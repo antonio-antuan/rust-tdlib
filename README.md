@@ -3,7 +3,6 @@ Rust client for TDlib.
 Library allows you to interact with Telegram Database library. 
 
 ### Features
-* default - provides only TDlib types
 * client - provides total integration with TDlib API. See `examples` directory.
 
 ### Run example
