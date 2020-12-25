@@ -1,15 +1,10 @@
-pub use self::{
-  _common::{
-    RObject,
-    RFunction,
-    TdType,
-  },
-};
+pub use self::_common::{RFunction, RObject, TdType};
 
 #[allow(dead_code, unused_imports)]
 pub(crate) use self::_common::from_json;
 
-#[macro_use] mod _common;
+#[macro_use]
+mod _common;
 
 pub use self::account_ttl::*;
 pub use self::address::*;
@@ -253,8 +248,6 @@ pub use self::voice_note::*;
 pub use self::web_page::*;
 pub use self::web_page_instant_view::*;
 
-
-
 mod account_ttl;
 mod address;
 mod animation;
@@ -496,5 +489,3 @@ mod video_note;
 mod voice_note;
 mod web_page;
 mod web_page_instant_view;
-
-

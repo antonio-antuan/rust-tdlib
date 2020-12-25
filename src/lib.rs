@@ -9,10 +9,8 @@ extern crate log;
 #[macro_use]
 extern crate lazy_static;
 
-
 #[cfg(feature = "client")]
 pub mod client;
 
-pub mod types;
 pub mod errors;
-
+pub mod types;

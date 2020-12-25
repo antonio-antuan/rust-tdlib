@@ -1,10 +1,10 @@
 [package]
-name = "telegram-tdlib"
+name = "rust-tdlib"
 version = "0.1.0-beta.0"
 authors = ["aCLr <a.ch.clr@gmail.com>"]
 description = "TDlib (Telegram Database) client"
-homepage = "https://github.com/aCLr/telegram-tdlib"
-repository = "https://github.com/aCLr/telegram-tdlib"
+homepage = "https://github.com/aCLr/rust-tdlib"
+repository = "https://github.com/aCLr/rust-tdlib"
 license = "MIT"
 keywords = [ "telegram", "tdlib" ]
 categories = ["api-bindings"]
@@ -19,7 +19,6 @@ readme = "README.md"
 edition = "2018"
 
 [features]
-default = []
 client = ["tokio", "lazy_static", "async-trait", "rtdlib-sys", "log"]
 
 [dependencies]
@@ -38,7 +37,7 @@ tokio = { version = "1", features = ["sync", "rt", "time"], optional = true}
 async-trait = { version = "0.1", optional = true }
 
 
-
 [dev-dependencies]
-tokio = {version = "1", features = ["macros", "rt-multi-thread"]}
+tokio = {version = "1", features = ["macros", "rt-multi-thread", "sync"]}
+log = { version = "0.4" }
 env_logger = "0.8"

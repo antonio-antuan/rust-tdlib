@@ -2,14 +2,9 @@
 extern crate log;
 
 use env_logger;
-use rtdlib_sys::Tdlib;
-use std::io;
-use std::sync::Arc;
-use std::sync::{Condvar, Mutex};
 use telegram_tdlib::{
-    client::api::Api, client::client::TypeInAuthStateHandler, client::Client, types::*,
+    client::client::TypeInAuthStateHandler, client::Client, client::Tdlib, types::*,
 };
-use tokio::sync::mpsc::Receiver;
 
 #[tokio::main]
 async fn main() {
@@ -49,7 +44,7 @@ async fn main() {
             .await
             .unwrap();
         info!("{:?}", chat)
-    };
+    }
 
     updates_join.abort()
 }
