@@ -2,9 +2,7 @@
 extern crate log;
 
 use env_logger;
-use telegram_tdlib::{
-    client::client::TypeInAuthStateHandler, client::Client, client::Tdlib, types::*,
-};
+use rust_tdlib::{client::client::TypeInAuthStateHandler, client::Client, client::Tdlib, types::*};
 
 #[tokio::main]
 async fn main() {
@@ -33,7 +31,7 @@ async fn main() {
         }
     });
     let chats = api
-        .search_public_chats(SearchPublicChats::builder().query("rust async").build())
+        .search_public_chats(SearchPublicChats::builder().query("@rust").build())
         .await
         .unwrap();
 
