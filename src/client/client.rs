@@ -47,9 +47,14 @@ pub trait AuthStateHandler {
 
 /// Provides minimum implementation of `AuthStateHandler`.
 /// All required methods wait for stdin input
-pub struct TypeInAuthStateHandler {}
+#[derive(Clone, Debug)]
+pub struct TypeInAuthStateHandler;
 
 impl TypeInAuthStateHandler {
+    pub fn new() -> Self {
+        Self
+    }
+
     fn type_in() -> String {
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
@@ -98,9 +103,78 @@ impl AuthStateHandler for TypeInAuthStateHandler {
     }
 }
 
+#[derive(Debug)]
+pub struct ClientBuilder<A>
+where
+    A: AuthStateHandler + Send + Sync + 'static,
+{
+    updates_sender: Option<mpsc::Sender<TdType>>,
+    auth_state_handler: Option<A>,
+    tdlib_parameters: Option<TdlibParameters>,
+    tdlib: Tdlib,
+}
+
+impl Default for ClientBuilder<TypeInAuthStateHandler> {
+    fn default() -> Self {
+        let s = Self::new();
+        s.with_auth_state_handler(TypeInAuthStateHandler::new())
+    }
+}
+
+impl<A> ClientBuilder<A>
+where
+    A: AuthStateHandler + Send + Sync + 'static,
+{
+    pub fn new() -> Self {
+        Self {
+            tdlib: Tdlib::new(),
+            auth_state_handler: None,
+            updates_sender: None,
+            tdlib_parameters: None,
+        }
+    }
+
+    pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<TdType>) -> Self {
+        self.updates_sender = Some(updates_sender);
+        self
+    }
+
+    pub fn with_auth_state_handler(mut self, auth_state_handler: A) -> Self {
+        self.auth_state_handler = Some(auth_state_handler);
+        self
+    }
+
+    pub fn with_tdlib_parameters(mut self, tdlib_parameters: TdlibParameters) -> Self {
+        self.tdlib_parameters = Some(tdlib_parameters);
+        self
+    }
+
+    pub fn with_tdlib(mut self, tdlib: Tdlib) -> Self {
+        self.tdlib = tdlib;
+        self
+    }
+
+    pub fn build(self) -> RTDResult<Client<A>> {
+        let auth_state_handler = match self.auth_state_handler {
+            None => Err(RTDError::Internal("auth_state_handler not specified"))?,
+            Some(h) => h,
+        };
+        let tdlib_parameters = match self.tdlib_parameters {
+            None => Err(RTDError::Internal("tdlib_parameters not specified"))?,
+            Some(h) => h,
+        };
+        let mut cl = Client::new(self.tdlib, auth_state_handler, tdlib_parameters);
+        match self.updates_sender {
+            None => {}
+            Some(s) => cl.set_updates_sender(s),
+        };
+        Ok(cl)
+    }
+}
+
 /// `Client` is a high-level abstraction of TDLib.
 /// Before start any API interactions you must call `start().await`.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Client<A>
 where
     A: AuthStateHandler + Send + Sync + 'static,
@@ -117,6 +191,11 @@ impl<A> Client<A>
 where
     A: AuthStateHandler + Send + Sync + 'static,
 {
+    pub fn builder() -> ClientBuilder<A> {
+        ClientBuilder::new()
+    }
+
+    /// Returns instance of Api, which allows to interact with TDLib API
     pub fn api(&self) -> &Api {
         &self.api
     }
