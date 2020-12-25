@@ -1,0 +1,44 @@
+[package]
+name = "telegram-tdlib"
+version = "0.1.0"
+authors = ["aCLr <a.ch.clr@gmail.com>"]
+description = "TDlib (Telegram Database) client"
+homepage = "https://github.com/aCLr/telegram-tdlib"
+repository = "https://github.com/aCLr/telegram-tdlib"
+license = "MIT"
+keywords = [ "telegram", "tdlib" ]
+categories = ["api-bindings"]
+include = [
+  "Cargo.toml",
+  "**/*.rs",
+  "README.md",
+  "LICENSE"
+]
+readme = "README.md"
+edition = "2018"
+
+
+[dependencies]
+log = "0.4"
+regex = "1"
+futures = "0.3"
+lazy_static = "1.4"
+tokio = { version = "1", features = ["sync", "rt", "time"]}
+async-trait = "0.1.42"
+
+libc = "0.2"
+
+serde = "1"
+serde_derive = "1"
+serde_json = "1"
+serde-aux = "0.6"
+
+uuid = { version = "0.8", features = ["v4"] }
+
+rtdlib-sys = { version = "0.1" }
+
+
+[dev-dependencies]
+# tokio features specified for tokio::main
+tokio = {version = "1", features = ["macros", "rt-multi-thread"]}
+env_logger = "0.8.2"
