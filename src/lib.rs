@@ -1,3 +1,5 @@
+#![allow(clippy::large_enum_variant, clippy::borrowed_box)]
+
 #[macro_use]
 extern crate serde_derive;
 
@@ -14,3 +16,4 @@ pub mod client;
 
 pub mod errors;
 pub mod types;
+

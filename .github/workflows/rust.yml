@@ -10,15 +10,30 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  lint-n-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        env:
+          RUST_LOG: trace
+          API_ID: 1
+          API_HASH: 1
+        run: cargo test --features client --verbose
+
+      - name: clippy
+        run: cargo-clippy
+
+
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+
     - name: Build
       run: cargo build --verbose
     - name: Build client
       run: cargo build --features client --verbose
-#    - name: Run tests
-#      run: cargo test --verbose

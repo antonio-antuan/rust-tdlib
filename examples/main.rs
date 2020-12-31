@@ -2,10 +2,14 @@
 extern crate log;
 
 use env_logger;
-use rust_tdlib::{client::client::TypeInAuthStateHandler, client::Client, client::Tdlib, types::*};
+use rust_tdlib::{
+    client::{Client, RawApi, Tdlib, TypeInAuthStateHandler},
+    types::*,
+};
 
 #[tokio::main]
 async fn main() {
+    Tdlib::set_log_verbosity_level(1);
     env_logger::init();
     let tdlib_parameters = TdlibParameters::builder()
         .database_directory("tdlib")
@@ -18,14 +22,18 @@ async fn main() {
         .application_version(env!("CARGO_PKG_VERSION"))
         .enable_storage_optimizer(true)
         .build();
-    let mut client = Client::new(Tdlib::new(), TypeInAuthStateHandler {}, tdlib_parameters);
+    let mut client = Client::new(
+        RawApi::default(),
+        TypeInAuthStateHandler {},
+        tdlib_parameters,
+    );
 
     let (sender, mut receiver) = tokio::sync::mpsc::channel::<TdType>(100);
     client.set_updates_sender(sender);
     client.start().await.unwrap();
     let api = client.api();
 
-    let updates_join = tokio::spawn(async move {
+    let _updates_join = tokio::spawn(async move {
         while let Some(message) = receiver.recv().await {
             info!("updates handler received {:?}", message);
         }
@@ -43,6 +51,4 @@ async fn main() {
             .unwrap();
         info!("{:?}", chat)
     }
-
-    updates_join.abort()
 }
