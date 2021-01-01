@@ -14,17 +14,23 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      API_ID: 1
+      API_HASH: 1
+
     steps:
       - uses: actions/checkout@v2
-      - name: Run tests
+
+      - name: formatting
+        run: cargo fmt --check
+
+      - name: tests
         env:
           RUST_LOG: trace
-          API_ID: 1
-          API_HASH: 1
-        run: cargo test --features client --verbose
+        run: cargo test --features client
 
       - name: clippy
-        run: cargo-clippy
+        run: cargo clippy --tests --examples --all-features
 
 
   build:
@@ -33,7 +39,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --verbose
-    - name: Build client
-      run: cargo build --features client --verbose
+
+    - name: build
+      run: cargo build
+
+    - name: build client
+      run: cargo build --features client

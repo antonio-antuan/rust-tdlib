@@ -1,9 +1,9 @@
-use crate::types::*;
 use crate::errors::*;
+use crate::types::*;
 use uuid::Uuid;
 
-use std::fmt::Debug;
 use serde::de::{Deserialize, Deserializer};
+use std::fmt::Debug;
 
 /// TRAIT | Contains information about a Telegram Passport element to be saved
 pub trait TDInputPassportElement: Debug + RObject {}
@@ -12,971 +12,1107 @@ pub trait TDInputPassportElement: Debug + RObject {}
 #[derive(Debug, Clone, Serialize)]
 #[serde(untagged)]
 pub enum InputPassportElement {
-  #[doc(hidden)] _Default(()),
-  /// A Telegram Passport element to be saved containing the user's address
-  Address(InputPassportElementAddress),
-  /// A Telegram Passport element to be saved containing the user's bank statement
-  BankStatement(InputPassportElementBankStatement),
-  /// A Telegram Passport element to be saved containing the user's driver license
-  DriverLicense(InputPassportElementDriverLicense),
-  /// A Telegram Passport element to be saved containing the user's email address
-  EmailAddress(InputPassportElementEmailAddress),
-  /// A Telegram Passport element to be saved containing the user's identity card
-  IdentityCard(InputPassportElementIdentityCard),
-  /// A Telegram Passport element to be saved containing the user's internal passport
-  InternalPassport(InputPassportElementInternalPassport),
-  /// A Telegram Passport element to be saved containing the user's passport
-  Passport(InputPassportElementPassport),
-  /// A Telegram Passport element to be saved containing the user's passport registration
-  PassportRegistration(InputPassportElementPassportRegistration),
-  /// A Telegram Passport element to be saved containing the user's personal details
-  PersonalDetails(InputPassportElementPersonalDetails),
-  /// A Telegram Passport element to be saved containing the user's phone number
-  PhoneNumber(InputPassportElementPhoneNumber),
-  /// A Telegram Passport element to be saved containing the user's rental agreement
-  RentalAgreement(InputPassportElementRentalAgreement),
-  /// A Telegram Passport element to be saved containing the user's temporary registration
-  TemporaryRegistration(InputPassportElementTemporaryRegistration),
-  /// A Telegram Passport element to be saved containing the user's utility bill
-  UtilityBill(InputPassportElementUtilityBill),
-
+    #[doc(hidden)]
+    _Default(()),
+    /// A Telegram Passport element to be saved containing the user's address
+    Address(InputPassportElementAddress),
+    /// A Telegram Passport element to be saved containing the user's bank statement
+    BankStatement(InputPassportElementBankStatement),
+    /// A Telegram Passport element to be saved containing the user's driver license
+    DriverLicense(InputPassportElementDriverLicense),
+    /// A Telegram Passport element to be saved containing the user's email address
+    EmailAddress(InputPassportElementEmailAddress),
+    /// A Telegram Passport element to be saved containing the user's identity card
+    IdentityCard(InputPassportElementIdentityCard),
+    /// A Telegram Passport element to be saved containing the user's internal passport
+    InternalPassport(InputPassportElementInternalPassport),
+    /// A Telegram Passport element to be saved containing the user's passport
+    Passport(InputPassportElementPassport),
+    /// A Telegram Passport element to be saved containing the user's passport registration
+    PassportRegistration(InputPassportElementPassportRegistration),
+    /// A Telegram Passport element to be saved containing the user's personal details
+    PersonalDetails(InputPassportElementPersonalDetails),
+    /// A Telegram Passport element to be saved containing the user's phone number
+    PhoneNumber(InputPassportElementPhoneNumber),
+    /// A Telegram Passport element to be saved containing the user's rental agreement
+    RentalAgreement(InputPassportElementRentalAgreement),
+    /// A Telegram Passport element to be saved containing the user's temporary registration
+    TemporaryRegistration(InputPassportElementTemporaryRegistration),
+    /// A Telegram Passport element to be saved containing the user's utility bill
+    UtilityBill(InputPassportElementUtilityBill),
 }
 
 impl Default for InputPassportElement {
-  fn default() -> Self { InputPassportElement::_Default(()) }
+    fn default() -> Self {
+        InputPassportElement::_Default(())
+    }
 }
 
 impl<'de> Deserialize<'de> for InputPassportElement {
-  fn deserialize<D>(deserializer: D) -> Result<InputPassportElement, D::Error> where D: Deserializer<'de> {
-    use serde::de::Error;
-    rtd_enum_deserialize!(
-      InputPassportElement,
-      (inputPassportElementAddress, Address);
-      (inputPassportElementBankStatement, BankStatement);
-      (inputPassportElementDriverLicense, DriverLicense);
-      (inputPassportElementEmailAddress, EmailAddress);
-      (inputPassportElementIdentityCard, IdentityCard);
-      (inputPassportElementInternalPassport, InternalPassport);
-      (inputPassportElementPassport, Passport);
-      (inputPassportElementPassportRegistration, PassportRegistration);
-      (inputPassportElementPersonalDetails, PersonalDetails);
-      (inputPassportElementPhoneNumber, PhoneNumber);
-      (inputPassportElementRentalAgreement, RentalAgreement);
-      (inputPassportElementTemporaryRegistration, TemporaryRegistration);
-      (inputPassportElementUtilityBill, UtilityBill);
+    fn deserialize<D>(deserializer: D) -> Result<InputPassportElement, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        use serde::de::Error;
+        rtd_enum_deserialize!(
+          InputPassportElement,
+          (inputPassportElementAddress, Address);
+          (inputPassportElementBankStatement, BankStatement);
+          (inputPassportElementDriverLicense, DriverLicense);
+          (inputPassportElementEmailAddress, EmailAddress);
+          (inputPassportElementIdentityCard, IdentityCard);
+          (inputPassportElementInternalPassport, InternalPassport);
+          (inputPassportElementPassport, Passport);
+          (inputPassportElementPassportRegistration, PassportRegistration);
+          (inputPassportElementPersonalDetails, PersonalDetails);
+          (inputPassportElementPhoneNumber, PhoneNumber);
+          (inputPassportElementRentalAgreement, RentalAgreement);
+          (inputPassportElementTemporaryRegistration, TemporaryRegistration);
+          (inputPassportElementUtilityBill, UtilityBill);
 
-    )(deserializer)
-  }
+        )(deserializer)
+    }
 }
 
 impl RObject for InputPassportElement {
-  #[doc(hidden)] fn td_name(&self) -> &'static str {
-    match self {
-      InputPassportElement::Address(t) => t.td_name(),
-      InputPassportElement::BankStatement(t) => t.td_name(),
-      InputPassportElement::DriverLicense(t) => t.td_name(),
-      InputPassportElement::EmailAddress(t) => t.td_name(),
-      InputPassportElement::IdentityCard(t) => t.td_name(),
-      InputPassportElement::InternalPassport(t) => t.td_name(),
-      InputPassportElement::Passport(t) => t.td_name(),
-      InputPassportElement::PassportRegistration(t) => t.td_name(),
-      InputPassportElement::PersonalDetails(t) => t.td_name(),
-      InputPassportElement::PhoneNumber(t) => t.td_name(),
-      InputPassportElement::RentalAgreement(t) => t.td_name(),
-      InputPassportElement::TemporaryRegistration(t) => t.td_name(),
-      InputPassportElement::UtilityBill(t) => t.td_name(),
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        match self {
+            InputPassportElement::Address(t) => t.td_name(),
+            InputPassportElement::BankStatement(t) => t.td_name(),
+            InputPassportElement::DriverLicense(t) => t.td_name(),
+            InputPassportElement::EmailAddress(t) => t.td_name(),
+            InputPassportElement::IdentityCard(t) => t.td_name(),
+            InputPassportElement::InternalPassport(t) => t.td_name(),
+            InputPassportElement::Passport(t) => t.td_name(),
+            InputPassportElement::PassportRegistration(t) => t.td_name(),
+            InputPassportElement::PersonalDetails(t) => t.td_name(),
+            InputPassportElement::PhoneNumber(t) => t.td_name(),
+            InputPassportElement::RentalAgreement(t) => t.td_name(),
+            InputPassportElement::TemporaryRegistration(t) => t.td_name(),
+            InputPassportElement::UtilityBill(t) => t.td_name(),
 
-      _ => "-1",
+            _ => "-1",
+        }
     }
-  }
-  #[doc(hidden)] fn extra(&self) -> Option<String> {
-    match self {
-      InputPassportElement::Address(t) => t.extra(),
-      InputPassportElement::BankStatement(t) => t.extra(),
-      InputPassportElement::DriverLicense(t) => t.extra(),
-      InputPassportElement::EmailAddress(t) => t.extra(),
-      InputPassportElement::IdentityCard(t) => t.extra(),
-      InputPassportElement::InternalPassport(t) => t.extra(),
-      InputPassportElement::Passport(t) => t.extra(),
-      InputPassportElement::PassportRegistration(t) => t.extra(),
-      InputPassportElement::PersonalDetails(t) => t.extra(),
-      InputPassportElement::PhoneNumber(t) => t.extra(),
-      InputPassportElement::RentalAgreement(t) => t.extra(),
-      InputPassportElement::TemporaryRegistration(t) => t.extra(),
-      InputPassportElement::UtilityBill(t) => t.extra(),
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        match self {
+            InputPassportElement::Address(t) => t.extra(),
+            InputPassportElement::BankStatement(t) => t.extra(),
+            InputPassportElement::DriverLicense(t) => t.extra(),
+            InputPassportElement::EmailAddress(t) => t.extra(),
+            InputPassportElement::IdentityCard(t) => t.extra(),
+            InputPassportElement::InternalPassport(t) => t.extra(),
+            InputPassportElement::Passport(t) => t.extra(),
+            InputPassportElement::PassportRegistration(t) => t.extra(),
+            InputPassportElement::PersonalDetails(t) => t.extra(),
+            InputPassportElement::PhoneNumber(t) => t.extra(),
+            InputPassportElement::RentalAgreement(t) => t.extra(),
+            InputPassportElement::TemporaryRegistration(t) => t.extra(),
+            InputPassportElement::UtilityBill(t) => t.extra(),
 
-      _ => None,
+            _ => None,
+        }
     }
-  }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
 
 impl InputPassportElement {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  #[doc(hidden)] pub fn _is_default(&self) -> bool { matches!(self, InputPassportElement::_Default(_)) }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    #[doc(hidden)]
+    pub fn _is_default(&self) -> bool {
+        matches!(self, InputPassportElement::_Default(_))
+    }
 }
 
 impl AsRef<InputPassportElement> for InputPassportElement {
-  fn as_ref(&self) -> &InputPassportElement { self }
+    fn as_ref(&self) -> &InputPassportElement {
+        self
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's address
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementAddress {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The address to be saved
-  address: Address,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The address to be saved
+    address: Address,
 }
 
 impl RObject for InputPassportElementAddress {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementAddress" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementAddress"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementAddress {}
 
-
-
 impl InputPassportElementAddress {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementAddressBuilder {
-    let mut inner = InputPassportElementAddress::default();
-    inner.td_name = "inputPassportElementAddress".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementAddressBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementAddressBuilder {
+        let mut inner = InputPassportElementAddress::default();
+        inner.td_name = "inputPassportElementAddress".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementAddressBuilder { inner }
+    }
 
-  pub fn address(&self) -> &Address { &self.address }
-
+    pub fn address(&self) -> &Address {
+        &self.address
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementAddressBuilder {
-  inner: InputPassportElementAddress
+    inner: InputPassportElementAddress,
 }
 
 impl RTDInputPassportElementAddressBuilder {
-  pub fn build(&self) -> InputPassportElementAddress { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementAddress {
+        self.inner.clone()
+    }
 
-   
-  pub fn address<T: AsRef<Address>>(&mut self, address: T) -> &mut Self {
-    self.inner.address = address.as_ref().clone();
-    self
-  }
-
+    pub fn address<T: AsRef<Address>>(&mut self, address: T) -> &mut Self {
+        self.inner.address = address.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementAddress> for InputPassportElementAddress {
-  fn as_ref(&self) -> &InputPassportElementAddress { self }
+    fn as_ref(&self) -> &InputPassportElementAddress {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementAddress> for RTDInputPassportElementAddressBuilder {
-  fn as_ref(&self) -> &InputPassportElementAddress { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementAddress {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's bank statement
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementBankStatement {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The bank statement to be saved
-  bank_statement: InputPersonalDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The bank statement to be saved
+    bank_statement: InputPersonalDocument,
 }
 
 impl RObject for InputPassportElementBankStatement {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementBankStatement" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementBankStatement"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementBankStatement {}
 
-
-
 impl InputPassportElementBankStatement {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementBankStatementBuilder {
-    let mut inner = InputPassportElementBankStatement::default();
-    inner.td_name = "inputPassportElementBankStatement".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementBankStatementBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementBankStatementBuilder {
+        let mut inner = InputPassportElementBankStatement::default();
+        inner.td_name = "inputPassportElementBankStatement".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementBankStatementBuilder { inner }
+    }
 
-  pub fn bank_statement(&self) -> &InputPersonalDocument { &self.bank_statement }
-
+    pub fn bank_statement(&self) -> &InputPersonalDocument {
+        &self.bank_statement
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementBankStatementBuilder {
-  inner: InputPassportElementBankStatement
+    inner: InputPassportElementBankStatement,
 }
 
 impl RTDInputPassportElementBankStatementBuilder {
-  pub fn build(&self) -> InputPassportElementBankStatement { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementBankStatement {
+        self.inner.clone()
+    }
 
-   
-  pub fn bank_statement<T: AsRef<InputPersonalDocument>>(&mut self, bank_statement: T) -> &mut Self {
-    self.inner.bank_statement = bank_statement.as_ref().clone();
-    self
-  }
-
+    pub fn bank_statement<T: AsRef<InputPersonalDocument>>(
+        &mut self,
+        bank_statement: T,
+    ) -> &mut Self {
+        self.inner.bank_statement = bank_statement.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementBankStatement> for InputPassportElementBankStatement {
-  fn as_ref(&self) -> &InputPassportElementBankStatement { self }
+    fn as_ref(&self) -> &InputPassportElementBankStatement {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementBankStatement> for RTDInputPassportElementBankStatementBuilder {
-  fn as_ref(&self) -> &InputPassportElementBankStatement { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementBankStatement {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's driver license
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementDriverLicense {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The driver license to be saved
-  driver_license: InputIdentityDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The driver license to be saved
+    driver_license: InputIdentityDocument,
 }
 
 impl RObject for InputPassportElementDriverLicense {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementDriverLicense" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementDriverLicense"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementDriverLicense {}
 
-
-
 impl InputPassportElementDriverLicense {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementDriverLicenseBuilder {
-    let mut inner = InputPassportElementDriverLicense::default();
-    inner.td_name = "inputPassportElementDriverLicense".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementDriverLicenseBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementDriverLicenseBuilder {
+        let mut inner = InputPassportElementDriverLicense::default();
+        inner.td_name = "inputPassportElementDriverLicense".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementDriverLicenseBuilder { inner }
+    }
 
-  pub fn driver_license(&self) -> &InputIdentityDocument { &self.driver_license }
-
+    pub fn driver_license(&self) -> &InputIdentityDocument {
+        &self.driver_license
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementDriverLicenseBuilder {
-  inner: InputPassportElementDriverLicense
+    inner: InputPassportElementDriverLicense,
 }
 
 impl RTDInputPassportElementDriverLicenseBuilder {
-  pub fn build(&self) -> InputPassportElementDriverLicense { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementDriverLicense {
+        self.inner.clone()
+    }
 
-   
-  pub fn driver_license<T: AsRef<InputIdentityDocument>>(&mut self, driver_license: T) -> &mut Self {
-    self.inner.driver_license = driver_license.as_ref().clone();
-    self
-  }
-
+    pub fn driver_license<T: AsRef<InputIdentityDocument>>(
+        &mut self,
+        driver_license: T,
+    ) -> &mut Self {
+        self.inner.driver_license = driver_license.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementDriverLicense> for InputPassportElementDriverLicense {
-  fn as_ref(&self) -> &InputPassportElementDriverLicense { self }
+    fn as_ref(&self) -> &InputPassportElementDriverLicense {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementDriverLicense> for RTDInputPassportElementDriverLicenseBuilder {
-  fn as_ref(&self) -> &InputPassportElementDriverLicense { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementDriverLicense {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's email address
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementEmailAddress {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The email address to be saved
-  email_address: String,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The email address to be saved
+    email_address: String,
 }
 
 impl RObject for InputPassportElementEmailAddress {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementEmailAddress" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementEmailAddress"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementEmailAddress {}
 
-
-
 impl InputPassportElementEmailAddress {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementEmailAddressBuilder {
-    let mut inner = InputPassportElementEmailAddress::default();
-    inner.td_name = "inputPassportElementEmailAddress".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementEmailAddressBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementEmailAddressBuilder {
+        let mut inner = InputPassportElementEmailAddress::default();
+        inner.td_name = "inputPassportElementEmailAddress".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementEmailAddressBuilder { inner }
+    }
 
-  pub fn email_address(&self) -> &String { &self.email_address }
-
+    pub fn email_address(&self) -> &String {
+        &self.email_address
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementEmailAddressBuilder {
-  inner: InputPassportElementEmailAddress
+    inner: InputPassportElementEmailAddress,
 }
 
 impl RTDInputPassportElementEmailAddressBuilder {
-  pub fn build(&self) -> InputPassportElementEmailAddress { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementEmailAddress {
+        self.inner.clone()
+    }
 
-   
-  pub fn email_address<T: AsRef<str>>(&mut self, email_address: T) -> &mut Self {
-    self.inner.email_address = email_address.as_ref().to_string();
-    self
-  }
-
+    pub fn email_address<T: AsRef<str>>(&mut self, email_address: T) -> &mut Self {
+        self.inner.email_address = email_address.as_ref().to_string();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementEmailAddress> for InputPassportElementEmailAddress {
-  fn as_ref(&self) -> &InputPassportElementEmailAddress { self }
+    fn as_ref(&self) -> &InputPassportElementEmailAddress {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementEmailAddress> for RTDInputPassportElementEmailAddressBuilder {
-  fn as_ref(&self) -> &InputPassportElementEmailAddress { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementEmailAddress {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's identity card
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementIdentityCard {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The identity card to be saved
-  identity_card: InputIdentityDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The identity card to be saved
+    identity_card: InputIdentityDocument,
 }
 
 impl RObject for InputPassportElementIdentityCard {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementIdentityCard" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementIdentityCard"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementIdentityCard {}
 
-
-
 impl InputPassportElementIdentityCard {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementIdentityCardBuilder {
-    let mut inner = InputPassportElementIdentityCard::default();
-    inner.td_name = "inputPassportElementIdentityCard".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementIdentityCardBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementIdentityCardBuilder {
+        let mut inner = InputPassportElementIdentityCard::default();
+        inner.td_name = "inputPassportElementIdentityCard".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementIdentityCardBuilder { inner }
+    }
 
-  pub fn identity_card(&self) -> &InputIdentityDocument { &self.identity_card }
-
+    pub fn identity_card(&self) -> &InputIdentityDocument {
+        &self.identity_card
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementIdentityCardBuilder {
-  inner: InputPassportElementIdentityCard
+    inner: InputPassportElementIdentityCard,
 }
 
 impl RTDInputPassportElementIdentityCardBuilder {
-  pub fn build(&self) -> InputPassportElementIdentityCard { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementIdentityCard {
+        self.inner.clone()
+    }
 
-   
-  pub fn identity_card<T: AsRef<InputIdentityDocument>>(&mut self, identity_card: T) -> &mut Self {
-    self.inner.identity_card = identity_card.as_ref().clone();
-    self
-  }
-
+    pub fn identity_card<T: AsRef<InputIdentityDocument>>(
+        &mut self,
+        identity_card: T,
+    ) -> &mut Self {
+        self.inner.identity_card = identity_card.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementIdentityCard> for InputPassportElementIdentityCard {
-  fn as_ref(&self) -> &InputPassportElementIdentityCard { self }
+    fn as_ref(&self) -> &InputPassportElementIdentityCard {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementIdentityCard> for RTDInputPassportElementIdentityCardBuilder {
-  fn as_ref(&self) -> &InputPassportElementIdentityCard { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementIdentityCard {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's internal passport
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementInternalPassport {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The internal passport to be saved
-  internal_passport: InputIdentityDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The internal passport to be saved
+    internal_passport: InputIdentityDocument,
 }
 
 impl RObject for InputPassportElementInternalPassport {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementInternalPassport" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementInternalPassport"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementInternalPassport {}
 
-
-
 impl InputPassportElementInternalPassport {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementInternalPassportBuilder {
-    let mut inner = InputPassportElementInternalPassport::default();
-    inner.td_name = "inputPassportElementInternalPassport".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementInternalPassportBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementInternalPassportBuilder {
+        let mut inner = InputPassportElementInternalPassport::default();
+        inner.td_name = "inputPassportElementInternalPassport".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementInternalPassportBuilder { inner }
+    }
 
-  pub fn internal_passport(&self) -> &InputIdentityDocument { &self.internal_passport }
-
+    pub fn internal_passport(&self) -> &InputIdentityDocument {
+        &self.internal_passport
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementInternalPassportBuilder {
-  inner: InputPassportElementInternalPassport
+    inner: InputPassportElementInternalPassport,
 }
 
 impl RTDInputPassportElementInternalPassportBuilder {
-  pub fn build(&self) -> InputPassportElementInternalPassport { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementInternalPassport {
+        self.inner.clone()
+    }
 
-   
-  pub fn internal_passport<T: AsRef<InputIdentityDocument>>(&mut self, internal_passport: T) -> &mut Self {
-    self.inner.internal_passport = internal_passport.as_ref().clone();
-    self
-  }
-
+    pub fn internal_passport<T: AsRef<InputIdentityDocument>>(
+        &mut self,
+        internal_passport: T,
+    ) -> &mut Self {
+        self.inner.internal_passport = internal_passport.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementInternalPassport> for InputPassportElementInternalPassport {
-  fn as_ref(&self) -> &InputPassportElementInternalPassport { self }
+    fn as_ref(&self) -> &InputPassportElementInternalPassport {
+        self
+    }
 }
 
-impl AsRef<InputPassportElementInternalPassport> for RTDInputPassportElementInternalPassportBuilder {
-  fn as_ref(&self) -> &InputPassportElementInternalPassport { &self.inner }
+impl AsRef<InputPassportElementInternalPassport>
+    for RTDInputPassportElementInternalPassportBuilder
+{
+    fn as_ref(&self) -> &InputPassportElementInternalPassport {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's passport
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementPassport {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The passport to be saved
-  passport: InputIdentityDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The passport to be saved
+    passport: InputIdentityDocument,
 }
 
 impl RObject for InputPassportElementPassport {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementPassport" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementPassport"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementPassport {}
 
-
-
 impl InputPassportElementPassport {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementPassportBuilder {
-    let mut inner = InputPassportElementPassport::default();
-    inner.td_name = "inputPassportElementPassport".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementPassportBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementPassportBuilder {
+        let mut inner = InputPassportElementPassport::default();
+        inner.td_name = "inputPassportElementPassport".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementPassportBuilder { inner }
+    }
 
-  pub fn passport(&self) -> &InputIdentityDocument { &self.passport }
-
+    pub fn passport(&self) -> &InputIdentityDocument {
+        &self.passport
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementPassportBuilder {
-  inner: InputPassportElementPassport
+    inner: InputPassportElementPassport,
 }
 
 impl RTDInputPassportElementPassportBuilder {
-  pub fn build(&self) -> InputPassportElementPassport { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementPassport {
+        self.inner.clone()
+    }
 
-   
-  pub fn passport<T: AsRef<InputIdentityDocument>>(&mut self, passport: T) -> &mut Self {
-    self.inner.passport = passport.as_ref().clone();
-    self
-  }
-
+    pub fn passport<T: AsRef<InputIdentityDocument>>(&mut self, passport: T) -> &mut Self {
+        self.inner.passport = passport.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementPassport> for InputPassportElementPassport {
-  fn as_ref(&self) -> &InputPassportElementPassport { self }
+    fn as_ref(&self) -> &InputPassportElementPassport {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementPassport> for RTDInputPassportElementPassportBuilder {
-  fn as_ref(&self) -> &InputPassportElementPassport { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementPassport {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's passport registration
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementPassportRegistration {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The passport registration page to be saved
-  passport_registration: InputPersonalDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The passport registration page to be saved
+    passport_registration: InputPersonalDocument,
 }
 
 impl RObject for InputPassportElementPassportRegistration {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementPassportRegistration" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementPassportRegistration"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementPassportRegistration {}
 
-
-
 impl InputPassportElementPassportRegistration {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementPassportRegistrationBuilder {
-    let mut inner = InputPassportElementPassportRegistration::default();
-    inner.td_name = "inputPassportElementPassportRegistration".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementPassportRegistrationBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementPassportRegistrationBuilder {
+        let mut inner = InputPassportElementPassportRegistration::default();
+        inner.td_name = "inputPassportElementPassportRegistration".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementPassportRegistrationBuilder { inner }
+    }
 
-  pub fn passport_registration(&self) -> &InputPersonalDocument { &self.passport_registration }
-
+    pub fn passport_registration(&self) -> &InputPersonalDocument {
+        &self.passport_registration
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementPassportRegistrationBuilder {
-  inner: InputPassportElementPassportRegistration
+    inner: InputPassportElementPassportRegistration,
 }
 
 impl RTDInputPassportElementPassportRegistrationBuilder {
-  pub fn build(&self) -> InputPassportElementPassportRegistration { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementPassportRegistration {
+        self.inner.clone()
+    }
 
-   
-  pub fn passport_registration<T: AsRef<InputPersonalDocument>>(&mut self, passport_registration: T) -> &mut Self {
-    self.inner.passport_registration = passport_registration.as_ref().clone();
-    self
-  }
-
+    pub fn passport_registration<T: AsRef<InputPersonalDocument>>(
+        &mut self,
+        passport_registration: T,
+    ) -> &mut Self {
+        self.inner.passport_registration = passport_registration.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementPassportRegistration> for InputPassportElementPassportRegistration {
-  fn as_ref(&self) -> &InputPassportElementPassportRegistration { self }
+    fn as_ref(&self) -> &InputPassportElementPassportRegistration {
+        self
+    }
 }
 
-impl AsRef<InputPassportElementPassportRegistration> for RTDInputPassportElementPassportRegistrationBuilder {
-  fn as_ref(&self) -> &InputPassportElementPassportRegistration { &self.inner }
+impl AsRef<InputPassportElementPassportRegistration>
+    for RTDInputPassportElementPassportRegistrationBuilder
+{
+    fn as_ref(&self) -> &InputPassportElementPassportRegistration {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's personal details
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementPersonalDetails {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// Personal details of the user
-  personal_details: PersonalDetails,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// Personal details of the user
+    personal_details: PersonalDetails,
 }
 
 impl RObject for InputPassportElementPersonalDetails {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementPersonalDetails" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementPersonalDetails"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementPersonalDetails {}
 
-
-
 impl InputPassportElementPersonalDetails {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementPersonalDetailsBuilder {
-    let mut inner = InputPassportElementPersonalDetails::default();
-    inner.td_name = "inputPassportElementPersonalDetails".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementPersonalDetailsBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementPersonalDetailsBuilder {
+        let mut inner = InputPassportElementPersonalDetails::default();
+        inner.td_name = "inputPassportElementPersonalDetails".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementPersonalDetailsBuilder { inner }
+    }
 
-  pub fn personal_details(&self) -> &PersonalDetails { &self.personal_details }
-
+    pub fn personal_details(&self) -> &PersonalDetails {
+        &self.personal_details
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementPersonalDetailsBuilder {
-  inner: InputPassportElementPersonalDetails
+    inner: InputPassportElementPersonalDetails,
 }
 
 impl RTDInputPassportElementPersonalDetailsBuilder {
-  pub fn build(&self) -> InputPassportElementPersonalDetails { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementPersonalDetails {
+        self.inner.clone()
+    }
 
-   
-  pub fn personal_details<T: AsRef<PersonalDetails>>(&mut self, personal_details: T) -> &mut Self {
-    self.inner.personal_details = personal_details.as_ref().clone();
-    self
-  }
-
+    pub fn personal_details<T: AsRef<PersonalDetails>>(
+        &mut self,
+        personal_details: T,
+    ) -> &mut Self {
+        self.inner.personal_details = personal_details.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementPersonalDetails> for InputPassportElementPersonalDetails {
-  fn as_ref(&self) -> &InputPassportElementPersonalDetails { self }
+    fn as_ref(&self) -> &InputPassportElementPersonalDetails {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementPersonalDetails> for RTDInputPassportElementPersonalDetailsBuilder {
-  fn as_ref(&self) -> &InputPassportElementPersonalDetails { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementPersonalDetails {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's phone number
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementPhoneNumber {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The phone number to be saved
-  phone_number: String,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The phone number to be saved
+    phone_number: String,
 }
 
 impl RObject for InputPassportElementPhoneNumber {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementPhoneNumber" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementPhoneNumber"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementPhoneNumber {}
 
-
-
 impl InputPassportElementPhoneNumber {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementPhoneNumberBuilder {
-    let mut inner = InputPassportElementPhoneNumber::default();
-    inner.td_name = "inputPassportElementPhoneNumber".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementPhoneNumberBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementPhoneNumberBuilder {
+        let mut inner = InputPassportElementPhoneNumber::default();
+        inner.td_name = "inputPassportElementPhoneNumber".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementPhoneNumberBuilder { inner }
+    }
 
-  pub fn phone_number(&self) -> &String { &self.phone_number }
-
+    pub fn phone_number(&self) -> &String {
+        &self.phone_number
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementPhoneNumberBuilder {
-  inner: InputPassportElementPhoneNumber
+    inner: InputPassportElementPhoneNumber,
 }
 
 impl RTDInputPassportElementPhoneNumberBuilder {
-  pub fn build(&self) -> InputPassportElementPhoneNumber { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementPhoneNumber {
+        self.inner.clone()
+    }
 
-   
-  pub fn phone_number<T: AsRef<str>>(&mut self, phone_number: T) -> &mut Self {
-    self.inner.phone_number = phone_number.as_ref().to_string();
-    self
-  }
-
+    pub fn phone_number<T: AsRef<str>>(&mut self, phone_number: T) -> &mut Self {
+        self.inner.phone_number = phone_number.as_ref().to_string();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementPhoneNumber> for InputPassportElementPhoneNumber {
-  fn as_ref(&self) -> &InputPassportElementPhoneNumber { self }
+    fn as_ref(&self) -> &InputPassportElementPhoneNumber {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementPhoneNumber> for RTDInputPassportElementPhoneNumberBuilder {
-  fn as_ref(&self) -> &InputPassportElementPhoneNumber { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementPhoneNumber {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's rental agreement
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementRentalAgreement {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The rental agreement to be saved
-  rental_agreement: InputPersonalDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The rental agreement to be saved
+    rental_agreement: InputPersonalDocument,
 }
 
 impl RObject for InputPassportElementRentalAgreement {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementRentalAgreement" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementRentalAgreement"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementRentalAgreement {}
 
-
-
 impl InputPassportElementRentalAgreement {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementRentalAgreementBuilder {
-    let mut inner = InputPassportElementRentalAgreement::default();
-    inner.td_name = "inputPassportElementRentalAgreement".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementRentalAgreementBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementRentalAgreementBuilder {
+        let mut inner = InputPassportElementRentalAgreement::default();
+        inner.td_name = "inputPassportElementRentalAgreement".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementRentalAgreementBuilder { inner }
+    }
 
-  pub fn rental_agreement(&self) -> &InputPersonalDocument { &self.rental_agreement }
-
+    pub fn rental_agreement(&self) -> &InputPersonalDocument {
+        &self.rental_agreement
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementRentalAgreementBuilder {
-  inner: InputPassportElementRentalAgreement
+    inner: InputPassportElementRentalAgreement,
 }
 
 impl RTDInputPassportElementRentalAgreementBuilder {
-  pub fn build(&self) -> InputPassportElementRentalAgreement { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementRentalAgreement {
+        self.inner.clone()
+    }
 
-   
-  pub fn rental_agreement<T: AsRef<InputPersonalDocument>>(&mut self, rental_agreement: T) -> &mut Self {
-    self.inner.rental_agreement = rental_agreement.as_ref().clone();
-    self
-  }
-
+    pub fn rental_agreement<T: AsRef<InputPersonalDocument>>(
+        &mut self,
+        rental_agreement: T,
+    ) -> &mut Self {
+        self.inner.rental_agreement = rental_agreement.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementRentalAgreement> for InputPassportElementRentalAgreement {
-  fn as_ref(&self) -> &InputPassportElementRentalAgreement { self }
+    fn as_ref(&self) -> &InputPassportElementRentalAgreement {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementRentalAgreement> for RTDInputPassportElementRentalAgreementBuilder {
-  fn as_ref(&self) -> &InputPassportElementRentalAgreement { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementRentalAgreement {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's temporary registration
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementTemporaryRegistration {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The temporary registration document to be saved
-  temporary_registration: InputPersonalDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The temporary registration document to be saved
+    temporary_registration: InputPersonalDocument,
 }
 
 impl RObject for InputPassportElementTemporaryRegistration {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementTemporaryRegistration" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementTemporaryRegistration"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementTemporaryRegistration {}
 
-
-
 impl InputPassportElementTemporaryRegistration {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementTemporaryRegistrationBuilder {
-    let mut inner = InputPassportElementTemporaryRegistration::default();
-    inner.td_name = "inputPassportElementTemporaryRegistration".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementTemporaryRegistrationBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementTemporaryRegistrationBuilder {
+        let mut inner = InputPassportElementTemporaryRegistration::default();
+        inner.td_name = "inputPassportElementTemporaryRegistration".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementTemporaryRegistrationBuilder { inner }
+    }
 
-  pub fn temporary_registration(&self) -> &InputPersonalDocument { &self.temporary_registration }
-
+    pub fn temporary_registration(&self) -> &InputPersonalDocument {
+        &self.temporary_registration
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementTemporaryRegistrationBuilder {
-  inner: InputPassportElementTemporaryRegistration
+    inner: InputPassportElementTemporaryRegistration,
 }
 
 impl RTDInputPassportElementTemporaryRegistrationBuilder {
-  pub fn build(&self) -> InputPassportElementTemporaryRegistration { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementTemporaryRegistration {
+        self.inner.clone()
+    }
 
-   
-  pub fn temporary_registration<T: AsRef<InputPersonalDocument>>(&mut self, temporary_registration: T) -> &mut Self {
-    self.inner.temporary_registration = temporary_registration.as_ref().clone();
-    self
-  }
-
+    pub fn temporary_registration<T: AsRef<InputPersonalDocument>>(
+        &mut self,
+        temporary_registration: T,
+    ) -> &mut Self {
+        self.inner.temporary_registration = temporary_registration.as_ref().clone();
+        self
+    }
 }
 
-impl AsRef<InputPassportElementTemporaryRegistration> for InputPassportElementTemporaryRegistration {
-  fn as_ref(&self) -> &InputPassportElementTemporaryRegistration { self }
+impl AsRef<InputPassportElementTemporaryRegistration>
+    for InputPassportElementTemporaryRegistration
+{
+    fn as_ref(&self) -> &InputPassportElementTemporaryRegistration {
+        self
+    }
 }
 
-impl AsRef<InputPassportElementTemporaryRegistration> for RTDInputPassportElementTemporaryRegistrationBuilder {
-  fn as_ref(&self) -> &InputPassportElementTemporaryRegistration { &self.inner }
+impl AsRef<InputPassportElementTemporaryRegistration>
+    for RTDInputPassportElementTemporaryRegistrationBuilder
+{
+    fn as_ref(&self) -> &InputPassportElementTemporaryRegistration {
+        &self.inner
+    }
 }
-
-
-
-
 
 /// A Telegram Passport element to be saved containing the user's utility bill
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementUtilityBill {
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@type", deserialize = "@type"))]
-  td_name: String,
-  #[doc(hidden)]
-  #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-  extra: Option<String>,
-  /// The utility bill to be saved
-  utility_bill: InputPersonalDocument,
-  
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@type", deserialize = "@type"))]
+    td_name: String,
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    /// The utility bill to be saved
+    utility_bill: InputPersonalDocument,
 }
 
 impl RObject for InputPassportElementUtilityBill {
-  #[doc(hidden)] fn td_name(&self) -> &'static str { "inputPassportElementUtilityBill" }
-  #[doc(hidden)] fn extra(&self) -> Option<String> { self.extra.clone() }
-  fn to_json(&self) -> RTDResult<String> { Ok(serde_json::to_string(self)?) }
+    #[doc(hidden)]
+    fn td_name(&self) -> &'static str {
+        "inputPassportElementUtilityBill"
+    }
+    #[doc(hidden)]
+    fn extra(&self) -> Option<String> {
+        self.extra.clone()
+    }
+    fn to_json(&self) -> RTDResult<String> {
+        Ok(serde_json::to_string(self)?)
+    }
 }
-
 
 impl TDInputPassportElement for InputPassportElementUtilityBill {}
 
-
-
 impl InputPassportElementUtilityBill {
-  pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> { Ok(serde_json::from_str(json.as_ref())?) }
-  pub fn builder() -> RTDInputPassportElementUtilityBillBuilder {
-    let mut inner = InputPassportElementUtilityBill::default();
-    inner.td_name = "inputPassportElementUtilityBill".to_string();
-    inner.extra = Some(Uuid::new_v4().to_string());
-    RTDInputPassportElementUtilityBillBuilder { inner }
-  }
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputPassportElementUtilityBillBuilder {
+        let mut inner = InputPassportElementUtilityBill::default();
+        inner.td_name = "inputPassportElementUtilityBill".to_string();
+        inner.extra = Some(Uuid::new_v4().to_string());
+        RTDInputPassportElementUtilityBillBuilder { inner }
+    }
 
-  pub fn utility_bill(&self) -> &InputPersonalDocument { &self.utility_bill }
-
+    pub fn utility_bill(&self) -> &InputPersonalDocument {
+        &self.utility_bill
+    }
 }
 
 #[doc(hidden)]
 pub struct RTDInputPassportElementUtilityBillBuilder {
-  inner: InputPassportElementUtilityBill
+    inner: InputPassportElementUtilityBill,
 }
 
 impl RTDInputPassportElementUtilityBillBuilder {
-  pub fn build(&self) -> InputPassportElementUtilityBill { self.inner.clone() }
+    pub fn build(&self) -> InputPassportElementUtilityBill {
+        self.inner.clone()
+    }
 
-   
-  pub fn utility_bill<T: AsRef<InputPersonalDocument>>(&mut self, utility_bill: T) -> &mut Self {
-    self.inner.utility_bill = utility_bill.as_ref().clone();
-    self
-  }
-
+    pub fn utility_bill<T: AsRef<InputPersonalDocument>>(&mut self, utility_bill: T) -> &mut Self {
+        self.inner.utility_bill = utility_bill.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<InputPassportElementUtilityBill> for InputPassportElementUtilityBill {
-  fn as_ref(&self) -> &InputPassportElementUtilityBill { self }
+    fn as_ref(&self) -> &InputPassportElementUtilityBill {
+        self
+    }
 }
 
 impl AsRef<InputPassportElementUtilityBill> for RTDInputPassportElementUtilityBillBuilder {
-  fn as_ref(&self) -> &InputPassportElementUtilityBill { &self.inner }
+    fn as_ref(&self) -> &InputPassportElementUtilityBill {
+        &self.inner
+    }
 }
-
-
-
