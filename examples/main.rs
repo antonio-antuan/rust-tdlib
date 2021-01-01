@@ -9,7 +9,7 @@ use rust_tdlib::{
 
 #[tokio::main]
 async fn main() {
-    Tdlib::set_log_verbosity_level(1);
+    Tdlib::set_log_verbosity_level(1).unwrap();
     env_logger::init();
     let tdlib_parameters = TdlibParameters::builder()
         .database_directory("tdlib")
