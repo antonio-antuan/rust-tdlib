@@ -44,8 +44,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: build
-      run: cargo build
+    - name: build without default features
+      run: cargo build --no-default-features
 
     - name: build client
-      run: cargo build --features client
+      run: cargo build
