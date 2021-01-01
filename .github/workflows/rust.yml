@@ -36,7 +36,7 @@ jobs:
   build:
 
     needs:
-      - clippy
+      - lint-n-test
 
     runs-on: ubuntu-latest
 
