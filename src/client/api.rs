@@ -8,13 +8,15 @@ use crate::{
 };
 use rtdlib_sys::Tdlib;
 
+#[doc(hidden)]
 pub trait TdLibClient {
     fn send<Fnc: RFunction>(&self, fnc: Fnc) -> RTDResult<()>;
     fn receive(&self, timeout: f64) -> Option<String>;
     fn execute<Fnc: RFunction>(&self, fnc: Fnc) -> RTDResult<Option<String>>;
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
+#[doc(hidden)]
 pub struct RawApi {
     tdlib: Arc<Tdlib>,
 }
@@ -52,7 +54,9 @@ impl RawApi {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
+/// Struct stores all methods which you can call to interact with Telegram, such as:
+/// [send_message](Api::send_message), [download_file](Api::download_file), [search_chats](Api::search_chats) and so on.
 pub struct Api<S>
 where
     S: TdLibClient + Clone,

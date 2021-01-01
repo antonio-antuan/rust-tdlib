@@ -1,6 +1,8 @@
 CHANGELOG
 ===
-
+## 0.1.2
+* Fixed with_auth_state_handler for ClientBuilder.
+* Documentation improvements.
 
 ## 0.1.1
 * Improvements for docs.rs

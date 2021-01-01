@@ -17,22 +17,17 @@ async fn main() {
         .application_version(env!("CARGO_PKG_VERSION"))
         .enable_storage_optimizer(true)
         .build();
-    let (sender, mut receiver) = tokio::sync::mpsc::channel::<TdType>(100);
-
     let mut client = Client::builder()
         .with_tdlib_parameters(tdlib_parameters)
-        .with_updates_sender(sender)
         .build()
         .unwrap();
 
     let waiter = client.start().await.unwrap();
     let api = client.api();
 
-    tokio::spawn(async move {
-        while let Some(message) = receiver.recv().await {
-            info!("updates handler received {:?}", message);
-        }
-    });
+    let me = api.get_me(GetMe::builder().build()).await.unwrap();
+    info!("me: {:?}", me);
+
     let chats = api
         .search_public_chats(SearchPublicChats::builder().query("@rust").build())
         .await

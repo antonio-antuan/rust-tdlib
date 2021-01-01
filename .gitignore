@@ -2,3 +2,6 @@
 target
 tdlib
 Cargo.lock
+debug
+doc
+.rustc_info.json
