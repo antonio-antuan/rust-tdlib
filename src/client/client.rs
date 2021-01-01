@@ -159,17 +159,21 @@ where
     tdlib_parameters: Option<TdlibParameters>,
     auth_state_handler: A,
     tdlib: Tdlib,
+    tdlib_log_file_path: Option<String>,
+    tdlib_log_max_file_size: Option<i64>,
 }
 
 impl Default for ClientBuilder<ConsoleAuthStateHandler> {
     fn default() -> Self {
         Self {
             tdlib_verbosity_level: 0,
+            tdlib_log_file_path: None,
             read_updates_timeout: 2.0,
             updates_sender: None,
             tdlib_parameters: None,
             auth_state_handler: ConsoleAuthStateHandler::new(),
             tdlib: Tdlib::new(),
+            tdlib_log_max_file_size: None,
         }
     }
 }
@@ -178,10 +182,24 @@ impl<A> ClientBuilder<A>
 where
     A: AuthStateHandler + Send + Sync + 'static,
 {
-    /// TDlib verbosity level
-    /// See TDlib docs for details.
+    /// TDlib log verbosity level
+    /// See [tdlib method documentation](https://core.telegram.org/tdlib/docs/classtd_1_1_log.html#a0f683bd572154f7b4c8b4f973ea3395f) for details
     pub fn with_tdlib_verbosity_level(mut self, tdlib_verbosity_level: i32) -> Self {
         self.tdlib_verbosity_level = tdlib_verbosity_level;
+        self
+    }
+
+    /// TDlib log file path
+    /// See [tdlib method documentation](https://core.telegram.org/tdlib/docs/classtd_1_1_log.html#a038b57d66436f9f367f5c77360e8254b) for details.
+    pub fn with_tdlib_log_file_path(mut self, tdlib_log_file_path: &str) -> Self {
+        self.tdlib_log_file_path = Some(tdlib_log_file_path.to_string());
+        self
+    }
+
+    /// TDlib log max file size
+    /// See [tdlib method documentation](https://core.telegram.org/tdlib/docs/classtd_1_1_log.html#a749ea8521373bbe9f5c30f58bc591016) for details.
+    pub fn with_tdlib_log_max_file_size(mut self, tdlib_log_max_file_size: i64) -> Self {
+        self.tdlib_log_max_file_size = Some(tdlib_log_max_file_size);
         self
     }
 
@@ -202,8 +220,8 @@ where
         self
     }
 
-    /// `AuthStateHandler` allows you to handle particular "auth states", such as "WaitPassword", "WaitPhoneNumber" and so on.
-    /// See `crate::types::AuthorizationState`.
+    /// [AuthStateHandler](crate::client::client::AuthStateHandler) allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
+    /// See [AuthorizationState](crate::types::AuthorizationState).
     pub fn with_auth_state_handler(mut self, auth_state_handler: A) -> Self {
         self.auth_state_handler = auth_state_handler;
         self
@@ -213,6 +231,15 @@ where
         if self.tdlib_parameters.is_none() {
             return Err(RTDError::InvalidParameters("tdlib_parameters not set"));
         };
+
+        if self.tdlib_log_max_file_size.is_some() {
+            Tdlib::set_log_max_file_size(self.tdlib_log_max_file_size.unwrap());
+        }
+
+        if self.tdlib_log_file_path.is_some() {
+            Tdlib::set_log_file_path(Some(self.tdlib_log_file_path.unwrap().as_str()));
+        }
+
         Tdlib::set_log_verbosity_level(self.tdlib_verbosity_level)
             .map_err(|e| RTDError::TdlibError(e.to_string()))?;
         let client = Client::new(
@@ -226,7 +253,7 @@ where
     }
 }
 
-/// `Client` is a high-level abstraction of TDLib.
+/// A high-level abstraction of TDLib.
 /// Before start any API interactions you must call `start().await`.
 #[derive(Clone)]
 pub struct Client<A, S>
@@ -280,7 +307,7 @@ where
 
     /// Starts interaction with TDLib.
     /// Method blocks until authorization performed.
-    /// It returns `JoinHandle` which allows you to handle client state.
+    /// It returns [JoinHandle](tokio::task::JoinHandle) which allows you to handle client state.
     pub async fn start(&mut self) -> Result<JoinHandle<ClientState>, RTDError> {
         let (client_state_sx, mut client_state_rx) = mpsc::channel::<ClientState>(2);
         let (auth_sx, auth_rx) = mpsc::channel::<UpdateAuthorizationState>(10);
@@ -321,7 +348,7 @@ where
     }
 
     /// Stops the client.
-    /// You may want to await JoinHandle retrieved with `self.start().await` after stopping the client.
+    /// You may want to await JoinHandle retrieved with `client.start().await` after stopping the client.
     pub fn stop(&self) {
         self.stop_flag.store(true, Ordering::Release)
     }
@@ -379,7 +406,7 @@ where
         })
     }
 
-    // created task handles UpdateAuthorizationState and sends it to particular methods of specified `AuthStateHandler`
+    // created task handles [UpdateAuthorizationState][crate::types::UpdateAuthorizationState] and sends it to particular methods of specified [AuthStateHandler](crate::client::client::AuthStateHandler)
     fn init_auth_task(
         &self,
         client_state_sx: mpsc::Sender<ClientState>,

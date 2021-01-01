@@ -1,6 +1,6 @@
 [package]
 name = "rust-tdlib"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["aCLr <a.ch.clr@gmail.com>"]
 description = "TDlib (Telegram Database) client"
 homepage = "https://github.com/aCLr/rust-tdlib"
@@ -18,8 +18,12 @@ include = [
 readme = "README.md"
 edition = "2018"
 
+[package.metadata.docs.rs]
+all-features = true
+
 [features]
 client = ["tokio", "lazy_static", "async-trait", "rtdlib-sys", "log"]
+default = ["client"]
 
 [dependencies]
 futures = "0.3"
