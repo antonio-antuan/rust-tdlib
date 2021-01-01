@@ -35,6 +35,9 @@ jobs:
 
   build:
 
+    needs:
+      - clippy
+
     runs-on: ubuntu-latest
 
     steps:
