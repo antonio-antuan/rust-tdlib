@@ -612,11 +612,8 @@ mod tests {
     fn test_builder_no_params() {
         let result = Client::builder().build();
 
-        match result {
-            Ok(_) => {
-                panic!("client wrongly build without tdlib params")
-            }
-            Err(_) => {}
+        if result.is_ok() {
+            panic!("client wrongly build without tdlib params")
         }
 
         Client::builder()

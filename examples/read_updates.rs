@@ -27,7 +27,7 @@ async fn main() {
     while wait_messages_num > 0 {
         let message = receiver.recv().await.unwrap();
         info!("updates handler received {:?}", message);
-        wait_messages_num = wait_messages_num - 1;
+        wait_messages_num -= wait_messages_num;
     }
 
     client.stop();
