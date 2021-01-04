@@ -22,7 +22,7 @@ async fn main() {
         .unwrap();
 
     let waiter = client.start().await.unwrap();
-    let mut wait_messages_num = 1;
+    let mut wait_messages_num: i32 = 1;
 
     while wait_messages_num > 0 {
         let message = receiver.recv().await.unwrap();
