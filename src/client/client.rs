@@ -5,12 +5,13 @@ use rtdlib_sys::Tdlib;
 use std::sync::Arc;
 
 use super::api::{Api, RawApi, TdLibClient};
+use crate::errors::RTDResult;
 use crate::types::{
     AuthorizationState, AuthorizationStateWaitOtherDeviceConfirmation,
     AuthorizationStateWaitPhoneNumber, AuthorizationStateWaitRegistration, RegisterUser,
 };
 use crate::{
-    errors::{RTDError, RTDResult},
+    errors::RTDError,
     types::from_json,
     types::TdType,
     types::{
@@ -277,7 +278,6 @@ where
     S: TdLibClient + Send + Sync + Clone + 'static,
 {
     stop_flag: Arc<AtomicBool>,
-    is_started: bool,
     api: Api<S>,
     updates_sender: Option<mpsc::Sender<TdType>>,
     auth_state_handler: Arc<A>,
@@ -315,30 +315,16 @@ where
             stop_flag,
             read_updates_timeout,
             updates_sender,
-            is_started: false,
             tdlib_parameters: Arc::new(tdlib_parameters),
             api: Api::new(api),
             auth_state_handler: Arc::new(auth_state_handler),
         }
     }
 
-    pub fn set_updates_sender(&mut self, updates_sender: mpsc::Sender<TdType>) -> RTDResult<()> {
-        match self.is_started {
-            true => Err(RTDError::InvalidParameters(
-                "can't set updates sender when client already started",
-            )),
-            false => {
-                self.updates_sender = Some(updates_sender);
-                Ok(())
-            }
-        }
-    }
-
     /// Starts interaction with TDLib.
     /// Method blocks until authorization performed.
     /// It returns [JoinHandle](tokio::task::JoinHandle) which allows you to handle client state.
-    pub async fn start(&mut self) -> RTDResult<JoinHandle<ClientState>> {
-        self.is_started = true;
+    pub async fn start(&mut self) -> Result<JoinHandle<ClientState>, RTDError> {
         let (client_state_sx, mut client_state_rx) = mpsc::channel::<ClientState>(2);
         let (auth_sx, auth_rx) = mpsc::channel::<UpdateAuthorizationState>(10);
 
@@ -466,7 +452,7 @@ async fn handle_auth_state<A: AuthStateHandler, S: TdLibClient + Clone>(
     api: &Api<S>,
     auth_state_handler: Arc<A>,
     state: UpdateAuthorizationState,
-    mut client_state_sx: mpsc::Sender<ClientState>,
+    client_state_sx: mpsc::Sender<ClientState>,
     tdlib_parameters: Arc<TdlibParameters>,
 ) -> RTDResult<()> {
     match state.authorization_state() {
@@ -636,3 +622,4 @@ mod tests {
             .unwrap();
     }
 }
+
