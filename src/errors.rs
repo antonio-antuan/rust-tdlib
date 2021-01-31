@@ -25,7 +25,7 @@ impl fmt::Display for RTDError {
             }
             RTDError::Internal(err) => {
                 write!(f, "{}", err)
-            },
+            }
             RTDError::InvalidParameters(err) => {
                 write!(f, "{}", err)
             }
@@ -56,4 +56,3 @@ impl From<serde_json::Error> for RTDError {
         RTDError::SerdeJson(err)
     }
 }
-

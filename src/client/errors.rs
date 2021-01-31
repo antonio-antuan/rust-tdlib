@@ -81,4 +81,3 @@ impl error::Error for TGError {
         None
     }
 }
-

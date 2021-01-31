@@ -11,4 +11,3 @@ pub mod errors;
 
 pub use client::{AuthStateHandler, Client, ClientBuilder, ConsoleAuthStateHandler};
 pub use rtdlib_sys::Tdlib;
-

@@ -1,6 +1,6 @@
 [package]
 name = "rust-tdlib"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["aCLr <a.ch.clr@gmail.com>"]
 description = "TDlib (Telegram Database) client"
 homepage = "https://github.com/aCLr/rust-tdlib"
@@ -12,6 +12,7 @@ include = [
   "Cargo.toml",
   "**/*.rs",
   "README.md",
+  "CHANGELOG.md",
   "LICENSE",
   ".gitignore"
 ]
@@ -37,11 +38,11 @@ serde_json = "1"
 log = { version = "0.4", optional = true }
 rtdlib-sys = { version = "0.1", optional = true }
 lazy_static = { version = "1.4", optional = true }
-tokio = { version = "1", features = ["sync", "time", "rt", "macros"], optional = true}
+tokio = { version = "1", features = ["sync", "macros"], optional = true}
 async-trait = { version = "0.1", optional = true }
 
 
 [dev-dependencies]
-tokio = {version = "1", features = ["macros", "rt", "sync"]}
+tokio = {version = "1", features = ["macros", "rt-multi-thread", "sync"]}
 log = { version = "0.4" }
 env_logger = "0.8"

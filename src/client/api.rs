@@ -177,6 +177,29 @@ where
                 }
             },
         }
+    } // Adds a chat to a chat list. A chat can't be simultaneously in Main and Archive chat lists, so it is automatically removed from another one if needed
+    pub async fn add_chat_to_list<C: AsRef<AddChatToList>>(
+        &self,
+        add_chat_to_list: C,
+    ) -> RTDResult<Ok> {
+        let extra = add_chat_to_list.as_ref().extra().ok_or(RTDError::Internal(
+            "invalid tdlib response type, not have `extra` field",
+        ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(add_chat_to_list.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Adds a user to the contact list or edits an existing contact by their user identifier
     pub async fn add_contact<C: AsRef<AddContact>>(&self, add_contact: C) -> RTDResult<Ok> {
         let extra = add_contact.as_ref().extra().ok_or(RTDError::Internal(
@@ -276,7 +299,7 @@ where
                 }
             },
         }
-    } // Adds a message to TDLib internal log. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Adds a message to TDLib internal log. Can be called synchronously
     pub async fn add_log_message<C: AsRef<AddLogMessage>>(
         &self,
         add_log_message: C,
@@ -579,13 +602,21 @@ where
                 }
             },
         }
-    } // Adds a user to the blacklist
-    pub async fn block_user<C: AsRef<BlockUser>>(&self, block_user: C) -> RTDResult<Ok> {
-        let extra = block_user.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+    } // Blocks an original sender of a message in the Replies chat
+    pub async fn block_message_sender_from_replies<C: AsRef<BlockMessageSenderFromReplies>>(
+        &self,
+        block_message_sender_from_replies: C,
+    ) -> RTDResult<Ok> {
+        let extra =
+            block_message_sender_from_replies
+                .as_ref()
+                .extra()
+                .ok_or(RTDError::Internal(
+                    "invalid tdlib response type, not have `extra` field",
+                ))?;
         let signal = OBSERVER.subscribe(&extra);
-        self.raw_api.send(block_user.as_ref())?;
+        self.raw_api
+            .send(block_message_sender_from_replies.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -1079,7 +1110,7 @@ where
                 }
             },
         }
-    } // Removes potentially dangerous characters from the name of a file. The encoding of the file name is supposed to be UTF-8. Returns an empty string on failure. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Removes potentially dangerous characters from the name of a file. The encoding of the file name is supposed to be UTF-8. Returns an empty string on failure. Can be called synchronously
     pub async fn clean_file_name<C: AsRef<CleanFileName>>(
         &self,
         clean_file_name: C,
@@ -1206,7 +1237,7 @@ where
                 }
             },
         }
-    } // Closes the TDLib instance. All databases will be flushed to disk and properly closed. After the close completes, updateAuthorizationState with authorizationStateClosed will be sent
+    } // Closes the TDLib instance. All databases will be flushed to disk and properly closed. After the close completes, updateAuthorizationState with authorizationStateClosed will be sent. Can be called before initialization
     pub async fn close<C: AsRef<Close>>(&self, close: C) -> RTDResult<Ok> {
         let extra = close.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -1337,6 +1368,32 @@ where
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
                 TdType::CallId(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Creates new chat filter. Returns information about the created chat filter
+    pub async fn create_chat_filter<C: AsRef<CreateChatFilter>>(
+        &self,
+        create_chat_filter: C,
+    ) -> RTDResult<ChatFilterInfo> {
+        let extra = create_chat_filter
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(create_chat_filter.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::ChatFilterInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -1575,6 +1632,32 @@ where
                 }
             },
         }
+    } // Deletes existing chat filter
+    pub async fn delete_chat_filter<C: AsRef<DeleteChatFilter>>(
+        &self,
+        delete_chat_filter: C,
+    ) -> RTDResult<Ok> {
+        let extra = delete_chat_filter
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(delete_chat_filter.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Deletes all messages in the chat. Use Chat.can_be_deleted_only_for_self and Chat.can_be_deleted_for_all_users fields to find whether and how the method can be applied to the chat
     pub async fn delete_chat_history<C: AsRef<DeleteChatHistory>>(
         &self,
@@ -1748,7 +1831,7 @@ where
                 }
             },
         }
-    } // Deletes a profile photo. If something changes, updateUser will be sent
+    } // Deletes a profile photo
     pub async fn delete_profile_photo<C: AsRef<DeleteProfilePhoto>>(
         &self,
         delete_profile_photo: C,
@@ -1852,7 +1935,7 @@ where
                 }
             },
         }
-    } // Closes the TDLib instance, destroying all local data without a proper logout. The current user session will remain in the list of all active sessions. All local data will be destroyed. After the destruction completes updateAuthorizationState with authorizationStateClosed will be sent
+    } // Closes the TDLib instance, destroying all local data without a proper logout. The current user session will remain in the list of all active sessions. All local data will be destroyed. After the destruction completes updateAuthorizationState with authorizationStateClosed will be sent. Can be called before authorization
     pub async fn destroy<C: AsRef<Destroy>>(&self, destroy: C) -> RTDResult<Ok> {
         let extra = destroy.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -1977,6 +2060,29 @@ where
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
                 TdType::File(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Edits existing chat filter. Returns information about the edited chat filter
+    pub async fn edit_chat_filter<C: AsRef<EditChatFilter>>(
+        &self,
+        edit_chat_filter: C,
+    ) -> RTDResult<ChatFilterInfo> {
+        let extra = edit_chat_filter.as_ref().extra().ok_or(RTDError::Internal(
+            "invalid tdlib response type, not have `extra` field",
+        ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(edit_chat_filter.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::ChatFilterInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -2437,7 +2543,7 @@ where
                 }
             },
         }
-    } // Returns all active live locations that should be updated by the client. The list is persistent across application restarts only if the message database is used
+    } // Returns all active live locations that should be updated by the application. The list is persistent across application restarts only if the message database is used
     pub async fn get_active_live_location_messages<C: AsRef<GetActiveLiveLocationMessages>>(
         &self,
         get_active_live_location_messages: C,
@@ -2595,7 +2701,7 @@ where
                 }
             },
         }
-    } // Returns the current authorization state; this is an offline request. For informational purposes only. Use updateAuthorizationState instead to maintain the current authorization state
+    } // Returns the current authorization state; this is an offline request. For informational purposes only. Use updateAuthorizationState instead to maintain the current authorization state. Can be called before initialization
     pub async fn get_authorization_state<C: AsRef<GetAuthorizationState>>(
         &self,
         get_authorization_state: C,
@@ -2621,7 +2727,7 @@ where
                 }
             },
         }
-    } // Returns auto-download settings presets for the currently logged in user
+    } // Returns auto-download settings presets for the current user
     pub async fn get_auto_download_settings_presets<C: AsRef<GetAutoDownloadSettingsPresets>>(
         &self,
         get_auto_download_settings_presets: C,
@@ -2698,6 +2804,32 @@ where
                 }
             },
         }
+    } // Returns information about a bank card
+    pub async fn get_bank_card_info<C: AsRef<GetBankCardInfo>>(
+        &self,
+        get_bank_card_info: C,
+    ) -> RTDResult<BankCardInfo> {
+        let extra = get_bank_card_info
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_bank_card_info.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::BankCardInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Returns information about a basic group by its identifier. This is an offline request if the current user is not a bot
     pub async fn get_basic_group<C: AsRef<GetBasicGroup>>(
         &self,
@@ -2747,25 +2879,25 @@ where
                 }
             },
         }
-    } // Returns users that were blocked by the current user
-    pub async fn get_blocked_users<C: AsRef<GetBlockedUsers>>(
+    } // Returns users and chats that were blocked by the current user
+    pub async fn get_blocked_message_senders<C: AsRef<GetBlockedMessageSenders>>(
         &self,
-        get_blocked_users: C,
-    ) -> RTDResult<Users> {
-        let extra = get_blocked_users
+        get_blocked_message_senders: C,
+    ) -> RTDResult<MessageSenders> {
+        let extra = get_blocked_message_senders
             .as_ref()
             .extra()
             .ok_or(RTDError::Internal(
                 "invalid tdlib response type, not have `extra` field",
             ))?;
         let signal = OBSERVER.subscribe(&extra);
-        self.raw_api.send(get_blocked_users.as_ref())?;
+        self.raw_api.send(get_blocked_message_senders.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
-                TdType::Users(v) => Ok(v),
+                TdType::MessageSenders(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -2792,6 +2924,32 @@ where
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
                 TdType::CallbackQueryAnswer(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns information about a message with the callback button that originated a callback query; for bots only
+    pub async fn get_callback_query_message<C: AsRef<GetCallbackQueryMessage>>(
+        &self,
+        get_callback_query_message: C,
+    ) -> RTDResult<Message> {
+        let extra = get_callback_query_message
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_callback_query_message.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -2871,6 +3029,57 @@ where
                 }
             },
         }
+    } // Returns information about a chat filter by its identifier
+    pub async fn get_chat_filter<C: AsRef<GetChatFilter>>(
+        &self,
+        get_chat_filter: C,
+    ) -> RTDResult<ChatFilter> {
+        let extra = get_chat_filter.as_ref().extra().ok_or(RTDError::Internal(
+            "invalid tdlib response type, not have `extra` field",
+        ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_chat_filter.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::ChatFilter(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns default icon name for a filter. Can be called synchronously
+    pub async fn get_chat_filter_default_icon_name<C: AsRef<GetChatFilterDefaultIconName>>(
+        &self,
+        get_chat_filter_default_icon_name: C,
+    ) -> RTDResult<Text> {
+        let extra =
+            get_chat_filter_default_icon_name
+                .as_ref()
+                .extra()
+                .ok_or(RTDError::Internal(
+                    "invalid tdlib response type, not have `extra` field",
+                ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api
+            .send(get_chat_filter_default_icon_name.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Returns messages in a chat. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance the number of returned messages is chosen by the library. This is an offline request if only_local is true
     pub async fn get_chat_history<C: AsRef<GetChatHistory>>(
         &self,
@@ -2887,6 +3096,32 @@ where
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns chat lists to which the chat can be added. This is an offline request
+    pub async fn get_chat_lists_to_add_chat<C: AsRef<GetChatListsToAddChat>>(
+        &self,
+        get_chat_lists_to_add_chat: C,
+    ) -> RTDResult<ChatLists> {
+        let extra = get_chat_lists_to_add_chat
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_chat_lists_to_add_chat.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::ChatLists(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -2998,7 +3233,7 @@ where
                 }
             },
         }
-    } // Returns information about a pinned chat message
+    } // Returns information about a newest pinned message in the chat
     pub async fn get_chat_pinned_message<C: AsRef<GetChatPinnedMessage>>(
         &self,
         get_chat_pinned_message: C,
@@ -3050,7 +3285,33 @@ where
                 }
             },
         }
-    } // Returns an HTTP URL with the chat statistics. Currently this method can be used only for channels. Can be used only if SupergroupFullInfo.can_view_statistics == true
+    } // Returns detailed statistics about a chat. Currently this method can be used only for supergroups and channels. Can be used only if SupergroupFullInfo.can_get_statistics == true
+    pub async fn get_chat_statistics<C: AsRef<GetChatStatistics>>(
+        &self,
+        get_chat_statistics: C,
+    ) -> RTDResult<ChatStatistics> {
+        let extra = get_chat_statistics
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_chat_statistics.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::ChatStatistics(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns an HTTP URL with the chat statistics. Currently this method of getting the statistics are disabled and can be deleted in the future
     pub async fn get_chat_statistics_url<C: AsRef<GetChatStatisticsUrl>>(
         &self,
         get_chat_statistics_url: C,
@@ -3076,7 +3337,7 @@ where
                 }
             },
         }
-    } // Returns an ordered list of chats in a chat list. Chats are sorted by the pair (order, chat_id) in decreasing order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63  1). For optimal performance the number of returned chats is chosen by the library
+    } // Returns an ordered list of chats in a chat list. Chats are sorted by the pair (chat.position.order, chat.id) in descending order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63  1). For optimal performance the number of returned chats is chosen by the library
     pub async fn get_chats<C: AsRef<GetChats>>(&self, get_chats: C) -> RTDResult<Chats> {
         let extra = get_chats.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -3142,7 +3403,30 @@ where
                 }
             },
         }
-    } // Uses current user IP to found their country. Returns two-letter ISO 3166-1 alpha-2 country code. Can be called before authorization
+    } // Returns information about existing countries. Can be called before authorization
+    pub async fn get_countries<C: AsRef<GetCountries>>(
+        &self,
+        get_countries: C,
+    ) -> RTDResult<Countries> {
+        let extra = get_countries.as_ref().extra().ok_or(RTDError::Internal(
+            "invalid tdlib response type, not have `extra` field",
+        ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_countries.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Countries(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Uses current user IP address to find their country. Returns two-letter ISO 3166-1 alpha-2 country code. Can be called before authorization
     pub async fn get_country_code<C: AsRef<GetCountryCode>>(
         &self,
         get_country_code: C,
@@ -3191,7 +3475,7 @@ where
                 }
             },
         }
-    } // Returns all updates needed to restore current TDLib state, i.e. all actual UpdateAuthorizationState/UpdateUser/UpdateNewChat and others. This is especially useful if TDLib is run in a separate process. This is an offline method. Can be called before authorization
+    } // Returns all updates needed to restore current TDLib state, i.e. all actual UpdateAuthorizationState/UpdateUser/UpdateNewChat and others. This is especially useful if TDLib is run in a separate process. Can be called before initialization
     pub async fn get_current_state<C: AsRef<GetCurrentState>>(
         &self,
         get_current_state: C,
@@ -3368,7 +3652,7 @@ where
                 }
             },
         }
-    } // Returns the extension of a file, guessed by its MIME type. Returns an empty string on failure. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns the extension of a file, guessed by its MIME type. Returns an empty string on failure. Can be called synchronously
     pub async fn get_file_extension<C: AsRef<GetFileExtension>>(
         &self,
         get_file_extension: C,
@@ -3394,7 +3678,7 @@ where
                 }
             },
         }
-    } // Returns the MIME type of a file, guessed by its extension. Returns an empty string on failure. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns the MIME type of a file, guessed by its extension. Returns an empty string on failure. Can be called synchronously
     pub async fn get_file_mime_type<C: AsRef<GetFileMimeType>>(
         &self,
         get_file_mime_type: C,
@@ -3625,7 +3909,7 @@ where
                 }
             },
         }
-    } // Converts a JsonValue object to corresponding JSON-serialized string. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Converts a JsonValue object to corresponding JSON-serialized string. Can be called synchronously
     pub async fn get_json_string<C: AsRef<GetJsonString>>(
         &self,
         get_json_string: C,
@@ -3648,7 +3932,7 @@ where
                 }
             },
         }
-    } // Converts a JSON-serialized string to corresponding JsonValue object. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Converts a JSON-serialized string to corresponding JsonValue object. Can be called synchronously
     pub async fn get_json_value<C: AsRef<GetJsonValue>>(
         &self,
         get_json_value: C,
@@ -3697,7 +3981,7 @@ where
                 }
             },
         }
-    } // Returns a string stored in the local database from the specified localization target and language pack by its key. Returns a 404 error if the string is not found. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns a string stored in the local database from the specified localization target and language pack by its key. Returns a 404 error if the string is not found. Can be called synchronously
     pub async fn get_language_pack_string<C: AsRef<GetLanguagePackString>>(
         &self,
         get_language_pack_string: C,
@@ -3775,7 +4059,7 @@ where
                 }
             },
         }
-    } // Returns information about currently used log stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns information about currently used log stream for internal logging of TDLib. Can be called synchronously
     pub async fn get_log_stream<C: AsRef<GetLogStream>>(
         &self,
         get_log_stream: C,
@@ -3798,7 +4082,7 @@ where
                 }
             },
         }
-    } // Returns current verbosity level for a specified TDLib internal log tag. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns current verbosity level for a specified TDLib internal log tag. Can be called synchronously
     pub async fn get_log_tag_verbosity_level<C: AsRef<GetLogTagVerbosityLevel>>(
         &self,
         get_log_tag_verbosity_level: C,
@@ -3824,7 +4108,7 @@ where
                 }
             },
         }
-    } // Returns list of available TDLib internal log tags, for example, ["actor", "binlog", "connections", "notifications", "proxy"]. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns list of available TDLib internal log tags, for example, ["actor", "binlog", "connections", "notifications", "proxy"]. Can be called synchronously
     pub async fn get_log_tags<C: AsRef<GetLogTags>>(&self, get_log_tags: C) -> RTDResult<LogTags> {
         let extra = get_log_tags.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -3844,7 +4128,7 @@ where
                 }
             },
         }
-    } // Returns current verbosity level of the internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns current verbosity level of the internal logging of TDLib. Can be called synchronously
     pub async fn get_log_verbosity_level<C: AsRef<GetLogVerbosityLevel>>(
         &self,
         get_log_verbosity_level: C,
@@ -3945,6 +4229,32 @@ where
                 }
             },
         }
+    } // Replaces text entities with Markdown formatting in a human-friendly format. Entities that can't be represented in Markdown unambiguously are kept as is. Can be called synchronously
+    pub async fn get_markdown_text<C: AsRef<GetMarkdownText>>(
+        &self,
+        get_markdown_text: C,
+    ) -> RTDResult<FormattedText> {
+        let extra = get_markdown_text
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_markdown_text.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::FormattedText(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Returns the current user
     pub async fn get_me<C: AsRef<GetMe>>(&self, get_me: C) -> RTDResult<User> {
         let extra = get_me.as_ref().extra().ok_or(RTDError::Internal(
@@ -3985,11 +4295,37 @@ where
                 }
             },
         }
-    } // Returns a private HTTPS link to a message in a chat. Available only for already sent messages in supergroups and channels. The link will work only for members of the chat
+    } // Returns an HTML code for embedding the message. Available only for messages in supergroups and channels with a username
+    pub async fn get_message_embedding_code<C: AsRef<GetMessageEmbeddingCode>>(
+        &self,
+        get_message_embedding_code: C,
+    ) -> RTDResult<Text> {
+        let extra = get_message_embedding_code
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_message_embedding_code.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns an HTTPS link to a message in a chat. Available only for already sent messages in supergroups and channels. This is an offline request
     pub async fn get_message_link<C: AsRef<GetMessageLink>>(
         &self,
         get_message_link: C,
-    ) -> RTDResult<HttpUrl> {
+    ) -> RTDResult<MessageLink> {
         let extra = get_message_link.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
         ))?;
@@ -4000,7 +4336,7 @@ where
         match received {
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
+                TdType::MessageLink(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -4053,6 +4389,110 @@ where
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns forwarded copies of a channel message to different public channels. For optimal performance the number of returned messages is chosen by the library
+    pub async fn get_message_public_forwards<C: AsRef<GetMessagePublicForwards>>(
+        &self,
+        get_message_public_forwards: C,
+    ) -> RTDResult<FoundMessages> {
+        let extra = get_message_public_forwards
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_message_public_forwards.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::FoundMessages(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns detailed statistics about a message. Can be used only if Message.can_get_statistics == true
+    pub async fn get_message_statistics<C: AsRef<GetMessageStatistics>>(
+        &self,
+        get_message_statistics: C,
+    ) -> RTDResult<MessageStatistics> {
+        let extra = get_message_statistics
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_message_statistics.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::MessageStatistics(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns information about a message thread. Can be used only if message.can_get_message_thread == true
+    pub async fn get_message_thread<C: AsRef<GetMessageThread>>(
+        &self,
+        get_message_thread: C,
+    ) -> RTDResult<MessageThreadInfo> {
+        let extra = get_message_thread
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_message_thread.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::MessageThreadInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Returns messages in a message thread of a message. Can be used only if message.can_get_message_thread == true. Message thread of a channel message is in the channel's linked supergroup. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance the number of returned messages is chosen by the library
+    pub async fn get_message_thread_history<C: AsRef<GetMessageThreadHistory>>(
+        &self,
+        get_message_thread_history: C,
+    ) -> RTDResult<Messages> {
+        let extra = get_message_thread_history
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_message_thread_history.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -4286,6 +4726,32 @@ where
                 }
             },
         }
+    } // Returns information about a phone number by its prefix. Can be called before authorization
+    pub async fn get_phone_number_info<C: AsRef<GetPhoneNumberInfo>>(
+        &self,
+        get_phone_number_info: C,
+    ) -> RTDResult<PhoneNumberInfo> {
+        let extra = get_phone_number_info
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_phone_number_info.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::PhoneNumberInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Returns users voted for the specified option in a non-anonymous polls. For the optimal performance the number of returned users is chosen by the library
     pub async fn get_poll_voters<C: AsRef<GetPollVoters>>(
         &self,
@@ -4378,33 +4844,7 @@ where
                 }
             },
         }
-    } // Returns a public HTTPS link to a message. Available only for messages in supergroups and channels with a username
-    pub async fn get_public_message_link<C: AsRef<GetPublicMessageLink>>(
-        &self,
-        get_public_message_link: C,
-    ) -> RTDResult<PublicMessageLink> {
-        let extra = get_public_message_link
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.raw_api.send(get_public_message_link.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
-            Ok(v) => match v {
-                TdType::PublicMessageLink(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
-                _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
-                }
-            },
-        }
-    } // Returns a globally unique push notification subscription identifier for identification of an account, which has received a push notification. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns a globally unique push notification subscription identifier for identification of an account, which has received a push notification. Can be called synchronously
     pub async fn get_push_receiver_id<C: AsRef<GetPushReceiverId>>(
         &self,
         get_push_receiver_id: C,
@@ -4508,6 +4948,32 @@ where
                 }
             },
         }
+    } // Returns recommended chat filters for the current user
+    pub async fn get_recommended_chat_filters<C: AsRef<GetRecommendedChatFilters>>(
+        &self,
+        get_recommended_chat_filters: C,
+    ) -> RTDResult<RecommendedChatFilters> {
+        let extra = get_recommended_chat_filters
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_recommended_chat_filters.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::RecommendedChatFilters(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Returns a 2-step verification recovery email address that was previously set up. This method can be used to verify a password provided by the user
     pub async fn get_recovery_email_address<C: AsRef<GetRecoveryEmailAddress>>(
         &self,
@@ -4534,7 +5000,7 @@ where
                 }
             },
         }
-    } // Returns information about a file by its remote ID; this is an offline request. Can be used to register a URL as a file for further uploading, or sending as a message. Even the request succeeds, the file can be used only if it is still accessible to the user. For example, if the file is from a message, then the message must be not deleted and accessible to the user. If the file database is disabled, then the corresponding object with the file must be preloaded by the client
+    } // Returns information about a file by its remote ID; this is an offline request. Can be used to register a URL as a file for further uploading, or sending as a message. Even the request succeeds, the file can be used only if it is still accessible to the user. For example, if the file is from a message, then the message must be not deleted and accessible to the user. If the file database is disabled, then the corresponding object with the file must be preloaded by the application
     pub async fn get_remote_file<C: AsRef<GetRemoteFile>>(
         &self,
         get_remote_file: C,
@@ -4557,7 +5023,7 @@ where
                 }
             },
         }
-    } // Returns information about a message that is replied by given message
+    } // Returns information about a message that is replied by a given message. Also returns the pinned message, the game message, and the invoice message for messages of the types messagePinMessage, messageGameScore, and messagePaymentSuccessful respectively
     pub async fn get_replied_message<C: AsRef<GetRepliedMessage>>(
         &self,
         get_replied_message: C,
@@ -4678,6 +5144,32 @@ where
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
                 TdType::SecretChat(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Loads an asynchronous or a zoomed in statistical graph
+    pub async fn get_statistical_graph<C: AsRef<GetStatisticalGraph>>(
+        &self,
+        get_statistical_graph: C,
+    ) -> RTDResult<StatisticalGraph> {
+        let extra = get_statistical_graph
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(get_statistical_graph.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::StatisticalGraph(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -4809,7 +5301,7 @@ where
                 }
             },
         }
-    } // Returns a list of basic group and supergroup chats, which can be used as a discussion group for a channel. Basic group chats need to be first upgraded to supergroups before they can be set as a discussion group
+    } // Returns a list of basic group and supergroup chats, which can be used as a discussion group for a channel. Returned basic group chats must be first upgraded to supergroups before they can be set as a discussion group. To set a returned supergroup as a discussion group, access to its old messages must be enabled using toggleSupergroupIsAllHistoryAvailable first
     pub async fn get_suitable_discussion_chats<C: AsRef<GetSuitableDiscussionChats>>(
         &self,
         get_suitable_discussion_chats: C,
@@ -4959,7 +5451,7 @@ where
                 }
             },
         }
-    } // Returns all entities (mentions, hashtags, cashtags, bot commands, URLs, and email addresses) contained in the text. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns all entities (mentions, hashtags, cashtags, bot commands, bank card numbers, URLs, and email addresses) contained in the text. Can be called synchronously
     pub async fn get_text_entities<C: AsRef<GetTextEntities>>(
         &self,
         get_text_entities: C,
@@ -5005,7 +5497,7 @@ where
                 }
             },
         }
-    } // Returns a list of trending sticker sets
+    } // Returns a list of trending sticker sets. For the optimal performance the number of returned sticker sets is chosen by the library
     pub async fn get_trending_sticker_sets<C: AsRef<GetTrendingStickerSets>>(
         &self,
         get_trending_sticker_sets: C,
@@ -5107,7 +5599,7 @@ where
     pub async fn get_user_profile_photos<C: AsRef<GetUserProfilePhotos>>(
         &self,
         get_user_profile_photos: C,
-    ) -> RTDResult<UserProfilePhotos> {
+    ) -> RTDResult<ChatPhotos> {
         let extra = get_user_profile_photos
             .as_ref()
             .extra()
@@ -5121,7 +5613,7 @@ where
         match received {
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
-                TdType::UserProfilePhotos(v) => Ok(v),
+                TdType::ChatPhotos(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -5174,6 +5666,32 @@ where
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
                 TdType::WebPage(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Hides a suggested action
+    pub async fn hide_suggested_action<C: AsRef<HideSuggestedAction>>(
+        &self,
+        hide_suggested_action: C,
+    ) -> RTDResult<Ok> {
+        let extra = hide_suggested_action
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(hide_suggested_action.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -5359,7 +5877,30 @@ where
                 }
             },
         }
-    } // Parses Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities contained in the text. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Parses Markdown entities in a human-friendly format, ignoring markup errors. Can be called synchronously
+    pub async fn parse_markdown<C: AsRef<ParseMarkdown>>(
+        &self,
+        parse_markdown: C,
+    ) -> RTDResult<FormattedText> {
+        let extra = parse_markdown.as_ref().extra().ok_or(RTDError::Internal(
+            "invalid tdlib response type, not have `extra` field",
+        ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(parse_markdown.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::FormattedText(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Parses Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities contained in the text. Can be called synchronously
     pub async fn parse_text_entities<C: AsRef<ParseTextEntities>>(
         &self,
         parse_text_entities: C,
@@ -5385,7 +5926,7 @@ where
                 }
             },
         }
-    } // Pins a message in a chat; requires can_pin_messages rights
+    } // Pins a message in a chat; requires can_pin_messages rights or can_edit_messages rights in the channel
     pub async fn pin_chat_message<C: AsRef<PinChatMessage>>(
         &self,
         pin_chat_message: C,
@@ -5480,7 +6021,7 @@ where
                 }
             },
         }
-    } // Reads a part of a file from the TDLib file cache and returns read bytes. This method is intended to be used only if the client has no direct access to TDLib's file system, because it is usually slower than a direct read from the file
+    } // Reads a part of a file from the TDLib file cache and returns read bytes. This method is intended to be used only if the application has no direct access to TDLib's file system, because it is usually slower than a direct read from the file
     pub async fn read_file_part<C: AsRef<ReadFilePart>>(
         &self,
         read_file_part: C,
@@ -5922,6 +6463,32 @@ where
                 }
             },
         }
+    } // Changes the order of chat filters
+    pub async fn reorder_chat_filters<C: AsRef<ReorderChatFilters>>(
+        &self,
+        reorder_chat_filters: C,
+    ) -> RTDResult<Ok> {
+        let extra = reorder_chat_filters
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(reorder_chat_filters.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Changes the order of installed sticker sets
     pub async fn reorder_installed_sticker_sets<C: AsRef<ReorderInstalledStickerSets>>(
         &self,
@@ -5948,7 +6515,7 @@ where
                 }
             },
         }
-    } // Reports a chat to the Telegram moderators. Supported only for supergroups, channels, or private chats with bots, since other chats can't be checked by moderators, or when the report is done from the chat action bar
+    } // Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if this is a private chats with a bot, a private chat with a user sharing their location, a supergroup, or a channel, since other chats can't be checked by moderators
     pub async fn report_chat<C: AsRef<ReportChat>>(&self, report_chat: C) -> RTDResult<Ok> {
         let extra = report_chat.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -6049,7 +6616,7 @@ where
                 }
             },
         }
-    } // Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber
+    } // Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber, or if there is no pending authentication query and the current authorization state is authorizationStateWaitCode, authorizationStateWaitRegistration, or authorizationStateWaitPassword
     pub async fn request_qr_code_authentication<C: AsRef<RequestQrCodeAuthentication>>(
         &self,
         request_qr_code_authentication: C,
@@ -6504,7 +7071,7 @@ where
                 }
             },
         }
-    } // Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the chat list
+    } // Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the main chat list
     pub async fn search_chats<C: AsRef<SearchChats>>(&self, search_chats: C) -> RTDResult<Chats> {
         let extra = search_chats.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -6550,7 +7117,7 @@ where
                 }
             },
         }
-    } // Searches for the specified query in the title and username of already known chats via request to the server. Returns chats in the order seen in the chat list
+    } // Searches for the specified query in the title and username of already known chats via request to the server. Returns chats in the order seen in the main chat list
     pub async fn search_chats_on_server<C: AsRef<SearchChatsOnServer>>(
         &self,
         search_chats_on_server: C,
@@ -6922,6 +7489,32 @@ where
                 }
             },
         }
+    } // Sends call signaling data
+    pub async fn send_call_signaling_data<C: AsRef<SendCallSignalingData>>(
+        &self,
+        send_call_signaling_data: C,
+    ) -> RTDResult<Ok> {
+        let extra = send_call_signaling_data
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(send_call_signaling_data.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
     } // Sends a notification about user activity in a chat
     pub async fn send_chat_action<C: AsRef<SendChatAction>>(
         &self,
@@ -7102,7 +7695,7 @@ where
                 }
             },
         }
-    } // Sends messages grouped together into an album. Currently only photo and video messages can be grouped into an album. Returns sent messages
+    } // Sends messages grouped together into an album. Currently only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
     pub async fn send_message_album<C: AsRef<SendMessageAlbum>>(
         &self,
         send_message_album: C,
@@ -7128,7 +7721,7 @@ where
                 }
             },
         }
-    } // Sends a Telegram Passport authorization form, effectively sharing data with the service. This method must be called after getPassportAuthorizationFormAvailableElements if some previously available elements need to be used
+    } // Sends a Telegram Passport authorization form, effectively sharing data with the service. This method must be called after getPassportAuthorizationFormAvailableElements if some previously available elements are going to be reused
     pub async fn send_passport_authorization_form<C: AsRef<SendPassportAuthorizationForm>>(
         &self,
         send_passport_authorization_form: C,
@@ -7260,7 +7853,7 @@ where
                 }
             },
         }
-    } // Succeeds after a specified amount of time has passed. Can be called before authorization. Can be called before initialization
+    } // Succeeds after a specified amount of time has passed. Can be called before initialization
     pub async fn set_alarm<C: AsRef<SetAlarm>>(&self, set_alarm: C) -> RTDResult<Ok> {
         let extra = set_alarm.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -7402,33 +7995,7 @@ where
                 }
             },
         }
-    } // Moves a chat to a different chat list. Current chat list of the chat must ne non-null
-    pub async fn set_chat_chat_list<C: AsRef<SetChatChatList>>(
-        &self,
-        set_chat_chat_list: C,
-    ) -> RTDResult<Ok> {
-        let extra = set_chat_chat_list
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.raw_api.send(set_chat_chat_list.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
-                _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
-                }
-            },
-        }
-    } // Changes client data associated with a chat
+    } // Changes application-specific data associated with a chat
     pub async fn set_chat_client_data<C: AsRef<SetChatClientData>>(
         &self,
         set_chat_client_data: C,
@@ -7636,7 +8203,7 @@ where
                 }
             },
         }
-    } // Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info rights. The photo will not be changed before request to the server has been completed
+    } // Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
     pub async fn set_chat_photo<C: AsRef<SetChatPhoto>>(&self, set_chat_photo: C) -> RTDResult<Ok> {
         let extra = set_chat_photo.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -7682,13 +8249,33 @@ where
                 }
             },
         }
-    } // Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info rights. The title will not be changed until the request to the server has been completed
+    } // Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
     pub async fn set_chat_title<C: AsRef<SetChatTitle>>(&self, set_chat_title: C) -> RTDResult<Ok> {
         let extra = set_chat_title.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
         ))?;
         let signal = OBSERVER.subscribe(&extra);
         self.raw_api.send(set_chat_title.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Sets the list of commands supported by the bot; for bots only
+    pub async fn set_commands<C: AsRef<SetCommands>>(&self, set_commands: C) -> RTDResult<Ok> {
+        let extra = set_commands.as_ref().extra().ok_or(RTDError::Internal(
+            "invalid tdlib response type, not have `extra` field",
+        ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(set_commands.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -7856,7 +8443,27 @@ where
                 }
             },
         }
-    } // Sets new log stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Changes the location of the current user. Needs to be called if GetOption("is_location_visible") is true and location changes for more than 1 kilometer
+    pub async fn set_location<C: AsRef<SetLocation>>(&self, set_location: C) -> RTDResult<Ok> {
+        let extra = set_location.as_ref().extra().ok_or(RTDError::Internal(
+            "invalid tdlib response type, not have `extra` field",
+        ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(set_location.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Sets new log stream for internal logging of TDLib. Can be called synchronously
     pub async fn set_log_stream<C: AsRef<SetLogStream>>(&self, set_log_stream: C) -> RTDResult<Ok> {
         let extra = set_log_stream.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -7876,7 +8483,7 @@ where
                 }
             },
         }
-    } // Sets the verbosity level for a specified TDLib internal log tag. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Sets the verbosity level for a specified TDLib internal log tag. Can be called synchronously
     pub async fn set_log_tag_verbosity_level<C: AsRef<SetLogTagVerbosityLevel>>(
         &self,
         set_log_tag_verbosity_level: C,
@@ -7902,7 +8509,7 @@ where
                 }
             },
         }
-    } // Sets the verbosity level of the internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Sets the verbosity level of the internal logging of TDLib. Can be called synchronously
     pub async fn set_log_verbosity_level<C: AsRef<SetLogVerbosityLevel>>(
         &self,
         set_log_verbosity_level: C,
@@ -7928,7 +8535,7 @@ where
                 }
             },
         }
-    } // Changes the first and last name of the current user. If something changes, updateUser will be sent
+    } // Changes the first and last name of the current user
     pub async fn set_name<C: AsRef<SetName>>(&self, set_name: C) -> RTDResult<Ok> {
         let extra = set_name.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -8112,7 +8719,7 @@ where
                 }
             },
         }
-    } // Uploads a new profile photo for the current user. If something changes, updateUser will be sent
+    } // Changes a profile photo for the current user
     pub async fn set_profile_photo<C: AsRef<SetProfilePhoto>>(
         &self,
         set_profile_photo: C,
@@ -8210,6 +8817,32 @@ where
             Err(_) => Err(RTDError::Internal("receiver already closed")),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Sets a sticker set thumbnail; for bots only. Returns the sticker set
+    pub async fn set_sticker_set_thumbnail<C: AsRef<SetStickerSetThumbnail>>(
+        &self,
+        set_sticker_set_thumbnail: C,
+    ) -> RTDResult<StickerSet> {
+        let extra = set_sticker_set_thumbnail
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api.send(set_sticker_set_thumbnail.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::StickerSet(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
                     error!("invalid response received: {:?}", v);
@@ -8321,7 +8954,7 @@ where
                 }
             },
         }
-    } // Changes the username of the current user. If something changes, updateUser will be sent
+    } // Changes the username of the current user
     pub async fn set_username<C: AsRef<SetUsername>>(&self, set_username: C) -> RTDResult<Ok> {
         let extra = set_username.as_ref().extra().ok_or(RTDError::Internal(
             "invalid tdlib response type, not have `extra` field",
@@ -8387,7 +9020,7 @@ where
                 }
             },
         }
-    } // Fetches the latest versions of all strings from a language pack in the current localization target from the server. This method doesn't need to be called explicitly for the current used/base language packs. Can be called before authorization
+    } // Fetches the latest versions of all strings from a language pack in the current localization target from the server. This method shouldn't be called explicitly for the current used/base language packs. Can be called before authorization
     pub async fn synchronize_language_pack<C: AsRef<SynchronizeLanguagePack>>(
         &self,
         synchronize_language_pack: C,
@@ -8704,7 +9337,7 @@ where
                 }
             },
         }
-    } // Returns the specified error and ensures that the Error object is used; for testing only. This is an offline method. Can be called before authorization. Can be called synchronously
+    } // Returns the specified error and ensures that the Error object is used; for testing only. Can be called synchronously
     pub async fn test_return_error<C: AsRef<TestReturnError>>(
         &self,
         test_return_error: C,
@@ -8832,7 +9465,7 @@ where
                 }
             },
         }
-    } // Changes the pinned state of a chat. You can pin up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") non-secret chats and the same number of secret chats in the main/archive chat list
+    } // Changes the pinned state of a chat. There can be up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") pinned non-secret chats and the same number of secret chats in the main/arhive chat list
     pub async fn toggle_chat_is_pinned<C: AsRef<ToggleChatIsPinned>>(
         &self,
         toggle_chat_is_pinned: C,
@@ -8845,6 +9478,33 @@ where
             ))?;
         let signal = OBSERVER.subscribe(&extra);
         self.raw_api.send(toggle_chat_is_pinned.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                _ => {
+                    error!("invalid response received: {:?}", v);
+                    Err(RTDError::Internal("receive invalid response"))
+                }
+            },
+        }
+    } // Changes the block state of a message sender. Currently, only users and supergroup chats can be blocked
+    pub async fn toggle_message_sender_is_blocked<C: AsRef<ToggleMessageSenderIsBlocked>>(
+        &self,
+        toggle_message_sender_is_blocked: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_message_sender_is_blocked
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.raw_api
+            .send(toggle_message_sender_is_blocked.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -8940,13 +9600,19 @@ where
                 }
             },
         }
-    } // Removes a user from the blacklist
-    pub async fn unblock_user<C: AsRef<UnblockUser>>(&self, unblock_user: C) -> RTDResult<Ok> {
-        let extra = unblock_user.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+    } // Removes all pinned messages from a chat; requires can_pin_messages rights in the group or can_edit_messages rights in the channel
+    pub async fn unpin_all_chat_messages<C: AsRef<UnpinAllChatMessages>>(
+        &self,
+        unpin_all_chat_messages: C,
+    ) -> RTDResult<Ok> {
+        let extra = unpin_all_chat_messages
+            .as_ref()
+            .extra()
+            .ok_or(RTDError::Internal(
+                "invalid tdlib response type, not have `extra` field",
+            ))?;
         let signal = OBSERVER.subscribe(&extra);
-        self.raw_api.send(unblock_user.as_ref())?;
+        self.raw_api.send(unpin_all_chat_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -8960,7 +9626,7 @@ where
                 }
             },
         }
-    } // Removes the pinned message from a chat; requires can_pin_messages rights in the group or channel
+    } // Removes a pinned message from a chat; requires can_pin_messages rights in the group or can_edit_messages rights in the channel
     pub async fn unpin_chat_message<C: AsRef<UnpinChatMessage>>(
         &self,
         unpin_chat_message: C,
@@ -9133,7 +9799,7 @@ where
                 }
             },
         }
-    } // Writes a part of a generated file. This method is intended to be used only if the client has no direct access to TDLib's file system, because it is usually slower than a direct write to the destination file
+    } // Writes a part of a generated file. This method is intended to be used only if the application has no direct access to TDLib's file system, because it is usually slower than a direct write to the destination file
     pub async fn write_generated_file_part<C: AsRef<WriteGeneratedFilePart>>(
         &self,
         write_generated_file_part: C,
