@@ -1,29 +1,37 @@
 //! Handlers for all incoming data
 use super::observer::OBSERVER;
 use async_trait::async_trait;
-use rtdlib_sys::Tdlib;
 use std::sync::Arc;
 
 use super::api::{Api, RawApi, TdLibClient};
-use crate::errors::RTDResult;
-use crate::types::{
-    AuthorizationState, AuthorizationStateWaitOtherDeviceConfirmation,
-    AuthorizationStateWaitPhoneNumber, AuthorizationStateWaitRegistration, RegisterUser,
-};
 use crate::{
-    errors::RTDError,
-    types::from_json,
-    types::TdType,
+    tdjson::TdlibClient,
+    errors::RTDResult,
     types::{
-        AuthorizationStateWaitCode, AuthorizationStateWaitEncryptionKey,
-        AuthorizationStateWaitPassword, CheckAuthenticationCode, CheckAuthenticationPassword,
-        CheckDatabaseEncryptionKey, SetAuthenticationPhoneNumber, SetTdlibParameters,
-        TdlibParameters, UpdateAuthorizationState,
+        AuthorizationState,
+        AuthorizationStateWaitOtherDeviceConfirmation,
+        AuthorizationStateWaitPhoneNumber,
+        AuthorizationStateWaitRegistration,
+        RegisterUser,
+        from_json,
+        TdType,
+        AuthorizationStateWaitCode,
+        AuthorizationStateWaitEncryptionKey,
+        AuthorizationStateWaitPassword,
+        CheckAuthenticationCode,
+        CheckAuthenticationPassword,
+        CheckDatabaseEncryptionKey,
+        SetAuthenticationPhoneNumber,
+        SetTdlibParameters,
+        TdlibParameters,
+        UpdateAuthorizationState
     },
+    errors::RTDError,
 };
 use std::io;
 use std::sync::atomic::{AtomicBool, Ordering};
 use tokio::{sync::mpsc, task::JoinHandle};
+use std::collections::HashMap;
 
 const CLOSED_CHANNEL_ERROR: RTDError = RTDError::Internal("channel closed");
 
@@ -157,28 +165,22 @@ pub struct ClientBuilder<A>
 where
     A: AuthStateHandler + Send + Sync + 'static,
 {
-    tdlib_verbosity_level: i32,
     read_updates_timeout: f64,
     updates_sender: Option<mpsc::Sender<Box<TdType>>>,
     tdlib_parameters: Option<TdlibParameters>,
     auth_state_handler: A,
-    tdlib: Tdlib,
-    tdlib_log_file_path: Option<String>,
-    tdlib_log_max_file_size: Option<i64>,
+    tdlib: TdlibClient,
 }
 
 impl Default for ClientBuilder<ConsoleAuthStateHandler> {
     /// Provides default implementation with [ConsoleAuthStateHandler](crate::client::client::ConsoleAuthStateHandler)
     fn default() -> Self {
         Self {
-            tdlib_verbosity_level: 0,
-            tdlib_log_file_path: None,
             read_updates_timeout: 2.0,
             updates_sender: None,
             tdlib_parameters: None,
             auth_state_handler: ConsoleAuthStateHandler::new(),
-            tdlib: Tdlib::new(),
-            tdlib_log_max_file_size: None,
+            tdlib: TdlibClient::new(),
         }
     }
 }
@@ -187,27 +189,6 @@ impl<A> ClientBuilder<A>
 where
     A: AuthStateHandler + Send + Sync + 'static,
 {
-    /// TDlib log verbosity level
-    /// See [tdlib method documentation](https://core.telegram.org/tdlib/docs/classtd_1_1_log.html#a0f683bd572154f7b4c8b4f973ea3395f) for details
-    pub fn with_tdlib_verbosity_level(mut self, tdlib_verbosity_level: i32) -> Self {
-        self.tdlib_verbosity_level = tdlib_verbosity_level;
-        self
-    }
-
-    /// TDlib log file path
-    /// See [tdlib method documentation](https://core.telegram.org/tdlib/docs/classtd_1_1_log.html#a038b57d66436f9f367f5c77360e8254b) for details.
-    pub fn with_tdlib_log_file_path(mut self, tdlib_log_file_path: &str) -> Self {
-        self.tdlib_log_file_path = Some(tdlib_log_file_path.to_string());
-        self
-    }
-
-    /// TDlib log max file size
-    /// See [tdlib method documentation](https://core.telegram.org/tdlib/docs/classtd_1_1_log.html#a749ea8521373bbe9f5c30f58bc591016) for details.
-    pub fn with_tdlib_log_max_file_size(mut self, tdlib_log_max_file_size: i64) -> Self {
-        self.tdlib_log_max_file_size = Some(tdlib_log_max_file_size);
-        self
-    }
-
     pub fn with_read_updates_timeout(mut self, read_updates_timeout: f64) -> Self {
         self.read_updates_timeout = read_updates_timeout;
         self
@@ -233,13 +214,10 @@ where
     {
         ClientBuilder {
             auth_state_handler,
-            tdlib_verbosity_level: self.tdlib_verbosity_level,
             read_updates_timeout: self.read_updates_timeout,
             updates_sender: self.updates_sender,
             tdlib_parameters: self.tdlib_parameters,
             tdlib: self.tdlib,
-            tdlib_log_file_path: self.tdlib_log_file_path,
-            tdlib_log_max_file_size: self.tdlib_log_max_file_size,
         }
     }
 
@@ -248,16 +226,6 @@ where
             return Err(RTDError::InvalidParameters("tdlib_parameters not set"));
         };
 
-        if self.tdlib_log_max_file_size.is_some() {
-            Tdlib::set_log_max_file_size(self.tdlib_log_max_file_size.unwrap());
-        }
-
-        if self.tdlib_log_file_path.is_some() {
-            Tdlib::set_log_file_path(Some(self.tdlib_log_file_path.unwrap().as_str()));
-        }
-
-        Tdlib::set_log_verbosity_level(self.tdlib_verbosity_level)
-            .map_err(|e| RTDError::TdlibError(e.to_string()))?;
         let client = Client::new(
             RawApi::new(self.tdlib),
             self.auth_state_handler,
@@ -267,6 +235,17 @@ where
         );
         Ok(client)
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct ClientInstance {
+    client_id: i32,
+    updates_sender: Option<mpsc::Sender<Box<TdType>>>,
+    tdlib_parameters: Arc<TdlibParameters>,
+}
+
+impl ClientInstance {
+    pub fn new()
 }
 
 /// A high-level abstraction of TDLib.
@@ -279,10 +258,9 @@ where
 {
     stop_flag: Arc<AtomicBool>,
     api: Api<S>,
-    updates_sender: Option<mpsc::Sender<Box<TdType>>>,
     auth_state_handler: Arc<A>,
-    tdlib_parameters: Arc<TdlibParameters>,
     read_updates_timeout: f64,
+    clients: HashMap<i32, ClientInstance>,
 }
 
 impl Client<ConsoleAuthStateHandler, RawApi> {
@@ -306,18 +284,20 @@ where
     pub(crate) fn new(
         api: S,
         auth_state_handler: A,
-        tdlib_parameters: TdlibParameters,
-        updates_sender: Option<mpsc::Sender<Box<TdType>>>,
+        client: ClientInstance,
         read_updates_timeout: f64,
     ) -> Self {
         let stop_flag = Arc::new(AtomicBool::new(false));
+        let clients: HashMap<i32, ClientInstance> = vec![(client.client_id, client)]
+            .into_iter()
+            .collect();
+
         Self {
             stop_flag,
             read_updates_timeout,
-            updates_sender,
-            tdlib_parameters: Arc::new(tdlib_parameters),
+            auth_state_handler,
+            clients,
             api: Api::new(api),
-            auth_state_handler: Arc::new(auth_state_handler),
         }
     }
 

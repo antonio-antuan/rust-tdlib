@@ -4,52 +4,47 @@ use crate::{
     client::observer::OBSERVER,
     errors::{RTDError, RTDResult},
     types::RFunction,
+    tdjson,
     types::*,
 };
-use rtdlib_sys::Tdlib;
 
 #[doc(hidden)]
 pub trait TdLibClient {
-    fn send<Fnc: RFunction>(&self, fnc: Fnc) -> RTDResult<()>;
+    fn send<Fnc: RFunction>(&self, client_id: tdjson::ClientId, fnc: Fnc) -> RTDResult<()>;
     fn receive(&self, timeout: f64) -> Option<String>;
     fn execute<Fnc: RFunction>(&self, fnc: Fnc) -> RTDResult<Option<String>>;
 }
 
 #[derive(Clone, Debug)]
 #[doc(hidden)]
-pub struct RawApi {
-    tdlib: Arc<Tdlib>,
-}
+pub struct RawApi;
 
 impl Default for RawApi {
     fn default() -> Self {
-        Self {
-            tdlib: Arc::new(Tdlib::new()),
-        }
+        Self
     }
 }
 
 impl TdLibClient for RawApi {
-    fn send<Fnc: RFunction>(&self, fnc: Fnc) -> RTDResult<()> {
+    fn send<Fnc: RFunction>(&self, client_id: tdjson::ClientId, fnc: Fnc) -> RTDResult<()> {
         let json = fnc.to_json()?;
-        self.tdlib.send(&json[..]);
+        tdjson::send(client_id, &json[..]);
         Ok(())
     }
 
     fn receive(&self, timeout: f64) -> Option<String> {
-        self.tdlib.receive(timeout)
+        tdjson::receive(timeout)
     }
 
     fn execute<Fnc: RFunction>(&self, fnc: Fnc) -> RTDResult<Option<String>> {
         let json = fnc.to_json()?;
-        Ok(self.tdlib.execute(&json[..]))
+        Ok(tdjson::execute(&json[..]))
     }
 }
 
 impl RawApi {
-    pub fn new(tdlib: Tdlib) -> Self {
+    pub fn new() -> Self {
         Self {
-            tdlib: Arc::new(tdlib),
         }
     }
 }
