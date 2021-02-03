@@ -159,7 +159,7 @@ where
 {
     tdlib_verbosity_level: i32,
     read_updates_timeout: f64,
-    updates_sender: Option<mpsc::Sender<TdType>>,
+    updates_sender: Option<mpsc::Sender<Box<TdType>>>,
     tdlib_parameters: Option<TdlibParameters>,
     auth_state_handler: A,
     tdlib: Tdlib,
@@ -214,7 +214,7 @@ where
     }
 
     /// If you want to receive real-time updates (new messages, calls, etc.) you have to receive them with tokio::mpsc::Receiver<TdType>
-    pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<TdType>) -> Self {
+    pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<Box<TdType>>) -> Self {
         self.updates_sender = Some(updates_sender);
         self
     }
@@ -279,7 +279,7 @@ where
 {
     stop_flag: Arc<AtomicBool>,
     api: Api<S>,
-    updates_sender: Option<mpsc::Sender<TdType>>,
+    updates_sender: Option<mpsc::Sender<Box<TdType>>>,
     auth_state_handler: Arc<A>,
     tdlib_parameters: Arc<TdlibParameters>,
     read_updates_timeout: f64,
@@ -307,7 +307,7 @@ where
         api: S,
         auth_state_handler: A,
         tdlib_parameters: TdlibParameters,
-        updates_sender: Option<mpsc::Sender<TdType>>,
+        updates_sender: Option<mpsc::Sender<Box<TdType>>>,
         read_updates_timeout: f64,
     ) -> Self {
         let stop_flag = Arc::new(AtomicBool::new(false));
@@ -384,7 +384,9 @@ where
             trace!("updates handler started");
             let current = tokio::runtime::Handle::try_current().unwrap();
             while !stop_flag.load(Ordering::Acquire) {
+                trace!("still need updates");
                 let rec_api = api.raw_api().clone();
+                trace!("starting blocking");
                 if let Some(json) = current
                     .spawn_blocking(move || {
                         trace!("waiting for new updates");
@@ -412,7 +414,7 @@ where
                                     None => {}
                                     Some(sender) => {
                                         trace!("update send: {:?}", t);
-                                        sender.send(t).await.map_err(|_| CLOSED_CHANNEL_ERROR)?;
+                                        sender.send(Box::new(t)).await.map_err(|_| CLOSED_CHANNEL_ERROR)?;
                                         trace!("update sent");
                                     }
                                 },

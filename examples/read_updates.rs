@@ -17,7 +17,7 @@ async fn main() {
         .application_version(env!("CARGO_PKG_VERSION"))
         .enable_storage_optimizer(true)
         .build();
-    let (sender, mut receiver) = tokio::sync::mpsc::channel::<TdType>(10);
+    let (sender, mut receiver) = tokio::sync::mpsc::channel::<Box<TdType>>(10);
 
     let mut client = Client::builder()
         .with_tdlib_parameters(tdlib_parameters)
@@ -27,26 +27,22 @@ async fn main() {
         .build()
         .unwrap();
 
-    let cl_waiter = client.start().await.unwrap();
-
-
     let reader_waiter = tokio::spawn(async move {
-
-        let mut wait_messages_num: i32 = 1;
-        while wait_messages_num > 0 {
-            let message = receiver.recv().await.unwrap();
+        let mut wait_messages = 40;
+        while let Some(message) = receiver.recv().await {
             info!("updates handler received {:?}", message);
-            wait_messages_num -= wait_messages_num;
+            wait_messages -= 1;
+            if wait_messages == 0 {
+                info!("reader closed");
+                break
+            }
         }
     });
-    let me = client.api().get_me(GetMe::builder().build()).await.unwrap();
-    info!("me: {:?}", me);
-    tokio::select! {
-        h = cl_waiter => panic!("{:?}", h),
-        w = reader_waiter =>  panic!("{:?}", w)
-    }
 
-    client.stop();
-    cl_waiter.await.unwrap();
-    info!("client closed");
+    let cl_waiter = client.start().await.unwrap();
+
+    tokio::select! {
+        h = cl_waiter => warn!("client closed: {:?}", h),
+        _ = reader_waiter => info!("reader closed")
+    }
 }
