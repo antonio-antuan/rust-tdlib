@@ -133,6 +133,29 @@ impl RObject for FileType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            FileType::Animation(t) => t.client_id(),
+            FileType::Audio(t) => t.client_id(),
+            FileType::Document(t) => t.client_id(),
+            FileType::None(t) => t.client_id(),
+            FileType::Photo(t) => t.client_id(),
+            FileType::ProfilePhoto(t) => t.client_id(),
+            FileType::Secret(t) => t.client_id(),
+            FileType::SecretThumbnail(t) => t.client_id(),
+            FileType::Secure(t) => t.client_id(),
+            FileType::Sticker(t) => t.client_id(),
+            FileType::Thumbnail(t) => t.client_id(),
+            FileType::Unknown(t) => t.client_id(),
+            FileType::Video(t) => t.client_id(),
+            FileType::VideoNote(t) => t.client_id(),
+            FileType::VoiceNote(t) => t.client_id(),
+            FileType::Wallpaper(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl FileType {
@@ -160,6 +183,8 @@ pub struct FileTypeAnimation {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeAnimation {
@@ -170,6 +195,10 @@ impl RObject for FileTypeAnimation {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -186,6 +215,7 @@ impl FileTypeAnimation {
         let mut inner = FileTypeAnimation::default();
         inner.td_name = "fileTypeAnimation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeAnimationBuilder { inner }
     }
 }
@@ -222,6 +252,8 @@ pub struct FileTypeAudio {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeAudio {
@@ -232,6 +264,10 @@ impl RObject for FileTypeAudio {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -248,6 +284,7 @@ impl FileTypeAudio {
         let mut inner = FileTypeAudio::default();
         inner.td_name = "fileTypeAudio".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeAudioBuilder { inner }
     }
 }
@@ -284,6 +321,8 @@ pub struct FileTypeDocument {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeDocument {
@@ -294,6 +333,10 @@ impl RObject for FileTypeDocument {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -310,6 +353,7 @@ impl FileTypeDocument {
         let mut inner = FileTypeDocument::default();
         inner.td_name = "fileTypeDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeDocumentBuilder { inner }
     }
 }
@@ -346,6 +390,8 @@ pub struct FileTypeNone {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeNone {
@@ -356,6 +402,10 @@ impl RObject for FileTypeNone {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -372,6 +422,7 @@ impl FileTypeNone {
         let mut inner = FileTypeNone::default();
         inner.td_name = "fileTypeNone".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeNoneBuilder { inner }
     }
 }
@@ -408,6 +459,8 @@ pub struct FileTypePhoto {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypePhoto {
@@ -418,6 +471,10 @@ impl RObject for FileTypePhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -434,6 +491,7 @@ impl FileTypePhoto {
         let mut inner = FileTypePhoto::default();
         inner.td_name = "fileTypePhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypePhotoBuilder { inner }
     }
 }
@@ -470,6 +528,8 @@ pub struct FileTypeProfilePhoto {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeProfilePhoto {
@@ -480,6 +540,10 @@ impl RObject for FileTypeProfilePhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -496,6 +560,7 @@ impl FileTypeProfilePhoto {
         let mut inner = FileTypeProfilePhoto::default();
         inner.td_name = "fileTypeProfilePhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeProfilePhotoBuilder { inner }
     }
 }
@@ -532,6 +597,8 @@ pub struct FileTypeSecret {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeSecret {
@@ -542,6 +609,10 @@ impl RObject for FileTypeSecret {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -558,6 +629,7 @@ impl FileTypeSecret {
         let mut inner = FileTypeSecret::default();
         inner.td_name = "fileTypeSecret".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeSecretBuilder { inner }
     }
 }
@@ -594,6 +666,8 @@ pub struct FileTypeSecretThumbnail {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeSecretThumbnail {
@@ -604,6 +678,10 @@ impl RObject for FileTypeSecretThumbnail {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -620,6 +698,7 @@ impl FileTypeSecretThumbnail {
         let mut inner = FileTypeSecretThumbnail::default();
         inner.td_name = "fileTypeSecretThumbnail".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeSecretThumbnailBuilder { inner }
     }
 }
@@ -656,6 +735,8 @@ pub struct FileTypeSecure {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeSecure {
@@ -666,6 +747,10 @@ impl RObject for FileTypeSecure {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -682,6 +767,7 @@ impl FileTypeSecure {
         let mut inner = FileTypeSecure::default();
         inner.td_name = "fileTypeSecure".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeSecureBuilder { inner }
     }
 }
@@ -718,6 +804,8 @@ pub struct FileTypeSticker {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeSticker {
@@ -728,6 +816,10 @@ impl RObject for FileTypeSticker {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -744,6 +836,7 @@ impl FileTypeSticker {
         let mut inner = FileTypeSticker::default();
         inner.td_name = "fileTypeSticker".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeStickerBuilder { inner }
     }
 }
@@ -780,6 +873,8 @@ pub struct FileTypeThumbnail {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeThumbnail {
@@ -790,6 +885,10 @@ impl RObject for FileTypeThumbnail {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -806,6 +905,7 @@ impl FileTypeThumbnail {
         let mut inner = FileTypeThumbnail::default();
         inner.td_name = "fileTypeThumbnail".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeThumbnailBuilder { inner }
     }
 }
@@ -842,6 +942,8 @@ pub struct FileTypeUnknown {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeUnknown {
@@ -852,6 +954,10 @@ impl RObject for FileTypeUnknown {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -868,6 +974,7 @@ impl FileTypeUnknown {
         let mut inner = FileTypeUnknown::default();
         inner.td_name = "fileTypeUnknown".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeUnknownBuilder { inner }
     }
 }
@@ -904,6 +1011,8 @@ pub struct FileTypeVideo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeVideo {
@@ -914,6 +1023,10 @@ impl RObject for FileTypeVideo {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -930,6 +1043,7 @@ impl FileTypeVideo {
         let mut inner = FileTypeVideo::default();
         inner.td_name = "fileTypeVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeVideoBuilder { inner }
     }
 }
@@ -966,6 +1080,8 @@ pub struct FileTypeVideoNote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeVideoNote {
@@ -976,6 +1092,10 @@ impl RObject for FileTypeVideoNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -992,6 +1112,7 @@ impl FileTypeVideoNote {
         let mut inner = FileTypeVideoNote::default();
         inner.td_name = "fileTypeVideoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeVideoNoteBuilder { inner }
     }
 }
@@ -1028,6 +1149,8 @@ pub struct FileTypeVoiceNote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeVoiceNote {
@@ -1038,6 +1161,10 @@ impl RObject for FileTypeVoiceNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1054,6 +1181,7 @@ impl FileTypeVoiceNote {
         let mut inner = FileTypeVoiceNote::default();
         inner.td_name = "fileTypeVoiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeVoiceNoteBuilder { inner }
     }
 }
@@ -1090,6 +1218,8 @@ pub struct FileTypeWallpaper {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for FileTypeWallpaper {
@@ -1100,6 +1230,10 @@ impl RObject for FileTypeWallpaper {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1116,6 +1250,7 @@ impl FileTypeWallpaper {
         let mut inner = FileTypeWallpaper::default();
         inner.td_name = "fileTypeWallpaper".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileTypeWallpaperBuilder { inner }
     }
 }

@@ -1,6 +1,6 @@
-use std::os::raw::{c_char, c_double, c_int};
 use std::ffi::CStr;
 use std::ffi::CString;
+use std::os::raw::{c_char, c_double, c_int};
 
 pub type ClientId = i32;
 #[link(name = "tdjson")]
@@ -34,13 +34,10 @@ pub fn receive(timeout: f64) -> Option<String> {
     unsafe {
         match td_receive(timeout)
             .as_ref()
-            .map(|response| CStr::from_ptr(response).to_string_lossy().into_owned()) {
-            None => {
-                None
-            }
-            Some(contents) => {
-                Some(contents)
-            }
+            .map(|response| CStr::from_ptr(response).to_string_lossy().into_owned())
+        {
+            None => None,
+            Some(contents) => Some(contents),
         }
     }
 }

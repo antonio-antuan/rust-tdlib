@@ -88,6 +88,20 @@ impl RObject for InlineKeyboardButtonType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            InlineKeyboardButtonType::Buy(t) => t.client_id(),
+            InlineKeyboardButtonType::Callback(t) => t.client_id(),
+            InlineKeyboardButtonType::CallbackGame(t) => t.client_id(),
+            InlineKeyboardButtonType::CallbackWithPassword(t) => t.client_id(),
+            InlineKeyboardButtonType::LoginUrl(t) => t.client_id(),
+            InlineKeyboardButtonType::SwitchInline(t) => t.client_id(),
+            InlineKeyboardButtonType::Url(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl InlineKeyboardButtonType {
@@ -115,6 +129,8 @@ pub struct InlineKeyboardButtonTypeBuy {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for InlineKeyboardButtonTypeBuy {
@@ -125,6 +141,10 @@ impl RObject for InlineKeyboardButtonTypeBuy {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -141,6 +161,7 @@ impl InlineKeyboardButtonTypeBuy {
         let mut inner = InlineKeyboardButtonTypeBuy::default();
         inner.td_name = "inlineKeyboardButtonTypeBuy".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInlineKeyboardButtonTypeBuyBuilder { inner }
     }
 }
@@ -177,6 +198,8 @@ pub struct InlineKeyboardButtonTypeCallback {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Data to be sent to the bot via a callback query
     data: String,
 }
@@ -189,6 +212,10 @@ impl RObject for InlineKeyboardButtonTypeCallback {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -205,6 +232,7 @@ impl InlineKeyboardButtonTypeCallback {
         let mut inner = InlineKeyboardButtonTypeCallback::default();
         inner.td_name = "inlineKeyboardButtonTypeCallback".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInlineKeyboardButtonTypeCallbackBuilder { inner }
     }
 
@@ -250,6 +278,8 @@ pub struct InlineKeyboardButtonTypeCallbackGame {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for InlineKeyboardButtonTypeCallbackGame {
@@ -260,6 +290,10 @@ impl RObject for InlineKeyboardButtonTypeCallbackGame {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -276,6 +310,7 @@ impl InlineKeyboardButtonTypeCallbackGame {
         let mut inner = InlineKeyboardButtonTypeCallbackGame::default();
         inner.td_name = "inlineKeyboardButtonTypeCallbackGame".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInlineKeyboardButtonTypeCallbackGameBuilder { inner }
     }
 }
@@ -314,6 +349,8 @@ pub struct InlineKeyboardButtonTypeCallbackWithPassword {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Data to be sent to the bot via a callback query
     data: String,
 }
@@ -326,6 +363,10 @@ impl RObject for InlineKeyboardButtonTypeCallbackWithPassword {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -342,6 +383,7 @@ impl InlineKeyboardButtonTypeCallbackWithPassword {
         let mut inner = InlineKeyboardButtonTypeCallbackWithPassword::default();
         inner.td_name = "inlineKeyboardButtonTypeCallbackWithPassword".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInlineKeyboardButtonTypeCallbackWithPasswordBuilder { inner }
     }
 
@@ -391,6 +433,8 @@ pub struct InlineKeyboardButtonTypeLoginUrl {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// An HTTP URL to open
     url: String,
     /// Unique button identifier
@@ -408,6 +452,10 @@ impl RObject for InlineKeyboardButtonTypeLoginUrl {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -423,6 +471,7 @@ impl InlineKeyboardButtonTypeLoginUrl {
         let mut inner = InlineKeyboardButtonTypeLoginUrl::default();
         inner.td_name = "inlineKeyboardButtonTypeLoginUrl".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInlineKeyboardButtonTypeLoginUrlBuilder { inner }
     }
 
@@ -486,6 +535,8 @@ pub struct InlineKeyboardButtonTypeSwitchInline {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Inline query to be sent to the bot
     query: String,
     /// True, if the inline query should be sent from the current chat
@@ -500,6 +551,10 @@ impl RObject for InlineKeyboardButtonTypeSwitchInline {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -516,6 +571,7 @@ impl InlineKeyboardButtonTypeSwitchInline {
         let mut inner = InlineKeyboardButtonTypeSwitchInline::default();
         inner.td_name = "inlineKeyboardButtonTypeSwitchInline".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInlineKeyboardButtonTypeSwitchInlineBuilder { inner }
     }
 
@@ -572,6 +628,8 @@ pub struct InlineKeyboardButtonTypeUrl {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// HTTP or tg:// URL to open
     url: String,
 }
@@ -584,6 +642,10 @@ impl RObject for InlineKeyboardButtonTypeUrl {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -600,6 +662,7 @@ impl InlineKeyboardButtonTypeUrl {
         let mut inner = InlineKeyboardButtonTypeUrl::default();
         inner.td_name = "inlineKeyboardButtonTypeUrl".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInlineKeyboardButtonTypeUrlBuilder { inner }
     }
 

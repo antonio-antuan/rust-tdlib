@@ -73,6 +73,17 @@ impl RObject for InputCredentials {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            InputCredentials::AndroidPay(t) => t.client_id(),
+            InputCredentials::ApplePay(t) => t.client_id(),
+            InputCredentials::New(t) => t.client_id(),
+            InputCredentials::Saved(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl InputCredentials {
@@ -100,6 +111,8 @@ pub struct InputCredentialsAndroidPay {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// JSON-encoded data with the credential identifier
     data: String,
 }
@@ -112,6 +125,10 @@ impl RObject for InputCredentialsAndroidPay {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -128,6 +145,7 @@ impl InputCredentialsAndroidPay {
         let mut inner = InputCredentialsAndroidPay::default();
         inner.td_name = "inputCredentialsAndroidPay".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputCredentialsAndroidPayBuilder { inner }
     }
 
@@ -173,6 +191,8 @@ pub struct InputCredentialsApplePay {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// JSON-encoded data with the credential identifier
     data: String,
 }
@@ -185,6 +205,10 @@ impl RObject for InputCredentialsApplePay {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -201,6 +225,7 @@ impl InputCredentialsApplePay {
         let mut inner = InputCredentialsApplePay::default();
         inner.td_name = "inputCredentialsApplePay".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputCredentialsApplePayBuilder { inner }
     }
 
@@ -246,6 +271,8 @@ pub struct InputCredentialsNew {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Contains JSON-encoded data with a credential identifier from the payment provider
     data: String,
     /// True, if the credential identifier can be saved on the server side
@@ -260,6 +287,10 @@ impl RObject for InputCredentialsNew {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -276,6 +307,7 @@ impl InputCredentialsNew {
         let mut inner = InputCredentialsNew::default();
         inner.td_name = "inputCredentialsNew".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputCredentialsNewBuilder { inner }
     }
 
@@ -330,6 +362,8 @@ pub struct InputCredentialsSaved {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the saved credentials
     saved_credentials_id: String,
 }
@@ -342,6 +376,10 @@ impl RObject for InputCredentialsSaved {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -358,6 +396,7 @@ impl InputCredentialsSaved {
         let mut inner = InputCredentialsSaved::default();
         inner.td_name = "inputCredentialsSaved".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputCredentialsSavedBuilder { inner }
     }
 

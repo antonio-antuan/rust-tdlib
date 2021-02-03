@@ -57,6 +57,7 @@ pub trait RObject: Debug {
     fn td_name(&self) -> &'static str;
     #[doc(hidden)]
     fn extra(&self) -> Option<String>;
+    fn client_id(&self) -> Option<i32>;
     /// Return td type to json string
     fn to_json(&self) -> RTDResult<String>;
 }
@@ -73,6 +74,9 @@ impl<'a, RObj: RObject> RObject for &'a RObj {
     fn extra(&self) -> Option<String> {
         (*self).extra()
     }
+    fn client_id(&self) -> Option<i32> {
+        (*self).client_id()
+    }
 }
 
 impl<'a, RObj: RObject> RObject for &'a mut RObj {
@@ -84,6 +88,9 @@ impl<'a, RObj: RObject> RObject for &'a mut RObj {
     }
     fn extra(&self) -> Option<String> {
         (**self).extra()
+    }
+    fn client_id(&self) -> Option<i32> {
+        (**self).client_id()
     }
 }
 
@@ -883,6 +890,472 @@ impl<'de> Deserialize<'de> for TdType {
          (webPageInstantView, WebPageInstantView);
 
         )(deserializer)
+    }
+}
+
+impl TdType {
+    pub fn client_id(&self) -> Option<i32> {
+        match self {
+            TdType::AuthorizationState(value) => value.client_id(),
+
+            TdType::CanTransferOwnershipResult(value) => value.client_id(),
+
+            TdType::ChatStatistics(value) => value.client_id(),
+
+            TdType::CheckChatUsernameResult(value) => value.client_id(),
+
+            TdType::JsonValue(value) => value.client_id(),
+
+            TdType::LanguagePackStringValue(value) => value.client_id(),
+
+            TdType::LogStream(value) => value.client_id(),
+
+            TdType::LoginUrlInfo(value) => value.client_id(),
+
+            TdType::OptionValue(value) => value.client_id(),
+
+            TdType::PassportElement(value) => value.client_id(),
+
+            TdType::StatisticalGraph(value) => value.client_id(),
+
+            TdType::Update(value) => value.client_id(),
+
+            TdType::AccountTtl(value) => value.client_id(),
+
+            TdType::Animations(value) => value.client_id(),
+
+            TdType::AuthenticationCodeInfo(value) => value.client_id(),
+
+            TdType::AutoDownloadSettingsPresets(value) => value.client_id(),
+
+            TdType::Background(value) => value.client_id(),
+
+            TdType::Backgrounds(value) => value.client_id(),
+
+            TdType::BankCardInfo(value) => value.client_id(),
+
+            TdType::BasicGroup(value) => value.client_id(),
+
+            TdType::BasicGroupFullInfo(value) => value.client_id(),
+
+            TdType::CallId(value) => value.client_id(),
+
+            TdType::CallbackQueryAnswer(value) => value.client_id(),
+
+            TdType::Chat(value) => value.client_id(),
+
+            TdType::ChatAdministrators(value) => value.client_id(),
+
+            TdType::ChatEvents(value) => value.client_id(),
+
+            TdType::ChatFilter(value) => value.client_id(),
+
+            TdType::ChatFilterInfo(value) => value.client_id(),
+
+            TdType::ChatInviteLink(value) => value.client_id(),
+
+            TdType::ChatInviteLinkInfo(value) => value.client_id(),
+
+            TdType::ChatLists(value) => value.client_id(),
+
+            TdType::ChatMember(value) => value.client_id(),
+
+            TdType::ChatMembers(value) => value.client_id(),
+
+            TdType::ChatPhotos(value) => value.client_id(),
+
+            TdType::Chats(value) => value.client_id(),
+
+            TdType::ChatsNearby(value) => value.client_id(),
+
+            TdType::ConnectedWebsites(value) => value.client_id(),
+
+            TdType::Count(value) => value.client_id(),
+
+            TdType::Countries(value) => value.client_id(),
+
+            TdType::CustomRequestResult(value) => value.client_id(),
+
+            TdType::DatabaseStatistics(value) => value.client_id(),
+
+            TdType::DeepLinkInfo(value) => value.client_id(),
+
+            TdType::EmailAddressAuthenticationCodeInfo(value) => value.client_id(),
+
+            TdType::Emojis(value) => value.client_id(),
+
+            TdType::Error(value) => value.client_id(),
+
+            TdType::File(value) => value.client_id(),
+
+            TdType::FilePart(value) => value.client_id(),
+
+            TdType::FormattedText(value) => value.client_id(),
+
+            TdType::FoundMessages(value) => value.client_id(),
+
+            TdType::GameHighScores(value) => value.client_id(),
+
+            TdType::Hashtags(value) => value.client_id(),
+
+            TdType::HttpUrl(value) => value.client_id(),
+
+            TdType::ImportedContacts(value) => value.client_id(),
+
+            TdType::InlineQueryResults(value) => value.client_id(),
+
+            TdType::LanguagePackInfo(value) => value.client_id(),
+
+            TdType::LanguagePackStrings(value) => value.client_id(),
+
+            TdType::LocalizationTargetInfo(value) => value.client_id(),
+
+            TdType::LogTags(value) => value.client_id(),
+
+            TdType::LogVerbosityLevel(value) => value.client_id(),
+
+            TdType::Message(value) => value.client_id(),
+
+            TdType::MessageLink(value) => value.client_id(),
+
+            TdType::MessageLinkInfo(value) => value.client_id(),
+
+            TdType::MessageSenders(value) => value.client_id(),
+
+            TdType::MessageStatistics(value) => value.client_id(),
+
+            TdType::MessageThreadInfo(value) => value.client_id(),
+
+            TdType::Messages(value) => value.client_id(),
+
+            TdType::NetworkStatistics(value) => value.client_id(),
+
+            TdType::Ok(value) => value.client_id(),
+
+            TdType::OrderInfo(value) => value.client_id(),
+
+            TdType::PassportAuthorizationForm(value) => value.client_id(),
+
+            TdType::PassportElements(value) => value.client_id(),
+
+            TdType::PassportElementsWithErrors(value) => value.client_id(),
+
+            TdType::PasswordState(value) => value.client_id(),
+
+            TdType::PaymentForm(value) => value.client_id(),
+
+            TdType::PaymentReceipt(value) => value.client_id(),
+
+            TdType::PaymentResult(value) => value.client_id(),
+
+            TdType::PhoneNumberInfo(value) => value.client_id(),
+
+            TdType::Proxies(value) => value.client_id(),
+
+            TdType::Proxy(value) => value.client_id(),
+
+            TdType::PushReceiverId(value) => value.client_id(),
+
+            TdType::RecommendedChatFilters(value) => value.client_id(),
+
+            TdType::RecoveryEmailAddress(value) => value.client_id(),
+
+            TdType::ScopeNotificationSettings(value) => value.client_id(),
+
+            TdType::Seconds(value) => value.client_id(),
+
+            TdType::SecretChat(value) => value.client_id(),
+
+            TdType::Session(value) => value.client_id(),
+
+            TdType::Sessions(value) => value.client_id(),
+
+            TdType::StickerSet(value) => value.client_id(),
+
+            TdType::StickerSets(value) => value.client_id(),
+
+            TdType::Stickers(value) => value.client_id(),
+
+            TdType::StorageStatistics(value) => value.client_id(),
+
+            TdType::StorageStatisticsFast(value) => value.client_id(),
+
+            TdType::Supergroup(value) => value.client_id(),
+
+            TdType::SupergroupFullInfo(value) => value.client_id(),
+
+            TdType::TMeUrls(value) => value.client_id(),
+
+            TdType::TemporaryPasswordState(value) => value.client_id(),
+
+            TdType::TestBytes(value) => value.client_id(),
+
+            TdType::TestInt(value) => value.client_id(),
+
+            TdType::TestString(value) => value.client_id(),
+
+            TdType::TestVectorInt(value) => value.client_id(),
+
+            TdType::TestVectorIntObject(value) => value.client_id(),
+
+            TdType::TestVectorString(value) => value.client_id(),
+
+            TdType::TestVectorStringObject(value) => value.client_id(),
+
+            TdType::Text(value) => value.client_id(),
+
+            TdType::TextEntities(value) => value.client_id(),
+
+            TdType::Updates(value) => value.client_id(),
+
+            TdType::User(value) => value.client_id(),
+
+            TdType::UserFullInfo(value) => value.client_id(),
+
+            TdType::UserPrivacySettingRules(value) => value.client_id(),
+
+            TdType::Users(value) => value.client_id(),
+
+            TdType::ValidatedOrderInfo(value) => value.client_id(),
+
+            TdType::WebPage(value) => value.client_id(),
+
+            TdType::WebPageInstantView(value) => value.client_id(),
+
+            _ => None,
+        }
+    }
+
+    pub fn extra(&self) -> &Option<String> {
+        match self {
+            TdType::AuthorizationState(value) => &value.extra(),
+
+            TdType::CanTransferOwnershipResult(value) => &value.extra(),
+
+            TdType::ChatStatistics(value) => &value.extra(),
+
+            TdType::CheckChatUsernameResult(value) => &value.extra(),
+
+            TdType::JsonValue(value) => &value.extra(),
+
+            TdType::LanguagePackStringValue(value) => &value.extra(),
+
+            TdType::LogStream(value) => &value.extra(),
+
+            TdType::LoginUrlInfo(value) => &value.extra(),
+
+            TdType::OptionValue(value) => &value.extra(),
+
+            TdType::PassportElement(value) => &value.extra(),
+
+            TdType::StatisticalGraph(value) => &value.extra(),
+
+            TdType::Update(value) => &value.extra(),
+
+            TdType::AccountTtl(value) => &value.extra(),
+
+            TdType::Animations(value) => &value.extra(),
+
+            TdType::AuthenticationCodeInfo(value) => &value.extra(),
+
+            TdType::AutoDownloadSettingsPresets(value) => &value.extra(),
+
+            TdType::Background(value) => &value.extra(),
+
+            TdType::Backgrounds(value) => &value.extra(),
+
+            TdType::BankCardInfo(value) => &value.extra(),
+
+            TdType::BasicGroup(value) => &value.extra(),
+
+            TdType::BasicGroupFullInfo(value) => &value.extra(),
+
+            TdType::CallId(value) => &value.extra(),
+
+            TdType::CallbackQueryAnswer(value) => &value.extra(),
+
+            TdType::Chat(value) => &value.extra(),
+
+            TdType::ChatAdministrators(value) => &value.extra(),
+
+            TdType::ChatEvents(value) => &value.extra(),
+
+            TdType::ChatFilter(value) => &value.extra(),
+
+            TdType::ChatFilterInfo(value) => &value.extra(),
+
+            TdType::ChatInviteLink(value) => &value.extra(),
+
+            TdType::ChatInviteLinkInfo(value) => &value.extra(),
+
+            TdType::ChatLists(value) => &value.extra(),
+
+            TdType::ChatMember(value) => &value.extra(),
+
+            TdType::ChatMembers(value) => &value.extra(),
+
+            TdType::ChatPhotos(value) => &value.extra(),
+
+            TdType::Chats(value) => &value.extra(),
+
+            TdType::ChatsNearby(value) => &value.extra(),
+
+            TdType::ConnectedWebsites(value) => &value.extra(),
+
+            TdType::Count(value) => &value.extra(),
+
+            TdType::Countries(value) => &value.extra(),
+
+            TdType::CustomRequestResult(value) => &value.extra(),
+
+            TdType::DatabaseStatistics(value) => &value.extra(),
+
+            TdType::DeepLinkInfo(value) => &value.extra(),
+
+            TdType::EmailAddressAuthenticationCodeInfo(value) => &value.extra(),
+
+            TdType::Emojis(value) => &value.extra(),
+
+            TdType::Error(value) => &value.extra(),
+
+            TdType::File(value) => &value.extra(),
+
+            TdType::FilePart(value) => &value.extra(),
+
+            TdType::FormattedText(value) => &value.extra(),
+
+            TdType::FoundMessages(value) => &value.extra(),
+
+            TdType::GameHighScores(value) => &value.extra(),
+
+            TdType::Hashtags(value) => &value.extra(),
+
+            TdType::HttpUrl(value) => &value.extra(),
+
+            TdType::ImportedContacts(value) => &value.extra(),
+
+            TdType::InlineQueryResults(value) => &value.extra(),
+
+            TdType::LanguagePackInfo(value) => &value.extra(),
+
+            TdType::LanguagePackStrings(value) => &value.extra(),
+
+            TdType::LocalizationTargetInfo(value) => &value.extra(),
+
+            TdType::LogTags(value) => &value.extra(),
+
+            TdType::LogVerbosityLevel(value) => &value.extra(),
+
+            TdType::Message(value) => &value.extra(),
+
+            TdType::MessageLink(value) => &value.extra(),
+
+            TdType::MessageLinkInfo(value) => &value.extra(),
+
+            TdType::MessageSenders(value) => &value.extra(),
+
+            TdType::MessageStatistics(value) => &value.extra(),
+
+            TdType::MessageThreadInfo(value) => &value.extra(),
+
+            TdType::Messages(value) => &value.extra(),
+
+            TdType::NetworkStatistics(value) => &value.extra(),
+
+            TdType::Ok(value) => &value.extra(),
+
+            TdType::OrderInfo(value) => &value.extra(),
+
+            TdType::PassportAuthorizationForm(value) => &value.extra(),
+
+            TdType::PassportElements(value) => &value.extra(),
+
+            TdType::PassportElementsWithErrors(value) => &value.extra(),
+
+            TdType::PasswordState(value) => &value.extra(),
+
+            TdType::PaymentForm(value) => &value.extra(),
+
+            TdType::PaymentReceipt(value) => &value.extra(),
+
+            TdType::PaymentResult(value) => &value.extra(),
+
+            TdType::PhoneNumberInfo(value) => &value.extra(),
+
+            TdType::Proxies(value) => &value.extra(),
+
+            TdType::Proxy(value) => &value.extra(),
+
+            TdType::PushReceiverId(value) => &value.extra(),
+
+            TdType::RecommendedChatFilters(value) => &value.extra(),
+
+            TdType::RecoveryEmailAddress(value) => &value.extra(),
+
+            TdType::ScopeNotificationSettings(value) => &value.extra(),
+
+            TdType::Seconds(value) => &value.extra(),
+
+            TdType::SecretChat(value) => &value.extra(),
+
+            TdType::Session(value) => &value.extra(),
+
+            TdType::Sessions(value) => &value.extra(),
+
+            TdType::StickerSet(value) => &value.extra(),
+
+            TdType::StickerSets(value) => &value.extra(),
+
+            TdType::Stickers(value) => &value.extra(),
+
+            TdType::StorageStatistics(value) => &value.extra(),
+
+            TdType::StorageStatisticsFast(value) => &value.extra(),
+
+            TdType::Supergroup(value) => &value.extra(),
+
+            TdType::SupergroupFullInfo(value) => &value.extra(),
+
+            TdType::TMeUrls(value) => &value.extra(),
+
+            TdType::TemporaryPasswordState(value) => &value.extra(),
+
+            TdType::TestBytes(value) => &value.extra(),
+
+            TdType::TestInt(value) => &value.extra(),
+
+            TdType::TestString(value) => &value.extra(),
+
+            TdType::TestVectorInt(value) => &value.extra(),
+
+            TdType::TestVectorIntObject(value) => &value.extra(),
+
+            TdType::TestVectorString(value) => &value.extra(),
+
+            TdType::TestVectorStringObject(value) => &value.extra(),
+
+            TdType::Text(value) => &value.extra(),
+
+            TdType::TextEntities(value) => &value.extra(),
+
+            TdType::Updates(value) => &value.extra(),
+
+            TdType::User(value) => &value.extra(),
+
+            TdType::UserFullInfo(value) => &value.extra(),
+
+            TdType::UserPrivacySettingRules(value) => &value.extra(),
+
+            TdType::Users(value) => &value.extra(),
+
+            TdType::ValidatedOrderInfo(value) => &value.extra(),
+
+            TdType::WebPage(value) => &value.extra(),
+
+            TdType::WebPageInstantView(value) => &value.extra(),
+
+            _ => &None,
+        }
     }
 }
 

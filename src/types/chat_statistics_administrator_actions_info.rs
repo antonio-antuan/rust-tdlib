@@ -11,6 +11,8 @@ pub struct ChatStatisticsAdministratorActionsInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Administrator user identifier
     user_id: i32,
     /// Number of messages deleted by the administrator
@@ -30,6 +32,10 @@ impl RObject for ChatStatisticsAdministratorActionsInfo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -43,6 +49,7 @@ impl ChatStatisticsAdministratorActionsInfo {
         let mut inner = ChatStatisticsAdministratorActionsInfo::default();
         inner.td_name = "chatStatisticsAdministratorActionsInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatStatisticsAdministratorActionsInfoBuilder { inner }
     }
 

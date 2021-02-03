@@ -11,6 +11,8 @@ pub struct File {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique file identifier
     id: i32,
     /// File size; 0 if unknown
@@ -32,6 +34,10 @@ impl RObject for File {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -45,6 +51,7 @@ impl File {
         let mut inner = File::default();
         inner.td_name = "file".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDFileBuilder { inner }
     }
 

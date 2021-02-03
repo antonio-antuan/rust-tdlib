@@ -63,6 +63,15 @@ impl RObject for InputBackground {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            InputBackground::Local(t) => t.client_id(),
+            InputBackground::Remote(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl InputBackground {
@@ -90,6 +99,8 @@ pub struct InputBackgroundLocal {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Background file to use. Only inputFileLocal and inputFileGenerated are supported. The file must be in JPEG format for wallpapers and in PNG format for patterns
     background: InputFile,
 }
@@ -102,6 +113,10 @@ impl RObject for InputBackgroundLocal {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -118,6 +133,7 @@ impl InputBackgroundLocal {
         let mut inner = InputBackgroundLocal::default();
         inner.td_name = "inputBackgroundLocal".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputBackgroundLocalBuilder { inner }
     }
 
@@ -163,6 +179,8 @@ pub struct InputBackgroundRemote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The background identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     background_id: i64,
@@ -176,6 +194,10 @@ impl RObject for InputBackgroundRemote {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -192,6 +214,7 @@ impl InputBackgroundRemote {
         let mut inner = InputBackgroundRemote::default();
         inner.td_name = "inputBackgroundRemote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputBackgroundRemoteBuilder { inner }
     }
 

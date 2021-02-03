@@ -11,6 +11,8 @@ pub struct ChatPosition {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The chat list
     list: ChatList,
     /// A parameter used to determine order of the chat in the chat list. Chats must be sorted by the pair (order, chat.id) in descending order
@@ -31,6 +33,10 @@ impl RObject for ChatPosition {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -44,6 +50,7 @@ impl ChatPosition {
         let mut inner = ChatPosition::default();
         inner.td_name = "chatPosition".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatPositionBuilder { inner }
     }
 

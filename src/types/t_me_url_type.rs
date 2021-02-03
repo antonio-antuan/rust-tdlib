@@ -73,6 +73,17 @@ impl RObject for TMeUrlType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            TMeUrlType::ChatInvite(t) => t.client_id(),
+            TMeUrlType::StickerSet(t) => t.client_id(),
+            TMeUrlType::Supergroup(t) => t.client_id(),
+            TMeUrlType::User(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl TMeUrlType {
@@ -100,6 +111,8 @@ pub struct TMeUrlTypeChatInvite {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat invite link info
     info: ChatInviteLinkInfo,
 }
@@ -112,6 +125,10 @@ impl RObject for TMeUrlTypeChatInvite {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -128,6 +145,7 @@ impl TMeUrlTypeChatInvite {
         let mut inner = TMeUrlTypeChatInvite::default();
         inner.td_name = "tMeUrlTypeChatInvite".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTMeUrlTypeChatInviteBuilder { inner }
     }
 
@@ -173,6 +191,8 @@ pub struct TMeUrlTypeStickerSet {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the sticker set
     #[serde(deserialize_with = "super::_common::number_from_string")]
     sticker_set_id: i64,
@@ -186,6 +206,10 @@ impl RObject for TMeUrlTypeStickerSet {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -202,6 +226,7 @@ impl TMeUrlTypeStickerSet {
         let mut inner = TMeUrlTypeStickerSet::default();
         inner.td_name = "tMeUrlTypeStickerSet".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTMeUrlTypeStickerSetBuilder { inner }
     }
 
@@ -247,6 +272,8 @@ pub struct TMeUrlTypeSupergroup {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the supergroup or channel
     supergroup_id: i64,
 }
@@ -259,6 +286,10 @@ impl RObject for TMeUrlTypeSupergroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -275,6 +306,7 @@ impl TMeUrlTypeSupergroup {
         let mut inner = TMeUrlTypeSupergroup::default();
         inner.td_name = "tMeUrlTypeSupergroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTMeUrlTypeSupergroupBuilder { inner }
     }
 
@@ -320,6 +352,8 @@ pub struct TMeUrlTypeUser {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the user
     user_id: i32,
 }
@@ -332,6 +366,10 @@ impl RObject for TMeUrlTypeUser {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -348,6 +386,7 @@ impl TMeUrlTypeUser {
         let mut inner = TMeUrlTypeUser::default();
         inner.td_name = "tMeUrlTypeUser".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTMeUrlTypeUserBuilder { inner }
     }
 

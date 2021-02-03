@@ -113,6 +113,25 @@ impl RObject for AuthorizationState {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            AuthorizationState::Closed(t) => t.client_id(),
+            AuthorizationState::Closing(t) => t.client_id(),
+            AuthorizationState::LoggingOut(t) => t.client_id(),
+            AuthorizationState::Ready(t) => t.client_id(),
+            AuthorizationState::WaitCode(t) => t.client_id(),
+            AuthorizationState::WaitEncryptionKey(t) => t.client_id(),
+            AuthorizationState::WaitOtherDeviceConfirmation(t) => t.client_id(),
+            AuthorizationState::WaitPassword(t) => t.client_id(),
+            AuthorizationState::WaitPhoneNumber(t) => t.client_id(),
+            AuthorizationState::WaitRegistration(t) => t.client_id(),
+            AuthorizationState::WaitTdlibParameters(t) => t.client_id(),
+            AuthorizationState::GetAuthorizationState(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl AuthorizationState {
@@ -140,6 +159,8 @@ pub struct AuthorizationStateClosed {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for AuthorizationStateClosed {
@@ -150,6 +171,10 @@ impl RObject for AuthorizationStateClosed {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -166,6 +191,7 @@ impl AuthorizationStateClosed {
         let mut inner = AuthorizationStateClosed::default();
         inner.td_name = "authorizationStateClosed".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateClosedBuilder { inner }
     }
 }
@@ -202,6 +228,8 @@ pub struct AuthorizationStateClosing {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for AuthorizationStateClosing {
@@ -212,6 +240,10 @@ impl RObject for AuthorizationStateClosing {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -228,6 +260,7 @@ impl AuthorizationStateClosing {
         let mut inner = AuthorizationStateClosing::default();
         inner.td_name = "authorizationStateClosing".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateClosingBuilder { inner }
     }
 }
@@ -264,6 +297,8 @@ pub struct AuthorizationStateLoggingOut {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for AuthorizationStateLoggingOut {
@@ -274,6 +309,10 @@ impl RObject for AuthorizationStateLoggingOut {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -290,6 +329,7 @@ impl AuthorizationStateLoggingOut {
         let mut inner = AuthorizationStateLoggingOut::default();
         inner.td_name = "authorizationStateLoggingOut".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateLoggingOutBuilder { inner }
     }
 }
@@ -326,6 +366,8 @@ pub struct AuthorizationStateReady {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for AuthorizationStateReady {
@@ -336,6 +378,10 @@ impl RObject for AuthorizationStateReady {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -352,6 +398,7 @@ impl AuthorizationStateReady {
         let mut inner = AuthorizationStateReady::default();
         inner.td_name = "authorizationStateReady".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateReadyBuilder { inner }
     }
 }
@@ -388,6 +435,8 @@ pub struct AuthorizationStateWaitCode {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Information about the authorization code that was sent
     code_info: AuthenticationCodeInfo,
 }
@@ -400,6 +449,10 @@ impl RObject for AuthorizationStateWaitCode {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -416,6 +469,7 @@ impl AuthorizationStateWaitCode {
         let mut inner = AuthorizationStateWaitCode::default();
         inner.td_name = "authorizationStateWaitCode".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateWaitCodeBuilder { inner }
     }
 
@@ -461,6 +515,8 @@ pub struct AuthorizationStateWaitEncryptionKey {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the database is currently encrypted
     is_encrypted: bool,
 }
@@ -473,6 +529,10 @@ impl RObject for AuthorizationStateWaitEncryptionKey {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -489,6 +549,7 @@ impl AuthorizationStateWaitEncryptionKey {
         let mut inner = AuthorizationStateWaitEncryptionKey::default();
         inner.td_name = "authorizationStateWaitEncryptionKey".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateWaitEncryptionKeyBuilder { inner }
     }
 
@@ -534,6 +595,8 @@ pub struct AuthorizationStateWaitOtherDeviceConfirmation {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A tg:// URL for the QR code. The link will be updated frequently
     link: String,
 }
@@ -546,6 +609,10 @@ impl RObject for AuthorizationStateWaitOtherDeviceConfirmation {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -562,6 +629,7 @@ impl AuthorizationStateWaitOtherDeviceConfirmation {
         let mut inner = AuthorizationStateWaitOtherDeviceConfirmation::default();
         inner.td_name = "authorizationStateWaitOtherDeviceConfirmation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateWaitOtherDeviceConfirmationBuilder { inner }
     }
 
@@ -611,6 +679,8 @@ pub struct AuthorizationStateWaitPassword {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Hint for the password; may be empty
     password_hint: String,
     /// True, if a recovery email address has been set up
@@ -628,6 +698,10 @@ impl RObject for AuthorizationStateWaitPassword {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -643,6 +717,7 @@ impl AuthorizationStateWaitPassword {
         let mut inner = AuthorizationStateWaitPassword::default();
         inner.td_name = "authorizationStateWaitPassword".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateWaitPasswordBuilder { inner }
     }
 
@@ -710,6 +785,8 @@ pub struct AuthorizationStateWaitPhoneNumber {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for AuthorizationStateWaitPhoneNumber {
@@ -720,6 +797,10 @@ impl RObject for AuthorizationStateWaitPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -736,6 +817,7 @@ impl AuthorizationStateWaitPhoneNumber {
         let mut inner = AuthorizationStateWaitPhoneNumber::default();
         inner.td_name = "authorizationStateWaitPhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateWaitPhoneNumberBuilder { inner }
     }
 }
@@ -772,6 +854,8 @@ pub struct AuthorizationStateWaitRegistration {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Telegram terms of service
     terms_of_service: TermsOfService,
 }
@@ -784,6 +868,10 @@ impl RObject for AuthorizationStateWaitRegistration {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -800,6 +888,7 @@ impl AuthorizationStateWaitRegistration {
         let mut inner = AuthorizationStateWaitRegistration::default();
         inner.td_name = "authorizationStateWaitRegistration".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateWaitRegistrationBuilder { inner }
     }
 
@@ -845,6 +934,8 @@ pub struct AuthorizationStateWaitTdlibParameters {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for AuthorizationStateWaitTdlibParameters {
@@ -855,6 +946,10 @@ impl RObject for AuthorizationStateWaitTdlibParameters {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -871,6 +966,7 @@ impl AuthorizationStateWaitTdlibParameters {
         let mut inner = AuthorizationStateWaitTdlibParameters::default();
         inner.td_name = "authorizationStateWaitTdlibParameters".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAuthorizationStateWaitTdlibParametersBuilder { inner }
     }
 }

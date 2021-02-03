@@ -83,6 +83,19 @@ impl RObject for CallState {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            CallState::Discarded(t) => t.client_id(),
+            CallState::Error(t) => t.client_id(),
+            CallState::ExchangingKeys(t) => t.client_id(),
+            CallState::HangingUp(t) => t.client_id(),
+            CallState::Pending(t) => t.client_id(),
+            CallState::Ready(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl CallState {
@@ -110,6 +123,8 @@ pub struct CallStateDiscarded {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The reason, why the call has ended
     reason: CallDiscardReason,
     /// True, if the call rating should be sent to the server
@@ -127,6 +142,10 @@ impl RObject for CallStateDiscarded {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -142,6 +161,7 @@ impl CallStateDiscarded {
         let mut inner = CallStateDiscarded::default();
         inner.td_name = "callStateDiscarded".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallStateDiscardedBuilder { inner }
     }
 
@@ -205,6 +225,8 @@ pub struct CallStateError {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Error. An error with the code 4005000 will be returned if an outgoing call is missed because of an expired timeout
     error: Error,
 }
@@ -217,6 +239,10 @@ impl RObject for CallStateError {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -233,6 +259,7 @@ impl CallStateError {
         let mut inner = CallStateError::default();
         inner.td_name = "callStateError".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallStateErrorBuilder { inner }
     }
 
@@ -278,6 +305,8 @@ pub struct CallStateExchangingKeys {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CallStateExchangingKeys {
@@ -288,6 +317,10 @@ impl RObject for CallStateExchangingKeys {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -304,6 +337,7 @@ impl CallStateExchangingKeys {
         let mut inner = CallStateExchangingKeys::default();
         inner.td_name = "callStateExchangingKeys".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallStateExchangingKeysBuilder { inner }
     }
 }
@@ -340,6 +374,8 @@ pub struct CallStateHangingUp {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CallStateHangingUp {
@@ -350,6 +386,10 @@ impl RObject for CallStateHangingUp {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -366,6 +406,7 @@ impl CallStateHangingUp {
         let mut inner = CallStateHangingUp::default();
         inner.td_name = "callStateHangingUp".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallStateHangingUpBuilder { inner }
     }
 }
@@ -402,6 +443,8 @@ pub struct CallStatePending {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the call has already been created by the server
     is_created: bool,
     /// True, if the call has already been received by the other party
@@ -416,6 +459,10 @@ impl RObject for CallStatePending {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -432,6 +479,7 @@ impl CallStatePending {
         let mut inner = CallStatePending::default();
         inner.td_name = "callStatePending".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallStatePendingBuilder { inner }
     }
 
@@ -486,6 +534,8 @@ pub struct CallStateReady {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Call protocols supported by the peer
     protocol: CallProtocol,
     /// List of available call servers
@@ -509,6 +559,10 @@ impl RObject for CallStateReady {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -524,6 +578,7 @@ impl CallStateReady {
         let mut inner = CallStateReady::default();
         inner.td_name = "callStateReady".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallStateReadyBuilder { inner }
     }
 

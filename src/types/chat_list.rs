@@ -68,6 +68,16 @@ impl RObject for ChatList {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatList::Archive(t) => t.client_id(),
+            ChatList::Filter(t) => t.client_id(),
+            ChatList::Main(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl ChatList {
@@ -95,6 +105,8 @@ pub struct ChatListArchive {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatListArchive {
@@ -105,6 +117,10 @@ impl RObject for ChatListArchive {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -121,6 +137,7 @@ impl ChatListArchive {
         let mut inner = ChatListArchive::default();
         inner.td_name = "chatListArchive".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatListArchiveBuilder { inner }
     }
 }
@@ -157,6 +174,8 @@ pub struct ChatListFilter {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat filter identifier
     chat_filter_id: i32,
 }
@@ -169,6 +188,10 @@ impl RObject for ChatListFilter {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -185,6 +208,7 @@ impl ChatListFilter {
         let mut inner = ChatListFilter::default();
         inner.td_name = "chatListFilter".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatListFilterBuilder { inner }
     }
 
@@ -230,6 +254,8 @@ pub struct ChatListMain {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatListMain {
@@ -240,6 +266,10 @@ impl RObject for ChatListMain {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -256,6 +286,7 @@ impl ChatListMain {
         let mut inner = ChatListMain::default();
         inner.td_name = "chatListMain".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatListMainBuilder { inner }
     }
 }

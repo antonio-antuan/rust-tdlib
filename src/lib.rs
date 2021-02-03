@@ -49,7 +49,7 @@ extern crate lazy_static;
 #[cfg(feature = "client")]
 pub mod client;
 
-#[cfg(feature= "tdjson" )]
+#[cfg(feature = "tdjson")]
 pub mod tdjson;
 
 pub mod errors;

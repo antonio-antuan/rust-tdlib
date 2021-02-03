@@ -11,6 +11,8 @@ pub struct MaskPosition {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Part of the face, relative to which the mask should be placed
     point: MaskPoint,
     /// Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. (For example, 1.0 will place the mask just to the left of the default mask position)
@@ -30,6 +32,10 @@ impl RObject for MaskPosition {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -43,6 +49,7 @@ impl MaskPosition {
         let mut inner = MaskPosition::default();
         inner.td_name = "maskPosition".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMaskPositionBuilder { inner }
     }
 

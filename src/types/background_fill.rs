@@ -63,6 +63,15 @@ impl RObject for BackgroundFill {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            BackgroundFill::Gradient(t) => t.client_id(),
+            BackgroundFill::Solid(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl BackgroundFill {
@@ -90,6 +99,8 @@ pub struct BackgroundFillGradient {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A top color of the background in the RGB24 format
     top_color: i32,
     /// A bottom color of the background in the RGB24 format
@@ -107,6 +118,10 @@ impl RObject for BackgroundFillGradient {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -122,6 +137,7 @@ impl BackgroundFillGradient {
         let mut inner = BackgroundFillGradient::default();
         inner.td_name = "backgroundFillGradient".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDBackgroundFillGradientBuilder { inner }
     }
 
@@ -185,6 +201,8 @@ pub struct BackgroundFillSolid {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A color of the background in the RGB24 format
     color: i32,
 }
@@ -197,6 +215,10 @@ impl RObject for BackgroundFillSolid {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -213,6 +235,7 @@ impl BackgroundFillSolid {
         let mut inner = BackgroundFillSolid::default();
         inner.td_name = "backgroundFillSolid".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDBackgroundFillSolidBuilder { inner }
     }
 

@@ -138,6 +138,30 @@ impl RObject for TextEntityType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            TextEntityType::BankCardNumber(t) => t.client_id(),
+            TextEntityType::Bold(t) => t.client_id(),
+            TextEntityType::BotCommand(t) => t.client_id(),
+            TextEntityType::Cashtag(t) => t.client_id(),
+            TextEntityType::Code(t) => t.client_id(),
+            TextEntityType::EmailAddress(t) => t.client_id(),
+            TextEntityType::Hashtag(t) => t.client_id(),
+            TextEntityType::Italic(t) => t.client_id(),
+            TextEntityType::Mention(t) => t.client_id(),
+            TextEntityType::MentionName(t) => t.client_id(),
+            TextEntityType::PhoneNumber(t) => t.client_id(),
+            TextEntityType::Pre(t) => t.client_id(),
+            TextEntityType::PreCode(t) => t.client_id(),
+            TextEntityType::Strikethrough(t) => t.client_id(),
+            TextEntityType::TextUrl(t) => t.client_id(),
+            TextEntityType::Underline(t) => t.client_id(),
+            TextEntityType::Url(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl TextEntityType {
@@ -165,6 +189,8 @@ pub struct TextEntityTypeBankCardNumber {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeBankCardNumber {
@@ -175,6 +201,10 @@ impl RObject for TextEntityTypeBankCardNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -191,6 +221,7 @@ impl TextEntityTypeBankCardNumber {
         let mut inner = TextEntityTypeBankCardNumber::default();
         inner.td_name = "textEntityTypeBankCardNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeBankCardNumberBuilder { inner }
     }
 }
@@ -227,6 +258,8 @@ pub struct TextEntityTypeBold {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeBold {
@@ -237,6 +270,10 @@ impl RObject for TextEntityTypeBold {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -253,6 +290,7 @@ impl TextEntityTypeBold {
         let mut inner = TextEntityTypeBold::default();
         inner.td_name = "textEntityTypeBold".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeBoldBuilder { inner }
     }
 }
@@ -289,6 +327,8 @@ pub struct TextEntityTypeBotCommand {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeBotCommand {
@@ -299,6 +339,10 @@ impl RObject for TextEntityTypeBotCommand {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -315,6 +359,7 @@ impl TextEntityTypeBotCommand {
         let mut inner = TextEntityTypeBotCommand::default();
         inner.td_name = "textEntityTypeBotCommand".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeBotCommandBuilder { inner }
     }
 }
@@ -351,6 +396,8 @@ pub struct TextEntityTypeCashtag {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeCashtag {
@@ -361,6 +408,10 @@ impl RObject for TextEntityTypeCashtag {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -377,6 +428,7 @@ impl TextEntityTypeCashtag {
         let mut inner = TextEntityTypeCashtag::default();
         inner.td_name = "textEntityTypeCashtag".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeCashtagBuilder { inner }
     }
 }
@@ -413,6 +465,8 @@ pub struct TextEntityTypeCode {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeCode {
@@ -423,6 +477,10 @@ impl RObject for TextEntityTypeCode {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -439,6 +497,7 @@ impl TextEntityTypeCode {
         let mut inner = TextEntityTypeCode::default();
         inner.td_name = "textEntityTypeCode".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeCodeBuilder { inner }
     }
 }
@@ -475,6 +534,8 @@ pub struct TextEntityTypeEmailAddress {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeEmailAddress {
@@ -485,6 +546,10 @@ impl RObject for TextEntityTypeEmailAddress {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -501,6 +566,7 @@ impl TextEntityTypeEmailAddress {
         let mut inner = TextEntityTypeEmailAddress::default();
         inner.td_name = "textEntityTypeEmailAddress".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeEmailAddressBuilder { inner }
     }
 }
@@ -537,6 +603,8 @@ pub struct TextEntityTypeHashtag {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeHashtag {
@@ -547,6 +615,10 @@ impl RObject for TextEntityTypeHashtag {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -563,6 +635,7 @@ impl TextEntityTypeHashtag {
         let mut inner = TextEntityTypeHashtag::default();
         inner.td_name = "textEntityTypeHashtag".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeHashtagBuilder { inner }
     }
 }
@@ -599,6 +672,8 @@ pub struct TextEntityTypeItalic {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeItalic {
@@ -609,6 +684,10 @@ impl RObject for TextEntityTypeItalic {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -625,6 +704,7 @@ impl TextEntityTypeItalic {
         let mut inner = TextEntityTypeItalic::default();
         inner.td_name = "textEntityTypeItalic".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeItalicBuilder { inner }
     }
 }
@@ -661,6 +741,8 @@ pub struct TextEntityTypeMention {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeMention {
@@ -671,6 +753,10 @@ impl RObject for TextEntityTypeMention {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -687,6 +773,7 @@ impl TextEntityTypeMention {
         let mut inner = TextEntityTypeMention::default();
         inner.td_name = "textEntityTypeMention".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeMentionBuilder { inner }
     }
 }
@@ -723,6 +810,8 @@ pub struct TextEntityTypeMentionName {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the mentioned user
     user_id: i32,
 }
@@ -735,6 +824,10 @@ impl RObject for TextEntityTypeMentionName {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -751,6 +844,7 @@ impl TextEntityTypeMentionName {
         let mut inner = TextEntityTypeMentionName::default();
         inner.td_name = "textEntityTypeMentionName".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeMentionNameBuilder { inner }
     }
 
@@ -796,6 +890,8 @@ pub struct TextEntityTypePhoneNumber {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypePhoneNumber {
@@ -806,6 +902,10 @@ impl RObject for TextEntityTypePhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -822,6 +922,7 @@ impl TextEntityTypePhoneNumber {
         let mut inner = TextEntityTypePhoneNumber::default();
         inner.td_name = "textEntityTypePhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypePhoneNumberBuilder { inner }
     }
 }
@@ -858,6 +959,8 @@ pub struct TextEntityTypePre {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypePre {
@@ -868,6 +971,10 @@ impl RObject for TextEntityTypePre {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -884,6 +991,7 @@ impl TextEntityTypePre {
         let mut inner = TextEntityTypePre::default();
         inner.td_name = "textEntityTypePre".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypePreBuilder { inner }
     }
 }
@@ -920,6 +1028,8 @@ pub struct TextEntityTypePreCode {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Programming language of the code; as defined by the sender
     language: String,
 }
@@ -932,6 +1042,10 @@ impl RObject for TextEntityTypePreCode {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -948,6 +1062,7 @@ impl TextEntityTypePreCode {
         let mut inner = TextEntityTypePreCode::default();
         inner.td_name = "textEntityTypePreCode".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypePreCodeBuilder { inner }
     }
 
@@ -993,6 +1108,8 @@ pub struct TextEntityTypeStrikethrough {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeStrikethrough {
@@ -1003,6 +1120,10 @@ impl RObject for TextEntityTypeStrikethrough {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1019,6 +1140,7 @@ impl TextEntityTypeStrikethrough {
         let mut inner = TextEntityTypeStrikethrough::default();
         inner.td_name = "textEntityTypeStrikethrough".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeStrikethroughBuilder { inner }
     }
 }
@@ -1055,6 +1177,8 @@ pub struct TextEntityTypeTextUrl {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// HTTP or tg:// URL to be opened when the link is clicked
     url: String,
 }
@@ -1067,6 +1191,10 @@ impl RObject for TextEntityTypeTextUrl {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1083,6 +1211,7 @@ impl TextEntityTypeTextUrl {
         let mut inner = TextEntityTypeTextUrl::default();
         inner.td_name = "textEntityTypeTextUrl".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeTextUrlBuilder { inner }
     }
 
@@ -1128,6 +1257,8 @@ pub struct TextEntityTypeUnderline {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeUnderline {
@@ -1138,6 +1269,10 @@ impl RObject for TextEntityTypeUnderline {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1154,6 +1289,7 @@ impl TextEntityTypeUnderline {
         let mut inner = TextEntityTypeUnderline::default();
         inner.td_name = "textEntityTypeUnderline".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeUnderlineBuilder { inner }
     }
 }
@@ -1190,6 +1326,8 @@ pub struct TextEntityTypeUrl {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextEntityTypeUrl {
@@ -1200,6 +1338,10 @@ impl RObject for TextEntityTypeUrl {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1216,6 +1358,7 @@ impl TextEntityTypeUrl {
         let mut inner = TextEntityTypeUrl::default();
         inner.td_name = "textEntityTypeUrl".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextEntityTypeUrlBuilder { inner }
     }
 }

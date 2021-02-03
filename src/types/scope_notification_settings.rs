@@ -11,6 +11,8 @@ pub struct ScopeNotificationSettings {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Time left before notifications will be unmuted, in seconds
     mute_for: i32,
     /// The name of an audio file to be used for notification sounds; only applies to iOS applications
@@ -32,6 +34,10 @@ impl RObject for ScopeNotificationSettings {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -45,6 +51,7 @@ impl ScopeNotificationSettings {
         let mut inner = ScopeNotificationSettings::default();
         inner.td_name = "scopeNotificationSettings".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDScopeNotificationSettingsBuilder { inner }
     }
 

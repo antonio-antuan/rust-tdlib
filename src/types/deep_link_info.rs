@@ -11,6 +11,8 @@ pub struct DeepLinkInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Text to be shown to the user
     text: FormattedText,
     /// True, if user should be asked to update the application
@@ -26,6 +28,10 @@ impl RObject for DeepLinkInfo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -39,6 +45,7 @@ impl DeepLinkInfo {
         let mut inner = DeepLinkInfo::default();
         inner.td_name = "deepLinkInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDDeepLinkInfoBuilder { inner }
     }
 

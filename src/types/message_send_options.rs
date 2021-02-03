@@ -11,6 +11,8 @@ pub struct MessageSendOptions {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Pass true to disable notification for the message
     disable_notification: bool,
     /// Pass true if the message is sent from the background
@@ -28,6 +30,10 @@ impl RObject for MessageSendOptions {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -41,6 +47,7 @@ impl MessageSendOptions {
         let mut inner = MessageSendOptions::default();
         inner.td_name = "messageSendOptions".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageSendOptionsBuilder { inner }
     }
 

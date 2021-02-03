@@ -11,6 +11,8 @@ pub struct LanguagePackInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique language pack identifier
     id: String,
     /// Identifier of a base language pack; may be empty. If a string is missed in the language pack, then it should be fetched from base language pack. Unsupported in custom language packs
@@ -48,6 +50,10 @@ impl RObject for LanguagePackInfo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -61,6 +67,7 @@ impl LanguagePackInfo {
         let mut inner = LanguagePackInfo::default();
         inner.td_name = "languagePackInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDLanguagePackInfoBuilder { inner }
     }
 

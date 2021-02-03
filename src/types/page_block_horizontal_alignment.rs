@@ -68,6 +68,16 @@ impl RObject for PageBlockHorizontalAlignment {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            PageBlockHorizontalAlignment::Center(t) => t.client_id(),
+            PageBlockHorizontalAlignment::Left(t) => t.client_id(),
+            PageBlockHorizontalAlignment::Right(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl PageBlockHorizontalAlignment {
@@ -95,6 +105,8 @@ pub struct PageBlockHorizontalAlignmentCenter {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PageBlockHorizontalAlignmentCenter {
@@ -105,6 +117,10 @@ impl RObject for PageBlockHorizontalAlignmentCenter {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -121,6 +137,7 @@ impl PageBlockHorizontalAlignmentCenter {
         let mut inner = PageBlockHorizontalAlignmentCenter::default();
         inner.td_name = "pageBlockHorizontalAlignmentCenter".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockHorizontalAlignmentCenterBuilder { inner }
     }
 }
@@ -157,6 +174,8 @@ pub struct PageBlockHorizontalAlignmentLeft {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PageBlockHorizontalAlignmentLeft {
@@ -167,6 +186,10 @@ impl RObject for PageBlockHorizontalAlignmentLeft {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -183,6 +206,7 @@ impl PageBlockHorizontalAlignmentLeft {
         let mut inner = PageBlockHorizontalAlignmentLeft::default();
         inner.td_name = "pageBlockHorizontalAlignmentLeft".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockHorizontalAlignmentLeftBuilder { inner }
     }
 }
@@ -219,6 +243,8 @@ pub struct PageBlockHorizontalAlignmentRight {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PageBlockHorizontalAlignmentRight {
@@ -229,6 +255,10 @@ impl RObject for PageBlockHorizontalAlignmentRight {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -245,6 +275,7 @@ impl PageBlockHorizontalAlignmentRight {
         let mut inner = PageBlockHorizontalAlignmentRight::default();
         inner.td_name = "pageBlockHorizontalAlignmentRight".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockHorizontalAlignmentRightBuilder { inner }
     }
 }

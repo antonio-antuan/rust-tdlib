@@ -11,6 +11,8 @@ pub struct ConnectedWebsite {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Website identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
@@ -41,6 +43,10 @@ impl RObject for ConnectedWebsite {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -54,6 +60,7 @@ impl ConnectedWebsite {
         let mut inner = ConnectedWebsite::default();
         inner.td_name = "connectedWebsite".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDConnectedWebsiteBuilder { inner }
     }
 

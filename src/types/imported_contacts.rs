@@ -11,6 +11,8 @@ pub struct ImportedContacts {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// User identifiers of the imported contacts in the same order as they were specified in the request; 0 if the contact is not yet a registered user
     user_ids: Vec<i32>,
     /// The number of users that imported the corresponding contact; 0 for already registered users or if unavailable
@@ -26,6 +28,10 @@ impl RObject for ImportedContacts {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -39,6 +45,7 @@ impl ImportedContacts {
         let mut inner = ImportedContacts::default();
         inner.td_name = "importedContacts".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDImportedContactsBuilder { inner }
     }
 

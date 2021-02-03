@@ -11,6 +11,8 @@ pub struct TestBytes {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Bytes
     value: String,
 }
@@ -23,6 +25,10 @@ impl RObject for TestBytes {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -37,6 +43,7 @@ impl TestBytes {
         let mut inner = TestBytes::default();
         inner.td_name = "testBytes".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTestBytesBuilder { inner }
     }
 

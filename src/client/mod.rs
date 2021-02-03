@@ -3,10 +3,11 @@
 mod observer;
 
 /// TDlib API methods.
-pub mod api;
-#[allow(clippy::module_inception)]
-/// Handlers for all incoming data
 pub mod client;
 pub mod errors;
+#[allow(clippy::module_inception)]
+/// Handlers for all incoming data
+pub mod worker;
 
-pub use client::{AuthStateHandler, Client, ClientBuilder, ConsoleAuthStateHandler};
+pub use client::Client;
+pub use worker::{AuthStateHandler, ConsoleAuthStateHandler, WorkerBuilder};

@@ -83,6 +83,19 @@ impl RObject for UserStatus {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            UserStatus::Empty(t) => t.client_id(),
+            UserStatus::LastMonth(t) => t.client_id(),
+            UserStatus::LastWeek(t) => t.client_id(),
+            UserStatus::Offline(t) => t.client_id(),
+            UserStatus::Online(t) => t.client_id(),
+            UserStatus::Recently(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl UserStatus {
@@ -110,6 +123,8 @@ pub struct UserStatusEmpty {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserStatusEmpty {
@@ -120,6 +135,10 @@ impl RObject for UserStatusEmpty {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -136,6 +155,7 @@ impl UserStatusEmpty {
         let mut inner = UserStatusEmpty::default();
         inner.td_name = "userStatusEmpty".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserStatusEmptyBuilder { inner }
     }
 }
@@ -172,6 +192,8 @@ pub struct UserStatusLastMonth {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserStatusLastMonth {
@@ -182,6 +204,10 @@ impl RObject for UserStatusLastMonth {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -198,6 +224,7 @@ impl UserStatusLastMonth {
         let mut inner = UserStatusLastMonth::default();
         inner.td_name = "userStatusLastMonth".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserStatusLastMonthBuilder { inner }
     }
 }
@@ -234,6 +261,8 @@ pub struct UserStatusLastWeek {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserStatusLastWeek {
@@ -244,6 +273,10 @@ impl RObject for UserStatusLastWeek {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -260,6 +293,7 @@ impl UserStatusLastWeek {
         let mut inner = UserStatusLastWeek::default();
         inner.td_name = "userStatusLastWeek".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserStatusLastWeekBuilder { inner }
     }
 }
@@ -296,6 +330,8 @@ pub struct UserStatusOffline {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the user was last online
     was_online: i32,
 }
@@ -308,6 +344,10 @@ impl RObject for UserStatusOffline {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -324,6 +364,7 @@ impl UserStatusOffline {
         let mut inner = UserStatusOffline::default();
         inner.td_name = "userStatusOffline".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserStatusOfflineBuilder { inner }
     }
 
@@ -369,6 +410,8 @@ pub struct UserStatusOnline {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the user's online status will expire
     expires: i32,
 }
@@ -381,6 +424,10 @@ impl RObject for UserStatusOnline {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -397,6 +444,7 @@ impl UserStatusOnline {
         let mut inner = UserStatusOnline::default();
         inner.td_name = "userStatusOnline".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserStatusOnlineBuilder { inner }
     }
 
@@ -442,6 +490,8 @@ pub struct UserStatusRecently {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserStatusRecently {
@@ -452,6 +502,10 @@ impl RObject for UserStatusRecently {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -468,6 +522,7 @@ impl UserStatusRecently {
         let mut inner = UserStatusRecently::default();
         inner.td_name = "userStatusRecently".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserStatusRecentlyBuilder { inner }
     }
 }

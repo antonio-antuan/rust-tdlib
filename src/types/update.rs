@@ -458,6 +458,94 @@ impl RObject for Update {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            Update::TestUseUpdate(t) => t.client_id(),
+            Update::ActiveNotifications(t) => t.client_id(),
+            Update::AnimationSearchParameters(t) => t.client_id(),
+            Update::AuthorizationState(t) => t.client_id(),
+            Update::BasicGroup(t) => t.client_id(),
+            Update::BasicGroupFullInfo(t) => t.client_id(),
+            Update::Call(t) => t.client_id(),
+            Update::ChatActionBar(t) => t.client_id(),
+            Update::ChatDefaultDisableNotification(t) => t.client_id(),
+            Update::ChatDraftMessage(t) => t.client_id(),
+            Update::ChatFilters(t) => t.client_id(),
+            Update::ChatHasScheduledMessages(t) => t.client_id(),
+            Update::ChatIsBlocked(t) => t.client_id(),
+            Update::ChatIsMarkedAsUnread(t) => t.client_id(),
+            Update::ChatLastMessage(t) => t.client_id(),
+            Update::ChatNotificationSettings(t) => t.client_id(),
+            Update::ChatOnlineMemberCount(t) => t.client_id(),
+            Update::ChatPermissions(t) => t.client_id(),
+            Update::ChatPhoto(t) => t.client_id(),
+            Update::ChatPosition(t) => t.client_id(),
+            Update::ChatReadInbox(t) => t.client_id(),
+            Update::ChatReadOutbox(t) => t.client_id(),
+            Update::ChatReplyMarkup(t) => t.client_id(),
+            Update::ChatTitle(t) => t.client_id(),
+            Update::ChatUnreadMentionCount(t) => t.client_id(),
+            Update::ConnectionState(t) => t.client_id(),
+            Update::DeleteMessages(t) => t.client_id(),
+            Update::DiceEmojis(t) => t.client_id(),
+            Update::FavoriteStickers(t) => t.client_id(),
+            Update::File(t) => t.client_id(),
+            Update::FileGenerationStart(t) => t.client_id(),
+            Update::FileGenerationStop(t) => t.client_id(),
+            Update::HavePendingNotifications(t) => t.client_id(),
+            Update::InstalledStickerSets(t) => t.client_id(),
+            Update::LanguagePackStrings(t) => t.client_id(),
+            Update::MessageContent(t) => t.client_id(),
+            Update::MessageContentOpened(t) => t.client_id(),
+            Update::MessageEdited(t) => t.client_id(),
+            Update::MessageInteractionInfo(t) => t.client_id(),
+            Update::MessageIsPinned(t) => t.client_id(),
+            Update::MessageLiveLocationViewed(t) => t.client_id(),
+            Update::MessageMentionRead(t) => t.client_id(),
+            Update::MessageSendAcknowledged(t) => t.client_id(),
+            Update::MessageSendFailed(t) => t.client_id(),
+            Update::MessageSendSucceeded(t) => t.client_id(),
+            Update::NewCallSignalingData(t) => t.client_id(),
+            Update::NewCallbackQuery(t) => t.client_id(),
+            Update::NewChat(t) => t.client_id(),
+            Update::NewChosenInlineResult(t) => t.client_id(),
+            Update::NewCustomEvent(t) => t.client_id(),
+            Update::NewCustomQuery(t) => t.client_id(),
+            Update::NewInlineCallbackQuery(t) => t.client_id(),
+            Update::NewInlineQuery(t) => t.client_id(),
+            Update::NewMessage(t) => t.client_id(),
+            Update::NewPreCheckoutQuery(t) => t.client_id(),
+            Update::NewShippingQuery(t) => t.client_id(),
+            Update::Notification(t) => t.client_id(),
+            Update::NotificationGroup(t) => t.client_id(),
+            Update::Option(t) => t.client_id(),
+            Update::Poll(t) => t.client_id(),
+            Update::PollAnswer(t) => t.client_id(),
+            Update::RecentStickers(t) => t.client_id(),
+            Update::SavedAnimations(t) => t.client_id(),
+            Update::ScopeNotificationSettings(t) => t.client_id(),
+            Update::SecretChat(t) => t.client_id(),
+            Update::SelectedBackground(t) => t.client_id(),
+            Update::ServiceNotification(t) => t.client_id(),
+            Update::StickerSet(t) => t.client_id(),
+            Update::SuggestedActions(t) => t.client_id(),
+            Update::Supergroup(t) => t.client_id(),
+            Update::SupergroupFullInfo(t) => t.client_id(),
+            Update::TermsOfService(t) => t.client_id(),
+            Update::TrendingStickerSets(t) => t.client_id(),
+            Update::UnreadChatCount(t) => t.client_id(),
+            Update::UnreadMessageCount(t) => t.client_id(),
+            Update::User(t) => t.client_id(),
+            Update::UserChatAction(t) => t.client_id(),
+            Update::UserFullInfo(t) => t.client_id(),
+            Update::UserPrivacySettingRules(t) => t.client_id(),
+            Update::UserStatus(t) => t.client_id(),
+            Update::UsersNearby(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl Update {
@@ -485,6 +573,8 @@ pub struct UpdateActiveNotifications {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Lists of active notification groups
     groups: Vec<NotificationGroup>,
 }
@@ -497,6 +587,10 @@ impl RObject for UpdateActiveNotifications {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -513,6 +607,7 @@ impl UpdateActiveNotifications {
         let mut inner = UpdateActiveNotifications::default();
         inner.td_name = "updateActiveNotifications".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateActiveNotificationsBuilder { inner }
     }
 
@@ -558,6 +653,8 @@ pub struct UpdateAnimationSearchParameters {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Name of the animation search provider
     provider: String,
     /// The new list of emojis suggested for searching
@@ -572,6 +669,10 @@ impl RObject for UpdateAnimationSearchParameters {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -588,6 +689,7 @@ impl UpdateAnimationSearchParameters {
         let mut inner = UpdateAnimationSearchParameters::default();
         inner.td_name = "updateAnimationSearchParameters".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateAnimationSearchParametersBuilder { inner }
     }
 
@@ -642,6 +744,8 @@ pub struct UpdateAuthorizationState {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New authorization state
     authorization_state: AuthorizationState,
 }
@@ -654,6 +758,10 @@ impl RObject for UpdateAuthorizationState {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -670,6 +778,7 @@ impl UpdateAuthorizationState {
         let mut inner = UpdateAuthorizationState::default();
         inner.td_name = "updateAuthorizationState".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateAuthorizationStateBuilder { inner }
     }
 
@@ -718,6 +827,8 @@ pub struct UpdateBasicGroup {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New data about the group
     basic_group: BasicGroup,
 }
@@ -730,6 +841,10 @@ impl RObject for UpdateBasicGroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -746,6 +861,7 @@ impl UpdateBasicGroup {
         let mut inner = UpdateBasicGroup::default();
         inner.td_name = "updateBasicGroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateBasicGroupBuilder { inner }
     }
 
@@ -791,6 +907,8 @@ pub struct UpdateBasicGroupFullInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of a basic group
     basic_group_id: i32,
     /// New full information about the group
@@ -805,6 +923,10 @@ impl RObject for UpdateBasicGroupFullInfo {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -821,6 +943,7 @@ impl UpdateBasicGroupFullInfo {
         let mut inner = UpdateBasicGroupFullInfo::default();
         inner.td_name = "updateBasicGroupFullInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateBasicGroupFullInfoBuilder { inner }
     }
 
@@ -878,6 +1001,8 @@ pub struct UpdateCall {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New data about a call
     call: Call,
 }
@@ -890,6 +1015,10 @@ impl RObject for UpdateCall {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -906,6 +1035,7 @@ impl UpdateCall {
         let mut inner = UpdateCall::default();
         inner.td_name = "updateCall".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateCallBuilder { inner }
     }
 
@@ -951,6 +1081,8 @@ pub struct UpdateChatActionBar {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The new value of the action bar; may be null
@@ -965,6 +1097,10 @@ impl RObject for UpdateChatActionBar {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -981,6 +1117,7 @@ impl UpdateChatActionBar {
         let mut inner = UpdateChatActionBar::default();
         inner.td_name = "updateChatActionBar".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatActionBarBuilder { inner }
     }
 
@@ -1035,6 +1172,8 @@ pub struct UpdateChatDefaultDisableNotification {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The new default_disable_notification value
@@ -1049,6 +1188,10 @@ impl RObject for UpdateChatDefaultDisableNotification {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1065,6 +1208,7 @@ impl UpdateChatDefaultDisableNotification {
         let mut inner = UpdateChatDefaultDisableNotification::default();
         inner.td_name = "updateChatDefaultDisableNotification".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatDefaultDisableNotificationBuilder { inner }
     }
 
@@ -1124,6 +1268,8 @@ pub struct UpdateChatDraftMessage {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The new draft message; may be null
@@ -1141,6 +1287,10 @@ impl RObject for UpdateChatDraftMessage {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -1156,6 +1306,7 @@ impl UpdateChatDraftMessage {
         let mut inner = UpdateChatDraftMessage::default();
         inner.td_name = "updateChatDraftMessage".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatDraftMessageBuilder { inner }
     }
 
@@ -1219,6 +1370,8 @@ pub struct UpdateChatFilters {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The new list of chat filters
     chat_filters: Vec<ChatFilterInfo>,
 }
@@ -1231,6 +1384,10 @@ impl RObject for UpdateChatFilters {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1247,6 +1404,7 @@ impl UpdateChatFilters {
         let mut inner = UpdateChatFilters::default();
         inner.td_name = "updateChatFilters".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatFiltersBuilder { inner }
     }
 
@@ -1292,6 +1450,8 @@ pub struct UpdateChatHasScheduledMessages {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// New value of has_scheduled_messages
@@ -1306,6 +1466,10 @@ impl RObject for UpdateChatHasScheduledMessages {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1322,6 +1486,7 @@ impl UpdateChatHasScheduledMessages {
         let mut inner = UpdateChatHasScheduledMessages::default();
         inner.td_name = "updateChatHasScheduledMessages".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatHasScheduledMessagesBuilder { inner }
     }
 
@@ -1376,6 +1541,8 @@ pub struct UpdateChatIsBlocked {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// New value of is_blocked
@@ -1390,6 +1557,10 @@ impl RObject for UpdateChatIsBlocked {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1406,6 +1577,7 @@ impl UpdateChatIsBlocked {
         let mut inner = UpdateChatIsBlocked::default();
         inner.td_name = "updateChatIsBlocked".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatIsBlockedBuilder { inner }
     }
 
@@ -1460,6 +1632,8 @@ pub struct UpdateChatIsMarkedAsUnread {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// New value of is_marked_as_unread
@@ -1474,6 +1648,10 @@ impl RObject for UpdateChatIsMarkedAsUnread {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1490,6 +1668,7 @@ impl UpdateChatIsMarkedAsUnread {
         let mut inner = UpdateChatIsMarkedAsUnread::default();
         inner.td_name = "updateChatIsMarkedAsUnread".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatIsMarkedAsUnreadBuilder { inner }
     }
 
@@ -1544,6 +1723,8 @@ pub struct UpdateChatLastMessage {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The new last message in the chat; may be null
@@ -1561,6 +1742,10 @@ impl RObject for UpdateChatLastMessage {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -1576,6 +1761,7 @@ impl UpdateChatLastMessage {
         let mut inner = UpdateChatLastMessage::default();
         inner.td_name = "updateChatLastMessage".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatLastMessageBuilder { inner }
     }
 
@@ -1639,6 +1825,8 @@ pub struct UpdateChatNotificationSettings {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The new notification settings
@@ -1653,6 +1841,10 @@ impl RObject for UpdateChatNotificationSettings {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1669,6 +1861,7 @@ impl UpdateChatNotificationSettings {
         let mut inner = UpdateChatNotificationSettings::default();
         inner.td_name = "updateChatNotificationSettings".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatNotificationSettingsBuilder { inner }
     }
 
@@ -1726,6 +1919,8 @@ pub struct UpdateChatOnlineMemberCount {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the chat
     chat_id: i64,
     /// New number of online members in the chat, or 0 if unknown
@@ -1740,6 +1935,10 @@ impl RObject for UpdateChatOnlineMemberCount {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1756,6 +1955,7 @@ impl UpdateChatOnlineMemberCount {
         let mut inner = UpdateChatOnlineMemberCount::default();
         inner.td_name = "updateChatOnlineMemberCount".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatOnlineMemberCountBuilder { inner }
     }
 
@@ -1810,6 +2010,8 @@ pub struct UpdateChatPermissions {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The new chat permissions
@@ -1824,6 +2026,10 @@ impl RObject for UpdateChatPermissions {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1840,6 +2046,7 @@ impl UpdateChatPermissions {
         let mut inner = UpdateChatPermissions::default();
         inner.td_name = "updateChatPermissions".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatPermissionsBuilder { inner }
     }
 
@@ -1894,6 +2101,8 @@ pub struct UpdateChatPhoto {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The new chat photo; may be null
@@ -1908,6 +2117,10 @@ impl RObject for UpdateChatPhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1924,6 +2137,7 @@ impl UpdateChatPhoto {
         let mut inner = UpdateChatPhoto::default();
         inner.td_name = "updateChatPhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatPhotoBuilder { inner }
     }
 
@@ -1978,6 +2192,8 @@ pub struct UpdateChatPosition {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// New chat position. If new order is 0, then the chat needs to be removed from the list
@@ -1992,6 +2208,10 @@ impl RObject for UpdateChatPosition {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2008,6 +2228,7 @@ impl UpdateChatPosition {
         let mut inner = UpdateChatPosition::default();
         inner.td_name = "updateChatPosition".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatPositionBuilder { inner }
     }
 
@@ -2062,6 +2283,8 @@ pub struct UpdateChatReadInbox {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Identifier of the last read incoming message
@@ -2079,6 +2302,10 @@ impl RObject for UpdateChatReadInbox {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2094,6 +2321,7 @@ impl UpdateChatReadInbox {
         let mut inner = UpdateChatReadInbox::default();
         inner.td_name = "updateChatReadInbox".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatReadInboxBuilder { inner }
     }
 
@@ -2157,6 +2385,8 @@ pub struct UpdateChatReadOutbox {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Identifier of last read outgoing message
@@ -2171,6 +2401,10 @@ impl RObject for UpdateChatReadOutbox {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2187,6 +2421,7 @@ impl UpdateChatReadOutbox {
         let mut inner = UpdateChatReadOutbox::default();
         inner.td_name = "updateChatReadOutbox".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatReadOutboxBuilder { inner }
     }
 
@@ -2241,6 +2476,8 @@ pub struct UpdateChatReplyMarkup {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Identifier of the message from which reply markup needs to be used; 0 if there is no default custom reply markup in the chat
@@ -2255,6 +2492,10 @@ impl RObject for UpdateChatReplyMarkup {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2271,6 +2512,7 @@ impl UpdateChatReplyMarkup {
         let mut inner = UpdateChatReplyMarkup::default();
         inner.td_name = "updateChatReplyMarkup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatReplyMarkupBuilder { inner }
     }
 
@@ -2325,6 +2567,8 @@ pub struct UpdateChatTitle {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The new chat title
@@ -2339,6 +2583,10 @@ impl RObject for UpdateChatTitle {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2355,6 +2603,7 @@ impl UpdateChatTitle {
         let mut inner = UpdateChatTitle::default();
         inner.td_name = "updateChatTitle".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatTitleBuilder { inner }
     }
 
@@ -2409,6 +2658,8 @@ pub struct UpdateChatUnreadMentionCount {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The number of unread mention messages left in the chat
@@ -2423,6 +2674,10 @@ impl RObject for UpdateChatUnreadMentionCount {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2439,6 +2694,7 @@ impl UpdateChatUnreadMentionCount {
         let mut inner = UpdateChatUnreadMentionCount::default();
         inner.td_name = "updateChatUnreadMentionCount".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateChatUnreadMentionCountBuilder { inner }
     }
 
@@ -2493,6 +2749,8 @@ pub struct UpdateConnectionState {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The new connection state
     state: ConnectionState,
 }
@@ -2505,6 +2763,10 @@ impl RObject for UpdateConnectionState {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2521,6 +2783,7 @@ impl UpdateConnectionState {
         let mut inner = UpdateConnectionState::default();
         inner.td_name = "updateConnectionState".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateConnectionStateBuilder { inner }
     }
 
@@ -2566,6 +2829,8 @@ pub struct UpdateDeleteMessages {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Identifiers of the deleted messages
@@ -2585,6 +2850,10 @@ impl RObject for UpdateDeleteMessages {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2600,6 +2869,7 @@ impl UpdateDeleteMessages {
         let mut inner = UpdateDeleteMessages::default();
         inner.td_name = "updateDeleteMessages".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateDeleteMessagesBuilder { inner }
     }
 
@@ -2672,6 +2942,8 @@ pub struct UpdateDiceEmojis {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The new list of supported dice emojis
     emojis: Vec<String>,
 }
@@ -2684,6 +2956,10 @@ impl RObject for UpdateDiceEmojis {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2700,6 +2976,7 @@ impl UpdateDiceEmojis {
         let mut inner = UpdateDiceEmojis::default();
         inner.td_name = "updateDiceEmojis".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateDiceEmojisBuilder { inner }
     }
 
@@ -2745,6 +3022,8 @@ pub struct UpdateFavoriteStickers {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The new list of file identifiers of favorite stickers
     sticker_ids: Vec<i32>,
 }
@@ -2757,6 +3036,10 @@ impl RObject for UpdateFavoriteStickers {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2773,6 +3056,7 @@ impl UpdateFavoriteStickers {
         let mut inner = UpdateFavoriteStickers::default();
         inner.td_name = "updateFavoriteStickers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateFavoriteStickersBuilder { inner }
     }
 
@@ -2818,6 +3102,8 @@ pub struct UpdateFile {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New data about the file
     file: File,
 }
@@ -2830,6 +3116,10 @@ impl RObject for UpdateFile {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2846,6 +3136,7 @@ impl UpdateFile {
         let mut inner = UpdateFile::default();
         inner.td_name = "updateFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateFileBuilder { inner }
     }
 
@@ -2891,6 +3182,8 @@ pub struct UpdateFileGenerationStart {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier for the generation process
     #[serde(deserialize_with = "super::_common::number_from_string")]
     generation_id: i64,
@@ -2911,6 +3204,10 @@ impl RObject for UpdateFileGenerationStart {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2926,6 +3223,7 @@ impl UpdateFileGenerationStart {
         let mut inner = UpdateFileGenerationStart::default();
         inner.td_name = "updateFileGenerationStart".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateFileGenerationStartBuilder { inner }
     }
 
@@ -2998,6 +3296,8 @@ pub struct UpdateFileGenerationStop {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier for the generation process
     #[serde(deserialize_with = "super::_common::number_from_string")]
     generation_id: i64,
@@ -3011,6 +3311,10 @@ impl RObject for UpdateFileGenerationStop {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3027,6 +3331,7 @@ impl UpdateFileGenerationStop {
         let mut inner = UpdateFileGenerationStop::default();
         inner.td_name = "updateFileGenerationStop".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateFileGenerationStopBuilder { inner }
     }
 
@@ -3072,6 +3377,8 @@ pub struct UpdateHavePendingNotifications {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if there are some delayed notification updates, which will be sent soon
     have_delayed_notifications: bool,
     /// True, if there can be some yet unreceived notifications, which are being fetched from the server
@@ -3086,6 +3393,10 @@ impl RObject for UpdateHavePendingNotifications {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3102,6 +3413,7 @@ impl UpdateHavePendingNotifications {
         let mut inner = UpdateHavePendingNotifications::default();
         inner.td_name = "updateHavePendingNotifications".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateHavePendingNotificationsBuilder { inner }
     }
 
@@ -3159,6 +3471,8 @@ pub struct UpdateInstalledStickerSets {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the list of installed mask sticker sets was updated
     is_masks: bool,
     /// The new list of installed ordinary sticker sets
@@ -3175,6 +3489,10 @@ impl RObject for UpdateInstalledStickerSets {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3190,6 +3508,7 @@ impl UpdateInstalledStickerSets {
         let mut inner = UpdateInstalledStickerSets::default();
         inner.td_name = "updateInstalledStickerSets".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateInstalledStickerSetsBuilder { inner }
     }
 
@@ -3244,6 +3563,8 @@ pub struct UpdateLanguagePackStrings {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Localization target to which the language pack belongs
     localization_target: String,
     /// Identifier of the updated language pack
@@ -3261,6 +3582,10 @@ impl RObject for UpdateLanguagePackStrings {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3276,6 +3601,7 @@ impl UpdateLanguagePackStrings {
         let mut inner = UpdateLanguagePackStrings::default();
         inner.td_name = "updateLanguagePackStrings".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateLanguagePackStringsBuilder { inner }
     }
 
@@ -3339,6 +3665,8 @@ pub struct UpdateMessageContent {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Message identifier
@@ -3356,6 +3684,10 @@ impl RObject for UpdateMessageContent {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3371,6 +3703,7 @@ impl UpdateMessageContent {
         let mut inner = UpdateMessageContent::default();
         inner.td_name = "updateMessageContent".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageContentBuilder { inner }
     }
 
@@ -3434,6 +3767,8 @@ pub struct UpdateMessageContentOpened {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Message identifier
@@ -3448,6 +3783,10 @@ impl RObject for UpdateMessageContentOpened {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3464,6 +3803,7 @@ impl UpdateMessageContentOpened {
         let mut inner = UpdateMessageContentOpened::default();
         inner.td_name = "updateMessageContentOpened".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageContentOpenedBuilder { inner }
     }
 
@@ -3518,6 +3858,8 @@ pub struct UpdateMessageEdited {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Message identifier
@@ -3537,6 +3879,10 @@ impl RObject for UpdateMessageEdited {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3552,6 +3898,7 @@ impl UpdateMessageEdited {
         let mut inner = UpdateMessageEdited::default();
         inner.td_name = "updateMessageEdited".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageEditedBuilder { inner }
     }
 
@@ -3624,6 +3971,8 @@ pub struct UpdateMessageInteractionInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Message identifier
@@ -3641,6 +3990,10 @@ impl RObject for UpdateMessageInteractionInfo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3656,6 +4009,7 @@ impl UpdateMessageInteractionInfo {
         let mut inner = UpdateMessageInteractionInfo::default();
         inner.td_name = "updateMessageInteractionInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageInteractionInfoBuilder { inner }
     }
 
@@ -3722,6 +4076,8 @@ pub struct UpdateMessageIsPinned {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// The message identifier
@@ -3739,6 +4095,10 @@ impl RObject for UpdateMessageIsPinned {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3754,6 +4114,7 @@ impl UpdateMessageIsPinned {
         let mut inner = UpdateMessageIsPinned::default();
         inner.td_name = "updateMessageIsPinned".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageIsPinnedBuilder { inner }
     }
 
@@ -3817,6 +4178,8 @@ pub struct UpdateMessageLiveLocationViewed {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the chat with the live location message
     chat_id: i64,
     /// Identifier of the message with live location
@@ -3831,6 +4194,10 @@ impl RObject for UpdateMessageLiveLocationViewed {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3847,6 +4214,7 @@ impl UpdateMessageLiveLocationViewed {
         let mut inner = UpdateMessageLiveLocationViewed::default();
         inner.td_name = "updateMessageLiveLocationViewed".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageLiveLocationViewedBuilder { inner }
     }
 
@@ -3901,6 +4269,8 @@ pub struct UpdateMessageMentionRead {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// Message identifier
@@ -3918,6 +4288,10 @@ impl RObject for UpdateMessageMentionRead {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3933,6 +4307,7 @@ impl UpdateMessageMentionRead {
         let mut inner = UpdateMessageMentionRead::default();
         inner.td_name = "updateMessageMentionRead".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageMentionReadBuilder { inner }
     }
 
@@ -3996,6 +4371,8 @@ pub struct UpdateMessageSendAcknowledged {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The chat identifier of the sent message
     chat_id: i64,
     /// A temporary message identifier
@@ -4010,6 +4387,10 @@ impl RObject for UpdateMessageSendAcknowledged {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -4026,6 +4407,7 @@ impl UpdateMessageSendAcknowledged {
         let mut inner = UpdateMessageSendAcknowledged::default();
         inner.td_name = "updateMessageSendAcknowledged".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageSendAcknowledgedBuilder { inner }
     }
 
@@ -4080,6 +4462,8 @@ pub struct UpdateMessageSendFailed {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Contains information about the message which failed to send
     message: Message,
     /// The previous temporary message identifier
@@ -4099,6 +4483,10 @@ impl RObject for UpdateMessageSendFailed {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -4114,6 +4502,7 @@ impl UpdateMessageSendFailed {
         let mut inner = UpdateMessageSendFailed::default();
         inner.td_name = "updateMessageSendFailed".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageSendFailedBuilder { inner }
     }
 
@@ -4186,6 +4575,8 @@ pub struct UpdateMessageSendSucceeded {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Information about the sent message. Usually only the message identifier, date, and content are changed, but almost all other fields can also change
     message: Message,
     /// The previous temporary message identifier
@@ -4200,6 +4591,10 @@ impl RObject for UpdateMessageSendSucceeded {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -4216,6 +4611,7 @@ impl UpdateMessageSendSucceeded {
         let mut inner = UpdateMessageSendSucceeded::default();
         inner.td_name = "updateMessageSendSucceeded".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateMessageSendSucceededBuilder { inner }
     }
 
@@ -4270,6 +4666,8 @@ pub struct UpdateNewCallSignalingData {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The call identifier
     call_id: i32,
     /// The data
@@ -4284,6 +4682,10 @@ impl RObject for UpdateNewCallSignalingData {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -4300,6 +4702,7 @@ impl UpdateNewCallSignalingData {
         let mut inner = UpdateNewCallSignalingData::default();
         inner.td_name = "updateNewCallSignalingData".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewCallSignalingDataBuilder { inner }
     }
 
@@ -4354,6 +4757,8 @@ pub struct UpdateNewCallbackQuery {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique query identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
@@ -4379,6 +4784,10 @@ impl RObject for UpdateNewCallbackQuery {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -4394,6 +4803,7 @@ impl UpdateNewCallbackQuery {
         let mut inner = UpdateNewCallbackQuery::default();
         inner.td_name = "updateNewCallbackQuery".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewCallbackQueryBuilder { inner }
     }
 
@@ -4484,6 +4894,8 @@ pub struct UpdateNewChat {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The chat
     chat: Chat,
 }
@@ -4496,6 +4908,10 @@ impl RObject for UpdateNewChat {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -4512,6 +4928,7 @@ impl UpdateNewChat {
         let mut inner = UpdateNewChat::default();
         inner.td_name = "updateNewChat".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewChatBuilder { inner }
     }
 
@@ -4557,6 +4974,8 @@ pub struct UpdateNewChosenInlineResult {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the user who sent the query
     sender_user_id: i32,
     /// User location; may be null
@@ -4578,6 +4997,10 @@ impl RObject for UpdateNewChosenInlineResult {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -4593,6 +5016,7 @@ impl UpdateNewChosenInlineResult {
         let mut inner = UpdateNewChosenInlineResult::default();
         inner.td_name = "updateNewChosenInlineResult".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewChosenInlineResultBuilder { inner }
     }
 
@@ -4674,6 +5098,8 @@ pub struct UpdateNewCustomEvent {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A JSON-serialized event
     event: String,
 }
@@ -4686,6 +5112,10 @@ impl RObject for UpdateNewCustomEvent {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -4702,6 +5132,7 @@ impl UpdateNewCustomEvent {
         let mut inner = UpdateNewCustomEvent::default();
         inner.td_name = "updateNewCustomEvent".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewCustomEventBuilder { inner }
     }
 
@@ -4747,6 +5178,8 @@ pub struct UpdateNewCustomQuery {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The query identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
@@ -4765,6 +5198,10 @@ impl RObject for UpdateNewCustomQuery {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -4780,6 +5217,7 @@ impl UpdateNewCustomQuery {
         let mut inner = UpdateNewCustomQuery::default();
         inner.td_name = "updateNewCustomQuery".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewCustomQueryBuilder { inner }
     }
 
@@ -4843,6 +5281,8 @@ pub struct UpdateNewInlineCallbackQuery {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique query identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
@@ -4866,6 +5306,10 @@ impl RObject for UpdateNewInlineCallbackQuery {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -4881,6 +5325,7 @@ impl UpdateNewInlineCallbackQuery {
         let mut inner = UpdateNewInlineCallbackQuery::default();
         inner.td_name = "updateNewInlineCallbackQuery".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewInlineCallbackQueryBuilder { inner }
     }
 
@@ -4962,6 +5407,8 @@ pub struct UpdateNewInlineQuery {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique query identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
@@ -4984,6 +5431,10 @@ impl RObject for UpdateNewInlineQuery {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -4999,6 +5450,7 @@ impl UpdateNewInlineQuery {
         let mut inner = UpdateNewInlineQuery::default();
         inner.td_name = "updateNewInlineQuery".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewInlineQueryBuilder { inner }
     }
 
@@ -5080,6 +5532,8 @@ pub struct UpdateNewMessage {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The new message
     message: Message,
 }
@@ -5092,6 +5546,10 @@ impl RObject for UpdateNewMessage {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -5108,6 +5566,7 @@ impl UpdateNewMessage {
         let mut inner = UpdateNewMessage::default();
         inner.td_name = "updateNewMessage".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewMessageBuilder { inner }
     }
 
@@ -5153,6 +5612,8 @@ pub struct UpdateNewPreCheckoutQuery {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique query identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
@@ -5179,6 +5640,10 @@ impl RObject for UpdateNewPreCheckoutQuery {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -5194,6 +5659,7 @@ impl UpdateNewPreCheckoutQuery {
         let mut inner = UpdateNewPreCheckoutQuery::default();
         inner.td_name = "updateNewPreCheckoutQuery".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewPreCheckoutQueryBuilder { inner }
     }
 
@@ -5293,6 +5759,8 @@ pub struct UpdateNewShippingQuery {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique query identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
@@ -5313,6 +5781,10 @@ impl RObject for UpdateNewShippingQuery {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -5328,6 +5800,7 @@ impl UpdateNewShippingQuery {
         let mut inner = UpdateNewShippingQuery::default();
         inner.td_name = "updateNewShippingQuery".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNewShippingQueryBuilder { inner }
     }
 
@@ -5400,6 +5873,8 @@ pub struct UpdateNotification {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique notification group identifier
     notification_group_id: i32,
     /// Changed notification
@@ -5414,6 +5889,10 @@ impl RObject for UpdateNotification {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -5430,6 +5909,7 @@ impl UpdateNotification {
         let mut inner = UpdateNotification::default();
         inner.td_name = "updateNotification".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNotificationBuilder { inner }
     }
 
@@ -5484,6 +5964,8 @@ pub struct UpdateNotificationGroup {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique notification group identifier
     notification_group_id: i32,
     /// New type of the notification group
@@ -5512,6 +5994,10 @@ impl RObject for UpdateNotificationGroup {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -5527,6 +6013,7 @@ impl UpdateNotificationGroup {
         let mut inner = UpdateNotificationGroup::default();
         inner.td_name = "updateNotificationGroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateNotificationGroupBuilder { inner }
     }
 
@@ -5638,6 +6125,8 @@ pub struct UpdateOption {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The option name
     name: String,
     /// The new option value
@@ -5652,6 +6141,10 @@ impl RObject for UpdateOption {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -5668,6 +6161,7 @@ impl UpdateOption {
         let mut inner = UpdateOption::default();
         inner.td_name = "updateOption".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateOptionBuilder { inner }
     }
 
@@ -5722,6 +6216,8 @@ pub struct UpdatePoll {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New data about the poll
     poll: Poll,
 }
@@ -5734,6 +6230,10 @@ impl RObject for UpdatePoll {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -5750,6 +6250,7 @@ impl UpdatePoll {
         let mut inner = UpdatePoll::default();
         inner.td_name = "updatePoll".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdatePollBuilder { inner }
     }
 
@@ -5795,6 +6296,8 @@ pub struct UpdatePollAnswer {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique poll identifier
     #[serde(deserialize_with = "super::_common::number_from_string")]
     poll_id: i64,
@@ -5813,6 +6316,10 @@ impl RObject for UpdatePollAnswer {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -5828,6 +6335,7 @@ impl UpdatePollAnswer {
         let mut inner = UpdatePollAnswer::default();
         inner.td_name = "updatePollAnswer".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdatePollAnswerBuilder { inner }
     }
 
@@ -5891,6 +6399,8 @@ pub struct UpdateRecentStickers {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the list of stickers attached to photo or video files was updated, otherwise the list of sent stickers is updated
     is_attached: bool,
     /// The new list of file identifiers of recently used stickers
@@ -5905,6 +6415,10 @@ impl RObject for UpdateRecentStickers {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -5921,6 +6435,7 @@ impl UpdateRecentStickers {
         let mut inner = UpdateRecentStickers::default();
         inner.td_name = "updateRecentStickers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateRecentStickersBuilder { inner }
     }
 
@@ -5975,6 +6490,8 @@ pub struct UpdateSavedAnimations {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The new list of file identifiers of saved animations
     animation_ids: Vec<i32>,
 }
@@ -5987,6 +6504,10 @@ impl RObject for UpdateSavedAnimations {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6003,6 +6524,7 @@ impl UpdateSavedAnimations {
         let mut inner = UpdateSavedAnimations::default();
         inner.td_name = "updateSavedAnimations".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateSavedAnimationsBuilder { inner }
     }
 
@@ -6048,6 +6570,8 @@ pub struct UpdateScopeNotificationSettings {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Types of chats for which notification settings were updated
     scope: NotificationSettingsScope,
     /// The new notification settings
@@ -6062,6 +6586,10 @@ impl RObject for UpdateScopeNotificationSettings {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6078,6 +6606,7 @@ impl UpdateScopeNotificationSettings {
         let mut inner = UpdateScopeNotificationSettings::default();
         inner.td_name = "updateScopeNotificationSettings".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateScopeNotificationSettingsBuilder { inner }
     }
 
@@ -6135,6 +6664,8 @@ pub struct UpdateSecretChat {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New data about the secret chat
     secret_chat: SecretChat,
 }
@@ -6147,6 +6678,10 @@ impl RObject for UpdateSecretChat {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6163,6 +6698,7 @@ impl UpdateSecretChat {
         let mut inner = UpdateSecretChat::default();
         inner.td_name = "updateSecretChat".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateSecretChatBuilder { inner }
     }
 
@@ -6208,6 +6744,8 @@ pub struct UpdateSelectedBackground {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if background for dark theme has changed
     for_dark_theme: bool,
     /// The new selected background; may be null
@@ -6222,6 +6760,10 @@ impl RObject for UpdateSelectedBackground {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6238,6 +6780,7 @@ impl UpdateSelectedBackground {
         let mut inner = UpdateSelectedBackground::default();
         inner.td_name = "updateSelectedBackground".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateSelectedBackgroundBuilder { inner }
     }
 
@@ -6292,6 +6835,8 @@ pub struct UpdateServiceNotification {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Notification type. If type begins with "AUTH_KEY_DROP_", then two buttons "Cancel" and "Log out" should be shown under notification; if user presses the second, all local data should be destroyed using Destroy method
     #[serde(rename(serialize = "type", deserialize = "type"))]
     type_: String,
@@ -6308,6 +6853,10 @@ impl RObject for UpdateServiceNotification {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -6323,6 +6872,7 @@ impl UpdateServiceNotification {
         let mut inner = UpdateServiceNotification::default();
         inner.td_name = "updateServiceNotification".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateServiceNotificationBuilder { inner }
     }
 
@@ -6377,6 +6927,8 @@ pub struct UpdateStickerSet {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The sticker set
     sticker_set: StickerSet,
 }
@@ -6389,6 +6941,10 @@ impl RObject for UpdateStickerSet {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6405,6 +6961,7 @@ impl UpdateStickerSet {
         let mut inner = UpdateStickerSet::default();
         inner.td_name = "updateStickerSet".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateStickerSetBuilder { inner }
     }
 
@@ -6450,6 +7007,8 @@ pub struct UpdateSuggestedActions {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Added suggested actions
     added_actions: Vec<SuggestedAction>,
     /// Removed suggested actions
@@ -6464,6 +7023,10 @@ impl RObject for UpdateSuggestedActions {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6480,6 +7043,7 @@ impl UpdateSuggestedActions {
         let mut inner = UpdateSuggestedActions::default();
         inner.td_name = "updateSuggestedActions".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateSuggestedActionsBuilder { inner }
     }
 
@@ -6534,6 +7098,8 @@ pub struct UpdateSupergroup {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New data about the supergroup
     supergroup: Supergroup,
 }
@@ -6546,6 +7112,10 @@ impl RObject for UpdateSupergroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6562,6 +7132,7 @@ impl UpdateSupergroup {
         let mut inner = UpdateSupergroup::default();
         inner.td_name = "updateSupergroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateSupergroupBuilder { inner }
     }
 
@@ -6607,6 +7178,8 @@ pub struct UpdateSupergroupFullInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the supergroup or channel
     supergroup_id: i32,
     /// New full information about the supergroup
@@ -6621,6 +7194,10 @@ impl RObject for UpdateSupergroupFullInfo {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6637,6 +7214,7 @@ impl UpdateSupergroupFullInfo {
         let mut inner = UpdateSupergroupFullInfo::default();
         inner.td_name = "updateSupergroupFullInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateSupergroupFullInfoBuilder { inner }
     }
 
@@ -6694,6 +7272,8 @@ pub struct UpdateTermsOfService {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the terms of service
     terms_of_service_id: String,
     /// The new terms of service
@@ -6708,6 +7288,10 @@ impl RObject for UpdateTermsOfService {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6724,6 +7308,7 @@ impl UpdateTermsOfService {
         let mut inner = UpdateTermsOfService::default();
         inner.td_name = "updateTermsOfService".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateTermsOfServiceBuilder { inner }
     }
 
@@ -6778,6 +7363,8 @@ pub struct UpdateTrendingStickerSets {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The prefix of the list of trending sticker sets with the newest trending sticker sets
     sticker_sets: StickerSets,
 }
@@ -6790,6 +7377,10 @@ impl RObject for UpdateTrendingStickerSets {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -6806,6 +7397,7 @@ impl UpdateTrendingStickerSets {
         let mut inner = UpdateTrendingStickerSets::default();
         inner.td_name = "updateTrendingStickerSets".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateTrendingStickerSetsBuilder { inner }
     }
 
@@ -6851,6 +7443,8 @@ pub struct UpdateUnreadChatCount {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The chat list with changed number of unread messages
     chat_list: ChatList,
     /// Approximate total number of chats in the chat list
@@ -6874,6 +7468,10 @@ impl RObject for UpdateUnreadChatCount {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -6889,6 +7487,7 @@ impl UpdateUnreadChatCount {
         let mut inner = UpdateUnreadChatCount::default();
         inner.td_name = "updateUnreadChatCount".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateUnreadChatCountBuilder { inner }
     }
 
@@ -6982,6 +7581,8 @@ pub struct UpdateUnreadMessageCount {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The chat list with changed number of unread messages
     chat_list: ChatList,
     /// Total number of unread messages
@@ -6999,6 +7600,10 @@ impl RObject for UpdateUnreadMessageCount {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -7014,6 +7619,7 @@ impl UpdateUnreadMessageCount {
         let mut inner = UpdateUnreadMessageCount::default();
         inner.td_name = "updateUnreadMessageCount".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateUnreadMessageCountBuilder { inner }
     }
 
@@ -7077,6 +7683,8 @@ pub struct UpdateUser {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New data about the user
     user: User,
 }
@@ -7089,6 +7697,10 @@ impl RObject for UpdateUser {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -7105,6 +7717,7 @@ impl UpdateUser {
         let mut inner = UpdateUser::default();
         inner.td_name = "updateUser".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateUserBuilder { inner }
     }
 
@@ -7150,6 +7763,8 @@ pub struct UpdateUserChatAction {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
     /// If not 0, a message thread identifier in which the action was performed
@@ -7169,6 +7784,10 @@ impl RObject for UpdateUserChatAction {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -7184,6 +7803,7 @@ impl UpdateUserChatAction {
         let mut inner = UpdateUserChatAction::default();
         inner.td_name = "updateUserChatAction".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateUserChatActionBuilder { inner }
     }
 
@@ -7256,6 +7876,8 @@ pub struct UpdateUserFullInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// User identifier
     user_id: i32,
     /// New full information about the user
@@ -7270,6 +7892,10 @@ impl RObject for UpdateUserFullInfo {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -7286,6 +7912,7 @@ impl UpdateUserFullInfo {
         let mut inner = UpdateUserFullInfo::default();
         inner.td_name = "updateUserFullInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateUserFullInfoBuilder { inner }
     }
 
@@ -7340,6 +7967,8 @@ pub struct UpdateUserPrivacySettingRules {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The privacy setting
     setting: UserPrivacySetting,
     /// New privacy rules
@@ -7354,6 +7983,10 @@ impl RObject for UpdateUserPrivacySettingRules {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -7370,6 +8003,7 @@ impl UpdateUserPrivacySettingRules {
         let mut inner = UpdateUserPrivacySettingRules::default();
         inner.td_name = "updateUserPrivacySettingRules".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateUserPrivacySettingRulesBuilder { inner }
     }
 
@@ -7424,6 +8058,8 @@ pub struct UpdateUserStatus {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// User identifier
     user_id: i32,
     /// New status of the user
@@ -7438,6 +8074,10 @@ impl RObject for UpdateUserStatus {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -7454,6 +8094,7 @@ impl UpdateUserStatus {
         let mut inner = UpdateUserStatus::default();
         inner.td_name = "updateUserStatus".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateUserStatusBuilder { inner }
     }
 
@@ -7508,6 +8149,8 @@ pub struct UpdateUsersNearby {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The new list of users nearby
     users_nearby: Vec<ChatNearby>,
 }
@@ -7520,6 +8163,10 @@ impl RObject for UpdateUsersNearby {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -7536,6 +8183,7 @@ impl UpdateUsersNearby {
         let mut inner = UpdateUsersNearby::default();
         inner.td_name = "updateUsersNearby".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUpdateUsersNearbyBuilder { inner }
     }
 

@@ -1,6 +1,6 @@
 #[macro_use]
 extern crate log;
-use futures::{future::FutureExt};
+use futures::future::FutureExt;
 use rust_tdlib::{client::Client, types::*};
 
 #[tokio::main]
@@ -34,7 +34,7 @@ async fn main() {
             wait_messages -= 1;
             if wait_messages == 0 {
                 info!("reader closed");
-                break
+                break;
             }
         }
     });

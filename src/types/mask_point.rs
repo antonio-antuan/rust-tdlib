@@ -73,6 +73,17 @@ impl RObject for MaskPoint {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            MaskPoint::Chin(t) => t.client_id(),
+            MaskPoint::Eyes(t) => t.client_id(),
+            MaskPoint::Forehead(t) => t.client_id(),
+            MaskPoint::Mouth(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl MaskPoint {
@@ -100,6 +111,8 @@ pub struct MaskPointChin {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MaskPointChin {
@@ -110,6 +123,10 @@ impl RObject for MaskPointChin {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -126,6 +143,7 @@ impl MaskPointChin {
         let mut inner = MaskPointChin::default();
         inner.td_name = "maskPointChin".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMaskPointChinBuilder { inner }
     }
 }
@@ -162,6 +180,8 @@ pub struct MaskPointEyes {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MaskPointEyes {
@@ -172,6 +192,10 @@ impl RObject for MaskPointEyes {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -188,6 +212,7 @@ impl MaskPointEyes {
         let mut inner = MaskPointEyes::default();
         inner.td_name = "maskPointEyes".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMaskPointEyesBuilder { inner }
     }
 }
@@ -224,6 +249,8 @@ pub struct MaskPointForehead {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MaskPointForehead {
@@ -234,6 +261,10 @@ impl RObject for MaskPointForehead {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -250,6 +281,7 @@ impl MaskPointForehead {
         let mut inner = MaskPointForehead::default();
         inner.td_name = "maskPointForehead".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMaskPointForeheadBuilder { inner }
     }
 }
@@ -286,6 +318,8 @@ pub struct MaskPointMouth {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MaskPointMouth {
@@ -296,6 +330,10 @@ impl RObject for MaskPointMouth {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -312,6 +350,7 @@ impl MaskPointMouth {
         let mut inner = MaskPointMouth::default();
         inner.td_name = "maskPointMouth".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMaskPointMouthBuilder { inner }
     }
 }

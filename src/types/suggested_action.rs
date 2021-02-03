@@ -63,6 +63,15 @@ impl RObject for SuggestedAction {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            SuggestedAction::CheckPhoneNumber(t) => t.client_id(),
+            SuggestedAction::EnableArchiveAndMuteNewChats(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl SuggestedAction {
@@ -90,6 +99,8 @@ pub struct SuggestedActionCheckPhoneNumber {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SuggestedActionCheckPhoneNumber {
@@ -100,6 +111,10 @@ impl RObject for SuggestedActionCheckPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -116,6 +131,7 @@ impl SuggestedActionCheckPhoneNumber {
         let mut inner = SuggestedActionCheckPhoneNumber::default();
         inner.td_name = "suggestedActionCheckPhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSuggestedActionCheckPhoneNumberBuilder { inner }
     }
 }
@@ -152,6 +168,8 @@ pub struct SuggestedActionEnableArchiveAndMuteNewChats {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SuggestedActionEnableArchiveAndMuteNewChats {
@@ -162,6 +180,10 @@ impl RObject for SuggestedActionEnableArchiveAndMuteNewChats {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -178,6 +200,7 @@ impl SuggestedActionEnableArchiveAndMuteNewChats {
         let mut inner = SuggestedActionEnableArchiveAndMuteNewChats::default();
         inner.td_name = "suggestedActionEnableArchiveAndMuteNewChats".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder { inner }
     }
 }

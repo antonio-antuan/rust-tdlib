@@ -73,6 +73,17 @@ impl RObject for ChatType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatType::BasicGroup(t) => t.client_id(),
+            ChatType::Private(t) => t.client_id(),
+            ChatType::Secret(t) => t.client_id(),
+            ChatType::Supergroup(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl ChatType {
@@ -100,6 +111,8 @@ pub struct ChatTypeBasicGroup {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Basic group identifier
     basic_group_id: i32,
 }
@@ -112,6 +125,10 @@ impl RObject for ChatTypeBasicGroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -128,6 +145,7 @@ impl ChatTypeBasicGroup {
         let mut inner = ChatTypeBasicGroup::default();
         inner.td_name = "chatTypeBasicGroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatTypeBasicGroupBuilder { inner }
     }
 
@@ -173,6 +191,8 @@ pub struct ChatTypePrivate {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// User identifier
     user_id: i32,
 }
@@ -185,6 +205,10 @@ impl RObject for ChatTypePrivate {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -201,6 +225,7 @@ impl ChatTypePrivate {
         let mut inner = ChatTypePrivate::default();
         inner.td_name = "chatTypePrivate".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatTypePrivateBuilder { inner }
     }
 
@@ -246,6 +271,8 @@ pub struct ChatTypeSecret {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Secret chat identifier
     secret_chat_id: i32,
     /// User identifier of the secret chat peer
@@ -260,6 +287,10 @@ impl RObject for ChatTypeSecret {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -276,6 +307,7 @@ impl ChatTypeSecret {
         let mut inner = ChatTypeSecret::default();
         inner.td_name = "chatTypeSecret".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatTypeSecretBuilder { inner }
     }
 
@@ -330,6 +362,8 @@ pub struct ChatTypeSupergroup {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Supergroup or channel identifier
     supergroup_id: i32,
     /// True, if the supergroup is a channel
@@ -344,6 +378,10 @@ impl RObject for ChatTypeSupergroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -360,6 +398,7 @@ impl ChatTypeSupergroup {
         let mut inner = ChatTypeSupergroup::default();
         inner.td_name = "chatTypeSupergroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatTypeSupergroupBuilder { inner }
     }
 

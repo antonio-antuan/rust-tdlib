@@ -68,6 +68,16 @@ impl RObject for PageBlockVerticalAlignment {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            PageBlockVerticalAlignment::Bottom(t) => t.client_id(),
+            PageBlockVerticalAlignment::Middle(t) => t.client_id(),
+            PageBlockVerticalAlignment::Top(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl PageBlockVerticalAlignment {
@@ -95,6 +105,8 @@ pub struct PageBlockVerticalAlignmentBottom {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PageBlockVerticalAlignmentBottom {
@@ -105,6 +117,10 @@ impl RObject for PageBlockVerticalAlignmentBottom {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -121,6 +137,7 @@ impl PageBlockVerticalAlignmentBottom {
         let mut inner = PageBlockVerticalAlignmentBottom::default();
         inner.td_name = "pageBlockVerticalAlignmentBottom".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockVerticalAlignmentBottomBuilder { inner }
     }
 }
@@ -157,6 +174,8 @@ pub struct PageBlockVerticalAlignmentMiddle {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PageBlockVerticalAlignmentMiddle {
@@ -167,6 +186,10 @@ impl RObject for PageBlockVerticalAlignmentMiddle {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -183,6 +206,7 @@ impl PageBlockVerticalAlignmentMiddle {
         let mut inner = PageBlockVerticalAlignmentMiddle::default();
         inner.td_name = "pageBlockVerticalAlignmentMiddle".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockVerticalAlignmentMiddleBuilder { inner }
     }
 }
@@ -219,6 +243,8 @@ pub struct PageBlockVerticalAlignmentTop {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PageBlockVerticalAlignmentTop {
@@ -229,6 +255,10 @@ impl RObject for PageBlockVerticalAlignmentTop {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -245,6 +275,7 @@ impl PageBlockVerticalAlignmentTop {
         let mut inner = PageBlockVerticalAlignmentTop::default();
         inner.td_name = "pageBlockVerticalAlignmentTop".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockVerticalAlignmentTopBuilder { inner }
     }
 }

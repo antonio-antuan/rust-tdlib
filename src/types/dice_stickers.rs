@@ -63,6 +63,15 @@ impl RObject for DiceStickers {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            DiceStickers::Regular(t) => t.client_id(),
+            DiceStickers::SlotMachine(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl DiceStickers {
@@ -90,6 +99,8 @@ pub struct DiceStickersRegular {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The animated sticker with the dice animation
     sticker: Sticker,
 }
@@ -102,6 +113,10 @@ impl RObject for DiceStickersRegular {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -118,6 +133,7 @@ impl DiceStickersRegular {
         let mut inner = DiceStickersRegular::default();
         inner.td_name = "diceStickersRegular".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDDiceStickersRegularBuilder { inner }
     }
 
@@ -163,6 +179,8 @@ pub struct DiceStickersSlotMachine {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The animated sticker with the slot machine background. The background animation must start playing after all reel animations finish
     background: Sticker,
     /// The animated sticker with the lever animation. The lever animation must play once in the initial dice state
@@ -184,6 +202,10 @@ impl RObject for DiceStickersSlotMachine {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -199,6 +221,7 @@ impl DiceStickersSlotMachine {
         let mut inner = DiceStickersSlotMachine::default();
         inner.td_name = "diceStickersSlotMachine".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDDiceStickersSlotMachineBuilder { inner }
     }
 

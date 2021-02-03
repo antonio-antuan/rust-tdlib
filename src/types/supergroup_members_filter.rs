@@ -93,6 +93,21 @@ impl RObject for SupergroupMembersFilter {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            SupergroupMembersFilter::Administrators(t) => t.client_id(),
+            SupergroupMembersFilter::Banned(t) => t.client_id(),
+            SupergroupMembersFilter::Bots(t) => t.client_id(),
+            SupergroupMembersFilter::Contacts(t) => t.client_id(),
+            SupergroupMembersFilter::Mention(t) => t.client_id(),
+            SupergroupMembersFilter::Recent(t) => t.client_id(),
+            SupergroupMembersFilter::Restricted(t) => t.client_id(),
+            SupergroupMembersFilter::Search(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl SupergroupMembersFilter {
@@ -120,6 +135,8 @@ pub struct SupergroupMembersFilterAdministrators {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SupergroupMembersFilterAdministrators {
@@ -130,6 +147,10 @@ impl RObject for SupergroupMembersFilterAdministrators {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -146,6 +167,7 @@ impl SupergroupMembersFilterAdministrators {
         let mut inner = SupergroupMembersFilterAdministrators::default();
         inner.td_name = "supergroupMembersFilterAdministrators".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSupergroupMembersFilterAdministratorsBuilder { inner }
     }
 }
@@ -184,6 +206,8 @@ pub struct SupergroupMembersFilterBanned {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Query to search for
     query: String,
 }
@@ -196,6 +220,10 @@ impl RObject for SupergroupMembersFilterBanned {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -212,6 +240,7 @@ impl SupergroupMembersFilterBanned {
         let mut inner = SupergroupMembersFilterBanned::default();
         inner.td_name = "supergroupMembersFilterBanned".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSupergroupMembersFilterBannedBuilder { inner }
     }
 
@@ -257,6 +286,8 @@ pub struct SupergroupMembersFilterBots {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SupergroupMembersFilterBots {
@@ -267,6 +298,10 @@ impl RObject for SupergroupMembersFilterBots {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -283,6 +318,7 @@ impl SupergroupMembersFilterBots {
         let mut inner = SupergroupMembersFilterBots::default();
         inner.td_name = "supergroupMembersFilterBots".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSupergroupMembersFilterBotsBuilder { inner }
     }
 }
@@ -319,6 +355,8 @@ pub struct SupergroupMembersFilterContacts {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Query to search for
     query: String,
 }
@@ -331,6 +369,10 @@ impl RObject for SupergroupMembersFilterContacts {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -347,6 +389,7 @@ impl SupergroupMembersFilterContacts {
         let mut inner = SupergroupMembersFilterContacts::default();
         inner.td_name = "supergroupMembersFilterContacts".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSupergroupMembersFilterContactsBuilder { inner }
     }
 
@@ -392,6 +435,8 @@ pub struct SupergroupMembersFilterMention {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Query to search for
     query: String,
     /// If non-zero, the identifier of the current message thread
@@ -406,6 +451,10 @@ impl RObject for SupergroupMembersFilterMention {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -422,6 +471,7 @@ impl SupergroupMembersFilterMention {
         let mut inner = SupergroupMembersFilterMention::default();
         inner.td_name = "supergroupMembersFilterMention".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSupergroupMembersFilterMentionBuilder { inner }
     }
 
@@ -476,6 +526,8 @@ pub struct SupergroupMembersFilterRecent {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SupergroupMembersFilterRecent {
@@ -486,6 +538,10 @@ impl RObject for SupergroupMembersFilterRecent {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -502,6 +558,7 @@ impl SupergroupMembersFilterRecent {
         let mut inner = SupergroupMembersFilterRecent::default();
         inner.td_name = "supergroupMembersFilterRecent".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSupergroupMembersFilterRecentBuilder { inner }
     }
 }
@@ -538,6 +595,8 @@ pub struct SupergroupMembersFilterRestricted {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Query to search for
     query: String,
 }
@@ -550,6 +609,10 @@ impl RObject for SupergroupMembersFilterRestricted {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -566,6 +629,7 @@ impl SupergroupMembersFilterRestricted {
         let mut inner = SupergroupMembersFilterRestricted::default();
         inner.td_name = "supergroupMembersFilterRestricted".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSupergroupMembersFilterRestrictedBuilder { inner }
     }
 
@@ -611,6 +675,8 @@ pub struct SupergroupMembersFilterSearch {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Query to search for
     query: String,
 }
@@ -623,6 +689,10 @@ impl RObject for SupergroupMembersFilterSearch {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -639,6 +709,7 @@ impl SupergroupMembersFilterSearch {
         let mut inner = SupergroupMembersFilterSearch::default();
         inner.td_name = "supergroupMembersFilterSearch".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDSupergroupMembersFilterSearchBuilder { inner }
     }
 

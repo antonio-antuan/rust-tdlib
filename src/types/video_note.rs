@@ -11,6 +11,8 @@ pub struct VideoNote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Duration of the video, in seconds; as defined by the sender
     duration: i32,
     /// Video width and height; as defined by the sender
@@ -32,6 +34,10 @@ impl RObject for VideoNote {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -45,6 +51,7 @@ impl VideoNote {
         let mut inner = VideoNote::default();
         inner.td_name = "videoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDVideoNoteBuilder { inner }
     }
 

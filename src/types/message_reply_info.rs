@@ -11,6 +11,8 @@ pub struct MessageReplyInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Number of times the message was directly or indirectly replied
     reply_count: i32,
     /// Recent repliers to the message; available in channels with a discussion supergroup
@@ -32,6 +34,10 @@ impl RObject for MessageReplyInfo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -45,6 +51,7 @@ impl MessageReplyInfo {
         let mut inner = MessageReplyInfo::default();
         inner.td_name = "messageReplyInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageReplyInfoBuilder { inner }
     }
 

@@ -78,6 +78,18 @@ impl RObject for ChatActionBar {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatActionBar::AddContact(t) => t.client_id(),
+            ChatActionBar::ReportAddBlock(t) => t.client_id(),
+            ChatActionBar::ReportSpam(t) => t.client_id(),
+            ChatActionBar::ReportUnrelatedLocation(t) => t.client_id(),
+            ChatActionBar::SharePhoneNumber(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl ChatActionBar {
@@ -105,6 +117,8 @@ pub struct ChatActionBarAddContact {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatActionBarAddContact {
@@ -115,6 +129,10 @@ impl RObject for ChatActionBarAddContact {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -131,6 +149,7 @@ impl ChatActionBarAddContact {
         let mut inner = ChatActionBarAddContact::default();
         inner.td_name = "chatActionBarAddContact".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatActionBarAddContactBuilder { inner }
     }
 }
@@ -167,6 +186,8 @@ pub struct ChatActionBarReportAddBlock {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// If true, the chat was automatically archived and can be moved back to the main chat list using addChatToList simultaneously with setting chat notification settings to default using setChatNotificationSettings
     can_unarchive: bool,
     /// If non-negative, the current user was found by the peer through searchChatsNearby and this is the distance between the users
@@ -181,6 +202,10 @@ impl RObject for ChatActionBarReportAddBlock {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -197,6 +222,7 @@ impl ChatActionBarReportAddBlock {
         let mut inner = ChatActionBarReportAddBlock::default();
         inner.td_name = "chatActionBarReportAddBlock".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatActionBarReportAddBlockBuilder { inner }
     }
 
@@ -251,6 +277,8 @@ pub struct ChatActionBarReportSpam {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// If true, the chat was automatically archived and can be moved back to the main chat list using addChatToList simultaneously with setting chat notification settings to default using setChatNotificationSettings
     can_unarchive: bool,
 }
@@ -263,6 +291,10 @@ impl RObject for ChatActionBarReportSpam {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -279,6 +311,7 @@ impl ChatActionBarReportSpam {
         let mut inner = ChatActionBarReportSpam::default();
         inner.td_name = "chatActionBarReportSpam".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatActionBarReportSpamBuilder { inner }
     }
 
@@ -324,6 +357,8 @@ pub struct ChatActionBarReportUnrelatedLocation {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatActionBarReportUnrelatedLocation {
@@ -334,6 +369,10 @@ impl RObject for ChatActionBarReportUnrelatedLocation {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -350,6 +389,7 @@ impl ChatActionBarReportUnrelatedLocation {
         let mut inner = ChatActionBarReportUnrelatedLocation::default();
         inner.td_name = "chatActionBarReportUnrelatedLocation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatActionBarReportUnrelatedLocationBuilder { inner }
     }
 }
@@ -388,6 +428,8 @@ pub struct ChatActionBarSharePhoneNumber {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatActionBarSharePhoneNumber {
@@ -398,6 +440,10 @@ impl RObject for ChatActionBarSharePhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -414,6 +460,7 @@ impl ChatActionBarSharePhoneNumber {
         let mut inner = ChatActionBarSharePhoneNumber::default();
         inner.td_name = "chatActionBarSharePhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatActionBarSharePhoneNumberBuilder { inner }
     }
 }

@@ -11,6 +11,8 @@ pub struct MessageStatistics {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A graph containing number of message views and shares
     message_interaction_graph: StatisticalGraph,
 }
@@ -23,6 +25,10 @@ impl RObject for MessageStatistics {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -37,6 +43,7 @@ impl MessageStatistics {
         let mut inner = MessageStatistics::default();
         inner.td_name = "messageStatistics".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageStatisticsBuilder { inner }
     }
 

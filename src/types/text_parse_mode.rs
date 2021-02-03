@@ -63,6 +63,15 @@ impl RObject for TextParseMode {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            TextParseMode::HTML(t) => t.client_id(),
+            TextParseMode::Markdown(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl TextParseMode {
@@ -90,6 +99,8 @@ pub struct TextParseModeHTML {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for TextParseModeHTML {
@@ -100,6 +111,10 @@ impl RObject for TextParseModeHTML {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -116,6 +131,7 @@ impl TextParseModeHTML {
         let mut inner = TextParseModeHTML::default();
         inner.td_name = "textParseModeHTML".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextParseModeHTMLBuilder { inner }
     }
 }
@@ -152,6 +168,8 @@ pub struct TextParseModeMarkdown {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Version of the parser: 0 or 1  Telegram Bot API "Markdown" parse mode, 2  Telegram Bot API "MarkdownV2" parse mode
     version: i32,
 }
@@ -164,6 +182,10 @@ impl RObject for TextParseModeMarkdown {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -180,6 +202,7 @@ impl TextParseModeMarkdown {
         let mut inner = TextParseModeMarkdown::default();
         inner.td_name = "textParseModeMarkdown".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDTextParseModeMarkdownBuilder { inner }
     }
 

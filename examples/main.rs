@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate log;
 
-use rust_tdlib::{client::Client, types::*};
+use rust_tdlib::{types::*, Client, Worker};
 
 #[tokio::main]
 async fn main() {
@@ -18,32 +18,31 @@ async fn main() {
         .enable_storage_optimizer(true)
         .build();
     let mut client = Client::builder()
-        .with_tdlib_verbosity_level(env!("TD_LOG_LEVEL").parse().unwrap())
-        .with_tdlib_log_file_path("log")
         .with_tdlib_parameters(tdlib_parameters)
         .build()
         .unwrap();
 
-    let waiter = client.start().await.unwrap();
-    let api = client.api();
+    let worker = Worker::builder().with_client(client).build();
 
-    let me = api.get_me(GetMe::builder().build()).await.unwrap();
+    let waiter = worker.start().await.unwrap();
+
+    let me = client.get_me(GetMe::builder().build()).await.unwrap();
     info!("me: {:?}", me);
 
-    let chats = api
+    let chats = client
         .search_public_chats(SearchPublicChats::builder().query("@rust").build())
         .await
         .unwrap();
 
     info!("found chats: {}", chats.chat_ids().len());
     for chat_id in chats.chat_ids() {
-        let chat = api
+        let chat = client
             .get_chat(GetChat::builder().chat_id(*chat_id))
             .await
             .unwrap();
         info!("{:?}", chat)
     }
-    client.stop();
+    worker.stop();
     waiter.await.unwrap();
     info!("client closed");
 }

@@ -73,6 +73,17 @@ impl RObject for UserType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            UserType::Bot(t) => t.client_id(),
+            UserType::Deleted(t) => t.client_id(),
+            UserType::Regular(t) => t.client_id(),
+            UserType::Unknown(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl UserType {
@@ -100,6 +111,8 @@ pub struct UserTypeBot {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the bot can be invited to basic group and supergroup chats
     can_join_groups: bool,
     /// True, if the bot can read all messages in basic group or supergroup chats and not just those addressed to the bot. In private and channel chats a bot can always read all messages
@@ -121,6 +134,10 @@ impl RObject for UserTypeBot {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -136,6 +153,7 @@ impl UserTypeBot {
         let mut inner = UserTypeBot::default();
         inner.td_name = "userTypeBot".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserTypeBotBuilder { inner }
     }
 
@@ -220,6 +238,8 @@ pub struct UserTypeDeleted {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserTypeDeleted {
@@ -230,6 +250,10 @@ impl RObject for UserTypeDeleted {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -246,6 +270,7 @@ impl UserTypeDeleted {
         let mut inner = UserTypeDeleted::default();
         inner.td_name = "userTypeDeleted".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserTypeDeletedBuilder { inner }
     }
 }
@@ -282,6 +307,8 @@ pub struct UserTypeRegular {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserTypeRegular {
@@ -292,6 +319,10 @@ impl RObject for UserTypeRegular {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -308,6 +339,7 @@ impl UserTypeRegular {
         let mut inner = UserTypeRegular::default();
         inner.td_name = "userTypeRegular".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserTypeRegularBuilder { inner }
     }
 }
@@ -344,6 +376,8 @@ pub struct UserTypeUnknown {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserTypeUnknown {
@@ -354,6 +388,10 @@ impl RObject for UserTypeUnknown {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -370,6 +408,7 @@ impl UserTypeUnknown {
         let mut inner = UserTypeUnknown::default();
         inner.td_name = "userTypeUnknown".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDUserTypeUnknownBuilder { inner }
     }
 }

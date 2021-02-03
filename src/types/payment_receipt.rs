@@ -11,6 +11,8 @@ pub struct PaymentReceipt {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the payment was made
     date: i32,
     /// User identifier of the payment provider bot
@@ -34,6 +36,10 @@ impl RObject for PaymentReceipt {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -47,6 +53,7 @@ impl PaymentReceipt {
         let mut inner = PaymentReceipt::default();
         inner.td_name = "paymentReceipt".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPaymentReceiptBuilder { inner }
     }
 

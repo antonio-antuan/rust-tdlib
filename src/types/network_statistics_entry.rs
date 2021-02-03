@@ -63,6 +63,15 @@ impl RObject for NetworkStatisticsEntry {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            NetworkStatisticsEntry::Call(t) => t.client_id(),
+            NetworkStatisticsEntry::File(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl NetworkStatisticsEntry {
@@ -90,6 +99,8 @@ pub struct NetworkStatisticsEntryCall {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Type of the network the data was sent through. Call setNetworkType to maintain the actual network type
     network_type: NetworkType,
     /// Total number of bytes sent
@@ -109,6 +120,10 @@ impl RObject for NetworkStatisticsEntryCall {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -124,6 +139,7 @@ impl NetworkStatisticsEntryCall {
         let mut inner = NetworkStatisticsEntryCall::default();
         inner.td_name = "networkStatisticsEntryCall".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDNetworkStatisticsEntryCallBuilder { inner }
     }
 
@@ -196,6 +212,8 @@ pub struct NetworkStatisticsEntryFile {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Type of the file the data is part of
     file_type: FileType,
     /// Type of the network the data was sent through. Call setNetworkType to maintain the actual network type
@@ -215,6 +233,10 @@ impl RObject for NetworkStatisticsEntryFile {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -230,6 +252,7 @@ impl NetworkStatisticsEntryFile {
         let mut inner = NetworkStatisticsEntryFile::default();
         inner.td_name = "networkStatisticsEntryFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDNetworkStatisticsEntryFileBuilder { inner }
     }
 

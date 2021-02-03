@@ -11,6 +11,8 @@ pub struct MessageCopyOptions {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if content of the message needs to be copied without a link to the original message. Always true if the message is forwarded to a secret chat
     send_copy: bool,
     /// True, if media caption of the message copy needs to be replaced. Ignored if send_copy is false
@@ -28,6 +30,10 @@ impl RObject for MessageCopyOptions {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -41,6 +47,7 @@ impl MessageCopyOptions {
         let mut inner = MessageCopyOptions::default();
         inner.td_name = "messageCopyOptions".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageCopyOptionsBuilder { inner }
     }
 

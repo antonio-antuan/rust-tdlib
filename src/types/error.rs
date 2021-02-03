@@ -11,6 +11,8 @@ pub struct Error {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Error code; subject to future changes. If the error code is 406, the error message must not be processed in any way and must not be displayed to the user
     code: i32,
     /// Error message; subject to future changes
@@ -26,6 +28,10 @@ impl RObject for Error {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -39,6 +45,7 @@ impl Error {
         let mut inner = Error::default();
         inner.td_name = "error".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDErrorBuilder { inner }
     }
 

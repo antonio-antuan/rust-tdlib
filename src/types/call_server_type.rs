@@ -63,6 +63,15 @@ impl RObject for CallServerType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            CallServerType::TelegramReflector(t) => t.client_id(),
+            CallServerType::Webrtc(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl CallServerType {
@@ -90,6 +99,8 @@ pub struct CallServerTypeTelegramReflector {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A peer tag to be used with the reflector
     peer_tag: String,
 }
@@ -102,6 +113,10 @@ impl RObject for CallServerTypeTelegramReflector {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -118,6 +133,7 @@ impl CallServerTypeTelegramReflector {
         let mut inner = CallServerTypeTelegramReflector::default();
         inner.td_name = "callServerTypeTelegramReflector".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallServerTypeTelegramReflectorBuilder { inner }
     }
 
@@ -163,6 +179,8 @@ pub struct CallServerTypeWebrtc {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Username to be used for authentication
     username: String,
     /// Authentication password
@@ -182,6 +200,10 @@ impl RObject for CallServerTypeWebrtc {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -197,6 +219,7 @@ impl CallServerTypeWebrtc {
         let mut inner = CallServerTypeWebrtc::default();
         inner.td_name = "callServerTypeWebrtc".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallServerTypeWebrtcBuilder { inner }
     }
 

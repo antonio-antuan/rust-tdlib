@@ -11,6 +11,8 @@ pub struct IdentityDocument {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Document number; 1-24 characters
     number: String,
     /// Document expiry date; may be null
@@ -34,6 +36,10 @@ impl RObject for IdentityDocument {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -47,6 +53,7 @@ impl IdentityDocument {
         let mut inner = IdentityDocument::default();
         inner.td_name = "identityDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDIdentityDocumentBuilder { inner }
     }
 

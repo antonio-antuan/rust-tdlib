@@ -73,6 +73,17 @@ impl RObject for LogStream {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            LogStream::GetLogStream(t) => t.client_id(),
+            LogStream::Default(t) => t.client_id(),
+            LogStream::Empty(t) => t.client_id(),
+            LogStream::File(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl LogStream {
@@ -100,6 +111,8 @@ pub struct LogStreamDefault {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for LogStreamDefault {
@@ -110,6 +123,10 @@ impl RObject for LogStreamDefault {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -126,6 +143,7 @@ impl LogStreamDefault {
         let mut inner = LogStreamDefault::default();
         inner.td_name = "logStreamDefault".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDLogStreamDefaultBuilder { inner }
     }
 }
@@ -162,6 +180,8 @@ pub struct LogStreamEmpty {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for LogStreamEmpty {
@@ -172,6 +192,10 @@ impl RObject for LogStreamEmpty {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -188,6 +212,7 @@ impl LogStreamEmpty {
         let mut inner = LogStreamEmpty::default();
         inner.td_name = "logStreamEmpty".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDLogStreamEmptyBuilder { inner }
     }
 }
@@ -224,6 +249,8 @@ pub struct LogStreamFile {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Path to the file to where the internal TDLib log will be written
     path: String,
     /// The maximum size of the file to where the internal TDLib log is written before the file will be auto-rotated
@@ -241,6 +268,10 @@ impl RObject for LogStreamFile {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -256,6 +287,7 @@ impl LogStreamFile {
         let mut inner = LogStreamFile::default();
         inner.td_name = "logStreamFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDLogStreamFileBuilder { inner }
     }
 

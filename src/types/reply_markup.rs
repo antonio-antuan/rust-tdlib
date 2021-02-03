@@ -73,6 +73,17 @@ impl RObject for ReplyMarkup {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ReplyMarkup::ForceReply(t) => t.client_id(),
+            ReplyMarkup::InlineKeyboard(t) => t.client_id(),
+            ReplyMarkup::RemoveKeyboard(t) => t.client_id(),
+            ReplyMarkup::ShowKeyboard(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl ReplyMarkup {
@@ -100,6 +111,8 @@ pub struct ReplyMarkupForceReply {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if a forced reply must automatically be shown to the current user. For outgoing messages, specify true to show the forced reply only for the mentioned users and for the target user of a reply
     is_personal: bool,
 }
@@ -112,6 +125,10 @@ impl RObject for ReplyMarkupForceReply {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -128,6 +145,7 @@ impl ReplyMarkupForceReply {
         let mut inner = ReplyMarkupForceReply::default();
         inner.td_name = "replyMarkupForceReply".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDReplyMarkupForceReplyBuilder { inner }
     }
 
@@ -173,6 +191,8 @@ pub struct ReplyMarkupInlineKeyboard {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A list of rows of inline keyboard buttons
     rows: Vec<Vec<InlineKeyboardButton>>,
 }
@@ -185,6 +205,10 @@ impl RObject for ReplyMarkupInlineKeyboard {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -201,6 +225,7 @@ impl ReplyMarkupInlineKeyboard {
         let mut inner = ReplyMarkupInlineKeyboard::default();
         inner.td_name = "replyMarkupInlineKeyboard".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDReplyMarkupInlineKeyboardBuilder { inner }
     }
 
@@ -246,6 +271,8 @@ pub struct ReplyMarkupRemoveKeyboard {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the keyboard is removed only for the mentioned users or the target user of a reply
     is_personal: bool,
 }
@@ -258,6 +285,10 @@ impl RObject for ReplyMarkupRemoveKeyboard {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -274,6 +305,7 @@ impl ReplyMarkupRemoveKeyboard {
         let mut inner = ReplyMarkupRemoveKeyboard::default();
         inner.td_name = "replyMarkupRemoveKeyboard".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDReplyMarkupRemoveKeyboardBuilder { inner }
     }
 
@@ -319,6 +351,8 @@ pub struct ReplyMarkupShowKeyboard {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A list of rows of bot keyboard buttons
     rows: Vec<Vec<KeyboardButton>>,
     /// True, if the application needs to resize the keyboard vertically
@@ -338,6 +372,10 @@ impl RObject for ReplyMarkupShowKeyboard {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -353,6 +391,7 @@ impl ReplyMarkupShowKeyboard {
         let mut inner = ReplyMarkupShowKeyboard::default();
         inner.td_name = "replyMarkupShowKeyboard".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDReplyMarkupShowKeyboardBuilder { inner }
     }
 

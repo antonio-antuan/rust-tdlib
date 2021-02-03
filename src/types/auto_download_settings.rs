@@ -11,6 +11,8 @@ pub struct AutoDownloadSettings {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the auto-download is enabled
     is_auto_download_enabled: bool,
     /// The maximum size of a photo file to be auto-downloaded
@@ -38,6 +40,10 @@ impl RObject for AutoDownloadSettings {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -51,6 +57,7 @@ impl AutoDownloadSettings {
         let mut inner = AutoDownloadSettings::default();
         inner.td_name = "autoDownloadSettings".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDAutoDownloadSettingsBuilder { inner }
     }
 

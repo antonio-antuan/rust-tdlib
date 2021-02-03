@@ -11,6 +11,8 @@ pub struct ChatPhotoInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A small (160x160) chat photo variant in JPEG format. The file can be downloaded only before the photo is changed
     small: File,
     /// A big (640x640) chat photo variant in JPEG format. The file can be downloaded only before the photo is changed
@@ -28,6 +30,10 @@ impl RObject for ChatPhotoInfo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -41,6 +47,7 @@ impl ChatPhotoInfo {
         let mut inner = ChatPhotoInfo::default();
         inner.td_name = "chatPhotoInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatPhotoInfoBuilder { inner }
     }
 

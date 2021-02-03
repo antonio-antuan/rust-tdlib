@@ -11,6 +11,8 @@ pub struct PassportAuthorizationForm {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the authorization form
     id: i32,
     /// Information about the Telegram Passport elements that must be provided to complete the form
@@ -28,6 +30,10 @@ impl RObject for PassportAuthorizationForm {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -41,6 +47,7 @@ impl PassportAuthorizationForm {
         let mut inner = PassportAuthorizationForm::default();
         inner.td_name = "passportAuthorizationForm".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPassportAuthorizationFormBuilder { inner }
     }
 

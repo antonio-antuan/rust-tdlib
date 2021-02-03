@@ -68,6 +68,16 @@ impl RObject for CallbackQueryPayload {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            CallbackQueryPayload::Data(t) => t.client_id(),
+            CallbackQueryPayload::DataWithPassword(t) => t.client_id(),
+            CallbackQueryPayload::Game(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl CallbackQueryPayload {
@@ -95,6 +105,8 @@ pub struct CallbackQueryPayloadData {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Data that was attached to the callback button
     data: String,
 }
@@ -107,6 +119,10 @@ impl RObject for CallbackQueryPayloadData {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -123,6 +139,7 @@ impl CallbackQueryPayloadData {
         let mut inner = CallbackQueryPayloadData::default();
         inner.td_name = "callbackQueryPayloadData".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallbackQueryPayloadDataBuilder { inner }
     }
 
@@ -168,6 +185,8 @@ pub struct CallbackQueryPayloadDataWithPassword {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The password for the current user
     password: String,
     /// Data that was attached to the callback button
@@ -182,6 +201,10 @@ impl RObject for CallbackQueryPayloadDataWithPassword {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -198,6 +221,7 @@ impl CallbackQueryPayloadDataWithPassword {
         let mut inner = CallbackQueryPayloadDataWithPassword::default();
         inner.td_name = "callbackQueryPayloadDataWithPassword".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallbackQueryPayloadDataWithPasswordBuilder { inner }
     }
 
@@ -254,6 +278,8 @@ pub struct CallbackQueryPayloadGame {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A short name of the game that was attached to the callback button
     game_short_name: String,
 }
@@ -266,6 +292,10 @@ impl RObject for CallbackQueryPayloadGame {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -282,6 +312,7 @@ impl CallbackQueryPayloadGame {
         let mut inner = CallbackQueryPayloadGame::default();
         inner.td_name = "callbackQueryPayloadGame".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCallbackQueryPayloadGameBuilder { inner }
     }
 

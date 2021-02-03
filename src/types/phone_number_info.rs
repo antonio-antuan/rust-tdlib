@@ -11,6 +11,8 @@ pub struct PhoneNumberInfo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Information about the country to which the phone number belongs; may be null
     country: Option<CountryInfo>,
     /// The part of the phone number denoting country calling code or its part
@@ -28,6 +30,10 @@ impl RObject for PhoneNumberInfo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -41,6 +47,7 @@ impl PhoneNumberInfo {
         let mut inner = PhoneNumberInfo::default();
         inner.td_name = "phoneNumberInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPhoneNumberInfoBuilder { inner }
     }
 

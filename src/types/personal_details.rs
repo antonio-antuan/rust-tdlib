@@ -11,6 +11,8 @@ pub struct PersonalDetails {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// First name of the user written in English; 1-255 characters
     first_name: String,
     /// Middle name of the user written in English; 0-255 characters
@@ -42,6 +44,10 @@ impl RObject for PersonalDetails {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -55,6 +61,7 @@ impl PersonalDetails {
         let mut inner = PersonalDetails::default();
         inner.td_name = "personalDetails".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPersonalDetailsBuilder { inner }
     }
 

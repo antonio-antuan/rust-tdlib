@@ -11,6 +11,8 @@ pub struct BankCardActionOpenUrl {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Action text
     text: String,
     /// The URL to be opened
@@ -26,6 +28,10 @@ impl RObject for BankCardActionOpenUrl {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -39,6 +45,7 @@ impl BankCardActionOpenUrl {
         let mut inner = BankCardActionOpenUrl::default();
         inner.td_name = "bankCardActionOpenUrl".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDBankCardActionOpenUrlBuilder { inner }
     }
 

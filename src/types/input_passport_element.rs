@@ -118,6 +118,26 @@ impl RObject for InputPassportElement {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            InputPassportElement::Address(t) => t.client_id(),
+            InputPassportElement::BankStatement(t) => t.client_id(),
+            InputPassportElement::DriverLicense(t) => t.client_id(),
+            InputPassportElement::EmailAddress(t) => t.client_id(),
+            InputPassportElement::IdentityCard(t) => t.client_id(),
+            InputPassportElement::InternalPassport(t) => t.client_id(),
+            InputPassportElement::Passport(t) => t.client_id(),
+            InputPassportElement::PassportRegistration(t) => t.client_id(),
+            InputPassportElement::PersonalDetails(t) => t.client_id(),
+            InputPassportElement::PhoneNumber(t) => t.client_id(),
+            InputPassportElement::RentalAgreement(t) => t.client_id(),
+            InputPassportElement::TemporaryRegistration(t) => t.client_id(),
+            InputPassportElement::UtilityBill(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl InputPassportElement {
@@ -145,6 +165,8 @@ pub struct InputPassportElementAddress {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The address to be saved
     address: Address,
 }
@@ -157,6 +179,10 @@ impl RObject for InputPassportElementAddress {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -173,6 +199,7 @@ impl InputPassportElementAddress {
         let mut inner = InputPassportElementAddress::default();
         inner.td_name = "inputPassportElementAddress".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementAddressBuilder { inner }
     }
 
@@ -218,6 +245,8 @@ pub struct InputPassportElementBankStatement {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The bank statement to be saved
     bank_statement: InputPersonalDocument,
 }
@@ -230,6 +259,10 @@ impl RObject for InputPassportElementBankStatement {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -246,6 +279,7 @@ impl InputPassportElementBankStatement {
         let mut inner = InputPassportElementBankStatement::default();
         inner.td_name = "inputPassportElementBankStatement".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementBankStatementBuilder { inner }
     }
 
@@ -294,6 +328,8 @@ pub struct InputPassportElementDriverLicense {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The driver license to be saved
     driver_license: InputIdentityDocument,
 }
@@ -306,6 +342,10 @@ impl RObject for InputPassportElementDriverLicense {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -322,6 +362,7 @@ impl InputPassportElementDriverLicense {
         let mut inner = InputPassportElementDriverLicense::default();
         inner.td_name = "inputPassportElementDriverLicense".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementDriverLicenseBuilder { inner }
     }
 
@@ -370,6 +411,8 @@ pub struct InputPassportElementEmailAddress {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The email address to be saved
     email_address: String,
 }
@@ -382,6 +425,10 @@ impl RObject for InputPassportElementEmailAddress {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -398,6 +445,7 @@ impl InputPassportElementEmailAddress {
         let mut inner = InputPassportElementEmailAddress::default();
         inner.td_name = "inputPassportElementEmailAddress".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementEmailAddressBuilder { inner }
     }
 
@@ -443,6 +491,8 @@ pub struct InputPassportElementIdentityCard {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The identity card to be saved
     identity_card: InputIdentityDocument,
 }
@@ -455,6 +505,10 @@ impl RObject for InputPassportElementIdentityCard {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -471,6 +525,7 @@ impl InputPassportElementIdentityCard {
         let mut inner = InputPassportElementIdentityCard::default();
         inner.td_name = "inputPassportElementIdentityCard".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementIdentityCardBuilder { inner }
     }
 
@@ -519,6 +574,8 @@ pub struct InputPassportElementInternalPassport {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The internal passport to be saved
     internal_passport: InputIdentityDocument,
 }
@@ -531,6 +588,10 @@ impl RObject for InputPassportElementInternalPassport {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -547,6 +608,7 @@ impl InputPassportElementInternalPassport {
         let mut inner = InputPassportElementInternalPassport::default();
         inner.td_name = "inputPassportElementInternalPassport".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementInternalPassportBuilder { inner }
     }
 
@@ -597,6 +659,8 @@ pub struct InputPassportElementPassport {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The passport to be saved
     passport: InputIdentityDocument,
 }
@@ -609,6 +673,10 @@ impl RObject for InputPassportElementPassport {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -625,6 +693,7 @@ impl InputPassportElementPassport {
         let mut inner = InputPassportElementPassport::default();
         inner.td_name = "inputPassportElementPassport".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementPassportBuilder { inner }
     }
 
@@ -670,6 +739,8 @@ pub struct InputPassportElementPassportRegistration {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The passport registration page to be saved
     passport_registration: InputPersonalDocument,
 }
@@ -682,6 +753,10 @@ impl RObject for InputPassportElementPassportRegistration {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -698,6 +773,7 @@ impl InputPassportElementPassportRegistration {
         let mut inner = InputPassportElementPassportRegistration::default();
         inner.td_name = "inputPassportElementPassportRegistration".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementPassportRegistrationBuilder { inner }
     }
 
@@ -748,6 +824,8 @@ pub struct InputPassportElementPersonalDetails {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Personal details of the user
     personal_details: PersonalDetails,
 }
@@ -760,6 +838,10 @@ impl RObject for InputPassportElementPersonalDetails {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -776,6 +858,7 @@ impl InputPassportElementPersonalDetails {
         let mut inner = InputPassportElementPersonalDetails::default();
         inner.td_name = "inputPassportElementPersonalDetails".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementPersonalDetailsBuilder { inner }
     }
 
@@ -824,6 +907,8 @@ pub struct InputPassportElementPhoneNumber {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The phone number to be saved
     phone_number: String,
 }
@@ -836,6 +921,10 @@ impl RObject for InputPassportElementPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -852,6 +941,7 @@ impl InputPassportElementPhoneNumber {
         let mut inner = InputPassportElementPhoneNumber::default();
         inner.td_name = "inputPassportElementPhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementPhoneNumberBuilder { inner }
     }
 
@@ -897,6 +987,8 @@ pub struct InputPassportElementRentalAgreement {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The rental agreement to be saved
     rental_agreement: InputPersonalDocument,
 }
@@ -909,6 +1001,10 @@ impl RObject for InputPassportElementRentalAgreement {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -925,6 +1021,7 @@ impl InputPassportElementRentalAgreement {
         let mut inner = InputPassportElementRentalAgreement::default();
         inner.td_name = "inputPassportElementRentalAgreement".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementRentalAgreementBuilder { inner }
     }
 
@@ -973,6 +1070,8 @@ pub struct InputPassportElementTemporaryRegistration {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The temporary registration document to be saved
     temporary_registration: InputPersonalDocument,
 }
@@ -985,6 +1084,10 @@ impl RObject for InputPassportElementTemporaryRegistration {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1001,6 +1104,7 @@ impl InputPassportElementTemporaryRegistration {
         let mut inner = InputPassportElementTemporaryRegistration::default();
         inner.td_name = "inputPassportElementTemporaryRegistration".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementTemporaryRegistrationBuilder { inner }
     }
 
@@ -1053,6 +1157,8 @@ pub struct InputPassportElementUtilityBill {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The utility bill to be saved
     utility_bill: InputPersonalDocument,
 }
@@ -1065,6 +1171,10 @@ impl RObject for InputPassportElementUtilityBill {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1081,6 +1191,7 @@ impl InputPassportElementUtilityBill {
         let mut inner = InputPassportElementUtilityBill::default();
         inner.td_name = "inputPassportElementUtilityBill".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputPassportElementUtilityBillBuilder { inner }
     }
 

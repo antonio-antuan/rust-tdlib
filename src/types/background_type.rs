@@ -68,6 +68,16 @@ impl RObject for BackgroundType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            BackgroundType::Fill(t) => t.client_id(),
+            BackgroundType::Pattern(t) => t.client_id(),
+            BackgroundType::Wallpaper(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl BackgroundType {
@@ -95,6 +105,8 @@ pub struct BackgroundTypeFill {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Description of the background fill
     fill: BackgroundFill,
 }
@@ -107,6 +119,10 @@ impl RObject for BackgroundTypeFill {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -123,6 +139,7 @@ impl BackgroundTypeFill {
         let mut inner = BackgroundTypeFill::default();
         inner.td_name = "backgroundTypeFill".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDBackgroundTypeFillBuilder { inner }
     }
 
@@ -168,6 +185,8 @@ pub struct BackgroundTypePattern {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Description of the background fill
     fill: BackgroundFill,
     /// Intensity of the pattern when it is shown above the filled background, 0-100
@@ -185,6 +204,10 @@ impl RObject for BackgroundTypePattern {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -200,6 +223,7 @@ impl BackgroundTypePattern {
         let mut inner = BackgroundTypePattern::default();
         inner.td_name = "backgroundTypePattern".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDBackgroundTypePatternBuilder { inner }
     }
 
@@ -263,6 +287,8 @@ pub struct BackgroundTypeWallpaper {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the wallpaper must be downscaled to fit in 450x450 square and then box-blurred with radius 12
     is_blurred: bool,
     /// True, if the background needs to be slightly moved when device is tilted
@@ -277,6 +303,10 @@ impl RObject for BackgroundTypeWallpaper {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -293,6 +323,7 @@ impl BackgroundTypeWallpaper {
         let mut inner = BackgroundTypeWallpaper::default();
         inner.td_name = "backgroundTypeWallpaper".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDBackgroundTypeWallpaperBuilder { inner }
     }
 

@@ -11,6 +11,8 @@ pub struct InputThumbnail {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Thumbnail file to send. Sending thumbnails by file_id is currently not supported
     thumbnail: InputFile,
     /// Thumbnail width, usually shouldn't exceed 320. Use 0 if unknown
@@ -28,6 +30,10 @@ impl RObject for InputThumbnail {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -41,6 +47,7 @@ impl InputThumbnail {
         let mut inner = InputThumbnail::default();
         inner.td_name = "inputThumbnail".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDInputThumbnailBuilder { inner }
     }
 

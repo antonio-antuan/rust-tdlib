@@ -11,6 +11,8 @@ pub struct StorageStatisticsByChat {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier; 0 if none
     chat_id: i64,
     /// Total size of the files in the chat
@@ -30,6 +32,10 @@ impl RObject for StorageStatisticsByChat {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -43,6 +49,7 @@ impl StorageStatisticsByChat {
         let mut inner = StorageStatisticsByChat::default();
         inner.td_name = "storageStatisticsByChat".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDStorageStatisticsByChatBuilder { inner }
     }
 

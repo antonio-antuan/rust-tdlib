@@ -83,6 +83,19 @@ impl RObject for CheckChatUsernameResult {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            CheckChatUsernameResult::CheckChatUsername(t) => t.client_id(),
+            CheckChatUsernameResult::Ok(t) => t.client_id(),
+            CheckChatUsernameResult::PublicChatsTooMuch(t) => t.client_id(),
+            CheckChatUsernameResult::PublicGroupsUnavailable(t) => t.client_id(),
+            CheckChatUsernameResult::UsernameInvalid(t) => t.client_id(),
+            CheckChatUsernameResult::UsernameOccupied(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl CheckChatUsernameResult {
@@ -110,6 +123,8 @@ pub struct CheckChatUsernameResultOk {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CheckChatUsernameResultOk {
@@ -120,6 +135,10 @@ impl RObject for CheckChatUsernameResultOk {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -136,6 +155,7 @@ impl CheckChatUsernameResultOk {
         let mut inner = CheckChatUsernameResultOk::default();
         inner.td_name = "checkChatUsernameResultOk".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCheckChatUsernameResultOkBuilder { inner }
     }
 }
@@ -172,6 +192,8 @@ pub struct CheckChatUsernameResultPublicChatsTooMuch {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CheckChatUsernameResultPublicChatsTooMuch {
@@ -182,6 +204,10 @@ impl RObject for CheckChatUsernameResultPublicChatsTooMuch {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -198,6 +224,7 @@ impl CheckChatUsernameResultPublicChatsTooMuch {
         let mut inner = CheckChatUsernameResultPublicChatsTooMuch::default();
         inner.td_name = "checkChatUsernameResultPublicChatsTooMuch".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCheckChatUsernameResultPublicChatsTooMuchBuilder { inner }
     }
 }
@@ -238,6 +265,8 @@ pub struct CheckChatUsernameResultPublicGroupsUnavailable {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CheckChatUsernameResultPublicGroupsUnavailable {
@@ -248,6 +277,10 @@ impl RObject for CheckChatUsernameResultPublicGroupsUnavailable {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -264,6 +297,7 @@ impl CheckChatUsernameResultPublicGroupsUnavailable {
         let mut inner = CheckChatUsernameResultPublicGroupsUnavailable::default();
         inner.td_name = "checkChatUsernameResultPublicGroupsUnavailable".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCheckChatUsernameResultPublicGroupsUnavailableBuilder { inner }
     }
 }
@@ -304,6 +338,8 @@ pub struct CheckChatUsernameResultUsernameInvalid {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CheckChatUsernameResultUsernameInvalid {
@@ -314,6 +350,10 @@ impl RObject for CheckChatUsernameResultUsernameInvalid {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -330,6 +370,7 @@ impl CheckChatUsernameResultUsernameInvalid {
         let mut inner = CheckChatUsernameResultUsernameInvalid::default();
         inner.td_name = "checkChatUsernameResultUsernameInvalid".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCheckChatUsernameResultUsernameInvalidBuilder { inner }
     }
 }
@@ -368,6 +409,8 @@ pub struct CheckChatUsernameResultUsernameOccupied {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CheckChatUsernameResultUsernameOccupied {
@@ -378,6 +421,10 @@ impl RObject for CheckChatUsernameResultUsernameOccupied {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -394,6 +441,7 @@ impl CheckChatUsernameResultUsernameOccupied {
         let mut inner = CheckChatUsernameResultUsernameOccupied::default();
         inner.td_name = "checkChatUsernameResultUsernameOccupied".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDCheckChatUsernameResultUsernameOccupiedBuilder { inner }
     }
 }

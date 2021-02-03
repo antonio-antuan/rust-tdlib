@@ -63,6 +63,15 @@ impl RObject for PublicChatType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            PublicChatType::HasUsername(t) => t.client_id(),
+            PublicChatType::IsLocationBased(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl PublicChatType {
@@ -90,6 +99,8 @@ pub struct PublicChatTypeHasUsername {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PublicChatTypeHasUsername {
@@ -100,6 +111,10 @@ impl RObject for PublicChatTypeHasUsername {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -116,6 +131,7 @@ impl PublicChatTypeHasUsername {
         let mut inner = PublicChatTypeHasUsername::default();
         inner.td_name = "publicChatTypeHasUsername".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPublicChatTypeHasUsernameBuilder { inner }
     }
 }
@@ -152,6 +168,8 @@ pub struct PublicChatTypeIsLocationBased {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PublicChatTypeIsLocationBased {
@@ -162,6 +180,10 @@ impl RObject for PublicChatTypeIsLocationBased {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -178,6 +200,7 @@ impl PublicChatTypeIsLocationBased {
         let mut inner = PublicChatTypeIsLocationBased::default();
         inner.td_name = "publicChatTypeIsLocationBased".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPublicChatTypeIsLocationBasedBuilder { inner }
     }
 }

@@ -63,6 +63,15 @@ impl RObject for PollType {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            PollType::Quiz(t) => t.client_id(),
+            PollType::Regular(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl PollType {
@@ -90,6 +99,8 @@ pub struct PollTypeQuiz {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// 0-based identifier of the correct answer option; 1 for a yet unanswered poll
     correct_option_id: i32,
     /// Text that is shown when the user chooses an incorrect answer or taps on the lamp icon, 0-200 characters with at most 2 line feeds; empty for a yet unanswered poll
@@ -104,6 +115,10 @@ impl RObject for PollTypeQuiz {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -120,6 +135,7 @@ impl PollTypeQuiz {
         let mut inner = PollTypeQuiz::default();
         inner.td_name = "pollTypeQuiz".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPollTypeQuizBuilder { inner }
     }
 
@@ -174,6 +190,8 @@ pub struct PollTypeRegular {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if multiple answer options can be chosen simultaneously
     allow_multiple_answers: bool,
 }
@@ -186,6 +204,10 @@ impl RObject for PollTypeRegular {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -202,6 +224,7 @@ impl PollTypeRegular {
         let mut inner = PollTypeRegular::default();
         inner.td_name = "pollTypeRegular".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPollTypeRegularBuilder { inner }
     }
 

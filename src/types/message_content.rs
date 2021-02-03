@@ -263,6 +263,55 @@ impl RObject for MessageContent {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            MessageContent::MessageAnimation(t) => t.client_id(),
+            MessageContent::MessageAudio(t) => t.client_id(),
+            MessageContent::MessageBasicGroupChatCreate(t) => t.client_id(),
+            MessageContent::MessageCall(t) => t.client_id(),
+            MessageContent::MessageChatAddMembers(t) => t.client_id(),
+            MessageContent::MessageChatChangePhoto(t) => t.client_id(),
+            MessageContent::MessageChatChangeTitle(t) => t.client_id(),
+            MessageContent::MessageChatDeleteMember(t) => t.client_id(),
+            MessageContent::MessageChatDeletePhoto(t) => t.client_id(),
+            MessageContent::MessageChatJoinByLink(t) => t.client_id(),
+            MessageContent::MessageChatSetTtl(t) => t.client_id(),
+            MessageContent::MessageChatUpgradeFrom(t) => t.client_id(),
+            MessageContent::MessageChatUpgradeTo(t) => t.client_id(),
+            MessageContent::MessageContact(t) => t.client_id(),
+            MessageContent::MessageContactRegistered(t) => t.client_id(),
+            MessageContent::MessageCustomServiceAction(t) => t.client_id(),
+            MessageContent::MessageDice(t) => t.client_id(),
+            MessageContent::MessageDocument(t) => t.client_id(),
+            MessageContent::MessageExpiredPhoto(t) => t.client_id(),
+            MessageContent::MessageExpiredVideo(t) => t.client_id(),
+            MessageContent::MessageGame(t) => t.client_id(),
+            MessageContent::MessageGameScore(t) => t.client_id(),
+            MessageContent::MessageInvoice(t) => t.client_id(),
+            MessageContent::MessageLocation(t) => t.client_id(),
+            MessageContent::MessagePassportDataReceived(t) => t.client_id(),
+            MessageContent::MessagePassportDataSent(t) => t.client_id(),
+            MessageContent::MessagePaymentSuccessful(t) => t.client_id(),
+            MessageContent::MessagePaymentSuccessfulBot(t) => t.client_id(),
+            MessageContent::MessagePhoto(t) => t.client_id(),
+            MessageContent::MessagePinMessage(t) => t.client_id(),
+            MessageContent::MessagePoll(t) => t.client_id(),
+            MessageContent::MessageProximityAlertTriggered(t) => t.client_id(),
+            MessageContent::MessageScreenshotTaken(t) => t.client_id(),
+            MessageContent::MessageSticker(t) => t.client_id(),
+            MessageContent::MessageSupergroupChatCreate(t) => t.client_id(),
+            MessageContent::MessageText(t) => t.client_id(),
+            MessageContent::MessageUnsupported(t) => t.client_id(),
+            MessageContent::MessageVenue(t) => t.client_id(),
+            MessageContent::MessageVideo(t) => t.client_id(),
+            MessageContent::MessageVideoNote(t) => t.client_id(),
+            MessageContent::MessageVoiceNote(t) => t.client_id(),
+            MessageContent::MessageWebsiteConnected(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl MessageContent {
@@ -290,6 +339,8 @@ pub struct MessageAnimation {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The animation description
     animation: Animation,
     /// Animation caption
@@ -307,6 +358,10 @@ impl RObject for MessageAnimation {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -322,6 +377,7 @@ impl MessageAnimation {
         let mut inner = MessageAnimation::default();
         inner.td_name = "messageAnimation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageAnimationBuilder { inner }
     }
 
@@ -385,6 +441,8 @@ pub struct MessageAudio {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The audio description
     audio: Audio,
     /// Audio caption
@@ -399,6 +457,10 @@ impl RObject for MessageAudio {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -415,6 +477,7 @@ impl MessageAudio {
         let mut inner = MessageAudio::default();
         inner.td_name = "messageAudio".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageAudioBuilder { inner }
     }
 
@@ -469,6 +532,8 @@ pub struct MessageBasicGroupChatCreate {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Title of the basic group
     title: String,
     /// User identifiers of members in the basic group
@@ -483,6 +548,10 @@ impl RObject for MessageBasicGroupChatCreate {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -499,6 +568,7 @@ impl MessageBasicGroupChatCreate {
         let mut inner = MessageBasicGroupChatCreate::default();
         inner.td_name = "messageBasicGroupChatCreate".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageBasicGroupChatCreateBuilder { inner }
     }
 
@@ -553,6 +623,8 @@ pub struct MessageCall {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the call was a video call
     is_video: bool,
     /// Reason why the call was discarded
@@ -570,6 +642,10 @@ impl RObject for MessageCall {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -585,6 +661,7 @@ impl MessageCall {
         let mut inner = MessageCall::default();
         inner.td_name = "messageCall".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageCallBuilder { inner }
     }
 
@@ -648,6 +725,8 @@ pub struct MessageChatAddMembers {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// User identifiers of the new members
     member_user_ids: Vec<i32>,
 }
@@ -660,6 +739,10 @@ impl RObject for MessageChatAddMembers {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -676,6 +759,7 @@ impl MessageChatAddMembers {
         let mut inner = MessageChatAddMembers::default();
         inner.td_name = "messageChatAddMembers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatAddMembersBuilder { inner }
     }
 
@@ -721,6 +805,8 @@ pub struct MessageChatChangePhoto {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New chat photo
     photo: ChatPhoto,
 }
@@ -733,6 +819,10 @@ impl RObject for MessageChatChangePhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -749,6 +839,7 @@ impl MessageChatChangePhoto {
         let mut inner = MessageChatChangePhoto::default();
         inner.td_name = "messageChatChangePhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatChangePhotoBuilder { inner }
     }
 
@@ -794,6 +885,8 @@ pub struct MessageChatChangeTitle {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New chat title
     title: String,
 }
@@ -806,6 +899,10 @@ impl RObject for MessageChatChangeTitle {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -822,6 +919,7 @@ impl MessageChatChangeTitle {
         let mut inner = MessageChatChangeTitle::default();
         inner.td_name = "messageChatChangeTitle".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatChangeTitleBuilder { inner }
     }
 
@@ -867,6 +965,8 @@ pub struct MessageChatDeleteMember {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// User identifier of the deleted chat member
     user_id: i32,
 }
@@ -879,6 +979,10 @@ impl RObject for MessageChatDeleteMember {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -895,6 +999,7 @@ impl MessageChatDeleteMember {
         let mut inner = MessageChatDeleteMember::default();
         inner.td_name = "messageChatDeleteMember".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatDeleteMemberBuilder { inner }
     }
 
@@ -940,6 +1045,8 @@ pub struct MessageChatDeletePhoto {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MessageChatDeletePhoto {
@@ -950,6 +1057,10 @@ impl RObject for MessageChatDeletePhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -966,6 +1077,7 @@ impl MessageChatDeletePhoto {
         let mut inner = MessageChatDeletePhoto::default();
         inner.td_name = "messageChatDeletePhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatDeletePhotoBuilder { inner }
     }
 }
@@ -1002,6 +1114,8 @@ pub struct MessageChatJoinByLink {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MessageChatJoinByLink {
@@ -1012,6 +1126,10 @@ impl RObject for MessageChatJoinByLink {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1028,6 +1146,7 @@ impl MessageChatJoinByLink {
         let mut inner = MessageChatJoinByLink::default();
         inner.td_name = "messageChatJoinByLink".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatJoinByLinkBuilder { inner }
     }
 }
@@ -1064,6 +1183,8 @@ pub struct MessageChatSetTtl {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// New TTL
     ttl: i32,
 }
@@ -1076,6 +1197,10 @@ impl RObject for MessageChatSetTtl {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1092,6 +1217,7 @@ impl MessageChatSetTtl {
         let mut inner = MessageChatSetTtl::default();
         inner.td_name = "messageChatSetTtl".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatSetTtlBuilder { inner }
     }
 
@@ -1137,6 +1263,8 @@ pub struct MessageChatUpgradeFrom {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Title of the newly created supergroup
     title: String,
     /// The identifier of the original basic group
@@ -1151,6 +1279,10 @@ impl RObject for MessageChatUpgradeFrom {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1167,6 +1299,7 @@ impl MessageChatUpgradeFrom {
         let mut inner = MessageChatUpgradeFrom::default();
         inner.td_name = "messageChatUpgradeFrom".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatUpgradeFromBuilder { inner }
     }
 
@@ -1221,6 +1354,8 @@ pub struct MessageChatUpgradeTo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the supergroup to which the basic group was upgraded
     supergroup_id: i32,
 }
@@ -1233,6 +1368,10 @@ impl RObject for MessageChatUpgradeTo {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1249,6 +1388,7 @@ impl MessageChatUpgradeTo {
         let mut inner = MessageChatUpgradeTo::default();
         inner.td_name = "messageChatUpgradeTo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageChatUpgradeToBuilder { inner }
     }
 
@@ -1294,6 +1434,8 @@ pub struct MessageContact {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The contact description
     contact: Contact,
 }
@@ -1306,6 +1448,10 @@ impl RObject for MessageContact {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1322,6 +1468,7 @@ impl MessageContact {
         let mut inner = MessageContact::default();
         inner.td_name = "messageContact".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageContactBuilder { inner }
     }
 
@@ -1367,6 +1514,8 @@ pub struct MessageContactRegistered {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MessageContactRegistered {
@@ -1377,6 +1526,10 @@ impl RObject for MessageContactRegistered {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1393,6 +1546,7 @@ impl MessageContactRegistered {
         let mut inner = MessageContactRegistered::default();
         inner.td_name = "messageContactRegistered".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageContactRegisteredBuilder { inner }
     }
 }
@@ -1429,6 +1583,8 @@ pub struct MessageCustomServiceAction {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Message text to be shown in the chat
     text: String,
 }
@@ -1441,6 +1597,10 @@ impl RObject for MessageCustomServiceAction {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1457,6 +1617,7 @@ impl MessageCustomServiceAction {
         let mut inner = MessageCustomServiceAction::default();
         inner.td_name = "messageCustomServiceAction".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageCustomServiceActionBuilder { inner }
     }
 
@@ -1502,6 +1663,8 @@ pub struct MessageDice {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The animated stickers with the initial dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
     initial_state: Option<DiceStickers>,
     /// The animated stickers with the final dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
@@ -1523,6 +1686,10 @@ impl RObject for MessageDice {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -1538,6 +1705,7 @@ impl MessageDice {
         let mut inner = MessageDice::default();
         inner.td_name = "messageDice".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageDiceBuilder { inner }
     }
 
@@ -1622,6 +1790,8 @@ pub struct MessageDocument {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The document description
     document: Document,
     /// Document caption
@@ -1636,6 +1806,10 @@ impl RObject for MessageDocument {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1652,6 +1826,7 @@ impl MessageDocument {
         let mut inner = MessageDocument::default();
         inner.td_name = "messageDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageDocumentBuilder { inner }
     }
 
@@ -1706,6 +1881,8 @@ pub struct MessageExpiredPhoto {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MessageExpiredPhoto {
@@ -1716,6 +1893,10 @@ impl RObject for MessageExpiredPhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1732,6 +1913,7 @@ impl MessageExpiredPhoto {
         let mut inner = MessageExpiredPhoto::default();
         inner.td_name = "messageExpiredPhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageExpiredPhotoBuilder { inner }
     }
 }
@@ -1768,6 +1950,8 @@ pub struct MessageExpiredVideo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MessageExpiredVideo {
@@ -1778,6 +1962,10 @@ impl RObject for MessageExpiredVideo {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1794,6 +1982,7 @@ impl MessageExpiredVideo {
         let mut inner = MessageExpiredVideo::default();
         inner.td_name = "messageExpiredVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageExpiredVideoBuilder { inner }
     }
 }
@@ -1830,6 +2019,8 @@ pub struct MessageGame {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The game description
     game: Game,
 }
@@ -1842,6 +2033,10 @@ impl RObject for MessageGame {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1858,6 +2053,7 @@ impl MessageGame {
         let mut inner = MessageGame::default();
         inner.td_name = "messageGame".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageGameBuilder { inner }
     }
 
@@ -1903,6 +2099,8 @@ pub struct MessageGameScore {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the message with the game, can be an identifier of a deleted message
     game_message_id: i64,
     /// Identifier of the game; may be different from the games presented in the message with the game
@@ -1921,6 +2119,10 @@ impl RObject for MessageGameScore {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -1936,6 +2138,7 @@ impl MessageGameScore {
         let mut inner = MessageGameScore::default();
         inner.td_name = "messageGameScore".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageGameScoreBuilder { inner }
     }
 
@@ -1999,6 +2202,8 @@ pub struct MessageInvoice {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Product title
     title: String,
     /// A message with an invoice from a bot
@@ -2028,6 +2233,10 @@ impl RObject for MessageInvoice {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2043,6 +2252,7 @@ impl MessageInvoice {
         let mut inner = MessageInvoice::default();
         inner.td_name = "messageInvoice".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageInvoiceBuilder { inner }
     }
 
@@ -2160,6 +2370,8 @@ pub struct MessageLocation {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The location description
     location: Location,
     /// Time relative to the message send date, for which the location can be updated, in seconds
@@ -2181,6 +2393,10 @@ impl RObject for MessageLocation {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2196,6 +2412,7 @@ impl MessageLocation {
         let mut inner = MessageLocation::default();
         inner.td_name = "messageLocation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageLocationBuilder { inner }
     }
 
@@ -2277,6 +2494,8 @@ pub struct MessagePassportDataReceived {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// List of received Telegram Passport elements
     elements: Vec<EncryptedPassportElement>,
     /// Encrypted data credentials
@@ -2291,6 +2510,10 @@ impl RObject for MessagePassportDataReceived {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2307,6 +2530,7 @@ impl MessagePassportDataReceived {
         let mut inner = MessagePassportDataReceived::default();
         inner.td_name = "messagePassportDataReceived".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessagePassportDataReceivedBuilder { inner }
     }
 
@@ -2361,6 +2585,8 @@ pub struct MessagePassportDataSent {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// List of Telegram Passport element types sent
     types: Vec<PassportElementType>,
 }
@@ -2373,6 +2599,10 @@ impl RObject for MessagePassportDataSent {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2389,6 +2619,7 @@ impl MessagePassportDataSent {
         let mut inner = MessagePassportDataSent::default();
         inner.td_name = "messagePassportDataSent".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessagePassportDataSentBuilder { inner }
     }
 
@@ -2434,6 +2665,8 @@ pub struct MessagePaymentSuccessful {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the message with the corresponding invoice; can be an identifier of a deleted message
     invoice_message_id: i64,
     /// Currency for the price of the product
@@ -2451,6 +2684,10 @@ impl RObject for MessagePaymentSuccessful {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2466,6 +2703,7 @@ impl MessagePaymentSuccessful {
         let mut inner = MessagePaymentSuccessful::default();
         inner.td_name = "messagePaymentSuccessful".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessagePaymentSuccessfulBuilder { inner }
     }
 
@@ -2529,6 +2767,8 @@ pub struct MessagePaymentSuccessfulBot {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the message with the corresponding invoice; can be an identifier of a deleted message
     invoice_message_id: i64,
     /// Currency for price of the product
@@ -2556,6 +2796,10 @@ impl RObject for MessagePaymentSuccessfulBot {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2571,6 +2815,7 @@ impl MessagePaymentSuccessfulBot {
         let mut inner = MessagePaymentSuccessfulBot::default();
         inner.td_name = "messagePaymentSuccessfulBot".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessagePaymentSuccessfulBotBuilder { inner }
     }
 
@@ -2685,6 +2930,8 @@ pub struct MessagePhoto {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The photo description
     photo: Photo,
     /// Photo caption
@@ -2702,6 +2949,10 @@ impl RObject for MessagePhoto {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2717,6 +2968,7 @@ impl MessagePhoto {
         let mut inner = MessagePhoto::default();
         inner.td_name = "messagePhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessagePhotoBuilder { inner }
     }
 
@@ -2780,6 +3032,8 @@ pub struct MessagePinMessage {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the pinned message, can be an identifier of a deleted message or 0
     message_id: i64,
 }
@@ -2792,6 +3046,10 @@ impl RObject for MessagePinMessage {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2808,6 +3066,7 @@ impl MessagePinMessage {
         let mut inner = MessagePinMessage::default();
         inner.td_name = "messagePinMessage".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessagePinMessageBuilder { inner }
     }
 
@@ -2853,6 +3112,8 @@ pub struct MessagePoll {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The poll description
     poll: Poll,
 }
@@ -2865,6 +3126,10 @@ impl RObject for MessagePoll {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2881,6 +3146,7 @@ impl MessagePoll {
         let mut inner = MessagePoll::default();
         inner.td_name = "messagePoll".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessagePollBuilder { inner }
     }
 
@@ -2926,6 +3192,8 @@ pub struct MessageProximityAlertTriggered {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The user or chat, which triggered the proximity alert
     traveler: MessageSender,
     /// The user or chat, which subscribed for the proximity alert
@@ -2943,6 +3211,10 @@ impl RObject for MessageProximityAlertTriggered {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2958,6 +3230,7 @@ impl MessageProximityAlertTriggered {
         let mut inner = MessageProximityAlertTriggered::default();
         inner.td_name = "messageProximityAlertTriggered".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageProximityAlertTriggeredBuilder { inner }
     }
 
@@ -3021,6 +3294,8 @@ pub struct MessageScreenshotTaken {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MessageScreenshotTaken {
@@ -3031,6 +3306,10 @@ impl RObject for MessageScreenshotTaken {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3047,6 +3326,7 @@ impl MessageScreenshotTaken {
         let mut inner = MessageScreenshotTaken::default();
         inner.td_name = "messageScreenshotTaken".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageScreenshotTakenBuilder { inner }
     }
 }
@@ -3083,6 +3363,8 @@ pub struct MessageSticker {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The sticker description
     sticker: Sticker,
 }
@@ -3095,6 +3377,10 @@ impl RObject for MessageSticker {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3111,6 +3397,7 @@ impl MessageSticker {
         let mut inner = MessageSticker::default();
         inner.td_name = "messageSticker".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageStickerBuilder { inner }
     }
 
@@ -3156,6 +3443,8 @@ pub struct MessageSupergroupChatCreate {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Title of the supergroup or channel
     title: String,
 }
@@ -3168,6 +3457,10 @@ impl RObject for MessageSupergroupChatCreate {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3184,6 +3477,7 @@ impl MessageSupergroupChatCreate {
         let mut inner = MessageSupergroupChatCreate::default();
         inner.td_name = "messageSupergroupChatCreate".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageSupergroupChatCreateBuilder { inner }
     }
 
@@ -3229,6 +3523,8 @@ pub struct MessageText {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Text of the message
     text: FormattedText,
     /// A preview of the web page that's mentioned in the text; may be null
@@ -3243,6 +3539,10 @@ impl RObject for MessageText {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3259,6 +3559,7 @@ impl MessageText {
         let mut inner = MessageText::default();
         inner.td_name = "messageText".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageTextBuilder { inner }
     }
 
@@ -3313,6 +3614,8 @@ pub struct MessageUnsupported {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MessageUnsupported {
@@ -3323,6 +3626,10 @@ impl RObject for MessageUnsupported {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3339,6 +3646,7 @@ impl MessageUnsupported {
         let mut inner = MessageUnsupported::default();
         inner.td_name = "messageUnsupported".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageUnsupportedBuilder { inner }
     }
 }
@@ -3375,6 +3683,8 @@ pub struct MessageVenue {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The venue description
     venue: Venue,
 }
@@ -3387,6 +3697,10 @@ impl RObject for MessageVenue {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3403,6 +3717,7 @@ impl MessageVenue {
         let mut inner = MessageVenue::default();
         inner.td_name = "messageVenue".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageVenueBuilder { inner }
     }
 
@@ -3448,6 +3763,8 @@ pub struct MessageVideo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The video description
     video: Video,
     /// Video caption
@@ -3465,6 +3782,10 @@ impl RObject for MessageVideo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3480,6 +3801,7 @@ impl MessageVideo {
         let mut inner = MessageVideo::default();
         inner.td_name = "messageVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageVideoBuilder { inner }
     }
 
@@ -3543,6 +3865,8 @@ pub struct MessageVideoNote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The video note description
     video_note: VideoNote,
     /// True, if at least one of the recipients has viewed the video note
@@ -3560,6 +3884,10 @@ impl RObject for MessageVideoNote {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3575,6 +3903,7 @@ impl MessageVideoNote {
         let mut inner = MessageVideoNote::default();
         inner.td_name = "messageVideoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageVideoNoteBuilder { inner }
     }
 
@@ -3638,6 +3967,8 @@ pub struct MessageVoiceNote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The voice note description
     voice_note: VoiceNote,
     /// Voice note caption
@@ -3655,6 +3986,10 @@ impl RObject for MessageVoiceNote {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -3670,6 +4005,7 @@ impl MessageVoiceNote {
         let mut inner = MessageVoiceNote::default();
         inner.td_name = "messageVoiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageVoiceNoteBuilder { inner }
     }
 
@@ -3733,6 +4069,8 @@ pub struct MessageWebsiteConnected {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Domain name of the connected website
     domain_name: String,
 }
@@ -3745,6 +4083,10 @@ impl RObject for MessageWebsiteConnected {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -3761,6 +4103,7 @@ impl MessageWebsiteConnected {
         let mut inner = MessageWebsiteConnected::default();
         inner.td_name = "messageWebsiteConnected".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDMessageWebsiteConnectedBuilder { inner }
     }
 

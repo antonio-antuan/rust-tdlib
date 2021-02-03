@@ -88,6 +88,20 @@ impl RObject for ChatMembersFilter {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatMembersFilter::Administrators(t) => t.client_id(),
+            ChatMembersFilter::Banned(t) => t.client_id(),
+            ChatMembersFilter::Bots(t) => t.client_id(),
+            ChatMembersFilter::Contacts(t) => t.client_id(),
+            ChatMembersFilter::Members(t) => t.client_id(),
+            ChatMembersFilter::Mention(t) => t.client_id(),
+            ChatMembersFilter::Restricted(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl ChatMembersFilter {
@@ -115,6 +129,8 @@ pub struct ChatMembersFilterAdministrators {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatMembersFilterAdministrators {
@@ -125,6 +141,10 @@ impl RObject for ChatMembersFilterAdministrators {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -141,6 +161,7 @@ impl ChatMembersFilterAdministrators {
         let mut inner = ChatMembersFilterAdministrators::default();
         inner.td_name = "chatMembersFilterAdministrators".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatMembersFilterAdministratorsBuilder { inner }
     }
 }
@@ -177,6 +198,8 @@ pub struct ChatMembersFilterBanned {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatMembersFilterBanned {
@@ -187,6 +210,10 @@ impl RObject for ChatMembersFilterBanned {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -203,6 +230,7 @@ impl ChatMembersFilterBanned {
         let mut inner = ChatMembersFilterBanned::default();
         inner.td_name = "chatMembersFilterBanned".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatMembersFilterBannedBuilder { inner }
     }
 }
@@ -239,6 +267,8 @@ pub struct ChatMembersFilterBots {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatMembersFilterBots {
@@ -249,6 +279,10 @@ impl RObject for ChatMembersFilterBots {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -265,6 +299,7 @@ impl ChatMembersFilterBots {
         let mut inner = ChatMembersFilterBots::default();
         inner.td_name = "chatMembersFilterBots".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatMembersFilterBotsBuilder { inner }
     }
 }
@@ -301,6 +336,8 @@ pub struct ChatMembersFilterContacts {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatMembersFilterContacts {
@@ -311,6 +348,10 @@ impl RObject for ChatMembersFilterContacts {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -327,6 +368,7 @@ impl ChatMembersFilterContacts {
         let mut inner = ChatMembersFilterContacts::default();
         inner.td_name = "chatMembersFilterContacts".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatMembersFilterContactsBuilder { inner }
     }
 }
@@ -363,6 +405,8 @@ pub struct ChatMembersFilterMembers {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatMembersFilterMembers {
@@ -373,6 +417,10 @@ impl RObject for ChatMembersFilterMembers {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -389,6 +437,7 @@ impl ChatMembersFilterMembers {
         let mut inner = ChatMembersFilterMembers::default();
         inner.td_name = "chatMembersFilterMembers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatMembersFilterMembersBuilder { inner }
     }
 }
@@ -425,6 +474,8 @@ pub struct ChatMembersFilterMention {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// If non-zero, the identifier of the current message thread
     message_thread_id: i64,
 }
@@ -437,6 +488,10 @@ impl RObject for ChatMembersFilterMention {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -453,6 +508,7 @@ impl ChatMembersFilterMention {
         let mut inner = ChatMembersFilterMention::default();
         inner.td_name = "chatMembersFilterMention".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatMembersFilterMentionBuilder { inner }
     }
 
@@ -498,6 +554,8 @@ pub struct ChatMembersFilterRestricted {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatMembersFilterRestricted {
@@ -508,6 +566,10 @@ impl RObject for ChatMembersFilterRestricted {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -524,6 +586,7 @@ impl ChatMembersFilterRestricted {
         let mut inner = ChatMembersFilterRestricted::default();
         inner.td_name = "chatMembersFilterRestricted".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatMembersFilterRestrictedBuilder { inner }
     }
 }

@@ -68,6 +68,16 @@ impl RObject for LoginUrlInfo {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            LoginUrlInfo::GetLoginUrlInfo(t) => t.client_id(),
+            LoginUrlInfo::Open(t) => t.client_id(),
+            LoginUrlInfo::RequestConfirmation(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl LoginUrlInfo {
@@ -95,6 +105,8 @@ pub struct LoginUrlInfoOpen {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The URL to open
     url: String,
     /// True, if there is no need to show an ordinary open URL confirm
@@ -109,6 +121,10 @@ impl RObject for LoginUrlInfoOpen {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -125,6 +141,7 @@ impl LoginUrlInfoOpen {
         let mut inner = LoginUrlInfoOpen::default();
         inner.td_name = "loginUrlInfoOpen".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDLoginUrlInfoOpenBuilder { inner }
     }
 
@@ -179,6 +196,8 @@ pub struct LoginUrlInfoRequestConfirmation {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// An HTTP URL to be opened
     url: String,
     /// A domain of the URL
@@ -198,6 +217,10 @@ impl RObject for LoginUrlInfoRequestConfirmation {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -213,6 +236,7 @@ impl LoginUrlInfoRequestConfirmation {
         let mut inner = LoginUrlInfoRequestConfirmation::default();
         inner.td_name = "loginUrlInfoRequestConfirmation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDLoginUrlInfoRequestConfirmationBuilder { inner }
     }
 

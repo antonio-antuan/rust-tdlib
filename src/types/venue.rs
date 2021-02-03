@@ -11,6 +11,8 @@ pub struct Venue {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Venue location; as defined by the sender
     location: Location,
     /// Venue name; as defined by the sender
@@ -35,6 +37,10 @@ impl RObject for Venue {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -48,6 +54,7 @@ impl Venue {
         let mut inner = Venue::default();
         inner.td_name = "venue".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDVenueBuilder { inner }
     }
 

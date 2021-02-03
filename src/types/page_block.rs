@@ -198,6 +198,42 @@ impl RObject for PageBlock {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            PageBlock::Anchor(t) => t.client_id(),
+            PageBlock::Animation(t) => t.client_id(),
+            PageBlock::Audio(t) => t.client_id(),
+            PageBlock::AuthorDate(t) => t.client_id(),
+            PageBlock::BlockQuote(t) => t.client_id(),
+            PageBlock::ChatLink(t) => t.client_id(),
+            PageBlock::Collage(t) => t.client_id(),
+            PageBlock::Cover(t) => t.client_id(),
+            PageBlock::Details(t) => t.client_id(),
+            PageBlock::Divider(t) => t.client_id(),
+            PageBlock::Embedded(t) => t.client_id(),
+            PageBlock::EmbeddedPost(t) => t.client_id(),
+            PageBlock::Footer(t) => t.client_id(),
+            PageBlock::Header(t) => t.client_id(),
+            PageBlock::Kicker(t) => t.client_id(),
+            PageBlock::List(t) => t.client_id(),
+            PageBlock::Map(t) => t.client_id(),
+            PageBlock::Paragraph(t) => t.client_id(),
+            PageBlock::Photo(t) => t.client_id(),
+            PageBlock::Preformatted(t) => t.client_id(),
+            PageBlock::PullQuote(t) => t.client_id(),
+            PageBlock::RelatedArticles(t) => t.client_id(),
+            PageBlock::Slideshow(t) => t.client_id(),
+            PageBlock::Subheader(t) => t.client_id(),
+            PageBlock::Subtitle(t) => t.client_id(),
+            PageBlock::Table(t) => t.client_id(),
+            PageBlock::Title(t) => t.client_id(),
+            PageBlock::Video(t) => t.client_id(),
+            PageBlock::VoiceNote(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl PageBlock {
@@ -225,6 +261,8 @@ pub struct PageBlockAnchor {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Name of the anchor
     name: String,
 }
@@ -237,6 +275,10 @@ impl RObject for PageBlockAnchor {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -253,6 +295,7 @@ impl PageBlockAnchor {
         let mut inner = PageBlockAnchor::default();
         inner.td_name = "pageBlockAnchor".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockAnchorBuilder { inner }
     }
 
@@ -298,6 +341,8 @@ pub struct PageBlockAnimation {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Animation file; may be null
     animation: Option<Animation>,
     /// Animation caption
@@ -315,6 +360,10 @@ impl RObject for PageBlockAnimation {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -330,6 +379,7 @@ impl PageBlockAnimation {
         let mut inner = PageBlockAnimation::default();
         inner.td_name = "pageBlockAnimation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockAnimationBuilder { inner }
     }
 
@@ -393,6 +443,8 @@ pub struct PageBlockAudio {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Audio file; may be null
     audio: Option<Audio>,
     /// Audio file caption
@@ -407,6 +459,10 @@ impl RObject for PageBlockAudio {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -423,6 +479,7 @@ impl PageBlockAudio {
         let mut inner = PageBlockAudio::default();
         inner.td_name = "pageBlockAudio".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockAudioBuilder { inner }
     }
 
@@ -477,6 +534,8 @@ pub struct PageBlockAuthorDate {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Author
     author: RichText,
     /// Point in time (Unix timestamp) when the article was published; 0 if unknown
@@ -491,6 +550,10 @@ impl RObject for PageBlockAuthorDate {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -507,6 +570,7 @@ impl PageBlockAuthorDate {
         let mut inner = PageBlockAuthorDate::default();
         inner.td_name = "pageBlockAuthorDate".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockAuthorDateBuilder { inner }
     }
 
@@ -561,6 +625,8 @@ pub struct PageBlockBlockQuote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Quote text
     text: RichText,
     /// Quote credit
@@ -575,6 +641,10 @@ impl RObject for PageBlockBlockQuote {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -591,6 +661,7 @@ impl PageBlockBlockQuote {
         let mut inner = PageBlockBlockQuote::default();
         inner.td_name = "pageBlockBlockQuote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockBlockQuoteBuilder { inner }
     }
 
@@ -645,6 +716,8 @@ pub struct PageBlockChatLink {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat title
     title: String,
     /// Chat photo; may be null
@@ -662,6 +735,10 @@ impl RObject for PageBlockChatLink {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -677,6 +754,7 @@ impl PageBlockChatLink {
         let mut inner = PageBlockChatLink::default();
         inner.td_name = "pageBlockChatLink".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockChatLinkBuilder { inner }
     }
 
@@ -740,6 +818,8 @@ pub struct PageBlockCollage {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Collage item contents
     page_blocks: Vec<PageBlock>,
     /// Block caption
@@ -754,6 +834,10 @@ impl RObject for PageBlockCollage {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -770,6 +854,7 @@ impl PageBlockCollage {
         let mut inner = PageBlockCollage::default();
         inner.td_name = "pageBlockCollage".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockCollageBuilder { inner }
     }
 
@@ -824,6 +909,8 @@ pub struct PageBlockCover {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Cover
     cover: Box<PageBlock>,
 }
@@ -836,6 +923,10 @@ impl RObject for PageBlockCover {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -852,6 +943,7 @@ impl PageBlockCover {
         let mut inner = PageBlockCover::default();
         inner.td_name = "pageBlockCover".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockCoverBuilder { inner }
     }
 
@@ -897,6 +989,8 @@ pub struct PageBlockDetails {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Always visible heading for the block
     header: RichText,
     /// Block contents
@@ -914,6 +1008,10 @@ impl RObject for PageBlockDetails {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -929,6 +1027,7 @@ impl PageBlockDetails {
         let mut inner = PageBlockDetails::default();
         inner.td_name = "pageBlockDetails".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockDetailsBuilder { inner }
     }
 
@@ -992,6 +1091,8 @@ pub struct PageBlockDivider {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PageBlockDivider {
@@ -1002,6 +1103,10 @@ impl RObject for PageBlockDivider {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1018,6 +1123,7 @@ impl PageBlockDivider {
         let mut inner = PageBlockDivider::default();
         inner.td_name = "pageBlockDivider".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockDividerBuilder { inner }
     }
 }
@@ -1054,6 +1160,8 @@ pub struct PageBlockEmbedded {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Web page URL, if available
     url: String,
     /// HTML-markup of the embedded page
@@ -1081,6 +1189,10 @@ impl RObject for PageBlockEmbedded {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -1096,6 +1208,7 @@ impl PageBlockEmbedded {
         let mut inner = PageBlockEmbedded::default();
         inner.td_name = "pageBlockEmbedded".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockEmbeddedBuilder { inner }
     }
 
@@ -1204,6 +1317,8 @@ pub struct PageBlockEmbeddedPost {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Web page URL
     url: String,
     /// Post author
@@ -1227,6 +1342,10 @@ impl RObject for PageBlockEmbeddedPost {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -1242,6 +1361,7 @@ impl PageBlockEmbeddedPost {
         let mut inner = PageBlockEmbeddedPost::default();
         inner.td_name = "pageBlockEmbeddedPost".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockEmbeddedPostBuilder { inner }
     }
 
@@ -1332,6 +1452,8 @@ pub struct PageBlockFooter {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Footer
     footer: RichText,
 }
@@ -1344,6 +1466,10 @@ impl RObject for PageBlockFooter {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1360,6 +1486,7 @@ impl PageBlockFooter {
         let mut inner = PageBlockFooter::default();
         inner.td_name = "pageBlockFooter".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockFooterBuilder { inner }
     }
 
@@ -1405,6 +1532,8 @@ pub struct PageBlockHeader {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Header
     header: RichText,
 }
@@ -1417,6 +1546,10 @@ impl RObject for PageBlockHeader {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1433,6 +1566,7 @@ impl PageBlockHeader {
         let mut inner = PageBlockHeader::default();
         inner.td_name = "pageBlockHeader".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockHeaderBuilder { inner }
     }
 
@@ -1478,6 +1612,8 @@ pub struct PageBlockKicker {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Kicker
     kicker: RichText,
 }
@@ -1490,6 +1626,10 @@ impl RObject for PageBlockKicker {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1506,6 +1646,7 @@ impl PageBlockKicker {
         let mut inner = PageBlockKicker::default();
         inner.td_name = "pageBlockKicker".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockKickerBuilder { inner }
     }
 
@@ -1551,6 +1692,8 @@ pub struct PageBlockList {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The items of the list
     items: Vec<PageBlockListItem>,
 }
@@ -1563,6 +1706,10 @@ impl RObject for PageBlockList {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1579,6 +1726,7 @@ impl PageBlockList {
         let mut inner = PageBlockList::default();
         inner.td_name = "pageBlockList".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockListBuilder { inner }
     }
 
@@ -1624,6 +1772,8 @@ pub struct PageBlockMap {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Location of the map center
     location: Location,
     /// Map zoom level
@@ -1645,6 +1795,10 @@ impl RObject for PageBlockMap {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -1660,6 +1814,7 @@ impl PageBlockMap {
         let mut inner = PageBlockMap::default();
         inner.td_name = "pageBlockMap".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockMapBuilder { inner }
     }
 
@@ -1741,6 +1896,8 @@ pub struct PageBlockParagraph {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Paragraph text
     text: RichText,
 }
@@ -1753,6 +1910,10 @@ impl RObject for PageBlockParagraph {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1769,6 +1930,7 @@ impl PageBlockParagraph {
         let mut inner = PageBlockParagraph::default();
         inner.td_name = "pageBlockParagraph".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockParagraphBuilder { inner }
     }
 
@@ -1814,6 +1976,8 @@ pub struct PageBlockPhoto {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Photo file; may be null
     photo: Option<Photo>,
     /// Photo caption
@@ -1831,6 +1995,10 @@ impl RObject for PageBlockPhoto {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -1846,6 +2014,7 @@ impl PageBlockPhoto {
         let mut inner = PageBlockPhoto::default();
         inner.td_name = "pageBlockPhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockPhotoBuilder { inner }
     }
 
@@ -1909,6 +2078,8 @@ pub struct PageBlockPreformatted {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Paragraph text
     text: RichText,
     /// Programming language for which the text should be formatted
@@ -1923,6 +2094,10 @@ impl RObject for PageBlockPreformatted {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -1939,6 +2114,7 @@ impl PageBlockPreformatted {
         let mut inner = PageBlockPreformatted::default();
         inner.td_name = "pageBlockPreformatted".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockPreformattedBuilder { inner }
     }
 
@@ -1993,6 +2169,8 @@ pub struct PageBlockPullQuote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Quote text
     text: RichText,
     /// Quote credit
@@ -2007,6 +2185,10 @@ impl RObject for PageBlockPullQuote {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2023,6 +2205,7 @@ impl PageBlockPullQuote {
         let mut inner = PageBlockPullQuote::default();
         inner.td_name = "pageBlockPullQuote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockPullQuoteBuilder { inner }
     }
 
@@ -2077,6 +2260,8 @@ pub struct PageBlockRelatedArticles {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Block header
     header: RichText,
     /// List of related articles
@@ -2091,6 +2276,10 @@ impl RObject for PageBlockRelatedArticles {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2107,6 +2296,7 @@ impl PageBlockRelatedArticles {
         let mut inner = PageBlockRelatedArticles::default();
         inner.td_name = "pageBlockRelatedArticles".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockRelatedArticlesBuilder { inner }
     }
 
@@ -2161,6 +2351,8 @@ pub struct PageBlockSlideshow {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Slideshow item contents
     page_blocks: Vec<PageBlock>,
     /// Block caption
@@ -2175,6 +2367,10 @@ impl RObject for PageBlockSlideshow {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2191,6 +2387,7 @@ impl PageBlockSlideshow {
         let mut inner = PageBlockSlideshow::default();
         inner.td_name = "pageBlockSlideshow".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockSlideshowBuilder { inner }
     }
 
@@ -2245,6 +2442,8 @@ pub struct PageBlockSubheader {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Subheader
     subheader: RichText,
 }
@@ -2257,6 +2456,10 @@ impl RObject for PageBlockSubheader {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2273,6 +2476,7 @@ impl PageBlockSubheader {
         let mut inner = PageBlockSubheader::default();
         inner.td_name = "pageBlockSubheader".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockSubheaderBuilder { inner }
     }
 
@@ -2318,6 +2522,8 @@ pub struct PageBlockSubtitle {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Subtitle
     subtitle: RichText,
 }
@@ -2330,6 +2536,10 @@ impl RObject for PageBlockSubtitle {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2346,6 +2556,7 @@ impl PageBlockSubtitle {
         let mut inner = PageBlockSubtitle::default();
         inner.td_name = "pageBlockSubtitle".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockSubtitleBuilder { inner }
     }
 
@@ -2391,6 +2602,8 @@ pub struct PageBlockTable {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Table caption
     caption: RichText,
     /// Table cells
@@ -2410,6 +2623,10 @@ impl RObject for PageBlockTable {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2425,6 +2642,7 @@ impl PageBlockTable {
         let mut inner = PageBlockTable::default();
         inner.td_name = "pageBlockTable".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockTableBuilder { inner }
     }
 
@@ -2497,6 +2715,8 @@ pub struct PageBlockTitle {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Title
     title: RichText,
 }
@@ -2509,6 +2729,10 @@ impl RObject for PageBlockTitle {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2525,6 +2749,7 @@ impl PageBlockTitle {
         let mut inner = PageBlockTitle::default();
         inner.td_name = "pageBlockTitle".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockTitleBuilder { inner }
     }
 
@@ -2570,6 +2795,8 @@ pub struct PageBlockVideo {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Video file; may be null
     video: Option<Video>,
     /// Video caption
@@ -2589,6 +2816,10 @@ impl RObject for PageBlockVideo {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -2604,6 +2835,7 @@ impl PageBlockVideo {
         let mut inner = PageBlockVideo::default();
         inner.td_name = "pageBlockVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockVideoBuilder { inner }
     }
 
@@ -2676,6 +2908,8 @@ pub struct PageBlockVoiceNote {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Voice note; may be null
     voice_note: Option<VoiceNote>,
     /// Voice note caption
@@ -2690,6 +2924,10 @@ impl RObject for PageBlockVoiceNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -2706,6 +2944,7 @@ impl PageBlockVoiceNote {
         let mut inner = PageBlockVoiceNote::default();
         inner.td_name = "pageBlockVoiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDPageBlockVoiceNoteBuilder { inner }
     }
 

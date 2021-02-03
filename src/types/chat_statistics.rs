@@ -68,6 +68,16 @@ impl RObject for ChatStatistics {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatStatistics::Channel(t) => t.client_id(),
+            ChatStatistics::Supergroup(t) => t.client_id(),
+            ChatStatistics::GetChatStatistics(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl ChatStatistics {
@@ -95,6 +105,8 @@ pub struct ChatStatisticsChannel {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A period to which the statistics applies
     period: DateRange,
     /// Number of members in the chat
@@ -136,6 +148,10 @@ impl RObject for ChatStatisticsChannel {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -151,6 +167,7 @@ impl ChatStatisticsChannel {
         let mut inner = ChatStatisticsChannel::default();
         inner.td_name = "chatStatisticsChannel".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatStatisticsChannelBuilder { inner }
     }
 
@@ -349,6 +366,8 @@ pub struct ChatStatisticsSupergroup {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A period to which the statistics applies
     period: DateRange,
     /// Number of members in the chat
@@ -392,6 +411,10 @@ impl RObject for ChatStatisticsSupergroup {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -407,6 +430,7 @@ impl ChatStatisticsSupergroup {
         let mut inner = ChatStatisticsSupergroup::default();
         inner.td_name = "chatStatisticsSupergroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatStatisticsSupergroupBuilder { inner }
     }
 

@@ -63,6 +63,15 @@ impl RObject for ChatSource {
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatSource::MtprotoProxy(t) => t.client_id(),
+            ChatSource::PublicServiceAnnouncement(t) => t.client_id(),
+
+            _ => None,
+        }
+    }
 }
 
 impl ChatSource {
@@ -90,6 +99,8 @@ pub struct ChatSourceMtprotoProxy {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatSourceMtprotoProxy {
@@ -100,6 +111,10 @@ impl RObject for ChatSourceMtprotoProxy {
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
@@ -116,6 +131,7 @@ impl ChatSourceMtprotoProxy {
         let mut inner = ChatSourceMtprotoProxy::default();
         inner.td_name = "chatSourceMtprotoProxy".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatSourceMtprotoProxyBuilder { inner }
     }
 }
@@ -152,6 +168,8 @@ pub struct ChatSourcePublicServiceAnnouncement {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The type of the announcement
     #[serde(rename(serialize = "type", deserialize = "type"))]
     type_: String,
@@ -168,6 +186,10 @@ impl RObject for ChatSourcePublicServiceAnnouncement {
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
     fn to_json(&self) -> RTDResult<String> {
         Ok(serde_json::to_string(self)?)
     }
@@ -183,6 +205,7 @@ impl ChatSourcePublicServiceAnnouncement {
         let mut inner = ChatSourcePublicServiceAnnouncement::default();
         inner.td_name = "chatSourcePublicServiceAnnouncement".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+        inner.client_id = None;
         RTDChatSourcePublicServiceAnnouncementBuilder { inner }
     }
 
