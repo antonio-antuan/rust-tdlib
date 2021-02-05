@@ -1,10 +1,11 @@
 #[macro_use]
 extern crate log;
 
-use rust_tdlib::{types::*, Client, Worker};
+use rust_tdlib::{types::*, client::{Client, Worker}, tdjson};
 
 #[tokio::main]
 async fn main() {
+    tdjson::set_log_verbosity_level(2);
     env_logger::init();
     let tdlib_parameters = TdlibParameters::builder()
         .database_directory("tdlib")
@@ -17,14 +18,15 @@ async fn main() {
         .application_version(env!("CARGO_PKG_VERSION"))
         .enable_storage_optimizer(true)
         .build();
-    let mut client = Client::builder()
-        .with_tdlib_parameters(tdlib_parameters)
+    let client = Client::builder()
+        .with_tdlib_parameters(tdlib_parameters.clone())
         .build()
         .unwrap();
 
-    let worker = Worker::builder().with_client(client).build();
+    let mut worker = Worker::builder().build().unwrap();
 
-    let waiter = worker.start().await.unwrap();
+    let waiter = worker.start();
+    let (client_state, client) = worker.auth_client(client).await.unwrap();
 
     let me = client.get_me(GetMe::builder().build()).await.unwrap();
     info!("me: {:?}", me);
@@ -43,6 +45,8 @@ async fn main() {
         info!("{:?}", chat)
     }
     worker.stop();
-    waiter.await.unwrap();
+    client_state.await.unwrap();
     info!("client closed");
+    waiter.await.unwrap();
+    info!("worker stopped");
 }

@@ -26,7 +26,7 @@ macro_rules! rtd_enum_deserialize {
           Some(s) => s,
           None => return Err(D::Error::unknown_field(stringify!("{} -> @type", $field), &[stringify!("{} -> @type is not the correct type", $type_name)])) // &format!("{} -> @type is not the correct type", stringify!($field))[..]
         },
-        None => return Err(D::Error::missing_field(stringify!("{} -> @type", $field)))
+        None => return Err(D::Error::custom("@type is empty"))
       };
 
       let obj = match rtd_trait_type {
@@ -36,7 +36,7 @@ macro_rules! rtd_enum_deserialize {
             Err(_e) => return Err(D::Error::custom(format!("{} can't deserialize to {}::{}: {}", stringify!($td_name), stringify!($type_name), stringify!($enum_item), _e)))
           }),
         )*
-        _ => return Err(D::Error::missing_field(stringify!($field)))
+        _ => return Err(D::Error::custom(format!("got {} @type with unavailable variant", rtd_trait_type)))
       };
       Ok(obj)
     }
@@ -1126,265 +1126,236 @@ impl TdType {
         }
     }
 
-    pub fn extra(&self) -> &Option<String> {
+    pub fn extra(&self) -> Option<String> {
         match self {
-            TdType::AuthorizationState(value) => &value.extra(),
+            TdType::AuthorizationState(value) => value.extra(),
 
-            TdType::CanTransferOwnershipResult(value) => &value.extra(),
+            TdType::CanTransferOwnershipResult(value) => value.extra(),
 
-            TdType::ChatStatistics(value) => &value.extra(),
+            TdType::ChatStatistics(value) => value.extra(),
 
-            TdType::CheckChatUsernameResult(value) => &value.extra(),
+            TdType::CheckChatUsernameResult(value) => value.extra(),
 
-            TdType::JsonValue(value) => &value.extra(),
+            TdType::JsonValue(value) => value.extra(),
 
-            TdType::LanguagePackStringValue(value) => &value.extra(),
+            TdType::LanguagePackStringValue(value) => value.extra(),
 
-            TdType::LogStream(value) => &value.extra(),
+            TdType::LogStream(value) => value.extra(),
 
-            TdType::LoginUrlInfo(value) => &value.extra(),
+            TdType::LoginUrlInfo(value) => value.extra(),
 
-            TdType::OptionValue(value) => &value.extra(),
+            TdType::OptionValue(value) => value.extra(),
 
-            TdType::PassportElement(value) => &value.extra(),
+            TdType::PassportElement(value) => value.extra(),
 
-            TdType::StatisticalGraph(value) => &value.extra(),
+            TdType::StatisticalGraph(value) => value.extra(),
 
-            TdType::Update(value) => &value.extra(),
+            TdType::Update(value) => value.extra(),
 
-            TdType::AccountTtl(value) => &value.extra(),
+            TdType::AccountTtl(value) => value.extra(),
 
-            TdType::Animations(value) => &value.extra(),
+            TdType::Animations(value) => value.extra(),
 
-            TdType::AuthenticationCodeInfo(value) => &value.extra(),
+            TdType::AuthenticationCodeInfo(value) => value.extra(),
 
-            TdType::AutoDownloadSettingsPresets(value) => &value.extra(),
+            TdType::AutoDownloadSettingsPresets(value) => value.extra(),
 
-            TdType::Background(value) => &value.extra(),
+            TdType::Background(value) => value.extra(),
 
-            TdType::Backgrounds(value) => &value.extra(),
+            TdType::Backgrounds(value) => value.extra(),
 
-            TdType::BankCardInfo(value) => &value.extra(),
+            TdType::BankCardInfo(value) => value.extra(),
 
-            TdType::BasicGroup(value) => &value.extra(),
+            TdType::BasicGroup(value) => value.extra(),
 
-            TdType::BasicGroupFullInfo(value) => &value.extra(),
+            TdType::BasicGroupFullInfo(value) => value.extra(),
 
-            TdType::CallId(value) => &value.extra(),
+            TdType::CallId(value) => value.extra(),
 
-            TdType::CallbackQueryAnswer(value) => &value.extra(),
+            TdType::CallbackQueryAnswer(value) => value.extra(),
 
-            TdType::Chat(value) => &value.extra(),
+            TdType::Chat(value) => value.extra(),
 
-            TdType::ChatAdministrators(value) => &value.extra(),
+            TdType::ChatAdministrators(value) => value.extra(),
 
-            TdType::ChatEvents(value) => &value.extra(),
+            TdType::ChatEvents(value) => value.extra(),
 
-            TdType::ChatFilter(value) => &value.extra(),
+            TdType::ChatFilter(value) => value.extra(),
 
-            TdType::ChatFilterInfo(value) => &value.extra(),
+            TdType::ChatFilterInfo(value) => value.extra(),
 
-            TdType::ChatInviteLink(value) => &value.extra(),
+            TdType::ChatInviteLink(value) => value.extra(),
 
-            TdType::ChatInviteLinkInfo(value) => &value.extra(),
+            TdType::ChatInviteLinkInfo(value) => value.extra(),
 
-            TdType::ChatLists(value) => &value.extra(),
+            TdType::ChatLists(value) => value.extra(),
 
-            TdType::ChatMember(value) => &value.extra(),
+            TdType::ChatMember(value) => value.extra(),
 
-            TdType::ChatMembers(value) => &value.extra(),
+            TdType::ChatMembers(value) => value.extra(),
 
-            TdType::ChatPhotos(value) => &value.extra(),
+            TdType::ChatPhotos(value) => value.extra(),
 
-            TdType::Chats(value) => &value.extra(),
+            TdType::Chats(value) => value.extra(),
 
-            TdType::ChatsNearby(value) => &value.extra(),
+            TdType::ChatsNearby(value) => value.extra(),
 
-            TdType::ConnectedWebsites(value) => &value.extra(),
+            TdType::ConnectedWebsites(value) => value.extra(),
 
-            TdType::Count(value) => &value.extra(),
+            TdType::Count(value) => value.extra(),
 
-            TdType::Countries(value) => &value.extra(),
+            TdType::Countries(value) => value.extra(),
 
-            TdType::CustomRequestResult(value) => &value.extra(),
+            TdType::CustomRequestResult(value) => value.extra(),
 
-            TdType::DatabaseStatistics(value) => &value.extra(),
+            TdType::DatabaseStatistics(value) => value.extra(),
 
-            TdType::DeepLinkInfo(value) => &value.extra(),
+            TdType::DeepLinkInfo(value) => value.extra(),
 
-            TdType::EmailAddressAuthenticationCodeInfo(value) => &value.extra(),
+            TdType::EmailAddressAuthenticationCodeInfo(value) => value.extra(),
 
-            TdType::Emojis(value) => &value.extra(),
+            TdType::Emojis(value) => value.extra(),
 
-            TdType::Error(value) => &value.extra(),
+            TdType::Error(value) => value.extra(),
 
-            TdType::File(value) => &value.extra(),
+            TdType::File(value) => value.extra(),
 
-            TdType::FilePart(value) => &value.extra(),
+            TdType::FilePart(value) => value.extra(),
 
-            TdType::FormattedText(value) => &value.extra(),
+            TdType::FormattedText(value) => value.extra(),
 
-            TdType::FoundMessages(value) => &value.extra(),
+            TdType::FoundMessages(value) => value.extra(),
 
-            TdType::GameHighScores(value) => &value.extra(),
+            TdType::GameHighScores(value) => value.extra(),
 
-            TdType::Hashtags(value) => &value.extra(),
+            TdType::Hashtags(value) => value.extra(),
 
-            TdType::HttpUrl(value) => &value.extra(),
+            TdType::HttpUrl(value) => value.extra(),
 
-            TdType::ImportedContacts(value) => &value.extra(),
+            TdType::ImportedContacts(value) => value.extra(),
 
-            TdType::InlineQueryResults(value) => &value.extra(),
+            TdType::InlineQueryResults(value) => value.extra(),
 
-            TdType::LanguagePackInfo(value) => &value.extra(),
+            TdType::LanguagePackInfo(value) => value.extra(),
 
-            TdType::LanguagePackStrings(value) => &value.extra(),
+            TdType::LanguagePackStrings(value) => value.extra(),
 
-            TdType::LocalizationTargetInfo(value) => &value.extra(),
+            TdType::LocalizationTargetInfo(value) => value.extra(),
 
-            TdType::LogTags(value) => &value.extra(),
+            TdType::LogTags(value) => value.extra(),
 
-            TdType::LogVerbosityLevel(value) => &value.extra(),
+            TdType::LogVerbosityLevel(value) => value.extra(),
 
-            TdType::Message(value) => &value.extra(),
+            TdType::Message(value) => value.extra(),
 
-            TdType::MessageLink(value) => &value.extra(),
+            TdType::MessageLink(value) => value.extra(),
 
-            TdType::MessageLinkInfo(value) => &value.extra(),
+            TdType::MessageLinkInfo(value) => value.extra(),
 
-            TdType::MessageSenders(value) => &value.extra(),
+            TdType::MessageSenders(value) => value.extra(),
 
-            TdType::MessageStatistics(value) => &value.extra(),
+            TdType::MessageStatistics(value) => value.extra(),
 
-            TdType::MessageThreadInfo(value) => &value.extra(),
+            TdType::MessageThreadInfo(value) => value.extra(),
 
-            TdType::Messages(value) => &value.extra(),
+            TdType::Messages(value) => value.extra(),
 
-            TdType::NetworkStatistics(value) => &value.extra(),
+            TdType::NetworkStatistics(value) => value.extra(),
 
-            TdType::Ok(value) => &value.extra(),
+            TdType::Ok(value) => value.extra(),
 
-            TdType::OrderInfo(value) => &value.extra(),
+            TdType::OrderInfo(value) => value.extra(),
 
-            TdType::PassportAuthorizationForm(value) => &value.extra(),
+            TdType::PassportAuthorizationForm(value) => value.extra(),
 
-            TdType::PassportElements(value) => &value.extra(),
+            TdType::PassportElements(value) => value.extra(),
 
-            TdType::PassportElementsWithErrors(value) => &value.extra(),
+            TdType::PassportElementsWithErrors(value) => value.extra(),
 
-            TdType::PasswordState(value) => &value.extra(),
+            TdType::PasswordState(value) => value.extra(),
 
-            TdType::PaymentForm(value) => &value.extra(),
+            TdType::PaymentForm(value) => value.extra(),
 
-            TdType::PaymentReceipt(value) => &value.extra(),
+            TdType::PaymentReceipt(value) => value.extra(),
 
-            TdType::PaymentResult(value) => &value.extra(),
+            TdType::PaymentResult(value) => value.extra(),
 
-            TdType::PhoneNumberInfo(value) => &value.extra(),
+            TdType::PhoneNumberInfo(value) => value.extra(),
 
-            TdType::Proxies(value) => &value.extra(),
+            TdType::Proxies(value) => value.extra(),
 
-            TdType::Proxy(value) => &value.extra(),
+            TdType::Proxy(value) => value.extra(),
 
-            TdType::PushReceiverId(value) => &value.extra(),
+            TdType::PushReceiverId(value) => value.extra(),
 
-            TdType::RecommendedChatFilters(value) => &value.extra(),
+            TdType::RecommendedChatFilters(value) => value.extra(),
 
-            TdType::RecoveryEmailAddress(value) => &value.extra(),
+            TdType::RecoveryEmailAddress(value) => value.extra(),
 
-            TdType::ScopeNotificationSettings(value) => &value.extra(),
+            TdType::ScopeNotificationSettings(value) => value.extra(),
 
-            TdType::Seconds(value) => &value.extra(),
+            TdType::Seconds(value) => value.extra(),
 
-            TdType::SecretChat(value) => &value.extra(),
+            TdType::SecretChat(value) => value.extra(),
 
-            TdType::Session(value) => &value.extra(),
+            TdType::Session(value) => value.extra(),
 
-            TdType::Sessions(value) => &value.extra(),
+            TdType::Sessions(value) => value.extra(),
 
-            TdType::StickerSet(value) => &value.extra(),
+            TdType::StickerSet(value) => value.extra(),
 
-            TdType::StickerSets(value) => &value.extra(),
+            TdType::StickerSets(value) => value.extra(),
 
-            TdType::Stickers(value) => &value.extra(),
+            TdType::Stickers(value) => value.extra(),
 
-            TdType::StorageStatistics(value) => &value.extra(),
+            TdType::StorageStatistics(value) => value.extra(),
 
-            TdType::StorageStatisticsFast(value) => &value.extra(),
+            TdType::StorageStatisticsFast(value) => value.extra(),
 
-            TdType::Supergroup(value) => &value.extra(),
+            TdType::Supergroup(value) => value.extra(),
 
-            TdType::SupergroupFullInfo(value) => &value.extra(),
+            TdType::SupergroupFullInfo(value) => value.extra(),
 
-            TdType::TMeUrls(value) => &value.extra(),
+            TdType::TMeUrls(value) => value.extra(),
 
-            TdType::TemporaryPasswordState(value) => &value.extra(),
+            TdType::TemporaryPasswordState(value) => value.extra(),
 
-            TdType::TestBytes(value) => &value.extra(),
+            TdType::TestBytes(value) => value.extra(),
 
-            TdType::TestInt(value) => &value.extra(),
+            TdType::TestInt(value) => value.extra(),
 
-            TdType::TestString(value) => &value.extra(),
+            TdType::TestString(value) => value.extra(),
 
-            TdType::TestVectorInt(value) => &value.extra(),
+            TdType::TestVectorInt(value) => value.extra(),
 
-            TdType::TestVectorIntObject(value) => &value.extra(),
+            TdType::TestVectorIntObject(value) => value.extra(),
 
-            TdType::TestVectorString(value) => &value.extra(),
+            TdType::TestVectorString(value) => value.extra(),
 
-            TdType::TestVectorStringObject(value) => &value.extra(),
+            TdType::TestVectorStringObject(value) => value.extra(),
 
-            TdType::Text(value) => &value.extra(),
+            TdType::Text(value) => value.extra(),
 
-            TdType::TextEntities(value) => &value.extra(),
+            TdType::TextEntities(value) => value.extra(),
 
-            TdType::Updates(value) => &value.extra(),
+            TdType::Updates(value) => value.extra(),
 
-            TdType::User(value) => &value.extra(),
+            TdType::User(value) => value.extra(),
 
-            TdType::UserFullInfo(value) => &value.extra(),
+            TdType::UserFullInfo(value) => value.extra(),
 
-            TdType::UserPrivacySettingRules(value) => &value.extra(),
+            TdType::UserPrivacySettingRules(value) => value.extra(),
 
-            TdType::Users(value) => &value.extra(),
+            TdType::Users(value) => value.extra(),
 
-            TdType::ValidatedOrderInfo(value) => &value.extra(),
+            TdType::ValidatedOrderInfo(value) => value.extra(),
 
-            TdType::WebPage(value) => &value.extra(),
+            TdType::WebPage(value) => value.extra(),
 
-            TdType::WebPageInstantView(value) => &value.extra(),
+            TdType::WebPageInstantView(value) => value.extra(),
 
-            _ => &None,
+            _ => None,
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::types::{from_json, TdType, UpdateAuthorizationState};
-
-    #[test]
-    fn test_deserialize_enum() {
-        match from_json::<UpdateAuthorizationState>(
-            r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#,
-        ) {
-            Ok(_) => {}
-            Err(e) => {
-                panic!("{}", e)
-            }
-        };
-
-        match from_json::<TdType>(
-            r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#,
-        ) {
-            Ok(t) => match t {
-                TdType::UpdateAuthorizationState(_) => {}
-                _ => panic!("from_json failed: {:?}", t),
-            },
-            Err(e) => {
-                panic!("{}", e)
-            }
-        };
     }
 }
 
@@ -1411,4 +1382,58 @@ where
         }
     }
     Ok(r)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::types::{from_json, TdType, UpdateAuthorizationState, JsonValue};
+
+    #[test]
+    fn test_deserialize_enum() {
+        match from_json::<UpdateAuthorizationState>(
+            r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#,
+        ) {
+            Ok(_) => {}
+            Err(e) => {
+                panic!("{}", e)
+            }
+        };
+
+        match from_json::<TdType>(
+            r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#,
+        ) {
+            Ok(t) => match t {
+                TdType::UpdateAuthorizationState(_) => {}
+                _ => panic!("from_json failed: {:?}", t),
+            },
+            Err(e) => {
+                panic!("{}", e)
+            }
+        };
+
+        match from_json::<JsonValue> (
+            r#"{"@type":"jsonValueObject","members":[{"@type":"jsonObjectMember","key":"emojies_animated_zoom","value":{"@type":"jsonValueNumber","value":0.625000}},{"@type":"jsonObjectMember","key":"youtube_pip","value":{"@type":"jsonValueString","value":"inapp"}},{"@type":"jsonObjectMember","key":"qr_login_camera","value":{"@type":"jsonValueBoolean","value":false}},{"@type":"jsonObjectMember","key":"qr_login_code","value":{"@type":"jsonValueString","value":"disabled"}}],"@extra":"a26563e1-114b-45d3-abb5-08c541a3bdb3","@client_id":1}"#,
+        ) {
+            Ok(t) => match t {
+                JsonValue::Object(o) => {}
+                _ => panic!("got invalid enum")
+            },
+            Err(e) => panic!("{}", e)
+        };
+
+        match from_json::<TdType>(
+            r#"{"@type":"jsonValueObject","members":[{"@type":"jsonObjectMember","key":"emojies_animated_zoom","value":{"@type":"jsonValueNumber","value":0.625000}},{"@type":"jsonObjectMember","key":"youtube_pip","value":{"@type":"jsonValueString","value":"inapp"}},{"@type":"jsonObjectMember","key":"qr_login_camera","value":{"@type":"jsonValueBoolean","value":false}},{"@type":"jsonObjectMember","key":"qr_login_code","value":{"@type":"jsonValueString","value":"disabled"}}],"@extra":"a26563e1-114b-45d3-abb5-08c541a3bdb3","@client_id":1}"#,
+        ) {
+            Ok(t) => match t {
+                TdType::JsonValue(j) => match j {
+                    JsonValue::Object(o) => {}
+                    _ => panic!("from_json failed: {:?}", j)
+                },
+                _ => panic!("from_json failed: {:?}", t)
+            },
+            Err(e) => {
+                 panic!("{}", e)
+             }
+        };
+    }
 }
