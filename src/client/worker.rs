@@ -2,9 +2,9 @@
 use super::observer::OBSERVER;
 use async_trait::async_trait;
 use std::collections::HashMap;
-use std::sync::Arc;
+use std::sync::{Arc};
 
-use super::client::{Client, RawApi, TdLibClient};
+use super::client::{Client, RawApi, TdLibClient, ClientState};
 use crate::{
     errors::RTDError,
     errors::RTDResult,
@@ -15,12 +15,12 @@ use crate::{
         AuthorizationStateWaitPassword, AuthorizationStateWaitPhoneNumber,
         AuthorizationStateWaitRegistration, CheckAuthenticationCode, CheckAuthenticationPassword,
         CheckDatabaseEncryptionKey, RegisterUser, SetAuthenticationPhoneNumber, SetTdlibParameters,
-        TdType, TdlibParameters, UpdateAuthorizationState,
+        TdType, UpdateAuthorizationState, RObject
     },
 };
 use std::io;
 use std::sync::atomic::{AtomicBool, Ordering};
-use tokio::{sync::mpsc, task::JoinHandle};
+use tokio::{sync::{mpsc, RwLock}, task::JoinHandle};
 
 const CLOSED_CHANNEL_ERROR: RTDError = RTDError::Internal("channel closed");
 
@@ -54,15 +54,6 @@ pub trait AuthStateHandler {
     ) -> (String, String);
 }
 
-#[derive(Debug, Clone)]
-pub enum ClientState {
-    /// Client opened. You can start interaction
-    Opened,
-    /// Client closed properly. You must reopen it if you want to interact with Telegram
-    Closed,
-    /// Client closed with error
-    Error(String),
-}
 
 /// Provides minimal implementation of `AuthStateHandler`.
 /// All required methods wait for stdin input
@@ -152,7 +143,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
 #[derive(Debug)]
 pub struct WorkerBuilder<A, S>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
+    A: AuthStateHandler,
     S: TdLibClient,
 {
     read_updates_timeout: f64,
@@ -173,7 +164,7 @@ impl Default for WorkerBuilder<ConsoleAuthStateHandler, RawApi> {
 
 impl<A, S> WorkerBuilder<A, S>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
+    A: AuthStateHandler,
     S: TdLibClient,
 {
     pub fn with_read_updates_timeout(mut self, read_updates_timeout: f64) -> Self {
@@ -185,7 +176,7 @@ where
     /// See [AuthorizationState](crate::types::AuthorizationState).
     pub fn with_auth_state_handler<N>(self, auth_state_handler: N) -> WorkerBuilder<N, S>
     where
-        N: AuthStateHandler + Send + Sync + 'static,
+        N: AuthStateHandler,
     {
         WorkerBuilder {
             auth_state_handler,
@@ -201,7 +192,7 @@ where
 
     pub fn build(self) -> RTDResult<Worker<A, S>> {
         if self.client.is_none() {
-            return Err(RTDError::InvalidParameters(
+            return Err(RTDError::BadRequest(
                 "at least one client must created",
             ));
         };
@@ -219,13 +210,13 @@ where
 #[derive(Debug, Clone)]
 pub struct Worker<A, S>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
+    A: AuthStateHandler,
     S: TdLibClient,
 {
     stop_flag: Arc<AtomicBool>,
     auth_state_handler: Arc<A>,
     read_updates_timeout: f64,
-    clients: Arc<HashMap<ClientId, Client<S>>>,
+    clients: Arc<RwLock<HashMap<ClientId, Client<S>>>>,
 }
 
 impl Worker<ConsoleAuthStateHandler, RawApi> {
@@ -236,7 +227,7 @@ impl Worker<ConsoleAuthStateHandler, RawApi> {
 
 impl<A, S> Worker<A, S>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
+    A: AuthStateHandler,
     S: TdLibClient,
 {
     // Client must be created only with builder
@@ -249,7 +240,7 @@ where
             stop_flag,
             read_updates_timeout,
             auth_state_handler: Arc::new(auth_state_handler),
-            clients: Arc::new(clients),
+            clients: Arc::new(RwLock::new(clients)),
         }
     }
 
@@ -257,20 +248,10 @@ where
     /// Method blocks until authorization performed.
     /// It returns [JoinHandle](tokio::task::JoinHandle) which allows you to handle client state.
     pub async fn start(&mut self) -> Result<JoinHandle<ClientState>, RTDError> {
-        let (client_state_sx, mut client_state_rx) = mpsc::channel::<ClientState>(2);
         let (auth_sx, auth_rx) = mpsc::channel::<UpdateAuthorizationState>(10);
 
         let updates_handle = self.init_updates_task(auth_sx);
-        let auth_handle = self.init_auth_task(client_state_sx, auth_rx);
-
-        // wait until ClientState::Opened received
-        if let Some(msg) = client_state_rx.recv().await {
-            match msg {
-                ClientState::Closed => return Ok(tokio::spawn(async { ClientState::Closed })),
-                ClientState::Error(e) => return Err(RTDError::TdlibError(e)),
-                ClientState::Opened => {}
-            }
-        }
+        let auth_handle = self.init_auth_task(auth_rx);
 
         let stop = self.stop_flag.clone();
 
@@ -283,11 +264,6 @@ where
                 u = updates_handle => match u {
                     Ok(_) => ClientState::Closed,
                     Err(e) => ClientState::Error(e.to_string()),
-                },
-                r = client_state_rx.recv() => match r {
-                    Some(ClientState::Opened) => ClientState::Error("received Opened state again".to_string()),
-                    Some(state) => state,
-                    None => ClientState::Error("auth state channel closed".to_string())
                 },
             };
             stop.store(true, Ordering::Release);
@@ -335,7 +311,7 @@ where
                                 }
                                 _ => {
                                     if let Some(client_id) = t.client_id() {
-                                        match clients.get(client_id) {
+                                        match clients.read().await.get(&client_id) {
                                             None => {
                                                 warn!(
                                                     "found updates for unavailable client ({})",
@@ -368,7 +344,6 @@ where
     // created task handles [UpdateAuthorizationState][crate::types::UpdateAuthorizationState] and sends it to particular methods of specified [AuthStateHandler](crate::client::client::AuthStateHandler)
     fn init_auth_task(
         &self,
-        client_state_sx: mpsc::Sender<ClientState>,
         mut auth_rx: mpsc::Receiver<UpdateAuthorizationState>,
     ) -> JoinHandle<RTDResult<()>> {
         let auth_state_handler = self.auth_state_handler.clone();
@@ -377,7 +352,7 @@ where
             while let Some(auth_state) = auth_rx.recv().await {
                 trace!("received new auth state: {:?}", auth_state);
                 if let Some(client_id) = auth_state.client_id() {
-                    match clients.get(&client_id) {
+                    match clients.read().await.get(&client_id) {
                         None => {warn!(
                                                     "found auth updates for unavailable client ({})",
                                                     client_id
@@ -385,11 +360,9 @@ where
                         Some(client) => {
 
                             handle_auth_state(
-                                &auth_api,
-                                auth_state_handler.clone(),
+                                client,
+                                auth_state_handler.as_ref(),
                                 auth_state,
-                                client_state_sx.clone(),
-                                tdlib_params.clone(),
                             )
                             .await?;
                         }
@@ -402,16 +375,14 @@ where
 }
 
 async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient>(
-    api: &Client<R>,
-    auth_state_handler: Arc<A>,
+    client: &Client<R>,
+    auth_state_handler: &A,
     state: UpdateAuthorizationState,
-    client_state_sx: mpsc::Sender<ClientState>,
-    tdlib_parameters: Arc<TdlibParameters>,
 ) -> RTDResult<()> {
     match state.authorization_state() {
         AuthorizationState::_Default(_) => Ok(()),
         AuthorizationState::Closed(_) => {
-            client_state_sx
+            client.auth_sender()
                 .send(ClientState::Closed)
                 .await
                 .map_err(|_| CLOSED_CHANNEL_ERROR)?;
@@ -421,7 +392,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient>(
         AuthorizationState::LoggingOut(_) => Ok(()),
         AuthorizationState::Ready(_) => {
             trace!("ready state received, send signal");
-            client_state_sx
+            client.auth_sender()
                 .send(ClientState::Opened)
                 .await
                 .map_err(|_| CLOSED_CHANNEL_ERROR)?;
@@ -429,7 +400,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient>(
         }
         AuthorizationState::WaitCode(wait_code) => {
             let code = auth_state_handler.handle_wait_code(wait_code).await;
-            api.check_authentication_code(CheckAuthenticationCode::builder().code(code).build())
+            client.check_authentication_code(CheckAuthenticationCode::builder().code(code).build())
                 .await?;
             Ok(())
         }
@@ -438,7 +409,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient>(
                 .handle_encryption_key(wait_encryption_key)
                 .await;
             trace!("checking encryption key");
-            api.check_database_encryption_key(
+            client.check_database_encryption_key(
                 CheckDatabaseEncryptionKey::builder()
                     .encryption_key(key)
                     .build(),
@@ -458,7 +429,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient>(
         AuthorizationState::WaitPassword(wait_password) => {
             let password = auth_state_handler.handle_wait_password(wait_password).await;
             trace!("checking password");
-            api.check_authentication_password(
+            client.check_authentication_password(
                 CheckAuthenticationPassword::builder()
                     .password(password)
                     .build(),
@@ -471,7 +442,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient>(
             let phone_number = auth_state_handler
                 .handle_wait_phone_number(wait_phone_number)
                 .await;
-            api.set_authentication_phone_number(
+            client.set_authentication_phone_number(
                 SetAuthenticationPhoneNumber::builder()
                     .phone_number(phone_number)
                     .build(),
@@ -488,14 +459,14 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient>(
                 .first_name(first_name)
                 .last_name(last_name)
                 .build();
-            api.register_user(register).await?;
+            client.register_user(register).await?;
             trace!("handled register user");
             Ok(())
         }
         AuthorizationState::WaitTdlibParameters(_) => {
-            api.set_tdlib_parameters(
+            client.set_tdlib_parameters(
                 SetTdlibParameters::builder()
-                    .parameters(tdlib_parameters)
+                    .parameters(client.tdlib_parameters())
                     .build(),
             )
             .await?;

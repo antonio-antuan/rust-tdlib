@@ -6,6 +6,7 @@ use crate::{
     types::*,
 };
 use tokio::sync::mpsc;
+use tokio::task::JoinHandle;
 
 #[doc(hidden)]
 pub trait TdLibClient {
@@ -47,6 +48,17 @@ impl RawApi {
     }
 }
 
+
+#[derive(Debug, Clone)]
+pub enum ClientState {
+    /// Client opened. You can start interaction
+    Opened,
+    /// Client closed properly. You must reopen it if you want to interact with Telegram
+    Closed,
+    /// Client closed with error
+    Error(String),
+}
+
 #[derive(Clone, Debug)]
 /// Struct stores all methods which you can call to interact with Telegram, such as:
 /// [send_message](Api::send_message), [download_file](Api::download_file), [search_chats](Api::search_chats) and so on.
@@ -57,6 +69,8 @@ where
     raw_api: S,
     client_id: i32,
     updates_sender: Option<mpsc::Sender<Box<TdType>>>,
+    auth_state_sender: mpsc::Sender<ClientState>,
+    auth_state_receiver: Option<mpsc::Receiver<ClientState>>,
     tdlib_parameters: TdlibParameters,
 }
 
@@ -67,9 +81,16 @@ where
     pub fn client_id(&self) -> i32 {
         self.client_id
     }
+    pub fn tdlib_parameters(&self) -> &TdlibParameters {
+        &self.tdlib_parameters
+    }
 
     pub(crate) fn updates_sender(&self) -> &Option<mpsc::Sender<Box<TdType>>> {
         &self.updates_sender
+    }
+
+    pub(crate) fn auth_sender(&self) -> &mpsc::Sender<ClientState> {
+        &self.auth_state_sender
     }
 }
 
@@ -119,7 +140,7 @@ where
 
     pub fn build(self) -> RTDResult<Client<R>> {
         if self.tdlib_parameters.is_none() {
-            return Err(RTDError::InvalidParameters("tdlib_parameters not set"));
+            return Err(RTDError::BadRequest("tdlib_parameters not set"));
         };
 
         let client = Client::new(
@@ -147,12 +168,40 @@ where
         tdlib_parameters: TdlibParameters,
     ) -> Self {
         let client_id = tdjson::new_client();
+        let (auth_state_sender, auth_state_receiver) = mpsc::channel(10);
         Self {
             raw_api,
             client_id,
+            auth_state_receiver: Some(auth_state_receiver),
+            auth_state_sender,
             updates_sender,
             tdlib_parameters,
         }
+    }
+
+    pub async fn wait_for_auth(&mut self) -> RTDResult<JoinHandle<ClientState>> {
+        let mut recv = match &self.auth_state_receiver {
+            None => return Err(RTDError::BadRequest("client already initialized")),
+            Some(recv) => {
+                self.auth_state_receiver = None;
+                recv
+            }
+        };
+        if let Some(msg) = recv.recv().await {
+            match msg {
+                ClientState::Closed => return Ok(tokio::spawn(async { ClientState::Closed })),
+                ClientState::Error(e) => return Err(RTDError::TdlibError(e)),
+                ClientState::Opened => {}
+            }
+        }
+        Ok(tokio::spawn(async move {
+             match recv.recv().await {
+                Some(ClientState::Opened) => ClientState::Error("received Opened state again".to_string()),
+                Some(state) => state,
+                None => ClientState::Error("auth state channel closed".to_string())
+            }
+        }))
+
     }
 
     // Accepts an incoming call

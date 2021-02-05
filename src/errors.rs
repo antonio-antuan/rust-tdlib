@@ -6,7 +6,7 @@ pub enum RTDError {
     SerdeJson(serde_json::Error),
     TdlibError(String),
     Internal(&'static str),
-    InvalidParameters(&'static str),
+    BadRequest(&'static str),
 }
 
 pub type RTDResult<T, E = RTDError> = Result<T, E>;
@@ -26,7 +26,7 @@ impl fmt::Display for RTDError {
             RTDError::Internal(err) => {
                 write!(f, "{}", err)
             }
-            RTDError::InvalidParameters(err) => {
+            RTDError::BadRequest(err) => {
                 write!(f, "{}", err)
             }
         }
@@ -40,7 +40,7 @@ impl error::Error for RTDError {
             RTDError::SerdeJson(ref err) => Some(err),
             RTDError::Internal(_) => None,
             RTDError::TdlibError(_) => None,
-            RTDError::InvalidParameters(_) => None,
+            RTDError::BadRequest(_) => None,
         }
     }
 }
