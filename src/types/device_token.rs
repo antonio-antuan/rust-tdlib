@@ -2,39 +2,49 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Represents a data needed to subscribe for push notifications through registerDevice method. To use specific push notification service, the correct application platform must be specified and a valid server authentication data must be uploaded at https://my.telegram.org
 pub trait TDDeviceToken: Debug + RObject {}
 
 /// Represents a data needed to subscribe for push notifications through registerDevice method. To use specific push notification service, the correct application platform must be specified and a valid server authentication data must be uploaded at https://my.telegram.org
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum DeviceToken {
     #[doc(hidden)]
     _Default(()),
     /// A token for Apple Push Notification service
+    #[serde(rename(deserialize = "deviceTokenApplePush"))]
     ApplePush(DeviceTokenApplePush),
     /// A token for Apple Push Notification service VoIP notifications
+    #[serde(rename(deserialize = "deviceTokenApplePushVoIP"))]
     ApplePushVoIP(DeviceTokenApplePushVoIP),
     /// A token for BlackBerry Push Service
+    #[serde(rename(deserialize = "deviceTokenBlackBerryPush"))]
     BlackBerryPush(DeviceTokenBlackBerryPush),
     /// A token for Firebase Cloud Messaging
+    #[serde(rename(deserialize = "deviceTokenFirebaseCloudMessaging"))]
     FirebaseCloudMessaging(DeviceTokenFirebaseCloudMessaging),
     /// A token for Microsoft Push Notification Service
+    #[serde(rename(deserialize = "deviceTokenMicrosoftPush"))]
     MicrosoftPush(DeviceTokenMicrosoftPush),
     /// A token for Microsoft Push Notification Service VoIP channel
+    #[serde(rename(deserialize = "deviceTokenMicrosoftPushVoIP"))]
     MicrosoftPushVoIP(DeviceTokenMicrosoftPushVoIP),
     /// A token for Simple Push API for Firefox OS
+    #[serde(rename(deserialize = "deviceTokenSimplePush"))]
     SimplePush(DeviceTokenSimplePush),
     /// A token for Tizen Push Service
+    #[serde(rename(deserialize = "deviceTokenTizenPush"))]
     TizenPush(DeviceTokenTizenPush),
     /// A token for Ubuntu Push Client service
+    #[serde(rename(deserialize = "deviceTokenUbuntuPush"))]
     UbuntuPush(DeviceTokenUbuntuPush),
     /// A token for web Push API
+    #[serde(rename(deserialize = "deviceTokenWebPush"))]
     WebPush(DeviceTokenWebPush),
     /// A token for Windows Push Notification Services
+    #[serde(rename(deserialize = "deviceTokenWindowsPush"))]
     WindowsPush(DeviceTokenWindowsPush),
 }
 
@@ -44,49 +54,7 @@ impl Default for DeviceToken {
     }
 }
 
-impl<'de> Deserialize<'de> for DeviceToken {
-    fn deserialize<D>(deserializer: D) -> Result<DeviceToken, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          DeviceToken,
-          (deviceTokenApplePush, ApplePush);
-          (deviceTokenApplePushVoIP, ApplePushVoIP);
-          (deviceTokenBlackBerryPush, BlackBerryPush);
-          (deviceTokenFirebaseCloudMessaging, FirebaseCloudMessaging);
-          (deviceTokenMicrosoftPush, MicrosoftPush);
-          (deviceTokenMicrosoftPushVoIP, MicrosoftPushVoIP);
-          (deviceTokenSimplePush, SimplePush);
-          (deviceTokenTizenPush, TizenPush);
-          (deviceTokenUbuntuPush, UbuntuPush);
-          (deviceTokenWebPush, WebPush);
-          (deviceTokenWindowsPush, WindowsPush);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for DeviceToken {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            DeviceToken::ApplePush(t) => t.td_name(),
-            DeviceToken::ApplePushVoIP(t) => t.td_name(),
-            DeviceToken::BlackBerryPush(t) => t.td_name(),
-            DeviceToken::FirebaseCloudMessaging(t) => t.td_name(),
-            DeviceToken::MicrosoftPush(t) => t.td_name(),
-            DeviceToken::MicrosoftPushVoIP(t) => t.td_name(),
-            DeviceToken::SimplePush(t) => t.td_name(),
-            DeviceToken::TizenPush(t) => t.td_name(),
-            DeviceToken::UbuntuPush(t) => t.td_name(),
-            DeviceToken::WebPush(t) => t.td_name(),
-            DeviceToken::WindowsPush(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -104,9 +72,6 @@ impl RObject for DeviceToken {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -148,9 +113,6 @@ impl AsRef<DeviceToken> for DeviceToken {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenApplePush {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -163,19 +125,12 @@ pub struct DeviceTokenApplePush {
 
 impl RObject for DeviceTokenApplePush {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenApplePush"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -187,9 +142,8 @@ impl DeviceTokenApplePush {
     }
     pub fn builder() -> RTDDeviceTokenApplePushBuilder {
         let mut inner = DeviceTokenApplePush::default();
-        inner.td_name = "deviceTokenApplePush".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenApplePushBuilder { inner }
     }
 
@@ -239,9 +193,6 @@ impl AsRef<DeviceTokenApplePush> for RTDDeviceTokenApplePushBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenApplePushVoIP {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -256,19 +207,12 @@ pub struct DeviceTokenApplePushVoIP {
 
 impl RObject for DeviceTokenApplePushVoIP {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenApplePushVoIP"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -280,9 +224,8 @@ impl DeviceTokenApplePushVoIP {
     }
     pub fn builder() -> RTDDeviceTokenApplePushVoIPBuilder {
         let mut inner = DeviceTokenApplePushVoIP::default();
-        inner.td_name = "deviceTokenApplePushVoIP".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenApplePushVoIPBuilder { inner }
     }
 
@@ -341,9 +284,6 @@ impl AsRef<DeviceTokenApplePushVoIP> for RTDDeviceTokenApplePushVoIPBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenBlackBerryPush {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -354,19 +294,12 @@ pub struct DeviceTokenBlackBerryPush {
 
 impl RObject for DeviceTokenBlackBerryPush {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenBlackBerryPush"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -378,9 +311,8 @@ impl DeviceTokenBlackBerryPush {
     }
     pub fn builder() -> RTDDeviceTokenBlackBerryPushBuilder {
         let mut inner = DeviceTokenBlackBerryPush::default();
-        inner.td_name = "deviceTokenBlackBerryPush".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenBlackBerryPushBuilder { inner }
     }
 
@@ -421,9 +353,6 @@ impl AsRef<DeviceTokenBlackBerryPush> for RTDDeviceTokenBlackBerryPushBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenFirebaseCloudMessaging {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -436,19 +365,12 @@ pub struct DeviceTokenFirebaseCloudMessaging {
 
 impl RObject for DeviceTokenFirebaseCloudMessaging {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenFirebaseCloudMessaging"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -460,9 +382,8 @@ impl DeviceTokenFirebaseCloudMessaging {
     }
     pub fn builder() -> RTDDeviceTokenFirebaseCloudMessagingBuilder {
         let mut inner = DeviceTokenFirebaseCloudMessaging::default();
-        inner.td_name = "deviceTokenFirebaseCloudMessaging".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenFirebaseCloudMessagingBuilder { inner }
     }
 
@@ -512,9 +433,6 @@ impl AsRef<DeviceTokenFirebaseCloudMessaging> for RTDDeviceTokenFirebaseCloudMes
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenMicrosoftPush {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -525,19 +443,12 @@ pub struct DeviceTokenMicrosoftPush {
 
 impl RObject for DeviceTokenMicrosoftPush {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenMicrosoftPush"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -549,9 +460,8 @@ impl DeviceTokenMicrosoftPush {
     }
     pub fn builder() -> RTDDeviceTokenMicrosoftPushBuilder {
         let mut inner = DeviceTokenMicrosoftPush::default();
-        inner.td_name = "deviceTokenMicrosoftPush".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenMicrosoftPushBuilder { inner }
     }
 
@@ -592,9 +502,6 @@ impl AsRef<DeviceTokenMicrosoftPush> for RTDDeviceTokenMicrosoftPushBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenMicrosoftPushVoIP {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -605,19 +512,12 @@ pub struct DeviceTokenMicrosoftPushVoIP {
 
 impl RObject for DeviceTokenMicrosoftPushVoIP {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenMicrosoftPushVoIP"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -629,9 +529,8 @@ impl DeviceTokenMicrosoftPushVoIP {
     }
     pub fn builder() -> RTDDeviceTokenMicrosoftPushVoIPBuilder {
         let mut inner = DeviceTokenMicrosoftPushVoIP::default();
-        inner.td_name = "deviceTokenMicrosoftPushVoIP".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenMicrosoftPushVoIPBuilder { inner }
     }
 
@@ -672,9 +571,6 @@ impl AsRef<DeviceTokenMicrosoftPushVoIP> for RTDDeviceTokenMicrosoftPushVoIPBuil
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenSimplePush {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -685,19 +581,12 @@ pub struct DeviceTokenSimplePush {
 
 impl RObject for DeviceTokenSimplePush {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenSimplePush"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -709,9 +598,8 @@ impl DeviceTokenSimplePush {
     }
     pub fn builder() -> RTDDeviceTokenSimplePushBuilder {
         let mut inner = DeviceTokenSimplePush::default();
-        inner.td_name = "deviceTokenSimplePush".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenSimplePushBuilder { inner }
     }
 
@@ -752,9 +640,6 @@ impl AsRef<DeviceTokenSimplePush> for RTDDeviceTokenSimplePushBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenTizenPush {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -765,19 +650,12 @@ pub struct DeviceTokenTizenPush {
 
 impl RObject for DeviceTokenTizenPush {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenTizenPush"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -789,9 +667,8 @@ impl DeviceTokenTizenPush {
     }
     pub fn builder() -> RTDDeviceTokenTizenPushBuilder {
         let mut inner = DeviceTokenTizenPush::default();
-        inner.td_name = "deviceTokenTizenPush".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenTizenPushBuilder { inner }
     }
 
@@ -832,9 +709,6 @@ impl AsRef<DeviceTokenTizenPush> for RTDDeviceTokenTizenPushBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenUbuntuPush {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -845,19 +719,12 @@ pub struct DeviceTokenUbuntuPush {
 
 impl RObject for DeviceTokenUbuntuPush {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenUbuntuPush"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -869,9 +736,8 @@ impl DeviceTokenUbuntuPush {
     }
     pub fn builder() -> RTDDeviceTokenUbuntuPushBuilder {
         let mut inner = DeviceTokenUbuntuPush::default();
-        inner.td_name = "deviceTokenUbuntuPush".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenUbuntuPushBuilder { inner }
     }
 
@@ -912,9 +778,6 @@ impl AsRef<DeviceTokenUbuntuPush> for RTDDeviceTokenUbuntuPushBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenWebPush {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -929,19 +792,12 @@ pub struct DeviceTokenWebPush {
 
 impl RObject for DeviceTokenWebPush {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenWebPush"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -953,9 +809,8 @@ impl DeviceTokenWebPush {
     }
     pub fn builder() -> RTDDeviceTokenWebPushBuilder {
         let mut inner = DeviceTokenWebPush::default();
-        inner.td_name = "deviceTokenWebPush".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenWebPushBuilder { inner }
     }
 
@@ -1014,9 +869,6 @@ impl AsRef<DeviceTokenWebPush> for RTDDeviceTokenWebPushBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenWindowsPush {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1027,19 +879,12 @@ pub struct DeviceTokenWindowsPush {
 
 impl RObject for DeviceTokenWindowsPush {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "deviceTokenWindowsPush"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1051,9 +896,8 @@ impl DeviceTokenWindowsPush {
     }
     pub fn builder() -> RTDDeviceTokenWindowsPushBuilder {
         let mut inner = DeviceTokenWindowsPush::default();
-        inner.td_name = "deviceTokenWindowsPush".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDeviceTokenWindowsPushBuilder { inner }
     }
 

@@ -2,25 +2,28 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Contains information about the origin of a forwarded message
 pub trait TDMessageForwardOrigin: Debug + RObject {}
 
 /// Contains information about the origin of a forwarded message
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum MessageForwardOrigin {
     #[doc(hidden)]
     _Default(()),
     /// The message was originally a post in a channel
+    #[serde(rename(deserialize = "messageForwardOriginChannel"))]
     Channel(MessageForwardOriginChannel),
     /// The message was originally sent by an anonymous chat administrator on behalf of the chat
+    #[serde(rename(deserialize = "messageForwardOriginChat"))]
     Chat(MessageForwardOriginChat),
     /// The message was originally sent by a user, which is hidden by their privacy settings
+    #[serde(rename(deserialize = "messageForwardOriginHiddenUser"))]
     HiddenUser(MessageForwardOriginHiddenUser),
     /// The message was originally sent by a known user
+    #[serde(rename(deserialize = "messageForwardOriginUser"))]
     User(MessageForwardOriginUser),
 }
 
@@ -30,35 +33,7 @@ impl Default for MessageForwardOrigin {
     }
 }
 
-impl<'de> Deserialize<'de> for MessageForwardOrigin {
-    fn deserialize<D>(deserializer: D) -> Result<MessageForwardOrigin, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          MessageForwardOrigin,
-          (messageForwardOriginChannel, Channel);
-          (messageForwardOriginChat, Chat);
-          (messageForwardOriginHiddenUser, HiddenUser);
-          (messageForwardOriginUser, User);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for MessageForwardOrigin {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            MessageForwardOrigin::Channel(t) => t.td_name(),
-            MessageForwardOrigin::Chat(t) => t.td_name(),
-            MessageForwardOrigin::HiddenUser(t) => t.td_name(),
-            MessageForwardOrigin::User(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -69,9 +44,6 @@ impl RObject for MessageForwardOrigin {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -106,9 +78,6 @@ impl AsRef<MessageForwardOrigin> for MessageForwardOrigin {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageForwardOriginChannel {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -123,19 +92,12 @@ pub struct MessageForwardOriginChannel {
 
 impl RObject for MessageForwardOriginChannel {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageForwardOriginChannel"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -147,9 +109,8 @@ impl MessageForwardOriginChannel {
     }
     pub fn builder() -> RTDMessageForwardOriginChannelBuilder {
         let mut inner = MessageForwardOriginChannel::default();
-        inner.td_name = "messageForwardOriginChannel".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDMessageForwardOriginChannelBuilder { inner }
     }
 
@@ -208,9 +169,6 @@ impl AsRef<MessageForwardOriginChannel> for RTDMessageForwardOriginChannelBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageForwardOriginChat {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -223,19 +181,12 @@ pub struct MessageForwardOriginChat {
 
 impl RObject for MessageForwardOriginChat {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageForwardOriginChat"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -247,9 +198,8 @@ impl MessageForwardOriginChat {
     }
     pub fn builder() -> RTDMessageForwardOriginChatBuilder {
         let mut inner = MessageForwardOriginChat::default();
-        inner.td_name = "messageForwardOriginChat".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDMessageForwardOriginChatBuilder { inner }
     }
 
@@ -299,9 +249,6 @@ impl AsRef<MessageForwardOriginChat> for RTDMessageForwardOriginChatBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageForwardOriginHiddenUser {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -312,19 +259,12 @@ pub struct MessageForwardOriginHiddenUser {
 
 impl RObject for MessageForwardOriginHiddenUser {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageForwardOriginHiddenUser"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -336,9 +276,8 @@ impl MessageForwardOriginHiddenUser {
     }
     pub fn builder() -> RTDMessageForwardOriginHiddenUserBuilder {
         let mut inner = MessageForwardOriginHiddenUser::default();
-        inner.td_name = "messageForwardOriginHiddenUser".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDMessageForwardOriginHiddenUserBuilder { inner }
     }
 
@@ -379,9 +318,6 @@ impl AsRef<MessageForwardOriginHiddenUser> for RTDMessageForwardOriginHiddenUser
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageForwardOriginUser {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -392,19 +328,12 @@ pub struct MessageForwardOriginUser {
 
 impl RObject for MessageForwardOriginUser {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageForwardOriginUser"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -416,9 +345,8 @@ impl MessageForwardOriginUser {
     }
     pub fn builder() -> RTDMessageForwardOriginUserBuilder {
         let mut inner = MessageForwardOriginUser::default();
-        inner.td_name = "messageForwardOriginUser".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDMessageForwardOriginUserBuilder { inner }
     }
 

@@ -2,25 +2,28 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes a stream to which TDLib internal log is written
 pub trait TDLogStream: Debug + RObject {}
 
 /// Describes a stream to which TDLib internal log is written
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum LogStream {
     #[doc(hidden)]
     _Default(()),
     /// Returns information about currently used log stream for internal logging of TDLib. Can be called synchronously
+    #[serde(rename(deserialize = "getLogStream"))]
     GetLogStream(GetLogStream),
     /// The log is written to stderr or an OS specific log
+    #[serde(rename(deserialize = "logStreamDefault"))]
     Default(LogStreamDefault),
     /// The log is written nowhere
+    #[serde(rename(deserialize = "logStreamEmpty"))]
     Empty(LogStreamEmpty),
     /// The log is written to a file
+    #[serde(rename(deserialize = "logStreamFile"))]
     File(LogStreamFile),
 }
 
@@ -30,35 +33,7 @@ impl Default for LogStream {
     }
 }
 
-impl<'de> Deserialize<'de> for LogStream {
-    fn deserialize<D>(deserializer: D) -> Result<LogStream, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          LogStream,
-          (getLogStream, GetLogStream);
-          (logStreamDefault, Default);
-          (logStreamEmpty, Empty);
-          (logStreamFile, File);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for LogStream {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            LogStream::GetLogStream(t) => t.td_name(),
-            LogStream::Default(t) => t.td_name(),
-            LogStream::Empty(t) => t.td_name(),
-            LogStream::File(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -69,9 +44,6 @@ impl RObject for LogStream {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -106,9 +78,6 @@ impl AsRef<LogStream> for LogStream {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LogStreamDefault {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -117,19 +86,12 @@ pub struct LogStreamDefault {
 
 impl RObject for LogStreamDefault {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "logStreamDefault"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -141,9 +103,8 @@ impl LogStreamDefault {
     }
     pub fn builder() -> RTDLogStreamDefaultBuilder {
         let mut inner = LogStreamDefault::default();
-        inner.td_name = "logStreamDefault".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDLogStreamDefaultBuilder { inner }
     }
 }
@@ -175,9 +136,6 @@ impl AsRef<LogStreamDefault> for RTDLogStreamDefaultBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LogStreamEmpty {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -186,19 +144,12 @@ pub struct LogStreamEmpty {
 
 impl RObject for LogStreamEmpty {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "logStreamEmpty"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -210,9 +161,8 @@ impl LogStreamEmpty {
     }
     pub fn builder() -> RTDLogStreamEmptyBuilder {
         let mut inner = LogStreamEmpty::default();
-        inner.td_name = "logStreamEmpty".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDLogStreamEmptyBuilder { inner }
     }
 }
@@ -244,9 +194,6 @@ impl AsRef<LogStreamEmpty> for RTDLogStreamEmptyBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LogStreamFile {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -261,19 +208,12 @@ pub struct LogStreamFile {
 
 impl RObject for LogStreamFile {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "logStreamFile"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -285,9 +225,8 @@ impl LogStreamFile {
     }
     pub fn builder() -> RTDLogStreamFileBuilder {
         let mut inner = LogStreamFile::default();
-        inner.td_name = "logStreamFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDLogStreamFileBuilder { inner }
     }
 

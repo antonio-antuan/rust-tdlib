@@ -2,29 +2,34 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the current call state
 pub trait TDCallState: Debug + RObject {}
 
 /// Describes the current call state
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum CallState {
     #[doc(hidden)]
     _Default(()),
     /// The call has ended successfully
+    #[serde(rename(deserialize = "callStateDiscarded"))]
     Discarded(CallStateDiscarded),
     /// The call has ended with an error
+    #[serde(rename(deserialize = "callStateError"))]
     Error(CallStateError),
     /// The call has been answered and encryption keys are being exchanged
+    #[serde(rename(deserialize = "callStateExchangingKeys"))]
     ExchangingKeys(CallStateExchangingKeys),
     /// The call is hanging up after discardCall has been called
+    #[serde(rename(deserialize = "callStateHangingUp"))]
     HangingUp(CallStateHangingUp),
     /// The call is pending, waiting to be accepted by a user
+    #[serde(rename(deserialize = "callStatePending"))]
     Pending(CallStatePending),
     /// The call is ready to use
+    #[serde(rename(deserialize = "callStateReady"))]
     Ready(CallStateReady),
 }
 
@@ -34,39 +39,7 @@ impl Default for CallState {
     }
 }
 
-impl<'de> Deserialize<'de> for CallState {
-    fn deserialize<D>(deserializer: D) -> Result<CallState, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          CallState,
-          (callStateDiscarded, Discarded);
-          (callStateError, Error);
-          (callStateExchangingKeys, ExchangingKeys);
-          (callStateHangingUp, HangingUp);
-          (callStatePending, Pending);
-          (callStateReady, Ready);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for CallState {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            CallState::Discarded(t) => t.td_name(),
-            CallState::Error(t) => t.td_name(),
-            CallState::ExchangingKeys(t) => t.td_name(),
-            CallState::HangingUp(t) => t.td_name(),
-            CallState::Pending(t) => t.td_name(),
-            CallState::Ready(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -79,9 +52,6 @@ impl RObject for CallState {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -118,9 +88,6 @@ impl AsRef<CallState> for CallState {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallStateDiscarded {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -135,19 +102,12 @@ pub struct CallStateDiscarded {
 
 impl RObject for CallStateDiscarded {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callStateDiscarded"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -159,9 +119,8 @@ impl CallStateDiscarded {
     }
     pub fn builder() -> RTDCallStateDiscardedBuilder {
         let mut inner = CallStateDiscarded::default();
-        inner.td_name = "callStateDiscarded".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallStateDiscardedBuilder { inner }
     }
 
@@ -220,9 +179,6 @@ impl AsRef<CallStateDiscarded> for RTDCallStateDiscardedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallStateError {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -233,19 +189,12 @@ pub struct CallStateError {
 
 impl RObject for CallStateError {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callStateError"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -257,9 +206,8 @@ impl CallStateError {
     }
     pub fn builder() -> RTDCallStateErrorBuilder {
         let mut inner = CallStateError::default();
-        inner.td_name = "callStateError".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallStateErrorBuilder { inner }
     }
 
@@ -300,9 +248,6 @@ impl AsRef<CallStateError> for RTDCallStateErrorBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallStateExchangingKeys {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -311,19 +256,12 @@ pub struct CallStateExchangingKeys {
 
 impl RObject for CallStateExchangingKeys {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callStateExchangingKeys"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -335,9 +273,8 @@ impl CallStateExchangingKeys {
     }
     pub fn builder() -> RTDCallStateExchangingKeysBuilder {
         let mut inner = CallStateExchangingKeys::default();
-        inner.td_name = "callStateExchangingKeys".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallStateExchangingKeysBuilder { inner }
     }
 }
@@ -369,9 +306,6 @@ impl AsRef<CallStateExchangingKeys> for RTDCallStateExchangingKeysBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallStateHangingUp {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -380,19 +314,12 @@ pub struct CallStateHangingUp {
 
 impl RObject for CallStateHangingUp {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callStateHangingUp"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -404,9 +331,8 @@ impl CallStateHangingUp {
     }
     pub fn builder() -> RTDCallStateHangingUpBuilder {
         let mut inner = CallStateHangingUp::default();
-        inner.td_name = "callStateHangingUp".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallStateHangingUpBuilder { inner }
     }
 }
@@ -438,9 +364,6 @@ impl AsRef<CallStateHangingUp> for RTDCallStateHangingUpBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallStatePending {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -453,19 +376,12 @@ pub struct CallStatePending {
 
 impl RObject for CallStatePending {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callStatePending"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -477,9 +393,8 @@ impl CallStatePending {
     }
     pub fn builder() -> RTDCallStatePendingBuilder {
         let mut inner = CallStatePending::default();
-        inner.td_name = "callStatePending".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallStatePendingBuilder { inner }
     }
 
@@ -529,9 +444,6 @@ impl AsRef<CallStatePending> for RTDCallStatePendingBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallStateReady {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -552,19 +464,12 @@ pub struct CallStateReady {
 
 impl RObject for CallStateReady {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callStateReady"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -576,9 +481,8 @@ impl CallStateReady {
     }
     pub fn builder() -> RTDCallStateReadyBuilder {
         let mut inner = CallStateReady::default();
-        inner.td_name = "callStateReady".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallStateReadyBuilder { inner }
     }
 

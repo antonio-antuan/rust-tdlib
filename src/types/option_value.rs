@@ -2,27 +2,31 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Represents the value of an option
 pub trait TDOptionValue: Debug + RObject {}
 
 /// Represents the value of an option
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum OptionValue {
     #[doc(hidden)]
     _Default(()),
     /// Returns the value of an option by its name. (Check the list of available options on https://core.telegram.org/tdlib/options.) Can be called before authorization
+    #[serde(rename(deserialize = "getOption"))]
     GetOption(GetOption),
     /// Represents a boolean option
+    #[serde(rename(deserialize = "optionValueBoolean"))]
     Boolean(OptionValueBoolean),
     /// Represents an unknown option or an option which has a default value
+    #[serde(rename(deserialize = "optionValueEmpty"))]
     Empty(OptionValueEmpty),
     /// Represents an integer option
+    #[serde(rename(deserialize = "optionValueInteger"))]
     Integer(OptionValueInteger),
     /// Represents a string option
+    #[serde(rename(deserialize = "optionValueString"))]
     String(OptionValueString),
 }
 
@@ -32,37 +36,7 @@ impl Default for OptionValue {
     }
 }
 
-impl<'de> Deserialize<'de> for OptionValue {
-    fn deserialize<D>(deserializer: D) -> Result<OptionValue, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          OptionValue,
-          (getOption, GetOption);
-          (optionValueBoolean, Boolean);
-          (optionValueEmpty, Empty);
-          (optionValueInteger, Integer);
-          (optionValueString, String);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for OptionValue {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            OptionValue::GetOption(t) => t.td_name(),
-            OptionValue::Boolean(t) => t.td_name(),
-            OptionValue::Empty(t) => t.td_name(),
-            OptionValue::Integer(t) => t.td_name(),
-            OptionValue::String(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -74,9 +48,6 @@ impl RObject for OptionValue {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -112,9 +83,6 @@ impl AsRef<OptionValue> for OptionValue {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct OptionValueBoolean {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -125,19 +93,12 @@ pub struct OptionValueBoolean {
 
 impl RObject for OptionValueBoolean {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "optionValueBoolean"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -149,9 +110,8 @@ impl OptionValueBoolean {
     }
     pub fn builder() -> RTDOptionValueBooleanBuilder {
         let mut inner = OptionValueBoolean::default();
-        inner.td_name = "optionValueBoolean".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDOptionValueBooleanBuilder { inner }
     }
 
@@ -192,9 +152,6 @@ impl AsRef<OptionValueBoolean> for RTDOptionValueBooleanBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct OptionValueEmpty {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -203,19 +160,12 @@ pub struct OptionValueEmpty {
 
 impl RObject for OptionValueEmpty {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "optionValueEmpty"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -227,9 +177,8 @@ impl OptionValueEmpty {
     }
     pub fn builder() -> RTDOptionValueEmptyBuilder {
         let mut inner = OptionValueEmpty::default();
-        inner.td_name = "optionValueEmpty".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDOptionValueEmptyBuilder { inner }
     }
 }
@@ -261,9 +210,6 @@ impl AsRef<OptionValueEmpty> for RTDOptionValueEmptyBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct OptionValueInteger {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -275,19 +221,12 @@ pub struct OptionValueInteger {
 
 impl RObject for OptionValueInteger {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "optionValueInteger"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -299,9 +238,8 @@ impl OptionValueInteger {
     }
     pub fn builder() -> RTDOptionValueIntegerBuilder {
         let mut inner = OptionValueInteger::default();
-        inner.td_name = "optionValueInteger".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDOptionValueIntegerBuilder { inner }
     }
 
@@ -342,9 +280,6 @@ impl AsRef<OptionValueInteger> for RTDOptionValueIntegerBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct OptionValueString {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -355,19 +290,12 @@ pub struct OptionValueString {
 
 impl RObject for OptionValueString {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "optionValueString"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -379,9 +307,8 @@ impl OptionValueString {
     }
     pub fn builder() -> RTDOptionValueStringBuilder {
         let mut inner = OptionValueString::default();
-        inner.td_name = "optionValueString".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDOptionValueStringBuilder { inner }
     }
 

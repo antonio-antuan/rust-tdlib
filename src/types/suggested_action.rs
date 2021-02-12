@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes an action suggested to the current user
 pub trait TDSuggestedAction: Debug + RObject {}
 
 /// Describes an action suggested to the current user
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum SuggestedAction {
     #[doc(hidden)]
     _Default(()),
     /// Suggests the user to check authorization phone number and change the phone number if it is inaccessible
+    #[serde(rename(deserialize = "suggestedActionCheckPhoneNumber"))]
     CheckPhoneNumber(SuggestedActionCheckPhoneNumber),
     /// Suggests the user to enable "archive_and_mute_new_chats_from_unknown_users" option
+    #[serde(rename(deserialize = "suggestedActionEnableArchiveAndMuteNewChats"))]
     EnableArchiveAndMuteNewChats(SuggestedActionEnableArchiveAndMuteNewChats),
 }
 
@@ -26,31 +27,7 @@ impl Default for SuggestedAction {
     }
 }
 
-impl<'de> Deserialize<'de> for SuggestedAction {
-    fn deserialize<D>(deserializer: D) -> Result<SuggestedAction, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          SuggestedAction,
-          (suggestedActionCheckPhoneNumber, CheckPhoneNumber);
-          (suggestedActionEnableArchiveAndMuteNewChats, EnableArchiveAndMuteNewChats);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for SuggestedAction {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            SuggestedAction::CheckPhoneNumber(t) => t.td_name(),
-            SuggestedAction::EnableArchiveAndMuteNewChats(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for SuggestedAction {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<SuggestedAction> for SuggestedAction {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SuggestedActionCheckPhoneNumber {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -105,19 +76,12 @@ pub struct SuggestedActionCheckPhoneNumber {
 
 impl RObject for SuggestedActionCheckPhoneNumber {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "suggestedActionCheckPhoneNumber"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -129,9 +93,8 @@ impl SuggestedActionCheckPhoneNumber {
     }
     pub fn builder() -> RTDSuggestedActionCheckPhoneNumberBuilder {
         let mut inner = SuggestedActionCheckPhoneNumber::default();
-        inner.td_name = "suggestedActionCheckPhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDSuggestedActionCheckPhoneNumberBuilder { inner }
     }
 }
@@ -163,9 +126,6 @@ impl AsRef<SuggestedActionCheckPhoneNumber> for RTDSuggestedActionCheckPhoneNumb
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SuggestedActionEnableArchiveAndMuteNewChats {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -174,19 +134,12 @@ pub struct SuggestedActionEnableArchiveAndMuteNewChats {
 
 impl RObject for SuggestedActionEnableArchiveAndMuteNewChats {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "suggestedActionEnableArchiveAndMuteNewChats"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -198,9 +151,8 @@ impl SuggestedActionEnableArchiveAndMuteNewChats {
     }
     pub fn builder() -> RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder {
         let mut inner = SuggestedActionEnableArchiveAndMuteNewChats::default();
-        inner.td_name = "suggestedActionEnableArchiveAndMuteNewChats".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder { inner }
     }
 }

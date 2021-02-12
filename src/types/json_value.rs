@@ -2,33 +2,40 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Represents a JSON value
 pub trait TDJsonValue: Debug + RObject {}
 
 /// Represents a JSON value
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum JsonValue {
     #[doc(hidden)]
     _Default(()),
     /// Returns application config, provided by the server. Can be called before authorization
+    #[serde(rename(deserialize = "getApplicationConfig"))]
     GetApplicationConfig(GetApplicationConfig),
     /// Converts a JSON-serialized string to corresponding JsonValue object. Can be called synchronously
+    #[serde(rename(deserialize = "getJsonValue"))]
     GetJsonValue(GetJsonValue),
     /// Represents a JSON array
+    #[serde(rename(deserialize = "jsonValueArray"))]
     Array(JsonValueArray),
     /// Represents a boolean JSON value
+    #[serde(rename(deserialize = "jsonValueBoolean"))]
     Boolean(JsonValueBoolean),
     /// Represents a null JSON value
+    #[serde(rename(deserialize = "jsonValueNull"))]
     Null(JsonValueNull),
     /// Represents a numeric JSON value
+    #[serde(rename(deserialize = "jsonValueNumber"))]
     Number(JsonValueNumber),
     /// Represents a JSON object
+    #[serde(rename(deserialize = "jsonValueObject"))]
     Object(JsonValueObject),
     /// Represents a string JSON value
+    #[serde(rename(deserialize = "jsonValueString"))]
     String(JsonValueString),
 }
 
@@ -38,43 +45,7 @@ impl Default for JsonValue {
     }
 }
 
-impl<'de> Deserialize<'de> for JsonValue {
-    fn deserialize<D>(deserializer: D) -> Result<JsonValue, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          JsonValue,
-          (getApplicationConfig, GetApplicationConfig);
-          (getJsonValue, GetJsonValue);
-          (jsonValueArray, Array);
-          (jsonValueBoolean, Boolean);
-          (jsonValueNull, Null);
-          (jsonValueNumber, Number);
-          (jsonValueObject, Object);
-          (jsonValueString, String);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for JsonValue {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            JsonValue::GetApplicationConfig(t) => t.td_name(),
-            JsonValue::GetJsonValue(t) => t.td_name(),
-            JsonValue::Array(t) => t.td_name(),
-            JsonValue::Boolean(t) => t.td_name(),
-            JsonValue::Null(t) => t.td_name(),
-            JsonValue::Number(t) => t.td_name(),
-            JsonValue::Object(t) => t.td_name(),
-            JsonValue::String(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -89,9 +60,6 @@ impl RObject for JsonValue {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -130,9 +98,6 @@ impl AsRef<JsonValue> for JsonValue {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct JsonValueArray {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -143,19 +108,12 @@ pub struct JsonValueArray {
 
 impl RObject for JsonValueArray {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "jsonValueArray"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -167,9 +125,8 @@ impl JsonValueArray {
     }
     pub fn builder() -> RTDJsonValueArrayBuilder {
         let mut inner = JsonValueArray::default();
-        inner.td_name = "jsonValueArray".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDJsonValueArrayBuilder { inner }
     }
 
@@ -210,9 +167,6 @@ impl AsRef<JsonValueArray> for RTDJsonValueArrayBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct JsonValueBoolean {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -223,19 +177,12 @@ pub struct JsonValueBoolean {
 
 impl RObject for JsonValueBoolean {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "jsonValueBoolean"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -247,9 +194,8 @@ impl JsonValueBoolean {
     }
     pub fn builder() -> RTDJsonValueBooleanBuilder {
         let mut inner = JsonValueBoolean::default();
-        inner.td_name = "jsonValueBoolean".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDJsonValueBooleanBuilder { inner }
     }
 
@@ -290,9 +236,6 @@ impl AsRef<JsonValueBoolean> for RTDJsonValueBooleanBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct JsonValueNull {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -301,19 +244,12 @@ pub struct JsonValueNull {
 
 impl RObject for JsonValueNull {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "jsonValueNull"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -325,9 +261,8 @@ impl JsonValueNull {
     }
     pub fn builder() -> RTDJsonValueNullBuilder {
         let mut inner = JsonValueNull::default();
-        inner.td_name = "jsonValueNull".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDJsonValueNullBuilder { inner }
     }
 }
@@ -359,9 +294,6 @@ impl AsRef<JsonValueNull> for RTDJsonValueNullBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct JsonValueNumber {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -372,19 +304,12 @@ pub struct JsonValueNumber {
 
 impl RObject for JsonValueNumber {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "jsonValueNumber"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -396,9 +321,8 @@ impl JsonValueNumber {
     }
     pub fn builder() -> RTDJsonValueNumberBuilder {
         let mut inner = JsonValueNumber::default();
-        inner.td_name = "jsonValueNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDJsonValueNumberBuilder { inner }
     }
 
@@ -439,9 +363,6 @@ impl AsRef<JsonValueNumber> for RTDJsonValueNumberBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct JsonValueObject {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -452,19 +373,12 @@ pub struct JsonValueObject {
 
 impl RObject for JsonValueObject {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "jsonValueObject"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -476,9 +390,8 @@ impl JsonValueObject {
     }
     pub fn builder() -> RTDJsonValueObjectBuilder {
         let mut inner = JsonValueObject::default();
-        inner.td_name = "jsonValueObject".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDJsonValueObjectBuilder { inner }
     }
 
@@ -519,9 +432,6 @@ impl AsRef<JsonValueObject> for RTDJsonValueObjectBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct JsonValueString {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -532,19 +442,12 @@ pub struct JsonValueString {
 
 impl RObject for JsonValueString {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "jsonValueString"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -556,9 +459,8 @@ impl JsonValueString {
     }
     pub fn builder() -> RTDJsonValueStringBuilder {
         let mut inner = JsonValueString::default();
-        inner.td_name = "jsonValueString".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDJsonValueStringBuilder { inner }
     }
 

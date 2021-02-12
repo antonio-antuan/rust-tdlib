@@ -2,25 +2,28 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes a statistical graph
 pub trait TDStatisticalGraph: Debug + RObject {}
 
 /// Describes a statistical graph
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum StatisticalGraph {
     #[doc(hidden)]
     _Default(()),
     /// Loads an asynchronous or a zoomed in statistical graph
+    #[serde(rename(deserialize = "getStatisticalGraph"))]
     GetStatisticalGraph(GetStatisticalGraph),
     /// The graph data to be asynchronously loaded through getStatisticalGraph
+    #[serde(rename(deserialize = "statisticalGraphAsync"))]
     Async(StatisticalGraphAsync),
     /// A graph data
+    #[serde(rename(deserialize = "statisticalGraphData"))]
     Data(StatisticalGraphData),
     /// An error message to be shown to the user instead of the graph
+    #[serde(rename(deserialize = "statisticalGraphError"))]
     Error(StatisticalGraphError),
 }
 
@@ -30,35 +33,7 @@ impl Default for StatisticalGraph {
     }
 }
 
-impl<'de> Deserialize<'de> for StatisticalGraph {
-    fn deserialize<D>(deserializer: D) -> Result<StatisticalGraph, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          StatisticalGraph,
-          (getStatisticalGraph, GetStatisticalGraph);
-          (statisticalGraphAsync, Async);
-          (statisticalGraphData, Data);
-          (statisticalGraphError, Error);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for StatisticalGraph {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            StatisticalGraph::GetStatisticalGraph(t) => t.td_name(),
-            StatisticalGraph::Async(t) => t.td_name(),
-            StatisticalGraph::Data(t) => t.td_name(),
-            StatisticalGraph::Error(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -69,9 +44,6 @@ impl RObject for StatisticalGraph {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -106,9 +78,6 @@ impl AsRef<StatisticalGraph> for StatisticalGraph {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct StatisticalGraphAsync {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -119,19 +88,12 @@ pub struct StatisticalGraphAsync {
 
 impl RObject for StatisticalGraphAsync {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "statisticalGraphAsync"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -143,9 +105,8 @@ impl StatisticalGraphAsync {
     }
     pub fn builder() -> RTDStatisticalGraphAsyncBuilder {
         let mut inner = StatisticalGraphAsync::default();
-        inner.td_name = "statisticalGraphAsync".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDStatisticalGraphAsyncBuilder { inner }
     }
 
@@ -186,9 +147,6 @@ impl AsRef<StatisticalGraphAsync> for RTDStatisticalGraphAsyncBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct StatisticalGraphData {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -201,19 +159,12 @@ pub struct StatisticalGraphData {
 
 impl RObject for StatisticalGraphData {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "statisticalGraphData"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -225,9 +176,8 @@ impl StatisticalGraphData {
     }
     pub fn builder() -> RTDStatisticalGraphDataBuilder {
         let mut inner = StatisticalGraphData::default();
-        inner.td_name = "statisticalGraphData".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDStatisticalGraphDataBuilder { inner }
     }
 
@@ -277,9 +227,6 @@ impl AsRef<StatisticalGraphData> for RTDStatisticalGraphDataBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct StatisticalGraphError {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -290,19 +237,12 @@ pub struct StatisticalGraphError {
 
 impl RObject for StatisticalGraphError {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "statisticalGraphError"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -314,9 +254,8 @@ impl StatisticalGraphError {
     }
     pub fn builder() -> RTDStatisticalGraphErrorBuilder {
         let mut inner = StatisticalGraphError::default();
-        inner.td_name = "statisticalGraphError".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDStatisticalGraphErrorBuilder { inner }
     }
 

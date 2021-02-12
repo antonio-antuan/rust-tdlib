@@ -6,9 +6,6 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct StorageStatistics {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -23,19 +20,12 @@ pub struct StorageStatistics {
 
 impl RObject for StorageStatistics {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "storageStatistics"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -45,9 +35,8 @@ impl StorageStatistics {
     }
     pub fn builder() -> RTDStorageStatisticsBuilder {
         let mut inner = StorageStatistics::default();
-        inner.td_name = "storageStatistics".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDStorageStatisticsBuilder { inner }
     }
 

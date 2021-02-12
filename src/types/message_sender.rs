@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Contains information about the sender of a message
 pub trait TDMessageSender: Debug + RObject {}
 
 /// Contains information about the sender of a message
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum MessageSender {
     #[doc(hidden)]
     _Default(()),
     /// The message was sent on behalf of a chat
+    #[serde(rename(deserialize = "messageSenderChat"))]
     Chat(MessageSenderChat),
     /// The message was sent by a known user
+    #[serde(rename(deserialize = "messageSenderUser"))]
     User(MessageSenderUser),
 }
 
@@ -26,31 +27,7 @@ impl Default for MessageSender {
     }
 }
 
-impl<'de> Deserialize<'de> for MessageSender {
-    fn deserialize<D>(deserializer: D) -> Result<MessageSender, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          MessageSender,
-          (messageSenderChat, Chat);
-          (messageSenderUser, User);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for MessageSender {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            MessageSender::Chat(t) => t.td_name(),
-            MessageSender::User(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for MessageSender {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<MessageSender> for MessageSender {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageSenderChat {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -107,19 +78,12 @@ pub struct MessageSenderChat {
 
 impl RObject for MessageSenderChat {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageSenderChat"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -131,9 +95,8 @@ impl MessageSenderChat {
     }
     pub fn builder() -> RTDMessageSenderChatBuilder {
         let mut inner = MessageSenderChat::default();
-        inner.td_name = "messageSenderChat".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDMessageSenderChatBuilder { inner }
     }
 
@@ -174,9 +137,6 @@ impl AsRef<MessageSenderChat> for RTDMessageSenderChatBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageSenderUser {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -187,19 +147,12 @@ pub struct MessageSenderUser {
 
 impl RObject for MessageSenderUser {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageSenderUser"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -211,9 +164,8 @@ impl MessageSenderUser {
     }
     pub fn builder() -> RTDMessageSenderUserBuilder {
         let mut inner = MessageSenderUser::default();
-        inner.td_name = "messageSenderUser".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDMessageSenderUserBuilder { inner }
     }
 

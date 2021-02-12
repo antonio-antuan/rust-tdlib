@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the type of a call server
 pub trait TDCallServerType: Debug + RObject {}
 
 /// Describes the type of a call server
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum CallServerType {
     #[doc(hidden)]
     _Default(()),
     /// A Telegram call reflector
+    #[serde(rename(deserialize = "callServerTypeTelegramReflector"))]
     TelegramReflector(CallServerTypeTelegramReflector),
     /// A WebRTC server
+    #[serde(rename(deserialize = "callServerTypeWebrtc"))]
     Webrtc(CallServerTypeWebrtc),
 }
 
@@ -26,31 +27,7 @@ impl Default for CallServerType {
     }
 }
 
-impl<'de> Deserialize<'de> for CallServerType {
-    fn deserialize<D>(deserializer: D) -> Result<CallServerType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          CallServerType,
-          (callServerTypeTelegramReflector, TelegramReflector);
-          (callServerTypeWebrtc, Webrtc);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for CallServerType {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            CallServerType::TelegramReflector(t) => t.td_name(),
-            CallServerType::Webrtc(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for CallServerType {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<CallServerType> for CallServerType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallServerTypeTelegramReflector {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -107,19 +78,12 @@ pub struct CallServerTypeTelegramReflector {
 
 impl RObject for CallServerTypeTelegramReflector {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callServerTypeTelegramReflector"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -131,9 +95,8 @@ impl CallServerTypeTelegramReflector {
     }
     pub fn builder() -> RTDCallServerTypeTelegramReflectorBuilder {
         let mut inner = CallServerTypeTelegramReflector::default();
-        inner.td_name = "callServerTypeTelegramReflector".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallServerTypeTelegramReflectorBuilder { inner }
     }
 
@@ -174,9 +137,6 @@ impl AsRef<CallServerTypeTelegramReflector> for RTDCallServerTypeTelegramReflect
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallServerTypeWebrtc {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -193,19 +153,12 @@ pub struct CallServerTypeWebrtc {
 
 impl RObject for CallServerTypeWebrtc {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callServerTypeWebrtc"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -217,9 +170,8 @@ impl CallServerTypeWebrtc {
     }
     pub fn builder() -> RTDCallServerTypeWebrtcBuilder {
         let mut inner = CallServerTypeWebrtc::default();
-        inner.td_name = "callServerTypeWebrtc".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallServerTypeWebrtcBuilder { inner }
     }
 

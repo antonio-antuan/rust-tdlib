@@ -2,23 +2,25 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the types of chats to which notification settings are applied
 pub trait TDNotificationSettingsScope: Debug + RObject {}
 
 /// Describes the types of chats to which notification settings are applied
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum NotificationSettingsScope {
     #[doc(hidden)]
     _Default(()),
     /// Notification settings applied to all channels when the corresponding chat setting has a default value
+    #[serde(rename(deserialize = "notificationSettingsScopeChannelChats"))]
     ChannelChats(NotificationSettingsScopeChannelChats),
     /// Notification settings applied to all basic groups and supergroups when the corresponding chat setting has a default value
+    #[serde(rename(deserialize = "notificationSettingsScopeGroupChats"))]
     GroupChats(NotificationSettingsScopeGroupChats),
     /// Notification settings applied to all private and secret chats when the corresponding chat setting has a default value
+    #[serde(rename(deserialize = "notificationSettingsScopePrivateChats"))]
     PrivateChats(NotificationSettingsScopePrivateChats),
 }
 
@@ -28,33 +30,7 @@ impl Default for NotificationSettingsScope {
     }
 }
 
-impl<'de> Deserialize<'de> for NotificationSettingsScope {
-    fn deserialize<D>(deserializer: D) -> Result<NotificationSettingsScope, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          NotificationSettingsScope,
-          (notificationSettingsScopeChannelChats, ChannelChats);
-          (notificationSettingsScopeGroupChats, GroupChats);
-          (notificationSettingsScopePrivateChats, PrivateChats);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for NotificationSettingsScope {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            NotificationSettingsScope::ChannelChats(t) => t.td_name(),
-            NotificationSettingsScope::GroupChats(t) => t.td_name(),
-            NotificationSettingsScope::PrivateChats(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -64,9 +40,6 @@ impl RObject for NotificationSettingsScope {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -100,9 +73,6 @@ impl AsRef<NotificationSettingsScope> for NotificationSettingsScope {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationSettingsScopeChannelChats {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -111,19 +81,12 @@ pub struct NotificationSettingsScopeChannelChats {
 
 impl RObject for NotificationSettingsScopeChannelChats {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notificationSettingsScopeChannelChats"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -135,9 +98,8 @@ impl NotificationSettingsScopeChannelChats {
     }
     pub fn builder() -> RTDNotificationSettingsScopeChannelChatsBuilder {
         let mut inner = NotificationSettingsScopeChannelChats::default();
-        inner.td_name = "notificationSettingsScopeChannelChats".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDNotificationSettingsScopeChannelChatsBuilder { inner }
     }
 }
@@ -171,9 +133,6 @@ impl AsRef<NotificationSettingsScopeChannelChats>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationSettingsScopeGroupChats {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -182,19 +141,12 @@ pub struct NotificationSettingsScopeGroupChats {
 
 impl RObject for NotificationSettingsScopeGroupChats {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notificationSettingsScopeGroupChats"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -206,9 +158,8 @@ impl NotificationSettingsScopeGroupChats {
     }
     pub fn builder() -> RTDNotificationSettingsScopeGroupChatsBuilder {
         let mut inner = NotificationSettingsScopeGroupChats::default();
-        inner.td_name = "notificationSettingsScopeGroupChats".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDNotificationSettingsScopeGroupChatsBuilder { inner }
     }
 }
@@ -240,9 +191,6 @@ impl AsRef<NotificationSettingsScopeGroupChats> for RTDNotificationSettingsScope
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationSettingsScopePrivateChats {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -251,19 +199,12 @@ pub struct NotificationSettingsScopePrivateChats {
 
 impl RObject for NotificationSettingsScopePrivateChats {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notificationSettingsScopePrivateChats"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -275,9 +216,8 @@ impl NotificationSettingsScopePrivateChats {
     }
     pub fn builder() -> RTDNotificationSettingsScopePrivateChatsBuilder {
         let mut inner = NotificationSettingsScopePrivateChats::default();
-        inner.td_name = "notificationSettingsScopePrivateChats".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDNotificationSettingsScopePrivateChatsBuilder { inner }
     }
 }

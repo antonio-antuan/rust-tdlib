@@ -6,9 +6,6 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallServer {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -29,19 +26,12 @@ pub struct CallServer {
 
 impl RObject for CallServer {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callServer"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -51,9 +41,8 @@ impl CallServer {
     }
     pub fn builder() -> RTDCallServerBuilder {
         let mut inner = CallServer::default();
-        inner.td_name = "callServer".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallServerBuilder { inner }
     }
 

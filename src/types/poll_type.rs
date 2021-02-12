@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the type of a poll
 pub trait TDPollType: Debug + RObject {}
 
 /// Describes the type of a poll
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum PollType {
     #[doc(hidden)]
     _Default(()),
     /// A poll in quiz mode, which has exactly one correct answer option and can be answered only once
+    #[serde(rename(deserialize = "pollTypeQuiz"))]
     Quiz(PollTypeQuiz),
     /// A regular poll
+    #[serde(rename(deserialize = "pollTypeRegular"))]
     Regular(PollTypeRegular),
 }
 
@@ -26,31 +27,7 @@ impl Default for PollType {
     }
 }
 
-impl<'de> Deserialize<'de> for PollType {
-    fn deserialize<D>(deserializer: D) -> Result<PollType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          PollType,
-          (pollTypeQuiz, Quiz);
-          (pollTypeRegular, Regular);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for PollType {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            PollType::Quiz(t) => t.td_name(),
-            PollType::Regular(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for PollType {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<PollType> for PollType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PollTypeQuiz {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -109,19 +80,12 @@ pub struct PollTypeQuiz {
 
 impl RObject for PollTypeQuiz {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "pollTypeQuiz"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -133,9 +97,8 @@ impl PollTypeQuiz {
     }
     pub fn builder() -> RTDPollTypeQuizBuilder {
         let mut inner = PollTypeQuiz::default();
-        inner.td_name = "pollTypeQuiz".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDPollTypeQuizBuilder { inner }
     }
 
@@ -185,9 +148,6 @@ impl AsRef<PollTypeQuiz> for RTDPollTypeQuizBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PollTypeRegular {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -198,19 +158,12 @@ pub struct PollTypeRegular {
 
 impl RObject for PollTypeRegular {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "pollTypeRegular"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -222,9 +175,8 @@ impl PollTypeRegular {
     }
     pub fn builder() -> RTDPollTypeRegularBuilder {
         let mut inner = PollTypeRegular::default();
-        inner.td_name = "pollTypeRegular".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDPollTypeRegularBuilder { inner }
     }
 

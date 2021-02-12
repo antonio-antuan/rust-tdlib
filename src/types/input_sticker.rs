@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes a sticker that needs to be added to a sticker set
 pub trait TDInputSticker: Debug + RObject {}
 
 /// Describes a sticker that needs to be added to a sticker set
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum InputSticker {
     #[doc(hidden)]
     _Default(()),
     /// An animated sticker in TGS format
+    #[serde(rename(deserialize = "inputStickerAnimated"))]
     Animated(InputStickerAnimated),
     /// A static sticker in PNG format, which will be converted to WEBP server-side
+    #[serde(rename(deserialize = "inputStickerStatic"))]
     Static(InputStickerStatic),
 }
 
@@ -26,31 +27,7 @@ impl Default for InputSticker {
     }
 }
 
-impl<'de> Deserialize<'de> for InputSticker {
-    fn deserialize<D>(deserializer: D) -> Result<InputSticker, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          InputSticker,
-          (inputStickerAnimated, Animated);
-          (inputStickerStatic, Static);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for InputSticker {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            InputSticker::Animated(t) => t.td_name(),
-            InputSticker::Static(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for InputSticker {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<InputSticker> for InputSticker {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputStickerAnimated {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -109,19 +80,12 @@ pub struct InputStickerAnimated {
 
 impl RObject for InputStickerAnimated {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputStickerAnimated"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -133,9 +97,8 @@ impl InputStickerAnimated {
     }
     pub fn builder() -> RTDInputStickerAnimatedBuilder {
         let mut inner = InputStickerAnimated::default();
-        inner.td_name = "inputStickerAnimated".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputStickerAnimatedBuilder { inner }
     }
 
@@ -185,9 +148,6 @@ impl AsRef<InputStickerAnimated> for RTDInputStickerAnimatedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputStickerStatic {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -202,19 +162,12 @@ pub struct InputStickerStatic {
 
 impl RObject for InputStickerStatic {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputStickerStatic"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -226,9 +179,8 @@ impl InputStickerStatic {
     }
     pub fn builder() -> RTDInputStickerStaticBuilder {
         let mut inner = InputStickerStatic::default();
-        inner.td_name = "inputStickerStatic".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputStickerStaticBuilder { inner }
     }
 

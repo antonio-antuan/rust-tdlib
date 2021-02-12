@@ -2,23 +2,25 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the type of a background
 pub trait TDBackgroundType: Debug + RObject {}
 
 /// Describes the type of a background
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum BackgroundType {
     #[doc(hidden)]
     _Default(()),
     /// A filled background
+    #[serde(rename(deserialize = "backgroundTypeFill"))]
     Fill(BackgroundTypeFill),
     /// A PNG or TGV (gzipped subset of SVG with MIME type "application/x-tgwallpattern") pattern to be combined with the background fill chosen by the user
+    #[serde(rename(deserialize = "backgroundTypePattern"))]
     Pattern(BackgroundTypePattern),
     /// A wallpaper in JPEG format
+    #[serde(rename(deserialize = "backgroundTypeWallpaper"))]
     Wallpaper(BackgroundTypeWallpaper),
 }
 
@@ -28,33 +30,7 @@ impl Default for BackgroundType {
     }
 }
 
-impl<'de> Deserialize<'de> for BackgroundType {
-    fn deserialize<D>(deserializer: D) -> Result<BackgroundType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          BackgroundType,
-          (backgroundTypeFill, Fill);
-          (backgroundTypePattern, Pattern);
-          (backgroundTypeWallpaper, Wallpaper);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for BackgroundType {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            BackgroundType::Fill(t) => t.td_name(),
-            BackgroundType::Pattern(t) => t.td_name(),
-            BackgroundType::Wallpaper(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -64,9 +40,6 @@ impl RObject for BackgroundType {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -100,9 +73,6 @@ impl AsRef<BackgroundType> for BackgroundType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct BackgroundTypeFill {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -113,19 +83,12 @@ pub struct BackgroundTypeFill {
 
 impl RObject for BackgroundTypeFill {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "backgroundTypeFill"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -137,9 +100,8 @@ impl BackgroundTypeFill {
     }
     pub fn builder() -> RTDBackgroundTypeFillBuilder {
         let mut inner = BackgroundTypeFill::default();
-        inner.td_name = "backgroundTypeFill".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDBackgroundTypeFillBuilder { inner }
     }
 
@@ -180,9 +142,6 @@ impl AsRef<BackgroundTypeFill> for RTDBackgroundTypeFillBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct BackgroundTypePattern {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -197,19 +156,12 @@ pub struct BackgroundTypePattern {
 
 impl RObject for BackgroundTypePattern {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "backgroundTypePattern"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -221,9 +173,8 @@ impl BackgroundTypePattern {
     }
     pub fn builder() -> RTDBackgroundTypePatternBuilder {
         let mut inner = BackgroundTypePattern::default();
-        inner.td_name = "backgroundTypePattern".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDBackgroundTypePatternBuilder { inner }
     }
 
@@ -282,9 +233,6 @@ impl AsRef<BackgroundTypePattern> for RTDBackgroundTypePatternBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct BackgroundTypeWallpaper {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -297,19 +245,12 @@ pub struct BackgroundTypeWallpaper {
 
 impl RObject for BackgroundTypeWallpaper {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "backgroundTypeWallpaper"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -321,9 +262,8 @@ impl BackgroundTypeWallpaper {
     }
     pub fn builder() -> RTDBackgroundTypeWallpaperBuilder {
         let mut inner = BackgroundTypeWallpaper::default();
-        inner.td_name = "backgroundTypeWallpaper".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDBackgroundTypeWallpaperBuilder { inner }
     }
 

@@ -2,27 +2,31 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the current state of the connection to Telegram servers
 pub trait TDConnectionState: Debug + RObject {}
 
 /// Describes the current state of the connection to Telegram servers
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ConnectionState {
     #[doc(hidden)]
     _Default(()),
     /// Currently establishing a connection to the Telegram servers
+    #[serde(rename(deserialize = "connectionStateConnecting"))]
     Connecting(ConnectionStateConnecting),
     /// Currently establishing a connection with a proxy server
+    #[serde(rename(deserialize = "connectionStateConnectingToProxy"))]
     ConnectingToProxy(ConnectionStateConnectingToProxy),
     /// There is a working connection to the Telegram servers
+    #[serde(rename(deserialize = "connectionStateReady"))]
     Ready(ConnectionStateReady),
     /// Downloading data received while the application was offline
+    #[serde(rename(deserialize = "connectionStateUpdating"))]
     Updating(ConnectionStateUpdating),
     /// Currently waiting for the network to become available. Use setNetworkType to change the available network type
+    #[serde(rename(deserialize = "connectionStateWaitingForNetwork"))]
     WaitingForNetwork(ConnectionStateWaitingForNetwork),
 }
 
@@ -32,37 +36,7 @@ impl Default for ConnectionState {
     }
 }
 
-impl<'de> Deserialize<'de> for ConnectionState {
-    fn deserialize<D>(deserializer: D) -> Result<ConnectionState, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ConnectionState,
-          (connectionStateConnecting, Connecting);
-          (connectionStateConnectingToProxy, ConnectingToProxy);
-          (connectionStateReady, Ready);
-          (connectionStateUpdating, Updating);
-          (connectionStateWaitingForNetwork, WaitingForNetwork);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for ConnectionState {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ConnectionState::Connecting(t) => t.td_name(),
-            ConnectionState::ConnectingToProxy(t) => t.td_name(),
-            ConnectionState::Ready(t) => t.td_name(),
-            ConnectionState::Updating(t) => t.td_name(),
-            ConnectionState::WaitingForNetwork(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -74,9 +48,6 @@ impl RObject for ConnectionState {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -112,9 +83,6 @@ impl AsRef<ConnectionState> for ConnectionState {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ConnectionStateConnecting {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -123,19 +91,12 @@ pub struct ConnectionStateConnecting {
 
 impl RObject for ConnectionStateConnecting {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "connectionStateConnecting"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -147,9 +108,8 @@ impl ConnectionStateConnecting {
     }
     pub fn builder() -> RTDConnectionStateConnectingBuilder {
         let mut inner = ConnectionStateConnecting::default();
-        inner.td_name = "connectionStateConnecting".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDConnectionStateConnectingBuilder { inner }
     }
 }
@@ -181,9 +141,6 @@ impl AsRef<ConnectionStateConnecting> for RTDConnectionStateConnectingBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ConnectionStateConnectingToProxy {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -192,19 +149,12 @@ pub struct ConnectionStateConnectingToProxy {
 
 impl RObject for ConnectionStateConnectingToProxy {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "connectionStateConnectingToProxy"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -216,9 +166,8 @@ impl ConnectionStateConnectingToProxy {
     }
     pub fn builder() -> RTDConnectionStateConnectingToProxyBuilder {
         let mut inner = ConnectionStateConnectingToProxy::default();
-        inner.td_name = "connectionStateConnectingToProxy".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDConnectionStateConnectingToProxyBuilder { inner }
     }
 }
@@ -250,9 +199,6 @@ impl AsRef<ConnectionStateConnectingToProxy> for RTDConnectionStateConnectingToP
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ConnectionStateReady {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -261,19 +207,12 @@ pub struct ConnectionStateReady {
 
 impl RObject for ConnectionStateReady {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "connectionStateReady"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -285,9 +224,8 @@ impl ConnectionStateReady {
     }
     pub fn builder() -> RTDConnectionStateReadyBuilder {
         let mut inner = ConnectionStateReady::default();
-        inner.td_name = "connectionStateReady".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDConnectionStateReadyBuilder { inner }
     }
 }
@@ -319,9 +257,6 @@ impl AsRef<ConnectionStateReady> for RTDConnectionStateReadyBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ConnectionStateUpdating {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -330,19 +265,12 @@ pub struct ConnectionStateUpdating {
 
 impl RObject for ConnectionStateUpdating {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "connectionStateUpdating"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -354,9 +282,8 @@ impl ConnectionStateUpdating {
     }
     pub fn builder() -> RTDConnectionStateUpdatingBuilder {
         let mut inner = ConnectionStateUpdating::default();
-        inner.td_name = "connectionStateUpdating".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDConnectionStateUpdatingBuilder { inner }
     }
 }
@@ -388,9 +315,6 @@ impl AsRef<ConnectionStateUpdating> for RTDConnectionStateUpdatingBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ConnectionStateWaitingForNetwork {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -399,19 +323,12 @@ pub struct ConnectionStateWaitingForNetwork {
 
 impl RObject for ConnectionStateWaitingForNetwork {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "connectionStateWaitingForNetwork"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -423,9 +340,8 @@ impl ConnectionStateWaitingForNetwork {
     }
     pub fn builder() -> RTDConnectionStateWaitingForNetworkBuilder {
         let mut inner = ConnectionStateWaitingForNetwork::default();
-        inner.td_name = "connectionStateWaitingForNetwork".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDConnectionStateWaitingForNetworkBuilder { inner }
     }
 }

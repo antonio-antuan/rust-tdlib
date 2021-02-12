@@ -2,51 +2,67 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | The content of a message to send
 pub trait TDInputMessageContent: Debug + RObject {}
 
 /// The content of a message to send
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum InputMessageContent {
     #[doc(hidden)]
     _Default(()),
     /// An animation message (GIF-style).
+    #[serde(rename(deserialize = "inputMessageAnimation"))]
     InputMessageAnimation(InputMessageAnimation),
     /// An audio message
+    #[serde(rename(deserialize = "inputMessageAudio"))]
     InputMessageAudio(InputMessageAudio),
     /// A message containing a user contact
+    #[serde(rename(deserialize = "inputMessageContact"))]
     InputMessageContact(InputMessageContact),
     /// A dice message
+    #[serde(rename(deserialize = "inputMessageDice"))]
     InputMessageDice(InputMessageDice),
     /// A document message (general file)
+    #[serde(rename(deserialize = "inputMessageDocument"))]
     InputMessageDocument(InputMessageDocument),
     /// A forwarded message
+    #[serde(rename(deserialize = "inputMessageForwarded"))]
     InputMessageForwarded(InputMessageForwarded),
     /// A message with a game; not supported for channels or secret chats
+    #[serde(rename(deserialize = "inputMessageGame"))]
     InputMessageGame(InputMessageGame),
     /// A message with an invoice; can be used only by bots and only in private chats
+    #[serde(rename(deserialize = "inputMessageInvoice"))]
     InputMessageInvoice(InputMessageInvoice),
     /// A message with a location
+    #[serde(rename(deserialize = "inputMessageLocation"))]
     InputMessageLocation(InputMessageLocation),
     /// A photo message
+    #[serde(rename(deserialize = "inputMessagePhoto"))]
     InputMessagePhoto(InputMessagePhoto),
     /// A message with a poll. Polls can't be sent to secret chats. Polls can be sent only to a private chat with a bot
+    #[serde(rename(deserialize = "inputMessagePoll"))]
     InputMessagePoll(InputMessagePoll),
     /// A sticker message
+    #[serde(rename(deserialize = "inputMessageSticker"))]
     InputMessageSticker(InputMessageSticker),
     /// A text message
+    #[serde(rename(deserialize = "inputMessageText"))]
     InputMessageText(InputMessageText),
     /// A message with information about a venue
+    #[serde(rename(deserialize = "inputMessageVenue"))]
     InputMessageVenue(InputMessageVenue),
     /// A video message
+    #[serde(rename(deserialize = "inputMessageVideo"))]
     InputMessageVideo(InputMessageVideo),
     /// A video note message
+    #[serde(rename(deserialize = "inputMessageVideoNote"))]
     InputMessageVideoNote(InputMessageVideoNote),
     /// A voice note message
+    #[serde(rename(deserialize = "inputMessageVoiceNote"))]
     InputMessageVoiceNote(InputMessageVoiceNote),
 }
 
@@ -56,61 +72,7 @@ impl Default for InputMessageContent {
     }
 }
 
-impl<'de> Deserialize<'de> for InputMessageContent {
-    fn deserialize<D>(deserializer: D) -> Result<InputMessageContent, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          InputMessageContent,
-          (inputMessageAnimation, InputMessageAnimation);
-          (inputMessageAudio, InputMessageAudio);
-          (inputMessageContact, InputMessageContact);
-          (inputMessageDice, InputMessageDice);
-          (inputMessageDocument, InputMessageDocument);
-          (inputMessageForwarded, InputMessageForwarded);
-          (inputMessageGame, InputMessageGame);
-          (inputMessageInvoice, InputMessageInvoice);
-          (inputMessageLocation, InputMessageLocation);
-          (inputMessagePhoto, InputMessagePhoto);
-          (inputMessagePoll, InputMessagePoll);
-          (inputMessageSticker, InputMessageSticker);
-          (inputMessageText, InputMessageText);
-          (inputMessageVenue, InputMessageVenue);
-          (inputMessageVideo, InputMessageVideo);
-          (inputMessageVideoNote, InputMessageVideoNote);
-          (inputMessageVoiceNote, InputMessageVoiceNote);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for InputMessageContent {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            InputMessageContent::InputMessageAnimation(t) => t.td_name(),
-            InputMessageContent::InputMessageAudio(t) => t.td_name(),
-            InputMessageContent::InputMessageContact(t) => t.td_name(),
-            InputMessageContent::InputMessageDice(t) => t.td_name(),
-            InputMessageContent::InputMessageDocument(t) => t.td_name(),
-            InputMessageContent::InputMessageForwarded(t) => t.td_name(),
-            InputMessageContent::InputMessageGame(t) => t.td_name(),
-            InputMessageContent::InputMessageInvoice(t) => t.td_name(),
-            InputMessageContent::InputMessageLocation(t) => t.td_name(),
-            InputMessageContent::InputMessagePhoto(t) => t.td_name(),
-            InputMessageContent::InputMessagePoll(t) => t.td_name(),
-            InputMessageContent::InputMessageSticker(t) => t.td_name(),
-            InputMessageContent::InputMessageText(t) => t.td_name(),
-            InputMessageContent::InputMessageVenue(t) => t.td_name(),
-            InputMessageContent::InputMessageVideo(t) => t.td_name(),
-            InputMessageContent::InputMessageVideoNote(t) => t.td_name(),
-            InputMessageContent::InputMessageVoiceNote(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -134,9 +96,6 @@ impl RObject for InputMessageContent {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -184,9 +143,6 @@ impl AsRef<InputMessageContent> for InputMessageContent {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageAnimation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -209,19 +165,12 @@ pub struct InputMessageAnimation {
 
 impl RObject for InputMessageAnimation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageAnimation"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -233,9 +182,8 @@ impl InputMessageAnimation {
     }
     pub fn builder() -> RTDInputMessageAnimationBuilder {
         let mut inner = InputMessageAnimation::default();
-        inner.td_name = "inputMessageAnimation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageAnimationBuilder { inner }
     }
 
@@ -330,9 +278,6 @@ impl AsRef<InputMessageAnimation> for RTDInputMessageAnimationBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageAudio {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -353,19 +298,12 @@ pub struct InputMessageAudio {
 
 impl RObject for InputMessageAudio {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageAudio"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -377,9 +315,8 @@ impl InputMessageAudio {
     }
     pub fn builder() -> RTDInputMessageAudioBuilder {
         let mut inner = InputMessageAudio::default();
-        inner.td_name = "inputMessageAudio".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageAudioBuilder { inner }
     }
 
@@ -468,9 +405,6 @@ impl AsRef<InputMessageAudio> for RTDInputMessageAudioBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageContact {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -481,19 +415,12 @@ pub struct InputMessageContact {
 
 impl RObject for InputMessageContact {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageContact"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -505,9 +432,8 @@ impl InputMessageContact {
     }
     pub fn builder() -> RTDInputMessageContactBuilder {
         let mut inner = InputMessageContact::default();
-        inner.td_name = "inputMessageContact".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageContactBuilder { inner }
     }
 
@@ -548,9 +474,6 @@ impl AsRef<InputMessageContact> for RTDInputMessageContactBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageDice {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -563,19 +486,12 @@ pub struct InputMessageDice {
 
 impl RObject for InputMessageDice {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageDice"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -587,9 +503,8 @@ impl InputMessageDice {
     }
     pub fn builder() -> RTDInputMessageDiceBuilder {
         let mut inner = InputMessageDice::default();
-        inner.td_name = "inputMessageDice".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageDiceBuilder { inner }
     }
 
@@ -639,9 +554,6 @@ impl AsRef<InputMessageDice> for RTDInputMessageDiceBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageDocument {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -658,19 +570,12 @@ pub struct InputMessageDocument {
 
 impl RObject for InputMessageDocument {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageDocument"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -682,9 +587,8 @@ impl InputMessageDocument {
     }
     pub fn builder() -> RTDInputMessageDocumentBuilder {
         let mut inner = InputMessageDocument::default();
-        inner.td_name = "inputMessageDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageDocumentBuilder { inner }
     }
 
@@ -755,9 +659,6 @@ impl AsRef<InputMessageDocument> for RTDInputMessageDocumentBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageForwarded {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -774,19 +675,12 @@ pub struct InputMessageForwarded {
 
 impl RObject for InputMessageForwarded {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageForwarded"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -798,9 +692,8 @@ impl InputMessageForwarded {
     }
     pub fn builder() -> RTDInputMessageForwardedBuilder {
         let mut inner = InputMessageForwarded::default();
-        inner.td_name = "inputMessageForwarded".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageForwardedBuilder { inner }
     }
 
@@ -868,9 +761,6 @@ impl AsRef<InputMessageForwarded> for RTDInputMessageForwardedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageGame {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -883,19 +773,12 @@ pub struct InputMessageGame {
 
 impl RObject for InputMessageGame {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageGame"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -907,9 +790,8 @@ impl InputMessageGame {
     }
     pub fn builder() -> RTDInputMessageGameBuilder {
         let mut inner = InputMessageGame::default();
-        inner.td_name = "inputMessageGame".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageGameBuilder { inner }
     }
 
@@ -959,9 +841,6 @@ impl AsRef<InputMessageGame> for RTDInputMessageGameBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageInvoice {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -992,19 +871,12 @@ pub struct InputMessageInvoice {
 
 impl RObject for InputMessageInvoice {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageInvoice"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1016,9 +888,8 @@ impl InputMessageInvoice {
     }
     pub fn builder() -> RTDInputMessageInvoiceBuilder {
         let mut inner = InputMessageInvoice::default();
-        inner.td_name = "inputMessageInvoice".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageInvoiceBuilder { inner }
     }
 
@@ -1149,9 +1020,6 @@ impl AsRef<InputMessageInvoice> for RTDInputMessageInvoiceBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageLocation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1168,19 +1036,12 @@ pub struct InputMessageLocation {
 
 impl RObject for InputMessageLocation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageLocation"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1192,9 +1053,8 @@ impl InputMessageLocation {
     }
     pub fn builder() -> RTDInputMessageLocationBuilder {
         let mut inner = InputMessageLocation::default();
-        inner.td_name = "inputMessageLocation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageLocationBuilder { inner }
     }
 
@@ -1262,9 +1122,6 @@ impl AsRef<InputMessageLocation> for RTDInputMessageLocationBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessagePhoto {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1287,19 +1144,12 @@ pub struct InputMessagePhoto {
 
 impl RObject for InputMessagePhoto {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessagePhoto"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1311,9 +1161,8 @@ impl InputMessagePhoto {
     }
     pub fn builder() -> RTDInputMessagePhotoBuilder {
         let mut inner = InputMessagePhoto::default();
-        inner.td_name = "inputMessagePhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessagePhotoBuilder { inner }
     }
 
@@ -1408,9 +1257,6 @@ impl AsRef<InputMessagePhoto> for RTDInputMessagePhotoBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessagePoll {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1434,19 +1280,12 @@ pub struct InputMessagePoll {
 
 impl RObject for InputMessagePoll {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessagePoll"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1458,9 +1297,8 @@ impl InputMessagePoll {
     }
     pub fn builder() -> RTDInputMessagePollBuilder {
         let mut inner = InputMessagePoll::default();
-        inner.td_name = "inputMessagePoll".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessagePollBuilder { inner }
     }
 
@@ -1555,9 +1393,6 @@ impl AsRef<InputMessagePoll> for RTDInputMessagePollBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageSticker {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1574,19 +1409,12 @@ pub struct InputMessageSticker {
 
 impl RObject for InputMessageSticker {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageSticker"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1598,9 +1426,8 @@ impl InputMessageSticker {
     }
     pub fn builder() -> RTDInputMessageStickerBuilder {
         let mut inner = InputMessageSticker::default();
-        inner.td_name = "inputMessageSticker".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageStickerBuilder { inner }
     }
 
@@ -1668,9 +1495,6 @@ impl AsRef<InputMessageSticker> for RTDInputMessageStickerBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageText {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1685,19 +1509,12 @@ pub struct InputMessageText {
 
 impl RObject for InputMessageText {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageText"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1709,9 +1526,8 @@ impl InputMessageText {
     }
     pub fn builder() -> RTDInputMessageTextBuilder {
         let mut inner = InputMessageText::default();
-        inner.td_name = "inputMessageText".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageTextBuilder { inner }
     }
 
@@ -1770,9 +1586,6 @@ impl AsRef<InputMessageText> for RTDInputMessageTextBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageVenue {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1783,19 +1596,12 @@ pub struct InputMessageVenue {
 
 impl RObject for InputMessageVenue {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageVenue"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1807,9 +1613,8 @@ impl InputMessageVenue {
     }
     pub fn builder() -> RTDInputMessageVenueBuilder {
         let mut inner = InputMessageVenue::default();
-        inner.td_name = "inputMessageVenue".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageVenueBuilder { inner }
     }
 
@@ -1850,9 +1655,6 @@ impl AsRef<InputMessageVenue> for RTDInputMessageVenueBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageVideo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1879,19 +1681,12 @@ pub struct InputMessageVideo {
 
 impl RObject for InputMessageVideo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageVideo"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1903,9 +1698,8 @@ impl InputMessageVideo {
     }
     pub fn builder() -> RTDInputMessageVideoBuilder {
         let mut inner = InputMessageVideo::default();
-        inner.td_name = "inputMessageVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageVideoBuilder { inner }
     }
 
@@ -2018,9 +1812,6 @@ impl AsRef<InputMessageVideo> for RTDInputMessageVideoBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageVideoNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -2037,19 +1828,12 @@ pub struct InputMessageVideoNote {
 
 impl RObject for InputMessageVideoNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageVideoNote"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -2061,9 +1845,8 @@ impl InputMessageVideoNote {
     }
     pub fn builder() -> RTDInputMessageVideoNoteBuilder {
         let mut inner = InputMessageVideoNote::default();
-        inner.td_name = "inputMessageVideoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageVideoNoteBuilder { inner }
     }
 
@@ -2131,9 +1914,6 @@ impl AsRef<InputMessageVideoNote> for RTDInputMessageVideoNoteBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageVoiceNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -2150,19 +1930,12 @@ pub struct InputMessageVoiceNote {
 
 impl RObject for InputMessageVoiceNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputMessageVoiceNote"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -2174,9 +1947,8 @@ impl InputMessageVoiceNote {
     }
     pub fn builder() -> RTDInputMessageVoiceNoteBuilder {
         let mut inner = InputMessageVoiceNote::default();
-        inner.td_name = "inputMessageVoiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputMessageVoiceNoteBuilder { inner }
     }
 

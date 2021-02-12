@@ -2,43 +2,55 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the different types of activity in a chat
 pub trait TDChatAction: Debug + RObject {}
 
 /// Describes the different types of activity in a chat
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatAction {
     #[doc(hidden)]
     _Default(()),
     /// The user has cancelled the previous action
+    #[serde(rename(deserialize = "chatActionCancel"))]
     Cancel(ChatActionCancel),
     /// The user is picking a contact to send
+    #[serde(rename(deserialize = "chatActionChoosingContact"))]
     ChoosingContact(ChatActionChoosingContact),
     /// The user is picking a location or venue to send
+    #[serde(rename(deserialize = "chatActionChoosingLocation"))]
     ChoosingLocation(ChatActionChoosingLocation),
     /// The user is recording a video
+    #[serde(rename(deserialize = "chatActionRecordingVideo"))]
     RecordingVideo(ChatActionRecordingVideo),
     /// The user is recording a video note
+    #[serde(rename(deserialize = "chatActionRecordingVideoNote"))]
     RecordingVideoNote(ChatActionRecordingVideoNote),
     /// The user is recording a voice note
+    #[serde(rename(deserialize = "chatActionRecordingVoiceNote"))]
     RecordingVoiceNote(ChatActionRecordingVoiceNote),
     /// The user has started to play a game
+    #[serde(rename(deserialize = "chatActionStartPlayingGame"))]
     StartPlayingGame(ChatActionStartPlayingGame),
     /// The user is typing a message
+    #[serde(rename(deserialize = "chatActionTyping"))]
     Typing(ChatActionTyping),
     /// The user is uploading a document
+    #[serde(rename(deserialize = "chatActionUploadingDocument"))]
     UploadingDocument(ChatActionUploadingDocument),
     /// The user is uploading a photo
+    #[serde(rename(deserialize = "chatActionUploadingPhoto"))]
     UploadingPhoto(ChatActionUploadingPhoto),
     /// The user is uploading a video
+    #[serde(rename(deserialize = "chatActionUploadingVideo"))]
     UploadingVideo(ChatActionUploadingVideo),
     /// The user is uploading a video note
+    #[serde(rename(deserialize = "chatActionUploadingVideoNote"))]
     UploadingVideoNote(ChatActionUploadingVideoNote),
     /// The user is uploading a voice note
+    #[serde(rename(deserialize = "chatActionUploadingVoiceNote"))]
     UploadingVoiceNote(ChatActionUploadingVoiceNote),
 }
 
@@ -48,53 +60,7 @@ impl Default for ChatAction {
     }
 }
 
-impl<'de> Deserialize<'de> for ChatAction {
-    fn deserialize<D>(deserializer: D) -> Result<ChatAction, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatAction,
-          (chatActionCancel, Cancel);
-          (chatActionChoosingContact, ChoosingContact);
-          (chatActionChoosingLocation, ChoosingLocation);
-          (chatActionRecordingVideo, RecordingVideo);
-          (chatActionRecordingVideoNote, RecordingVideoNote);
-          (chatActionRecordingVoiceNote, RecordingVoiceNote);
-          (chatActionStartPlayingGame, StartPlayingGame);
-          (chatActionTyping, Typing);
-          (chatActionUploadingDocument, UploadingDocument);
-          (chatActionUploadingPhoto, UploadingPhoto);
-          (chatActionUploadingVideo, UploadingVideo);
-          (chatActionUploadingVideoNote, UploadingVideoNote);
-          (chatActionUploadingVoiceNote, UploadingVoiceNote);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for ChatAction {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatAction::Cancel(t) => t.td_name(),
-            ChatAction::ChoosingContact(t) => t.td_name(),
-            ChatAction::ChoosingLocation(t) => t.td_name(),
-            ChatAction::RecordingVideo(t) => t.td_name(),
-            ChatAction::RecordingVideoNote(t) => t.td_name(),
-            ChatAction::RecordingVoiceNote(t) => t.td_name(),
-            ChatAction::StartPlayingGame(t) => t.td_name(),
-            ChatAction::Typing(t) => t.td_name(),
-            ChatAction::UploadingDocument(t) => t.td_name(),
-            ChatAction::UploadingPhoto(t) => t.td_name(),
-            ChatAction::UploadingVideo(t) => t.td_name(),
-            ChatAction::UploadingVideoNote(t) => t.td_name(),
-            ChatAction::UploadingVoiceNote(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -114,9 +80,6 @@ impl RObject for ChatAction {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -160,9 +123,6 @@ impl AsRef<ChatAction> for ChatAction {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionCancel {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -171,19 +131,12 @@ pub struct ChatActionCancel {
 
 impl RObject for ChatActionCancel {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionCancel"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -195,9 +148,8 @@ impl ChatActionCancel {
     }
     pub fn builder() -> RTDChatActionCancelBuilder {
         let mut inner = ChatActionCancel::default();
-        inner.td_name = "chatActionCancel".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionCancelBuilder { inner }
     }
 }
@@ -229,9 +181,6 @@ impl AsRef<ChatActionCancel> for RTDChatActionCancelBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionChoosingContact {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -240,19 +189,12 @@ pub struct ChatActionChoosingContact {
 
 impl RObject for ChatActionChoosingContact {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionChoosingContact"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -264,9 +206,8 @@ impl ChatActionChoosingContact {
     }
     pub fn builder() -> RTDChatActionChoosingContactBuilder {
         let mut inner = ChatActionChoosingContact::default();
-        inner.td_name = "chatActionChoosingContact".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionChoosingContactBuilder { inner }
     }
 }
@@ -298,9 +239,6 @@ impl AsRef<ChatActionChoosingContact> for RTDChatActionChoosingContactBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionChoosingLocation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -309,19 +247,12 @@ pub struct ChatActionChoosingLocation {
 
 impl RObject for ChatActionChoosingLocation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionChoosingLocation"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -333,9 +264,8 @@ impl ChatActionChoosingLocation {
     }
     pub fn builder() -> RTDChatActionChoosingLocationBuilder {
         let mut inner = ChatActionChoosingLocation::default();
-        inner.td_name = "chatActionChoosingLocation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionChoosingLocationBuilder { inner }
     }
 }
@@ -367,9 +297,6 @@ impl AsRef<ChatActionChoosingLocation> for RTDChatActionChoosingLocationBuilder 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionRecordingVideo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -378,19 +305,12 @@ pub struct ChatActionRecordingVideo {
 
 impl RObject for ChatActionRecordingVideo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionRecordingVideo"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -402,9 +322,8 @@ impl ChatActionRecordingVideo {
     }
     pub fn builder() -> RTDChatActionRecordingVideoBuilder {
         let mut inner = ChatActionRecordingVideo::default();
-        inner.td_name = "chatActionRecordingVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionRecordingVideoBuilder { inner }
     }
 }
@@ -436,9 +355,6 @@ impl AsRef<ChatActionRecordingVideo> for RTDChatActionRecordingVideoBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionRecordingVideoNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -447,19 +363,12 @@ pub struct ChatActionRecordingVideoNote {
 
 impl RObject for ChatActionRecordingVideoNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionRecordingVideoNote"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -471,9 +380,8 @@ impl ChatActionRecordingVideoNote {
     }
     pub fn builder() -> RTDChatActionRecordingVideoNoteBuilder {
         let mut inner = ChatActionRecordingVideoNote::default();
-        inner.td_name = "chatActionRecordingVideoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionRecordingVideoNoteBuilder { inner }
     }
 }
@@ -505,9 +413,6 @@ impl AsRef<ChatActionRecordingVideoNote> for RTDChatActionRecordingVideoNoteBuil
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionRecordingVoiceNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -516,19 +421,12 @@ pub struct ChatActionRecordingVoiceNote {
 
 impl RObject for ChatActionRecordingVoiceNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionRecordingVoiceNote"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -540,9 +438,8 @@ impl ChatActionRecordingVoiceNote {
     }
     pub fn builder() -> RTDChatActionRecordingVoiceNoteBuilder {
         let mut inner = ChatActionRecordingVoiceNote::default();
-        inner.td_name = "chatActionRecordingVoiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionRecordingVoiceNoteBuilder { inner }
     }
 }
@@ -574,9 +471,6 @@ impl AsRef<ChatActionRecordingVoiceNote> for RTDChatActionRecordingVoiceNoteBuil
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionStartPlayingGame {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -585,19 +479,12 @@ pub struct ChatActionStartPlayingGame {
 
 impl RObject for ChatActionStartPlayingGame {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionStartPlayingGame"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -609,9 +496,8 @@ impl ChatActionStartPlayingGame {
     }
     pub fn builder() -> RTDChatActionStartPlayingGameBuilder {
         let mut inner = ChatActionStartPlayingGame::default();
-        inner.td_name = "chatActionStartPlayingGame".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionStartPlayingGameBuilder { inner }
     }
 }
@@ -643,9 +529,6 @@ impl AsRef<ChatActionStartPlayingGame> for RTDChatActionStartPlayingGameBuilder 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionTyping {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -654,19 +537,12 @@ pub struct ChatActionTyping {
 
 impl RObject for ChatActionTyping {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionTyping"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -678,9 +554,8 @@ impl ChatActionTyping {
     }
     pub fn builder() -> RTDChatActionTypingBuilder {
         let mut inner = ChatActionTyping::default();
-        inner.td_name = "chatActionTyping".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionTypingBuilder { inner }
     }
 }
@@ -712,9 +587,6 @@ impl AsRef<ChatActionTyping> for RTDChatActionTypingBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionUploadingDocument {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -725,19 +597,12 @@ pub struct ChatActionUploadingDocument {
 
 impl RObject for ChatActionUploadingDocument {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionUploadingDocument"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -749,9 +614,8 @@ impl ChatActionUploadingDocument {
     }
     pub fn builder() -> RTDChatActionUploadingDocumentBuilder {
         let mut inner = ChatActionUploadingDocument::default();
-        inner.td_name = "chatActionUploadingDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionUploadingDocumentBuilder { inner }
     }
 
@@ -792,9 +656,6 @@ impl AsRef<ChatActionUploadingDocument> for RTDChatActionUploadingDocumentBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionUploadingPhoto {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -805,19 +666,12 @@ pub struct ChatActionUploadingPhoto {
 
 impl RObject for ChatActionUploadingPhoto {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionUploadingPhoto"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -829,9 +683,8 @@ impl ChatActionUploadingPhoto {
     }
     pub fn builder() -> RTDChatActionUploadingPhotoBuilder {
         let mut inner = ChatActionUploadingPhoto::default();
-        inner.td_name = "chatActionUploadingPhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionUploadingPhotoBuilder { inner }
     }
 
@@ -872,9 +725,6 @@ impl AsRef<ChatActionUploadingPhoto> for RTDChatActionUploadingPhotoBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionUploadingVideo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -885,19 +735,12 @@ pub struct ChatActionUploadingVideo {
 
 impl RObject for ChatActionUploadingVideo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionUploadingVideo"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -909,9 +752,8 @@ impl ChatActionUploadingVideo {
     }
     pub fn builder() -> RTDChatActionUploadingVideoBuilder {
         let mut inner = ChatActionUploadingVideo::default();
-        inner.td_name = "chatActionUploadingVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionUploadingVideoBuilder { inner }
     }
 
@@ -952,9 +794,6 @@ impl AsRef<ChatActionUploadingVideo> for RTDChatActionUploadingVideoBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionUploadingVideoNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -965,19 +804,12 @@ pub struct ChatActionUploadingVideoNote {
 
 impl RObject for ChatActionUploadingVideoNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionUploadingVideoNote"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -989,9 +821,8 @@ impl ChatActionUploadingVideoNote {
     }
     pub fn builder() -> RTDChatActionUploadingVideoNoteBuilder {
         let mut inner = ChatActionUploadingVideoNote::default();
-        inner.td_name = "chatActionUploadingVideoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionUploadingVideoNoteBuilder { inner }
     }
 
@@ -1032,9 +863,6 @@ impl AsRef<ChatActionUploadingVideoNote> for RTDChatActionUploadingVideoNoteBuil
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionUploadingVoiceNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -1045,19 +873,12 @@ pub struct ChatActionUploadingVoiceNote {
 
 impl RObject for ChatActionUploadingVoiceNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionUploadingVoiceNote"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -1069,9 +890,8 @@ impl ChatActionUploadingVoiceNote {
     }
     pub fn builder() -> RTDChatActionUploadingVoiceNoteBuilder {
         let mut inner = ChatActionUploadingVoiceNote::default();
-        inner.td_name = "chatActionUploadingVoiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatActionUploadingVoiceNoteBuilder { inner }
     }
 

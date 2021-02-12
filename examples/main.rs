@@ -1,11 +1,13 @@
 #[macro_use]
 extern crate log;
 
-use rust_tdlib::{types::*, client::{Client, Worker}, tdjson};
+use rust_tdlib::{
+    client::{Client, Worker},
+    types::*,
+};
 
 #[tokio::main]
 async fn main() {
-    tdjson::set_log_verbosity_level(2);
     env_logger::init();
     let tdlib_parameters = TdlibParameters::builder()
         .database_directory("tdlib")
@@ -45,6 +47,7 @@ async fn main() {
         info!("{:?}", chat)
     }
     worker.stop();
+    info!("worker stopped");
     client_state.await.unwrap();
     info!("client closed");
     waiter.await.unwrap();

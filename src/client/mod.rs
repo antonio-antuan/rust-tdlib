@@ -10,4 +10,4 @@ pub mod errors;
 pub mod worker;
 
 pub use client::Client;
-pub use worker::{AuthStateHandler, ConsoleAuthStateHandler, Worker};
+pub use worker::{AuthStateHandler, ConsoleAuthStateHandler, Worker, WorkerBuilder};

@@ -2,23 +2,25 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes a list of chats
 pub trait TDChatList: Debug + RObject {}
 
 /// Describes a list of chats
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatList {
     #[doc(hidden)]
     _Default(()),
     /// A list of chats usually located at the top of the main chat list. Unmuted chats are automatically moved from the Archive to the Main chat list when a new message arrives
+    #[serde(rename(deserialize = "chatListArchive"))]
     Archive(ChatListArchive),
     /// A list of chats belonging to a chat filter
+    #[serde(rename(deserialize = "chatListFilter"))]
     Filter(ChatListFilter),
     /// A main list of chats
+    #[serde(rename(deserialize = "chatListMain"))]
     Main(ChatListMain),
 }
 
@@ -28,33 +30,7 @@ impl Default for ChatList {
     }
 }
 
-impl<'de> Deserialize<'de> for ChatList {
-    fn deserialize<D>(deserializer: D) -> Result<ChatList, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatList,
-          (chatListArchive, Archive);
-          (chatListFilter, Filter);
-          (chatListMain, Main);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for ChatList {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatList::Archive(t) => t.td_name(),
-            ChatList::Filter(t) => t.td_name(),
-            ChatList::Main(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -64,9 +40,6 @@ impl RObject for ChatList {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -100,9 +73,6 @@ impl AsRef<ChatList> for ChatList {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatListArchive {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -111,19 +81,12 @@ pub struct ChatListArchive {
 
 impl RObject for ChatListArchive {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatListArchive"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -135,9 +98,8 @@ impl ChatListArchive {
     }
     pub fn builder() -> RTDChatListArchiveBuilder {
         let mut inner = ChatListArchive::default();
-        inner.td_name = "chatListArchive".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatListArchiveBuilder { inner }
     }
 }
@@ -169,9 +131,6 @@ impl AsRef<ChatListArchive> for RTDChatListArchiveBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatListFilter {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -182,19 +141,12 @@ pub struct ChatListFilter {
 
 impl RObject for ChatListFilter {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatListFilter"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -206,9 +158,8 @@ impl ChatListFilter {
     }
     pub fn builder() -> RTDChatListFilterBuilder {
         let mut inner = ChatListFilter::default();
-        inner.td_name = "chatListFilter".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatListFilterBuilder { inner }
     }
 
@@ -249,9 +200,6 @@ impl AsRef<ChatListFilter> for RTDChatListFilterBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatListMain {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -260,19 +208,12 @@ pub struct ChatListMain {
 
 impl RObject for ChatListMain {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatListMain"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -284,9 +225,8 @@ impl ChatListMain {
     }
     pub fn builder() -> RTDChatListMainBuilder {
         let mut inner = ChatListMain::default();
-        inner.td_name = "chatListMain".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatListMainBuilder { inner }
     }
 }

@@ -2,25 +2,28 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the type of a URL linking to an internal Telegram entity
 pub trait TDTMeUrlType: Debug + RObject {}
 
 /// Describes the type of a URL linking to an internal Telegram entity
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum TMeUrlType {
     #[doc(hidden)]
     _Default(()),
     /// A chat invite link
+    #[serde(rename(deserialize = "tMeUrlTypeChatInvite"))]
     ChatInvite(TMeUrlTypeChatInvite),
     /// A URL linking to a sticker set
+    #[serde(rename(deserialize = "tMeUrlTypeStickerSet"))]
     StickerSet(TMeUrlTypeStickerSet),
     /// A URL linking to a public supergroup or channel
+    #[serde(rename(deserialize = "tMeUrlTypeSupergroup"))]
     Supergroup(TMeUrlTypeSupergroup),
     /// A URL linking to a user
+    #[serde(rename(deserialize = "tMeUrlTypeUser"))]
     User(TMeUrlTypeUser),
 }
 
@@ -30,35 +33,7 @@ impl Default for TMeUrlType {
     }
 }
 
-impl<'de> Deserialize<'de> for TMeUrlType {
-    fn deserialize<D>(deserializer: D) -> Result<TMeUrlType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          TMeUrlType,
-          (tMeUrlTypeChatInvite, ChatInvite);
-          (tMeUrlTypeStickerSet, StickerSet);
-          (tMeUrlTypeSupergroup, Supergroup);
-          (tMeUrlTypeUser, User);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for TMeUrlType {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            TMeUrlType::ChatInvite(t) => t.td_name(),
-            TMeUrlType::StickerSet(t) => t.td_name(),
-            TMeUrlType::Supergroup(t) => t.td_name(),
-            TMeUrlType::User(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -69,9 +44,6 @@ impl RObject for TMeUrlType {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -106,9 +78,6 @@ impl AsRef<TMeUrlType> for TMeUrlType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TMeUrlTypeChatInvite {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -119,19 +88,12 @@ pub struct TMeUrlTypeChatInvite {
 
 impl RObject for TMeUrlTypeChatInvite {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "tMeUrlTypeChatInvite"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -143,9 +105,8 @@ impl TMeUrlTypeChatInvite {
     }
     pub fn builder() -> RTDTMeUrlTypeChatInviteBuilder {
         let mut inner = TMeUrlTypeChatInvite::default();
-        inner.td_name = "tMeUrlTypeChatInvite".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTMeUrlTypeChatInviteBuilder { inner }
     }
 
@@ -186,9 +147,6 @@ impl AsRef<TMeUrlTypeChatInvite> for RTDTMeUrlTypeChatInviteBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TMeUrlTypeStickerSet {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -200,19 +158,12 @@ pub struct TMeUrlTypeStickerSet {
 
 impl RObject for TMeUrlTypeStickerSet {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "tMeUrlTypeStickerSet"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -224,9 +175,8 @@ impl TMeUrlTypeStickerSet {
     }
     pub fn builder() -> RTDTMeUrlTypeStickerSetBuilder {
         let mut inner = TMeUrlTypeStickerSet::default();
-        inner.td_name = "tMeUrlTypeStickerSet".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTMeUrlTypeStickerSetBuilder { inner }
     }
 
@@ -267,9 +217,6 @@ impl AsRef<TMeUrlTypeStickerSet> for RTDTMeUrlTypeStickerSetBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TMeUrlTypeSupergroup {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -280,19 +227,12 @@ pub struct TMeUrlTypeSupergroup {
 
 impl RObject for TMeUrlTypeSupergroup {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "tMeUrlTypeSupergroup"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -304,9 +244,8 @@ impl TMeUrlTypeSupergroup {
     }
     pub fn builder() -> RTDTMeUrlTypeSupergroupBuilder {
         let mut inner = TMeUrlTypeSupergroup::default();
-        inner.td_name = "tMeUrlTypeSupergroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTMeUrlTypeSupergroupBuilder { inner }
     }
 
@@ -347,9 +286,6 @@ impl AsRef<TMeUrlTypeSupergroup> for RTDTMeUrlTypeSupergroupBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TMeUrlTypeUser {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -360,19 +296,12 @@ pub struct TMeUrlTypeUser {
 
 impl RObject for TMeUrlTypeUser {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "tMeUrlTypeUser"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -384,9 +313,8 @@ impl TMeUrlTypeUser {
     }
     pub fn builder() -> RTDTMeUrlTypeUserBuilder {
         let mut inner = TMeUrlTypeUser::default();
-        inner.td_name = "tMeUrlTypeUser".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTMeUrlTypeUserBuilder { inner }
     }
 

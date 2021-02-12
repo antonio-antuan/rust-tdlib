@@ -2,23 +2,25 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Contains a detailed statistics about a chat
 pub trait TDChatStatistics: Debug + RObject {}
 
 /// Contains a detailed statistics about a chat
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatStatistics {
     #[doc(hidden)]
     _Default(()),
     /// A detailed statistics about a channel chat
+    #[serde(rename(deserialize = "chatStatisticsChannel"))]
     Channel(ChatStatisticsChannel),
     /// A detailed statistics about a supergroup chat
+    #[serde(rename(deserialize = "chatStatisticsSupergroup"))]
     Supergroup(ChatStatisticsSupergroup),
     /// Returns detailed statistics about a chat. Currently this method can be used only for supergroups and channels. Can be used only if SupergroupFullInfo.can_get_statistics == true
+    #[serde(rename(deserialize = "getChatStatistics"))]
     GetChatStatistics(GetChatStatistics),
 }
 
@@ -28,33 +30,7 @@ impl Default for ChatStatistics {
     }
 }
 
-impl<'de> Deserialize<'de> for ChatStatistics {
-    fn deserialize<D>(deserializer: D) -> Result<ChatStatistics, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatStatistics,
-          (chatStatisticsChannel, Channel);
-          (chatStatisticsSupergroup, Supergroup);
-          (getChatStatistics, GetChatStatistics);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for ChatStatistics {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatStatistics::Channel(t) => t.td_name(),
-            ChatStatistics::Supergroup(t) => t.td_name(),
-            ChatStatistics::GetChatStatistics(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -64,9 +40,6 @@ impl RObject for ChatStatistics {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -99,9 +72,6 @@ impl AsRef<ChatStatistics> for ChatStatistics {
 /// A detailed statistics about a channel chat
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatStatisticsChannel {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
@@ -141,19 +111,12 @@ pub struct ChatStatisticsChannel {
 
 impl RObject for ChatStatisticsChannel {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatStatisticsChannel"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -165,9 +128,8 @@ impl ChatStatisticsChannel {
     }
     pub fn builder() -> RTDChatStatisticsChannelBuilder {
         let mut inner = ChatStatisticsChannel::default();
-        inner.td_name = "chatStatisticsChannel".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatStatisticsChannelBuilder { inner }
     }
 
@@ -361,9 +323,6 @@ impl AsRef<ChatStatisticsChannel> for RTDChatStatisticsChannelBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatStatisticsSupergroup {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -404,19 +363,12 @@ pub struct ChatStatisticsSupergroup {
 
 impl RObject for ChatStatisticsSupergroup {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatStatisticsSupergroup"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -428,9 +380,8 @@ impl ChatStatisticsSupergroup {
     }
     pub fn builder() -> RTDChatStatisticsSupergroupBuilder {
         let mut inner = ChatStatisticsSupergroup::default();
-        inner.td_name = "chatStatisticsSupergroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatStatisticsSupergroupBuilder { inner }
     }
 

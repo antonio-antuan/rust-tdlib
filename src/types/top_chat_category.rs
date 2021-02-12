@@ -2,31 +2,37 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Represents the categories of chats for which a list of frequently used chats can be retrieved
 pub trait TDTopChatCategory: Debug + RObject {}
 
 /// Represents the categories of chats for which a list of frequently used chats can be retrieved
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum TopChatCategory {
     #[doc(hidden)]
     _Default(()),
     /// A category containing frequently used private chats with bot users
+    #[serde(rename(deserialize = "topChatCategoryBots"))]
     Bots(TopChatCategoryBots),
     /// A category containing frequently used chats used for calls
+    #[serde(rename(deserialize = "topChatCategoryCalls"))]
     Calls(TopChatCategoryCalls),
     /// A category containing frequently used channels
+    #[serde(rename(deserialize = "topChatCategoryChannels"))]
     Channels(TopChatCategoryChannels),
     /// A category containing frequently used chats used to forward messages
+    #[serde(rename(deserialize = "topChatCategoryForwardChats"))]
     ForwardChats(TopChatCategoryForwardChats),
     /// A category containing frequently used basic groups and supergroups
+    #[serde(rename(deserialize = "topChatCategoryGroups"))]
     Groups(TopChatCategoryGroups),
     /// A category containing frequently used chats with inline bots sorted by their usage in inline mode
+    #[serde(rename(deserialize = "topChatCategoryInlineBots"))]
     InlineBots(TopChatCategoryInlineBots),
     /// A category containing frequently used private chats with non-bot users
+    #[serde(rename(deserialize = "topChatCategoryUsers"))]
     Users(TopChatCategoryUsers),
 }
 
@@ -36,41 +42,7 @@ impl Default for TopChatCategory {
     }
 }
 
-impl<'de> Deserialize<'de> for TopChatCategory {
-    fn deserialize<D>(deserializer: D) -> Result<TopChatCategory, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          TopChatCategory,
-          (topChatCategoryBots, Bots);
-          (topChatCategoryCalls, Calls);
-          (topChatCategoryChannels, Channels);
-          (topChatCategoryForwardChats, ForwardChats);
-          (topChatCategoryGroups, Groups);
-          (topChatCategoryInlineBots, InlineBots);
-          (topChatCategoryUsers, Users);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for TopChatCategory {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            TopChatCategory::Bots(t) => t.td_name(),
-            TopChatCategory::Calls(t) => t.td_name(),
-            TopChatCategory::Channels(t) => t.td_name(),
-            TopChatCategory::ForwardChats(t) => t.td_name(),
-            TopChatCategory::Groups(t) => t.td_name(),
-            TopChatCategory::InlineBots(t) => t.td_name(),
-            TopChatCategory::Users(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -84,9 +56,6 @@ impl RObject for TopChatCategory {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -124,9 +93,6 @@ impl AsRef<TopChatCategory> for TopChatCategory {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TopChatCategoryBots {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -135,19 +101,12 @@ pub struct TopChatCategoryBots {
 
 impl RObject for TopChatCategoryBots {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "topChatCategoryBots"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -159,9 +118,8 @@ impl TopChatCategoryBots {
     }
     pub fn builder() -> RTDTopChatCategoryBotsBuilder {
         let mut inner = TopChatCategoryBots::default();
-        inner.td_name = "topChatCategoryBots".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTopChatCategoryBotsBuilder { inner }
     }
 }
@@ -193,9 +151,6 @@ impl AsRef<TopChatCategoryBots> for RTDTopChatCategoryBotsBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TopChatCategoryCalls {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -204,19 +159,12 @@ pub struct TopChatCategoryCalls {
 
 impl RObject for TopChatCategoryCalls {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "topChatCategoryCalls"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -228,9 +176,8 @@ impl TopChatCategoryCalls {
     }
     pub fn builder() -> RTDTopChatCategoryCallsBuilder {
         let mut inner = TopChatCategoryCalls::default();
-        inner.td_name = "topChatCategoryCalls".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTopChatCategoryCallsBuilder { inner }
     }
 }
@@ -262,9 +209,6 @@ impl AsRef<TopChatCategoryCalls> for RTDTopChatCategoryCallsBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TopChatCategoryChannels {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -273,19 +217,12 @@ pub struct TopChatCategoryChannels {
 
 impl RObject for TopChatCategoryChannels {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "topChatCategoryChannels"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -297,9 +234,8 @@ impl TopChatCategoryChannels {
     }
     pub fn builder() -> RTDTopChatCategoryChannelsBuilder {
         let mut inner = TopChatCategoryChannels::default();
-        inner.td_name = "topChatCategoryChannels".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTopChatCategoryChannelsBuilder { inner }
     }
 }
@@ -331,9 +267,6 @@ impl AsRef<TopChatCategoryChannels> for RTDTopChatCategoryChannelsBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TopChatCategoryForwardChats {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -342,19 +275,12 @@ pub struct TopChatCategoryForwardChats {
 
 impl RObject for TopChatCategoryForwardChats {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "topChatCategoryForwardChats"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -366,9 +292,8 @@ impl TopChatCategoryForwardChats {
     }
     pub fn builder() -> RTDTopChatCategoryForwardChatsBuilder {
         let mut inner = TopChatCategoryForwardChats::default();
-        inner.td_name = "topChatCategoryForwardChats".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTopChatCategoryForwardChatsBuilder { inner }
     }
 }
@@ -400,9 +325,6 @@ impl AsRef<TopChatCategoryForwardChats> for RTDTopChatCategoryForwardChatsBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TopChatCategoryGroups {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -411,19 +333,12 @@ pub struct TopChatCategoryGroups {
 
 impl RObject for TopChatCategoryGroups {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "topChatCategoryGroups"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -435,9 +350,8 @@ impl TopChatCategoryGroups {
     }
     pub fn builder() -> RTDTopChatCategoryGroupsBuilder {
         let mut inner = TopChatCategoryGroups::default();
-        inner.td_name = "topChatCategoryGroups".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTopChatCategoryGroupsBuilder { inner }
     }
 }
@@ -469,9 +383,6 @@ impl AsRef<TopChatCategoryGroups> for RTDTopChatCategoryGroupsBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TopChatCategoryInlineBots {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -480,19 +391,12 @@ pub struct TopChatCategoryInlineBots {
 
 impl RObject for TopChatCategoryInlineBots {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "topChatCategoryInlineBots"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -504,9 +408,8 @@ impl TopChatCategoryInlineBots {
     }
     pub fn builder() -> RTDTopChatCategoryInlineBotsBuilder {
         let mut inner = TopChatCategoryInlineBots::default();
-        inner.td_name = "topChatCategoryInlineBots".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTopChatCategoryInlineBotsBuilder { inner }
     }
 }
@@ -538,9 +441,6 @@ impl AsRef<TopChatCategoryInlineBots> for RTDTopChatCategoryInlineBotsBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TopChatCategoryUsers {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -549,19 +449,12 @@ pub struct TopChatCategoryUsers {
 
 impl RObject for TopChatCategoryUsers {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "topChatCategoryUsers"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -573,9 +466,8 @@ impl TopChatCategoryUsers {
     }
     pub fn builder() -> RTDTopChatCategoryUsersBuilder {
         let mut inner = TopChatCategoryUsers::default();
-        inner.td_name = "topChatCategoryUsers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTopChatCategoryUsersBuilder { inner }
     }
 }

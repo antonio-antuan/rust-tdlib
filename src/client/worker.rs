@@ -5,17 +5,18 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 use super::client::{Client, ClientState, RawApi, TdLibClient};
+use crate::types::Update;
 use crate::{
     errors::RTDError,
     errors::RTDResult,
     tdjson::{new_client, receive, ClientId},
     types::{
-        from_json, AuthorizationState, AuthorizationStateWaitCode, GetApplicationConfig,
+        from_json, AuthorizationState, AuthorizationStateWaitCode,
         AuthorizationStateWaitEncryptionKey, AuthorizationStateWaitOtherDeviceConfirmation,
         AuthorizationStateWaitPassword, AuthorizationStateWaitPhoneNumber,
         AuthorizationStateWaitRegistration, CheckAuthenticationCode, CheckAuthenticationPassword,
-        CheckDatabaseEncryptionKey, RObject, RegisterUser, SetAuthenticationPhoneNumber,
-        SetTdlibParameters, TdType, UpdateAuthorizationState,
+        CheckDatabaseEncryptionKey, GetApplicationConfig, RObject, RegisterUser,
+        SetAuthenticationPhoneNumber, SetTdlibParameters, TdType, UpdateAuthorizationState,
     },
 };
 use std::io;
@@ -222,13 +223,20 @@ where
         client.set_client_id(client_id)?;
         let (sx, mut rx) = mpsc::channel::<ClientState>(10);
         log::trace!("going to add new client");
-        self.clients.write().await.insert(client_id, (client.clone(), sx));
+        self.clients
+            .write()
+            .await
+            .insert(client_id, (client.clone(), sx));
         log::trace!("new client added");
-        client.get_application_config(GetApplicationConfig::builder().build()).await?;
+        client
+            .get_application_config(GetApplicationConfig::builder().build())
+            .await?;
         // client.raw_api().send(client_id, GetApplicationConfig::builder().build());
         if let Some(msg) = rx.recv().await {
             match msg {
-                ClientState::Closed => return Ok((tokio::spawn(async { ClientState::Closed }), client)),
+                ClientState::Closed => {
+                    return Ok((tokio::spawn(async { ClientState::Closed }), client))
+                }
                 ClientState::Error(e) => return Err(RTDError::TdlibError(e)),
                 ClientState::Opened => {}
             }
@@ -313,36 +321,37 @@ where
                     match from_json::<TdType>(&json) {
                         Ok(t) => match OBSERVER.notify(t) {
                             None => {}
-                            Some(t) => match t {
-                                TdType::UpdateAuthorizationState(auth_state) => {
-                                    trace!("auth state send: {:?}", auth_state);
-                                    auth_sx
-                                        .send(auth_state)
-                                        .await
-                                        .map_err(|_| CLOSED_CHANNEL_ERROR)?;
-                                    trace!("auth state sent");
-                                }
-                                _ => {
-                                    if let Some(client_id) = t.client_id() {
-                                        match clients.read().await.get(&client_id) {
-                                            None => {
-                                                warn!(
-                                                    "found updates for unavailable client ({})",
-                                                    client_id
-                                                )
-                                            }
-                                            Some((client, _)) => {
-                                                if let Some(sender) = client.updates_sender() {
-                                                    sender
-                                                        .send(Box::new(t))
-                                                        .await
-                                                        .map_err(|_| CLOSED_CHANNEL_ERROR)?;
+                            Some(t) => {
+                                if let TdType::Update(update) = t {
+                                    if let Update::AuthorizationState(auth_state) = update {
+                                        trace!("auth state send: {:?}", auth_state);
+                                        auth_sx
+                                            .send(auth_state)
+                                            .await
+                                            .map_err(|_| CLOSED_CHANNEL_ERROR)?;
+                                        trace!("auth state sent");
+                                    } else {
+                                        if let Some(client_id) = update.client_id() {
+                                            match clients.read().await.get(&client_id) {
+                                                None => {
+                                                    warn!(
+                                                        "found updates for unavailable client ({})",
+                                                        client_id
+                                                    )
+                                                }
+                                                Some((client, _)) => {
+                                                    if let Some(sender) = client.updates_sender() {
+                                                        sender
+                                                            .send(update)
+                                                            .await
+                                                            .map_err(|_| CLOSED_CHANNEL_ERROR)?;
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            },
+                            }
                         },
                         Err(e) => {
                             panic!("{}", e)

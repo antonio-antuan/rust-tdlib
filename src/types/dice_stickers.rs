@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Contains animated stickers which should be used for dice animation rendering
 pub trait TDDiceStickers: Debug + RObject {}
 
 /// Contains animated stickers which should be used for dice animation rendering
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum DiceStickers {
     #[doc(hidden)]
     _Default(()),
     /// A regular animated sticker
+    #[serde(rename(deserialize = "diceStickersRegular"))]
     Regular(DiceStickersRegular),
     /// Animated stickers to be combined into a slot machine
+    #[serde(rename(deserialize = "diceStickersSlotMachine"))]
     SlotMachine(DiceStickersSlotMachine),
 }
 
@@ -26,31 +27,7 @@ impl Default for DiceStickers {
     }
 }
 
-impl<'de> Deserialize<'de> for DiceStickers {
-    fn deserialize<D>(deserializer: D) -> Result<DiceStickers, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          DiceStickers,
-          (diceStickersRegular, Regular);
-          (diceStickersSlotMachine, SlotMachine);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for DiceStickers {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            DiceStickers::Regular(t) => t.td_name(),
-            DiceStickers::SlotMachine(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for DiceStickers {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<DiceStickers> for DiceStickers {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DiceStickersRegular {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -107,19 +78,12 @@ pub struct DiceStickersRegular {
 
 impl RObject for DiceStickersRegular {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "diceStickersRegular"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -131,9 +95,8 @@ impl DiceStickersRegular {
     }
     pub fn builder() -> RTDDiceStickersRegularBuilder {
         let mut inner = DiceStickersRegular::default();
-        inner.td_name = "diceStickersRegular".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDiceStickersRegularBuilder { inner }
     }
 
@@ -174,9 +137,6 @@ impl AsRef<DiceStickersRegular> for RTDDiceStickersRegularBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DiceStickersSlotMachine {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -195,19 +155,12 @@ pub struct DiceStickersSlotMachine {
 
 impl RObject for DiceStickersSlotMachine {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "diceStickersSlotMachine"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -219,9 +172,8 @@ impl DiceStickersSlotMachine {
     }
     pub fn builder() -> RTDDiceStickersSlotMachineBuilder {
         let mut inner = DiceStickersSlotMachine::default();
-        inner.td_name = "diceStickersSlotMachine".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDDiceStickersSlotMachineBuilder { inner }
     }
 

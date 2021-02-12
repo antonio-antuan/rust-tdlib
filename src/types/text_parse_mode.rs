@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the way the text should be parsed for TextEntities
 pub trait TDTextParseMode: Debug + RObject {}
 
 /// Describes the way the text should be parsed for TextEntities
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum TextParseMode {
     #[doc(hidden)]
     _Default(()),
     /// The text uses HTML-style formatting. The same as Telegram Bot API "HTML" parse mode
+    #[serde(rename(deserialize = "textParseModeHTML"))]
     HTML(TextParseModeHTML),
     /// The text uses Markdown-style formatting
+    #[serde(rename(deserialize = "textParseModeMarkdown"))]
     Markdown(TextParseModeMarkdown),
 }
 
@@ -26,31 +27,7 @@ impl Default for TextParseMode {
     }
 }
 
-impl<'de> Deserialize<'de> for TextParseMode {
-    fn deserialize<D>(deserializer: D) -> Result<TextParseMode, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          TextParseMode,
-          (textParseModeHTML, HTML);
-          (textParseModeMarkdown, Markdown);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for TextParseMode {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            TextParseMode::HTML(t) => t.td_name(),
-            TextParseMode::Markdown(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for TextParseMode {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<TextParseMode> for TextParseMode {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TextParseModeHTML {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -105,19 +76,12 @@ pub struct TextParseModeHTML {
 
 impl RObject for TextParseModeHTML {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "textParseModeHTML"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -129,9 +93,8 @@ impl TextParseModeHTML {
     }
     pub fn builder() -> RTDTextParseModeHTMLBuilder {
         let mut inner = TextParseModeHTML::default();
-        inner.td_name = "textParseModeHTML".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTextParseModeHTMLBuilder { inner }
     }
 }
@@ -163,9 +126,6 @@ impl AsRef<TextParseModeHTML> for RTDTextParseModeHTMLBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TextParseModeMarkdown {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -176,19 +136,12 @@ pub struct TextParseModeMarkdown {
 
 impl RObject for TextParseModeMarkdown {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "textParseModeMarkdown"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -200,9 +153,8 @@ impl TextParseModeMarkdown {
     }
     pub fn builder() -> RTDTextParseModeMarkdownBuilder {
         let mut inner = TextParseModeMarkdown::default();
-        inner.td_name = "textParseModeMarkdown".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDTextParseModeMarkdownBuilder { inner }
     }
 

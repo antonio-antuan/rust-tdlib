@@ -2,23 +2,25 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes the type of a proxy server
 pub trait TDProxyType: Debug + RObject {}
 
 /// Describes the type of a proxy server
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ProxyType {
     #[doc(hidden)]
     _Default(()),
     /// A HTTP transparent proxy server
+    #[serde(rename(deserialize = "proxyTypeHttp"))]
     Http(ProxyTypeHttp),
     /// An MTProto proxy server
+    #[serde(rename(deserialize = "proxyTypeMtproto"))]
     Mtproto(ProxyTypeMtproto),
     /// A SOCKS5 proxy server
+    #[serde(rename(deserialize = "proxyTypeSocks5"))]
     Socks5(ProxyTypeSocks5),
 }
 
@@ -28,33 +30,7 @@ impl Default for ProxyType {
     }
 }
 
-impl<'de> Deserialize<'de> for ProxyType {
-    fn deserialize<D>(deserializer: D) -> Result<ProxyType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ProxyType,
-          (proxyTypeHttp, Http);
-          (proxyTypeMtproto, Mtproto);
-          (proxyTypeSocks5, Socks5);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for ProxyType {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ProxyType::Http(t) => t.td_name(),
-            ProxyType::Mtproto(t) => t.td_name(),
-            ProxyType::Socks5(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -64,9 +40,6 @@ impl RObject for ProxyType {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -100,9 +73,6 @@ impl AsRef<ProxyType> for ProxyType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ProxyTypeHttp {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -117,19 +87,12 @@ pub struct ProxyTypeHttp {
 
 impl RObject for ProxyTypeHttp {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "proxyTypeHttp"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -141,9 +104,8 @@ impl ProxyTypeHttp {
     }
     pub fn builder() -> RTDProxyTypeHttpBuilder {
         let mut inner = ProxyTypeHttp::default();
-        inner.td_name = "proxyTypeHttp".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDProxyTypeHttpBuilder { inner }
     }
 
@@ -202,9 +164,6 @@ impl AsRef<ProxyTypeHttp> for RTDProxyTypeHttpBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ProxyTypeMtproto {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -215,19 +174,12 @@ pub struct ProxyTypeMtproto {
 
 impl RObject for ProxyTypeMtproto {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "proxyTypeMtproto"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -239,9 +191,8 @@ impl ProxyTypeMtproto {
     }
     pub fn builder() -> RTDProxyTypeMtprotoBuilder {
         let mut inner = ProxyTypeMtproto::default();
-        inner.td_name = "proxyTypeMtproto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDProxyTypeMtprotoBuilder { inner }
     }
 
@@ -282,9 +233,6 @@ impl AsRef<ProxyTypeMtproto> for RTDProxyTypeMtprotoBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ProxyTypeSocks5 {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -297,19 +245,12 @@ pub struct ProxyTypeSocks5 {
 
 impl RObject for ProxyTypeSocks5 {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "proxyTypeSocks5"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -321,9 +262,8 @@ impl ProxyTypeSocks5 {
     }
     pub fn builder() -> RTDProxyTypeSocks5Builder {
         let mut inner = ProxyTypeSocks5::default();
-        inner.td_name = "proxyTypeSocks5".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDProxyTypeSocks5Builder { inner }
     }
 

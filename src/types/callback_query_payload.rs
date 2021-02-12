@@ -2,23 +2,25 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Represents a payload of a callback query
 pub trait TDCallbackQueryPayload: Debug + RObject {}
 
 /// Represents a payload of a callback query
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum CallbackQueryPayload {
     #[doc(hidden)]
     _Default(()),
     /// The payload for a general callback button
+    #[serde(rename(deserialize = "callbackQueryPayloadData"))]
     Data(CallbackQueryPayloadData),
     /// The payload for a callback button requiring password
+    #[serde(rename(deserialize = "callbackQueryPayloadDataWithPassword"))]
     DataWithPassword(CallbackQueryPayloadDataWithPassword),
     /// The payload for a game callback button
+    #[serde(rename(deserialize = "callbackQueryPayloadGame"))]
     Game(CallbackQueryPayloadGame),
 }
 
@@ -28,33 +30,7 @@ impl Default for CallbackQueryPayload {
     }
 }
 
-impl<'de> Deserialize<'de> for CallbackQueryPayload {
-    fn deserialize<D>(deserializer: D) -> Result<CallbackQueryPayload, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          CallbackQueryPayload,
-          (callbackQueryPayloadData, Data);
-          (callbackQueryPayloadDataWithPassword, DataWithPassword);
-          (callbackQueryPayloadGame, Game);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for CallbackQueryPayload {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            CallbackQueryPayload::Data(t) => t.td_name(),
-            CallbackQueryPayload::DataWithPassword(t) => t.td_name(),
-            CallbackQueryPayload::Game(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -64,9 +40,6 @@ impl RObject for CallbackQueryPayload {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -100,9 +73,6 @@ impl AsRef<CallbackQueryPayload> for CallbackQueryPayload {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallbackQueryPayloadData {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -113,19 +83,12 @@ pub struct CallbackQueryPayloadData {
 
 impl RObject for CallbackQueryPayloadData {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callbackQueryPayloadData"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -137,9 +100,8 @@ impl CallbackQueryPayloadData {
     }
     pub fn builder() -> RTDCallbackQueryPayloadDataBuilder {
         let mut inner = CallbackQueryPayloadData::default();
-        inner.td_name = "callbackQueryPayloadData".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallbackQueryPayloadDataBuilder { inner }
     }
 
@@ -180,9 +142,6 @@ impl AsRef<CallbackQueryPayloadData> for RTDCallbackQueryPayloadDataBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallbackQueryPayloadDataWithPassword {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -195,19 +154,12 @@ pub struct CallbackQueryPayloadDataWithPassword {
 
 impl RObject for CallbackQueryPayloadDataWithPassword {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callbackQueryPayloadDataWithPassword"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -219,9 +171,8 @@ impl CallbackQueryPayloadDataWithPassword {
     }
     pub fn builder() -> RTDCallbackQueryPayloadDataWithPasswordBuilder {
         let mut inner = CallbackQueryPayloadDataWithPassword::default();
-        inner.td_name = "callbackQueryPayloadDataWithPassword".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallbackQueryPayloadDataWithPasswordBuilder { inner }
     }
 
@@ -273,9 +224,6 @@ impl AsRef<CallbackQueryPayloadDataWithPassword>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallbackQueryPayloadGame {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -286,19 +234,12 @@ pub struct CallbackQueryPayloadGame {
 
 impl RObject for CallbackQueryPayloadGame {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callbackQueryPayloadGame"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -310,9 +251,8 @@ impl CallbackQueryPayloadGame {
     }
     pub fn builder() -> RTDCallbackQueryPayloadGameBuilder {
         let mut inner = CallbackQueryPayloadGame::default();
-        inner.td_name = "callbackQueryPayloadGame".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDCallbackQueryPayloadGameBuilder { inner }
     }
 

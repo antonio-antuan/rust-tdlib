@@ -2,33 +2,40 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes available user privacy settings
 pub trait TDUserPrivacySetting: Debug + RObject {}
 
 /// Describes available user privacy settings
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum UserPrivacySetting {
     #[doc(hidden)]
     _Default(()),
     /// A privacy setting for managing whether the user can be called
+    #[serde(rename(deserialize = "userPrivacySettingAllowCalls"))]
     AllowCalls(UserPrivacySettingAllowCalls),
     /// A privacy setting for managing whether the user can be invited to chats
+    #[serde(rename(deserialize = "userPrivacySettingAllowChatInvites"))]
     AllowChatInvites(UserPrivacySettingAllowChatInvites),
     /// A privacy setting for managing whether the user can be found by their phone number. Checked only if the phone number is not known to the other user. Can be set only to "Allow contacts" or "Allow all"
+    #[serde(rename(deserialize = "userPrivacySettingAllowFindingByPhoneNumber"))]
     AllowFindingByPhoneNumber(UserPrivacySettingAllowFindingByPhoneNumber),
     /// A privacy setting for managing whether peer-to-peer connections can be used for calls
+    #[serde(rename(deserialize = "userPrivacySettingAllowPeerToPeerCalls"))]
     AllowPeerToPeerCalls(UserPrivacySettingAllowPeerToPeerCalls),
     /// A privacy setting for managing whether a link to the user's account is included in forwarded messages
+    #[serde(rename(deserialize = "userPrivacySettingShowLinkInForwardedMessages"))]
     ShowLinkInForwardedMessages(UserPrivacySettingShowLinkInForwardedMessages),
     /// A privacy setting for managing whether the user's phone number is visible
+    #[serde(rename(deserialize = "userPrivacySettingShowPhoneNumber"))]
     ShowPhoneNumber(UserPrivacySettingShowPhoneNumber),
     /// A privacy setting for managing whether the user's profile photo is visible
+    #[serde(rename(deserialize = "userPrivacySettingShowProfilePhoto"))]
     ShowProfilePhoto(UserPrivacySettingShowProfilePhoto),
     /// A privacy setting for managing whether the user's online status is visible
+    #[serde(rename(deserialize = "userPrivacySettingShowStatus"))]
     ShowStatus(UserPrivacySettingShowStatus),
 }
 
@@ -38,43 +45,7 @@ impl Default for UserPrivacySetting {
     }
 }
 
-impl<'de> Deserialize<'de> for UserPrivacySetting {
-    fn deserialize<D>(deserializer: D) -> Result<UserPrivacySetting, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          UserPrivacySetting,
-          (userPrivacySettingAllowCalls, AllowCalls);
-          (userPrivacySettingAllowChatInvites, AllowChatInvites);
-          (userPrivacySettingAllowFindingByPhoneNumber, AllowFindingByPhoneNumber);
-          (userPrivacySettingAllowPeerToPeerCalls, AllowPeerToPeerCalls);
-          (userPrivacySettingShowLinkInForwardedMessages, ShowLinkInForwardedMessages);
-          (userPrivacySettingShowPhoneNumber, ShowPhoneNumber);
-          (userPrivacySettingShowProfilePhoto, ShowProfilePhoto);
-          (userPrivacySettingShowStatus, ShowStatus);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for UserPrivacySetting {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            UserPrivacySetting::AllowCalls(t) => t.td_name(),
-            UserPrivacySetting::AllowChatInvites(t) => t.td_name(),
-            UserPrivacySetting::AllowFindingByPhoneNumber(t) => t.td_name(),
-            UserPrivacySetting::AllowPeerToPeerCalls(t) => t.td_name(),
-            UserPrivacySetting::ShowLinkInForwardedMessages(t) => t.td_name(),
-            UserPrivacySetting::ShowPhoneNumber(t) => t.td_name(),
-            UserPrivacySetting::ShowProfilePhoto(t) => t.td_name(),
-            UserPrivacySetting::ShowStatus(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -89,9 +60,6 @@ impl RObject for UserPrivacySetting {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -130,9 +98,6 @@ impl AsRef<UserPrivacySetting> for UserPrivacySetting {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingAllowCalls {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -141,19 +106,12 @@ pub struct UserPrivacySettingAllowCalls {
 
 impl RObject for UserPrivacySettingAllowCalls {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingAllowCalls"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -165,9 +123,8 @@ impl UserPrivacySettingAllowCalls {
     }
     pub fn builder() -> RTDUserPrivacySettingAllowCallsBuilder {
         let mut inner = UserPrivacySettingAllowCalls::default();
-        inner.td_name = "userPrivacySettingAllowCalls".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDUserPrivacySettingAllowCallsBuilder { inner }
     }
 }
@@ -199,9 +156,6 @@ impl AsRef<UserPrivacySettingAllowCalls> for RTDUserPrivacySettingAllowCallsBuil
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingAllowChatInvites {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -210,19 +164,12 @@ pub struct UserPrivacySettingAllowChatInvites {
 
 impl RObject for UserPrivacySettingAllowChatInvites {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingAllowChatInvites"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -234,9 +181,8 @@ impl UserPrivacySettingAllowChatInvites {
     }
     pub fn builder() -> RTDUserPrivacySettingAllowChatInvitesBuilder {
         let mut inner = UserPrivacySettingAllowChatInvites::default();
-        inner.td_name = "userPrivacySettingAllowChatInvites".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDUserPrivacySettingAllowChatInvitesBuilder { inner }
     }
 }
@@ -268,9 +214,6 @@ impl AsRef<UserPrivacySettingAllowChatInvites> for RTDUserPrivacySettingAllowCha
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingAllowFindingByPhoneNumber {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -279,19 +222,12 @@ pub struct UserPrivacySettingAllowFindingByPhoneNumber {
 
 impl RObject for UserPrivacySettingAllowFindingByPhoneNumber {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingAllowFindingByPhoneNumber"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -303,9 +239,8 @@ impl UserPrivacySettingAllowFindingByPhoneNumber {
     }
     pub fn builder() -> RTDUserPrivacySettingAllowFindingByPhoneNumberBuilder {
         let mut inner = UserPrivacySettingAllowFindingByPhoneNumber::default();
-        inner.td_name = "userPrivacySettingAllowFindingByPhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDUserPrivacySettingAllowFindingByPhoneNumberBuilder { inner }
     }
 }
@@ -341,9 +276,6 @@ impl AsRef<UserPrivacySettingAllowFindingByPhoneNumber>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingAllowPeerToPeerCalls {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -352,19 +284,12 @@ pub struct UserPrivacySettingAllowPeerToPeerCalls {
 
 impl RObject for UserPrivacySettingAllowPeerToPeerCalls {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingAllowPeerToPeerCalls"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -376,9 +301,8 @@ impl UserPrivacySettingAllowPeerToPeerCalls {
     }
     pub fn builder() -> RTDUserPrivacySettingAllowPeerToPeerCallsBuilder {
         let mut inner = UserPrivacySettingAllowPeerToPeerCalls::default();
-        inner.td_name = "userPrivacySettingAllowPeerToPeerCalls".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDUserPrivacySettingAllowPeerToPeerCallsBuilder { inner }
     }
 }
@@ -412,9 +336,6 @@ impl AsRef<UserPrivacySettingAllowPeerToPeerCalls>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingShowLinkInForwardedMessages {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -423,19 +344,12 @@ pub struct UserPrivacySettingShowLinkInForwardedMessages {
 
 impl RObject for UserPrivacySettingShowLinkInForwardedMessages {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingShowLinkInForwardedMessages"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -447,9 +361,8 @@ impl UserPrivacySettingShowLinkInForwardedMessages {
     }
     pub fn builder() -> RTDUserPrivacySettingShowLinkInForwardedMessagesBuilder {
         let mut inner = UserPrivacySettingShowLinkInForwardedMessages::default();
-        inner.td_name = "userPrivacySettingShowLinkInForwardedMessages".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDUserPrivacySettingShowLinkInForwardedMessagesBuilder { inner }
     }
 }
@@ -485,9 +398,6 @@ impl AsRef<UserPrivacySettingShowLinkInForwardedMessages>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingShowPhoneNumber {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -496,19 +406,12 @@ pub struct UserPrivacySettingShowPhoneNumber {
 
 impl RObject for UserPrivacySettingShowPhoneNumber {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingShowPhoneNumber"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -520,9 +423,8 @@ impl UserPrivacySettingShowPhoneNumber {
     }
     pub fn builder() -> RTDUserPrivacySettingShowPhoneNumberBuilder {
         let mut inner = UserPrivacySettingShowPhoneNumber::default();
-        inner.td_name = "userPrivacySettingShowPhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDUserPrivacySettingShowPhoneNumberBuilder { inner }
     }
 }
@@ -554,9 +456,6 @@ impl AsRef<UserPrivacySettingShowPhoneNumber> for RTDUserPrivacySettingShowPhone
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingShowProfilePhoto {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -565,19 +464,12 @@ pub struct UserPrivacySettingShowProfilePhoto {
 
 impl RObject for UserPrivacySettingShowProfilePhoto {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingShowProfilePhoto"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -589,9 +481,8 @@ impl UserPrivacySettingShowProfilePhoto {
     }
     pub fn builder() -> RTDUserPrivacySettingShowProfilePhotoBuilder {
         let mut inner = UserPrivacySettingShowProfilePhoto::default();
-        inner.td_name = "userPrivacySettingShowProfilePhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDUserPrivacySettingShowProfilePhotoBuilder { inner }
     }
 }
@@ -623,9 +514,6 @@ impl AsRef<UserPrivacySettingShowProfilePhoto> for RTDUserPrivacySettingShowProf
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingShowStatus {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -634,19 +522,12 @@ pub struct UserPrivacySettingShowStatus {
 
 impl RObject for UserPrivacySettingShowStatus {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingShowStatus"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -658,9 +539,8 @@ impl UserPrivacySettingShowStatus {
     }
     pub fn builder() -> RTDUserPrivacySettingShowStatusBuilder {
         let mut inner = UserPrivacySettingShowStatus::default();
-        inner.td_name = "userPrivacySettingShowStatus".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDUserPrivacySettingShowStatusBuilder { inner }
     }
 }

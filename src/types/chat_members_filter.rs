@@ -2,31 +2,37 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Specifies the kind of chat members to return in searchChatMembers
 pub trait TDChatMembersFilter: Debug + RObject {}
 
 /// Specifies the kind of chat members to return in searchChatMembers
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatMembersFilter {
     #[doc(hidden)]
     _Default(()),
     /// Returns the owner and administrators
+    #[serde(rename(deserialize = "chatMembersFilterAdministrators"))]
     Administrators(ChatMembersFilterAdministrators),
     /// Returns users banned from the chat; can be used only by administrators in a supergroup or in a channel
+    #[serde(rename(deserialize = "chatMembersFilterBanned"))]
     Banned(ChatMembersFilterBanned),
     /// Returns bot members of the chat
+    #[serde(rename(deserialize = "chatMembersFilterBots"))]
     Bots(ChatMembersFilterBots),
     /// Returns contacts of the user
+    #[serde(rename(deserialize = "chatMembersFilterContacts"))]
     Contacts(ChatMembersFilterContacts),
     /// Returns all chat members, including restricted chat members
+    #[serde(rename(deserialize = "chatMembersFilterMembers"))]
     Members(ChatMembersFilterMembers),
     /// Returns users which can be mentioned in the chat
+    #[serde(rename(deserialize = "chatMembersFilterMention"))]
     Mention(ChatMembersFilterMention),
     /// Returns users under certain restrictions in the chat; can be used only by administrators in a supergroup
+    #[serde(rename(deserialize = "chatMembersFilterRestricted"))]
     Restricted(ChatMembersFilterRestricted),
 }
 
@@ -36,41 +42,7 @@ impl Default for ChatMembersFilter {
     }
 }
 
-impl<'de> Deserialize<'de> for ChatMembersFilter {
-    fn deserialize<D>(deserializer: D) -> Result<ChatMembersFilter, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatMembersFilter,
-          (chatMembersFilterAdministrators, Administrators);
-          (chatMembersFilterBanned, Banned);
-          (chatMembersFilterBots, Bots);
-          (chatMembersFilterContacts, Contacts);
-          (chatMembersFilterMembers, Members);
-          (chatMembersFilterMention, Mention);
-          (chatMembersFilterRestricted, Restricted);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for ChatMembersFilter {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatMembersFilter::Administrators(t) => t.td_name(),
-            ChatMembersFilter::Banned(t) => t.td_name(),
-            ChatMembersFilter::Bots(t) => t.td_name(),
-            ChatMembersFilter::Contacts(t) => t.td_name(),
-            ChatMembersFilter::Members(t) => t.td_name(),
-            ChatMembersFilter::Mention(t) => t.td_name(),
-            ChatMembersFilter::Restricted(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -84,9 +56,6 @@ impl RObject for ChatMembersFilter {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -124,9 +93,6 @@ impl AsRef<ChatMembersFilter> for ChatMembersFilter {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMembersFilterAdministrators {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -135,19 +101,12 @@ pub struct ChatMembersFilterAdministrators {
 
 impl RObject for ChatMembersFilterAdministrators {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMembersFilterAdministrators"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -159,9 +118,8 @@ impl ChatMembersFilterAdministrators {
     }
     pub fn builder() -> RTDChatMembersFilterAdministratorsBuilder {
         let mut inner = ChatMembersFilterAdministrators::default();
-        inner.td_name = "chatMembersFilterAdministrators".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMembersFilterAdministratorsBuilder { inner }
     }
 }
@@ -193,9 +151,6 @@ impl AsRef<ChatMembersFilterAdministrators> for RTDChatMembersFilterAdministrato
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMembersFilterBanned {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -204,19 +159,12 @@ pub struct ChatMembersFilterBanned {
 
 impl RObject for ChatMembersFilterBanned {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMembersFilterBanned"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -228,9 +176,8 @@ impl ChatMembersFilterBanned {
     }
     pub fn builder() -> RTDChatMembersFilterBannedBuilder {
         let mut inner = ChatMembersFilterBanned::default();
-        inner.td_name = "chatMembersFilterBanned".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMembersFilterBannedBuilder { inner }
     }
 }
@@ -262,9 +209,6 @@ impl AsRef<ChatMembersFilterBanned> for RTDChatMembersFilterBannedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMembersFilterBots {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -273,19 +217,12 @@ pub struct ChatMembersFilterBots {
 
 impl RObject for ChatMembersFilterBots {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMembersFilterBots"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -297,9 +234,8 @@ impl ChatMembersFilterBots {
     }
     pub fn builder() -> RTDChatMembersFilterBotsBuilder {
         let mut inner = ChatMembersFilterBots::default();
-        inner.td_name = "chatMembersFilterBots".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMembersFilterBotsBuilder { inner }
     }
 }
@@ -331,9 +267,6 @@ impl AsRef<ChatMembersFilterBots> for RTDChatMembersFilterBotsBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMembersFilterContacts {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -342,19 +275,12 @@ pub struct ChatMembersFilterContacts {
 
 impl RObject for ChatMembersFilterContacts {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMembersFilterContacts"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -366,9 +292,8 @@ impl ChatMembersFilterContacts {
     }
     pub fn builder() -> RTDChatMembersFilterContactsBuilder {
         let mut inner = ChatMembersFilterContacts::default();
-        inner.td_name = "chatMembersFilterContacts".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMembersFilterContactsBuilder { inner }
     }
 }
@@ -400,9 +325,6 @@ impl AsRef<ChatMembersFilterContacts> for RTDChatMembersFilterContactsBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMembersFilterMembers {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -411,19 +333,12 @@ pub struct ChatMembersFilterMembers {
 
 impl RObject for ChatMembersFilterMembers {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMembersFilterMembers"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -435,9 +350,8 @@ impl ChatMembersFilterMembers {
     }
     pub fn builder() -> RTDChatMembersFilterMembersBuilder {
         let mut inner = ChatMembersFilterMembers::default();
-        inner.td_name = "chatMembersFilterMembers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMembersFilterMembersBuilder { inner }
     }
 }
@@ -469,9 +383,6 @@ impl AsRef<ChatMembersFilterMembers> for RTDChatMembersFilterMembersBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMembersFilterMention {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -482,19 +393,12 @@ pub struct ChatMembersFilterMention {
 
 impl RObject for ChatMembersFilterMention {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMembersFilterMention"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -506,9 +410,8 @@ impl ChatMembersFilterMention {
     }
     pub fn builder() -> RTDChatMembersFilterMentionBuilder {
         let mut inner = ChatMembersFilterMention::default();
-        inner.td_name = "chatMembersFilterMention".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMembersFilterMentionBuilder { inner }
     }
 
@@ -549,9 +452,6 @@ impl AsRef<ChatMembersFilterMention> for RTDChatMembersFilterMentionBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMembersFilterRestricted {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -560,19 +460,12 @@ pub struct ChatMembersFilterRestricted {
 
 impl RObject for ChatMembersFilterRestricted {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMembersFilterRestricted"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -584,9 +477,8 @@ impl ChatMembersFilterRestricted {
     }
     pub fn builder() -> RTDChatMembersFilterRestrictedBuilder {
         let mut inner = ChatMembersFilterRestricted::default();
-        inner.td_name = "chatMembersFilterRestricted".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMembersFilterRestrictedBuilder { inner }
     }
 }

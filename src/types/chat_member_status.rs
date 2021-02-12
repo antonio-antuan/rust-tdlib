@@ -2,29 +2,34 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Provides information about the status of a member in a chat
 pub trait TDChatMemberStatus: Debug + RObject {}
 
 /// Provides information about the status of a member in a chat
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatMemberStatus {
     #[doc(hidden)]
     _Default(()),
     /// The user is a member of a chat and has some additional privileges. In basic groups, administrators can edit and delete messages sent by others, add new members, and ban unprivileged members. In supergroups and channels, there are more detailed options for administrator privileges
+    #[serde(rename(deserialize = "chatMemberStatusAdministrator"))]
     Administrator(ChatMemberStatusAdministrator),
     /// The user was banned (and hence is not a member of the chat). Implies the user can't return to the chat or view messages
+    #[serde(rename(deserialize = "chatMemberStatusBanned"))]
     Banned(ChatMemberStatusBanned),
     /// The user is the owner of a chat and has all the administrator privileges
+    #[serde(rename(deserialize = "chatMemberStatusCreator"))]
     Creator(ChatMemberStatusCreator),
     /// The user is not a chat member
+    #[serde(rename(deserialize = "chatMemberStatusLeft"))]
     Left(ChatMemberStatusLeft),
     /// The user is a member of a chat, without any additional privileges or restrictions
+    #[serde(rename(deserialize = "chatMemberStatusMember"))]
     Member(ChatMemberStatusMember),
     /// The user is under certain restrictions in the chat. Not supported in basic groups and channels
+    #[serde(rename(deserialize = "chatMemberStatusRestricted"))]
     Restricted(ChatMemberStatusRestricted),
 }
 
@@ -34,39 +39,7 @@ impl Default for ChatMemberStatus {
     }
 }
 
-impl<'de> Deserialize<'de> for ChatMemberStatus {
-    fn deserialize<D>(deserializer: D) -> Result<ChatMemberStatus, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatMemberStatus,
-          (chatMemberStatusAdministrator, Administrator);
-          (chatMemberStatusBanned, Banned);
-          (chatMemberStatusCreator, Creator);
-          (chatMemberStatusLeft, Left);
-          (chatMemberStatusMember, Member);
-          (chatMemberStatusRestricted, Restricted);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for ChatMemberStatus {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatMemberStatus::Administrator(t) => t.td_name(),
-            ChatMemberStatus::Banned(t) => t.td_name(),
-            ChatMemberStatus::Creator(t) => t.td_name(),
-            ChatMemberStatus::Left(t) => t.td_name(),
-            ChatMemberStatus::Member(t) => t.td_name(),
-            ChatMemberStatus::Restricted(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -79,9 +52,6 @@ impl RObject for ChatMemberStatus {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -118,9 +88,6 @@ impl AsRef<ChatMemberStatus> for ChatMemberStatus {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusAdministrator {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -151,19 +118,12 @@ pub struct ChatMemberStatusAdministrator {
 
 impl RObject for ChatMemberStatusAdministrator {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusAdministrator"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -175,9 +135,8 @@ impl ChatMemberStatusAdministrator {
     }
     pub fn builder() -> RTDChatMemberStatusAdministratorBuilder {
         let mut inner = ChatMemberStatusAdministrator::default();
-        inner.td_name = "chatMemberStatusAdministrator".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMemberStatusAdministratorBuilder { inner }
     }
 
@@ -308,9 +267,6 @@ impl AsRef<ChatMemberStatusAdministrator> for RTDChatMemberStatusAdministratorBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusBanned {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -321,19 +277,12 @@ pub struct ChatMemberStatusBanned {
 
 impl RObject for ChatMemberStatusBanned {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusBanned"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -345,9 +294,8 @@ impl ChatMemberStatusBanned {
     }
     pub fn builder() -> RTDChatMemberStatusBannedBuilder {
         let mut inner = ChatMemberStatusBanned::default();
-        inner.td_name = "chatMemberStatusBanned".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMemberStatusBannedBuilder { inner }
     }
 
@@ -388,9 +336,6 @@ impl AsRef<ChatMemberStatusBanned> for RTDChatMemberStatusBannedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusCreator {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -405,19 +350,12 @@ pub struct ChatMemberStatusCreator {
 
 impl RObject for ChatMemberStatusCreator {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusCreator"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -429,9 +367,8 @@ impl ChatMemberStatusCreator {
     }
     pub fn builder() -> RTDChatMemberStatusCreatorBuilder {
         let mut inner = ChatMemberStatusCreator::default();
-        inner.td_name = "chatMemberStatusCreator".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMemberStatusCreatorBuilder { inner }
     }
 
@@ -490,9 +427,6 @@ impl AsRef<ChatMemberStatusCreator> for RTDChatMemberStatusCreatorBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusLeft {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -501,19 +435,12 @@ pub struct ChatMemberStatusLeft {
 
 impl RObject for ChatMemberStatusLeft {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusLeft"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -525,9 +452,8 @@ impl ChatMemberStatusLeft {
     }
     pub fn builder() -> RTDChatMemberStatusLeftBuilder {
         let mut inner = ChatMemberStatusLeft::default();
-        inner.td_name = "chatMemberStatusLeft".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMemberStatusLeftBuilder { inner }
     }
 }
@@ -559,9 +485,6 @@ impl AsRef<ChatMemberStatusLeft> for RTDChatMemberStatusLeftBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusMember {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -570,19 +493,12 @@ pub struct ChatMemberStatusMember {
 
 impl RObject for ChatMemberStatusMember {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusMember"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -594,9 +510,8 @@ impl ChatMemberStatusMember {
     }
     pub fn builder() -> RTDChatMemberStatusMemberBuilder {
         let mut inner = ChatMemberStatusMember::default();
-        inner.td_name = "chatMemberStatusMember".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMemberStatusMemberBuilder { inner }
     }
 }
@@ -628,9 +543,6 @@ impl AsRef<ChatMemberStatusMember> for RTDChatMemberStatusMemberBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusRestricted {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -645,19 +557,12 @@ pub struct ChatMemberStatusRestricted {
 
 impl RObject for ChatMemberStatusRestricted {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusRestricted"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -669,9 +574,8 @@ impl ChatMemberStatusRestricted {
     }
     pub fn builder() -> RTDChatMemberStatusRestrictedBuilder {
         let mut inner = ChatMemberStatusRestricted::default();
-        inner.td_name = "chatMemberStatusRestricted".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatMemberStatusRestrictedBuilder { inner }
     }
 

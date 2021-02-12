@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Contains information about the sending state of the message
 pub trait TDMessageSendingState: Debug + RObject {}
 
 /// Contains information about the sending state of the message
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum MessageSendingState {
     #[doc(hidden)]
     _Default(()),
     /// The message failed to be sent
+    #[serde(rename(deserialize = "messageSendingStateFailed"))]
     Failed(MessageSendingStateFailed),
     /// The message is being sent now, but has not yet been delivered to the server
+    #[serde(rename(deserialize = "messageSendingStatePending"))]
     Pending(MessageSendingStatePending),
 }
 
@@ -26,31 +27,7 @@ impl Default for MessageSendingState {
     }
 }
 
-impl<'de> Deserialize<'de> for MessageSendingState {
-    fn deserialize<D>(deserializer: D) -> Result<MessageSendingState, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          MessageSendingState,
-          (messageSendingStateFailed, Failed);
-          (messageSendingStatePending, Pending);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for MessageSendingState {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            MessageSendingState::Failed(t) => t.td_name(),
-            MessageSendingState::Pending(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for MessageSendingState {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<MessageSendingState> for MessageSendingState {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageSendingStateFailed {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -113,19 +84,12 @@ pub struct MessageSendingStateFailed {
 
 impl RObject for MessageSendingStateFailed {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageSendingStateFailed"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -137,9 +101,8 @@ impl MessageSendingStateFailed {
     }
     pub fn builder() -> RTDMessageSendingStateFailedBuilder {
         let mut inner = MessageSendingStateFailed::default();
-        inner.td_name = "messageSendingStateFailed".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDMessageSendingStateFailedBuilder { inner }
     }
 
@@ -207,9 +170,6 @@ impl AsRef<MessageSendingStateFailed> for RTDMessageSendingStateFailedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageSendingStatePending {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -218,19 +178,12 @@ pub struct MessageSendingStatePending {
 
 impl RObject for MessageSendingStatePending {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageSendingStatePending"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -242,9 +195,8 @@ impl MessageSendingStatePending {
     }
     pub fn builder() -> RTDMessageSendingStatePendingBuilder {
         let mut inner = MessageSendingStatePending::default();
-        inner.td_name = "messageSendingStatePending".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDMessageSendingStatePendingBuilder { inner }
     }
 }

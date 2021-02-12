@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Contains statistics about network usage
 pub trait TDNetworkStatisticsEntry: Debug + RObject {}
 
 /// Contains statistics about network usage
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum NetworkStatisticsEntry {
     #[doc(hidden)]
     _Default(()),
     /// Contains information about the total amount of data that was used for calls
+    #[serde(rename(deserialize = "networkStatisticsEntryCall"))]
     Call(NetworkStatisticsEntryCall),
     /// Contains information about the total amount of data that was used to send and receive files
+    #[serde(rename(deserialize = "networkStatisticsEntryFile"))]
     File(NetworkStatisticsEntryFile),
 }
 
@@ -26,31 +27,7 @@ impl Default for NetworkStatisticsEntry {
     }
 }
 
-impl<'de> Deserialize<'de> for NetworkStatisticsEntry {
-    fn deserialize<D>(deserializer: D) -> Result<NetworkStatisticsEntry, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          NetworkStatisticsEntry,
-          (networkStatisticsEntryCall, Call);
-          (networkStatisticsEntryFile, File);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for NetworkStatisticsEntry {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            NetworkStatisticsEntry::Call(t) => t.td_name(),
-            NetworkStatisticsEntry::File(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for NetworkStatisticsEntry {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<NetworkStatisticsEntry> for NetworkStatisticsEntry {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NetworkStatisticsEntryCall {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -113,19 +84,12 @@ pub struct NetworkStatisticsEntryCall {
 
 impl RObject for NetworkStatisticsEntryCall {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "networkStatisticsEntryCall"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -137,9 +101,8 @@ impl NetworkStatisticsEntryCall {
     }
     pub fn builder() -> RTDNetworkStatisticsEntryCallBuilder {
         let mut inner = NetworkStatisticsEntryCall::default();
-        inner.td_name = "networkStatisticsEntryCall".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDNetworkStatisticsEntryCallBuilder { inner }
     }
 
@@ -207,9 +170,6 @@ impl AsRef<NetworkStatisticsEntryCall> for RTDNetworkStatisticsEntryCallBuilder 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NetworkStatisticsEntryFile {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -226,19 +186,12 @@ pub struct NetworkStatisticsEntryFile {
 
 impl RObject for NetworkStatisticsEntryFile {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "networkStatisticsEntryFile"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -250,9 +203,8 @@ impl NetworkStatisticsEntryFile {
     }
     pub fn builder() -> RTDNetworkStatisticsEntryFileBuilder {
         let mut inner = NetworkStatisticsEntryFile::default();
-        inner.td_name = "networkStatisticsEntryFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDNetworkStatisticsEntryFileBuilder { inner }
     }
 

@@ -245,8 +245,6 @@ impl Observer {
             TdType::WebPage(value) => value.extra(),
 
             TdType::WebPageInstantView(value) => value.extra(),
-
-            _ => None,
         };
         match extra {
             None => {

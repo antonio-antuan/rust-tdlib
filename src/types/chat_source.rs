@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes a reason why an external chat is shown in a chat list
 pub trait TDChatSource: Debug + RObject {}
 
 /// Describes a reason why an external chat is shown in a chat list
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatSource {
     #[doc(hidden)]
     _Default(()),
     /// The chat is sponsored by the user's MTProxy server
+    #[serde(rename(deserialize = "chatSourceMtprotoProxy"))]
     MtprotoProxy(ChatSourceMtprotoProxy),
     /// The chat contains a public service announcement
+    #[serde(rename(deserialize = "chatSourcePublicServiceAnnouncement"))]
     PublicServiceAnnouncement(ChatSourcePublicServiceAnnouncement),
 }
 
@@ -26,31 +27,7 @@ impl Default for ChatSource {
     }
 }
 
-impl<'de> Deserialize<'de> for ChatSource {
-    fn deserialize<D>(deserializer: D) -> Result<ChatSource, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatSource,
-          (chatSourceMtprotoProxy, MtprotoProxy);
-          (chatSourcePublicServiceAnnouncement, PublicServiceAnnouncement);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for ChatSource {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatSource::MtprotoProxy(t) => t.td_name(),
-            ChatSource::PublicServiceAnnouncement(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for ChatSource {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<ChatSource> for ChatSource {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatSourceMtprotoProxy {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -105,19 +76,12 @@ pub struct ChatSourceMtprotoProxy {
 
 impl RObject for ChatSourceMtprotoProxy {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatSourceMtprotoProxy"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -129,9 +93,8 @@ impl ChatSourceMtprotoProxy {
     }
     pub fn builder() -> RTDChatSourceMtprotoProxyBuilder {
         let mut inner = ChatSourceMtprotoProxy::default();
-        inner.td_name = "chatSourceMtprotoProxy".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatSourceMtprotoProxyBuilder { inner }
     }
 }
@@ -163,9 +126,6 @@ impl AsRef<ChatSourceMtprotoProxy> for RTDChatSourceMtprotoProxyBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatSourcePublicServiceAnnouncement {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -179,19 +139,12 @@ pub struct ChatSourcePublicServiceAnnouncement {
 
 impl RObject for ChatSourcePublicServiceAnnouncement {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatSourcePublicServiceAnnouncement"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -203,9 +156,8 @@ impl ChatSourcePublicServiceAnnouncement {
     }
     pub fn builder() -> RTDChatSourcePublicServiceAnnouncementBuilder {
         let mut inner = ChatSourcePublicServiceAnnouncement::default();
-        inner.td_name = "chatSourcePublicServiceAnnouncement".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDChatSourcePublicServiceAnnouncementBuilder { inner }
     }
 

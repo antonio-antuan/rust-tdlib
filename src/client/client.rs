@@ -66,7 +66,7 @@ where
 {
     raw_api: S,
     client_id: Option<i32>,
-    updates_sender: Option<mpsc::Sender<Box<TdType>>>,
+    updates_sender: Option<mpsc::Sender<Update>>,
     tdlib_parameters: TdlibParameters,
 }
 
@@ -95,7 +95,7 @@ where
         }
     }
 
-    pub(crate) fn updates_sender(&self) -> &Option<mpsc::Sender<Box<TdType>>> {
+    pub(crate) fn updates_sender(&self) -> &Option<mpsc::Sender<Update>> {
         &self.updates_sender
     }
 }
@@ -105,7 +105,7 @@ pub struct ClientBuilder<R>
 where
     R: TdLibClient + Clone,
 {
-    updates_sender: Option<mpsc::Sender<Box<TdType>>>,
+    updates_sender: Option<mpsc::Sender<Update>>,
     tdlib_parameters: Option<TdlibParameters>,
     tdjson: R,
 }
@@ -124,7 +124,7 @@ impl<R> ClientBuilder<R>
 where
     R: TdLibClient + Clone,
 {
-    pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<Box<TdType>>) -> Self {
+    pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<Update>) -> Self {
         self.updates_sender = Some(updates_sender);
         self
     }
@@ -157,8 +157,7 @@ where
     }
 }
 
-impl Client<RawApi>
-{
+impl Client<RawApi> {
     pub fn builder() -> ClientBuilder<RawApi> {
         ClientBuilder::default()
     }
@@ -171,7 +170,7 @@ where
 {
     pub fn new(
         raw_api: R,
-        updates_sender: Option<mpsc::Sender<Box<TdType>>>,
+        updates_sender: Option<mpsc::Sender<Update>>,
         tdlib_parameters: TdlibParameters,
     ) -> Self {
         Self {
@@ -10135,7 +10134,7 @@ where
             ))?;
         let signal = OBSERVER.subscribe(&extra);
         self.raw_api
-            .send(1, set_tdlib_parameters.as_ref())?;
+            .send(self.get_client_id()?, set_tdlib_parameters.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -11166,17 +11165,16 @@ where
         }
     }
 }
-//
+
 // #[cfg(test)]
 // mod tests {
-//     use crate::client::client::TdLibClient;
-//     use crate::client::{Client, ConsoleAuthStateHandler};
+//     use crate::client::api::TdLibClient;
+//     use crate::client::client::{Client, ConsoleAuthStateHandler};
 //     use crate::errors::RTDResult;
 //     use crate::types::{
 //         Chats, RFunction, RObject, SearchPublicChats, TdlibParameters, UpdateAuthorizationState,
 //     };
 //     use std::time::Duration;
-//     use crate::tdjson;
 //     use tokio::sync::mpsc;
 //     use tokio::time::timeout;
 //
@@ -11197,7 +11195,7 @@ where
 //     }
 //
 //     impl TdLibClient for MockedRawApi {
-//         fn send<Fnc: RFunction>(&self, client_id: tdjson::ClientId, _fnc: Fnc) -> RTDResult<()> {
+//         fn send<Fnc: RFunction>(&self, _fnc: Fnc) -> RTDResult<()> {
 //             Ok(())
 //         }
 //
@@ -11241,7 +11239,10 @@ where
 //
 //         let client = Client::new(
 //             mocked_raw_api.clone(),
+//             ConsoleAuthStateHandler::default(),
 //             TdlibParameters::builder().build(),
+//             None,
+//             2.0,
 //         );
 //
 //         let (sx, _rx) = mpsc::channel::<UpdateAuthorizationState>(10);

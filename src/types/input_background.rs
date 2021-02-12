@@ -2,21 +2,22 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Contains information about background to set
 pub trait TDInputBackground: Debug + RObject {}
 
 /// Contains information about background to set
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum InputBackground {
     #[doc(hidden)]
     _Default(()),
     /// A background from a local file
+    #[serde(rename(deserialize = "inputBackgroundLocal"))]
     Local(InputBackgroundLocal),
     /// A background from the server
+    #[serde(rename(deserialize = "inputBackgroundRemote"))]
     Remote(InputBackgroundRemote),
 }
 
@@ -26,31 +27,7 @@ impl Default for InputBackground {
     }
 }
 
-impl<'de> Deserialize<'de> for InputBackground {
-    fn deserialize<D>(deserializer: D) -> Result<InputBackground, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          InputBackground,
-          (inputBackgroundLocal, Local);
-          (inputBackgroundRemote, Remote);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for InputBackground {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            InputBackground::Local(t) => t.td_name(),
-            InputBackground::Remote(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -59,9 +36,6 @@ impl RObject for InputBackground {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -94,9 +68,6 @@ impl AsRef<InputBackground> for InputBackground {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputBackgroundLocal {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -107,19 +78,12 @@ pub struct InputBackgroundLocal {
 
 impl RObject for InputBackgroundLocal {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputBackgroundLocal"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -131,9 +95,8 @@ impl InputBackgroundLocal {
     }
     pub fn builder() -> RTDInputBackgroundLocalBuilder {
         let mut inner = InputBackgroundLocal::default();
-        inner.td_name = "inputBackgroundLocal".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputBackgroundLocalBuilder { inner }
     }
 
@@ -174,9 +137,6 @@ impl AsRef<InputBackgroundLocal> for RTDInputBackgroundLocalBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputBackgroundRemote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -188,19 +148,12 @@ pub struct InputBackgroundRemote {
 
 impl RObject for InputBackgroundRemote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputBackgroundRemote"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -212,9 +165,8 @@ impl InputBackgroundRemote {
     }
     pub fn builder() -> RTDInputBackgroundRemoteBuilder {
         let mut inner = InputBackgroundRemote::default();
-        inner.td_name = "inputBackgroundRemote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputBackgroundRemoteBuilder { inner }
     }
 

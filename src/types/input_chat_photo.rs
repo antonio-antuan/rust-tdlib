@@ -2,23 +2,25 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
 /// TRAIT | Describes a photo to be set as a user profile or chat photo
 pub trait TDInputChatPhoto: Debug + RObject {}
 
 /// Describes a photo to be set as a user profile or chat photo
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum InputChatPhoto {
     #[doc(hidden)]
     _Default(()),
     /// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 800 and be at most 2MB in size
+    #[serde(rename(deserialize = "inputChatPhotoAnimation"))]
     Animation(InputChatPhotoAnimation),
     /// A previously used profile photo of the current user
+    #[serde(rename(deserialize = "inputChatPhotoPrevious"))]
     Previous(InputChatPhotoPrevious),
     /// A static photo in JPEG format
+    #[serde(rename(deserialize = "inputChatPhotoStatic"))]
     Static(InputChatPhotoStatic),
 }
 
@@ -28,33 +30,7 @@ impl Default for InputChatPhoto {
     }
 }
 
-impl<'de> Deserialize<'de> for InputChatPhoto {
-    fn deserialize<D>(deserializer: D) -> Result<InputChatPhoto, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          InputChatPhoto,
-          (inputChatPhotoAnimation, Animation);
-          (inputChatPhotoPrevious, Previous);
-          (inputChatPhotoStatic, Static);
-
-        )(deserializer)
-    }
-}
-
 impl RObject for InputChatPhoto {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            InputChatPhoto::Animation(t) => t.td_name(),
-            InputChatPhoto::Previous(t) => t.td_name(),
-            InputChatPhoto::Static(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
     #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         match self {
@@ -64,9 +40,6 @@ impl RObject for InputChatPhoto {
 
             _ => None,
         }
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -100,9 +73,6 @@ impl AsRef<InputChatPhoto> for InputChatPhoto {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputChatPhotoAnimation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -115,19 +85,12 @@ pub struct InputChatPhotoAnimation {
 
 impl RObject for InputChatPhotoAnimation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputChatPhotoAnimation"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -139,9 +102,8 @@ impl InputChatPhotoAnimation {
     }
     pub fn builder() -> RTDInputChatPhotoAnimationBuilder {
         let mut inner = InputChatPhotoAnimation::default();
-        inner.td_name = "inputChatPhotoAnimation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputChatPhotoAnimationBuilder { inner }
     }
 
@@ -191,9 +153,6 @@ impl AsRef<InputChatPhotoAnimation> for RTDInputChatPhotoAnimationBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputChatPhotoPrevious {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -205,19 +164,12 @@ pub struct InputChatPhotoPrevious {
 
 impl RObject for InputChatPhotoPrevious {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputChatPhotoPrevious"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -229,9 +181,8 @@ impl InputChatPhotoPrevious {
     }
     pub fn builder() -> RTDInputChatPhotoPreviousBuilder {
         let mut inner = InputChatPhotoPrevious::default();
-        inner.td_name = "inputChatPhotoPrevious".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputChatPhotoPreviousBuilder { inner }
     }
 
@@ -272,9 +223,6 @@ impl AsRef<InputChatPhotoPrevious> for RTDInputChatPhotoPreviousBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputChatPhotoStatic {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
@@ -285,19 +233,12 @@ pub struct InputChatPhotoStatic {
 
 impl RObject for InputChatPhotoStatic {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputChatPhotoStatic"
-    }
-    #[doc(hidden)]
     fn extra(&self) -> Option<String> {
         self.extra.clone()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         self.client_id
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
     }
 }
 
@@ -309,9 +250,8 @@ impl InputChatPhotoStatic {
     }
     pub fn builder() -> RTDInputChatPhotoStaticBuilder {
         let mut inner = InputChatPhotoStatic::default();
-        inner.td_name = "inputChatPhotoStatic".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
-        inner.client_id = None;
+
         RTDInputChatPhotoStaticBuilder { inner }
     }
 
