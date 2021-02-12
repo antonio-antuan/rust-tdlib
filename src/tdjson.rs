@@ -9,6 +9,7 @@ extern "C" {
     fn td_send(client_id: c_int, request: *const c_char);
     fn td_receive(timeout: c_double) -> *const c_char;
     fn td_execute(request: *const c_char) -> *const c_char;
+    fn td_set_log_verbosity_level(level: c_int);
 }
 
 pub fn new_client() -> ClientId {
@@ -19,6 +20,10 @@ pub fn send(client_id: ClientId, request: &str) {
     let cstring = CString::new(request).unwrap();
     unsafe { td_send(client_id, cstring.as_ptr()) }
 }
+
+pub fn set_log_verbosity_level<'a>(level: i32) {
+    unsafe { td_set_log_verbosity_level(level) };
+  }
 
 pub fn execute(request: &str) -> Option<String> {
     let cstring = CString::new(request).unwrap();

@@ -587,12 +587,12 @@ impl<'de> Deserialize<'de> for TdType {
             None => return Err(D::Error::custom("@type is empty")),
         };
 
-        let obj = match rtd_trait_type {
+        Ok(match rtd_trait_type {
       
 
       "authorizationStateClosed" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateClosed deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -601,7 +601,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateClosing" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateClosing deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -610,7 +610,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateLoggingOut" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateLoggingOut deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -619,7 +619,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateReady" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateReady deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -628,7 +628,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateWaitCode" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateWaitCode deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -637,7 +637,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateWaitEncryptionKey" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateWaitEncryptionKey deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -646,7 +646,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateWaitOtherDeviceConfirmation" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateWaitOtherDeviceConfirmation deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -655,7 +655,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateWaitPassword" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateWaitPassword deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -664,7 +664,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateWaitPhoneNumber" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateWaitPhoneNumber deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -673,7 +673,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateWaitRegistration" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateWaitRegistration deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -682,7 +682,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "authorizationStateWaitTdlibParameters" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthorizationStateWaitTdlibParameters deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -691,7 +691,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getAuthorizationState" => TdType::AuthorizationState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetAuthorizationState deserialize to TdType::AuthorizationState with error: {}", e))
           )?
@@ -700,7 +700,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "canTransferOwnership" => TdType::CanTransferOwnershipResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CanTransferOwnership deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
           )?
@@ -709,7 +709,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "canTransferOwnershipResultOk" => TdType::CanTransferOwnershipResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CanTransferOwnershipResultOk deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
           )?
@@ -718,7 +718,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "canTransferOwnershipResultPasswordNeeded" => TdType::CanTransferOwnershipResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CanTransferOwnershipResultPasswordNeeded deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
           )?
@@ -727,7 +727,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "canTransferOwnershipResultPasswordTooFresh" => TdType::CanTransferOwnershipResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CanTransferOwnershipResultPasswordTooFresh deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
           )?
@@ -736,7 +736,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "canTransferOwnershipResultSessionTooFresh" => TdType::CanTransferOwnershipResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CanTransferOwnershipResultSessionTooFresh deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
           )?
@@ -745,7 +745,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "chatStatisticsChannel" => TdType::ChatStatistics(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatStatisticsChannel deserialize to TdType::ChatStatistics with error: {}", e))
           )?
@@ -754,7 +754,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "chatStatisticsSupergroup" => TdType::ChatStatistics(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatStatisticsSupergroup deserialize to TdType::ChatStatistics with error: {}", e))
           )?
@@ -763,7 +763,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getChatStatistics" => TdType::ChatStatistics(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetChatStatistics deserialize to TdType::ChatStatistics with error: {}", e))
           )?
@@ -772,7 +772,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "checkChatUsername" => TdType::CheckChatUsernameResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CheckChatUsername deserialize to TdType::CheckChatUsernameResult with error: {}", e))
           )?
@@ -781,7 +781,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "checkChatUsernameResultOk" => TdType::CheckChatUsernameResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CheckChatUsernameResultOk deserialize to TdType::CheckChatUsernameResult with error: {}", e))
           )?
@@ -790,7 +790,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "checkChatUsernameResultPublicChatsTooMuch" => TdType::CheckChatUsernameResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CheckChatUsernameResultPublicChatsTooMuch deserialize to TdType::CheckChatUsernameResult with error: {}", e))
           )?
@@ -799,7 +799,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "checkChatUsernameResultPublicGroupsUnavailable" => TdType::CheckChatUsernameResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CheckChatUsernameResultPublicGroupsUnavailable deserialize to TdType::CheckChatUsernameResult with error: {}", e))
           )?
@@ -808,7 +808,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "checkChatUsernameResultUsernameInvalid" => TdType::CheckChatUsernameResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CheckChatUsernameResultUsernameInvalid deserialize to TdType::CheckChatUsernameResult with error: {}", e))
           )?
@@ -817,7 +817,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "checkChatUsernameResultUsernameOccupied" => TdType::CheckChatUsernameResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CheckChatUsernameResultUsernameOccupied deserialize to TdType::CheckChatUsernameResult with error: {}", e))
           )?
@@ -826,7 +826,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getApplicationConfig" => TdType::JsonValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetApplicationConfig deserialize to TdType::JsonValue with error: {}", e))
           )?
@@ -835,7 +835,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getJsonValue" => TdType::JsonValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetJsonValue deserialize to TdType::JsonValue with error: {}", e))
           )?
@@ -844,7 +844,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "jsonValueArray" => TdType::JsonValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("JsonValueArray deserialize to TdType::JsonValue with error: {}", e))
           )?
@@ -853,7 +853,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "jsonValueBoolean" => TdType::JsonValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("JsonValueBoolean deserialize to TdType::JsonValue with error: {}", e))
           )?
@@ -862,7 +862,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "jsonValueNull" => TdType::JsonValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("JsonValueNull deserialize to TdType::JsonValue with error: {}", e))
           )?
@@ -871,7 +871,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "jsonValueNumber" => TdType::JsonValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("JsonValueNumber deserialize to TdType::JsonValue with error: {}", e))
           )?
@@ -880,7 +880,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "jsonValueObject" => TdType::JsonValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("JsonValueObject deserialize to TdType::JsonValue with error: {}", e))
           )?
@@ -889,7 +889,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "jsonValueString" => TdType::JsonValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("JsonValueString deserialize to TdType::JsonValue with error: {}", e))
           )?
@@ -898,7 +898,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getLanguagePackString" => TdType::LanguagePackStringValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetLanguagePackString deserialize to TdType::LanguagePackStringValue with error: {}", e))
           )?
@@ -907,7 +907,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "languagePackStringValueDeleted" => TdType::LanguagePackStringValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LanguagePackStringValueDeleted deserialize to TdType::LanguagePackStringValue with error: {}", e))
           )?
@@ -916,7 +916,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "languagePackStringValueOrdinary" => TdType::LanguagePackStringValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LanguagePackStringValueOrdinary deserialize to TdType::LanguagePackStringValue with error: {}", e))
           )?
@@ -925,7 +925,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "languagePackStringValuePluralized" => TdType::LanguagePackStringValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LanguagePackStringValuePluralized deserialize to TdType::LanguagePackStringValue with error: {}", e))
           )?
@@ -934,7 +934,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getLogStream" => TdType::LogStream(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetLogStream deserialize to TdType::LogStream with error: {}", e))
           )?
@@ -943,7 +943,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "logStreamDefault" => TdType::LogStream(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LogStreamDefault deserialize to TdType::LogStream with error: {}", e))
           )?
@@ -952,7 +952,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "logStreamEmpty" => TdType::LogStream(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LogStreamEmpty deserialize to TdType::LogStream with error: {}", e))
           )?
@@ -961,7 +961,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "logStreamFile" => TdType::LogStream(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LogStreamFile deserialize to TdType::LogStream with error: {}", e))
           )?
@@ -970,7 +970,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getLoginUrlInfo" => TdType::LoginUrlInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetLoginUrlInfo deserialize to TdType::LoginUrlInfo with error: {}", e))
           )?
@@ -979,7 +979,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "loginUrlInfoOpen" => TdType::LoginUrlInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LoginUrlInfoOpen deserialize to TdType::LoginUrlInfo with error: {}", e))
           )?
@@ -988,7 +988,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "loginUrlInfoRequestConfirmation" => TdType::LoginUrlInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LoginUrlInfoRequestConfirmation deserialize to TdType::LoginUrlInfo with error: {}", e))
           )?
@@ -997,7 +997,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getOption" => TdType::OptionValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetOption deserialize to TdType::OptionValue with error: {}", e))
           )?
@@ -1006,7 +1006,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "optionValueBoolean" => TdType::OptionValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("OptionValueBoolean deserialize to TdType::OptionValue with error: {}", e))
           )?
@@ -1015,7 +1015,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "optionValueEmpty" => TdType::OptionValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("OptionValueEmpty deserialize to TdType::OptionValue with error: {}", e))
           )?
@@ -1024,7 +1024,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "optionValueInteger" => TdType::OptionValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("OptionValueInteger deserialize to TdType::OptionValue with error: {}", e))
           )?
@@ -1033,7 +1033,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "optionValueString" => TdType::OptionValue(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("OptionValueString deserialize to TdType::OptionValue with error: {}", e))
           )?
@@ -1042,7 +1042,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getPassportElement" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetPassportElement deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1051,7 +1051,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementAddress" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementAddress deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1060,7 +1060,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementBankStatement" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementBankStatement deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1069,7 +1069,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementDriverLicense" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementDriverLicense deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1078,7 +1078,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementEmailAddress" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementEmailAddress deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1087,7 +1087,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementIdentityCard" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementIdentityCard deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1096,7 +1096,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementInternalPassport" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementInternalPassport deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1105,7 +1105,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementPassport" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementPassport deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1114,7 +1114,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementPassportRegistration" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementPassportRegistration deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1123,7 +1123,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementPersonalDetails" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementPersonalDetails deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1132,7 +1132,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementPhoneNumber" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementPhoneNumber deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1141,7 +1141,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementRentalAgreement" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementRentalAgreement deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1150,7 +1150,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementTemporaryRegistration" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementTemporaryRegistration deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1159,7 +1159,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "passportElementUtilityBill" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementUtilityBill deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1168,7 +1168,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "setPassportElement" => TdType::PassportElement(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("SetPassportElement deserialize to TdType::PassportElement with error: {}", e))
           )?
@@ -1177,7 +1177,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "getStatisticalGraph" => TdType::StatisticalGraph(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GetStatisticalGraph deserialize to TdType::StatisticalGraph with error: {}", e))
           )?
@@ -1186,7 +1186,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "statisticalGraphAsync" => TdType::StatisticalGraph(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("StatisticalGraphAsync deserialize to TdType::StatisticalGraph with error: {}", e))
           )?
@@ -1195,7 +1195,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "statisticalGraphData" => TdType::StatisticalGraph(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("StatisticalGraphData deserialize to TdType::StatisticalGraph with error: {}", e))
           )?
@@ -1204,7 +1204,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "statisticalGraphError" => TdType::StatisticalGraph(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("StatisticalGraphError deserialize to TdType::StatisticalGraph with error: {}", e))
           )?
@@ -1213,7 +1213,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "testUseUpdate" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TestUseUpdate deserialize to TdType::Update with error: {}", e))
           )?
@@ -1222,7 +1222,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateActiveNotifications" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateActiveNotifications deserialize to TdType::Update with error: {}", e))
           )?
@@ -1231,7 +1231,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateAnimationSearchParameters" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateAnimationSearchParameters deserialize to TdType::Update with error: {}", e))
           )?
@@ -1240,7 +1240,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateAuthorizationState" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateAuthorizationState deserialize to TdType::Update with error: {}", e))
           )?
@@ -1249,7 +1249,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateBasicGroup" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateBasicGroup deserialize to TdType::Update with error: {}", e))
           )?
@@ -1258,7 +1258,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateBasicGroupFullInfo" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateBasicGroupFullInfo deserialize to TdType::Update with error: {}", e))
           )?
@@ -1267,7 +1267,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateCall" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateCall deserialize to TdType::Update with error: {}", e))
           )?
@@ -1276,7 +1276,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatActionBar" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatActionBar deserialize to TdType::Update with error: {}", e))
           )?
@@ -1285,7 +1285,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatDefaultDisableNotification" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatDefaultDisableNotification deserialize to TdType::Update with error: {}", e))
           )?
@@ -1294,7 +1294,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatDraftMessage" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatDraftMessage deserialize to TdType::Update with error: {}", e))
           )?
@@ -1303,7 +1303,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatFilters" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatFilters deserialize to TdType::Update with error: {}", e))
           )?
@@ -1312,7 +1312,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatHasScheduledMessages" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatHasScheduledMessages deserialize to TdType::Update with error: {}", e))
           )?
@@ -1321,7 +1321,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatIsBlocked" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatIsBlocked deserialize to TdType::Update with error: {}", e))
           )?
@@ -1330,7 +1330,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatIsMarkedAsUnread" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatIsMarkedAsUnread deserialize to TdType::Update with error: {}", e))
           )?
@@ -1339,7 +1339,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatLastMessage" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatLastMessage deserialize to TdType::Update with error: {}", e))
           )?
@@ -1348,7 +1348,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatNotificationSettings" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatNotificationSettings deserialize to TdType::Update with error: {}", e))
           )?
@@ -1357,7 +1357,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatOnlineMemberCount" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatOnlineMemberCount deserialize to TdType::Update with error: {}", e))
           )?
@@ -1366,7 +1366,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatPermissions" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatPermissions deserialize to TdType::Update with error: {}", e))
           )?
@@ -1375,7 +1375,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatPhoto" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatPhoto deserialize to TdType::Update with error: {}", e))
           )?
@@ -1384,7 +1384,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatPosition" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatPosition deserialize to TdType::Update with error: {}", e))
           )?
@@ -1393,7 +1393,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatReadInbox" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatReadInbox deserialize to TdType::Update with error: {}", e))
           )?
@@ -1402,7 +1402,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatReadOutbox" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatReadOutbox deserialize to TdType::Update with error: {}", e))
           )?
@@ -1411,7 +1411,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatReplyMarkup" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatReplyMarkup deserialize to TdType::Update with error: {}", e))
           )?
@@ -1420,7 +1420,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatTitle" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatTitle deserialize to TdType::Update with error: {}", e))
           )?
@@ -1429,7 +1429,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateChatUnreadMentionCount" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateChatUnreadMentionCount deserialize to TdType::Update with error: {}", e))
           )?
@@ -1438,7 +1438,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateConnectionState" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateConnectionState deserialize to TdType::Update with error: {}", e))
           )?
@@ -1447,7 +1447,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateDeleteMessages" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateDeleteMessages deserialize to TdType::Update with error: {}", e))
           )?
@@ -1456,7 +1456,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateDiceEmojis" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateDiceEmojis deserialize to TdType::Update with error: {}", e))
           )?
@@ -1465,7 +1465,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateFavoriteStickers" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateFavoriteStickers deserialize to TdType::Update with error: {}", e))
           )?
@@ -1474,7 +1474,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateFile" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateFile deserialize to TdType::Update with error: {}", e))
           )?
@@ -1483,7 +1483,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateFileGenerationStart" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateFileGenerationStart deserialize to TdType::Update with error: {}", e))
           )?
@@ -1492,7 +1492,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateFileGenerationStop" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateFileGenerationStop deserialize to TdType::Update with error: {}", e))
           )?
@@ -1501,7 +1501,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateHavePendingNotifications" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateHavePendingNotifications deserialize to TdType::Update with error: {}", e))
           )?
@@ -1510,7 +1510,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateInstalledStickerSets" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateInstalledStickerSets deserialize to TdType::Update with error: {}", e))
           )?
@@ -1519,7 +1519,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateLanguagePackStrings" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateLanguagePackStrings deserialize to TdType::Update with error: {}", e))
           )?
@@ -1528,7 +1528,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageContent" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageContent deserialize to TdType::Update with error: {}", e))
           )?
@@ -1537,7 +1537,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageContentOpened" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageContentOpened deserialize to TdType::Update with error: {}", e))
           )?
@@ -1546,7 +1546,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageEdited" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageEdited deserialize to TdType::Update with error: {}", e))
           )?
@@ -1555,7 +1555,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageInteractionInfo" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageInteractionInfo deserialize to TdType::Update with error: {}", e))
           )?
@@ -1564,7 +1564,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageIsPinned" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageIsPinned deserialize to TdType::Update with error: {}", e))
           )?
@@ -1573,7 +1573,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageLiveLocationViewed" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageLiveLocationViewed deserialize to TdType::Update with error: {}", e))
           )?
@@ -1582,7 +1582,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageMentionRead" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageMentionRead deserialize to TdType::Update with error: {}", e))
           )?
@@ -1591,7 +1591,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageSendAcknowledged" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageSendAcknowledged deserialize to TdType::Update with error: {}", e))
           )?
@@ -1600,7 +1600,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageSendFailed" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageSendFailed deserialize to TdType::Update with error: {}", e))
           )?
@@ -1609,7 +1609,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateMessageSendSucceeded" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateMessageSendSucceeded deserialize to TdType::Update with error: {}", e))
           )?
@@ -1618,7 +1618,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewCallSignalingData" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewCallSignalingData deserialize to TdType::Update with error: {}", e))
           )?
@@ -1627,7 +1627,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewCallbackQuery" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewCallbackQuery deserialize to TdType::Update with error: {}", e))
           )?
@@ -1636,7 +1636,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewChat" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewChat deserialize to TdType::Update with error: {}", e))
           )?
@@ -1645,7 +1645,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewChosenInlineResult" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewChosenInlineResult deserialize to TdType::Update with error: {}", e))
           )?
@@ -1654,7 +1654,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewCustomEvent" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewCustomEvent deserialize to TdType::Update with error: {}", e))
           )?
@@ -1663,7 +1663,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewCustomQuery" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewCustomQuery deserialize to TdType::Update with error: {}", e))
           )?
@@ -1672,7 +1672,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewInlineCallbackQuery" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewInlineCallbackQuery deserialize to TdType::Update with error: {}", e))
           )?
@@ -1681,7 +1681,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewInlineQuery" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewInlineQuery deserialize to TdType::Update with error: {}", e))
           )?
@@ -1690,7 +1690,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewMessage" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewMessage deserialize to TdType::Update with error: {}", e))
           )?
@@ -1699,7 +1699,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewPreCheckoutQuery" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewPreCheckoutQuery deserialize to TdType::Update with error: {}", e))
           )?
@@ -1708,7 +1708,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNewShippingQuery" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNewShippingQuery deserialize to TdType::Update with error: {}", e))
           )?
@@ -1717,7 +1717,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNotification" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNotification deserialize to TdType::Update with error: {}", e))
           )?
@@ -1726,7 +1726,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateNotificationGroup" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateNotificationGroup deserialize to TdType::Update with error: {}", e))
           )?
@@ -1735,7 +1735,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateOption" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateOption deserialize to TdType::Update with error: {}", e))
           )?
@@ -1744,7 +1744,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updatePoll" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdatePoll deserialize to TdType::Update with error: {}", e))
           )?
@@ -1753,7 +1753,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updatePollAnswer" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdatePollAnswer deserialize to TdType::Update with error: {}", e))
           )?
@@ -1762,7 +1762,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateRecentStickers" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateRecentStickers deserialize to TdType::Update with error: {}", e))
           )?
@@ -1771,7 +1771,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateSavedAnimations" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateSavedAnimations deserialize to TdType::Update with error: {}", e))
           )?
@@ -1780,7 +1780,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateScopeNotificationSettings" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateScopeNotificationSettings deserialize to TdType::Update with error: {}", e))
           )?
@@ -1789,7 +1789,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateSecretChat" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateSecretChat deserialize to TdType::Update with error: {}", e))
           )?
@@ -1798,7 +1798,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateSelectedBackground" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateSelectedBackground deserialize to TdType::Update with error: {}", e))
           )?
@@ -1807,7 +1807,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateServiceNotification" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateServiceNotification deserialize to TdType::Update with error: {}", e))
           )?
@@ -1816,7 +1816,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateStickerSet" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateStickerSet deserialize to TdType::Update with error: {}", e))
           )?
@@ -1825,7 +1825,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateSuggestedActions" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateSuggestedActions deserialize to TdType::Update with error: {}", e))
           )?
@@ -1834,7 +1834,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateSupergroup" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateSupergroup deserialize to TdType::Update with error: {}", e))
           )?
@@ -1843,7 +1843,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateSupergroupFullInfo" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateSupergroupFullInfo deserialize to TdType::Update with error: {}", e))
           )?
@@ -1852,7 +1852,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateTermsOfService" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateTermsOfService deserialize to TdType::Update with error: {}", e))
           )?
@@ -1861,7 +1861,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateTrendingStickerSets" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateTrendingStickerSets deserialize to TdType::Update with error: {}", e))
           )?
@@ -1870,7 +1870,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateUnreadChatCount" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateUnreadChatCount deserialize to TdType::Update with error: {}", e))
           )?
@@ -1879,7 +1879,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateUnreadMessageCount" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateUnreadMessageCount deserialize to TdType::Update with error: {}", e))
           )?
@@ -1888,7 +1888,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateUser" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateUser deserialize to TdType::Update with error: {}", e))
           )?
@@ -1897,7 +1897,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateUserChatAction" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateUserChatAction deserialize to TdType::Update with error: {}", e))
           )?
@@ -1906,7 +1906,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateUserFullInfo" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateUserFullInfo deserialize to TdType::Update with error: {}", e))
           )?
@@ -1915,7 +1915,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateUserPrivacySettingRules" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateUserPrivacySettingRules deserialize to TdType::Update with error: {}", e))
           )?
@@ -1924,7 +1924,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateUserStatus" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateUserStatus deserialize to TdType::Update with error: {}", e))
           )?
@@ -1933,7 +1933,7 @@ impl<'de> Deserialize<'de> for TdType {
 
       "updateUsersNearby" => TdType::Update(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UpdateUsersNearby deserialize to TdType::Update with error: {}", e))
           )?
@@ -1941,7 +1941,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "accountTtl" => TdType::AccountTtl(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AccountTtl deserialize to TdType::AccountTtl with error: {}", e))
           )?
@@ -1949,7 +1949,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "animations" => TdType::Animations(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Animations deserialize to TdType::Animations with error: {}", e))
           )?
@@ -1957,7 +1957,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "authenticationCodeInfo" => TdType::AuthenticationCodeInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AuthenticationCodeInfo deserialize to TdType::AuthenticationCodeInfo with error: {}", e))
           )?
@@ -1965,7 +1965,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "autoDownloadSettingsPresets" => TdType::AutoDownloadSettingsPresets(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("AutoDownloadSettingsPresets deserialize to TdType::AutoDownloadSettingsPresets with error: {}", e))
           )?
@@ -1973,7 +1973,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "background" => TdType::Background(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Background deserialize to TdType::Background with error: {}", e))
           )?
@@ -1981,7 +1981,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "backgrounds" => TdType::Backgrounds(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Backgrounds deserialize to TdType::Backgrounds with error: {}", e))
           )?
@@ -1989,7 +1989,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "bankCardInfo" => TdType::BankCardInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("BankCardInfo deserialize to TdType::BankCardInfo with error: {}", e))
           )?
@@ -1997,7 +1997,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "basicGroup" => TdType::BasicGroup(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("BasicGroup deserialize to TdType::BasicGroup with error: {}", e))
           )?
@@ -2005,7 +2005,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "basicGroupFullInfo" => TdType::BasicGroupFullInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("BasicGroupFullInfo deserialize to TdType::BasicGroupFullInfo with error: {}", e))
           )?
@@ -2013,7 +2013,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "callId" => TdType::CallId(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CallId deserialize to TdType::CallId with error: {}", e))
           )?
@@ -2021,7 +2021,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "callbackQueryAnswer" => TdType::CallbackQueryAnswer(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CallbackQueryAnswer deserialize to TdType::CallbackQueryAnswer with error: {}", e))
           )?
@@ -2029,7 +2029,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chat" => TdType::Chat(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Chat deserialize to TdType::Chat with error: {}", e))
           )?
@@ -2037,7 +2037,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatAdministrators" => TdType::ChatAdministrators(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatAdministrators deserialize to TdType::ChatAdministrators with error: {}", e))
           )?
@@ -2045,7 +2045,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatEvents" => TdType::ChatEvents(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatEvents deserialize to TdType::ChatEvents with error: {}", e))
           )?
@@ -2053,7 +2053,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatFilter" => TdType::ChatFilter(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatFilter deserialize to TdType::ChatFilter with error: {}", e))
           )?
@@ -2061,7 +2061,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatFilterInfo" => TdType::ChatFilterInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatFilterInfo deserialize to TdType::ChatFilterInfo with error: {}", e))
           )?
@@ -2069,7 +2069,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatInviteLink" => TdType::ChatInviteLink(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatInviteLink deserialize to TdType::ChatInviteLink with error: {}", e))
           )?
@@ -2077,7 +2077,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatInviteLinkInfo" => TdType::ChatInviteLinkInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatInviteLinkInfo deserialize to TdType::ChatInviteLinkInfo with error: {}", e))
           )?
@@ -2085,7 +2085,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatLists" => TdType::ChatLists(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatLists deserialize to TdType::ChatLists with error: {}", e))
           )?
@@ -2093,7 +2093,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatMember" => TdType::ChatMember(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatMember deserialize to TdType::ChatMember with error: {}", e))
           )?
@@ -2101,7 +2101,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatMembers" => TdType::ChatMembers(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatMembers deserialize to TdType::ChatMembers with error: {}", e))
           )?
@@ -2109,7 +2109,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatPhotos" => TdType::ChatPhotos(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatPhotos deserialize to TdType::ChatPhotos with error: {}", e))
           )?
@@ -2117,7 +2117,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chats" => TdType::Chats(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Chats deserialize to TdType::Chats with error: {}", e))
           )?
@@ -2125,7 +2125,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "chatsNearby" => TdType::ChatsNearby(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ChatsNearby deserialize to TdType::ChatsNearby with error: {}", e))
           )?
@@ -2133,7 +2133,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "connectedWebsites" => TdType::ConnectedWebsites(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ConnectedWebsites deserialize to TdType::ConnectedWebsites with error: {}", e))
           )?
@@ -2141,7 +2141,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "count" => TdType::Count(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Count deserialize to TdType::Count with error: {}", e))
           )?
@@ -2149,7 +2149,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "countries" => TdType::Countries(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Countries deserialize to TdType::Countries with error: {}", e))
           )?
@@ -2157,7 +2157,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "customRequestResult" => TdType::CustomRequestResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("CustomRequestResult deserialize to TdType::CustomRequestResult with error: {}", e))
           )?
@@ -2165,7 +2165,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "databaseStatistics" => TdType::DatabaseStatistics(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("DatabaseStatistics deserialize to TdType::DatabaseStatistics with error: {}", e))
           )?
@@ -2173,7 +2173,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "deepLinkInfo" => TdType::DeepLinkInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("DeepLinkInfo deserialize to TdType::DeepLinkInfo with error: {}", e))
           )?
@@ -2181,7 +2181,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "emailAddressAuthenticationCodeInfo" => TdType::EmailAddressAuthenticationCodeInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("EmailAddressAuthenticationCodeInfo deserialize to TdType::EmailAddressAuthenticationCodeInfo with error: {}", e))
           )?
@@ -2189,7 +2189,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "emojis" => TdType::Emojis(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Emojis deserialize to TdType::Emojis with error: {}", e))
           )?
@@ -2197,7 +2197,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "error" => TdType::Error(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Error deserialize to TdType::Error with error: {}", e))
           )?
@@ -2205,7 +2205,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "file" => TdType::File(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("File deserialize to TdType::File with error: {}", e))
           )?
@@ -2213,7 +2213,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "filePart" => TdType::FilePart(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("FilePart deserialize to TdType::FilePart with error: {}", e))
           )?
@@ -2221,7 +2221,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "formattedText" => TdType::FormattedText(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("FormattedText deserialize to TdType::FormattedText with error: {}", e))
           )?
@@ -2229,7 +2229,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "foundMessages" => TdType::FoundMessages(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("FoundMessages deserialize to TdType::FoundMessages with error: {}", e))
           )?
@@ -2237,7 +2237,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "gameHighScores" => TdType::GameHighScores(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("GameHighScores deserialize to TdType::GameHighScores with error: {}", e))
           )?
@@ -2245,7 +2245,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "hashtags" => TdType::Hashtags(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Hashtags deserialize to TdType::Hashtags with error: {}", e))
           )?
@@ -2253,7 +2253,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "httpUrl" => TdType::HttpUrl(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("HttpUrl deserialize to TdType::HttpUrl with error: {}", e))
           )?
@@ -2261,7 +2261,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "importedContacts" => TdType::ImportedContacts(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ImportedContacts deserialize to TdType::ImportedContacts with error: {}", e))
           )?
@@ -2269,7 +2269,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "inlineQueryResults" => TdType::InlineQueryResults(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("InlineQueryResults deserialize to TdType::InlineQueryResults with error: {}", e))
           )?
@@ -2277,7 +2277,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "languagePackInfo" => TdType::LanguagePackInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LanguagePackInfo deserialize to TdType::LanguagePackInfo with error: {}", e))
           )?
@@ -2285,7 +2285,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "languagePackStrings" => TdType::LanguagePackStrings(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LanguagePackStrings deserialize to TdType::LanguagePackStrings with error: {}", e))
           )?
@@ -2293,7 +2293,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "localizationTargetInfo" => TdType::LocalizationTargetInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LocalizationTargetInfo deserialize to TdType::LocalizationTargetInfo with error: {}", e))
           )?
@@ -2301,7 +2301,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "logTags" => TdType::LogTags(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LogTags deserialize to TdType::LogTags with error: {}", e))
           )?
@@ -2309,7 +2309,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "logVerbosityLevel" => TdType::LogVerbosityLevel(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("LogVerbosityLevel deserialize to TdType::LogVerbosityLevel with error: {}", e))
           )?
@@ -2317,7 +2317,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "message" => TdType::Message(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Message deserialize to TdType::Message with error: {}", e))
           )?
@@ -2325,7 +2325,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "messageLink" => TdType::MessageLink(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("MessageLink deserialize to TdType::MessageLink with error: {}", e))
           )?
@@ -2333,7 +2333,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "messageLinkInfo" => TdType::MessageLinkInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("MessageLinkInfo deserialize to TdType::MessageLinkInfo with error: {}", e))
           )?
@@ -2341,7 +2341,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "messageSenders" => TdType::MessageSenders(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("MessageSenders deserialize to TdType::MessageSenders with error: {}", e))
           )?
@@ -2349,7 +2349,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "messageStatistics" => TdType::MessageStatistics(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("MessageStatistics deserialize to TdType::MessageStatistics with error: {}", e))
           )?
@@ -2357,7 +2357,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "messageThreadInfo" => TdType::MessageThreadInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("MessageThreadInfo deserialize to TdType::MessageThreadInfo with error: {}", e))
           )?
@@ -2365,7 +2365,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "messages" => TdType::Messages(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Messages deserialize to TdType::Messages with error: {}", e))
           )?
@@ -2373,7 +2373,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "networkStatistics" => TdType::NetworkStatistics(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("NetworkStatistics deserialize to TdType::NetworkStatistics with error: {}", e))
           )?
@@ -2381,7 +2381,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "ok" => TdType::Ok(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Ok deserialize to TdType::Ok with error: {}", e))
           )?
@@ -2389,7 +2389,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "orderInfo" => TdType::OrderInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("OrderInfo deserialize to TdType::OrderInfo with error: {}", e))
           )?
@@ -2397,7 +2397,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "passportAuthorizationForm" => TdType::PassportAuthorizationForm(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportAuthorizationForm deserialize to TdType::PassportAuthorizationForm with error: {}", e))
           )?
@@ -2405,7 +2405,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "passportElements" => TdType::PassportElements(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElements deserialize to TdType::PassportElements with error: {}", e))
           )?
@@ -2413,7 +2413,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "passportElementsWithErrors" => TdType::PassportElementsWithErrors(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PassportElementsWithErrors deserialize to TdType::PassportElementsWithErrors with error: {}", e))
           )?
@@ -2421,7 +2421,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "passwordState" => TdType::PasswordState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PasswordState deserialize to TdType::PasswordState with error: {}", e))
           )?
@@ -2429,7 +2429,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "paymentForm" => TdType::PaymentForm(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PaymentForm deserialize to TdType::PaymentForm with error: {}", e))
           )?
@@ -2437,7 +2437,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "paymentReceipt" => TdType::PaymentReceipt(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PaymentReceipt deserialize to TdType::PaymentReceipt with error: {}", e))
           )?
@@ -2445,7 +2445,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "paymentResult" => TdType::PaymentResult(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PaymentResult deserialize to TdType::PaymentResult with error: {}", e))
           )?
@@ -2453,7 +2453,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "phoneNumberInfo" => TdType::PhoneNumberInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PhoneNumberInfo deserialize to TdType::PhoneNumberInfo with error: {}", e))
           )?
@@ -2461,7 +2461,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "proxies" => TdType::Proxies(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Proxies deserialize to TdType::Proxies with error: {}", e))
           )?
@@ -2469,7 +2469,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "proxy" => TdType::Proxy(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Proxy deserialize to TdType::Proxy with error: {}", e))
           )?
@@ -2477,7 +2477,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "pushReceiverId" => TdType::PushReceiverId(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("PushReceiverId deserialize to TdType::PushReceiverId with error: {}", e))
           )?
@@ -2485,7 +2485,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "recommendedChatFilters" => TdType::RecommendedChatFilters(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("RecommendedChatFilters deserialize to TdType::RecommendedChatFilters with error: {}", e))
           )?
@@ -2493,7 +2493,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "recoveryEmailAddress" => TdType::RecoveryEmailAddress(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("RecoveryEmailAddress deserialize to TdType::RecoveryEmailAddress with error: {}", e))
           )?
@@ -2501,7 +2501,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "scopeNotificationSettings" => TdType::ScopeNotificationSettings(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ScopeNotificationSettings deserialize to TdType::ScopeNotificationSettings with error: {}", e))
           )?
@@ -2509,7 +2509,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "seconds" => TdType::Seconds(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Seconds deserialize to TdType::Seconds with error: {}", e))
           )?
@@ -2517,7 +2517,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "secretChat" => TdType::SecretChat(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("SecretChat deserialize to TdType::SecretChat with error: {}", e))
           )?
@@ -2525,7 +2525,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "session" => TdType::Session(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Session deserialize to TdType::Session with error: {}", e))
           )?
@@ -2533,7 +2533,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "sessions" => TdType::Sessions(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Sessions deserialize to TdType::Sessions with error: {}", e))
           )?
@@ -2541,7 +2541,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "stickerSet" => TdType::StickerSet(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("StickerSet deserialize to TdType::StickerSet with error: {}", e))
           )?
@@ -2549,7 +2549,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "stickerSets" => TdType::StickerSets(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("StickerSets deserialize to TdType::StickerSets with error: {}", e))
           )?
@@ -2557,7 +2557,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "stickers" => TdType::Stickers(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Stickers deserialize to TdType::Stickers with error: {}", e))
           )?
@@ -2565,7 +2565,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "storageStatistics" => TdType::StorageStatistics(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("StorageStatistics deserialize to TdType::StorageStatistics with error: {}", e))
           )?
@@ -2573,7 +2573,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "storageStatisticsFast" => TdType::StorageStatisticsFast(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("StorageStatisticsFast deserialize to TdType::StorageStatisticsFast with error: {}", e))
           )?
@@ -2581,7 +2581,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "supergroup" => TdType::Supergroup(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Supergroup deserialize to TdType::Supergroup with error: {}", e))
           )?
@@ -2589,7 +2589,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "supergroupFullInfo" => TdType::SupergroupFullInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("SupergroupFullInfo deserialize to TdType::SupergroupFullInfo with error: {}", e))
           )?
@@ -2597,7 +2597,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "tMeUrls" => TdType::TMeUrls(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TMeUrls deserialize to TdType::TMeUrls with error: {}", e))
           )?
@@ -2605,7 +2605,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "temporaryPasswordState" => TdType::TemporaryPasswordState(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TemporaryPasswordState deserialize to TdType::TemporaryPasswordState with error: {}", e))
           )?
@@ -2613,7 +2613,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "testBytes" => TdType::TestBytes(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TestBytes deserialize to TdType::TestBytes with error: {}", e))
           )?
@@ -2621,7 +2621,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "testInt" => TdType::TestInt(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TestInt deserialize to TdType::TestInt with error: {}", e))
           )?
@@ -2629,7 +2629,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "testString" => TdType::TestString(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TestString deserialize to TdType::TestString with error: {}", e))
           )?
@@ -2637,7 +2637,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "testVectorInt" => TdType::TestVectorInt(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TestVectorInt deserialize to TdType::TestVectorInt with error: {}", e))
           )?
@@ -2645,7 +2645,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "testVectorIntObject" => TdType::TestVectorIntObject(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TestVectorIntObject deserialize to TdType::TestVectorIntObject with error: {}", e))
           )?
@@ -2653,7 +2653,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "testVectorString" => TdType::TestVectorString(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TestVectorString deserialize to TdType::TestVectorString with error: {}", e))
           )?
@@ -2661,7 +2661,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "testVectorStringObject" => TdType::TestVectorStringObject(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TestVectorStringObject deserialize to TdType::TestVectorStringObject with error: {}", e))
           )?
@@ -2669,7 +2669,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "text" => TdType::Text(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Text deserialize to TdType::Text with error: {}", e))
           )?
@@ -2677,7 +2677,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "textEntities" => TdType::TextEntities(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("TextEntities deserialize to TdType::TextEntities with error: {}", e))
           )?
@@ -2685,7 +2685,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "updates" => TdType::Updates(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Updates deserialize to TdType::Updates with error: {}", e))
           )?
@@ -2693,7 +2693,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "user" => TdType::User(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("User deserialize to TdType::User with error: {}", e))
           )?
@@ -2701,7 +2701,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "userFullInfo" => TdType::UserFullInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UserFullInfo deserialize to TdType::UserFullInfo with error: {}", e))
           )?
@@ -2709,7 +2709,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "userPrivacySettingRules" => TdType::UserPrivacySettingRules(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("UserPrivacySettingRules deserialize to TdType::UserPrivacySettingRules with error: {}", e))
           )?
@@ -2717,7 +2717,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "users" => TdType::Users(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("Users deserialize to TdType::Users with error: {}", e))
           )?
@@ -2725,7 +2725,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "validatedOrderInfo" => TdType::ValidatedOrderInfo(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("ValidatedOrderInfo deserialize to TdType::ValidatedOrderInfo with error: {}", e))
           )?
@@ -2733,7 +2733,7 @@ impl<'de> Deserialize<'de> for TdType {
       
       "webPage" => TdType::WebPage(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("WebPage deserialize to TdType::WebPage with error: {}", e))
           )?
@@ -2741,15 +2741,14 @@ impl<'de> Deserialize<'de> for TdType {
       
       "webPageInstantView" => TdType::WebPageInstantView(
           serde_json::from_value(
-              rtd_trait_value.clone()
+              rtd_trait_value
           ).map_err(|e|
               D::Error::custom(format!("WebPageInstantView deserialize to TdType::WebPageInstantView with error: {}", e))
           )?
       ),
       
       _ => return Err(D::Error::custom(format!("got {} @type with unavailable variant", rtd_trait_type)))
-    };
-        Ok(obj)
+    })
     }
 }
 

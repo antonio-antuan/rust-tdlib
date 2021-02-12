@@ -231,7 +231,6 @@ where
         client
             .get_application_config(GetApplicationConfig::builder().build())
             .await?;
-        // client.raw_api().send(client_id, GetApplicationConfig::builder().build());
         if let Some(msg) = rx.recv().await {
             match msg {
                 ClientState::Closed => {

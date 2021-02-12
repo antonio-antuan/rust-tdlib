@@ -4,10 +4,12 @@ extern crate log;
 use rust_tdlib::{
     client::{Client, Worker},
     types::*,
+    tdjson
 };
 
 #[tokio::main]
 async fn main() {
+    tdjson::set_log_verbosity_level(1);
     env_logger::init();
     let tdlib_parameters = TdlibParameters::builder()
         .database_directory("tdlib")
