@@ -586,2170 +586,733 @@ impl<'de> Deserialize<'de> for TdType {
             },
             None => return Err(D::Error::custom("@type is empty")),
         };
-
-        Ok(match rtd_trait_type {
-      
-
-      "authorizationStateClosed" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateClosed deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateClosing" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateClosing deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateLoggingOut" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateLoggingOut deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateReady" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateReady deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateWaitCode" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateWaitCode deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateWaitEncryptionKey" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateWaitEncryptionKey deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateWaitOtherDeviceConfirmation" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateWaitOtherDeviceConfirmation deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateWaitPassword" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateWaitPassword deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateWaitPhoneNumber" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateWaitPhoneNumber deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateWaitRegistration" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateWaitRegistration deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "authorizationStateWaitTdlibParameters" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthorizationStateWaitTdlibParameters deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "getAuthorizationState" => TdType::AuthorizationState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetAuthorizationState deserialize to TdType::AuthorizationState with error: {}", e))
-          )?
-      ),
-      
-
-      "canTransferOwnership" => TdType::CanTransferOwnershipResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CanTransferOwnership deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
-          )?
-      ),
-      
-
-      "canTransferOwnershipResultOk" => TdType::CanTransferOwnershipResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CanTransferOwnershipResultOk deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
-          )?
-      ),
-      
-
-      "canTransferOwnershipResultPasswordNeeded" => TdType::CanTransferOwnershipResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CanTransferOwnershipResultPasswordNeeded deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
-          )?
-      ),
-      
-
-      "canTransferOwnershipResultPasswordTooFresh" => TdType::CanTransferOwnershipResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CanTransferOwnershipResultPasswordTooFresh deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
-          )?
-      ),
-      
-
-      "canTransferOwnershipResultSessionTooFresh" => TdType::CanTransferOwnershipResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CanTransferOwnershipResultSessionTooFresh deserialize to TdType::CanTransferOwnershipResult with error: {}", e))
-          )?
-      ),
-      
-
-      "chatStatisticsChannel" => TdType::ChatStatistics(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatStatisticsChannel deserialize to TdType::ChatStatistics with error: {}", e))
-          )?
-      ),
-      
-
-      "chatStatisticsSupergroup" => TdType::ChatStatistics(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatStatisticsSupergroup deserialize to TdType::ChatStatistics with error: {}", e))
-          )?
-      ),
-      
-
-      "getChatStatistics" => TdType::ChatStatistics(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetChatStatistics deserialize to TdType::ChatStatistics with error: {}", e))
-          )?
-      ),
-      
-
-      "checkChatUsername" => TdType::CheckChatUsernameResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CheckChatUsername deserialize to TdType::CheckChatUsernameResult with error: {}", e))
-          )?
-      ),
-      
-
-      "checkChatUsernameResultOk" => TdType::CheckChatUsernameResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CheckChatUsernameResultOk deserialize to TdType::CheckChatUsernameResult with error: {}", e))
-          )?
-      ),
-      
-
-      "checkChatUsernameResultPublicChatsTooMuch" => TdType::CheckChatUsernameResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CheckChatUsernameResultPublicChatsTooMuch deserialize to TdType::CheckChatUsernameResult with error: {}", e))
-          )?
-      ),
-      
-
-      "checkChatUsernameResultPublicGroupsUnavailable" => TdType::CheckChatUsernameResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CheckChatUsernameResultPublicGroupsUnavailable deserialize to TdType::CheckChatUsernameResult with error: {}", e))
-          )?
-      ),
-      
-
-      "checkChatUsernameResultUsernameInvalid" => TdType::CheckChatUsernameResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CheckChatUsernameResultUsernameInvalid deserialize to TdType::CheckChatUsernameResult with error: {}", e))
-          )?
-      ),
-      
-
-      "checkChatUsernameResultUsernameOccupied" => TdType::CheckChatUsernameResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CheckChatUsernameResultUsernameOccupied deserialize to TdType::CheckChatUsernameResult with error: {}", e))
-          )?
-      ),
-      
-
-      "getApplicationConfig" => TdType::JsonValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetApplicationConfig deserialize to TdType::JsonValue with error: {}", e))
-          )?
-      ),
-      
-
-      "getJsonValue" => TdType::JsonValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetJsonValue deserialize to TdType::JsonValue with error: {}", e))
-          )?
-      ),
-      
-
-      "jsonValueArray" => TdType::JsonValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("JsonValueArray deserialize to TdType::JsonValue with error: {}", e))
-          )?
-      ),
-      
-
-      "jsonValueBoolean" => TdType::JsonValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("JsonValueBoolean deserialize to TdType::JsonValue with error: {}", e))
-          )?
-      ),
-      
-
-      "jsonValueNull" => TdType::JsonValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("JsonValueNull deserialize to TdType::JsonValue with error: {}", e))
-          )?
-      ),
-      
-
-      "jsonValueNumber" => TdType::JsonValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("JsonValueNumber deserialize to TdType::JsonValue with error: {}", e))
-          )?
-      ),
-      
-
-      "jsonValueObject" => TdType::JsonValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("JsonValueObject deserialize to TdType::JsonValue with error: {}", e))
-          )?
-      ),
-      
-
-      "jsonValueString" => TdType::JsonValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("JsonValueString deserialize to TdType::JsonValue with error: {}", e))
-          )?
-      ),
-      
-
-      "getLanguagePackString" => TdType::LanguagePackStringValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetLanguagePackString deserialize to TdType::LanguagePackStringValue with error: {}", e))
-          )?
-      ),
-      
-
-      "languagePackStringValueDeleted" => TdType::LanguagePackStringValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LanguagePackStringValueDeleted deserialize to TdType::LanguagePackStringValue with error: {}", e))
-          )?
-      ),
-      
-
-      "languagePackStringValueOrdinary" => TdType::LanguagePackStringValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LanguagePackStringValueOrdinary deserialize to TdType::LanguagePackStringValue with error: {}", e))
-          )?
-      ),
-      
-
-      "languagePackStringValuePluralized" => TdType::LanguagePackStringValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LanguagePackStringValuePluralized deserialize to TdType::LanguagePackStringValue with error: {}", e))
-          )?
-      ),
-      
-
-      "getLogStream" => TdType::LogStream(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetLogStream deserialize to TdType::LogStream with error: {}", e))
-          )?
-      ),
-      
-
-      "logStreamDefault" => TdType::LogStream(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LogStreamDefault deserialize to TdType::LogStream with error: {}", e))
-          )?
-      ),
-      
-
-      "logStreamEmpty" => TdType::LogStream(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LogStreamEmpty deserialize to TdType::LogStream with error: {}", e))
-          )?
-      ),
-      
-
-      "logStreamFile" => TdType::LogStream(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LogStreamFile deserialize to TdType::LogStream with error: {}", e))
-          )?
-      ),
-      
-
-      "getLoginUrlInfo" => TdType::LoginUrlInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetLoginUrlInfo deserialize to TdType::LoginUrlInfo with error: {}", e))
-          )?
-      ),
-      
-
-      "loginUrlInfoOpen" => TdType::LoginUrlInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LoginUrlInfoOpen deserialize to TdType::LoginUrlInfo with error: {}", e))
-          )?
-      ),
-      
-
-      "loginUrlInfoRequestConfirmation" => TdType::LoginUrlInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LoginUrlInfoRequestConfirmation deserialize to TdType::LoginUrlInfo with error: {}", e))
-          )?
-      ),
-      
-
-      "getOption" => TdType::OptionValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetOption deserialize to TdType::OptionValue with error: {}", e))
-          )?
-      ),
-      
-
-      "optionValueBoolean" => TdType::OptionValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("OptionValueBoolean deserialize to TdType::OptionValue with error: {}", e))
-          )?
-      ),
-      
-
-      "optionValueEmpty" => TdType::OptionValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("OptionValueEmpty deserialize to TdType::OptionValue with error: {}", e))
-          )?
-      ),
-      
-
-      "optionValueInteger" => TdType::OptionValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("OptionValueInteger deserialize to TdType::OptionValue with error: {}", e))
-          )?
-      ),
-      
-
-      "optionValueString" => TdType::OptionValue(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("OptionValueString deserialize to TdType::OptionValue with error: {}", e))
-          )?
-      ),
-      
-
-      "getPassportElement" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetPassportElement deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementAddress" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementAddress deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementBankStatement" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementBankStatement deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementDriverLicense" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementDriverLicense deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementEmailAddress" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementEmailAddress deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementIdentityCard" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementIdentityCard deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementInternalPassport" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementInternalPassport deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementPassport" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementPassport deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementPassportRegistration" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementPassportRegistration deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementPersonalDetails" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementPersonalDetails deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementPhoneNumber" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementPhoneNumber deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementRentalAgreement" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementRentalAgreement deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementTemporaryRegistration" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementTemporaryRegistration deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "passportElementUtilityBill" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementUtilityBill deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "setPassportElement" => TdType::PassportElement(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("SetPassportElement deserialize to TdType::PassportElement with error: {}", e))
-          )?
-      ),
-      
-
-      "getStatisticalGraph" => TdType::StatisticalGraph(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GetStatisticalGraph deserialize to TdType::StatisticalGraph with error: {}", e))
-          )?
-      ),
-      
-
-      "statisticalGraphAsync" => TdType::StatisticalGraph(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("StatisticalGraphAsync deserialize to TdType::StatisticalGraph with error: {}", e))
-          )?
-      ),
-      
-
-      "statisticalGraphData" => TdType::StatisticalGraph(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("StatisticalGraphData deserialize to TdType::StatisticalGraph with error: {}", e))
-          )?
-      ),
-      
-
-      "statisticalGraphError" => TdType::StatisticalGraph(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("StatisticalGraphError deserialize to TdType::StatisticalGraph with error: {}", e))
-          )?
-      ),
-      
-
-      "testUseUpdate" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TestUseUpdate deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateActiveNotifications" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateActiveNotifications deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateAnimationSearchParameters" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateAnimationSearchParameters deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateAuthorizationState" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateAuthorizationState deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateBasicGroup" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateBasicGroup deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateBasicGroupFullInfo" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateBasicGroupFullInfo deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateCall" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateCall deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatActionBar" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatActionBar deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatDefaultDisableNotification" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatDefaultDisableNotification deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatDraftMessage" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatDraftMessage deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatFilters" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatFilters deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatHasScheduledMessages" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatHasScheduledMessages deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatIsBlocked" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatIsBlocked deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatIsMarkedAsUnread" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatIsMarkedAsUnread deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatLastMessage" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatLastMessage deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatNotificationSettings" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatNotificationSettings deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatOnlineMemberCount" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatOnlineMemberCount deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatPermissions" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatPermissions deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatPhoto" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatPhoto deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatPosition" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatPosition deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatReadInbox" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatReadInbox deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatReadOutbox" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatReadOutbox deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatReplyMarkup" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatReplyMarkup deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatTitle" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatTitle deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateChatUnreadMentionCount" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateChatUnreadMentionCount deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateConnectionState" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateConnectionState deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateDeleteMessages" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateDeleteMessages deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateDiceEmojis" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateDiceEmojis deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateFavoriteStickers" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateFavoriteStickers deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateFile" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateFile deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateFileGenerationStart" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateFileGenerationStart deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateFileGenerationStop" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateFileGenerationStop deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateHavePendingNotifications" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateHavePendingNotifications deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateInstalledStickerSets" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateInstalledStickerSets deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateLanguagePackStrings" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateLanguagePackStrings deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageContent" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageContent deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageContentOpened" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageContentOpened deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageEdited" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageEdited deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageInteractionInfo" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageInteractionInfo deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageIsPinned" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageIsPinned deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageLiveLocationViewed" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageLiveLocationViewed deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageMentionRead" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageMentionRead deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageSendAcknowledged" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageSendAcknowledged deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageSendFailed" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageSendFailed deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateMessageSendSucceeded" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateMessageSendSucceeded deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewCallSignalingData" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewCallSignalingData deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewCallbackQuery" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewCallbackQuery deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewChat" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewChat deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewChosenInlineResult" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewChosenInlineResult deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewCustomEvent" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewCustomEvent deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewCustomQuery" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewCustomQuery deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewInlineCallbackQuery" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewInlineCallbackQuery deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewInlineQuery" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewInlineQuery deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewMessage" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewMessage deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewPreCheckoutQuery" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewPreCheckoutQuery deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNewShippingQuery" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNewShippingQuery deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNotification" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNotification deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateNotificationGroup" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateNotificationGroup deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateOption" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateOption deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updatePoll" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdatePoll deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updatePollAnswer" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdatePollAnswer deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateRecentStickers" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateRecentStickers deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateSavedAnimations" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateSavedAnimations deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateScopeNotificationSettings" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateScopeNotificationSettings deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateSecretChat" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateSecretChat deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateSelectedBackground" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateSelectedBackground deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateServiceNotification" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateServiceNotification deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateStickerSet" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateStickerSet deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateSuggestedActions" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateSuggestedActions deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateSupergroup" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateSupergroup deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateSupergroupFullInfo" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateSupergroupFullInfo deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateTermsOfService" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateTermsOfService deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateTrendingStickerSets" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateTrendingStickerSets deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateUnreadChatCount" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateUnreadChatCount deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateUnreadMessageCount" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateUnreadMessageCount deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateUser" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateUser deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateUserChatAction" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateUserChatAction deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateUserFullInfo" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateUserFullInfo deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateUserPrivacySettingRules" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateUserPrivacySettingRules deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateUserStatus" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateUserStatus deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-
-      "updateUsersNearby" => TdType::Update(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UpdateUsersNearby deserialize to TdType::Update with error: {}", e))
-          )?
-      ),
-      
-      "accountTtl" => TdType::AccountTtl(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AccountTtl deserialize to TdType::AccountTtl with error: {}", e))
-          )?
-      ),
-      
-      "animations" => TdType::Animations(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Animations deserialize to TdType::Animations with error: {}", e))
-          )?
-      ),
-      
-      "authenticationCodeInfo" => TdType::AuthenticationCodeInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AuthenticationCodeInfo deserialize to TdType::AuthenticationCodeInfo with error: {}", e))
-          )?
-      ),
-      
-      "autoDownloadSettingsPresets" => TdType::AutoDownloadSettingsPresets(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("AutoDownloadSettingsPresets deserialize to TdType::AutoDownloadSettingsPresets with error: {}", e))
-          )?
-      ),
-      
-      "background" => TdType::Background(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Background deserialize to TdType::Background with error: {}", e))
-          )?
-      ),
-      
-      "backgrounds" => TdType::Backgrounds(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Backgrounds deserialize to TdType::Backgrounds with error: {}", e))
-          )?
-      ),
-      
-      "bankCardInfo" => TdType::BankCardInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("BankCardInfo deserialize to TdType::BankCardInfo with error: {}", e))
-          )?
-      ),
-      
-      "basicGroup" => TdType::BasicGroup(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("BasicGroup deserialize to TdType::BasicGroup with error: {}", e))
-          )?
-      ),
-      
-      "basicGroupFullInfo" => TdType::BasicGroupFullInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("BasicGroupFullInfo deserialize to TdType::BasicGroupFullInfo with error: {}", e))
-          )?
-      ),
-      
-      "callId" => TdType::CallId(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CallId deserialize to TdType::CallId with error: {}", e))
-          )?
-      ),
-      
-      "callbackQueryAnswer" => TdType::CallbackQueryAnswer(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CallbackQueryAnswer deserialize to TdType::CallbackQueryAnswer with error: {}", e))
-          )?
-      ),
-      
-      "chat" => TdType::Chat(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Chat deserialize to TdType::Chat with error: {}", e))
-          )?
-      ),
-      
-      "chatAdministrators" => TdType::ChatAdministrators(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatAdministrators deserialize to TdType::ChatAdministrators with error: {}", e))
-          )?
-      ),
-      
-      "chatEvents" => TdType::ChatEvents(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatEvents deserialize to TdType::ChatEvents with error: {}", e))
-          )?
-      ),
-      
-      "chatFilter" => TdType::ChatFilter(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatFilter deserialize to TdType::ChatFilter with error: {}", e))
-          )?
-      ),
-      
-      "chatFilterInfo" => TdType::ChatFilterInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatFilterInfo deserialize to TdType::ChatFilterInfo with error: {}", e))
-          )?
-      ),
-      
-      "chatInviteLink" => TdType::ChatInviteLink(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatInviteLink deserialize to TdType::ChatInviteLink with error: {}", e))
-          )?
-      ),
-      
-      "chatInviteLinkInfo" => TdType::ChatInviteLinkInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatInviteLinkInfo deserialize to TdType::ChatInviteLinkInfo with error: {}", e))
-          )?
-      ),
-      
-      "chatLists" => TdType::ChatLists(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatLists deserialize to TdType::ChatLists with error: {}", e))
-          )?
-      ),
-      
-      "chatMember" => TdType::ChatMember(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatMember deserialize to TdType::ChatMember with error: {}", e))
-          )?
-      ),
-      
-      "chatMembers" => TdType::ChatMembers(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatMembers deserialize to TdType::ChatMembers with error: {}", e))
-          )?
-      ),
-      
-      "chatPhotos" => TdType::ChatPhotos(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatPhotos deserialize to TdType::ChatPhotos with error: {}", e))
-          )?
-      ),
-      
-      "chats" => TdType::Chats(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Chats deserialize to TdType::Chats with error: {}", e))
-          )?
-      ),
-      
-      "chatsNearby" => TdType::ChatsNearby(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ChatsNearby deserialize to TdType::ChatsNearby with error: {}", e))
-          )?
-      ),
-      
-      "connectedWebsites" => TdType::ConnectedWebsites(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ConnectedWebsites deserialize to TdType::ConnectedWebsites with error: {}", e))
-          )?
-      ),
-      
-      "count" => TdType::Count(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Count deserialize to TdType::Count with error: {}", e))
-          )?
-      ),
-      
-      "countries" => TdType::Countries(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Countries deserialize to TdType::Countries with error: {}", e))
-          )?
-      ),
-      
-      "customRequestResult" => TdType::CustomRequestResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("CustomRequestResult deserialize to TdType::CustomRequestResult with error: {}", e))
-          )?
-      ),
-      
-      "databaseStatistics" => TdType::DatabaseStatistics(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("DatabaseStatistics deserialize to TdType::DatabaseStatistics with error: {}", e))
-          )?
-      ),
-      
-      "deepLinkInfo" => TdType::DeepLinkInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("DeepLinkInfo deserialize to TdType::DeepLinkInfo with error: {}", e))
-          )?
-      ),
-      
-      "emailAddressAuthenticationCodeInfo" => TdType::EmailAddressAuthenticationCodeInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("EmailAddressAuthenticationCodeInfo deserialize to TdType::EmailAddressAuthenticationCodeInfo with error: {}", e))
-          )?
-      ),
-      
-      "emojis" => TdType::Emojis(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Emojis deserialize to TdType::Emojis with error: {}", e))
-          )?
-      ),
-      
-      "error" => TdType::Error(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Error deserialize to TdType::Error with error: {}", e))
-          )?
-      ),
-      
-      "file" => TdType::File(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("File deserialize to TdType::File with error: {}", e))
-          )?
-      ),
-      
-      "filePart" => TdType::FilePart(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("FilePart deserialize to TdType::FilePart with error: {}", e))
-          )?
-      ),
-      
-      "formattedText" => TdType::FormattedText(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("FormattedText deserialize to TdType::FormattedText with error: {}", e))
-          )?
-      ),
-      
-      "foundMessages" => TdType::FoundMessages(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("FoundMessages deserialize to TdType::FoundMessages with error: {}", e))
-          )?
-      ),
-      
-      "gameHighScores" => TdType::GameHighScores(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("GameHighScores deserialize to TdType::GameHighScores with error: {}", e))
-          )?
-      ),
-      
-      "hashtags" => TdType::Hashtags(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Hashtags deserialize to TdType::Hashtags with error: {}", e))
-          )?
-      ),
-      
-      "httpUrl" => TdType::HttpUrl(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("HttpUrl deserialize to TdType::HttpUrl with error: {}", e))
-          )?
-      ),
-      
-      "importedContacts" => TdType::ImportedContacts(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ImportedContacts deserialize to TdType::ImportedContacts with error: {}", e))
-          )?
-      ),
-      
-      "inlineQueryResults" => TdType::InlineQueryResults(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("InlineQueryResults deserialize to TdType::InlineQueryResults with error: {}", e))
-          )?
-      ),
-      
-      "languagePackInfo" => TdType::LanguagePackInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LanguagePackInfo deserialize to TdType::LanguagePackInfo with error: {}", e))
-          )?
-      ),
-      
-      "languagePackStrings" => TdType::LanguagePackStrings(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LanguagePackStrings deserialize to TdType::LanguagePackStrings with error: {}", e))
-          )?
-      ),
-      
-      "localizationTargetInfo" => TdType::LocalizationTargetInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LocalizationTargetInfo deserialize to TdType::LocalizationTargetInfo with error: {}", e))
-          )?
-      ),
-      
-      "logTags" => TdType::LogTags(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LogTags deserialize to TdType::LogTags with error: {}", e))
-          )?
-      ),
-      
-      "logVerbosityLevel" => TdType::LogVerbosityLevel(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("LogVerbosityLevel deserialize to TdType::LogVerbosityLevel with error: {}", e))
-          )?
-      ),
-      
-      "message" => TdType::Message(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Message deserialize to TdType::Message with error: {}", e))
-          )?
-      ),
-      
-      "messageLink" => TdType::MessageLink(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("MessageLink deserialize to TdType::MessageLink with error: {}", e))
-          )?
-      ),
-      
-      "messageLinkInfo" => TdType::MessageLinkInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("MessageLinkInfo deserialize to TdType::MessageLinkInfo with error: {}", e))
-          )?
-      ),
-      
-      "messageSenders" => TdType::MessageSenders(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("MessageSenders deserialize to TdType::MessageSenders with error: {}", e))
-          )?
-      ),
-      
-      "messageStatistics" => TdType::MessageStatistics(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("MessageStatistics deserialize to TdType::MessageStatistics with error: {}", e))
-          )?
-      ),
-      
-      "messageThreadInfo" => TdType::MessageThreadInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("MessageThreadInfo deserialize to TdType::MessageThreadInfo with error: {}", e))
-          )?
-      ),
-      
-      "messages" => TdType::Messages(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Messages deserialize to TdType::Messages with error: {}", e))
-          )?
-      ),
-      
-      "networkStatistics" => TdType::NetworkStatistics(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("NetworkStatistics deserialize to TdType::NetworkStatistics with error: {}", e))
-          )?
-      ),
-      
-      "ok" => TdType::Ok(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Ok deserialize to TdType::Ok with error: {}", e))
-          )?
-      ),
-      
-      "orderInfo" => TdType::OrderInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("OrderInfo deserialize to TdType::OrderInfo with error: {}", e))
-          )?
-      ),
-      
-      "passportAuthorizationForm" => TdType::PassportAuthorizationForm(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportAuthorizationForm deserialize to TdType::PassportAuthorizationForm with error: {}", e))
-          )?
-      ),
-      
-      "passportElements" => TdType::PassportElements(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElements deserialize to TdType::PassportElements with error: {}", e))
-          )?
-      ),
-      
-      "passportElementsWithErrors" => TdType::PassportElementsWithErrors(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PassportElementsWithErrors deserialize to TdType::PassportElementsWithErrors with error: {}", e))
-          )?
-      ),
-      
-      "passwordState" => TdType::PasswordState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PasswordState deserialize to TdType::PasswordState with error: {}", e))
-          )?
-      ),
-      
-      "paymentForm" => TdType::PaymentForm(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PaymentForm deserialize to TdType::PaymentForm with error: {}", e))
-          )?
-      ),
-      
-      "paymentReceipt" => TdType::PaymentReceipt(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PaymentReceipt deserialize to TdType::PaymentReceipt with error: {}", e))
-          )?
-      ),
-      
-      "paymentResult" => TdType::PaymentResult(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PaymentResult deserialize to TdType::PaymentResult with error: {}", e))
-          )?
-      ),
-      
-      "phoneNumberInfo" => TdType::PhoneNumberInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PhoneNumberInfo deserialize to TdType::PhoneNumberInfo with error: {}", e))
-          )?
-      ),
-      
-      "proxies" => TdType::Proxies(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Proxies deserialize to TdType::Proxies with error: {}", e))
-          )?
-      ),
-      
-      "proxy" => TdType::Proxy(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Proxy deserialize to TdType::Proxy with error: {}", e))
-          )?
-      ),
-      
-      "pushReceiverId" => TdType::PushReceiverId(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("PushReceiverId deserialize to TdType::PushReceiverId with error: {}", e))
-          )?
-      ),
-      
-      "recommendedChatFilters" => TdType::RecommendedChatFilters(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("RecommendedChatFilters deserialize to TdType::RecommendedChatFilters with error: {}", e))
-          )?
-      ),
-      
-      "recoveryEmailAddress" => TdType::RecoveryEmailAddress(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("RecoveryEmailAddress deserialize to TdType::RecoveryEmailAddress with error: {}", e))
-          )?
-      ),
-      
-      "scopeNotificationSettings" => TdType::ScopeNotificationSettings(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ScopeNotificationSettings deserialize to TdType::ScopeNotificationSettings with error: {}", e))
-          )?
-      ),
-      
-      "seconds" => TdType::Seconds(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Seconds deserialize to TdType::Seconds with error: {}", e))
-          )?
-      ),
-      
-      "secretChat" => TdType::SecretChat(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("SecretChat deserialize to TdType::SecretChat with error: {}", e))
-          )?
-      ),
-      
-      "session" => TdType::Session(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Session deserialize to TdType::Session with error: {}", e))
-          )?
-      ),
-      
-      "sessions" => TdType::Sessions(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Sessions deserialize to TdType::Sessions with error: {}", e))
-          )?
-      ),
-      
-      "stickerSet" => TdType::StickerSet(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("StickerSet deserialize to TdType::StickerSet with error: {}", e))
-          )?
-      ),
-      
-      "stickerSets" => TdType::StickerSets(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("StickerSets deserialize to TdType::StickerSets with error: {}", e))
-          )?
-      ),
-      
-      "stickers" => TdType::Stickers(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Stickers deserialize to TdType::Stickers with error: {}", e))
-          )?
-      ),
-      
-      "storageStatistics" => TdType::StorageStatistics(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("StorageStatistics deserialize to TdType::StorageStatistics with error: {}", e))
-          )?
-      ),
-      
-      "storageStatisticsFast" => TdType::StorageStatisticsFast(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("StorageStatisticsFast deserialize to TdType::StorageStatisticsFast with error: {}", e))
-          )?
-      ),
-      
-      "supergroup" => TdType::Supergroup(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Supergroup deserialize to TdType::Supergroup with error: {}", e))
-          )?
-      ),
-      
-      "supergroupFullInfo" => TdType::SupergroupFullInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("SupergroupFullInfo deserialize to TdType::SupergroupFullInfo with error: {}", e))
-          )?
-      ),
-      
-      "tMeUrls" => TdType::TMeUrls(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TMeUrls deserialize to TdType::TMeUrls with error: {}", e))
-          )?
-      ),
-      
-      "temporaryPasswordState" => TdType::TemporaryPasswordState(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TemporaryPasswordState deserialize to TdType::TemporaryPasswordState with error: {}", e))
-          )?
-      ),
-      
-      "testBytes" => TdType::TestBytes(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TestBytes deserialize to TdType::TestBytes with error: {}", e))
-          )?
-      ),
-      
-      "testInt" => TdType::TestInt(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TestInt deserialize to TdType::TestInt with error: {}", e))
-          )?
-      ),
-      
-      "testString" => TdType::TestString(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TestString deserialize to TdType::TestString with error: {}", e))
-          )?
-      ),
-      
-      "testVectorInt" => TdType::TestVectorInt(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TestVectorInt deserialize to TdType::TestVectorInt with error: {}", e))
-          )?
-      ),
-      
-      "testVectorIntObject" => TdType::TestVectorIntObject(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TestVectorIntObject deserialize to TdType::TestVectorIntObject with error: {}", e))
-          )?
-      ),
-      
-      "testVectorString" => TdType::TestVectorString(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TestVectorString deserialize to TdType::TestVectorString with error: {}", e))
-          )?
-      ),
-      
-      "testVectorStringObject" => TdType::TestVectorStringObject(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TestVectorStringObject deserialize to TdType::TestVectorStringObject with error: {}", e))
-          )?
-      ),
-      
-      "text" => TdType::Text(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Text deserialize to TdType::Text with error: {}", e))
-          )?
-      ),
-      
-      "textEntities" => TdType::TextEntities(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("TextEntities deserialize to TdType::TextEntities with error: {}", e))
-          )?
-      ),
-      
-      "updates" => TdType::Updates(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Updates deserialize to TdType::Updates with error: {}", e))
-          )?
-      ),
-      
-      "user" => TdType::User(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("User deserialize to TdType::User with error: {}", e))
-          )?
-      ),
-      
-      "userFullInfo" => TdType::UserFullInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UserFullInfo deserialize to TdType::UserFullInfo with error: {}", e))
-          )?
-      ),
-      
-      "userPrivacySettingRules" => TdType::UserPrivacySettingRules(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("UserPrivacySettingRules deserialize to TdType::UserPrivacySettingRules with error: {}", e))
-          )?
-      ),
-      
-      "users" => TdType::Users(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("Users deserialize to TdType::Users with error: {}", e))
-          )?
-      ),
-      
-      "validatedOrderInfo" => TdType::ValidatedOrderInfo(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("ValidatedOrderInfo deserialize to TdType::ValidatedOrderInfo with error: {}", e))
-          )?
-      ),
-      
-      "webPage" => TdType::WebPage(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("WebPage deserialize to TdType::WebPage with error: {}", e))
-          )?
-      ),
-      
-      "webPageInstantView" => TdType::WebPageInstantView(
-          serde_json::from_value(
-              rtd_trait_value
-          ).map_err(|e|
-              D::Error::custom(format!("WebPageInstantView deserialize to TdType::WebPageInstantView with error: {}", e))
-          )?
-      ),
-      
-      _ => return Err(D::Error::custom(format!("got {} @type with unavailable variant", rtd_trait_type)))
-    })
+        if let Some(t) =
+            deserialize_traits(rtd_trait_type, rtd_trait_value.clone()).map_err(|err| {
+                D::Error::custom(format!(
+                    "can't deserialize for {} with error: {}",
+                    rtd_trait_type, err
+                ))
+            })?
+        {
+            return Ok(t);
+        };
+        if let Some(t) =
+            deserialize_direct_types(rtd_trait_type, rtd_trait_value.clone()).map_err(|err| {
+                D::Error::custom(format!(
+                    "can't deserialize for {} with error: {}",
+                    rtd_trait_type, err
+                ))
+            })?
+        {
+            return Ok(t);
+        }
+        return Err(D::Error::custom(format!(
+            "got {} @type with unavailable variant",
+            rtd_trait_type
+        )));
     }
+}
+
+fn deserialize_traits(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    if let Some(td_type) = deserialize_authorization_state(rtd_trait_type, rtd_trait_value.clone())?
+    {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) =
+        deserialize_can_transfer_ownership_result(rtd_trait_type, rtd_trait_value.clone())?
+    {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_chat_statistics(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) =
+        deserialize_check_chat_username_result(rtd_trait_type, rtd_trait_value.clone())?
+    {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_json_value(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) =
+        deserialize_language_pack_string_value(rtd_trait_type, rtd_trait_value.clone())?
+    {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_log_stream(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_login_url_info(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_option_value(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_passport_element(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_statistical_graph(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_update(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    Ok(None)
+}
+
+fn deserialize_direct_types(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
+        "accountTtl" => Some(TdType::AccountTtl(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "animations" => Some(TdType::Animations(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "authenticationCodeInfo" => Some(TdType::AuthenticationCodeInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "autoDownloadSettingsPresets" => Some(TdType::AutoDownloadSettingsPresets(
+            serde_json::from_value(rtd_trait_value.clone())?,
+        )),
+        "background" => Some(TdType::Background(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "backgrounds" => Some(TdType::Backgrounds(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "bankCardInfo" => Some(TdType::BankCardInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "basicGroup" => Some(TdType::BasicGroup(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "basicGroupFullInfo" => Some(TdType::BasicGroupFullInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "callId" => Some(TdType::CallId(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "callbackQueryAnswer" => Some(TdType::CallbackQueryAnswer(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chat" => Some(TdType::Chat(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatAdministrators" => Some(TdType::ChatAdministrators(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatEvents" => Some(TdType::ChatEvents(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatFilter" => Some(TdType::ChatFilter(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatFilterInfo" => Some(TdType::ChatFilterInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatInviteLink" => Some(TdType::ChatInviteLink(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatInviteLinkInfo" => Some(TdType::ChatInviteLinkInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatLists" => Some(TdType::ChatLists(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatMember" => Some(TdType::ChatMember(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatMembers" => Some(TdType::ChatMembers(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatPhotos" => Some(TdType::ChatPhotos(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chats" => Some(TdType::Chats(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "chatsNearby" => Some(TdType::ChatsNearby(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "connectedWebsites" => Some(TdType::ConnectedWebsites(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "count" => Some(TdType::Count(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "countries" => Some(TdType::Countries(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "customRequestResult" => Some(TdType::CustomRequestResult(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "databaseStatistics" => Some(TdType::DatabaseStatistics(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "deepLinkInfo" => Some(TdType::DeepLinkInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "emailAddressAuthenticationCodeInfo" => Some(TdType::EmailAddressAuthenticationCodeInfo(
+            serde_json::from_value(rtd_trait_value.clone())?,
+        )),
+        "emojis" => Some(TdType::Emojis(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "error" => Some(TdType::Error(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "file" => Some(TdType::File(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "filePart" => Some(TdType::FilePart(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "formattedText" => Some(TdType::FormattedText(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "foundMessages" => Some(TdType::FoundMessages(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "gameHighScores" => Some(TdType::GameHighScores(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "hashtags" => Some(TdType::Hashtags(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "httpUrl" => Some(TdType::HttpUrl(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "importedContacts" => Some(TdType::ImportedContacts(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "inlineQueryResults" => Some(TdType::InlineQueryResults(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "languagePackInfo" => Some(TdType::LanguagePackInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "languagePackStrings" => Some(TdType::LanguagePackStrings(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "localizationTargetInfo" => Some(TdType::LocalizationTargetInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "logTags" => Some(TdType::LogTags(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "logVerbosityLevel" => Some(TdType::LogVerbosityLevel(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "message" => Some(TdType::Message(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "messageLink" => Some(TdType::MessageLink(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "messageLinkInfo" => Some(TdType::MessageLinkInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "messageSenders" => Some(TdType::MessageSenders(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "messageStatistics" => Some(TdType::MessageStatistics(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "messageThreadInfo" => Some(TdType::MessageThreadInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "messages" => Some(TdType::Messages(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "networkStatistics" => Some(TdType::NetworkStatistics(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "ok" => Some(TdType::Ok(serde_json::from_value(rtd_trait_value.clone())?)),
+        "orderInfo" => Some(TdType::OrderInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "passportAuthorizationForm" => Some(TdType::PassportAuthorizationForm(
+            serde_json::from_value(rtd_trait_value.clone())?,
+        )),
+        "passportElements" => Some(TdType::PassportElements(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "passportElementsWithErrors" => Some(TdType::PassportElementsWithErrors(
+            serde_json::from_value(rtd_trait_value.clone())?,
+        )),
+        "passwordState" => Some(TdType::PasswordState(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "paymentForm" => Some(TdType::PaymentForm(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "paymentReceipt" => Some(TdType::PaymentReceipt(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "paymentResult" => Some(TdType::PaymentResult(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "phoneNumberInfo" => Some(TdType::PhoneNumberInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "proxies" => Some(TdType::Proxies(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "proxy" => Some(TdType::Proxy(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "pushReceiverId" => Some(TdType::PushReceiverId(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "recommendedChatFilters" => Some(TdType::RecommendedChatFilters(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "recoveryEmailAddress" => Some(TdType::RecoveryEmailAddress(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "scopeNotificationSettings" => Some(TdType::ScopeNotificationSettings(
+            serde_json::from_value(rtd_trait_value.clone())?,
+        )),
+        "seconds" => Some(TdType::Seconds(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "secretChat" => Some(TdType::SecretChat(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "session" => Some(TdType::Session(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "sessions" => Some(TdType::Sessions(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "stickerSet" => Some(TdType::StickerSet(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "stickerSets" => Some(TdType::StickerSets(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "stickers" => Some(TdType::Stickers(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "storageStatistics" => Some(TdType::StorageStatistics(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "storageStatisticsFast" => Some(TdType::StorageStatisticsFast(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "supergroup" => Some(TdType::Supergroup(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "supergroupFullInfo" => Some(TdType::SupergroupFullInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "tMeUrls" => Some(TdType::TMeUrls(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "temporaryPasswordState" => Some(TdType::TemporaryPasswordState(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "testBytes" => Some(TdType::TestBytes(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "testInt" => Some(TdType::TestInt(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "testString" => Some(TdType::TestString(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "testVectorInt" => Some(TdType::TestVectorInt(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "testVectorIntObject" => Some(TdType::TestVectorIntObject(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "testVectorString" => Some(TdType::TestVectorString(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "testVectorStringObject" => Some(TdType::TestVectorStringObject(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "text" => Some(TdType::Text(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "textEntities" => Some(TdType::TextEntities(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "updates" => Some(TdType::Updates(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "user" => Some(TdType::User(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "userFullInfo" => Some(TdType::UserFullInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "userPrivacySettingRules" => Some(TdType::UserPrivacySettingRules(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "users" => Some(TdType::Users(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "validatedOrderInfo" => Some(TdType::ValidatedOrderInfo(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "webPage" => Some(TdType::WebPage(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        "webPageInstantView" => Some(TdType::WebPageInstantView(serde_json::from_value(
+            rtd_trait_value.clone(),
+        )?)),
+        _ => None,
+    })
+}
+
+const AuthorizationState_MEMBERS: &'static [&'static str] = &[
+    "authorizationStateClosed",
+    "authorizationStateClosing",
+    "authorizationStateLoggingOut",
+    "authorizationStateReady",
+    "authorizationStateWaitCode",
+    "authorizationStateWaitEncryptionKey",
+    "authorizationStateWaitOtherDeviceConfirmation",
+    "authorizationStateWaitPassword",
+    "authorizationStateWaitPhoneNumber",
+    "authorizationStateWaitRegistration",
+    "authorizationStateWaitTdlibParameters",
+    "getAuthorizationState",
+];
+
+fn deserialize_authorization_state(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match AuthorizationState_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::AuthorizationState(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        false => None,
+    })
+}
+
+const CanTransferOwnershipResult_MEMBERS: &'static [&'static str] = &[
+    "canTransferOwnership",
+    "canTransferOwnershipResultOk",
+    "canTransferOwnershipResultPasswordNeeded",
+    "canTransferOwnershipResultPasswordTooFresh",
+    "canTransferOwnershipResultSessionTooFresh",
+];
+
+fn deserialize_can_transfer_ownership_result(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(
+        match CanTransferOwnershipResult_MEMBERS.contains(&rtd_trait_type) {
+            true => Some(TdType::CanTransferOwnershipResult(serde_json::from_value(
+                rtd_trait_value,
+            )?)),
+            false => None,
+        },
+    )
+}
+
+const ChatStatistics_MEMBERS: &'static [&'static str] = &[
+    "chatStatisticsChannel",
+    "chatStatisticsSupergroup",
+    "getChatStatistics",
+];
+
+fn deserialize_chat_statistics(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match ChatStatistics_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::ChatStatistics(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        false => None,
+    })
+}
+
+const CheckChatUsernameResult_MEMBERS: &'static [&'static str] = &[
+    "checkChatUsername",
+    "checkChatUsernameResultOk",
+    "checkChatUsernameResultPublicChatsTooMuch",
+    "checkChatUsernameResultPublicGroupsUnavailable",
+    "checkChatUsernameResultUsernameInvalid",
+    "checkChatUsernameResultUsernameOccupied",
+];
+
+fn deserialize_check_chat_username_result(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(
+        match CheckChatUsernameResult_MEMBERS.contains(&rtd_trait_type) {
+            true => Some(TdType::CheckChatUsernameResult(serde_json::from_value(
+                rtd_trait_value,
+            )?)),
+            false => None,
+        },
+    )
+}
+
+const JsonValue_MEMBERS: &'static [&'static str] = &[
+    "getApplicationConfig",
+    "getJsonValue",
+    "jsonValueArray",
+    "jsonValueBoolean",
+    "jsonValueNull",
+    "jsonValueNumber",
+    "jsonValueObject",
+    "jsonValueString",
+];
+
+fn deserialize_json_value(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match JsonValue_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::JsonValue(serde_json::from_value(rtd_trait_value)?)),
+        false => None,
+    })
+}
+
+const LanguagePackStringValue_MEMBERS: &'static [&'static str] = &[
+    "getLanguagePackString",
+    "languagePackStringValueDeleted",
+    "languagePackStringValueOrdinary",
+    "languagePackStringValuePluralized",
+];
+
+fn deserialize_language_pack_string_value(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(
+        match LanguagePackStringValue_MEMBERS.contains(&rtd_trait_type) {
+            true => Some(TdType::LanguagePackStringValue(serde_json::from_value(
+                rtd_trait_value,
+            )?)),
+            false => None,
+        },
+    )
+}
+
+const LogStream_MEMBERS: &'static [&'static str] = &[
+    "getLogStream",
+    "logStreamDefault",
+    "logStreamEmpty",
+    "logStreamFile",
+];
+
+fn deserialize_log_stream(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match LogStream_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::LogStream(serde_json::from_value(rtd_trait_value)?)),
+        false => None,
+    })
+}
+
+const LoginUrlInfo_MEMBERS: &'static [&'static str] = &[
+    "getLoginUrlInfo",
+    "loginUrlInfoOpen",
+    "loginUrlInfoRequestConfirmation",
+];
+
+fn deserialize_login_url_info(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match LoginUrlInfo_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::LoginUrlInfo(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        false => None,
+    })
+}
+
+const OptionValue_MEMBERS: &'static [&'static str] = &[
+    "getOption",
+    "optionValueBoolean",
+    "optionValueEmpty",
+    "optionValueInteger",
+    "optionValueString",
+];
+
+fn deserialize_option_value(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match OptionValue_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::OptionValue(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        false => None,
+    })
+}
+
+const PassportElement_MEMBERS: &'static [&'static str] = &[
+    "getPassportElement",
+    "passportElementAddress",
+    "passportElementBankStatement",
+    "passportElementDriverLicense",
+    "passportElementEmailAddress",
+    "passportElementIdentityCard",
+    "passportElementInternalPassport",
+    "passportElementPassport",
+    "passportElementPassportRegistration",
+    "passportElementPersonalDetails",
+    "passportElementPhoneNumber",
+    "passportElementRentalAgreement",
+    "passportElementTemporaryRegistration",
+    "passportElementUtilityBill",
+    "setPassportElement",
+];
+
+fn deserialize_passport_element(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match PassportElement_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::PassportElement(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        false => None,
+    })
+}
+
+const StatisticalGraph_MEMBERS: &'static [&'static str] = &[
+    "getStatisticalGraph",
+    "statisticalGraphAsync",
+    "statisticalGraphData",
+    "statisticalGraphError",
+];
+
+fn deserialize_statistical_graph(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match StatisticalGraph_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::StatisticalGraph(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        false => None,
+    })
+}
+
+const Update_MEMBERS: &'static [&'static str] = &[
+    "testUseUpdate",
+    "updateActiveNotifications",
+    "updateAnimationSearchParameters",
+    "updateAuthorizationState",
+    "updateBasicGroup",
+    "updateBasicGroupFullInfo",
+    "updateCall",
+    "updateChatActionBar",
+    "updateChatDefaultDisableNotification",
+    "updateChatDraftMessage",
+    "updateChatFilters",
+    "updateChatHasScheduledMessages",
+    "updateChatIsBlocked",
+    "updateChatIsMarkedAsUnread",
+    "updateChatLastMessage",
+    "updateChatNotificationSettings",
+    "updateChatOnlineMemberCount",
+    "updateChatPermissions",
+    "updateChatPhoto",
+    "updateChatPosition",
+    "updateChatReadInbox",
+    "updateChatReadOutbox",
+    "updateChatReplyMarkup",
+    "updateChatTitle",
+    "updateChatUnreadMentionCount",
+    "updateConnectionState",
+    "updateDeleteMessages",
+    "updateDiceEmojis",
+    "updateFavoriteStickers",
+    "updateFile",
+    "updateFileGenerationStart",
+    "updateFileGenerationStop",
+    "updateHavePendingNotifications",
+    "updateInstalledStickerSets",
+    "updateLanguagePackStrings",
+    "updateMessageContent",
+    "updateMessageContentOpened",
+    "updateMessageEdited",
+    "updateMessageInteractionInfo",
+    "updateMessageIsPinned",
+    "updateMessageLiveLocationViewed",
+    "updateMessageMentionRead",
+    "updateMessageSendAcknowledged",
+    "updateMessageSendFailed",
+    "updateMessageSendSucceeded",
+    "updateNewCallSignalingData",
+    "updateNewCallbackQuery",
+    "updateNewChat",
+    "updateNewChosenInlineResult",
+    "updateNewCustomEvent",
+    "updateNewCustomQuery",
+    "updateNewInlineCallbackQuery",
+    "updateNewInlineQuery",
+    "updateNewMessage",
+    "updateNewPreCheckoutQuery",
+    "updateNewShippingQuery",
+    "updateNotification",
+    "updateNotificationGroup",
+    "updateOption",
+    "updatePoll",
+    "updatePollAnswer",
+    "updateRecentStickers",
+    "updateSavedAnimations",
+    "updateScopeNotificationSettings",
+    "updateSecretChat",
+    "updateSelectedBackground",
+    "updateServiceNotification",
+    "updateStickerSet",
+    "updateSuggestedActions",
+    "updateSupergroup",
+    "updateSupergroupFullInfo",
+    "updateTermsOfService",
+    "updateTrendingStickerSets",
+    "updateUnreadChatCount",
+    "updateUnreadMessageCount",
+    "updateUser",
+    "updateUserChatAction",
+    "updateUserFullInfo",
+    "updateUserPrivacySettingRules",
+    "updateUserStatus",
+    "updateUsersNearby",
+];
+
+fn deserialize_update(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match Update_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::Update(serde_json::from_value(rtd_trait_value)?)),
+        false => None,
+    })
 }
 
 impl TdType {
@@ -3241,14 +1804,24 @@ where
 
 #[cfg(test)]
 mod tests {
+    use crate::types::_common::deserialize_update;
     use crate::types::{from_json, AuthorizationState, TdType, Update, UpdateAuthorizationState};
 
     #[test]
-    fn test_deserialize_enum() {
-        match from_json::<UpdateAuthorizationState>(
-            r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#,
+    fn test_deserialize_enums() {
+        match deserialize_update(
+            "updateAuthorizationState", serde_json::from_str::<serde_json::Value>(r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#).unwrap(),
         ) {
-            Ok(_) => {}
+            Ok(v) => {match v {
+                Some(v) => {
+                    match v {
+                        TdType::Update(_) => {},
+
+                        _ => {panic!("serialization failed")},
+                    }
+                },
+                None => panic!("serialization failed")
+            }}
             Err(e) => {
                 panic!("{}", e)
             }

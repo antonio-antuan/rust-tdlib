@@ -21,9 +21,10 @@ pub fn send(client_id: ClientId, request: &str) {
     unsafe { td_send(client_id, cstring.as_ptr()) }
 }
 
+// TODO: legacy docs
 pub fn set_log_verbosity_level<'a>(level: i32) {
     unsafe { td_set_log_verbosity_level(level) };
-  }
+}
 
 pub fn execute(request: &str) -> Option<String> {
     let cstring = CString::new(request).unwrap();

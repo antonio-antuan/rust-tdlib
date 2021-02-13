@@ -1,5 +1,9 @@
 CHANGELOG
 ===
+## 0.2.0
+* Support for tdlib 1.7.0
+* API changed because of need for support multiple clients: you can create multiple clients and bind it with one worker. See examples/main.rs for details.
+
 ## 0.1.2
 * Fixed with_auth_state_handler for ClientBuilder.
 * Documentation improvements.

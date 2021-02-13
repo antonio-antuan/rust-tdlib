@@ -22,7 +22,6 @@ async fn main() {
     let mut client = Client::builder()
         .with_tdlib_parameters(tdlib_parameters)
         .with_tdlib_verbosity_level(env!("TD_LOG_LEVEL").parse().unwrap())
-        // .with_tdlib_log_file_path("tdlogs")
         .with_updates_sender(sender)
         .build()
         .unwrap();
