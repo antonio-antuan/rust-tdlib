@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains content of a push message notification
+/// Contains content of a push message notification
 pub trait TDPushMessageContent: Debug + RObject {}
 
 /// Contains content of a push message notification
@@ -203,7 +203,7 @@ pub struct PushMessageContentAnimation {
 impl RObject for PushMessageContentAnimation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -292,7 +292,7 @@ pub struct PushMessageContentAudio {
 impl RObject for PushMessageContentAudio {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -368,7 +368,7 @@ pub struct PushMessageContentBasicGroupChatCreate {
 impl RObject for PushMessageContentBasicGroupChatCreate {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -434,7 +434,7 @@ pub struct PushMessageContentChatAddMembers {
 impl RObject for PushMessageContentChatAddMembers {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -519,7 +519,7 @@ pub struct PushMessageContentChatChangePhoto {
 impl RObject for PushMessageContentChatChangePhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -579,7 +579,7 @@ pub struct PushMessageContentChatChangeTitle {
 impl RObject for PushMessageContentChatChangeTitle {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -652,7 +652,7 @@ pub struct PushMessageContentChatDeleteMember {
 impl RObject for PushMessageContentChatDeleteMember {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -737,7 +737,7 @@ pub struct PushMessageContentChatJoinByLink {
 impl RObject for PushMessageContentChatJoinByLink {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -799,7 +799,7 @@ pub struct PushMessageContentContact {
 impl RObject for PushMessageContentContact {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -875,7 +875,7 @@ pub struct PushMessageContentContactRegistered {
 impl RObject for PushMessageContentContactRegistered {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -937,7 +937,7 @@ pub struct PushMessageContentDocument {
 impl RObject for PushMessageContentDocument {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1017,7 +1017,7 @@ pub struct PushMessageContentGame {
 impl RObject for PushMessageContentGame {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1099,7 +1099,7 @@ pub struct PushMessageContentGameScore {
 impl RObject for PushMessageContentGameScore {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1186,7 +1186,7 @@ pub struct PushMessageContentHidden {
 impl RObject for PushMessageContentHidden {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1257,7 +1257,7 @@ pub struct PushMessageContentInvoice {
 impl RObject for PushMessageContentInvoice {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1337,7 +1337,7 @@ pub struct PushMessageContentLocation {
 impl RObject for PushMessageContentLocation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1423,7 +1423,7 @@ pub struct PushMessageContentMediaAlbum {
 impl RObject for PushMessageContentMediaAlbum {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1528,7 +1528,7 @@ pub struct PushMessageContentMessageForwards {
 impl RObject for PushMessageContentMessageForwards {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1603,7 +1603,7 @@ pub struct PushMessageContentPhoto {
 impl RObject for PushMessageContentPhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1703,7 +1703,7 @@ pub struct PushMessageContentPoll {
 impl RObject for PushMessageContentPoll {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1788,7 +1788,7 @@ pub struct PushMessageContentScreenshotTaken {
 impl RObject for PushMessageContentScreenshotTaken {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1852,7 +1852,7 @@ pub struct PushMessageContentSticker {
 impl RObject for PushMessageContentSticker {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1941,7 +1941,7 @@ pub struct PushMessageContentText {
 impl RObject for PushMessageContentText {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -2025,7 +2025,7 @@ pub struct PushMessageContentVideo {
 impl RObject for PushMessageContentVideo {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -2123,7 +2123,7 @@ pub struct PushMessageContentVideoNote {
 impl RObject for PushMessageContentVideoNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -2203,7 +2203,7 @@ pub struct PushMessageContentVoiceNote {
 impl RObject for PushMessageContentVoiceNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

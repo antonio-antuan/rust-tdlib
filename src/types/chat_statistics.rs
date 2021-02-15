@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains a detailed statistics about a chat
+/// Contains a detailed statistics about a chat
 pub trait TDChatStatistics: Debug + RObject {}
 
 /// Contains a detailed statistics about a chat
@@ -112,7 +112,7 @@ pub struct ChatStatisticsChannel {
 impl RObject for ChatStatisticsChannel {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -364,7 +364,7 @@ pub struct ChatStatisticsSupergroup {
 impl RObject for ChatStatisticsSupergroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

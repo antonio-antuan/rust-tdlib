@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a sticker that needs to be added to a sticker set
+/// Describes a sticker that needs to be added to a sticker set
 pub trait TDInputSticker: Debug + RObject {}
 
 /// Describes a sticker that needs to be added to a sticker set
@@ -81,7 +81,7 @@ pub struct InputStickerAnimated {
 impl RObject for InputStickerAnimated {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -163,7 +163,7 @@ pub struct InputStickerStatic {
 impl RObject for InputStickerStatic {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

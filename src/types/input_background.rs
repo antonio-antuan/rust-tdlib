@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about background to set
+/// Contains information about background to set
 pub trait TDInputBackground: Debug + RObject {}
 
 /// Contains information about background to set
@@ -79,7 +79,7 @@ pub struct InputBackgroundLocal {
 impl RObject for InputBackgroundLocal {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -149,7 +149,7 @@ pub struct InputBackgroundRemote {
 impl RObject for InputBackgroundRemote {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

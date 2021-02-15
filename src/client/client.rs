@@ -4,10 +4,14 @@ use super::{
 };
 use crate::{
     errors::{RTDError, RTDResult},
-    tdjson,
     types::*,
 };
 use tokio::sync::mpsc;
+
+const CLOSED_RECEIVER_ERROR: RTDError = RTDError::Internal("receiver already closed");
+const INVALID_RESPONSE_ERROR: RTDError = RTDError::Internal("receive invalid response");
+const NO_EXTRA: RTDError =
+    RTDError::Internal("invalid tdlib response type, not have `extra` field");
 
 /// Represents state of particular client instance.
 #[derive(Debug, Clone)]
@@ -155,22 +159,20 @@ where
 
     // Accepts an incoming call
     pub async fn accept_call<C: AsRef<AcceptCall>>(&self, accept_call: C) -> RTDResult<Ok> {
-        let extra = accept_call.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = accept_call.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, accept_call.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -181,25 +183,20 @@ where
         &self,
         accept_terms_of_service: C,
     ) -> RTDResult<Ok> {
-        let extra = accept_terms_of_service
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = accept_terms_of_service.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, accept_terms_of_service.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -210,22 +207,20 @@ where
         &self,
         add_chat_member: C,
     ) -> RTDResult<Ok> {
-        let extra = add_chat_member.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = add_chat_member.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_chat_member.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -236,22 +231,20 @@ where
         &self,
         add_chat_members: C,
     ) -> RTDResult<Ok> {
-        let extra = add_chat_members.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = add_chat_members.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_chat_members.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -262,22 +255,20 @@ where
         &self,
         add_chat_to_list: C,
     ) -> RTDResult<Ok> {
-        let extra = add_chat_to_list.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = add_chat_to_list.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_chat_to_list.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -285,22 +276,20 @@ where
 
     // Adds a user to the contact list or edits an existing contact by their user identifier
     pub async fn add_contact<C: AsRef<AddContact>>(&self, add_contact: C) -> RTDResult<Ok> {
-        let extra = add_contact.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = add_contact.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_contact.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -314,9 +303,7 @@ where
         let extra = add_custom_server_language_pack
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -325,13 +312,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -342,25 +329,20 @@ where
         &self,
         add_favorite_sticker: C,
     ) -> RTDResult<Ok> {
-        let extra = add_favorite_sticker
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = add_favorite_sticker.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_favorite_sticker.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -371,25 +353,20 @@ where
         &self,
         add_local_message: C,
     ) -> RTDResult<Message> {
-        let extra = add_local_message
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = add_local_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_local_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -400,22 +377,20 @@ where
         &self,
         add_log_message: C,
     ) -> RTDResult<Ok> {
-        let extra = add_log_message.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = add_log_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_log_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -426,25 +401,20 @@ where
         &self,
         add_network_statistics: C,
     ) -> RTDResult<Ok> {
-        let extra = add_network_statistics
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = add_network_statistics.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_network_statistics.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -452,22 +422,20 @@ where
 
     // Adds a proxy server for network requests. Can be called before authorization
     pub async fn add_proxy<C: AsRef<AddProxy>>(&self, add_proxy: C) -> RTDResult<Proxy> {
-        let extra = add_proxy.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = add_proxy.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_proxy.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Proxy(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -478,25 +446,20 @@ where
         &self,
         add_recent_sticker: C,
     ) -> RTDResult<Stickers> {
-        let extra = add_recent_sticker
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = add_recent_sticker.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_recent_sticker.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Stickers(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -507,25 +470,20 @@ where
         &self,
         add_recently_found_chat: C,
     ) -> RTDResult<Ok> {
-        let extra = add_recently_found_chat
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = add_recently_found_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_recently_found_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -536,25 +494,20 @@ where
         &self,
         add_saved_animation: C,
     ) -> RTDResult<Ok> {
-        let extra = add_saved_animation
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = add_saved_animation.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_saved_animation.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -565,25 +518,20 @@ where
         &self,
         add_sticker_to_set: C,
     ) -> RTDResult<StickerSet> {
-        let extra = add_sticker_to_set
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = add_sticker_to_set.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, add_sticker_to_set.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSet(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -594,25 +542,20 @@ where
         &self,
         answer_callback_query: C,
     ) -> RTDResult<Ok> {
-        let extra = answer_callback_query
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = answer_callback_query.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, answer_callback_query.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -623,25 +566,20 @@ where
         &self,
         answer_custom_query: C,
     ) -> RTDResult<Ok> {
-        let extra = answer_custom_query
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = answer_custom_query.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, answer_custom_query.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -652,25 +590,20 @@ where
         &self,
         answer_inline_query: C,
     ) -> RTDResult<Ok> {
-        let extra = answer_inline_query
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = answer_inline_query.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, answer_inline_query.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -681,25 +614,20 @@ where
         &self,
         answer_pre_checkout_query: C,
     ) -> RTDResult<Ok> {
-        let extra = answer_pre_checkout_query
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = answer_pre_checkout_query.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, answer_pre_checkout_query.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -710,25 +638,20 @@ where
         &self,
         answer_shipping_query: C,
     ) -> RTDResult<Ok> {
-        let extra = answer_shipping_query
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = answer_shipping_query.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, answer_shipping_query.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -739,13 +662,10 @@ where
         &self,
         block_message_sender_from_replies: C,
     ) -> RTDResult<Ok> {
-        let extra =
-            block_message_sender_from_replies
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = block_message_sender_from_replies
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -754,13 +674,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -771,25 +691,20 @@ where
         &self,
         can_transfer_ownership: C,
     ) -> RTDResult<CanTransferOwnershipResult> {
-        let extra = can_transfer_ownership
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = can_transfer_ownership.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, can_transfer_ownership.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::CanTransferOwnershipResult(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -800,25 +715,20 @@ where
         &self,
         cancel_download_file: C,
     ) -> RTDResult<Ok> {
-        let extra = cancel_download_file
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = cancel_download_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, cancel_download_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -829,25 +739,20 @@ where
         &self,
         cancel_upload_file: C,
     ) -> RTDResult<Ok> {
-        let extra = cancel_upload_file
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = cancel_upload_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, cancel_upload_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -858,25 +763,20 @@ where
         &self,
         change_imported_contacts: C,
     ) -> RTDResult<ImportedContacts> {
-        let extra = change_imported_contacts
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = change_imported_contacts.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, change_imported_contacts.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ImportedContacts(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -887,25 +787,20 @@ where
         &self,
         change_phone_number: C,
     ) -> RTDResult<AuthenticationCodeInfo> {
-        let extra = change_phone_number
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = change_phone_number.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, change_phone_number.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -916,25 +811,20 @@ where
         &self,
         change_sticker_set: C,
     ) -> RTDResult<Ok> {
-        let extra = change_sticker_set
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = change_sticker_set.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, change_sticker_set.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -948,9 +838,7 @@ where
         let extra = check_authentication_bot_token
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -959,13 +847,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -976,25 +864,20 @@ where
         &self,
         check_authentication_code: C,
     ) -> RTDResult<Ok> {
-        let extra = check_authentication_code
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = check_authentication_code.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, check_authentication_code.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1008,9 +891,7 @@ where
         let extra = check_authentication_password
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1019,13 +900,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1039,9 +920,7 @@ where
         let extra = check_change_phone_number_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1050,13 +929,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1067,25 +946,20 @@ where
         &self,
         check_chat_invite_link: C,
     ) -> RTDResult<ChatInviteLinkInfo> {
-        let extra = check_chat_invite_link
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = check_chat_invite_link.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, check_chat_invite_link.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatInviteLinkInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1096,25 +970,20 @@ where
         &self,
         check_chat_username: C,
     ) -> RTDResult<CheckChatUsernameResult> {
-        let extra = check_chat_username
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = check_chat_username.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, check_chat_username.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::CheckChatUsernameResult(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1128,9 +997,7 @@ where
         let extra = check_created_public_chats_limit
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1139,13 +1006,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1159,9 +1026,7 @@ where
         let extra = check_database_encryption_key
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1170,13 +1035,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1192,9 +1057,7 @@ where
         let extra = check_email_address_verification_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1203,13 +1066,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1225,9 +1088,7 @@ where
         let extra = check_phone_number_confirmation_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1236,13 +1097,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1258,9 +1119,7 @@ where
         let extra = check_phone_number_verification_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1269,13 +1128,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1286,13 +1145,10 @@ where
         &self,
         check_recovery_email_address_code: C,
     ) -> RTDResult<PasswordState> {
-        let extra =
-            check_recovery_email_address_code
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = check_recovery_email_address_code
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1301,13 +1157,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PasswordState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1318,22 +1174,20 @@ where
         &self,
         clean_file_name: C,
     ) -> RTDResult<Text> {
-        let extra = clean_file_name.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = clean_file_name.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, clean_file_name.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1344,25 +1198,20 @@ where
         &self,
         clear_all_draft_messages: C,
     ) -> RTDResult<Ok> {
-        let extra = clear_all_draft_messages
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = clear_all_draft_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, clear_all_draft_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1373,25 +1222,20 @@ where
         &self,
         clear_imported_contacts: C,
     ) -> RTDResult<Ok> {
-        let extra = clear_imported_contacts
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = clear_imported_contacts.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, clear_imported_contacts.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1402,25 +1246,20 @@ where
         &self,
         clear_recent_stickers: C,
     ) -> RTDResult<Ok> {
-        let extra = clear_recent_stickers
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = clear_recent_stickers.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, clear_recent_stickers.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1434,22 +1273,20 @@ where
         let extra = clear_recently_found_chats
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, clear_recently_found_chats.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1457,22 +1294,20 @@ where
 
     // Closes the TDLib instance. All databases will be flushed to disk and properly closed. After the close completes, updateAuthorizationState with authorizationStateClosed will be sent. Can be called before initialization
     pub async fn close<C: AsRef<Close>>(&self, close: C) -> RTDResult<Ok> {
-        let extra = close.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = close.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, close.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1480,22 +1315,20 @@ where
 
     // Informs TDLib that the chat is closed by the user. Many useful activities depend on the chat being opened or closed
     pub async fn close_chat<C: AsRef<CloseChat>>(&self, close_chat: C) -> RTDResult<Ok> {
-        let extra = close_chat.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = close_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, close_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1506,25 +1339,20 @@ where
         &self,
         close_secret_chat: C,
     ) -> RTDResult<Ok> {
-        let extra = close_secret_chat
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = close_secret_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, close_secret_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1538,9 +1366,7 @@ where
         let extra = confirm_qr_code_authentication
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1549,13 +1375,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Session(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1566,25 +1392,20 @@ where
         &self,
         create_basic_group_chat: C,
     ) -> RTDResult<Chat> {
-        let extra = create_basic_group_chat
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = create_basic_group_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_basic_group_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1592,22 +1413,20 @@ where
 
     // Creates a new call
     pub async fn create_call<C: AsRef<CreateCall>>(&self, create_call: C) -> RTDResult<CallId> {
-        let extra = create_call.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = create_call.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_call.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::CallId(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1618,25 +1437,20 @@ where
         &self,
         create_chat_filter: C,
     ) -> RTDResult<ChatFilterInfo> {
-        let extra = create_chat_filter
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = create_chat_filter.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_chat_filter.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatFilterInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1650,22 +1464,20 @@ where
         let extra = create_new_basic_group_chat
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_new_basic_group_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1676,25 +1488,20 @@ where
         &self,
         create_new_secret_chat: C,
     ) -> RTDResult<Chat> {
-        let extra = create_new_secret_chat
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = create_new_secret_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_new_secret_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1705,25 +1512,20 @@ where
         &self,
         create_new_sticker_set: C,
     ) -> RTDResult<StickerSet> {
-        let extra = create_new_sticker_set
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = create_new_sticker_set.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_new_sticker_set.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSet(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1737,22 +1539,20 @@ where
         let extra = create_new_supergroup_chat
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_new_supergroup_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1763,25 +1563,20 @@ where
         &self,
         create_private_chat: C,
     ) -> RTDResult<Chat> {
-        let extra = create_private_chat
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = create_private_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_private_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1792,25 +1587,20 @@ where
         &self,
         create_secret_chat: C,
     ) -> RTDResult<Chat> {
-        let extra = create_secret_chat
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = create_secret_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_secret_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1821,25 +1611,20 @@ where
         &self,
         create_supergroup_chat: C,
     ) -> RTDResult<Chat> {
-        let extra = create_supergroup_chat
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = create_supergroup_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_supergroup_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1850,25 +1635,20 @@ where
         &self,
         create_temporary_password: C,
     ) -> RTDResult<TemporaryPasswordState> {
-        let extra = create_temporary_password
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = create_temporary_password.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, create_temporary_password.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TemporaryPasswordState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1879,22 +1659,20 @@ where
         &self,
         delete_account: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_account.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = delete_account.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_account.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1905,25 +1683,20 @@ where
         &self,
         delete_chat_filter: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_chat_filter
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_chat_filter.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_chat_filter.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1934,25 +1707,20 @@ where
         &self,
         delete_chat_history: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_chat_history
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_chat_history.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_chat_history.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1966,9 +1734,7 @@ where
         let extra = delete_chat_messages_from_user
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -1977,13 +1743,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -1994,25 +1760,20 @@ where
         &self,
         delete_chat_reply_markup: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_chat_reply_markup
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_chat_reply_markup.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_chat_reply_markup.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2020,22 +1781,20 @@ where
 
     // Deletes a file from the TDLib file cache
     pub async fn delete_file<C: AsRef<DeleteFile>>(&self, delete_file: C) -> RTDResult<Ok> {
-        let extra = delete_file.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = delete_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2046,25 +1805,20 @@ where
         &self,
         delete_language_pack: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_language_pack
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_language_pack.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_language_pack.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2075,22 +1829,20 @@ where
         &self,
         delete_messages: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_messages.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = delete_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2101,25 +1853,20 @@ where
         &self,
         delete_passport_element: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_passport_element
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_passport_element.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_passport_element.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2130,25 +1877,20 @@ where
         &self,
         delete_profile_photo: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_profile_photo
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_profile_photo.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_profile_photo.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2159,25 +1901,20 @@ where
         &self,
         delete_saved_credentials: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_saved_credentials
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_saved_credentials.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_saved_credentials.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2188,25 +1925,20 @@ where
         &self,
         delete_saved_order_info: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_saved_order_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_saved_order_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_saved_order_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2217,25 +1949,20 @@ where
         &self,
         delete_supergroup: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_supergroup
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = delete_supergroup.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_supergroup.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2243,22 +1970,20 @@ where
 
     // Closes the TDLib instance, destroying all local data without a proper logout. The current user session will remain in the list of all active sessions. All local data will be destroyed. After the destruction completes updateAuthorizationState with authorizationStateClosed will be sent. Can be called before authorization
     pub async fn destroy<C: AsRef<Destroy>>(&self, destroy: C) -> RTDResult<Ok> {
-        let extra = destroy.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = destroy.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, destroy.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2266,22 +1991,20 @@ where
 
     // Disables the currently enabled proxy. Can be called before authorization
     pub async fn disable_proxy<C: AsRef<DisableProxy>>(&self, disable_proxy: C) -> RTDResult<Ok> {
-        let extra = disable_proxy.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = disable_proxy.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, disable_proxy.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2289,22 +2012,20 @@ where
 
     // Discards a call
     pub async fn discard_call<C: AsRef<DiscardCall>>(&self, discard_call: C) -> RTDResult<Ok> {
-        let extra = discard_call.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = discard_call.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, discard_call.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2315,25 +2036,20 @@ where
         &self,
         disconnect_all_websites: C,
     ) -> RTDResult<Ok> {
-        let extra = disconnect_all_websites
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = disconnect_all_websites.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, disconnect_all_websites.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2344,25 +2060,20 @@ where
         &self,
         disconnect_website: C,
     ) -> RTDResult<Ok> {
-        let extra = disconnect_website
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = disconnect_website.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, disconnect_website.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2370,22 +2081,20 @@ where
 
     // Downloads a file from the cloud. Download progress and completion of the download will be notified through updateFile updates
     pub async fn download_file<C: AsRef<DownloadFile>>(&self, download_file: C) -> RTDResult<File> {
-        let extra = download_file.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = download_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, download_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::File(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2396,22 +2105,20 @@ where
         &self,
         edit_chat_filter: C,
     ) -> RTDResult<ChatFilterInfo> {
-        let extra = edit_chat_filter.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = edit_chat_filter.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_chat_filter.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatFilterInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2425,9 +2132,7 @@ where
         let extra = edit_custom_language_pack_info
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -2436,13 +2141,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2456,22 +2161,20 @@ where
         let extra = edit_inline_message_caption
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_inline_message_caption.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2482,13 +2185,10 @@ where
         &self,
         edit_inline_message_live_location: C,
     ) -> RTDResult<Ok> {
-        let extra =
-            edit_inline_message_live_location
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = edit_inline_message_live_location
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -2497,13 +2197,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2514,25 +2214,20 @@ where
         &self,
         edit_inline_message_media: C,
     ) -> RTDResult<Ok> {
-        let extra = edit_inline_message_media
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = edit_inline_message_media.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_inline_message_media.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2546,9 +2241,7 @@ where
         let extra = edit_inline_message_reply_markup
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -2557,13 +2250,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2574,25 +2267,20 @@ where
         &self,
         edit_inline_message_text: C,
     ) -> RTDResult<Ok> {
-        let extra = edit_inline_message_text
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = edit_inline_message_text.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_inline_message_text.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2603,25 +2291,20 @@ where
         &self,
         edit_message_caption: C,
     ) -> RTDResult<Message> {
-        let extra = edit_message_caption
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = edit_message_caption.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_message_caption.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2635,22 +2318,20 @@ where
         let extra = edit_message_live_location
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_message_live_location.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2661,25 +2342,20 @@ where
         &self,
         edit_message_media: C,
     ) -> RTDResult<Message> {
-        let extra = edit_message_media
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = edit_message_media.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_message_media.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2690,25 +2366,20 @@ where
         &self,
         edit_message_reply_markup: C,
     ) -> RTDResult<Message> {
-        let extra = edit_message_reply_markup
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = edit_message_reply_markup.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_message_reply_markup.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2722,9 +2393,7 @@ where
         let extra = edit_message_scheduling_state
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -2733,13 +2402,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2750,25 +2419,20 @@ where
         &self,
         edit_message_text: C,
     ) -> RTDResult<Message> {
-        let extra = edit_message_text
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = edit_message_text.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_message_text.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2776,22 +2440,20 @@ where
 
     // Edits an existing proxy server for network requests. Can be called before authorization
     pub async fn edit_proxy<C: AsRef<EditProxy>>(&self, edit_proxy: C) -> RTDResult<Proxy> {
-        let extra = edit_proxy.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = edit_proxy.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, edit_proxy.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Proxy(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2799,22 +2461,20 @@ where
 
     // Enables a proxy. Only one proxy can be enabled at a time. Can be called before authorization
     pub async fn enable_proxy<C: AsRef<EnableProxy>>(&self, enable_proxy: C) -> RTDResult<Ok> {
-        let extra = enable_proxy.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = enable_proxy.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, enable_proxy.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2825,25 +2485,20 @@ where
         &self,
         finish_file_generation: C,
     ) -> RTDResult<Ok> {
-        let extra = finish_file_generation
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = finish_file_generation.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, finish_file_generation.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2854,22 +2509,20 @@ where
         &self,
         forward_messages: C,
     ) -> RTDResult<Messages> {
-        let extra = forward_messages.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = forward_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, forward_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2880,25 +2533,20 @@ where
         &self,
         generate_chat_invite_link: C,
     ) -> RTDResult<ChatInviteLink> {
-        let extra = generate_chat_invite_link
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = generate_chat_invite_link.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, generate_chat_invite_link.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatInviteLink(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2909,22 +2557,20 @@ where
         &self,
         get_account_ttl: C,
     ) -> RTDResult<AccountTtl> {
-        let extra = get_account_ttl.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_account_ttl.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_account_ttl.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AccountTtl(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2935,13 +2581,10 @@ where
         &self,
         get_active_live_location_messages: C,
     ) -> RTDResult<Messages> {
-        let extra =
-            get_active_live_location_messages
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = get_active_live_location_messages
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -2950,13 +2593,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2967,25 +2610,20 @@ where
         &self,
         get_active_sessions: C,
     ) -> RTDResult<Sessions> {
-        let extra = get_active_sessions
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_active_sessions.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_active_sessions.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Sessions(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -2996,25 +2634,20 @@ where
         &self,
         get_all_passport_elements: C,
     ) -> RTDResult<PassportElements> {
-        let extra = get_all_passport_elements
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_all_passport_elements.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_all_passport_elements.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PassportElements(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3025,25 +2658,20 @@ where
         &self,
         get_application_config: C,
     ) -> RTDResult<JsonValue> {
-        let extra = get_application_config
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_application_config.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_application_config.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::JsonValue(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3054,25 +2682,20 @@ where
         &self,
         get_archived_sticker_sets: C,
     ) -> RTDResult<StickerSets> {
-        let extra = get_archived_sticker_sets
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_archived_sticker_sets.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_archived_sticker_sets.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSets(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3083,25 +2706,20 @@ where
         &self,
         get_attached_sticker_sets: C,
     ) -> RTDResult<StickerSets> {
-        let extra = get_attached_sticker_sets
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_attached_sticker_sets.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_attached_sticker_sets.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSets(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3112,25 +2730,20 @@ where
         &self,
         get_authorization_state: C,
     ) -> RTDResult<AuthorizationState> {
-        let extra = get_authorization_state
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_authorization_state.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_authorization_state.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AuthorizationState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3141,13 +2754,10 @@ where
         &self,
         get_auto_download_settings_presets: C,
     ) -> RTDResult<AutoDownloadSettingsPresets> {
-        let extra =
-            get_auto_download_settings_presets
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = get_auto_download_settings_presets
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -3156,13 +2766,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AutoDownloadSettingsPresets(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3173,25 +2783,20 @@ where
         &self,
         get_background_url: C,
     ) -> RTDResult<HttpUrl> {
-        let extra = get_background_url
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_background_url.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_background_url.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::HttpUrl(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3202,22 +2807,20 @@ where
         &self,
         get_backgrounds: C,
     ) -> RTDResult<Backgrounds> {
-        let extra = get_backgrounds.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_backgrounds.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_backgrounds.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Backgrounds(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3228,25 +2831,20 @@ where
         &self,
         get_bank_card_info: C,
     ) -> RTDResult<BankCardInfo> {
-        let extra = get_bank_card_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_bank_card_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_bank_card_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::BankCardInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3257,22 +2855,20 @@ where
         &self,
         get_basic_group: C,
     ) -> RTDResult<BasicGroup> {
-        let extra = get_basic_group.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_basic_group.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_basic_group.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::BasicGroup(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3283,25 +2879,20 @@ where
         &self,
         get_basic_group_full_info: C,
     ) -> RTDResult<BasicGroupFullInfo> {
-        let extra = get_basic_group_full_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_basic_group_full_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_basic_group_full_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::BasicGroupFullInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3315,22 +2906,20 @@ where
         let extra = get_blocked_message_senders
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_blocked_message_senders.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::MessageSenders(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3341,25 +2930,20 @@ where
         &self,
         get_callback_query_answer: C,
     ) -> RTDResult<CallbackQueryAnswer> {
-        let extra = get_callback_query_answer
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_callback_query_answer.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_callback_query_answer.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::CallbackQueryAnswer(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3373,22 +2957,20 @@ where
         let extra = get_callback_query_message
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_callback_query_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3396,22 +2978,20 @@ where
 
     // Returns information about a chat by its identifier, this is an offline request if the current user is not a bot
     pub async fn get_chat<C: AsRef<GetChat>>(&self, get_chat: C) -> RTDResult<Chat> {
-        let extra = get_chat.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3422,25 +3002,20 @@ where
         &self,
         get_chat_administrators: C,
     ) -> RTDResult<ChatAdministrators> {
-        let extra = get_chat_administrators
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_chat_administrators.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_administrators.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatAdministrators(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3451,25 +3026,20 @@ where
         &self,
         get_chat_event_log: C,
     ) -> RTDResult<ChatEvents> {
-        let extra = get_chat_event_log
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_chat_event_log.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_event_log.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatEvents(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3480,22 +3050,20 @@ where
         &self,
         get_chat_filter: C,
     ) -> RTDResult<ChatFilter> {
-        let extra = get_chat_filter.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_chat_filter.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_filter.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatFilter(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3506,13 +3074,10 @@ where
         &self,
         get_chat_filter_default_icon_name: C,
     ) -> RTDResult<Text> {
-        let extra =
-            get_chat_filter_default_icon_name
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = get_chat_filter_default_icon_name
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -3521,13 +3086,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3538,22 +3103,20 @@ where
         &self,
         get_chat_history: C,
     ) -> RTDResult<Messages> {
-        let extra = get_chat_history.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_chat_history.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_history.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3567,22 +3130,20 @@ where
         let extra = get_chat_lists_to_add_chat
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_lists_to_add_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatLists(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3593,22 +3154,20 @@ where
         &self,
         get_chat_member: C,
     ) -> RTDResult<ChatMember> {
-        let extra = get_chat_member.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_chat_member.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_member.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatMember(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3619,25 +3178,20 @@ where
         &self,
         get_chat_message_by_date: C,
     ) -> RTDResult<Message> {
-        let extra = get_chat_message_by_date
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_chat_message_by_date.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_message_by_date.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3648,25 +3202,20 @@ where
         &self,
         get_chat_message_count: C,
     ) -> RTDResult<Count> {
-        let extra = get_chat_message_count
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_chat_message_count.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_message_count.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Count(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3682,9 +3231,7 @@ where
         let extra = get_chat_notification_settings_exceptions
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -3693,13 +3240,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3710,25 +3257,20 @@ where
         &self,
         get_chat_pinned_message: C,
     ) -> RTDResult<Message> {
-        let extra = get_chat_pinned_message
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_chat_pinned_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_pinned_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3742,22 +3284,20 @@ where
         let extra = get_chat_scheduled_messages
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_scheduled_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3768,25 +3308,20 @@ where
         &self,
         get_chat_statistics: C,
     ) -> RTDResult<ChatStatistics> {
-        let extra = get_chat_statistics
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_chat_statistics.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_statistics.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatStatistics(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3797,25 +3332,20 @@ where
         &self,
         get_chat_statistics_url: C,
     ) -> RTDResult<HttpUrl> {
-        let extra = get_chat_statistics_url
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_chat_statistics_url.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chat_statistics_url.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::HttpUrl(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3823,22 +3353,20 @@ where
 
     // Returns an ordered list of chats in a chat list. Chats are sorted by the pair (chat.position.order, chat.id) in descending order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63  1). For optimal performance the number of returned chats is chosen by the library
     pub async fn get_chats<C: AsRef<GetChats>>(&self, get_chats: C) -> RTDResult<Chats> {
-        let extra = get_chats.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_chats.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_chats.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3849,25 +3377,20 @@ where
         &self,
         get_connected_websites: C,
     ) -> RTDResult<ConnectedWebsites> {
-        let extra = get_connected_websites
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_connected_websites.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_connected_websites.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ConnectedWebsites(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3875,22 +3398,20 @@ where
 
     // Returns all user contacts
     pub async fn get_contacts<C: AsRef<GetContacts>>(&self, get_contacts: C) -> RTDResult<Users> {
-        let extra = get_contacts.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_contacts.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_contacts.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Users(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3901,22 +3422,20 @@ where
         &self,
         get_countries: C,
     ) -> RTDResult<Countries> {
-        let extra = get_countries.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_countries.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_countries.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Countries(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3927,22 +3446,20 @@ where
         &self,
         get_country_code: C,
     ) -> RTDResult<Text> {
-        let extra = get_country_code.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_country_code.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_country_code.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3953,25 +3470,20 @@ where
         &self,
         get_created_public_chats: C,
     ) -> RTDResult<Chats> {
-        let extra = get_created_public_chats
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_created_public_chats.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_created_public_chats.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -3982,25 +3494,20 @@ where
         &self,
         get_current_state: C,
     ) -> RTDResult<Updates> {
-        let extra = get_current_state
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_current_state.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_current_state.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Updates(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4011,25 +3518,20 @@ where
         &self,
         get_database_statistics: C,
     ) -> RTDResult<DatabaseStatistics> {
-        let extra = get_database_statistics
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_database_statistics.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_database_statistics.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::DatabaseStatistics(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4040,25 +3542,20 @@ where
         &self,
         get_deep_link_info: C,
     ) -> RTDResult<DeepLinkInfo> {
-        let extra = get_deep_link_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_deep_link_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_deep_link_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::DeepLinkInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4069,25 +3566,20 @@ where
         &self,
         get_emoji_suggestions_url: C,
     ) -> RTDResult<HttpUrl> {
-        let extra = get_emoji_suggestions_url
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_emoji_suggestions_url.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_emoji_suggestions_url.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::HttpUrl(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4098,25 +3590,20 @@ where
         &self,
         get_favorite_stickers: C,
     ) -> RTDResult<Stickers> {
-        let extra = get_favorite_stickers
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_favorite_stickers.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_favorite_stickers.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Stickers(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4124,22 +3611,20 @@ where
 
     // Returns information about a file; this is an offline request
     pub async fn get_file<C: AsRef<GetFile>>(&self, get_file: C) -> RTDResult<File> {
-        let extra = get_file.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::File(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4153,9 +3638,7 @@ where
         let extra = get_file_downloaded_prefix_size
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -4164,13 +3647,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Count(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4181,25 +3664,20 @@ where
         &self,
         get_file_extension: C,
     ) -> RTDResult<Text> {
-        let extra = get_file_extension
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_file_extension.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_file_extension.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4210,25 +3688,20 @@ where
         &self,
         get_file_mime_type: C,
     ) -> RTDResult<Text> {
-        let extra = get_file_mime_type
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_file_mime_type.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_file_mime_type.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4239,25 +3712,20 @@ where
         &self,
         get_game_high_scores: C,
     ) -> RTDResult<GameHighScores> {
-        let extra = get_game_high_scores
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_game_high_scores.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_game_high_scores.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::GameHighScores(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4268,25 +3736,20 @@ where
         &self,
         get_groups_in_common: C,
     ) -> RTDResult<Chats> {
-        let extra = get_groups_in_common
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_groups_in_common.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_groups_in_common.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4300,22 +3763,20 @@ where
         let extra = get_imported_contact_count
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_imported_contact_count.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Count(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4329,9 +3790,7 @@ where
         let extra = get_inactive_supergroup_chats
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -4340,13 +3799,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4360,22 +3819,20 @@ where
         let extra = get_inline_game_high_scores
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_inline_game_high_scores.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::GameHighScores(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4386,25 +3843,20 @@ where
         &self,
         get_inline_query_results: C,
     ) -> RTDResult<InlineQueryResults> {
-        let extra = get_inline_query_results
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_inline_query_results.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_inline_query_results.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::InlineQueryResults(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4418,22 +3870,20 @@ where
         let extra = get_installed_sticker_sets
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_installed_sticker_sets.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSets(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4444,22 +3894,20 @@ where
         &self,
         get_invite_text: C,
     ) -> RTDResult<Text> {
-        let extra = get_invite_text.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_invite_text.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_invite_text.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4470,22 +3918,20 @@ where
         &self,
         get_json_string: C,
     ) -> RTDResult<Text> {
-        let extra = get_json_string.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_json_string.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_json_string.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4496,22 +3942,20 @@ where
         &self,
         get_json_value: C,
     ) -> RTDResult<JsonValue> {
-        let extra = get_json_value.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_json_value.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_json_value.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::JsonValue(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4522,25 +3966,20 @@ where
         &self,
         get_language_pack_info: C,
     ) -> RTDResult<LanguagePackInfo> {
-        let extra = get_language_pack_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_language_pack_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_language_pack_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LanguagePackInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4551,25 +3990,20 @@ where
         &self,
         get_language_pack_string: C,
     ) -> RTDResult<LanguagePackStringValue> {
-        let extra = get_language_pack_string
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_language_pack_string.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_language_pack_string.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LanguagePackStringValue(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4580,25 +4014,20 @@ where
         &self,
         get_language_pack_strings: C,
     ) -> RTDResult<LanguagePackStrings> {
-        let extra = get_language_pack_strings
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_language_pack_strings.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_language_pack_strings.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LanguagePackStrings(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4612,22 +4041,20 @@ where
         let extra = get_localization_target_info
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_localization_target_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LocalizationTargetInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4638,22 +4065,20 @@ where
         &self,
         get_log_stream: C,
     ) -> RTDResult<LogStream> {
-        let extra = get_log_stream.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_log_stream.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_log_stream.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LogStream(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4667,22 +4092,20 @@ where
         let extra = get_log_tag_verbosity_level
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_log_tag_verbosity_level.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LogVerbosityLevel(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4690,22 +4113,20 @@ where
 
     // Returns list of available TDLib internal log tags, for example, ["actor", "binlog", "connections", "notifications", "proxy"]. Can be called synchronously
     pub async fn get_log_tags<C: AsRef<GetLogTags>>(&self, get_log_tags: C) -> RTDResult<LogTags> {
-        let extra = get_log_tags.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_log_tags.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_log_tags.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LogTags(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4716,25 +4137,20 @@ where
         &self,
         get_log_verbosity_level: C,
     ) -> RTDResult<LogVerbosityLevel> {
-        let extra = get_log_verbosity_level
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_log_verbosity_level.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_log_verbosity_level.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LogVerbosityLevel(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4745,22 +4161,20 @@ where
         &self,
         get_login_url: C,
     ) -> RTDResult<HttpUrl> {
-        let extra = get_login_url.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_login_url.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_login_url.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::HttpUrl(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4771,25 +4185,20 @@ where
         &self,
         get_login_url_info: C,
     ) -> RTDResult<LoginUrlInfo> {
-        let extra = get_login_url_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_login_url_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_login_url_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::LoginUrlInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4800,25 +4209,20 @@ where
         &self,
         get_map_thumbnail_file: C,
     ) -> RTDResult<File> {
-        let extra = get_map_thumbnail_file
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_map_thumbnail_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_map_thumbnail_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::File(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4829,25 +4233,20 @@ where
         &self,
         get_markdown_text: C,
     ) -> RTDResult<FormattedText> {
-        let extra = get_markdown_text
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_markdown_text.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_markdown_text.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::FormattedText(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4855,22 +4254,20 @@ where
 
     // Returns the current user
     pub async fn get_me<C: AsRef<GetMe>>(&self, get_me: C) -> RTDResult<User> {
-        let extra = get_me.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_me.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_me.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::User(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4878,22 +4275,20 @@ where
 
     // Returns information about a message
     pub async fn get_message<C: AsRef<GetMessage>>(&self, get_message: C) -> RTDResult<Message> {
-        let extra = get_message.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4907,22 +4302,20 @@ where
         let extra = get_message_embedding_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message_embedding_code.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4933,22 +4326,20 @@ where
         &self,
         get_message_link: C,
     ) -> RTDResult<MessageLink> {
-        let extra = get_message_link.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_message_link.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message_link.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::MessageLink(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4959,25 +4350,20 @@ where
         &self,
         get_message_link_info: C,
     ) -> RTDResult<MessageLinkInfo> {
-        let extra = get_message_link_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_message_link_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message_link_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::MessageLinkInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -4988,25 +4374,20 @@ where
         &self,
         get_message_locally: C,
     ) -> RTDResult<Message> {
-        let extra = get_message_locally
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_message_locally.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message_locally.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5020,22 +4401,20 @@ where
         let extra = get_message_public_forwards
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message_public_forwards.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::FoundMessages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5046,25 +4425,20 @@ where
         &self,
         get_message_statistics: C,
     ) -> RTDResult<MessageStatistics> {
-        let extra = get_message_statistics
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_message_statistics.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message_statistics.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::MessageStatistics(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5075,25 +4449,20 @@ where
         &self,
         get_message_thread: C,
     ) -> RTDResult<MessageThreadInfo> {
-        let extra = get_message_thread
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_message_thread.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message_thread.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::MessageThreadInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5107,22 +4476,20 @@ where
         let extra = get_message_thread_history
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_message_thread_history.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5133,22 +4500,20 @@ where
         &self,
         get_messages: C,
     ) -> RTDResult<Messages> {
-        let extra = get_messages.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5159,25 +4524,20 @@ where
         &self,
         get_network_statistics: C,
     ) -> RTDResult<NetworkStatistics> {
-        let extra = get_network_statistics
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_network_statistics.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_network_statistics.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::NetworkStatistics(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5185,22 +4545,20 @@ where
 
     // Returns the value of an option by its name. (Check the list of available options on https://core.telegram.org/tdlib/options.) Can be called before authorization
     pub async fn get_option<C: AsRef<GetOption>>(&self, get_option: C) -> RTDResult<OptionValue> {
-        let extra = get_option.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_option.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_option.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::OptionValue(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5214,9 +4572,7 @@ where
         let extra = get_passport_authorization_form
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -5225,13 +4581,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PassportAuthorizationForm(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5247,9 +4603,7 @@ where
         let extra = get_passport_authorization_form_available_elements
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -5258,13 +4612,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PassportElementsWithErrors(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5275,25 +4629,20 @@ where
         &self,
         get_passport_element: C,
     ) -> RTDResult<PassportElement> {
-        let extra = get_passport_element
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_passport_element.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_passport_element.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PassportElement(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5304,25 +4653,20 @@ where
         &self,
         get_password_state: C,
     ) -> RTDResult<PasswordState> {
-        let extra = get_password_state
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_password_state.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_password_state.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PasswordState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5333,22 +4677,20 @@ where
         &self,
         get_payment_form: C,
     ) -> RTDResult<PaymentForm> {
-        let extra = get_payment_form.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_payment_form.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_payment_form.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PaymentForm(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5359,25 +4701,20 @@ where
         &self,
         get_payment_receipt: C,
     ) -> RTDResult<PaymentReceipt> {
-        let extra = get_payment_receipt
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_payment_receipt.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_payment_receipt.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PaymentReceipt(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5388,25 +4725,20 @@ where
         &self,
         get_phone_number_info: C,
     ) -> RTDResult<PhoneNumberInfo> {
-        let extra = get_phone_number_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_phone_number_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_phone_number_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PhoneNumberInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5417,22 +4749,20 @@ where
         &self,
         get_poll_voters: C,
     ) -> RTDResult<Users> {
-        let extra = get_poll_voters.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_poll_voters.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_poll_voters.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Users(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5446,9 +4776,7 @@ where
         let extra = get_preferred_country_language
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -5457,13 +4785,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5471,22 +4799,20 @@ where
 
     // Returns list of proxies that are currently set up. Can be called before authorization
     pub async fn get_proxies<C: AsRef<GetProxies>>(&self, get_proxies: C) -> RTDResult<Proxies> {
-        let extra = get_proxies.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_proxies.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_proxies.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Proxies(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5497,22 +4823,20 @@ where
         &self,
         get_proxy_link: C,
     ) -> RTDResult<Text> {
-        let extra = get_proxy_link.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_proxy_link.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_proxy_link.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5523,25 +4847,20 @@ where
         &self,
         get_push_receiver_id: C,
     ) -> RTDResult<PushReceiverId> {
-        let extra = get_push_receiver_id
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_push_receiver_id.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_push_receiver_id.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PushReceiverId(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5552,25 +4871,20 @@ where
         &self,
         get_recent_inline_bots: C,
     ) -> RTDResult<Users> {
-        let extra = get_recent_inline_bots
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_recent_inline_bots.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_recent_inline_bots.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Users(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5581,25 +4895,20 @@ where
         &self,
         get_recent_stickers: C,
     ) -> RTDResult<Stickers> {
-        let extra = get_recent_stickers
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_recent_stickers.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_recent_stickers.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Stickers(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5613,9 +4922,7 @@ where
         let extra = get_recently_visited_t_me_urls
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -5624,13 +4931,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TMeUrls(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5644,22 +4951,20 @@ where
         let extra = get_recommended_chat_filters
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_recommended_chat_filters.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::RecommendedChatFilters(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5673,22 +4978,20 @@ where
         let extra = get_recovery_email_address
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_recovery_email_address.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::RecoveryEmailAddress(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5699,22 +5002,20 @@ where
         &self,
         get_remote_file: C,
     ) -> RTDResult<File> {
-        let extra = get_remote_file.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_remote_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_remote_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::File(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5725,25 +5026,20 @@ where
         &self,
         get_replied_message: C,
     ) -> RTDResult<Message> {
-        let extra = get_replied_message
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_replied_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_replied_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5754,25 +5050,20 @@ where
         &self,
         get_saved_animations: C,
     ) -> RTDResult<Animations> {
-        let extra = get_saved_animations
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_saved_animations.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_saved_animations.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Animations(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5783,25 +5074,20 @@ where
         &self,
         get_saved_order_info: C,
     ) -> RTDResult<OrderInfo> {
-        let extra = get_saved_order_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_saved_order_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_saved_order_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::OrderInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5815,9 +5101,7 @@ where
         let extra = get_scope_notification_settings
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -5826,13 +5110,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ScopeNotificationSettings(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5843,22 +5127,20 @@ where
         &self,
         get_secret_chat: C,
     ) -> RTDResult<SecretChat> {
-        let extra = get_secret_chat.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_secret_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_secret_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::SecretChat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5869,25 +5151,20 @@ where
         &self,
         get_statistical_graph: C,
     ) -> RTDResult<StatisticalGraph> {
-        let extra = get_statistical_graph
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_statistical_graph.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_statistical_graph.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StatisticalGraph(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5898,25 +5175,20 @@ where
         &self,
         get_sticker_emojis: C,
     ) -> RTDResult<Emojis> {
-        let extra = get_sticker_emojis
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_sticker_emojis.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_sticker_emojis.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Emojis(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5927,22 +5199,20 @@ where
         &self,
         get_sticker_set: C,
     ) -> RTDResult<StickerSet> {
-        let extra = get_sticker_set.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_sticker_set.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_sticker_set.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSet(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5953,22 +5223,20 @@ where
         &self,
         get_stickers: C,
     ) -> RTDResult<Stickers> {
-        let extra = get_stickers.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_stickers.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_stickers.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Stickers(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -5979,25 +5247,20 @@ where
         &self,
         get_storage_statistics: C,
     ) -> RTDResult<StorageStatistics> {
-        let extra = get_storage_statistics
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_storage_statistics.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_storage_statistics.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StorageStatistics(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6011,22 +5274,20 @@ where
         let extra = get_storage_statistics_fast
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_storage_statistics_fast.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StorageStatisticsFast(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6040,9 +5301,7 @@ where
         let extra = get_suitable_discussion_chats
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -6051,13 +5310,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6068,22 +5327,20 @@ where
         &self,
         get_supergroup: C,
     ) -> RTDResult<Supergroup> {
-        let extra = get_supergroup.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_supergroup.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_supergroup.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Supergroup(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6094,25 +5351,20 @@ where
         &self,
         get_supergroup_full_info: C,
     ) -> RTDResult<SupergroupFullInfo> {
-        let extra = get_supergroup_full_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_supergroup_full_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_supergroup_full_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::SupergroupFullInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6123,25 +5375,20 @@ where
         &self,
         get_supergroup_members: C,
     ) -> RTDResult<ChatMembers> {
-        let extra = get_supergroup_members
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_supergroup_members.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_supergroup_members.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatMembers(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6152,22 +5399,20 @@ where
         &self,
         get_support_user: C,
     ) -> RTDResult<User> {
-        let extra = get_support_user.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_support_user.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_support_user.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::User(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6181,22 +5426,20 @@ where
         let extra = get_temporary_password_state
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_temporary_password_state.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TemporaryPasswordState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6207,25 +5450,20 @@ where
         &self,
         get_text_entities: C,
     ) -> RTDResult<TextEntities> {
-        let extra = get_text_entities
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_text_entities.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_text_entities.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TextEntities(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6233,22 +5471,20 @@ where
 
     // Returns a list of frequently used chats. Supported only if the chat info database is enabled
     pub async fn get_top_chats<C: AsRef<GetTopChats>>(&self, get_top_chats: C) -> RTDResult<Chats> {
-        let extra = get_top_chats.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_top_chats.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_top_chats.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6259,25 +5495,20 @@ where
         &self,
         get_trending_sticker_sets: C,
     ) -> RTDResult<StickerSets> {
-        let extra = get_trending_sticker_sets
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_trending_sticker_sets.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_trending_sticker_sets.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSets(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6285,22 +5516,20 @@ where
 
     // Returns information about a user by their identifier. This is an offline request if the current user is not a bot
     pub async fn get_user<C: AsRef<GetUser>>(&self, get_user: C) -> RTDResult<User> {
-        let extra = get_user.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = get_user.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_user.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::User(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6311,25 +5540,20 @@ where
         &self,
         get_user_full_info: C,
     ) -> RTDResult<UserFullInfo> {
-        let extra = get_user_full_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_user_full_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_user_full_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::UserFullInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6343,9 +5567,7 @@ where
         let extra = get_user_privacy_setting_rules
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -6354,13 +5576,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::UserPrivacySettingRules(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6371,25 +5593,20 @@ where
         &self,
         get_user_profile_photos: C,
     ) -> RTDResult<ChatPhotos> {
-        let extra = get_user_profile_photos
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_user_profile_photos.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_user_profile_photos.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatPhotos(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6400,25 +5617,20 @@ where
         &self,
         get_web_page_instant_view: C,
     ) -> RTDResult<WebPageInstantView> {
-        let extra = get_web_page_instant_view
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_web_page_instant_view.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_web_page_instant_view.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::WebPageInstantView(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6429,25 +5641,20 @@ where
         &self,
         get_web_page_preview: C,
     ) -> RTDResult<WebPage> {
-        let extra = get_web_page_preview
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = get_web_page_preview.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, get_web_page_preview.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::WebPage(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6458,25 +5665,20 @@ where
         &self,
         hide_suggested_action: C,
     ) -> RTDResult<Ok> {
-        let extra = hide_suggested_action
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = hide_suggested_action.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, hide_suggested_action.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6487,22 +5689,20 @@ where
         &self,
         import_contacts: C,
     ) -> RTDResult<ImportedContacts> {
-        let extra = import_contacts.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = import_contacts.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, import_contacts.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ImportedContacts(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6510,22 +5710,20 @@ where
 
     // Adds current user as a new member to a chat. Private and secret chats can't be joined using this method
     pub async fn join_chat<C: AsRef<JoinChat>>(&self, join_chat: C) -> RTDResult<Ok> {
-        let extra = join_chat.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = join_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, join_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6536,25 +5734,20 @@ where
         &self,
         join_chat_by_invite_link: C,
     ) -> RTDResult<Chat> {
-        let extra = join_chat_by_invite_link
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = join_chat_by_invite_link.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, join_chat_by_invite_link.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6562,22 +5755,20 @@ where
 
     // Removes current user from chat members. Private and secret chats can't be left using this method
     pub async fn leave_chat<C: AsRef<LeaveChat>>(&self, leave_chat: C) -> RTDResult<Ok> {
-        let extra = leave_chat.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = leave_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, leave_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6585,22 +5776,20 @@ where
 
     // Closes the TDLib instance after a proper logout. Requires an available network connection. All local data will be destroyed. After the logout completes, updateAuthorizationState with authorizationStateClosed will be sent
     pub async fn log_out<C: AsRef<LogOut>>(&self, log_out: C) -> RTDResult<Ok> {
-        let extra = log_out.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = log_out.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, log_out.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6608,22 +5797,20 @@ where
 
     // Informs TDLib that the chat is opened by the user. Many useful activities depend on the chat being opened or closed (e.g., in supergroups and channels all updates are received only for opened chats)
     pub async fn open_chat<C: AsRef<OpenChat>>(&self, open_chat: C) -> RTDResult<Ok> {
-        let extra = open_chat.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = open_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, open_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6634,25 +5821,20 @@ where
         &self,
         open_message_content: C,
     ) -> RTDResult<Ok> {
-        let extra = open_message_content
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = open_message_content.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, open_message_content.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6663,22 +5845,20 @@ where
         &self,
         optimize_storage: C,
     ) -> RTDResult<StorageStatistics> {
-        let extra = optimize_storage.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = optimize_storage.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, optimize_storage.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StorageStatistics(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6689,22 +5869,20 @@ where
         &self,
         parse_markdown: C,
     ) -> RTDResult<FormattedText> {
-        let extra = parse_markdown.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = parse_markdown.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, parse_markdown.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::FormattedText(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6715,25 +5893,20 @@ where
         &self,
         parse_text_entities: C,
     ) -> RTDResult<FormattedText> {
-        let extra = parse_text_entities
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = parse_text_entities.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, parse_text_entities.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::FormattedText(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6744,22 +5917,20 @@ where
         &self,
         pin_chat_message: C,
     ) -> RTDResult<Ok> {
-        let extra = pin_chat_message.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = pin_chat_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, pin_chat_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6767,22 +5938,20 @@ where
 
     // Computes time needed to receive a response from a Telegram server through a proxy. Can be called before authorization
     pub async fn ping_proxy<C: AsRef<PingProxy>>(&self, ping_proxy: C) -> RTDResult<Seconds> {
-        let extra = ping_proxy.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = ping_proxy.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, ping_proxy.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Seconds(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6793,25 +5962,20 @@ where
         &self,
         process_push_notification: C,
     ) -> RTDResult<Ok> {
-        let extra = process_push_notification
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = process_push_notification.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, process_push_notification.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6822,25 +5986,20 @@ where
         &self,
         read_all_chat_mentions: C,
     ) -> RTDResult<Ok> {
-        let extra = read_all_chat_mentions
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = read_all_chat_mentions.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, read_all_chat_mentions.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6851,22 +6010,20 @@ where
         &self,
         read_file_part: C,
     ) -> RTDResult<FilePart> {
-        let extra = read_file_part.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = read_file_part.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, read_file_part.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::FilePart(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6880,9 +6037,7 @@ where
         let extra = recover_authentication_password
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -6891,13 +6046,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6908,22 +6063,20 @@ where
         &self,
         recover_password: C,
     ) -> RTDResult<PasswordState> {
-        let extra = recover_password.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = recover_password.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, recover_password.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PasswordState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6934,22 +6087,20 @@ where
         &self,
         register_device: C,
     ) -> RTDResult<PushReceiverId> {
-        let extra = register_device.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = register_device.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, register_device.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PushReceiverId(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6957,22 +6108,20 @@ where
 
     // Finishes user registration. Works only when the current authorization state is authorizationStateWaitRegistration
     pub async fn register_user<C: AsRef<RegisterUser>>(&self, register_user: C) -> RTDResult<Ok> {
-        let extra = register_user.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = register_user.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, register_user.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -6983,25 +6132,20 @@ where
         &self,
         remove_background: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_background
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_background.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_background.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7012,25 +6156,20 @@ where
         &self,
         remove_chat_action_bar: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_chat_action_bar
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_chat_action_bar.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_chat_action_bar.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7041,22 +6180,20 @@ where
         &self,
         remove_contacts: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_contacts.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = remove_contacts.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_contacts.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7067,25 +6204,20 @@ where
         &self,
         remove_favorite_sticker: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_favorite_sticker
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_favorite_sticker.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_favorite_sticker.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7096,25 +6228,20 @@ where
         &self,
         remove_notification: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_notification
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_notification.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_notification.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7125,25 +6252,20 @@ where
         &self,
         remove_notification_group: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_notification_group
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_notification_group.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_notification_group.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7151,22 +6273,20 @@ where
 
     // Removes a proxy server. Can be called before authorization
     pub async fn remove_proxy<C: AsRef<RemoveProxy>>(&self, remove_proxy: C) -> RTDResult<Ok> {
-        let extra = remove_proxy.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = remove_proxy.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_proxy.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7177,25 +6297,20 @@ where
         &self,
         remove_recent_hashtag: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_recent_hashtag
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_recent_hashtag.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_recent_hashtag.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7206,25 +6321,20 @@ where
         &self,
         remove_recent_sticker: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_recent_sticker
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_recent_sticker.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_recent_sticker.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7238,22 +6348,20 @@ where
         let extra = remove_recently_found_chat
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_recently_found_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7264,25 +6372,20 @@ where
         &self,
         remove_saved_animation: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_saved_animation
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_saved_animation.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_saved_animation.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7293,25 +6396,20 @@ where
         &self,
         remove_sticker_from_set: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_sticker_from_set
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = remove_sticker_from_set.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_sticker_from_set.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7322,22 +6420,20 @@ where
         &self,
         remove_top_chat: C,
     ) -> RTDResult<Ok> {
-        let extra = remove_top_chat.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = remove_top_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_top_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7348,25 +6444,20 @@ where
         &self,
         reorder_chat_filters: C,
     ) -> RTDResult<Ok> {
-        let extra = reorder_chat_filters
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = reorder_chat_filters.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, reorder_chat_filters.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7380,9 +6471,7 @@ where
         let extra = reorder_installed_sticker_sets
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7391,13 +6480,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7405,22 +6494,20 @@ where
 
     // Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if this is a private chats with a bot, a private chat with a user sharing their location, a supergroup, or a channel, since other chats can't be checked by moderators
     pub async fn report_chat<C: AsRef<ReportChat>>(&self, report_chat: C) -> RTDResult<Ok> {
-        let extra = report_chat.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = report_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, report_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7431,25 +6518,20 @@ where
         &self,
         report_supergroup_spam: C,
     ) -> RTDResult<Ok> {
-        let extra = report_supergroup_spam
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = report_supergroup_spam.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, report_supergroup_spam.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7465,9 +6547,7 @@ where
         let extra = request_authentication_password_recovery
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7476,13 +6556,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7493,25 +6573,20 @@ where
         &self,
         request_password_recovery: C,
     ) -> RTDResult<EmailAddressAuthenticationCodeInfo> {
-        let extra = request_password_recovery
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = request_password_recovery.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, request_password_recovery.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::EmailAddressAuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7525,9 +6600,7 @@ where
         let extra = request_qr_code_authentication
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7536,13 +6609,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7556,22 +6629,20 @@ where
         let extra = resend_authentication_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, resend_authentication_code.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7585,9 +6656,7 @@ where
         let extra = resend_change_phone_number_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7596,13 +6665,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7618,9 +6687,7 @@ where
         let extra = resend_email_address_verification_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7629,13 +6696,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::EmailAddressAuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7646,22 +6713,20 @@ where
         &self,
         resend_messages: C,
     ) -> RTDResult<Messages> {
-        let extra = resend_messages.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = resend_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, resend_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7677,9 +6742,7 @@ where
         let extra = resend_phone_number_confirmation_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7688,13 +6751,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7710,9 +6773,7 @@ where
         let extra = resend_phone_number_verification_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7721,13 +6782,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7738,13 +6799,10 @@ where
         &self,
         resend_recovery_email_address_code: C,
     ) -> RTDResult<PasswordState> {
-        let extra =
-            resend_recovery_email_address_code
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = resend_recovery_email_address_code
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7753,13 +6811,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PasswordState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7773,9 +6831,7 @@ where
         let extra = reset_all_notification_settings
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -7784,13 +6840,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7801,25 +6857,20 @@ where
         &self,
         reset_backgrounds: C,
     ) -> RTDResult<Ok> {
-        let extra = reset_backgrounds
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = reset_backgrounds.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, reset_backgrounds.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7830,25 +6881,20 @@ where
         &self,
         reset_network_statistics: C,
     ) -> RTDResult<Ok> {
-        let extra = reset_network_statistics
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = reset_network_statistics.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, reset_network_statistics.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7862,22 +6908,20 @@ where
         let extra = save_application_log_event
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, save_application_log_event.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7888,25 +6932,20 @@ where
         &self,
         search_background: C,
     ) -> RTDResult<Background> {
-        let extra = search_background
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_background.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_background.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Background(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7917,25 +6956,20 @@ where
         &self,
         search_call_messages: C,
     ) -> RTDResult<Messages> {
-        let extra = search_call_messages
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_call_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_call_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7946,25 +6980,20 @@ where
         &self,
         search_chat_members: C,
     ) -> RTDResult<ChatMembers> {
-        let extra = search_chat_members
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_chat_members.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_chat_members.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatMembers(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -7975,25 +7004,20 @@ where
         &self,
         search_chat_messages: C,
     ) -> RTDResult<Messages> {
-        let extra = search_chat_messages
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_chat_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_chat_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8009,9 +7033,7 @@ where
         let extra = search_chat_recent_location_messages
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8020,13 +7042,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8034,22 +7056,20 @@ where
 
     // Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the main chat list
     pub async fn search_chats<C: AsRef<SearchChats>>(&self, search_chats: C) -> RTDResult<Chats> {
-        let extra = search_chats.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = search_chats.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_chats.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8060,25 +7080,20 @@ where
         &self,
         search_chats_nearby: C,
     ) -> RTDResult<ChatsNearby> {
-        let extra = search_chats_nearby
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_chats_nearby.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_chats_nearby.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatsNearby(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8089,25 +7104,20 @@ where
         &self,
         search_chats_on_server: C,
     ) -> RTDResult<Chats> {
-        let extra = search_chats_on_server
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_chats_on_server.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_chats_on_server.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8118,22 +7128,20 @@ where
         &self,
         search_contacts: C,
     ) -> RTDResult<Users> {
-        let extra = search_contacts.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = search_contacts.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_contacts.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Users(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8144,22 +7152,20 @@ where
         &self,
         search_emojis: C,
     ) -> RTDResult<Emojis> {
-        let extra = search_emojis.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = search_emojis.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_emojis.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Emojis(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8170,22 +7176,20 @@ where
         &self,
         search_hashtags: C,
     ) -> RTDResult<Hashtags> {
-        let extra = search_hashtags.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = search_hashtags.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_hashtags.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Hashtags(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8199,9 +7203,7 @@ where
         let extra = search_installed_sticker_sets
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8210,13 +7212,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSets(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8227,22 +7229,20 @@ where
         &self,
         search_messages: C,
     ) -> RTDResult<Messages> {
-        let extra = search_messages.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = search_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8253,25 +7253,20 @@ where
         &self,
         search_public_chat: C,
     ) -> RTDResult<Chat> {
-        let extra = search_public_chat
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_public_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_public_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8282,25 +7277,20 @@ where
         &self,
         search_public_chats: C,
     ) -> RTDResult<Chats> {
-        let extra = search_public_chats
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_public_chats.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_public_chats.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8311,25 +7301,20 @@ where
         &self,
         search_secret_messages: C,
     ) -> RTDResult<FoundMessages> {
-        let extra = search_secret_messages
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_secret_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_secret_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::FoundMessages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8340,25 +7325,20 @@ where
         &self,
         search_sticker_set: C,
     ) -> RTDResult<StickerSet> {
-        let extra = search_sticker_set
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_sticker_set.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_sticker_set.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSet(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8369,25 +7349,20 @@ where
         &self,
         search_sticker_sets: C,
     ) -> RTDResult<StickerSets> {
-        let extra = search_sticker_sets
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = search_sticker_sets.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_sticker_sets.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSets(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8398,22 +7373,20 @@ where
         &self,
         search_stickers: C,
     ) -> RTDResult<Stickers> {
-        let extra = search_stickers.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = search_stickers.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, search_stickers.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Stickers(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8424,25 +7397,20 @@ where
         &self,
         send_bot_start_message: C,
     ) -> RTDResult<Message> {
-        let extra = send_bot_start_message
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = send_bot_start_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_bot_start_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8456,22 +7424,20 @@ where
         let extra = send_call_debug_information
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_call_debug_information.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8482,22 +7448,20 @@ where
         &self,
         send_call_rating: C,
     ) -> RTDResult<Ok> {
-        let extra = send_call_rating.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = send_call_rating.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_call_rating.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8508,25 +7472,20 @@ where
         &self,
         send_call_signaling_data: C,
     ) -> RTDResult<Ok> {
-        let extra = send_call_signaling_data
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = send_call_signaling_data.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_call_signaling_data.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8537,22 +7496,20 @@ where
         &self,
         send_chat_action: C,
     ) -> RTDResult<Ok> {
-        let extra = send_chat_action.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = send_chat_action.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_chat_action.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8568,9 +7525,7 @@ where
         let extra = send_chat_screenshot_taken_notification
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8579,13 +7534,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8596,25 +7551,20 @@ where
         &self,
         send_chat_set_ttl_message: C,
     ) -> RTDResult<Message> {
-        let extra = send_chat_set_ttl_message
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = send_chat_set_ttl_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_chat_set_ttl_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8625,25 +7575,20 @@ where
         &self,
         send_custom_request: C,
     ) -> RTDResult<CustomRequestResult> {
-        let extra = send_custom_request
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = send_custom_request.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_custom_request.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::CustomRequestResult(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8659,9 +7604,7 @@ where
         let extra = send_email_address_verification_code
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8670,13 +7613,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::EmailAddressAuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8690,9 +7633,7 @@ where
         let extra = send_inline_query_result_message
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8701,13 +7642,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8715,22 +7656,20 @@ where
 
     // Sends a message. Returns the sent message
     pub async fn send_message<C: AsRef<SendMessage>>(&self, send_message: C) -> RTDResult<Message> {
-        let extra = send_message.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = send_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8741,25 +7680,20 @@ where
         &self,
         send_message_album: C,
     ) -> RTDResult<Messages> {
-        let extra = send_message_album
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = send_message_album.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_message_album.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8773,9 +7707,7 @@ where
         let extra = send_passport_authorization_form
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8784,13 +7716,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8801,25 +7733,20 @@ where
         &self,
         send_payment_form: C,
     ) -> RTDResult<PaymentResult> {
-        let extra = send_payment_form
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = send_payment_form.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_payment_form.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PaymentResult(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8830,13 +7757,10 @@ where
         &self,
         send_phone_number_confirmation_code: C,
     ) -> RTDResult<AuthenticationCodeInfo> {
-        let extra =
-            send_phone_number_confirmation_code
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = send_phone_number_confirmation_code
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8845,13 +7769,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8862,13 +7786,10 @@ where
         &self,
         send_phone_number_verification_code: C,
     ) -> RTDResult<AuthenticationCodeInfo> {
-        let extra =
-            send_phone_number_verification_code
-                .as_ref()
-                .extra()
-                .ok_or(RTDError::Internal(
-                    "invalid tdlib response type, not have `extra` field",
-                ))?;
+        let extra = send_phone_number_verification_code
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8877,13 +7798,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AuthenticationCodeInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8894,22 +7815,20 @@ where
         &self,
         set_account_ttl: C,
     ) -> RTDResult<Ok> {
-        let extra = set_account_ttl.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_account_ttl.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_account_ttl.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8917,22 +7836,20 @@ where
 
     // Succeeds after a specified amount of time has passed. Can be called before initialization
     pub async fn set_alarm<C: AsRef<SetAlarm>>(&self, set_alarm: C) -> RTDResult<Ok> {
-        let extra = set_alarm.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_alarm.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_alarm.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8946,9 +7863,7 @@ where
         let extra = set_authentication_phone_number
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -8957,13 +7872,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -8977,22 +7892,20 @@ where
         let extra = set_auto_download_settings
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_auto_download_settings.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9003,22 +7916,20 @@ where
         &self,
         set_background: C,
     ) -> RTDResult<Background> {
-        let extra = set_background.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_background.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_background.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Background(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9026,22 +7937,20 @@ where
 
     // Changes the bio of the current user
     pub async fn set_bio<C: AsRef<SetBio>>(&self, set_bio: C) -> RTDResult<Ok> {
-        let extra = set_bio.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_bio.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_bio.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9052,25 +7961,20 @@ where
         &self,
         set_bot_updates_status: C,
     ) -> RTDResult<Ok> {
-        let extra = set_bot_updates_status
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_bot_updates_status.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_bot_updates_status.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9081,25 +7985,20 @@ where
         &self,
         set_chat_client_data: C,
     ) -> RTDResult<Ok> {
-        let extra = set_chat_client_data
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_chat_client_data.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_client_data.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9110,25 +8009,20 @@ where
         &self,
         set_chat_description: C,
     ) -> RTDResult<Ok> {
-        let extra = set_chat_description
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_chat_description.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_description.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9139,25 +8033,20 @@ where
         &self,
         set_chat_discussion_group: C,
     ) -> RTDResult<Ok> {
-        let extra = set_chat_discussion_group
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_chat_discussion_group.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_discussion_group.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9168,25 +8057,20 @@ where
         &self,
         set_chat_draft_message: C,
     ) -> RTDResult<Ok> {
-        let extra = set_chat_draft_message
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_chat_draft_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_draft_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9197,25 +8081,20 @@ where
         &self,
         set_chat_location: C,
     ) -> RTDResult<Ok> {
-        let extra = set_chat_location
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_chat_location.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_location.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9226,25 +8105,20 @@ where
         &self,
         set_chat_member_status: C,
     ) -> RTDResult<Ok> {
-        let extra = set_chat_member_status
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_chat_member_status.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_member_status.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9258,9 +8132,7 @@ where
         let extra = set_chat_notification_settings
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -9269,13 +8141,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9286,25 +8158,20 @@ where
         &self,
         set_chat_permissions: C,
     ) -> RTDResult<Ok> {
-        let extra = set_chat_permissions
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_chat_permissions.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_permissions.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9312,22 +8179,20 @@ where
 
     // Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
     pub async fn set_chat_photo<C: AsRef<SetChatPhoto>>(&self, set_chat_photo: C) -> RTDResult<Ok> {
-        let extra = set_chat_photo.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_chat_photo.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_photo.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9338,25 +8203,20 @@ where
         &self,
         set_chat_slow_mode_delay: C,
     ) -> RTDResult<Ok> {
-        let extra = set_chat_slow_mode_delay
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_chat_slow_mode_delay.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_slow_mode_delay.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9364,22 +8224,20 @@ where
 
     // Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
     pub async fn set_chat_title<C: AsRef<SetChatTitle>>(&self, set_chat_title: C) -> RTDResult<Ok> {
-        let extra = set_chat_title.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_chat_title.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_title.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9387,22 +8245,20 @@ where
 
     // Sets the list of commands supported by the bot; for bots only
     pub async fn set_commands<C: AsRef<SetCommands>>(&self, set_commands: C) -> RTDResult<Ok> {
-        let extra = set_commands.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_commands.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_commands.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9413,25 +8269,20 @@ where
         &self,
         set_custom_language_pack: C,
     ) -> RTDResult<Ok> {
-        let extra = set_custom_language_pack
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_custom_language_pack.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_custom_language_pack.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9445,9 +8296,7 @@ where
         let extra = set_custom_language_pack_string
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -9456,13 +8305,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9476,22 +8325,20 @@ where
         let extra = set_database_encryption_key
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_database_encryption_key.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9505,22 +8352,20 @@ where
         let extra = set_file_generation_progress
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_file_generation_progress.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9531,22 +8376,20 @@ where
         &self,
         set_game_score: C,
     ) -> RTDResult<Message> {
-        let extra = set_game_score.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_game_score.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_game_score.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9557,25 +8400,20 @@ where
         &self,
         set_inline_game_score: C,
     ) -> RTDResult<Ok> {
-        let extra = set_inline_game_score
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_inline_game_score.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_inline_game_score.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9583,22 +8421,20 @@ where
 
     // Changes the location of the current user. Needs to be called if GetOption("is_location_visible") is true and location changes for more than 1 kilometer
     pub async fn set_location<C: AsRef<SetLocation>>(&self, set_location: C) -> RTDResult<Ok> {
-        let extra = set_location.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_location.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_location.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9606,22 +8442,20 @@ where
 
     // Sets new log stream for internal logging of TDLib. Can be called synchronously
     pub async fn set_log_stream<C: AsRef<SetLogStream>>(&self, set_log_stream: C) -> RTDResult<Ok> {
-        let extra = set_log_stream.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_log_stream.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_log_stream.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9635,22 +8469,20 @@ where
         let extra = set_log_tag_verbosity_level
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_log_tag_verbosity_level.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9661,25 +8493,20 @@ where
         &self,
         set_log_verbosity_level: C,
     ) -> RTDResult<Ok> {
-        let extra = set_log_verbosity_level
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_log_verbosity_level.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_log_verbosity_level.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9687,22 +8514,20 @@ where
 
     // Changes the first and last name of the current user
     pub async fn set_name<C: AsRef<SetName>>(&self, set_name: C) -> RTDResult<Ok> {
-        let extra = set_name.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_name.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_name.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9713,22 +8538,20 @@ where
         &self,
         set_network_type: C,
     ) -> RTDResult<Ok> {
-        let extra = set_network_type.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_network_type.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_network_type.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9736,22 +8559,20 @@ where
 
     // Sets the value of an option. (Check the list of available options on https://core.telegram.org/tdlib/options.) Only writable options can be set. Can be called before authorization
     pub async fn set_option<C: AsRef<SetOption>>(&self, set_option: C) -> RTDResult<Ok> {
-        let extra = set_option.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_option.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_option.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9762,25 +8583,20 @@ where
         &self,
         set_passport_element: C,
     ) -> RTDResult<PassportElement> {
-        let extra = set_passport_element
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_passport_element.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_passport_element.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PassportElement(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9794,22 +8610,20 @@ where
         let extra = set_passport_element_errors
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_passport_element_errors.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9820,22 +8634,20 @@ where
         &self,
         set_password: C,
     ) -> RTDResult<PasswordState> {
-        let extra = set_password.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_password.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_password.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PasswordState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9846,22 +8658,20 @@ where
         &self,
         set_pinned_chats: C,
     ) -> RTDResult<Ok> {
-        let extra = set_pinned_chats.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_pinned_chats.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_pinned_chats.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9872,22 +8682,20 @@ where
         &self,
         set_poll_answer: C,
     ) -> RTDResult<Ok> {
-        let extra = set_poll_answer.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_poll_answer.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_poll_answer.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9898,25 +8706,20 @@ where
         &self,
         set_profile_photo: C,
     ) -> RTDResult<Ok> {
-        let extra = set_profile_photo
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_profile_photo.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_profile_photo.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9930,22 +8733,20 @@ where
         let extra = set_recovery_email_address
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_recovery_email_address.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PasswordState(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9959,9 +8760,7 @@ where
         let extra = set_scope_notification_settings
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -9970,13 +8769,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -9990,22 +8789,20 @@ where
         let extra = set_sticker_position_in_set
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_sticker_position_in_set.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10016,25 +8813,20 @@ where
         &self,
         set_sticker_set_thumbnail: C,
     ) -> RTDResult<StickerSet> {
-        let extra = set_sticker_set_thumbnail
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_sticker_set_thumbnail.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_sticker_set_thumbnail.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSet(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10048,22 +8840,20 @@ where
         let extra = set_supergroup_sticker_set
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_supergroup_sticker_set.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10074,25 +8864,20 @@ where
         &self,
         set_supergroup_username: C,
     ) -> RTDResult<Ok> {
-        let extra = set_supergroup_username
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_supergroup_username.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_supergroup_username.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10103,25 +8888,20 @@ where
         &self,
         set_tdlib_parameters: C,
     ) -> RTDResult<Ok> {
-        let extra = set_tdlib_parameters
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = set_tdlib_parameters.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_tdlib_parameters.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10135,9 +8915,7 @@ where
         let extra = set_user_privacy_setting_rules
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -10146,13 +8924,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10160,22 +8938,20 @@ where
 
     // Changes the username of the current user
     pub async fn set_username<C: AsRef<SetUsername>>(&self, set_username: C) -> RTDResult<Ok> {
-        let extra = set_username.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = set_username.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_username.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10186,25 +8962,20 @@ where
         &self,
         share_phone_number: C,
     ) -> RTDResult<Ok> {
-        let extra = share_phone_number
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = share_phone_number.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, share_phone_number.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10212,22 +8983,20 @@ where
 
     // Stops a poll. A poll in a message can be stopped when the message has can_be_edited flag set
     pub async fn stop_poll<C: AsRef<StopPoll>>(&self, stop_poll: C) -> RTDResult<Ok> {
-        let extra = stop_poll.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = stop_poll.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, stop_poll.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10238,25 +9007,20 @@ where
         &self,
         synchronize_language_pack: C,
     ) -> RTDResult<Ok> {
-        let extra = synchronize_language_pack
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = synchronize_language_pack.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, synchronize_language_pack.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10270,22 +9034,20 @@ where
         let extra = terminate_all_other_sessions
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, terminate_all_other_sessions.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10296,25 +9058,20 @@ where
         &self,
         terminate_session: C,
     ) -> RTDResult<Ok> {
-        let extra = terminate_session
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = terminate_session.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, terminate_session.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10325,22 +9082,20 @@ where
         &self,
         test_call_bytes: C,
     ) -> RTDResult<TestBytes> {
-        let extra = test_call_bytes.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = test_call_bytes.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_call_bytes.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TestBytes(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10351,22 +9106,20 @@ where
         &self,
         test_call_empty: C,
     ) -> RTDResult<Ok> {
-        let extra = test_call_empty.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = test_call_empty.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_call_empty.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10377,22 +9130,20 @@ where
         &self,
         test_call_string: C,
     ) -> RTDResult<TestString> {
-        let extra = test_call_string.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = test_call_string.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_call_string.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TestString(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10403,25 +9154,20 @@ where
         &self,
         test_call_vector_int: C,
     ) -> RTDResult<TestVectorInt> {
-        let extra = test_call_vector_int
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = test_call_vector_int.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_call_vector_int.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TestVectorInt(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10435,22 +9181,20 @@ where
         let extra = test_call_vector_int_object
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_call_vector_int_object.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TestVectorIntObject(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10461,25 +9205,20 @@ where
         &self,
         test_call_vector_string: C,
     ) -> RTDResult<TestVectorString> {
-        let extra = test_call_vector_string
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = test_call_vector_string.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_call_vector_string.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TestVectorString(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10493,9 +9232,7 @@ where
         let extra = test_call_vector_string_object
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -10504,13 +9241,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TestVectorStringObject(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10521,25 +9258,20 @@ where
         &self,
         test_get_difference: C,
     ) -> RTDResult<Ok> {
-        let extra = test_get_difference
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = test_get_difference.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_get_difference.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10547,22 +9279,20 @@ where
 
     // Sends a simple network request to the Telegram servers; for testing only. Can be called before authorization
     pub async fn test_network<C: AsRef<TestNetwork>>(&self, test_network: C) -> RTDResult<Ok> {
-        let extra = test_network.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = test_network.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_network.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10570,22 +9300,20 @@ where
 
     // Sends a simple network request to the Telegram servers via proxy; for testing only. Can be called before authorization
     pub async fn test_proxy<C: AsRef<TestProxy>>(&self, test_proxy: C) -> RTDResult<Ok> {
-        let extra = test_proxy.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = test_proxy.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_proxy.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10596,25 +9324,20 @@ where
         &self,
         test_return_error: C,
     ) -> RTDResult<Error> {
-        let extra = test_return_error
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = test_return_error.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_return_error.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Error(v) => Ok(v),
 
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10625,22 +9348,20 @@ where
         &self,
         test_square_int: C,
     ) -> RTDResult<TestInt> {
-        let extra = test_square_int.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = test_square_int.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_square_int.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::TestInt(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10651,22 +9372,20 @@ where
         &self,
         test_use_update: C,
     ) -> RTDResult<Update> {
-        let extra = test_use_update.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = test_use_update.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, test_use_update.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Update(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10682,9 +9401,7 @@ where
         let extra = toggle_chat_default_disable_notification
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -10693,13 +9410,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10713,9 +9430,7 @@ where
         let extra = toggle_chat_is_marked_as_unread
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -10724,13 +9439,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10741,25 +9456,20 @@ where
         &self,
         toggle_chat_is_pinned: C,
     ) -> RTDResult<Ok> {
-        let extra = toggle_chat_is_pinned
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = toggle_chat_is_pinned.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, toggle_chat_is_pinned.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10773,9 +9483,7 @@ where
         let extra = toggle_message_sender_is_blocked
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -10784,13 +9492,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10806,9 +9514,7 @@ where
         let extra = toggle_supergroup_is_all_history_available
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -10817,13 +9523,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10837,9 +9543,7 @@ where
         let extra = toggle_supergroup_sign_messages
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -10848,13 +9552,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10865,25 +9569,20 @@ where
         &self,
         transfer_chat_ownership: C,
     ) -> RTDResult<Ok> {
-        let extra = transfer_chat_ownership
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = transfer_chat_ownership.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, transfer_chat_ownership.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10894,25 +9593,20 @@ where
         &self,
         unpin_all_chat_messages: C,
     ) -> RTDResult<Ok> {
-        let extra = unpin_all_chat_messages
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = unpin_all_chat_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, unpin_all_chat_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10923,25 +9617,20 @@ where
         &self,
         unpin_chat_message: C,
     ) -> RTDResult<Ok> {
-        let extra = unpin_chat_message
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = unpin_chat_message.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, unpin_chat_message.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10957,9 +9646,7 @@ where
         let extra = upgrade_basic_group_chat_to_supergroup_chat
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
@@ -10968,13 +9655,13 @@ where
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chat(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -10982,22 +9669,20 @@ where
 
     // Asynchronously uploads a file to the cloud without sending it in a message. updateFile will be used to notify about upload progress and successful completion of the upload. The file will not have a persistent remote identifier until it will be sent in a message
     pub async fn upload_file<C: AsRef<UploadFile>>(&self, upload_file: C) -> RTDResult<File> {
-        let extra = upload_file.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = upload_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, upload_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::File(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -11008,25 +9693,20 @@ where
         &self,
         upload_sticker_file: C,
     ) -> RTDResult<File> {
-        let extra = upload_sticker_file
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = upload_sticker_file.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, upload_sticker_file.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::File(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -11037,25 +9717,20 @@ where
         &self,
         validate_order_info: C,
     ) -> RTDResult<ValidatedOrderInfo> {
-        let extra = validate_order_info
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = validate_order_info.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, validate_order_info.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ValidatedOrderInfo(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -11063,22 +9738,20 @@ where
 
     // Informs TDLib that messages are being viewed by the user. Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels)
     pub async fn view_messages<C: AsRef<ViewMessages>>(&self, view_messages: C) -> RTDResult<Ok> {
-        let extra = view_messages.as_ref().extra().ok_or(RTDError::Internal(
-            "invalid tdlib response type, not have `extra` field",
-        ))?;
+        let extra = view_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, view_messages.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -11092,22 +9765,20 @@ where
         let extra = view_trending_sticker_sets
             .as_ref()
             .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+            .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, view_trending_sticker_sets.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
@@ -11118,122 +9789,22 @@ where
         &self,
         write_generated_file_part: C,
     ) -> RTDResult<Ok> {
-        let extra = write_generated_file_part
-            .as_ref()
-            .extra()
-            .ok_or(RTDError::Internal(
-                "invalid tdlib response type, not have `extra` field",
-            ))?;
+        let extra = write_generated_file_part.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, write_generated_file_part.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
-            Err(_) => Err(RTDError::Internal("receiver already closed")),
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
                 _ => {
-                    error!("invalid response received: {:?}", v);
-                    Err(RTDError::Internal("receive invalid response"))
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
                 }
             },
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::client::client::Client;
-    use crate::client::tdlib_client::TdLibClient;
-    use crate::client::worker::Worker;
-    use crate::errors::RTDResult;
-    use crate::tdjson;
-    use crate::client::observer::OBSERVER;
-    use crate::types::{Chats, RFunction, RObject, SearchPublicChats, TdlibParameters};
-    use std::time::Duration;
-    use tokio::time::timeout;
-
-    #[derive(Clone)]
-    struct MockedRawApi {
-        to_receive: Option<String>,
-    }
-
-    impl MockedRawApi {
-        pub fn set_to_receive(&mut self, value: String) {
-            trace!("delayed to receive: {}", value);
-            self.to_receive = Some(value);
-        }
-
-        pub fn new() -> Self {
-            Self { to_receive: None }
-        }
-    }
-
-    impl TdLibClient for MockedRawApi {
-        fn send<Fnc: RFunction>(&self, _client_id: tdjson::ClientId, fnc: Fnc) -> RTDResult<()> {
-            Ok(())
-        }
-
-        fn receive(&self, timeout: f64) -> Option<String> {
-            self.to_receive.clone()
-        }
-
-        fn execute<Fnc: RFunction>(&self, _fnc: Fnc) -> RTDResult<Option<String>> {
-            unimplemented!()
-        }
-
-        fn new_client(&self) -> tdjson::ClientId {
-            1
-        }
-    }
-
-    #[tokio::test]
-    async fn test_request_flow() {
-        // here we just test request-response flow with SearchPublicChats request
-        env_logger::init();
-
-        let mut mocked_raw_api = MockedRawApi::new();
-
-        let search_req = SearchPublicChats::builder().build();
-        let chats = Chats::builder().chat_ids(vec![1, 2, 3]).build();
-        let chats: serde_json::Value = serde_json::to_value(chats).unwrap();
-        let mut chats_object = chats.as_object().unwrap().clone();
-        chats_object.insert(
-            "@client_id".to_string(),
-            serde_json::Value::Number(1.into())
-        );
-        chats_object.insert(
-            "@extra".to_string(),
-            serde_json::Value::String(search_req.extra().unwrap().to_string()),
-        );
-        chats_object.insert(
-            "@type".to_string(),
-            serde_json::Value::String("chats".to_string()),
-        );
-        let to_receive = serde_json::to_string(&chats_object).unwrap();
-        mocked_raw_api.set_to_receive(to_receive);
-        trace!("chats objects: {:?}", chats_object);
-
-        let mut worker = Worker::builder().with_tdlib_client(mocked_raw_api.clone()).build().unwrap();
-        worker.start();
-
-        let client = worker.set_client(Client::builder()
-                    .with_tdlib_client(mocked_raw_api.clone())
-                    .with_tdlib_parameters(TdlibParameters::builder().build())
-                    .build()
-                    .unwrap()).await;
-
-        match timeout(
-            Duration::from_secs(10),
-            client.search_public_chats(search_req),
-        )
-        .await
-        {
-            Err(_) => panic!("did not receive response within 1 s"),
-            Ok(Err(e)) => panic!("{}", e),
-            Ok(Ok(result)) => assert_eq!(result.chat_ids(), &vec![1, 2, 3]),
         }
     }
 }

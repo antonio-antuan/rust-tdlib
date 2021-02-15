@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains the description of an error in a Telegram Passport element
+/// Contains the description of an error in a Telegram Passport element
 pub trait TDPassportElementErrorSource: Debug + RObject {}
 
 /// Contains the description of an error in a Telegram Passport element
@@ -114,7 +114,7 @@ pub struct PassportElementErrorSourceDataField {
 impl RObject for PassportElementErrorSourceDataField {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -183,7 +183,7 @@ pub struct PassportElementErrorSourceFile {
 impl RObject for PassportElementErrorSourceFile {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -250,7 +250,7 @@ pub struct PassportElementErrorSourceFiles {
 impl RObject for PassportElementErrorSourceFiles {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -308,7 +308,7 @@ pub struct PassportElementErrorSourceFrontSide {
 impl RObject for PassportElementErrorSourceFrontSide {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -366,7 +366,7 @@ pub struct PassportElementErrorSourceReverseSide {
 impl RObject for PassportElementErrorSourceReverseSide {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -426,7 +426,7 @@ pub struct PassportElementErrorSourceSelfie {
 impl RObject for PassportElementErrorSourceSelfie {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -486,7 +486,7 @@ pub struct PassportElementErrorSourceTranslationFile {
 impl RObject for PassportElementErrorSourceTranslationFile {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -557,7 +557,7 @@ pub struct PassportElementErrorSourceTranslationFiles {
 impl RObject for PassportElementErrorSourceTranslationFiles {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -619,7 +619,7 @@ pub struct PassportElementErrorSourceUnspecified {
 impl RObject for PassportElementErrorSourceUnspecified {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

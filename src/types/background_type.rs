@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of a background
+/// Describes the type of a background
 pub trait TDBackgroundType: Debug + RObject {}
 
 /// Describes the type of a background
@@ -84,7 +84,7 @@ pub struct BackgroundTypeFill {
 impl RObject for BackgroundTypeFill {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -157,7 +157,7 @@ pub struct BackgroundTypePattern {
 impl RObject for BackgroundTypePattern {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -246,7 +246,7 @@ pub struct BackgroundTypeWallpaper {
 impl RObject for BackgroundTypeWallpaper {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

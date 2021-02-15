@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about the time when a scheduled message will be sent
+/// Contains information about the time when a scheduled message will be sent
 pub trait TDMessageSchedulingState: Debug + RObject {}
 
 /// Contains information about the time when a scheduled message will be sent
@@ -79,7 +79,7 @@ pub struct MessageSchedulingStateSendAtDate {
 impl RObject for MessageSchedulingStateSendAtDate {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -146,7 +146,7 @@ pub struct MessageSchedulingStateSendWhenOnline {
 impl RObject for MessageSchedulingStateSendWhenOnline {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

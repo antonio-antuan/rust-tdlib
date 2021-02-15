@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about the sending state of the message
+/// Contains information about the sending state of the message
 pub trait TDMessageSendingState: Debug + RObject {}
 
 /// Contains information about the sending state of the message
@@ -85,7 +85,7 @@ pub struct MessageSendingStateFailed {
 impl RObject for MessageSendingStateFailed {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -179,7 +179,7 @@ pub struct MessageSendingStatePending {
 impl RObject for MessageSendingStatePending {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents the categories of chats for which a list of frequently used chats can be retrieved
+/// Represents the categories of chats for which a list of frequently used chats can be retrieved
 pub trait TDTopChatCategory: Debug + RObject {}
 
 /// Represents the categories of chats for which a list of frequently used chats can be retrieved
@@ -102,7 +102,7 @@ pub struct TopChatCategoryBots {
 impl RObject for TopChatCategoryBots {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -160,7 +160,7 @@ pub struct TopChatCategoryCalls {
 impl RObject for TopChatCategoryCalls {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -218,7 +218,7 @@ pub struct TopChatCategoryChannels {
 impl RObject for TopChatCategoryChannels {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -276,7 +276,7 @@ pub struct TopChatCategoryForwardChats {
 impl RObject for TopChatCategoryForwardChats {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -334,7 +334,7 @@ pub struct TopChatCategoryGroups {
 impl RObject for TopChatCategoryGroups {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -392,7 +392,7 @@ pub struct TopChatCategoryInlineBots {
 impl RObject for TopChatCategoryInlineBots {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -450,7 +450,7 @@ pub struct TopChatCategoryUsers {
 impl RObject for TopChatCategoryUsers {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a statistical graph
+/// Describes a statistical graph
 pub trait TDStatisticalGraph: Debug + RObject {}
 
 /// Describes a statistical graph
@@ -89,7 +89,7 @@ pub struct StatisticalGraphAsync {
 impl RObject for StatisticalGraphAsync {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -160,7 +160,7 @@ pub struct StatisticalGraphData {
 impl RObject for StatisticalGraphData {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -238,7 +238,7 @@ pub struct StatisticalGraphError {
 impl RObject for StatisticalGraphError {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

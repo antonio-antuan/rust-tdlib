@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a reason why an external chat is shown in a chat list
+/// Describes a reason why an external chat is shown in a chat list
 pub trait TDChatSource: Debug + RObject {}
 
 /// Describes a reason why an external chat is shown in a chat list
@@ -77,7 +77,7 @@ pub struct ChatSourceMtprotoProxy {
 impl RObject for ChatSourceMtprotoProxy {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -140,7 +140,7 @@ pub struct ChatSourcePublicServiceAnnouncement {
 impl RObject for ChatSourcePublicServiceAnnouncement {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

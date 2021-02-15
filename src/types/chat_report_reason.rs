@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the reason why a chat is reported
+/// Describes the reason why a chat is reported
 pub trait TDChatReportReason: Debug + RObject {}
 
 /// Describes the reason why a chat is reported
@@ -102,7 +102,7 @@ pub struct ChatReportReasonChildAbuse {
 impl RObject for ChatReportReasonChildAbuse {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -160,7 +160,7 @@ pub struct ChatReportReasonCopyright {
 impl RObject for ChatReportReasonCopyright {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -220,7 +220,7 @@ pub struct ChatReportReasonCustom {
 impl RObject for ChatReportReasonCustom {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -287,7 +287,7 @@ pub struct ChatReportReasonPornography {
 impl RObject for ChatReportReasonPornography {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -345,7 +345,7 @@ pub struct ChatReportReasonSpam {
 impl RObject for ChatReportReasonSpam {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -403,7 +403,7 @@ pub struct ChatReportReasonUnrelatedLocation {
 impl RObject for ChatReportReasonUnrelatedLocation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -461,7 +461,7 @@ pub struct ChatReportReasonViolence {
 impl RObject for ChatReportReasonViolence {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

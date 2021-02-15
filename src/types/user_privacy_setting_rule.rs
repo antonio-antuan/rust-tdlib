@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents a single rule for managing privacy settings
+/// Represents a single rule for managing privacy settings
 pub trait TDUserPrivacySettingRule: Debug + RObject {}
 
 /// Represents a single rule for managing privacy settings
@@ -107,7 +107,7 @@ pub struct UserPrivacySettingRuleAllowAll {
 impl RObject for UserPrivacySettingRuleAllowAll {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -167,7 +167,7 @@ pub struct UserPrivacySettingRuleAllowChatMembers {
 impl RObject for UserPrivacySettingRuleAllowChatMembers {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -236,7 +236,7 @@ pub struct UserPrivacySettingRuleAllowContacts {
 impl RObject for UserPrivacySettingRuleAllowContacts {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -296,7 +296,7 @@ pub struct UserPrivacySettingRuleAllowUsers {
 impl RObject for UserPrivacySettingRuleAllowUsers {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -363,7 +363,7 @@ pub struct UserPrivacySettingRuleRestrictAll {
 impl RObject for UserPrivacySettingRuleRestrictAll {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -423,7 +423,7 @@ pub struct UserPrivacySettingRuleRestrictChatMembers {
 impl RObject for UserPrivacySettingRuleRestrictChatMembers {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -494,7 +494,7 @@ pub struct UserPrivacySettingRuleRestrictContacts {
 impl RObject for UserPrivacySettingRuleRestrictContacts {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -556,7 +556,7 @@ pub struct UserPrivacySettingRuleRestrictUsers {
 impl RObject for UserPrivacySettingRuleRestrictUsers {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

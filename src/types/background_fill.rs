@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a fill of a background
+/// Describes a fill of a background
 pub trait TDBackgroundFill: Debug + RObject {}
 
 /// Describes a fill of a background
@@ -83,7 +83,7 @@ pub struct BackgroundFillGradient {
 impl RObject for BackgroundFillGradient {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -170,7 +170,7 @@ pub struct BackgroundFillSolid {
 impl RObject for BackgroundFillSolid {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

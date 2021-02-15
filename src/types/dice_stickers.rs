@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains animated stickers which should be used for dice animation rendering
+/// Contains animated stickers which should be used for dice animation rendering
 pub trait TDDiceStickers: Debug + RObject {}
 
 /// Contains animated stickers which should be used for dice animation rendering
@@ -79,7 +79,7 @@ pub struct DiceStickersRegular {
 impl RObject for DiceStickersRegular {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -156,7 +156,7 @@ pub struct DiceStickersSlotMachine {
 impl RObject for DiceStickersSlotMachine {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

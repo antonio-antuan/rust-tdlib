@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a keyboard button type
+/// Describes a keyboard button type
 pub trait TDKeyboardButtonType: Debug + RObject {}
 
 /// Describes a keyboard button type
@@ -87,7 +87,7 @@ pub struct KeyboardButtonTypeRequestLocation {
 impl RObject for KeyboardButtonTypeRequestLocation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -145,7 +145,7 @@ pub struct KeyboardButtonTypeRequestPhoneNumber {
 impl RObject for KeyboardButtonTypeRequestPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -209,7 +209,7 @@ pub struct KeyboardButtonTypeRequestPoll {
 impl RObject for KeyboardButtonTypeRequestPoll {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -285,7 +285,7 @@ pub struct KeyboardButtonTypeText {
 impl RObject for KeyboardButtonTypeText {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

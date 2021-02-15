@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of a poll
+/// Describes the type of a poll
 pub trait TDPollType: Debug + RObject {}
 
 /// Describes the type of a poll
@@ -81,7 +81,7 @@ pub struct PollTypeQuiz {
 impl RObject for PollTypeQuiz {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -159,7 +159,7 @@ pub struct PollTypeRegular {
 impl RObject for PollTypeRegular {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

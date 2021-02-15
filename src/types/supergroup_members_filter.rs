@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Specifies the kind of chat members to return in getSupergroupMembers
+/// Specifies the kind of chat members to return in getSupergroupMembers
 pub trait TDSupergroupMembersFilter: Debug + RObject {}
 
 /// Specifies the kind of chat members to return in getSupergroupMembers
@@ -107,7 +107,7 @@ pub struct SupergroupMembersFilterAdministrators {
 impl RObject for SupergroupMembersFilterAdministrators {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -169,7 +169,7 @@ pub struct SupergroupMembersFilterBanned {
 impl RObject for SupergroupMembersFilterBanned {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -236,7 +236,7 @@ pub struct SupergroupMembersFilterBots {
 impl RObject for SupergroupMembersFilterBots {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -296,7 +296,7 @@ pub struct SupergroupMembersFilterContacts {
 impl RObject for SupergroupMembersFilterContacts {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -367,7 +367,7 @@ pub struct SupergroupMembersFilterMention {
 impl RObject for SupergroupMembersFilterMention {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -443,7 +443,7 @@ pub struct SupergroupMembersFilterRecent {
 impl RObject for SupergroupMembersFilterRecent {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -503,7 +503,7 @@ pub struct SupergroupMembersFilterRestricted {
 impl RObject for SupergroupMembersFilterRestricted {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -572,7 +572,7 @@ pub struct SupergroupMembersFilterSearch {
 impl RObject for SupergroupMembersFilterSearch {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

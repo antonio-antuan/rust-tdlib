@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents a part of the text which must be formatted differently
+/// Represents a part of the text which must be formatted differently
 pub trait TDTextEntityType: Debug + RObject {}
 
 /// Represents a part of the text which must be formatted differently
@@ -152,7 +152,7 @@ pub struct TextEntityTypeBankCardNumber {
 impl RObject for TextEntityTypeBankCardNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -210,7 +210,7 @@ pub struct TextEntityTypeBold {
 impl RObject for TextEntityTypeBold {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -268,7 +268,7 @@ pub struct TextEntityTypeBotCommand {
 impl RObject for TextEntityTypeBotCommand {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -326,7 +326,7 @@ pub struct TextEntityTypeCashtag {
 impl RObject for TextEntityTypeCashtag {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -384,7 +384,7 @@ pub struct TextEntityTypeCode {
 impl RObject for TextEntityTypeCode {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -442,7 +442,7 @@ pub struct TextEntityTypeEmailAddress {
 impl RObject for TextEntityTypeEmailAddress {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -500,7 +500,7 @@ pub struct TextEntityTypeHashtag {
 impl RObject for TextEntityTypeHashtag {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -558,7 +558,7 @@ pub struct TextEntityTypeItalic {
 impl RObject for TextEntityTypeItalic {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -616,7 +616,7 @@ pub struct TextEntityTypeMention {
 impl RObject for TextEntityTypeMention {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -676,7 +676,7 @@ pub struct TextEntityTypeMentionName {
 impl RObject for TextEntityTypeMentionName {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -743,7 +743,7 @@ pub struct TextEntityTypePhoneNumber {
 impl RObject for TextEntityTypePhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -801,7 +801,7 @@ pub struct TextEntityTypePre {
 impl RObject for TextEntityTypePre {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -861,7 +861,7 @@ pub struct TextEntityTypePreCode {
 impl RObject for TextEntityTypePreCode {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -928,7 +928,7 @@ pub struct TextEntityTypeStrikethrough {
 impl RObject for TextEntityTypeStrikethrough {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -988,7 +988,7 @@ pub struct TextEntityTypeTextUrl {
 impl RObject for TextEntityTypeTextUrl {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1055,7 +1055,7 @@ pub struct TextEntityTypeUnderline {
 impl RObject for TextEntityTypeUnderline {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1113,7 +1113,7 @@ pub struct TextEntityTypeUrl {
 impl RObject for TextEntityTypeUrl {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

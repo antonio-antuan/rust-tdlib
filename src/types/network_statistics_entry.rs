@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains statistics about network usage
+/// Contains statistics about network usage
 pub trait TDNetworkStatisticsEntry: Debug + RObject {}
 
 /// Contains statistics about network usage
@@ -85,7 +85,7 @@ pub struct NetworkStatisticsEntryCall {
 impl RObject for NetworkStatisticsEntryCall {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -187,7 +187,7 @@ pub struct NetworkStatisticsEntryFile {
 impl RObject for NetworkStatisticsEntryFile {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

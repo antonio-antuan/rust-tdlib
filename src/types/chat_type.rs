@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of a chat
+/// Describes the type of a chat
 pub trait TDChatType: Debug + RObject {}
 
 /// Describes the type of a chat
@@ -89,7 +89,7 @@ pub struct ChatTypeBasicGroup {
 impl RObject for ChatTypeBasicGroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -158,7 +158,7 @@ pub struct ChatTypePrivate {
 impl RObject for ChatTypePrivate {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -229,7 +229,7 @@ pub struct ChatTypeSecret {
 impl RObject for ChatTypeSecret {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -309,7 +309,7 @@ pub struct ChatTypeSupergroup {
 impl RObject for ChatTypeSupergroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

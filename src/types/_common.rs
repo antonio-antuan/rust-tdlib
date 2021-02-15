@@ -606,10 +606,10 @@ impl<'de> Deserialize<'de> for TdType {
         {
             return Ok(t);
         }
-        return Err(D::Error::custom(format!(
+        Err(D::Error::custom(format!(
             "got {} @type with unavailable variant",
             rtd_trait_type
-        )));
+        )))
     }
 }
 
@@ -617,6 +617,17 @@ fn deserialize_traits(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
+    if let Some(td_type) = deserialize_update(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_json_value(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_option_value(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
     if let Some(td_type) = deserialize_authorization_state(rtd_trait_type, rtd_trait_value.clone())?
     {
         return Ok(Some(td_type));
@@ -632,13 +643,8 @@ fn deserialize_traits(
         return Ok(Some(td_type));
     };
 
-    if let Some(td_type) =
-        deserialize_check_chat_username_result(rtd_trait_type, rtd_trait_value.clone())?
+    if let Some(td_type) = deserialize_check_chat_username_result(rtd_trait_type, rtd_trait_value.clone())?
     {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_json_value(rtd_trait_type, rtd_trait_value.clone())? {
         return Ok(Some(td_type));
     };
 
@@ -656,19 +662,11 @@ fn deserialize_traits(
         return Ok(Some(td_type));
     };
 
-    if let Some(td_type) = deserialize_option_value(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
     if let Some(td_type) = deserialize_passport_element(rtd_trait_type, rtd_trait_value.clone())? {
         return Ok(Some(td_type));
     };
 
-    if let Some(td_type) = deserialize_statistical_graph(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_update(rtd_trait_type, rtd_trait_value.clone())? {
+    if let Some(td_type) = deserialize_statistical_graph(rtd_trait_type, rtd_trait_value)? {
         return Ok(Some(td_type));
     };
 
@@ -680,312 +678,228 @@ fn deserialize_direct_types(
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
     Ok(match rtd_trait_type {
-        "accountTtl" => Some(TdType::AccountTtl(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "animations" => Some(TdType::Animations(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "accountTtl" => Some(TdType::AccountTtl(serde_json::from_value(rtd_trait_value)?)),
+        "animations" => Some(TdType::Animations(serde_json::from_value(rtd_trait_value)?)),
         "authenticationCodeInfo" => Some(TdType::AuthenticationCodeInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "autoDownloadSettingsPresets" => Some(TdType::AutoDownloadSettingsPresets(
-            serde_json::from_value(rtd_trait_value.clone())?,
+            serde_json::from_value(rtd_trait_value)?,
         )),
-        "background" => Some(TdType::Background(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "background" => Some(TdType::Background(serde_json::from_value(rtd_trait_value)?)),
         "backgrounds" => Some(TdType::Backgrounds(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "bankCardInfo" => Some(TdType::BankCardInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "basicGroup" => Some(TdType::BasicGroup(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "basicGroup" => Some(TdType::BasicGroup(serde_json::from_value(rtd_trait_value)?)),
         "basicGroupFullInfo" => Some(TdType::BasicGroupFullInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "callId" => Some(TdType::CallId(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "callId" => Some(TdType::CallId(serde_json::from_value(rtd_trait_value)?)),
         "callbackQueryAnswer" => Some(TdType::CallbackQueryAnswer(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "chat" => Some(TdType::Chat(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "chat" => Some(TdType::Chat(serde_json::from_value(rtd_trait_value)?)),
         "chatAdministrators" => Some(TdType::ChatAdministrators(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "chatEvents" => Some(TdType::ChatEvents(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "chatFilter" => Some(TdType::ChatFilter(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "chatEvents" => Some(TdType::ChatEvents(serde_json::from_value(rtd_trait_value)?)),
+        "chatFilter" => Some(TdType::ChatFilter(serde_json::from_value(rtd_trait_value)?)),
         "chatFilterInfo" => Some(TdType::ChatFilterInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "chatInviteLink" => Some(TdType::ChatInviteLink(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "chatInviteLinkInfo" => Some(TdType::ChatInviteLinkInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "chatLists" => Some(TdType::ChatLists(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "chatMember" => Some(TdType::ChatMember(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "chatLists" => Some(TdType::ChatLists(serde_json::from_value(rtd_trait_value)?)),
+        "chatMember" => Some(TdType::ChatMember(serde_json::from_value(rtd_trait_value)?)),
         "chatMembers" => Some(TdType::ChatMembers(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "chatPhotos" => Some(TdType::ChatPhotos(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "chats" => Some(TdType::Chats(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "chatPhotos" => Some(TdType::ChatPhotos(serde_json::from_value(rtd_trait_value)?)),
+        "chats" => Some(TdType::Chats(serde_json::from_value(rtd_trait_value)?)),
         "chatsNearby" => Some(TdType::ChatsNearby(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "connectedWebsites" => Some(TdType::ConnectedWebsites(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "count" => Some(TdType::Count(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "countries" => Some(TdType::Countries(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "count" => Some(TdType::Count(serde_json::from_value(rtd_trait_value)?)),
+        "countries" => Some(TdType::Countries(serde_json::from_value(rtd_trait_value)?)),
         "customRequestResult" => Some(TdType::CustomRequestResult(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "databaseStatistics" => Some(TdType::DatabaseStatistics(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "deepLinkInfo" => Some(TdType::DeepLinkInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "emailAddressAuthenticationCodeInfo" => Some(TdType::EmailAddressAuthenticationCodeInfo(
-            serde_json::from_value(rtd_trait_value.clone())?,
+            serde_json::from_value(rtd_trait_value)?,
         )),
-        "emojis" => Some(TdType::Emojis(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "error" => Some(TdType::Error(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "file" => Some(TdType::File(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "filePart" => Some(TdType::FilePart(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "emojis" => Some(TdType::Emojis(serde_json::from_value(rtd_trait_value)?)),
+        "error" => Some(TdType::Error(serde_json::from_value(rtd_trait_value)?)),
+        "file" => Some(TdType::File(serde_json::from_value(rtd_trait_value)?)),
+        "filePart" => Some(TdType::FilePart(serde_json::from_value(rtd_trait_value)?)),
         "formattedText" => Some(TdType::FormattedText(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "foundMessages" => Some(TdType::FoundMessages(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "gameHighScores" => Some(TdType::GameHighScores(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "hashtags" => Some(TdType::Hashtags(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "httpUrl" => Some(TdType::HttpUrl(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "hashtags" => Some(TdType::Hashtags(serde_json::from_value(rtd_trait_value)?)),
+        "httpUrl" => Some(TdType::HttpUrl(serde_json::from_value(rtd_trait_value)?)),
         "importedContacts" => Some(TdType::ImportedContacts(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "inlineQueryResults" => Some(TdType::InlineQueryResults(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "languagePackInfo" => Some(TdType::LanguagePackInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "languagePackStrings" => Some(TdType::LanguagePackStrings(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "localizationTargetInfo" => Some(TdType::LocalizationTargetInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "logTags" => Some(TdType::LogTags(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "logTags" => Some(TdType::LogTags(serde_json::from_value(rtd_trait_value)?)),
         "logVerbosityLevel" => Some(TdType::LogVerbosityLevel(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "message" => Some(TdType::Message(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "message" => Some(TdType::Message(serde_json::from_value(rtd_trait_value)?)),
         "messageLink" => Some(TdType::MessageLink(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "messageLinkInfo" => Some(TdType::MessageLinkInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "messageSenders" => Some(TdType::MessageSenders(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "messageStatistics" => Some(TdType::MessageStatistics(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "messageThreadInfo" => Some(TdType::MessageThreadInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "messages" => Some(TdType::Messages(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "messages" => Some(TdType::Messages(serde_json::from_value(rtd_trait_value)?)),
         "networkStatistics" => Some(TdType::NetworkStatistics(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "ok" => Some(TdType::Ok(serde_json::from_value(rtd_trait_value.clone())?)),
-        "orderInfo" => Some(TdType::OrderInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "ok" => Some(TdType::Ok(serde_json::from_value(rtd_trait_value)?)),
+        "orderInfo" => Some(TdType::OrderInfo(serde_json::from_value(rtd_trait_value)?)),
         "passportAuthorizationForm" => Some(TdType::PassportAuthorizationForm(
-            serde_json::from_value(rtd_trait_value.clone())?,
+            serde_json::from_value(rtd_trait_value)?,
         )),
         "passportElements" => Some(TdType::PassportElements(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "passportElementsWithErrors" => Some(TdType::PassportElementsWithErrors(
-            serde_json::from_value(rtd_trait_value.clone())?,
+            serde_json::from_value(rtd_trait_value)?,
         )),
         "passwordState" => Some(TdType::PasswordState(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "paymentForm" => Some(TdType::PaymentForm(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "paymentReceipt" => Some(TdType::PaymentReceipt(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "paymentResult" => Some(TdType::PaymentResult(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "phoneNumberInfo" => Some(TdType::PhoneNumberInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "proxies" => Some(TdType::Proxies(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "proxy" => Some(TdType::Proxy(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "proxies" => Some(TdType::Proxies(serde_json::from_value(rtd_trait_value)?)),
+        "proxy" => Some(TdType::Proxy(serde_json::from_value(rtd_trait_value)?)),
         "pushReceiverId" => Some(TdType::PushReceiverId(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "recommendedChatFilters" => Some(TdType::RecommendedChatFilters(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "recoveryEmailAddress" => Some(TdType::RecoveryEmailAddress(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "scopeNotificationSettings" => Some(TdType::ScopeNotificationSettings(
-            serde_json::from_value(rtd_trait_value.clone())?,
+            serde_json::from_value(rtd_trait_value)?,
         )),
-        "seconds" => Some(TdType::Seconds(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "secretChat" => Some(TdType::SecretChat(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "session" => Some(TdType::Session(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "sessions" => Some(TdType::Sessions(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "stickerSet" => Some(TdType::StickerSet(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "seconds" => Some(TdType::Seconds(serde_json::from_value(rtd_trait_value)?)),
+        "secretChat" => Some(TdType::SecretChat(serde_json::from_value(rtd_trait_value)?)),
+        "session" => Some(TdType::Session(serde_json::from_value(rtd_trait_value)?)),
+        "sessions" => Some(TdType::Sessions(serde_json::from_value(rtd_trait_value)?)),
+        "stickerSet" => Some(TdType::StickerSet(serde_json::from_value(rtd_trait_value)?)),
         "stickerSets" => Some(TdType::StickerSets(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "stickers" => Some(TdType::Stickers(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "stickers" => Some(TdType::Stickers(serde_json::from_value(rtd_trait_value)?)),
         "storageStatistics" => Some(TdType::StorageStatistics(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "storageStatisticsFast" => Some(TdType::StorageStatisticsFast(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "supergroup" => Some(TdType::Supergroup(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "supergroup" => Some(TdType::Supergroup(serde_json::from_value(rtd_trait_value)?)),
         "supergroupFullInfo" => Some(TdType::SupergroupFullInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "tMeUrls" => Some(TdType::TMeUrls(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "tMeUrls" => Some(TdType::TMeUrls(serde_json::from_value(rtd_trait_value)?)),
         "temporaryPasswordState" => Some(TdType::TemporaryPasswordState(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "testBytes" => Some(TdType::TestBytes(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "testInt" => Some(TdType::TestInt(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "testString" => Some(TdType::TestString(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "testBytes" => Some(TdType::TestBytes(serde_json::from_value(rtd_trait_value)?)),
+        "testInt" => Some(TdType::TestInt(serde_json::from_value(rtd_trait_value)?)),
+        "testString" => Some(TdType::TestString(serde_json::from_value(rtd_trait_value)?)),
         "testVectorInt" => Some(TdType::TestVectorInt(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "testVectorIntObject" => Some(TdType::TestVectorIntObject(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "testVectorString" => Some(TdType::TestVectorString(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "testVectorStringObject" => Some(TdType::TestVectorStringObject(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "text" => Some(TdType::Text(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "text" => Some(TdType::Text(serde_json::from_value(rtd_trait_value)?)),
         "textEntities" => Some(TdType::TextEntities(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "updates" => Some(TdType::Updates(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
-        "user" => Some(TdType::User(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "updates" => Some(TdType::Updates(serde_json::from_value(rtd_trait_value)?)),
+        "user" => Some(TdType::User(serde_json::from_value(rtd_trait_value)?)),
         "userFullInfo" => Some(TdType::UserFullInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         "userPrivacySettingRules" => Some(TdType::UserPrivacySettingRules(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "users" => Some(TdType::Users(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "users" => Some(TdType::Users(serde_json::from_value(rtd_trait_value)?)),
         "validatedOrderInfo" => Some(TdType::ValidatedOrderInfo(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
-        "webPage" => Some(TdType::WebPage(serde_json::from_value(
-            rtd_trait_value.clone(),
-        )?)),
+        "webPage" => Some(TdType::WebPage(serde_json::from_value(rtd_trait_value)?)),
         "webPageInstantView" => Some(TdType::WebPageInstantView(serde_json::from_value(
-            rtd_trait_value.clone(),
+            rtd_trait_value,
         )?)),
         _ => None,
     })
 }
 
-const AUTHORIZATIONSTATE_MEMBERS: &'static [&'static str] = &[
+const AUTHORIZATIONSTATE_MEMBERS: &[&str] = &[
     "authorizationStateClosed",
     "authorizationStateClosing",
     "authorizationStateLoggingOut",
@@ -1012,7 +926,7 @@ fn deserialize_authorization_state(
     })
 }
 
-const CANTRANSFEROWNERSHIPRESULT_MEMBERS: &'static [&'static str] = &[
+const CANTRANSFEROWNERSHIPRESULT_MEMBERS: &[&str] = &[
     "canTransferOwnership",
     "canTransferOwnershipResultOk",
     "canTransferOwnershipResultPasswordNeeded",
@@ -1034,7 +948,7 @@ fn deserialize_can_transfer_ownership_result(
     )
 }
 
-const CHATSTATISTICS_MEMBERS: &'static [&'static str] = &[
+const CHATSTATISTICS_MEMBERS: &[&str] = &[
     "chatStatisticsChannel",
     "chatStatisticsSupergroup",
     "getChatStatistics",
@@ -1052,7 +966,7 @@ fn deserialize_chat_statistics(
     })
 }
 
-const CHECKCHATUSERNAMERESULT_MEMBERS: &'static [&'static str] = &[
+const CHECKCHATUSERNAMERESULT_MEMBERS: &[&str] = &[
     "checkChatUsername",
     "checkChatUsernameResultOk",
     "checkChatUsernameResultPublicChatsTooMuch",
@@ -1075,7 +989,7 @@ fn deserialize_check_chat_username_result(
     )
 }
 
-const JSONVALUE_MEMBERS: &'static [&'static str] = &[
+const JSONVALUE_MEMBERS: &[&str] = &[
     "getApplicationConfig",
     "getJsonValue",
     "jsonValueArray",
@@ -1096,7 +1010,7 @@ fn deserialize_json_value(
     })
 }
 
-const LANGUAGEPACKSTRINGVALUE_MEMBERS: &'static [&'static str] = &[
+const LANGUAGEPACKSTRINGVALUE_MEMBERS: &[&str] = &[
     "getLanguagePackString",
     "languagePackStringValueDeleted",
     "languagePackStringValueOrdinary",
@@ -1117,7 +1031,7 @@ fn deserialize_language_pack_string_value(
     )
 }
 
-const LOGSTREAM_MEMBERS: &'static [&'static str] = &[
+const LOGSTREAM_MEMBERS: &[&str] = &[
     "getLogStream",
     "logStreamDefault",
     "logStreamEmpty",
@@ -1134,7 +1048,7 @@ fn deserialize_log_stream(
     })
 }
 
-const LOGINURLINFO_MEMBERS: &'static [&'static str] = &[
+const LOGINURLINFO_MEMBERS: &[&str] = &[
     "getLoginUrlInfo",
     "loginUrlInfoOpen",
     "loginUrlInfoRequestConfirmation",
@@ -1152,7 +1066,7 @@ fn deserialize_login_url_info(
     })
 }
 
-const OPTIONVALUE_MEMBERS: &'static [&'static str] = &[
+const OPTIONVALUE_MEMBERS: &[&str] = &[
     "getOption",
     "optionValueBoolean",
     "optionValueEmpty",
@@ -1172,7 +1086,7 @@ fn deserialize_option_value(
     })
 }
 
-const PASSPORTELEMENT_MEMBERS: &'static [&'static str] = &[
+const PASSPORTELEMENT_MEMBERS: &[&str] = &[
     "getPassportElement",
     "passportElementAddress",
     "passportElementBankStatement",
@@ -1202,7 +1116,7 @@ fn deserialize_passport_element(
     })
 }
 
-const STATISTICALGRAPH_MEMBERS: &'static [&'static str] = &[
+const STATISTICALGRAPH_MEMBERS: &[&str] = &[
     "getStatisticalGraph",
     "statisticalGraphAsync",
     "statisticalGraphData",
@@ -1221,7 +1135,7 @@ fn deserialize_statistical_graph(
     })
 }
 
-const UPDATE_MEMBERS: &'static [&'static str] = &[
+const UPDATE_MEMBERS: &[&str] = &[
     "testUseUpdate",
     "updateActiveNotifications",
     "updateAnimationSearchParameters",

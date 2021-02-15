@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of a call server
+/// Describes the type of a call server
 pub trait TDCallServerType: Debug + RObject {}
 
 /// Describes the type of a call server
@@ -79,7 +79,7 @@ pub struct CallServerTypeTelegramReflector {
 impl RObject for CallServerTypeTelegramReflector {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -154,7 +154,7 @@ pub struct CallServerTypeWebrtc {
 impl RObject for CallServerTypeWebrtc {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

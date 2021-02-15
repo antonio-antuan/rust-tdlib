@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents the type of a user. The following types are possible: regular users, deleted users and bots
+/// Represents the type of a user. The following types are possible: regular users, deleted users and bots
 pub trait TDUserType: Debug + RObject {}
 
 /// Represents the type of a user. The following types are possible: regular users, deleted users and bots
@@ -97,7 +97,7 @@ pub struct UserTypeBot {
 impl RObject for UserTypeBot {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -203,7 +203,7 @@ pub struct UserTypeDeleted {
 impl RObject for UserTypeDeleted {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -261,7 +261,7 @@ pub struct UserTypeRegular {
 impl RObject for UserTypeRegular {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -319,7 +319,7 @@ pub struct UserTypeUnknown {
 impl RObject for UserTypeUnknown {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents a filter for message search results
+/// Represents a filter for message search results
 pub trait TDSearchMessagesFilter: Debug + RObject {}
 
 /// Represents a filter for message search results
@@ -157,7 +157,7 @@ pub struct SearchMessagesFilterAnimation {
 impl RObject for SearchMessagesFilterAnimation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -215,7 +215,7 @@ pub struct SearchMessagesFilterAudio {
 impl RObject for SearchMessagesFilterAudio {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -273,7 +273,7 @@ pub struct SearchMessagesFilterCall {
 impl RObject for SearchMessagesFilterCall {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -331,7 +331,7 @@ pub struct SearchMessagesFilterChatPhoto {
 impl RObject for SearchMessagesFilterChatPhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -389,7 +389,7 @@ pub struct SearchMessagesFilterDocument {
 impl RObject for SearchMessagesFilterDocument {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -447,7 +447,7 @@ pub struct SearchMessagesFilterEmpty {
 impl RObject for SearchMessagesFilterEmpty {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -505,7 +505,7 @@ pub struct SearchMessagesFilterFailedToSend {
 impl RObject for SearchMessagesFilterFailedToSend {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -563,7 +563,7 @@ pub struct SearchMessagesFilterMention {
 impl RObject for SearchMessagesFilterMention {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -621,7 +621,7 @@ pub struct SearchMessagesFilterMissedCall {
 impl RObject for SearchMessagesFilterMissedCall {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -679,7 +679,7 @@ pub struct SearchMessagesFilterPhoto {
 impl RObject for SearchMessagesFilterPhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -737,7 +737,7 @@ pub struct SearchMessagesFilterPhotoAndVideo {
 impl RObject for SearchMessagesFilterPhotoAndVideo {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -795,7 +795,7 @@ pub struct SearchMessagesFilterPinned {
 impl RObject for SearchMessagesFilterPinned {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -853,7 +853,7 @@ pub struct SearchMessagesFilterUnreadMention {
 impl RObject for SearchMessagesFilterUnreadMention {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -911,7 +911,7 @@ pub struct SearchMessagesFilterUrl {
 impl RObject for SearchMessagesFilterUrl {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -969,7 +969,7 @@ pub struct SearchMessagesFilterVideo {
 impl RObject for SearchMessagesFilterVideo {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1027,7 +1027,7 @@ pub struct SearchMessagesFilterVideoNote {
 impl RObject for SearchMessagesFilterVideoNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1085,7 +1085,7 @@ pub struct SearchMessagesFilterVoiceAndVideoNote {
 impl RObject for SearchMessagesFilterVoiceAndVideoNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1145,7 +1145,7 @@ pub struct SearchMessagesFilterVoiceNote {
 impl RObject for SearchMessagesFilterVoiceNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

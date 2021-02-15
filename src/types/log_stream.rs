@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a stream to which TDLib internal log is written
+/// Describes a stream to which TDLib internal log is written
 pub trait TDLogStream: Debug + RObject {}
 
 /// Describes a stream to which TDLib internal log is written
@@ -87,7 +87,7 @@ pub struct LogStreamDefault {
 impl RObject for LogStreamDefault {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -145,7 +145,7 @@ pub struct LogStreamEmpty {
 impl RObject for LogStreamEmpty {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -209,7 +209,7 @@ pub struct LogStreamFile {
 impl RObject for LogStreamFile {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

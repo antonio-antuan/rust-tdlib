@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about a Telegram Passport element to be saved
+/// Contains information about a Telegram Passport element to be saved
 pub trait TDInputPassportElement: Debug + RObject {}
 
 /// Contains information about a Telegram Passport element to be saved
@@ -134,7 +134,7 @@ pub struct InputPassportElementAddress {
 impl RObject for InputPassportElementAddress {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -203,7 +203,7 @@ pub struct InputPassportElementBankStatement {
 impl RObject for InputPassportElementBankStatement {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -275,7 +275,7 @@ pub struct InputPassportElementDriverLicense {
 impl RObject for InputPassportElementDriverLicense {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -347,7 +347,7 @@ pub struct InputPassportElementEmailAddress {
 impl RObject for InputPassportElementEmailAddress {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -416,7 +416,7 @@ pub struct InputPassportElementIdentityCard {
 impl RObject for InputPassportElementIdentityCard {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -488,7 +488,7 @@ pub struct InputPassportElementInternalPassport {
 impl RObject for InputPassportElementInternalPassport {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -562,7 +562,7 @@ pub struct InputPassportElementPassport {
 impl RObject for InputPassportElementPassport {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -631,7 +631,7 @@ pub struct InputPassportElementPassportRegistration {
 impl RObject for InputPassportElementPassportRegistration {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -705,7 +705,7 @@ pub struct InputPassportElementPersonalDetails {
 impl RObject for InputPassportElementPersonalDetails {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -777,7 +777,7 @@ pub struct InputPassportElementPhoneNumber {
 impl RObject for InputPassportElementPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -846,7 +846,7 @@ pub struct InputPassportElementRentalAgreement {
 impl RObject for InputPassportElementRentalAgreement {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -918,7 +918,7 @@ pub struct InputPassportElementTemporaryRegistration {
 impl RObject for InputPassportElementTemporaryRegistration {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -994,7 +994,7 @@ pub struct InputPassportElementUtilityBill {
 impl RObject for InputPassportElementUtilityBill {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

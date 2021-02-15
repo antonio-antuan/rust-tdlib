@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents a single result of an inline query; for bots only
+/// Represents a single result of an inline query; for bots only
 pub trait TDInputInlineQueryResult: Debug + RObject {}
 
 /// Represents a single result of an inline query; for bots only
@@ -149,7 +149,7 @@ pub struct InputInlineQueryResultAnimation {
 impl RObject for InputInlineQueryResultAnimation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -329,7 +329,7 @@ pub struct InputInlineQueryResultArticle {
 impl RObject for InputInlineQueryResultArticle {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -494,7 +494,7 @@ pub struct InputInlineQueryResultAudio {
 impl RObject for InputInlineQueryResultAudio {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -632,7 +632,7 @@ pub struct InputInlineQueryResultContact {
 impl RObject for InputInlineQueryResultContact {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -776,7 +776,7 @@ pub struct InputInlineQueryResultDocument {
 impl RObject for InputInlineQueryResultDocument {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -933,7 +933,7 @@ pub struct InputInlineQueryResultGame {
 impl RObject for InputInlineQueryResultGame {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1036,7 +1036,7 @@ pub struct InputInlineQueryResultLocation {
 impl RObject for InputInlineQueryResultLocation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1196,7 +1196,7 @@ pub struct InputInlineQueryResultPhoto {
 impl RObject for InputInlineQueryResultPhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1352,7 +1352,7 @@ pub struct InputInlineQueryResultSticker {
 impl RObject for InputInlineQueryResultSticker {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1490,7 +1490,7 @@ pub struct InputInlineQueryResultVenue {
 impl RObject for InputInlineQueryResultVenue {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1636,7 +1636,7 @@ pub struct InputInlineQueryResultVideo {
 impl RObject for InputInlineQueryResultVideo {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1808,7 +1808,7 @@ pub struct InputInlineQueryResultVoiceNote {
 impl RObject for InputInlineQueryResultVoiceNote {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

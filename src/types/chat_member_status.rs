@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Provides information about the status of a member in a chat
+/// Provides information about the status of a member in a chat
 pub trait TDChatMemberStatus: Debug + RObject {}
 
 /// Provides information about the status of a member in a chat
@@ -119,7 +119,7 @@ pub struct ChatMemberStatusAdministrator {
 impl RObject for ChatMemberStatusAdministrator {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -278,7 +278,7 @@ pub struct ChatMemberStatusBanned {
 impl RObject for ChatMemberStatusBanned {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -351,7 +351,7 @@ pub struct ChatMemberStatusCreator {
 impl RObject for ChatMemberStatusCreator {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -436,7 +436,7 @@ pub struct ChatMemberStatusLeft {
 impl RObject for ChatMemberStatusLeft {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -494,7 +494,7 @@ pub struct ChatMemberStatusMember {
 impl RObject for ChatMemberStatusMember {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -558,7 +558,7 @@ pub struct ChatMemberStatusRestricted {
 impl RObject for ChatMemberStatusRestricted {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

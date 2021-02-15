@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents the current authorization state of the TDLib client
+/// Represents the current authorization state of the TDLib client
 pub trait TDAuthorizationState: Debug + RObject {}
 
 /// Represents the current authorization state of the TDLib client
@@ -127,7 +127,7 @@ pub struct AuthorizationStateClosed {
 impl RObject for AuthorizationStateClosed {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -185,7 +185,7 @@ pub struct AuthorizationStateClosing {
 impl RObject for AuthorizationStateClosing {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -243,7 +243,7 @@ pub struct AuthorizationStateLoggingOut {
 impl RObject for AuthorizationStateLoggingOut {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -301,7 +301,7 @@ pub struct AuthorizationStateReady {
 impl RObject for AuthorizationStateReady {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -361,7 +361,7 @@ pub struct AuthorizationStateWaitCode {
 impl RObject for AuthorizationStateWaitCode {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -430,7 +430,7 @@ pub struct AuthorizationStateWaitEncryptionKey {
 impl RObject for AuthorizationStateWaitEncryptionKey {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -499,7 +499,7 @@ pub struct AuthorizationStateWaitOtherDeviceConfirmation {
 impl RObject for AuthorizationStateWaitOtherDeviceConfirmation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -576,7 +576,7 @@ pub struct AuthorizationStateWaitPassword {
 impl RObject for AuthorizationStateWaitPassword {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -665,7 +665,7 @@ pub struct AuthorizationStateWaitPhoneNumber {
 impl RObject for AuthorizationStateWaitPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -725,7 +725,7 @@ pub struct AuthorizationStateWaitRegistration {
 impl RObject for AuthorizationStateWaitRegistration {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -792,7 +792,7 @@ pub struct AuthorizationStateWaitTdlibParameters {
 impl RObject for AuthorizationStateWaitTdlibParameters {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

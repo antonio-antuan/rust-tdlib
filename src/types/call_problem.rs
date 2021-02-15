@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the exact type of a problem with a call
+/// Describes the exact type of a problem with a call
 pub trait TDCallProblem: Debug + RObject {}
 
 /// Describes the exact type of a problem with a call
@@ -112,7 +112,7 @@ pub struct CallProblemDistortedSpeech {
 impl RObject for CallProblemDistortedSpeech {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -170,7 +170,7 @@ pub struct CallProblemDistortedVideo {
 impl RObject for CallProblemDistortedVideo {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -228,7 +228,7 @@ pub struct CallProblemDropped {
 impl RObject for CallProblemDropped {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -286,7 +286,7 @@ pub struct CallProblemEcho {
 impl RObject for CallProblemEcho {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -344,7 +344,7 @@ pub struct CallProblemInterruptions {
 impl RObject for CallProblemInterruptions {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -402,7 +402,7 @@ pub struct CallProblemNoise {
 impl RObject for CallProblemNoise {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -460,7 +460,7 @@ pub struct CallProblemPixelatedVideo {
 impl RObject for CallProblemPixelatedVideo {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -518,7 +518,7 @@ pub struct CallProblemSilentLocal {
 impl RObject for CallProblemSilentLocal {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -576,7 +576,7 @@ pub struct CallProblemSilentRemote {
 impl RObject for CallProblemSilentRemote {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

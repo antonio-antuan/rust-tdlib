@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the current secret chat state
+/// Describes the current secret chat state
 pub trait TDSecretChatState: Debug + RObject {}
 
 /// Describes the current secret chat state
@@ -82,7 +82,7 @@ pub struct SecretChatStateClosed {
 impl RObject for SecretChatStateClosed {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -140,7 +140,7 @@ pub struct SecretChatStatePending {
 impl RObject for SecretChatStatePending {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -198,7 +198,7 @@ pub struct SecretChatStateReady {
 impl RObject for SecretChatStateReady {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

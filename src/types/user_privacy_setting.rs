@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes available user privacy settings
+/// Describes available user privacy settings
 pub trait TDUserPrivacySetting: Debug + RObject {}
 
 /// Describes available user privacy settings
@@ -107,7 +107,7 @@ pub struct UserPrivacySettingAllowCalls {
 impl RObject for UserPrivacySettingAllowCalls {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -165,7 +165,7 @@ pub struct UserPrivacySettingAllowChatInvites {
 impl RObject for UserPrivacySettingAllowChatInvites {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -223,7 +223,7 @@ pub struct UserPrivacySettingAllowFindingByPhoneNumber {
 impl RObject for UserPrivacySettingAllowFindingByPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -285,7 +285,7 @@ pub struct UserPrivacySettingAllowPeerToPeerCalls {
 impl RObject for UserPrivacySettingAllowPeerToPeerCalls {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -345,7 +345,7 @@ pub struct UserPrivacySettingShowLinkInForwardedMessages {
 impl RObject for UserPrivacySettingShowLinkInForwardedMessages {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -407,7 +407,7 @@ pub struct UserPrivacySettingShowPhoneNumber {
 impl RObject for UserPrivacySettingShowPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -465,7 +465,7 @@ pub struct UserPrivacySettingShowProfilePhoto {
 impl RObject for UserPrivacySettingShowProfilePhoto {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -523,7 +523,7 @@ pub struct UserPrivacySettingShowStatus {
 impl RObject for UserPrivacySettingShowStatus {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

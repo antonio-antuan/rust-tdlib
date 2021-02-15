@@ -174,6 +174,7 @@ where
     A: AuthStateHandler + Send + Sync + 'static,
     T: TdLibClient + Send + Sync + Clone + 'static,
 {
+    /// Specifies timeout which will be used during sending to [tokio::sync::mpsc](tokio::sync::mpsc).
     pub fn with_channels_send_timeout(mut self, timeout: f64) -> Self {
         self.channels_send_timeout = timeout;
         self
@@ -222,20 +223,22 @@ where
     }
 }
 
-/// A high-level abstraction of TDLib.
-/// Before start any API interactions you must call `start().await`.
+type ClientsMap<S> = HashMap<ClientId, (Client<S>, mpsc::Sender<ClientState>)>;
+
+/// The main object in all interactions.
+/// You have to [start](crate::client::worker::Worker::start] worker and bind each client with worker using [auth_client](crate::client::worker::Worker::auth_client).
 #[derive(Debug, Clone)]
 pub struct Worker<A, S>
 where
     A: AuthStateHandler + Send + Sync + 'static,
-    S: TdLibClient + Send + Sync + Clone + 'static ,
+    S: TdLibClient + Send + Sync + Clone + 'static,
 {
     stop_flag: Arc<AtomicBool>,
     auth_state_handler: Arc<A>,
     read_updates_timeout: f64,
     channels_send_timeout: f64,
     tdlib_client: S,
-    clients: Arc<RwLock<HashMap<ClientId, (Client<S>, mpsc::Sender<ClientState>)>>>,
+    clients: Arc<RwLock<ClientsMap<S>>>,
 }
 
 impl Worker<ConsoleAuthStateHandler, RawApi> {
@@ -249,6 +252,7 @@ where
     A: AuthStateHandler + Send + Sync + 'static,
     T: TdLibClient + Send + Sync + Clone + 'static,
 {
+    /// Binds client with worker and runs authorization routines
     pub async fn auth_client(
         &mut self,
         mut client: Client<T>,
@@ -298,20 +302,12 @@ where
 
     #[cfg(test)]
     // Method needs for tests because we can't handle get_application_config request properly.
-    pub async fn set_client(
-        &mut self,
-        mut client: Client<T>,
-    ) -> Client<T> {
+    pub async fn set_client(&mut self, mut client: Client<T>) -> Client<T> {
         let (sx, mut rx) = mpsc::channel::<ClientState>(10);
         let cl = self.tdlib_client.new_client();
-        self.clients
-            .write()
-            .await
-            .insert(cl, (client.clone(), sx));
+        self.clients.write().await.insert(cl, (client.clone(), sx));
         client.set_client_id(cl).unwrap();
-        let h = tokio::spawn(async {
-            ClientState::Opened
-        });
+        let h = tokio::spawn(async { ClientState::Opened });
         client
     }
 
@@ -323,7 +319,7 @@ where
         tdlib_client: T,
     ) -> Self {
         let stop_flag = Arc::new(AtomicBool::new(false));
-        let clients: HashMap<i32, (Client<T>, mpsc::Sender<ClientState>)> = HashMap::new();
+        let clients: ClientsMap<T> = HashMap::new();
 
         Self {
             stop_flag,
@@ -371,9 +367,8 @@ where
         self.stop_flag.store(true, Ordering::Release)
     }
 
-    // pub(crate) is just for unit-tests
     // It's the base routine: sends received updates to particular handlers: observer and auth_state handler
-    pub(crate) fn init_updates_task(
+    fn init_updates_task(
         &self,
         auth_sx: mpsc::Sender<UpdateAuthorizationState>,
     ) -> JoinHandle<RTDResult<()>> {
@@ -401,23 +396,21 @@ where
                                         trace!("auth state send: {:?}", auth_state);
                                         auth_sx.send_timeout(auth_state, send_timeout).await?;
                                         trace!("auth state sent");
-                                    } else {
-                                        if let Some(client_id) = update.client_id() {
-                                            match clients.read().await.get(&client_id) {
-                                                None => {
-                                                    warn!(
-                                                        "found updates for unavailable client ({})",
-                                                        client_id
-                                                    )
-                                                }
-                                                Some((client, _)) => {
-                                                    if let Some(sender) = client.updates_sender() {
-                                                        trace!("sending update to client");
-                                                        sender
-                                                            .send_timeout(update, send_timeout)
-                                                            .await?;
-                                                        trace!("update sent");
-                                                    }
+                                    } else if let Some(client_id) = update.client_id() {
+                                        match clients.read().await.get(&client_id) {
+                                            None => {
+                                                warn!(
+                                                    "found updates for unavailable client ({})",
+                                                    client_id
+                                                )
+                                            }
+                                            Some((client, _)) => {
+                                                if let Some(sender) = client.updates_sender() {
+                                                    trace!("sending update to client");
+                                                    sender
+                                                        .send_timeout(update, send_timeout)
+                                                        .await?;
+                                                    trace!("update sent");
                                                 }
                                             }
                                         }
@@ -583,70 +576,104 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use crate::client::{AuthStateHandler, Client};
-//     use crate::client::client::ClientBuilder;
-//     use crate::types::*;
-//     use async_trait::async_trait;
-//
-//     struct DummyStateHandler;
-//     #[async_trait]
-//     impl AuthStateHandler for DummyStateHandler {
-//         async fn handle_other_device_confirmation(
-//             &self,
-//             _: &AuthorizationStateWaitOtherDeviceConfirmation,
-//         ) {
-//             unimplemented!()
-//         }
-//         async fn handle_wait_code(&self, _: &AuthorizationStateWaitCode) -> String {
-//             unimplemented!()
-//         }
-//
-//         async fn handle_encryption_key(&self, _: &AuthorizationStateWaitEncryptionKey) -> String {
-//             unimplemented!()
-//         }
-//         async fn handle_wait_password(&self, _: &AuthorizationStateWaitPassword) -> String {
-//             unimplemented!()
-//         }
-//         async fn handle_wait_phone_number(&self, _: &AuthorizationStateWaitPhoneNumber) -> String {
-//             unimplemented!()
-//         }
-//         async fn handle_wait_registration(
-//             &self,
-//             _: &AuthorizationStateWaitRegistration,
-//         ) -> (String, String) {
-//             unimplemented!()
-//         }
-//     }
-//
-//     #[test]
-//     fn test_builder_auth_state_handler() {
-//         Client::builder()
-//             .with_tdlib_parameters(TdlibParameters::builder().build())
-//             .build()
-//             .unwrap();
-//         ClientBuilder::default()
-//             .with_tdlib_parameters(TdlibParameters::builder().build())
-//             .build()
-//             .unwrap();
-//         ClientBuilder::default()
-//             .with_tdlib_parameters(TdlibParameters::builder().build())
-//             .build()
-//             .unwrap();
-//     }
-//
-//     #[test]
-//     fn test_builder_no_params() {
-//         let result = Client::builder().build();
-//
-//         if result.is_ok() {
-//             panic!("client wrongly build without tdlib params")
-//         }
-//
-//         Client::builder()
-//             .with_tdlib_parameters(TdlibParameters::builder().build())
-//             .build()
-//             .unwrap();
-//     }
-// }
+#[cfg(test)]
+mod tests {
+    use crate::client::client::Client;
+    use crate::client::observer::OBSERVER;
+    use crate::client::tdlib_client::TdLibClient;
+    use crate::client::worker::Worker;
+    use crate::errors::RTDResult;
+    use crate::tdjson;
+    use crate::types::{Chats, RFunction, RObject, SearchPublicChats, TdlibParameters};
+    use std::time::Duration;
+    use tokio::time::timeout;
+
+    #[derive(Clone)]
+    struct MockedRawApi {
+        to_receive: Option<String>,
+    }
+
+    impl MockedRawApi {
+        pub fn set_to_receive(&mut self, value: String) {
+            trace!("delayed to receive: {}", value);
+            self.to_receive = Some(value);
+        }
+
+        pub fn new() -> Self {
+            Self { to_receive: None }
+        }
+    }
+
+    impl TdLibClient for MockedRawApi {
+        fn send<Fnc: RFunction>(&self, _client_id: tdjson::ClientId, fnc: Fnc) -> RTDResult<()> {
+            Ok(())
+        }
+
+        fn receive(&self, timeout: f64) -> Option<String> {
+            self.to_receive.clone()
+        }
+
+        fn execute<Fnc: RFunction>(&self, _fnc: Fnc) -> RTDResult<Option<String>> {
+            unimplemented!()
+        }
+
+        fn new_client(&self) -> tdjson::ClientId {
+            1
+        }
+    }
+
+    #[tokio::test]
+    async fn test_request_flow() {
+        // here we just test request-response flow with SearchPublicChats request
+        env_logger::init();
+
+        let mut mocked_raw_api = MockedRawApi::new();
+
+        let search_req = SearchPublicChats::builder().build();
+        let chats = Chats::builder().chat_ids(vec![1, 2, 3]).build();
+        let chats: serde_json::Value = serde_json::to_value(chats).unwrap();
+        let mut chats_object = chats.as_object().unwrap().clone();
+        chats_object.insert(
+            "@client_id".to_string(),
+            serde_json::Value::Number(1.into()),
+        );
+        chats_object.insert(
+            "@extra".to_string(),
+            serde_json::Value::String(search_req.extra().unwrap().to_string()),
+        );
+        chats_object.insert(
+            "@type".to_string(),
+            serde_json::Value::String("chats".to_string()),
+        );
+        let to_receive = serde_json::to_string(&chats_object).unwrap();
+        mocked_raw_api.set_to_receive(to_receive);
+        trace!("chats objects: {:?}", chats_object);
+
+        let mut worker = Worker::builder()
+            .with_tdlib_client(mocked_raw_api.clone())
+            .build()
+            .unwrap();
+        worker.start();
+
+        let client = worker
+            .set_client(
+                Client::builder()
+                    .with_tdlib_client(mocked_raw_api.clone())
+                    .with_tdlib_parameters(TdlibParameters::builder().build())
+                    .build()
+                    .unwrap(),
+            )
+            .await;
+
+        match timeout(
+            Duration::from_secs(10),
+            client.search_public_chats(search_req),
+        )
+        .await
+        {
+            Err(_) => panic!("did not receive response within 1 s"),
+            Ok(Err(e)) => panic!("{}", e),
+            Ok(Ok(result)) => assert_eq!(result.chat_ids(), &vec![1, 2, 3]),
+        }
+    }
+}

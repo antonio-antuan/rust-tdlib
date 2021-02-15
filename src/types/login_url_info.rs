@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about an inline button of type inlineKeyboardButtonTypeLoginUrl
+/// Contains information about an inline button of type inlineKeyboardButtonTypeLoginUrl
 pub trait TDLoginUrlInfo: Debug + RObject {}
 
 /// Contains information about an inline button of type inlineKeyboardButtonTypeLoginUrl
@@ -86,7 +86,7 @@ pub struct LoginUrlInfoOpen {
 impl RObject for LoginUrlInfoOpen {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -170,7 +170,7 @@ pub struct LoginUrlInfoRequestConfirmation {
 impl RObject for LoginUrlInfoRequestConfirmation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

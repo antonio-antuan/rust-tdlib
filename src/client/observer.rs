@@ -22,20 +22,20 @@ impl Observer {
     pub fn notify(&self, payload: TdType) -> Option<TdType> {
         match payload.extra() {
             None => {
-                trace!("no extra for payload {:?}", payload);
+                log::trace!("no extra for payload {:?}", payload);
                 Some(payload)
             }
             Some(extra) => {
                 let mut map = self.channels.write().unwrap();
                 match map.remove(extra) {
                     None => {
-                        trace!("no subscribers for {}", extra);
+                        log::trace!("no subscribers for {}", extra);
                         Some(payload)
                     }
                     Some(sender) => {
-                        trace!("signal send for {}", extra);
+                        log::trace!("signal send for {}", extra);
                         if let Err(t) = sender.send(payload) {
-                            warn!("request already closed, received update: {:?}", t)
+                            log::warn!("request already closed, received update: {:?}", t)
                         };
                         None
                     }
@@ -49,10 +49,10 @@ impl Observer {
         match self.channels.write() {
             Ok(mut map) => {
                 map.insert(extra.to_string(), sender);
-                trace!("subscribed for {}", extra);
+                log::trace!("subscribed for {}", extra);
             }
             _ => {
-                warn!("can't acquire lock for notifier map");
+                log::warn!("can't acquire lock for notifier map");
             }
         };
         receiver
@@ -60,7 +60,7 @@ impl Observer {
 
     pub fn unsubscribe(&self, extra: &str) {
         if let Ok(mut map) = self.channels.write() {
-            trace!("remove {} subscription", &extra);
+            log::trace!("remove {} subscription", &extra);
             map.remove(extra);
         };
     }

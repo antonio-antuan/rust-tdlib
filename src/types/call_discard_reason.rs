@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the reason why a call was discarded
+/// Describes the reason why a call was discarded
 pub trait TDCallDiscardReason: Debug + RObject {}
 
 /// Describes the reason why a call was discarded
@@ -92,7 +92,7 @@ pub struct CallDiscardReasonDeclined {
 impl RObject for CallDiscardReasonDeclined {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -150,7 +150,7 @@ pub struct CallDiscardReasonDisconnected {
 impl RObject for CallDiscardReasonDisconnected {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -208,7 +208,7 @@ pub struct CallDiscardReasonEmpty {
 impl RObject for CallDiscardReasonEmpty {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -266,7 +266,7 @@ pub struct CallDiscardReasonHungUp {
 impl RObject for CallDiscardReasonHungUp {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -324,7 +324,7 @@ pub struct CallDiscardReasonMissed {
 impl RObject for CallDiscardReasonMissed {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

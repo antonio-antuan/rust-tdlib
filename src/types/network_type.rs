@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents the type of a network
+/// Represents the type of a network
 pub trait TDNetworkType: Debug + RObject {}
 
 /// Represents the type of a network
@@ -92,7 +92,7 @@ pub struct NetworkTypeMobile {
 impl RObject for NetworkTypeMobile {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -150,7 +150,7 @@ pub struct NetworkTypeMobileRoaming {
 impl RObject for NetworkTypeMobileRoaming {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -208,7 +208,7 @@ pub struct NetworkTypeNone {
 impl RObject for NetworkTypeNone {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -266,7 +266,7 @@ pub struct NetworkTypeOther {
 impl RObject for NetworkTypeOther {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -324,7 +324,7 @@ pub struct NetworkTypeWiFi {
 impl RObject for NetworkTypeWiFi {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

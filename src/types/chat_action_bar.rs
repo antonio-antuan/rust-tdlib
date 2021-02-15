@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes actions which should be possible to do through a chat action bar
+/// Describes actions which should be possible to do through a chat action bar
 pub trait TDChatActionBar: Debug + RObject {}
 
 /// Describes actions which should be possible to do through a chat action bar
@@ -92,7 +92,7 @@ pub struct ChatActionBarAddContact {
 impl RObject for ChatActionBarAddContact {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -154,7 +154,7 @@ pub struct ChatActionBarReportAddBlock {
 impl RObject for ChatActionBarReportAddBlock {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -232,7 +232,7 @@ pub struct ChatActionBarReportSpam {
 impl RObject for ChatActionBarReportSpam {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -299,7 +299,7 @@ pub struct ChatActionBarReportUnrelatedLocation {
 impl RObject for ChatActionBarReportUnrelatedLocation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -359,7 +359,7 @@ pub struct ChatActionBarSharePhoneNumber {
 impl RObject for ChatActionBarSharePhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

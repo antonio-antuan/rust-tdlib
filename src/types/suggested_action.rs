@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes an action suggested to the current user
+/// Describes an action suggested to the current user
 pub trait TDSuggestedAction: Debug + RObject {}
 
 /// Describes an action suggested to the current user
@@ -77,7 +77,7 @@ pub struct SuggestedActionCheckPhoneNumber {
 impl RObject for SuggestedActionCheckPhoneNumber {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -135,7 +135,7 @@ pub struct SuggestedActionEnableArchiveAndMuteNewChats {
 impl RObject for SuggestedActionEnableArchiveAndMuteNewChats {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

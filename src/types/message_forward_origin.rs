@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about the origin of a forwarded message
+/// Contains information about the origin of a forwarded message
 pub trait TDMessageForwardOrigin: Debug + RObject {}
 
 /// Contains information about the origin of a forwarded message
@@ -93,7 +93,7 @@ pub struct MessageForwardOriginChannel {
 impl RObject for MessageForwardOriginChannel {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -182,7 +182,7 @@ pub struct MessageForwardOriginChat {
 impl RObject for MessageForwardOriginChat {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -260,7 +260,7 @@ pub struct MessageForwardOriginHiddenUser {
 impl RObject for MessageForwardOriginHiddenUser {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -329,7 +329,7 @@ pub struct MessageForwardOriginUser {
 impl RObject for MessageForwardOriginUser {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

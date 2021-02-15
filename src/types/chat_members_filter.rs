@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Specifies the kind of chat members to return in searchChatMembers
+/// Specifies the kind of chat members to return in searchChatMembers
 pub trait TDChatMembersFilter: Debug + RObject {}
 
 /// Specifies the kind of chat members to return in searchChatMembers
@@ -102,7 +102,7 @@ pub struct ChatMembersFilterAdministrators {
 impl RObject for ChatMembersFilterAdministrators {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -160,7 +160,7 @@ pub struct ChatMembersFilterBanned {
 impl RObject for ChatMembersFilterBanned {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -218,7 +218,7 @@ pub struct ChatMembersFilterBots {
 impl RObject for ChatMembersFilterBots {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -276,7 +276,7 @@ pub struct ChatMembersFilterContacts {
 impl RObject for ChatMembersFilterContacts {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -334,7 +334,7 @@ pub struct ChatMembersFilterMembers {
 impl RObject for ChatMembersFilterMembers {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -394,7 +394,7 @@ pub struct ChatMembersFilterMention {
 impl RObject for ChatMembersFilterMention {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -461,7 +461,7 @@ pub struct ChatMembersFilterRestricted {
 impl RObject for ChatMembersFilterRestricted {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

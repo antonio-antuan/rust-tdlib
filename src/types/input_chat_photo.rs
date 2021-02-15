@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a photo to be set as a user profile or chat photo
+/// Describes a photo to be set as a user profile or chat photo
 pub trait TDInputChatPhoto: Debug + RObject {}
 
 /// Describes a photo to be set as a user profile or chat photo
@@ -86,7 +86,7 @@ pub struct InputChatPhotoAnimation {
 impl RObject for InputChatPhotoAnimation {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -165,7 +165,7 @@ pub struct InputChatPhotoPrevious {
 impl RObject for InputChatPhotoPrevious {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -234,7 +234,7 @@ pub struct InputChatPhotoStatic {
 impl RObject for InputChatPhotoStatic {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

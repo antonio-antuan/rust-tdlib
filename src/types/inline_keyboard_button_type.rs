@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of an inline keyboard button
+/// Describes the type of an inline keyboard button
 pub trait TDInlineKeyboardButtonType: Debug + RObject {}
 
 /// Describes the type of an inline keyboard button
@@ -102,7 +102,7 @@ pub struct InlineKeyboardButtonTypeBuy {
 impl RObject for InlineKeyboardButtonTypeBuy {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -162,7 +162,7 @@ pub struct InlineKeyboardButtonTypeCallback {
 impl RObject for InlineKeyboardButtonTypeCallback {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -229,7 +229,7 @@ pub struct InlineKeyboardButtonTypeCallbackGame {
 impl RObject for InlineKeyboardButtonTypeCallbackGame {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -291,7 +291,7 @@ pub struct InlineKeyboardButtonTypeCallbackWithPassword {
 impl RObject for InlineKeyboardButtonTypeCallbackWithPassword {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -368,7 +368,7 @@ pub struct InlineKeyboardButtonTypeLoginUrl {
 impl RObject for InlineKeyboardButtonTypeLoginUrl {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -457,7 +457,7 @@ pub struct InlineKeyboardButtonTypeSwitchInline {
 impl RObject for InlineKeyboardButtonTypeSwitchInline {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -537,7 +537,7 @@ pub struct InlineKeyboardButtonTypeUrl {
 impl RObject for InlineKeyboardButtonTypeUrl {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

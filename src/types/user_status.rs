@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the last time the user was online
+/// Describes the last time the user was online
 pub trait TDUserStatus: Debug + RObject {}
 
 /// Describes the last time the user was online
@@ -97,7 +97,7 @@ pub struct UserStatusEmpty {
 impl RObject for UserStatusEmpty {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -155,7 +155,7 @@ pub struct UserStatusLastMonth {
 impl RObject for UserStatusLastMonth {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -213,7 +213,7 @@ pub struct UserStatusLastWeek {
 impl RObject for UserStatusLastWeek {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -273,7 +273,7 @@ pub struct UserStatusOffline {
 impl RObject for UserStatusOffline {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -342,7 +342,7 @@ pub struct UserStatusOnline {
 impl RObject for UserStatusOnline {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -409,7 +409,7 @@ pub struct UserStatusRecently {
 impl RObject for UserStatusRecently {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

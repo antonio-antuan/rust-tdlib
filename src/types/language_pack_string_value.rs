@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents the value of a string in a language pack
+/// Represents the value of a string in a language pack
 pub trait TDLanguagePackStringValue: Debug + RObject {}
 
 /// Represents the value of a string in a language pack
@@ -87,7 +87,7 @@ pub struct LanguagePackStringValueDeleted {
 impl RObject for LanguagePackStringValueDeleted {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -147,7 +147,7 @@ pub struct LanguagePackStringValueOrdinary {
 impl RObject for LanguagePackStringValueOrdinary {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -226,7 +226,7 @@ pub struct LanguagePackStringValuePluralized {
 impl RObject for LanguagePackStringValuePluralized {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

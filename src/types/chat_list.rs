@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a list of chats
+/// Describes a list of chats
 pub trait TDChatList: Debug + RObject {}
 
 /// Describes a list of chats
@@ -82,7 +82,7 @@ pub struct ChatListArchive {
 impl RObject for ChatListArchive {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -142,7 +142,7 @@ pub struct ChatListFilter {
 impl RObject for ChatListFilter {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -209,7 +209,7 @@ pub struct ChatListMain {
 impl RObject for ChatListMain {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

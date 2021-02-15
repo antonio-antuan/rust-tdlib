@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents result of checking whether the current session can be used to transfer a chat ownership to another user
+/// Represents result of checking whether the current session can be used to transfer a chat ownership to another user
 pub trait TDCanTransferOwnershipResult: Debug + RObject {}
 
 /// Represents result of checking whether the current session can be used to transfer a chat ownership to another user
@@ -92,7 +92,7 @@ pub struct CanTransferOwnershipResultOk {
 impl RObject for CanTransferOwnershipResultOk {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -150,7 +150,7 @@ pub struct CanTransferOwnershipResultPasswordNeeded {
 impl RObject for CanTransferOwnershipResultPasswordNeeded {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -212,7 +212,7 @@ pub struct CanTransferOwnershipResultPasswordTooFresh {
 impl RObject for CanTransferOwnershipResultPasswordTooFresh {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -285,7 +285,7 @@ pub struct CanTransferOwnershipResultSessionTooFresh {
 impl RObject for CanTransferOwnershipResultSessionTooFresh {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

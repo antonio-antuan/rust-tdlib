@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains detailed information about a notification
+/// Contains detailed information about a notification
 pub trait TDNotificationType: Debug + RObject {}
 
 /// Contains detailed information about a notification
@@ -89,7 +89,7 @@ pub struct NotificationTypeNewCall {
 impl RObject for NotificationTypeNewCall {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -158,7 +158,7 @@ pub struct NotificationTypeNewMessage {
 impl RObject for NotificationTypeNewMessage {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -235,7 +235,7 @@ pub struct NotificationTypeNewPushMessage {
 impl RObject for NotificationTypeNewPushMessage {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -338,7 +338,7 @@ pub struct NotificationTypeNewSecretChat {
 impl RObject for NotificationTypeNewSecretChat {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

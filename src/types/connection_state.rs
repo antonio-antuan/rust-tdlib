@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the current state of the connection to Telegram servers
+/// Describes the current state of the connection to Telegram servers
 pub trait TDConnectionState: Debug + RObject {}
 
 /// Describes the current state of the connection to Telegram servers
@@ -92,7 +92,7 @@ pub struct ConnectionStateConnecting {
 impl RObject for ConnectionStateConnecting {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -150,7 +150,7 @@ pub struct ConnectionStateConnectingToProxy {
 impl RObject for ConnectionStateConnectingToProxy {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -208,7 +208,7 @@ pub struct ConnectionStateReady {
 impl RObject for ConnectionStateReady {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -266,7 +266,7 @@ pub struct ConnectionStateUpdating {
 impl RObject for ConnectionStateUpdating {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -324,7 +324,7 @@ pub struct ConnectionStateWaitingForNetwork {
 impl RObject for ConnectionStateWaitingForNetwork {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

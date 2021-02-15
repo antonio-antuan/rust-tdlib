@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of a proxy server
+/// Describes the type of a proxy server
 pub trait TDProxyType: Debug + RObject {}
 
 /// Describes the type of a proxy server
@@ -88,7 +88,7 @@ pub struct ProxyTypeHttp {
 impl RObject for ProxyTypeHttp {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -175,7 +175,7 @@ pub struct ProxyTypeMtproto {
 impl RObject for ProxyTypeMtproto {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -246,7 +246,7 @@ pub struct ProxyTypeSocks5 {
 impl RObject for ProxyTypeSocks5 {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

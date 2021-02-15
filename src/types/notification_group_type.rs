@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of notifications in a notification group
+/// Describes the type of notifications in a notification group
 pub trait TDNotificationGroupType: Debug + RObject {}
 
 /// Describes the type of notifications in a notification group
@@ -87,7 +87,7 @@ pub struct NotificationGroupTypeCalls {
 impl RObject for NotificationGroupTypeCalls {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -145,7 +145,7 @@ pub struct NotificationGroupTypeMentions {
 impl RObject for NotificationGroupTypeMentions {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -203,7 +203,7 @@ pub struct NotificationGroupTypeMessages {
 impl RObject for NotificationGroupTypeMessages {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -261,7 +261,7 @@ pub struct NotificationGroupTypeSecretChat {
 impl RObject for NotificationGroupTypeSecretChat {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the types of chats to which notification settings are applied
+/// Describes the types of chats to which notification settings are applied
 pub trait TDNotificationSettingsScope: Debug + RObject {}
 
 /// Describes the types of chats to which notification settings are applied
@@ -82,7 +82,7 @@ pub struct NotificationSettingsScopeChannelChats {
 impl RObject for NotificationSettingsScopeChannelChats {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -142,7 +142,7 @@ pub struct NotificationSettingsScopeGroupChats {
 impl RObject for NotificationSettingsScopeGroupChats {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -200,7 +200,7 @@ pub struct NotificationSettingsScopePrivateChats {
 impl RObject for NotificationSettingsScopePrivateChats {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents result of checking whether a username can be set for a chat
+/// Represents result of checking whether a username can be set for a chat
 pub trait TDCheckChatUsernameResult: Debug + RObject {}
 
 /// Represents result of checking whether a username can be set for a chat
@@ -97,7 +97,7 @@ pub struct CheckChatUsernameResultOk {
 impl RObject for CheckChatUsernameResultOk {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -155,7 +155,7 @@ pub struct CheckChatUsernameResultPublicChatsTooMuch {
 impl RObject for CheckChatUsernameResultPublicChatsTooMuch {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -217,7 +217,7 @@ pub struct CheckChatUsernameResultPublicGroupsUnavailable {
 impl RObject for CheckChatUsernameResultPublicGroupsUnavailable {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -279,7 +279,7 @@ pub struct CheckChatUsernameResultUsernameInvalid {
 impl RObject for CheckChatUsernameResultUsernameInvalid {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -339,7 +339,7 @@ pub struct CheckChatUsernameResultUsernameOccupied {
 impl RObject for CheckChatUsernameResultUsernameOccupied {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

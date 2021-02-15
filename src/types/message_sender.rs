@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about the sender of a message
+/// Contains information about the sender of a message
 pub trait TDMessageSender: Debug + RObject {}
 
 /// Contains information about the sender of a message
@@ -79,7 +79,7 @@ pub struct MessageSenderChat {
 impl RObject for MessageSenderChat {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -148,7 +148,7 @@ pub struct MessageSenderUser {
 impl RObject for MessageSenderUser {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

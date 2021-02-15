@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a Vertical alignment of a table cell content
+/// Describes a Vertical alignment of a table cell content
 pub trait TDPageBlockVerticalAlignment: Debug + RObject {}
 
 /// Describes a Vertical alignment of a table cell content
@@ -82,7 +82,7 @@ pub struct PageBlockVerticalAlignmentBottom {
 impl RObject for PageBlockVerticalAlignmentBottom {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -140,7 +140,7 @@ pub struct PageBlockVerticalAlignmentMiddle {
 impl RObject for PageBlockVerticalAlignmentMiddle {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -198,7 +198,7 @@ pub struct PageBlockVerticalAlignmentTop {
 impl RObject for PageBlockVerticalAlignmentTop {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

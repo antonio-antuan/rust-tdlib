@@ -3,8 +3,8 @@
 mod observer;
 
 /// TDlib API methods.
-pub mod client;
 #[allow(clippy::module_inception)]
+pub mod client;
 /// Handlers for all incoming data
 pub mod worker;
 

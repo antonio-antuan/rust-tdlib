@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Provides information about the method by which an authentication code is delivered to the user
+/// Provides information about the method by which an authentication code is delivered to the user
 pub trait TDAuthenticationCodeType: Debug + RObject {}
 
 /// Provides information about the method by which an authentication code is delivered to the user
@@ -89,7 +89,7 @@ pub struct AuthenticationCodeTypeCall {
 impl RObject for AuthenticationCodeTypeCall {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -158,7 +158,7 @@ pub struct AuthenticationCodeTypeFlashCall {
 impl RObject for AuthenticationCodeTypeFlashCall {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -227,7 +227,7 @@ pub struct AuthenticationCodeTypeSms {
 impl RObject for AuthenticationCodeTypeSms {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -296,7 +296,7 @@ pub struct AuthenticationCodeTypeTelegramMessage {
 impl RObject for AuthenticationCodeTypeTelegramMessage {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

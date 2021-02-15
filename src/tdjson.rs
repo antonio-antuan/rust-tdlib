@@ -51,7 +51,7 @@ pub fn receive(timeout: f64) -> Option<String> {
 }
 
 // Deprecated. Use setLogVerbosityLevel request instead.
-pub fn set_log_verbosity_level<'a>(level: i32) {
+pub fn set_log_verbosity_level(level: i32) {
     unsafe { td_set_log_verbosity_level(level) };
 }
 

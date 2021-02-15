@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Part of the face, relative to which a mask should be placed
+/// Part of the face, relative to which a mask should be placed
 pub trait TDMaskPoint: Debug + RObject {}
 
 /// Part of the face, relative to which a mask should be placed
@@ -87,7 +87,7 @@ pub struct MaskPointChin {
 impl RObject for MaskPointChin {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -145,7 +145,7 @@ pub struct MaskPointEyes {
 impl RObject for MaskPointEyes {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -203,7 +203,7 @@ pub struct MaskPointForehead {
 impl RObject for MaskPointForehead {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -261,7 +261,7 @@ pub struct MaskPointMouth {
 impl RObject for MaskPointMouth {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

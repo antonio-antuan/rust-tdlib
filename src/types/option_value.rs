@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents the value of an option
+/// Represents the value of an option
 pub trait TDOptionValue: Debug + RObject {}
 
 /// Represents the value of an option
@@ -94,7 +94,7 @@ pub struct OptionValueBoolean {
 impl RObject for OptionValueBoolean {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -161,7 +161,7 @@ pub struct OptionValueEmpty {
 impl RObject for OptionValueEmpty {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -222,7 +222,7 @@ pub struct OptionValueInteger {
 impl RObject for OptionValueInteger {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -291,7 +291,7 @@ pub struct OptionValueString {
 impl RObject for OptionValueString {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

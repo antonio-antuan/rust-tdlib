@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of a URL linking to an internal Telegram entity
+/// Describes the type of a URL linking to an internal Telegram entity
 pub trait TDTMeUrlType: Debug + RObject {}
 
 /// Describes the type of a URL linking to an internal Telegram entity
@@ -89,7 +89,7 @@ pub struct TMeUrlTypeChatInvite {
 impl RObject for TMeUrlTypeChatInvite {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -159,7 +159,7 @@ pub struct TMeUrlTypeStickerSet {
 impl RObject for TMeUrlTypeStickerSet {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -228,7 +228,7 @@ pub struct TMeUrlTypeSupergroup {
 impl RObject for TMeUrlTypeSupergroup {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -297,7 +297,7 @@ pub struct TMeUrlTypeUser {
 impl RObject for TMeUrlTypeUser {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

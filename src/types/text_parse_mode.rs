@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes the way the text should be parsed for TextEntities
+/// Describes the way the text should be parsed for TextEntities
 pub trait TDTextParseMode: Debug + RObject {}
 
 /// Describes the way the text should be parsed for TextEntities
@@ -77,7 +77,7 @@ pub struct TextParseModeHTML {
 impl RObject for TextParseModeHTML {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -137,7 +137,7 @@ pub struct TextParseModeMarkdown {
 impl RObject for TextParseModeMarkdown {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

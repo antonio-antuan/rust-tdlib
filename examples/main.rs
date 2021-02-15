@@ -49,13 +49,11 @@ async fn main() {
 
     let (client1_state, client1) = worker.auth_client(client1).await.unwrap();
     log::info!("client1 authorized");
-
     let me = client1.get_me(GetMe::builder().build()).await.unwrap();
     log::info!("me 1: {:?}", me);
 
     let (client2_state, client2) = worker.auth_client(client2).await.unwrap();
     log::info!("client2 authorized");
-
     let me = client2.get_me(GetMe::builder().build()).await.unwrap();
     log::info!("me 2: {:?}", me);
 
@@ -78,7 +76,7 @@ async fn main() {
     log::info!("client1 closed");
 
     client2_state.await.unwrap();
-    log::info!("client1 closed");
+    log::info!("client2 closed");
 
     worker.stop();
     log::info!("worker stopped");

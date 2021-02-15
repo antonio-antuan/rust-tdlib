@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Describes a type of public chats
+/// Describes a type of public chats
 pub trait TDPublicChatType: Debug + RObject {}
 
 /// Describes a type of public chats
@@ -77,7 +77,7 @@ pub struct PublicChatTypeHasUsername {
 impl RObject for PublicChatTypeHasUsername {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -135,7 +135,7 @@ pub struct PublicChatTypeIsLocationBased {
 impl RObject for PublicChatTypeIsLocationBased {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// TRAIT | Represents a payload of a callback query
+/// Represents a payload of a callback query
 pub trait TDCallbackQueryPayload: Debug + RObject {}
 
 /// Represents a payload of a callback query
@@ -84,7 +84,7 @@ pub struct CallbackQueryPayloadData {
 impl RObject for CallbackQueryPayloadData {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -155,7 +155,7 @@ pub struct CallbackQueryPayloadDataWithPassword {
 impl RObject for CallbackQueryPayloadDataWithPassword {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -235,7 +235,7 @@ pub struct CallbackQueryPayloadGame {
 impl RObject for CallbackQueryPayloadGame {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
-        self.extra.as_ref().map(|v| v.as_str())
+        self.extra.as_deref()
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
