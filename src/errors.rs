@@ -60,6 +60,7 @@ impl From<serde_json::Error> for RTDError {
 const CLOSED_CHANNEL_ERROR: RTDError = RTDError::Internal("channel closed");
 const SEND_TO_CHANNEL_TIMEOUT: RTDError = RTDError::Internal("timeout for mpsc occurred");
 
+#[cfg(feature = "client")]
 impl<T> From<tokio::sync::mpsc::error::SendTimeoutError<T>> for RTDError {
     fn from(err: tokio::sync::mpsc::error::SendTimeoutError<T>) -> Self {
         match err {
