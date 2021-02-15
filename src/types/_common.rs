@@ -643,7 +643,8 @@ fn deserialize_traits(
         return Ok(Some(td_type));
     };
 
-    if let Some(td_type) = deserialize_check_chat_username_result(rtd_trait_type, rtd_trait_value.clone())?
+    if let Some(td_type) =
+        deserialize_check_chat_username_result(rtd_trait_type, rtd_trait_value.clone())?
     {
         return Ok(Some(td_type));
     };
