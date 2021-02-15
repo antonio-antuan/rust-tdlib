@@ -1,7 +1,4 @@
 //! Handlers for all incoming data
-use async_trait::async_trait;
-use std::collections::HashMap;
-use std::sync::Arc;
 use super::{
     client::{Client, ClientState},
     observer::OBSERVER,
@@ -21,8 +18,11 @@ use crate::{
         SetAuthenticationPhoneNumber, SetTdlibParameters, TdType, UpdateAuthorizationState,
     },
 };
+use async_trait::async_trait;
+use std::collections::HashMap;
 use std::io;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 use tokio::{
     sync::{mpsc, RwLock},
     task::JoinHandle,
