@@ -1,6 +1,6 @@
 .idea
 target
-tdlib*
+tddb*
 Cargo.lock
 debug
 doc

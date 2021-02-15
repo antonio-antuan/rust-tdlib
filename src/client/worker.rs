@@ -4,12 +4,15 @@ use async_trait::async_trait;
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use super::client::{Client, ClientState, RawApi, TdLibClient};
+use super::{
+    client::{Client, ClientState},
+    tdlib_client::{RawApi, TdLibClient},
+};
 use crate::types::Update;
 use crate::{
     errors::RTDError,
     errors::RTDResult,
-    tdjson::{new_client, receive, ClientId},
+    tdjson::ClientId,
     types::{
         from_json, AuthorizationState, AuthorizationStateWaitCode,
         AuthorizationStateWaitEncryptionKey, AuthorizationStateWaitOtherDeviceConfirmation,
@@ -26,7 +29,6 @@ use tokio::{
     task::JoinHandle,
     time,
 };
-
 
 /// `AuthStateHandler` trait provides methods that returns data, required for authentication
 ///It allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
@@ -144,29 +146,33 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
 }
 
 #[derive(Debug)]
-pub struct WorkerBuilder<A>
+pub struct WorkerBuilder<A, T>
 where
     A: AuthStateHandler + Send + Sync + 'static,
+    T: TdLibClient + Send + Sync + Clone + 'static,
 {
     read_updates_timeout: f64,
     channels_send_timeout: f64,
     auth_state_handler: A,
+    tdlib_client: T,
 }
 
-impl Default for WorkerBuilder<ConsoleAuthStateHandler> {
+impl Default for WorkerBuilder<ConsoleAuthStateHandler, RawApi> {
     /// Provides default implementation with [ConsoleAuthStateHandler](crate::client::client::ConsoleAuthStateHandler)
     fn default() -> Self {
         Self {
             read_updates_timeout: 2.0,
             channels_send_timeout: 5.0,
             auth_state_handler: ConsoleAuthStateHandler::new(),
+            tdlib_client: RawApi::new(),
         }
     }
 }
 
-impl<A> WorkerBuilder<A>
+impl<A, T> WorkerBuilder<A, T>
 where
     A: AuthStateHandler + Send + Sync + 'static,
+    T: TdLibClient + Send + Sync + Clone + 'static,
 {
     pub fn with_channels_send_timeout(mut self, timeout: f64) -> Self {
         self.channels_send_timeout = timeout;
@@ -180,7 +186,7 @@ where
 
     /// [AuthStateHandler](crate::client::client::AuthStateHandler) allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
     /// See [AuthorizationState](crate::types::AuthorizationState).
-    pub fn with_auth_state_handler<N>(self, auth_state_handler: N) -> WorkerBuilder<N>
+    pub fn with_auth_state_handler<N>(self, auth_state_handler: N) -> WorkerBuilder<N, T>
     where
         N: AuthStateHandler + Send + Sync + 'static,
     {
@@ -188,14 +194,29 @@ where
             auth_state_handler,
             read_updates_timeout: self.read_updates_timeout,
             channels_send_timeout: self.channels_send_timeout,
+            tdlib_client: self.tdlib_client,
         }
     }
 
-    pub fn build<S: TdLibClient + Send + Sync + 'static + Clone>(self) -> RTDResult<Worker<A, S>> {
+    #[doc(hidden)]
+    pub fn with_tdlib_client<C>(self, tdlib_client: C) -> WorkerBuilder<A, C>
+    where
+        C: TdLibClient + Send + Sync + Clone + 'static,
+    {
+        WorkerBuilder {
+            tdlib_client,
+            auth_state_handler: self.auth_state_handler,
+            read_updates_timeout: self.read_updates_timeout,
+            channels_send_timeout: self.channels_send_timeout,
+        }
+    }
+
+    pub fn build(self) -> RTDResult<Worker<A, T>> {
         let worker = Worker::new(
             self.auth_state_handler,
             self.read_updates_timeout,
             self.channels_send_timeout,
+            self.tdlib_client,
         );
         Ok(worker)
     }
@@ -207,31 +228,32 @@ where
 pub struct Worker<A, S>
 where
     A: AuthStateHandler + Send + Sync + 'static,
-    S: TdLibClient + Send + Sync + 'static + Clone,
+    S: TdLibClient + Send + Sync + Clone + 'static ,
 {
     stop_flag: Arc<AtomicBool>,
     auth_state_handler: Arc<A>,
     read_updates_timeout: f64,
     channels_send_timeout: f64,
+    tdlib_client: S,
     clients: Arc<RwLock<HashMap<ClientId, (Client<S>, mpsc::Sender<ClientState>)>>>,
 }
 
 impl Worker<ConsoleAuthStateHandler, RawApi> {
-    pub fn builder() -> WorkerBuilder<ConsoleAuthStateHandler> {
+    pub fn builder() -> WorkerBuilder<ConsoleAuthStateHandler, RawApi> {
         WorkerBuilder::default()
     }
 }
 
-impl<A, S> Worker<A, S>
+impl<A, T> Worker<A, T>
 where
     A: AuthStateHandler + Send + Sync + 'static,
-    S: TdLibClient + Send + Sync + 'static + Clone,
+    T: TdLibClient + Send + Sync + Clone + 'static,
 {
     pub async fn auth_client(
         &mut self,
-        mut client: Client<S>,
-    ) -> RTDResult<(JoinHandle<ClientState>, Client<S>)> {
-        let client_id = new_client();
+        mut client: Client<T>,
+    ) -> RTDResult<(JoinHandle<ClientState>, Client<T>)> {
+        let client_id = self.tdlib_client.new_client();
         log::debug!("new client created: {}", client_id);
         client.set_client_id(client_id)?;
         let (sx, mut rx) = mpsc::channel::<ClientState>(10);
@@ -245,18 +267,18 @@ where
             .get_application_config(GetApplicationConfig::builder().build())
             .await?;
 
-        log::debug!("received first internal response");
+        log::trace!("received first internal response");
 
         if let Some(msg) = rx.recv().await {
             match msg {
                 ClientState::Closed => {
                     debug!("client state on auth: closed");
-                    return Ok((tokio::spawn(async { ClientState::Closed }), client))
+                    return Ok((tokio::spawn(async { ClientState::Closed }), client));
                 }
                 ClientState::Error(e) => {
                     debug!("client state on auth: error");
                     return Err(RTDError::TdlibError(e));
-                },
+                }
                 ClientState::Opened => {
                     debug!("client state on auth: opened");
                 }
@@ -274,18 +296,39 @@ where
         Ok((h, client))
     }
 
+    #[cfg(test)]
+    // Method needs for tests because we can't handle get_application_config request properly.
+    pub async fn set_client(
+        &mut self,
+        mut client: Client<T>,
+    ) -> Client<T> {
+        let (sx, mut rx) = mpsc::channel::<ClientState>(10);
+        let cl = self.tdlib_client.new_client();
+        self.clients
+            .write()
+            .await
+            .insert(cl, (client.clone(), sx));
+        client.set_client_id(cl).unwrap();
+        let h = tokio::spawn(async {
+            ClientState::Opened
+        });
+        client
+    }
+
     // Client must be created only with builder
     pub(crate) fn new(
         auth_state_handler: A,
         read_updates_timeout: f64,
         channels_send_timeout: f64,
+        tdlib_client: T,
     ) -> Self {
         let stop_flag = Arc::new(AtomicBool::new(false));
-        let clients: HashMap<i32, (Client<S>, mpsc::Sender<ClientState>)> = HashMap::new();
+        let clients: HashMap<i32, (Client<T>, mpsc::Sender<ClientState>)> = HashMap::new();
 
         Self {
             stop_flag,
             read_updates_timeout,
+            tdlib_client,
             channels_send_timeout,
             auth_state_handler: Arc::new(auth_state_handler),
             clients: Arc::new(RwLock::new(clients)),
@@ -338,12 +381,13 @@ where
         let clients = self.clients.clone();
         let recv_timeout = self.read_updates_timeout;
         let send_timeout = time::Duration::from_secs_f64(self.channels_send_timeout);
-
+        let tdlib_client = Arc::new(self.tdlib_client.clone());
         tokio::spawn(async move {
             let current = tokio::runtime::Handle::try_current().unwrap();
             while !stop_flag.load(Ordering::Acquire) {
+                let cl = tdlib_client.clone();
                 if let Some(json) = current
-                    .spawn_blocking(move || receive(recv_timeout))
+                    .spawn_blocking(move || cl.receive(recv_timeout))
                     .await
                     .unwrap()
                 {
@@ -369,7 +413,9 @@ where
                                                 Some((client, _)) => {
                                                     if let Some(sender) = client.updates_sender() {
                                                         trace!("sending update to client");
-                                                        sender.send_timeout(update, send_timeout).await?;
+                                                        sender
+                                                            .send_timeout(update, send_timeout)
+                                                            .await?;
                                                         trace!("update sent");
                                                     }
                                                 }
@@ -436,14 +482,18 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
     match state.authorization_state() {
         AuthorizationState::_Default(_) => Ok(()),
         AuthorizationState::Closed(_) => {
-            auth_sender.send_timeout(ClientState::Closed, send_state_timeout).await?;
+            auth_sender
+                .send_timeout(ClientState::Closed, send_state_timeout)
+                .await?;
             Ok(())
         }
         AuthorizationState::Closing(_) => Ok(()),
         AuthorizationState::LoggingOut(_) => Ok(()),
         AuthorizationState::Ready(_) => {
             debug!("ready state received, send signal");
-            auth_sender.send_timeout(ClientState::Opened, send_state_timeout).await?;
+            auth_sender
+                .send_timeout(ClientState::Opened, send_state_timeout)
+                .await?;
             Ok(())
         }
         AuthorizationState::WaitCode(wait_code) => {

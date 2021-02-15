@@ -12,7 +12,7 @@ async fn main() {
     let client1 = Client::builder()
         .with_tdlib_parameters(
             TdlibParameters::builder()
-                .database_directory("tdlib1")
+                .database_directory("tddb1")
                 .use_test_dc(false)
                 .api_id(env!("API_ID").parse::<i32>().unwrap())
                 .api_hash(env!("API_HASH"))
@@ -29,7 +29,7 @@ async fn main() {
     let client2 = Client::builder()
         .with_tdlib_parameters(
             TdlibParameters::builder()
-                .database_directory("tdlib2")
+                .database_directory("tddb2")
                 .use_test_dc(false)
                 .api_id(env!("API_ID").parse::<i32>().unwrap())
                 .api_hash(env!("API_HASH"))

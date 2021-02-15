@@ -10,7 +10,7 @@ async fn main() {
     tdjson::set_log_verbosity_level(1);
     env_logger::init();
     let tdlib_parameters = TdlibParameters::builder()
-        .database_directory("tdlib")
+        .database_directory("tddb")
         .use_test_dc(false)
         .api_id(env!("API_ID").parse::<i32>().unwrap())
         .api_hash(env!("API_HASH"))
@@ -37,7 +37,7 @@ async fn main() {
             if wait_messages == 0 {
                 break;
             }
-        };
+        }
     });
 
     let mut worker = Worker::builder().build().unwrap();
@@ -71,6 +71,4 @@ async fn main() {
     worker.stop();
     log::info!("wait worker stopped");
     waiter.await.unwrap();
-
-
 }

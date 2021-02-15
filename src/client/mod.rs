@@ -8,5 +8,8 @@ pub mod client;
 /// Handlers for all incoming data
 pub mod worker;
 
+#[doc(hidden)]
+mod tdlib_client;
+
 pub use client::Client;
 pub use worker::{AuthStateHandler, ConsoleAuthStateHandler, Worker, WorkerBuilder};

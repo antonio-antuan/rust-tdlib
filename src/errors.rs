@@ -1,5 +1,4 @@
 use std::{error, fmt, io};
-use tokio::sync::mpsc::error::SendTimeoutError;
 
 #[derive(Debug)]
 pub enum RTDError {
@@ -58,16 +57,14 @@ impl From<serde_json::Error> for RTDError {
     }
 }
 
-
 const CLOSED_CHANNEL_ERROR: RTDError = RTDError::Internal("channel closed");
-const SEND_TO_CHANNEL_TIMEOUT: RTDError = RTDError::Internal("timeout for mpsc occured");
+const SEND_TO_CHANNEL_TIMEOUT: RTDError = RTDError::Internal("timeout for mpsc occurred");
 
-
-impl<T> From<SendTimeoutError<T>> for RTDError {
-    fn from(err: SendTimeoutError<T>) -> Self {
+impl<T> From<tokio::sync::mpsc::error::SendTimeoutError<T>> for RTDError {
+    fn from(err: tokio::sync::mpsc::error::SendTimeoutError<T>) -> Self {
         match err {
-            SendTimeoutError::Timeout(_) => {SEND_TO_CHANNEL_TIMEOUT}
-            SendTimeoutError::Closed(_) => {CLOSED_CHANNEL_ERROR}
+            tokio::sync::mpsc::error::SendTimeoutError::Timeout(_) => SEND_TO_CHANNEL_TIMEOUT,
+            tokio::sync::mpsc::error::SendTimeoutError::Closed(_) => CLOSED_CHANNEL_ERROR,
         }
     }
 }
