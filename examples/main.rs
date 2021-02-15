@@ -73,6 +73,7 @@ async fn main() {
 
     client1.stop().await.unwrap();
     client2.stop().await.unwrap();
+
     client1_state.await.unwrap();
     log::info!("client1 closed");
 

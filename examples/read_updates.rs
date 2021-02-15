@@ -30,8 +30,7 @@ async fn main() {
         .unwrap();
 
     let mut reader_waiter = tokio::spawn(async move {
-        // we need to specify large number because first updates always sent by tdlib in the beginning of process
-        let mut wait_messages: i32 = 40;
+        let mut wait_messages: i32 = 100;
         while let Some(message) = receiver.recv().await {
             log::info!("updates handler received {:?}", message);
             wait_messages -= 1;
@@ -56,16 +55,21 @@ async fn main() {
         },
     };
 
-    match v {
-        Some((_, client)) => {
-            client.stop().await.unwrap();
-            reader_waiter.await.unwrap();
-        },
-        None => {
-            worker.stop();
-        }
+    if let Some((mut state, client)) = v {
+        log::info!("stop client");
+        client.stop().await.unwrap();
+        log::info!("client stopped");
+
+        tokio::select! {
+            _ = &mut reader_waiter => {state.abort()},
+            _ = &mut state => {reader_waiter.abort()},
+            _ = &mut waiter => {reader_waiter.abort(); state.abort();},
+        };
     }
 
+    log::info!("stop worker");
+    worker.stop();
+    log::info!("wait worker stopped");
     waiter.await.unwrap();
 
 
