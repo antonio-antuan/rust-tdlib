@@ -32,7 +32,7 @@ impl Default for SecretChatState {
 
 impl RObject for SecretChatState {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             SecretChatState::Closed(t) => t.extra(),
             SecretChatState::Pending(t) => t.extra(),
@@ -81,8 +81,8 @@ pub struct SecretChatStateClosed {
 
 impl RObject for SecretChatStateClosed {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -139,8 +139,8 @@ pub struct SecretChatStatePending {
 
 impl RObject for SecretChatStatePending {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -197,8 +197,8 @@ pub struct SecretChatStateReady {
 
 impl RObject for SecretChatStateReady {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

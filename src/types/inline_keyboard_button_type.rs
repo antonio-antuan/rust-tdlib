@@ -44,7 +44,7 @@ impl Default for InlineKeyboardButtonType {
 
 impl RObject for InlineKeyboardButtonType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             InlineKeyboardButtonType::Buy(t) => t.extra(),
             InlineKeyboardButtonType::Callback(t) => t.extra(),
@@ -101,8 +101,8 @@ pub struct InlineKeyboardButtonTypeBuy {
 
 impl RObject for InlineKeyboardButtonTypeBuy {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -161,8 +161,8 @@ pub struct InlineKeyboardButtonTypeCallback {
 
 impl RObject for InlineKeyboardButtonTypeCallback {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -228,8 +228,8 @@ pub struct InlineKeyboardButtonTypeCallbackGame {
 
 impl RObject for InlineKeyboardButtonTypeCallbackGame {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -290,8 +290,8 @@ pub struct InlineKeyboardButtonTypeCallbackWithPassword {
 
 impl RObject for InlineKeyboardButtonTypeCallbackWithPassword {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -367,8 +367,8 @@ pub struct InlineKeyboardButtonTypeLoginUrl {
 
 impl RObject for InlineKeyboardButtonTypeLoginUrl {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -456,8 +456,8 @@ pub struct InlineKeyboardButtonTypeSwitchInline {
 
 impl RObject for InlineKeyboardButtonTypeSwitchInline {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -536,8 +536,8 @@ pub struct InlineKeyboardButtonTypeUrl {
 
 impl RObject for InlineKeyboardButtonTypeUrl {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

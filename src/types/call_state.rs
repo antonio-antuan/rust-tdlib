@@ -41,7 +41,7 @@ impl Default for CallState {
 
 impl RObject for CallState {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             CallState::Discarded(t) => t.extra(),
             CallState::Error(t) => t.extra(),
@@ -102,8 +102,8 @@ pub struct CallStateDiscarded {
 
 impl RObject for CallStateDiscarded {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -189,8 +189,8 @@ pub struct CallStateError {
 
 impl RObject for CallStateError {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -256,8 +256,8 @@ pub struct CallStateExchangingKeys {
 
 impl RObject for CallStateExchangingKeys {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -314,8 +314,8 @@ pub struct CallStateHangingUp {
 
 impl RObject for CallStateHangingUp {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -376,8 +376,8 @@ pub struct CallStatePending {
 
 impl RObject for CallStatePending {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -464,8 +464,8 @@ pub struct CallStateReady {
 
 impl RObject for CallStateReady {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -35,7 +35,7 @@ impl Default for InputFile {
 
 impl RObject for InputFile {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             InputFile::Generated(t) => t.extra(),
             InputFile::Id(t) => t.extra(),
@@ -92,8 +92,8 @@ pub struct InputFileGenerated {
 
 impl RObject for InputFileGenerated {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -179,8 +179,8 @@ pub struct InputFileId {
 
 impl RObject for InputFileId {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -248,8 +248,8 @@ pub struct InputFileLocal {
 
 impl RObject for InputFileLocal {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -317,8 +317,8 @@ pub struct InputFileRemote {
 
 impl RObject for InputFileRemote {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

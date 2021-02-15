@@ -35,7 +35,7 @@ impl Default for KeyboardButtonType {
 
 impl RObject for KeyboardButtonType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             KeyboardButtonType::RequestLocation(t) => t.extra(),
             KeyboardButtonType::RequestPhoneNumber(t) => t.extra(),
@@ -86,8 +86,8 @@ pub struct KeyboardButtonTypeRequestLocation {
 
 impl RObject for KeyboardButtonTypeRequestLocation {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -144,8 +144,8 @@ pub struct KeyboardButtonTypeRequestPhoneNumber {
 
 impl RObject for KeyboardButtonTypeRequestPhoneNumber {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -208,8 +208,8 @@ pub struct KeyboardButtonTypeRequestPoll {
 
 impl RObject for KeyboardButtonTypeRequestPoll {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -284,8 +284,8 @@ pub struct KeyboardButtonTypeText {
 
 impl RObject for KeyboardButtonTypeText {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

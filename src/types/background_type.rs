@@ -32,7 +32,7 @@ impl Default for BackgroundType {
 
 impl RObject for BackgroundType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             BackgroundType::Fill(t) => t.extra(),
             BackgroundType::Pattern(t) => t.extra(),
@@ -83,8 +83,8 @@ pub struct BackgroundTypeFill {
 
 impl RObject for BackgroundTypeFill {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -156,8 +156,8 @@ pub struct BackgroundTypePattern {
 
 impl RObject for BackgroundTypePattern {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -245,8 +245,8 @@ pub struct BackgroundTypeWallpaper {
 
 impl RObject for BackgroundTypeWallpaper {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

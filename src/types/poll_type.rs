@@ -29,7 +29,7 @@ impl Default for PollType {
 
 impl RObject for PollType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             PollType::Quiz(t) => t.extra(),
             PollType::Regular(t) => t.extra(),
@@ -80,8 +80,8 @@ pub struct PollTypeQuiz {
 
 impl RObject for PollTypeQuiz {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -158,8 +158,8 @@ pub struct PollTypeRegular {
 
 impl RObject for PollTypeRegular {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

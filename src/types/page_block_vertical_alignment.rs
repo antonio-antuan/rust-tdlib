@@ -32,7 +32,7 @@ impl Default for PageBlockVerticalAlignment {
 
 impl RObject for PageBlockVerticalAlignment {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             PageBlockVerticalAlignment::Bottom(t) => t.extra(),
             PageBlockVerticalAlignment::Middle(t) => t.extra(),
@@ -81,8 +81,8 @@ pub struct PageBlockVerticalAlignmentBottom {
 
 impl RObject for PageBlockVerticalAlignmentBottom {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -139,8 +139,8 @@ pub struct PageBlockVerticalAlignmentMiddle {
 
 impl RObject for PageBlockVerticalAlignmentMiddle {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -197,8 +197,8 @@ pub struct PageBlockVerticalAlignmentTop {
 
 impl RObject for PageBlockVerticalAlignmentTop {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

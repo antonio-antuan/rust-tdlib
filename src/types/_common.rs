@@ -19,7 +19,7 @@ where
 /// All tdlib type abstract class defined the same behavior
 pub trait RObject: Debug {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String>;
+    fn extra(&self) -> Option<&str>;
     fn client_id(&self) -> Option<i32>;
 }
 
@@ -30,7 +30,7 @@ pub trait RFunction: Debug + RObject + Serialize {
 }
 
 impl<'a, RObj: RObject> RObject for &'a RObj {
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         (*self).extra()
     }
     fn client_id(&self) -> Option<i32> {
@@ -39,7 +39,7 @@ impl<'a, RObj: RObject> RObject for &'a RObj {
 }
 
 impl<'a, RObj: RObject> RObject for &'a mut RObj {
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         (**self).extra()
     }
     fn client_id(&self) -> Option<i32> {
@@ -441,7 +441,7 @@ impl<'a, USERTYPE: TDUserType> TDUserType for &'a USERTYPE {}
 impl<'a, USERTYPE: TDUserType> TDUserType for &'a mut USERTYPE {}
 
 #[derive(Debug, Clone)]
-pub enum TdType {
+pub(crate) enum TdType {
     AuthorizationState(AuthorizationState),
     CanTransferOwnershipResult(CanTransferOwnershipResult),
     ChatStatistics(ChatStatistics),
@@ -985,7 +985,7 @@ fn deserialize_direct_types(
     })
 }
 
-const AuthorizationState_MEMBERS: &'static [&'static str] = &[
+const AUTHORIZATIONSTATE_MEMBERS: &'static [&'static str] = &[
     "authorizationStateClosed",
     "authorizationStateClosing",
     "authorizationStateLoggingOut",
@@ -1004,7 +1004,7 @@ fn deserialize_authorization_state(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match AuthorizationState_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match AUTHORIZATIONSTATE_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::AuthorizationState(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -1012,7 +1012,7 @@ fn deserialize_authorization_state(
     })
 }
 
-const CanTransferOwnershipResult_MEMBERS: &'static [&'static str] = &[
+const CANTRANSFEROWNERSHIPRESULT_MEMBERS: &'static [&'static str] = &[
     "canTransferOwnership",
     "canTransferOwnershipResultOk",
     "canTransferOwnershipResultPasswordNeeded",
@@ -1025,7 +1025,7 @@ fn deserialize_can_transfer_ownership_result(
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
     Ok(
-        match CanTransferOwnershipResult_MEMBERS.contains(&rtd_trait_type) {
+        match CANTRANSFEROWNERSHIPRESULT_MEMBERS.contains(&rtd_trait_type) {
             true => Some(TdType::CanTransferOwnershipResult(serde_json::from_value(
                 rtd_trait_value,
             )?)),
@@ -1034,7 +1034,7 @@ fn deserialize_can_transfer_ownership_result(
     )
 }
 
-const ChatStatistics_MEMBERS: &'static [&'static str] = &[
+const CHATSTATISTICS_MEMBERS: &'static [&'static str] = &[
     "chatStatisticsChannel",
     "chatStatisticsSupergroup",
     "getChatStatistics",
@@ -1044,7 +1044,7 @@ fn deserialize_chat_statistics(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match ChatStatistics_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match CHATSTATISTICS_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::ChatStatistics(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -1052,7 +1052,7 @@ fn deserialize_chat_statistics(
     })
 }
 
-const CheckChatUsernameResult_MEMBERS: &'static [&'static str] = &[
+const CHECKCHATUSERNAMERESULT_MEMBERS: &'static [&'static str] = &[
     "checkChatUsername",
     "checkChatUsernameResultOk",
     "checkChatUsernameResultPublicChatsTooMuch",
@@ -1066,7 +1066,7 @@ fn deserialize_check_chat_username_result(
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
     Ok(
-        match CheckChatUsernameResult_MEMBERS.contains(&rtd_trait_type) {
+        match CHECKCHATUSERNAMERESULT_MEMBERS.contains(&rtd_trait_type) {
             true => Some(TdType::CheckChatUsernameResult(serde_json::from_value(
                 rtd_trait_value,
             )?)),
@@ -1075,7 +1075,7 @@ fn deserialize_check_chat_username_result(
     )
 }
 
-const JsonValue_MEMBERS: &'static [&'static str] = &[
+const JSONVALUE_MEMBERS: &'static [&'static str] = &[
     "getApplicationConfig",
     "getJsonValue",
     "jsonValueArray",
@@ -1090,13 +1090,13 @@ fn deserialize_json_value(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match JsonValue_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match JSONVALUE_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::JsonValue(serde_json::from_value(rtd_trait_value)?)),
         false => None,
     })
 }
 
-const LanguagePackStringValue_MEMBERS: &'static [&'static str] = &[
+const LANGUAGEPACKSTRINGVALUE_MEMBERS: &'static [&'static str] = &[
     "getLanguagePackString",
     "languagePackStringValueDeleted",
     "languagePackStringValueOrdinary",
@@ -1108,7 +1108,7 @@ fn deserialize_language_pack_string_value(
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
     Ok(
-        match LanguagePackStringValue_MEMBERS.contains(&rtd_trait_type) {
+        match LANGUAGEPACKSTRINGVALUE_MEMBERS.contains(&rtd_trait_type) {
             true => Some(TdType::LanguagePackStringValue(serde_json::from_value(
                 rtd_trait_value,
             )?)),
@@ -1117,7 +1117,7 @@ fn deserialize_language_pack_string_value(
     )
 }
 
-const LogStream_MEMBERS: &'static [&'static str] = &[
+const LOGSTREAM_MEMBERS: &'static [&'static str] = &[
     "getLogStream",
     "logStreamDefault",
     "logStreamEmpty",
@@ -1128,13 +1128,13 @@ fn deserialize_log_stream(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match LogStream_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match LOGSTREAM_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::LogStream(serde_json::from_value(rtd_trait_value)?)),
         false => None,
     })
 }
 
-const LoginUrlInfo_MEMBERS: &'static [&'static str] = &[
+const LOGINURLINFO_MEMBERS: &'static [&'static str] = &[
     "getLoginUrlInfo",
     "loginUrlInfoOpen",
     "loginUrlInfoRequestConfirmation",
@@ -1144,7 +1144,7 @@ fn deserialize_login_url_info(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match LoginUrlInfo_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match LOGINURLINFO_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::LoginUrlInfo(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -1152,7 +1152,7 @@ fn deserialize_login_url_info(
     })
 }
 
-const OptionValue_MEMBERS: &'static [&'static str] = &[
+const OPTIONVALUE_MEMBERS: &'static [&'static str] = &[
     "getOption",
     "optionValueBoolean",
     "optionValueEmpty",
@@ -1164,7 +1164,7 @@ fn deserialize_option_value(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match OptionValue_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match OPTIONVALUE_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::OptionValue(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -1172,7 +1172,7 @@ fn deserialize_option_value(
     })
 }
 
-const PassportElement_MEMBERS: &'static [&'static str] = &[
+const PASSPORTELEMENT_MEMBERS: &'static [&'static str] = &[
     "getPassportElement",
     "passportElementAddress",
     "passportElementBankStatement",
@@ -1194,7 +1194,7 @@ fn deserialize_passport_element(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match PassportElement_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match PASSPORTELEMENT_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::PassportElement(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -1202,7 +1202,7 @@ fn deserialize_passport_element(
     })
 }
 
-const StatisticalGraph_MEMBERS: &'static [&'static str] = &[
+const STATISTICALGRAPH_MEMBERS: &'static [&'static str] = &[
     "getStatisticalGraph",
     "statisticalGraphAsync",
     "statisticalGraphData",
@@ -1213,7 +1213,7 @@ fn deserialize_statistical_graph(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match StatisticalGraph_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match STATISTICALGRAPH_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::StatisticalGraph(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -1221,7 +1221,7 @@ fn deserialize_statistical_graph(
     })
 }
 
-const Update_MEMBERS: &'static [&'static str] = &[
+const UPDATE_MEMBERS: &'static [&'static str] = &[
     "testUseUpdate",
     "updateActiveNotifications",
     "updateAnimationSearchParameters",
@@ -1309,244 +1309,14 @@ fn deserialize_update(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match Update_MEMBERS.contains(&rtd_trait_type) {
+    Ok(match UPDATE_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::Update(serde_json::from_value(rtd_trait_value)?)),
         false => None,
     })
 }
 
 impl TdType {
-    pub fn client_id(&self) -> Option<i32> {
-        match self {
-            TdType::AuthorizationState(value) => value.client_id(),
-
-            TdType::CanTransferOwnershipResult(value) => value.client_id(),
-
-            TdType::ChatStatistics(value) => value.client_id(),
-
-            TdType::CheckChatUsernameResult(value) => value.client_id(),
-
-            TdType::JsonValue(value) => value.client_id(),
-
-            TdType::LanguagePackStringValue(value) => value.client_id(),
-
-            TdType::LogStream(value) => value.client_id(),
-
-            TdType::LoginUrlInfo(value) => value.client_id(),
-
-            TdType::OptionValue(value) => value.client_id(),
-
-            TdType::PassportElement(value) => value.client_id(),
-
-            TdType::StatisticalGraph(value) => value.client_id(),
-
-            TdType::Update(value) => value.client_id(),
-
-            TdType::AccountTtl(value) => value.client_id(),
-
-            TdType::Animations(value) => value.client_id(),
-
-            TdType::AuthenticationCodeInfo(value) => value.client_id(),
-
-            TdType::AutoDownloadSettingsPresets(value) => value.client_id(),
-
-            TdType::Background(value) => value.client_id(),
-
-            TdType::Backgrounds(value) => value.client_id(),
-
-            TdType::BankCardInfo(value) => value.client_id(),
-
-            TdType::BasicGroup(value) => value.client_id(),
-
-            TdType::BasicGroupFullInfo(value) => value.client_id(),
-
-            TdType::CallId(value) => value.client_id(),
-
-            TdType::CallbackQueryAnswer(value) => value.client_id(),
-
-            TdType::Chat(value) => value.client_id(),
-
-            TdType::ChatAdministrators(value) => value.client_id(),
-
-            TdType::ChatEvents(value) => value.client_id(),
-
-            TdType::ChatFilter(value) => value.client_id(),
-
-            TdType::ChatFilterInfo(value) => value.client_id(),
-
-            TdType::ChatInviteLink(value) => value.client_id(),
-
-            TdType::ChatInviteLinkInfo(value) => value.client_id(),
-
-            TdType::ChatLists(value) => value.client_id(),
-
-            TdType::ChatMember(value) => value.client_id(),
-
-            TdType::ChatMembers(value) => value.client_id(),
-
-            TdType::ChatPhotos(value) => value.client_id(),
-
-            TdType::Chats(value) => value.client_id(),
-
-            TdType::ChatsNearby(value) => value.client_id(),
-
-            TdType::ConnectedWebsites(value) => value.client_id(),
-
-            TdType::Count(value) => value.client_id(),
-
-            TdType::Countries(value) => value.client_id(),
-
-            TdType::CustomRequestResult(value) => value.client_id(),
-
-            TdType::DatabaseStatistics(value) => value.client_id(),
-
-            TdType::DeepLinkInfo(value) => value.client_id(),
-
-            TdType::EmailAddressAuthenticationCodeInfo(value) => value.client_id(),
-
-            TdType::Emojis(value) => value.client_id(),
-
-            TdType::Error(value) => value.client_id(),
-
-            TdType::File(value) => value.client_id(),
-
-            TdType::FilePart(value) => value.client_id(),
-
-            TdType::FormattedText(value) => value.client_id(),
-
-            TdType::FoundMessages(value) => value.client_id(),
-
-            TdType::GameHighScores(value) => value.client_id(),
-
-            TdType::Hashtags(value) => value.client_id(),
-
-            TdType::HttpUrl(value) => value.client_id(),
-
-            TdType::ImportedContacts(value) => value.client_id(),
-
-            TdType::InlineQueryResults(value) => value.client_id(),
-
-            TdType::LanguagePackInfo(value) => value.client_id(),
-
-            TdType::LanguagePackStrings(value) => value.client_id(),
-
-            TdType::LocalizationTargetInfo(value) => value.client_id(),
-
-            TdType::LogTags(value) => value.client_id(),
-
-            TdType::LogVerbosityLevel(value) => value.client_id(),
-
-            TdType::Message(value) => value.client_id(),
-
-            TdType::MessageLink(value) => value.client_id(),
-
-            TdType::MessageLinkInfo(value) => value.client_id(),
-
-            TdType::MessageSenders(value) => value.client_id(),
-
-            TdType::MessageStatistics(value) => value.client_id(),
-
-            TdType::MessageThreadInfo(value) => value.client_id(),
-
-            TdType::Messages(value) => value.client_id(),
-
-            TdType::NetworkStatistics(value) => value.client_id(),
-
-            TdType::Ok(value) => value.client_id(),
-
-            TdType::OrderInfo(value) => value.client_id(),
-
-            TdType::PassportAuthorizationForm(value) => value.client_id(),
-
-            TdType::PassportElements(value) => value.client_id(),
-
-            TdType::PassportElementsWithErrors(value) => value.client_id(),
-
-            TdType::PasswordState(value) => value.client_id(),
-
-            TdType::PaymentForm(value) => value.client_id(),
-
-            TdType::PaymentReceipt(value) => value.client_id(),
-
-            TdType::PaymentResult(value) => value.client_id(),
-
-            TdType::PhoneNumberInfo(value) => value.client_id(),
-
-            TdType::Proxies(value) => value.client_id(),
-
-            TdType::Proxy(value) => value.client_id(),
-
-            TdType::PushReceiverId(value) => value.client_id(),
-
-            TdType::RecommendedChatFilters(value) => value.client_id(),
-
-            TdType::RecoveryEmailAddress(value) => value.client_id(),
-
-            TdType::ScopeNotificationSettings(value) => value.client_id(),
-
-            TdType::Seconds(value) => value.client_id(),
-
-            TdType::SecretChat(value) => value.client_id(),
-
-            TdType::Session(value) => value.client_id(),
-
-            TdType::Sessions(value) => value.client_id(),
-
-            TdType::StickerSet(value) => value.client_id(),
-
-            TdType::StickerSets(value) => value.client_id(),
-
-            TdType::Stickers(value) => value.client_id(),
-
-            TdType::StorageStatistics(value) => value.client_id(),
-
-            TdType::StorageStatisticsFast(value) => value.client_id(),
-
-            TdType::Supergroup(value) => value.client_id(),
-
-            TdType::SupergroupFullInfo(value) => value.client_id(),
-
-            TdType::TMeUrls(value) => value.client_id(),
-
-            TdType::TemporaryPasswordState(value) => value.client_id(),
-
-            TdType::TestBytes(value) => value.client_id(),
-
-            TdType::TestInt(value) => value.client_id(),
-
-            TdType::TestString(value) => value.client_id(),
-
-            TdType::TestVectorInt(value) => value.client_id(),
-
-            TdType::TestVectorIntObject(value) => value.client_id(),
-
-            TdType::TestVectorString(value) => value.client_id(),
-
-            TdType::TestVectorStringObject(value) => value.client_id(),
-
-            TdType::Text(value) => value.client_id(),
-
-            TdType::TextEntities(value) => value.client_id(),
-
-            TdType::Updates(value) => value.client_id(),
-
-            TdType::User(value) => value.client_id(),
-
-            TdType::UserFullInfo(value) => value.client_id(),
-
-            TdType::UserPrivacySettingRules(value) => value.client_id(),
-
-            TdType::Users(value) => value.client_id(),
-
-            TdType::ValidatedOrderInfo(value) => value.client_id(),
-
-            TdType::WebPage(value) => value.client_id(),
-
-            TdType::WebPageInstantView(value) => value.client_id(),
-        }
-    }
-
-    pub fn extra(&self) -> Option<String> {
+    pub fn extra(&self) -> Option<&str> {
         match self {
             TdType::AuthorizationState(value) => value.extra(),
 

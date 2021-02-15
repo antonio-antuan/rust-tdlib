@@ -50,7 +50,7 @@ impl Default for CallProblem {
 
 impl RObject for CallProblem {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             CallProblem::DistortedSpeech(t) => t.extra(),
             CallProblem::DistortedVideo(t) => t.extra(),
@@ -111,8 +111,8 @@ pub struct CallProblemDistortedSpeech {
 
 impl RObject for CallProblemDistortedSpeech {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -169,8 +169,8 @@ pub struct CallProblemDistortedVideo {
 
 impl RObject for CallProblemDistortedVideo {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -227,8 +227,8 @@ pub struct CallProblemDropped {
 
 impl RObject for CallProblemDropped {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -285,8 +285,8 @@ pub struct CallProblemEcho {
 
 impl RObject for CallProblemEcho {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -343,8 +343,8 @@ pub struct CallProblemInterruptions {
 
 impl RObject for CallProblemInterruptions {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -401,8 +401,8 @@ pub struct CallProblemNoise {
 
 impl RObject for CallProblemNoise {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -459,8 +459,8 @@ pub struct CallProblemPixelatedVideo {
 
 impl RObject for CallProblemPixelatedVideo {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -517,8 +517,8 @@ pub struct CallProblemSilentLocal {
 
 impl RObject for CallProblemSilentLocal {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -575,8 +575,8 @@ pub struct CallProblemSilentRemote {
 
 impl RObject for CallProblemSilentRemote {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

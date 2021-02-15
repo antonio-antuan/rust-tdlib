@@ -29,7 +29,7 @@ impl Default for ChatSource {
 
 impl RObject for ChatSource {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatSource::MtprotoProxy(t) => t.extra(),
             ChatSource::PublicServiceAnnouncement(t) => t.extra(),
@@ -76,8 +76,8 @@ pub struct ChatSourceMtprotoProxy {
 
 impl RObject for ChatSourceMtprotoProxy {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -139,8 +139,8 @@ pub struct ChatSourcePublicServiceAnnouncement {
 
 impl RObject for ChatSourcePublicServiceAnnouncement {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

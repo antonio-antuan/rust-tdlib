@@ -38,7 +38,7 @@ impl Default for ChatActionBar {
 
 impl RObject for ChatActionBar {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatActionBar::AddContact(t) => t.extra(),
             ChatActionBar::ReportAddBlock(t) => t.extra(),
@@ -91,8 +91,8 @@ pub struct ChatActionBarAddContact {
 
 impl RObject for ChatActionBarAddContact {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -153,8 +153,8 @@ pub struct ChatActionBarReportAddBlock {
 
 impl RObject for ChatActionBarReportAddBlock {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -231,8 +231,8 @@ pub struct ChatActionBarReportSpam {
 
 impl RObject for ChatActionBarReportSpam {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -298,8 +298,8 @@ pub struct ChatActionBarReportUnrelatedLocation {
 
 impl RObject for ChatActionBarReportUnrelatedLocation {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -358,8 +358,8 @@ pub struct ChatActionBarSharePhoneNumber {
 
 impl RObject for ChatActionBarSharePhoneNumber {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

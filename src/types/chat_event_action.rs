@@ -89,7 +89,7 @@ impl Default for ChatEventAction {
 
 impl RObject for ChatEventAction {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatEventAction::ChatEventDescriptionChanged(t) => t.extra(),
             ChatEventAction::ChatEventInvitesToggled(t) => t.extra(),
@@ -180,8 +180,8 @@ pub struct ChatEventDescriptionChanged {
 
 impl RObject for ChatEventDescriptionChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -258,8 +258,8 @@ pub struct ChatEventInvitesToggled {
 
 impl RObject for ChatEventInvitesToggled {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -327,8 +327,8 @@ pub struct ChatEventIsAllHistoryAvailableToggled {
 
 impl RObject for ChatEventIsAllHistoryAvailableToggled {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -400,8 +400,8 @@ pub struct ChatEventLinkedChatChanged {
 
 impl RObject for ChatEventLinkedChatChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -480,8 +480,8 @@ pub struct ChatEventLocationChanged {
 
 impl RObject for ChatEventLocationChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -560,8 +560,8 @@ pub struct ChatEventMemberInvited {
 
 impl RObject for ChatEventMemberInvited {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -636,8 +636,8 @@ pub struct ChatEventMemberJoined {
 
 impl RObject for ChatEventMemberJoined {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -694,8 +694,8 @@ pub struct ChatEventMemberLeft {
 
 impl RObject for ChatEventMemberLeft {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -758,8 +758,8 @@ pub struct ChatEventMemberPromoted {
 
 impl RObject for ChatEventMemberPromoted {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -849,8 +849,8 @@ pub struct ChatEventMemberRestricted {
 
 impl RObject for ChatEventMemberRestricted {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -936,8 +936,8 @@ pub struct ChatEventMessageDeleted {
 
 impl RObject for ChatEventMessageDeleted {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1007,8 +1007,8 @@ pub struct ChatEventMessageEdited {
 
 impl RObject for ChatEventMessageEdited {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1085,8 +1085,8 @@ pub struct ChatEventMessagePinned {
 
 impl RObject for ChatEventMessagePinned {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1154,8 +1154,8 @@ pub struct ChatEventMessageUnpinned {
 
 impl RObject for ChatEventMessageUnpinned {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1225,8 +1225,8 @@ pub struct ChatEventPermissionsChanged {
 
 impl RObject for ChatEventPermissionsChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1305,8 +1305,8 @@ pub struct ChatEventPhotoChanged {
 
 impl RObject for ChatEventPhotoChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1383,8 +1383,8 @@ pub struct ChatEventPollStopped {
 
 impl RObject for ChatEventPollStopped {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1452,8 +1452,8 @@ pub struct ChatEventSignMessagesToggled {
 
 impl RObject for ChatEventSignMessagesToggled {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1523,8 +1523,8 @@ pub struct ChatEventSlowModeDelayChanged {
 
 impl RObject for ChatEventSlowModeDelayChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1605,8 +1605,8 @@ pub struct ChatEventStickerSetChanged {
 
 impl RObject for ChatEventStickerSetChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1685,8 +1685,8 @@ pub struct ChatEventTitleChanged {
 
 impl RObject for ChatEventTitleChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1765,8 +1765,8 @@ pub struct ChatEventUsernameChanged {
 
 impl RObject for ChatEventUsernameChanged {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

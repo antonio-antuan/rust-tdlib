@@ -35,7 +35,7 @@ impl Default for MaskPoint {
 
 impl RObject for MaskPoint {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             MaskPoint::Chin(t) => t.extra(),
             MaskPoint::Eyes(t) => t.extra(),
@@ -86,8 +86,8 @@ pub struct MaskPointChin {
 
 impl RObject for MaskPointChin {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -144,8 +144,8 @@ pub struct MaskPointEyes {
 
 impl RObject for MaskPointEyes {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -202,8 +202,8 @@ pub struct MaskPointForehead {
 
 impl RObject for MaskPointForehead {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -260,8 +260,8 @@ pub struct MaskPointMouth {
 
 impl RObject for MaskPointMouth {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

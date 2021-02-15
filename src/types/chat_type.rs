@@ -35,7 +35,7 @@ impl Default for ChatType {
 
 impl RObject for ChatType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatType::BasicGroup(t) => t.extra(),
             ChatType::Private(t) => t.extra(),
@@ -88,8 +88,8 @@ pub struct ChatTypeBasicGroup {
 
 impl RObject for ChatTypeBasicGroup {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -157,8 +157,8 @@ pub struct ChatTypePrivate {
 
 impl RObject for ChatTypePrivate {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -228,8 +228,8 @@ pub struct ChatTypeSecret {
 
 impl RObject for ChatTypeSecret {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -308,8 +308,8 @@ pub struct ChatTypeSupergroup {
 
 impl RObject for ChatTypeSupergroup {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

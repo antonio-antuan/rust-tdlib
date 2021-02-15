@@ -35,7 +35,7 @@ impl Default for LogStream {
 
 impl RObject for LogStream {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             LogStream::GetLogStream(t) => t.extra(),
             LogStream::Default(t) => t.extra(),
@@ -86,8 +86,8 @@ pub struct LogStreamDefault {
 
 impl RObject for LogStreamDefault {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -144,8 +144,8 @@ pub struct LogStreamEmpty {
 
 impl RObject for LogStreamEmpty {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -208,8 +208,8 @@ pub struct LogStreamFile {
 
 impl RObject for LogStreamFile {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

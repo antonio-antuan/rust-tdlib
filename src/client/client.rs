@@ -47,6 +47,7 @@ impl RawApi {
     }
 }
 
+/// Represents state of particular client instance.
 #[derive(Debug, Clone)]
 pub enum ClientState {
     /// Client opened. You can start interaction
@@ -74,7 +75,7 @@ impl<S> Client<S>
 where
     S: TdLibClient + Clone,
 {
-    pub fn tdlib_parameters(&self) -> &TdlibParameters {
+    pub(crate) fn tdlib_parameters(&self) -> &TdlibParameters {
         &self.tdlib_parameters
     }
 
@@ -124,6 +125,8 @@ impl<R> ClientBuilder<R>
 where
     R: TdLibClient + Clone,
 {
+    /// If you want to receive Telegram updates (messages, channels, etc; see `crate::types::Update`),
+    /// you must set mpsc::Sender here.
     pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<Update>) -> Self {
         self.updates_sender = Some(updates_sender);
         self
@@ -135,6 +138,7 @@ where
         self
     }
 
+    #[doc(hidden)]
     pub fn with_tdjson<T: TdLibClient + Clone>(self, tdjson: T) -> ClientBuilder<T> {
         ClientBuilder {
             tdjson,
@@ -168,6 +172,7 @@ impl<R> Client<R>
 where
     R: TdLibClient + Clone,
 {
+    #[doc(hidden)]
     pub fn new(
         raw_api: R,
         updates_sender: Option<mpsc::Sender<Update>>,
@@ -179,6 +184,11 @@ where
             tdlib_parameters,
             client_id: None,
         }
+    }
+
+    /// Just a shortcut for `crate::client::client::Client::close`, allows you to stop the client.
+    pub async fn stop(&self) -> RTDResult<Ok> {
+        self.close(Close::builder().build()).await
     }
 
     // Accepts an incoming call

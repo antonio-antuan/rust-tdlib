@@ -35,7 +35,7 @@ impl Default for AuthenticationCodeType {
 
 impl RObject for AuthenticationCodeType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             AuthenticationCodeType::Call(t) => t.extra(),
             AuthenticationCodeType::FlashCall(t) => t.extra(),
@@ -88,8 +88,8 @@ pub struct AuthenticationCodeTypeCall {
 
 impl RObject for AuthenticationCodeTypeCall {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -157,8 +157,8 @@ pub struct AuthenticationCodeTypeFlashCall {
 
 impl RObject for AuthenticationCodeTypeFlashCall {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -226,8 +226,8 @@ pub struct AuthenticationCodeTypeSms {
 
 impl RObject for AuthenticationCodeTypeSms {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -295,8 +295,8 @@ pub struct AuthenticationCodeTypeTelegramMessage {
 
 impl RObject for AuthenticationCodeTypeTelegramMessage {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

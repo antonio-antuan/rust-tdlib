@@ -47,7 +47,7 @@ impl Default for SupergroupMembersFilter {
 
 impl RObject for SupergroupMembersFilter {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             SupergroupMembersFilter::Administrators(t) => t.extra(),
             SupergroupMembersFilter::Banned(t) => t.extra(),
@@ -106,8 +106,8 @@ pub struct SupergroupMembersFilterAdministrators {
 
 impl RObject for SupergroupMembersFilterAdministrators {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -168,8 +168,8 @@ pub struct SupergroupMembersFilterBanned {
 
 impl RObject for SupergroupMembersFilterBanned {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -235,8 +235,8 @@ pub struct SupergroupMembersFilterBots {
 
 impl RObject for SupergroupMembersFilterBots {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -295,8 +295,8 @@ pub struct SupergroupMembersFilterContacts {
 
 impl RObject for SupergroupMembersFilterContacts {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -366,8 +366,8 @@ pub struct SupergroupMembersFilterMention {
 
 impl RObject for SupergroupMembersFilterMention {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -442,8 +442,8 @@ pub struct SupergroupMembersFilterRecent {
 
 impl RObject for SupergroupMembersFilterRecent {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -502,8 +502,8 @@ pub struct SupergroupMembersFilterRestricted {
 
 impl RObject for SupergroupMembersFilterRestricted {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -571,8 +571,8 @@ pub struct SupergroupMembersFilterSearch {
 
 impl RObject for SupergroupMembersFilterSearch {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -35,7 +35,7 @@ impl Default for UserType {
 
 impl RObject for UserType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             UserType::Bot(t) => t.extra(),
             UserType::Deleted(t) => t.extra(),
@@ -96,8 +96,8 @@ pub struct UserTypeBot {
 
 impl RObject for UserTypeBot {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -202,8 +202,8 @@ pub struct UserTypeDeleted {
 
 impl RObject for UserTypeDeleted {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -260,8 +260,8 @@ pub struct UserTypeRegular {
 
 impl RObject for UserTypeRegular {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -318,8 +318,8 @@ pub struct UserTypeUnknown {
 
 impl RObject for UserTypeUnknown {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

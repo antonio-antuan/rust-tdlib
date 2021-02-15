@@ -35,7 +35,7 @@ impl Default for InputCredentials {
 
 impl RObject for InputCredentials {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             InputCredentials::AndroidPay(t) => t.extra(),
             InputCredentials::ApplePay(t) => t.extra(),
@@ -88,8 +88,8 @@ pub struct InputCredentialsAndroidPay {
 
 impl RObject for InputCredentialsAndroidPay {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -157,8 +157,8 @@ pub struct InputCredentialsApplePay {
 
 impl RObject for InputCredentialsApplePay {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -228,8 +228,8 @@ pub struct InputCredentialsNew {
 
 impl RObject for InputCredentialsNew {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -306,8 +306,8 @@ pub struct InputCredentialsSaved {
 
 impl RObject for InputCredentialsSaved {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

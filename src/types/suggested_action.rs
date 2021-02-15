@@ -29,7 +29,7 @@ impl Default for SuggestedAction {
 
 impl RObject for SuggestedAction {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             SuggestedAction::CheckPhoneNumber(t) => t.extra(),
             SuggestedAction::EnableArchiveAndMuteNewChats(t) => t.extra(),
@@ -76,8 +76,8 @@ pub struct SuggestedActionCheckPhoneNumber {
 
 impl RObject for SuggestedActionCheckPhoneNumber {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -134,8 +134,8 @@ pub struct SuggestedActionEnableArchiveAndMuteNewChats {
 
 impl RObject for SuggestedActionEnableArchiveAndMuteNewChats {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

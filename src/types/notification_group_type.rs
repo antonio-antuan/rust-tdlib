@@ -35,7 +35,7 @@ impl Default for NotificationGroupType {
 
 impl RObject for NotificationGroupType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             NotificationGroupType::Calls(t) => t.extra(),
             NotificationGroupType::Mentions(t) => t.extra(),
@@ -86,8 +86,8 @@ pub struct NotificationGroupTypeCalls {
 
 impl RObject for NotificationGroupTypeCalls {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -144,8 +144,8 @@ pub struct NotificationGroupTypeMentions {
 
 impl RObject for NotificationGroupTypeMentions {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -202,8 +202,8 @@ pub struct NotificationGroupTypeMessages {
 
 impl RObject for NotificationGroupTypeMessages {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -260,8 +260,8 @@ pub struct NotificationGroupTypeSecretChat {
 
 impl RObject for NotificationGroupTypeSecretChat {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -41,7 +41,7 @@ impl Default for CheckChatUsernameResult {
 
 impl RObject for CheckChatUsernameResult {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             CheckChatUsernameResult::CheckChatUsername(t) => t.extra(),
             CheckChatUsernameResult::Ok(t) => t.extra(),
@@ -96,8 +96,8 @@ pub struct CheckChatUsernameResultOk {
 
 impl RObject for CheckChatUsernameResultOk {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -154,8 +154,8 @@ pub struct CheckChatUsernameResultPublicChatsTooMuch {
 
 impl RObject for CheckChatUsernameResultPublicChatsTooMuch {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -216,8 +216,8 @@ pub struct CheckChatUsernameResultPublicGroupsUnavailable {
 
 impl RObject for CheckChatUsernameResultPublicGroupsUnavailable {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -278,8 +278,8 @@ pub struct CheckChatUsernameResultUsernameInvalid {
 
 impl RObject for CheckChatUsernameResultUsernameInvalid {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -338,8 +338,8 @@ pub struct CheckChatUsernameResultUsernameOccupied {
 
 impl RObject for CheckChatUsernameResultUsernameOccupied {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

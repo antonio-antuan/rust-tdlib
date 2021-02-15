@@ -32,7 +32,7 @@ impl Default for NotificationSettingsScope {
 
 impl RObject for NotificationSettingsScope {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             NotificationSettingsScope::ChannelChats(t) => t.extra(),
             NotificationSettingsScope::GroupChats(t) => t.extra(),
@@ -81,8 +81,8 @@ pub struct NotificationSettingsScopeChannelChats {
 
 impl RObject for NotificationSettingsScopeChannelChats {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -141,8 +141,8 @@ pub struct NotificationSettingsScopeGroupChats {
 
 impl RObject for NotificationSettingsScopeGroupChats {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -199,8 +199,8 @@ pub struct NotificationSettingsScopePrivateChats {
 
 impl RObject for NotificationSettingsScopePrivateChats {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

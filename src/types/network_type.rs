@@ -38,7 +38,7 @@ impl Default for NetworkType {
 
 impl RObject for NetworkType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             NetworkType::Mobile(t) => t.extra(),
             NetworkType::MobileRoaming(t) => t.extra(),
@@ -91,8 +91,8 @@ pub struct NetworkTypeMobile {
 
 impl RObject for NetworkTypeMobile {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -149,8 +149,8 @@ pub struct NetworkTypeMobileRoaming {
 
 impl RObject for NetworkTypeMobileRoaming {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -207,8 +207,8 @@ pub struct NetworkTypeNone {
 
 impl RObject for NetworkTypeNone {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -265,8 +265,8 @@ pub struct NetworkTypeOther {
 
 impl RObject for NetworkTypeOther {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -323,8 +323,8 @@ pub struct NetworkTypeWiFi {
 
 impl RObject for NetworkTypeWiFi {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

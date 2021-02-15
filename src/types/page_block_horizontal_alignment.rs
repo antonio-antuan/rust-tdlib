@@ -32,7 +32,7 @@ impl Default for PageBlockHorizontalAlignment {
 
 impl RObject for PageBlockHorizontalAlignment {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             PageBlockHorizontalAlignment::Center(t) => t.extra(),
             PageBlockHorizontalAlignment::Left(t) => t.extra(),
@@ -81,8 +81,8 @@ pub struct PageBlockHorizontalAlignmentCenter {
 
 impl RObject for PageBlockHorizontalAlignmentCenter {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -139,8 +139,8 @@ pub struct PageBlockHorizontalAlignmentLeft {
 
 impl RObject for PageBlockHorizontalAlignmentLeft {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -197,8 +197,8 @@ pub struct PageBlockHorizontalAlignmentRight {
 
 impl RObject for PageBlockHorizontalAlignmentRight {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

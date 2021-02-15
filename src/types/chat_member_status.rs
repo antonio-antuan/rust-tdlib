@@ -41,7 +41,7 @@ impl Default for ChatMemberStatus {
 
 impl RObject for ChatMemberStatus {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatMemberStatus::Administrator(t) => t.extra(),
             ChatMemberStatus::Banned(t) => t.extra(),
@@ -118,8 +118,8 @@ pub struct ChatMemberStatusAdministrator {
 
 impl RObject for ChatMemberStatusAdministrator {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -277,8 +277,8 @@ pub struct ChatMemberStatusBanned {
 
 impl RObject for ChatMemberStatusBanned {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -350,8 +350,8 @@ pub struct ChatMemberStatusCreator {
 
 impl RObject for ChatMemberStatusCreator {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -435,8 +435,8 @@ pub struct ChatMemberStatusLeft {
 
 impl RObject for ChatMemberStatusLeft {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -493,8 +493,8 @@ pub struct ChatMemberStatusMember {
 
 impl RObject for ChatMemberStatusMember {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -557,8 +557,8 @@ pub struct ChatMemberStatusRestricted {
 
 impl RObject for ChatMemberStatusRestricted {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

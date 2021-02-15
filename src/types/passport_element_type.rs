@@ -62,7 +62,7 @@ impl Default for PassportElementType {
 
 impl RObject for PassportElementType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             PassportElementType::Address(t) => t.extra(),
             PassportElementType::BankStatement(t) => t.extra(),
@@ -131,8 +131,8 @@ pub struct PassportElementTypeAddress {
 
 impl RObject for PassportElementTypeAddress {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -189,8 +189,8 @@ pub struct PassportElementTypeBankStatement {
 
 impl RObject for PassportElementTypeBankStatement {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -247,8 +247,8 @@ pub struct PassportElementTypeDriverLicense {
 
 impl RObject for PassportElementTypeDriverLicense {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -305,8 +305,8 @@ pub struct PassportElementTypeEmailAddress {
 
 impl RObject for PassportElementTypeEmailAddress {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -363,8 +363,8 @@ pub struct PassportElementTypeIdentityCard {
 
 impl RObject for PassportElementTypeIdentityCard {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -421,8 +421,8 @@ pub struct PassportElementTypeInternalPassport {
 
 impl RObject for PassportElementTypeInternalPassport {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -479,8 +479,8 @@ pub struct PassportElementTypePassport {
 
 impl RObject for PassportElementTypePassport {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -537,8 +537,8 @@ pub struct PassportElementTypePassportRegistration {
 
 impl RObject for PassportElementTypePassportRegistration {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -597,8 +597,8 @@ pub struct PassportElementTypePersonalDetails {
 
 impl RObject for PassportElementTypePersonalDetails {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -655,8 +655,8 @@ pub struct PassportElementTypePhoneNumber {
 
 impl RObject for PassportElementTypePhoneNumber {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -713,8 +713,8 @@ pub struct PassportElementTypeRentalAgreement {
 
 impl RObject for PassportElementTypeRentalAgreement {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -771,8 +771,8 @@ pub struct PassportElementTypeTemporaryRegistration {
 
 impl RObject for PassportElementTypeTemporaryRegistration {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -831,8 +831,8 @@ pub struct PassportElementTypeUtilityBill {
 
 impl RObject for PassportElementTypeUtilityBill {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

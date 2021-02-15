@@ -38,7 +38,7 @@ impl Default for CanTransferOwnershipResult {
 
 impl RObject for CanTransferOwnershipResult {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             CanTransferOwnershipResult::CanTransferOwnership(t) => t.extra(),
             CanTransferOwnershipResult::Ok(t) => t.extra(),
@@ -91,8 +91,8 @@ pub struct CanTransferOwnershipResultOk {
 
 impl RObject for CanTransferOwnershipResultOk {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -149,8 +149,8 @@ pub struct CanTransferOwnershipResultPasswordNeeded {
 
 impl RObject for CanTransferOwnershipResultPasswordNeeded {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -211,8 +211,8 @@ pub struct CanTransferOwnershipResultPasswordTooFresh {
 
 impl RObject for CanTransferOwnershipResultPasswordTooFresh {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -284,8 +284,8 @@ pub struct CanTransferOwnershipResultSessionTooFresh {
 
 impl RObject for CanTransferOwnershipResultSessionTooFresh {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

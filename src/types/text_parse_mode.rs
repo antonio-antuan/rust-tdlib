@@ -29,7 +29,7 @@ impl Default for TextParseMode {
 
 impl RObject for TextParseMode {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             TextParseMode::HTML(t) => t.extra(),
             TextParseMode::Markdown(t) => t.extra(),
@@ -76,8 +76,8 @@ pub struct TextParseModeHTML {
 
 impl RObject for TextParseModeHTML {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -136,8 +136,8 @@ pub struct TextParseModeMarkdown {
 
 impl RObject for TextParseModeMarkdown {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

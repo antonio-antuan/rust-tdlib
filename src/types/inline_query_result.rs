@@ -59,7 +59,7 @@ impl Default for InlineQueryResult {
 
 impl RObject for InlineQueryResult {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             InlineQueryResult::Animation(t) => t.extra(),
             InlineQueryResult::Article(t) => t.extra(),
@@ -132,8 +132,8 @@ pub struct InlineQueryResultAnimation {
 
 impl RObject for InlineQueryResultAnimation {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -229,8 +229,8 @@ pub struct InlineQueryResultArticle {
 
 impl RObject for InlineQueryResultArticle {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -345,8 +345,8 @@ pub struct InlineQueryResultAudio {
 
 impl RObject for InlineQueryResultAudio {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -427,8 +427,8 @@ pub struct InlineQueryResultContact {
 
 impl RObject for InlineQueryResultContact {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -520,8 +520,8 @@ pub struct InlineQueryResultDocument {
 
 impl RObject for InlineQueryResultDocument {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -618,8 +618,8 @@ pub struct InlineQueryResultGame {
 
 impl RObject for InlineQueryResultGame {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -702,8 +702,8 @@ pub struct InlineQueryResultLocation {
 
 impl RObject for InlineQueryResultLocation {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -804,8 +804,8 @@ pub struct InlineQueryResultPhoto {
 
 impl RObject for InlineQueryResultPhoto {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -902,8 +902,8 @@ pub struct InlineQueryResultSticker {
 
 impl RObject for InlineQueryResultSticker {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -984,8 +984,8 @@ pub struct InlineQueryResultVenue {
 
 impl RObject for InlineQueryResultVenue {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1077,8 +1077,8 @@ pub struct InlineQueryResultVideo {
 
 impl RObject for InlineQueryResultVideo {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -1177,8 +1177,8 @@ pub struct InlineQueryResultVoiceNote {
 
 impl RObject for InlineQueryResultVoiceNote {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -32,7 +32,7 @@ impl Default for ProxyType {
 
 impl RObject for ProxyType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ProxyType::Http(t) => t.extra(),
             ProxyType::Mtproto(t) => t.extra(),
@@ -87,8 +87,8 @@ pub struct ProxyTypeHttp {
 
 impl RObject for ProxyTypeHttp {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -174,8 +174,8 @@ pub struct ProxyTypeMtproto {
 
 impl RObject for ProxyTypeMtproto {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -245,8 +245,8 @@ pub struct ProxyTypeSocks5 {
 
 impl RObject for ProxyTypeSocks5 {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

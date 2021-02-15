@@ -35,7 +35,7 @@ impl Default for MessageForwardOrigin {
 
 impl RObject for MessageForwardOrigin {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             MessageForwardOrigin::Channel(t) => t.extra(),
             MessageForwardOrigin::Chat(t) => t.extra(),
@@ -92,8 +92,8 @@ pub struct MessageForwardOriginChannel {
 
 impl RObject for MessageForwardOriginChannel {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -181,8 +181,8 @@ pub struct MessageForwardOriginChat {
 
 impl RObject for MessageForwardOriginChat {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -259,8 +259,8 @@ pub struct MessageForwardOriginHiddenUser {
 
 impl RObject for MessageForwardOriginHiddenUser {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -328,8 +328,8 @@ pub struct MessageForwardOriginUser {
 
 impl RObject for MessageForwardOriginUser {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

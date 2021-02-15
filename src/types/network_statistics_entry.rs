@@ -29,7 +29,7 @@ impl Default for NetworkStatisticsEntry {
 
 impl RObject for NetworkStatisticsEntry {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             NetworkStatisticsEntry::Call(t) => t.extra(),
             NetworkStatisticsEntry::File(t) => t.extra(),
@@ -84,8 +84,8 @@ pub struct NetworkStatisticsEntryCall {
 
 impl RObject for NetworkStatisticsEntryCall {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -186,8 +186,8 @@ pub struct NetworkStatisticsEntryFile {
 
 impl RObject for NetworkStatisticsEntryFile {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

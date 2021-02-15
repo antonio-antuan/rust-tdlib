@@ -56,7 +56,7 @@ impl Default for DeviceToken {
 
 impl RObject for DeviceToken {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             DeviceToken::ApplePush(t) => t.extra(),
             DeviceToken::ApplePushVoIP(t) => t.extra(),
@@ -125,8 +125,8 @@ pub struct DeviceTokenApplePush {
 
 impl RObject for DeviceTokenApplePush {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -207,8 +207,8 @@ pub struct DeviceTokenApplePushVoIP {
 
 impl RObject for DeviceTokenApplePushVoIP {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -294,8 +294,8 @@ pub struct DeviceTokenBlackBerryPush {
 
 impl RObject for DeviceTokenBlackBerryPush {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -365,8 +365,8 @@ pub struct DeviceTokenFirebaseCloudMessaging {
 
 impl RObject for DeviceTokenFirebaseCloudMessaging {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -443,8 +443,8 @@ pub struct DeviceTokenMicrosoftPush {
 
 impl RObject for DeviceTokenMicrosoftPush {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -512,8 +512,8 @@ pub struct DeviceTokenMicrosoftPushVoIP {
 
 impl RObject for DeviceTokenMicrosoftPushVoIP {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -581,8 +581,8 @@ pub struct DeviceTokenSimplePush {
 
 impl RObject for DeviceTokenSimplePush {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -650,8 +650,8 @@ pub struct DeviceTokenTizenPush {
 
 impl RObject for DeviceTokenTizenPush {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -719,8 +719,8 @@ pub struct DeviceTokenUbuntuPush {
 
 impl RObject for DeviceTokenUbuntuPush {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -792,8 +792,8 @@ pub struct DeviceTokenWebPush {
 
 impl RObject for DeviceTokenWebPush {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -879,8 +879,8 @@ pub struct DeviceTokenWindowsPush {
 
 impl RObject for DeviceTokenWindowsPush {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -32,7 +32,7 @@ impl Default for ChatList {
 
 impl RObject for ChatList {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatList::Archive(t) => t.extra(),
             ChatList::Filter(t) => t.extra(),
@@ -81,8 +81,8 @@ pub struct ChatListArchive {
 
 impl RObject for ChatListArchive {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -141,8 +141,8 @@ pub struct ChatListFilter {
 
 impl RObject for ChatListFilter {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -208,8 +208,8 @@ pub struct ChatListMain {
 
 impl RObject for ChatListMain {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

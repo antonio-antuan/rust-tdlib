@@ -35,7 +35,7 @@ impl Default for TMeUrlType {
 
 impl RObject for TMeUrlType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             TMeUrlType::ChatInvite(t) => t.extra(),
             TMeUrlType::StickerSet(t) => t.extra(),
@@ -88,8 +88,8 @@ pub struct TMeUrlTypeChatInvite {
 
 impl RObject for TMeUrlTypeChatInvite {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -158,8 +158,8 @@ pub struct TMeUrlTypeStickerSet {
 
 impl RObject for TMeUrlTypeStickerSet {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -227,8 +227,8 @@ pub struct TMeUrlTypeSupergroup {
 
 impl RObject for TMeUrlTypeSupergroup {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -296,8 +296,8 @@ pub struct TMeUrlTypeUser {
 
 impl RObject for TMeUrlTypeUser {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

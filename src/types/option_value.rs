@@ -38,7 +38,7 @@ impl Default for OptionValue {
 
 impl RObject for OptionValue {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             OptionValue::GetOption(t) => t.extra(),
             OptionValue::Boolean(t) => t.extra(),
@@ -93,8 +93,8 @@ pub struct OptionValueBoolean {
 
 impl RObject for OptionValueBoolean {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -160,8 +160,8 @@ pub struct OptionValueEmpty {
 
 impl RObject for OptionValueEmpty {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -221,8 +221,8 @@ pub struct OptionValueInteger {
 
 impl RObject for OptionValueInteger {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -290,8 +290,8 @@ pub struct OptionValueString {
 
 impl RObject for OptionValueString {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -62,7 +62,7 @@ impl Default for ChatAction {
 
 impl RObject for ChatAction {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatAction::Cancel(t) => t.extra(),
             ChatAction::ChoosingContact(t) => t.extra(),
@@ -131,8 +131,8 @@ pub struct ChatActionCancel {
 
 impl RObject for ChatActionCancel {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -189,8 +189,8 @@ pub struct ChatActionChoosingContact {
 
 impl RObject for ChatActionChoosingContact {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -247,8 +247,8 @@ pub struct ChatActionChoosingLocation {
 
 impl RObject for ChatActionChoosingLocation {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -305,8 +305,8 @@ pub struct ChatActionRecordingVideo {
 
 impl RObject for ChatActionRecordingVideo {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -363,8 +363,8 @@ pub struct ChatActionRecordingVideoNote {
 
 impl RObject for ChatActionRecordingVideoNote {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -421,8 +421,8 @@ pub struct ChatActionRecordingVoiceNote {
 
 impl RObject for ChatActionRecordingVoiceNote {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -479,8 +479,8 @@ pub struct ChatActionStartPlayingGame {
 
 impl RObject for ChatActionStartPlayingGame {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -537,8 +537,8 @@ pub struct ChatActionTyping {
 
 impl RObject for ChatActionTyping {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -597,8 +597,8 @@ pub struct ChatActionUploadingDocument {
 
 impl RObject for ChatActionUploadingDocument {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -666,8 +666,8 @@ pub struct ChatActionUploadingPhoto {
 
 impl RObject for ChatActionUploadingPhoto {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -735,8 +735,8 @@ pub struct ChatActionUploadingVideo {
 
 impl RObject for ChatActionUploadingVideo {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -804,8 +804,8 @@ pub struct ChatActionUploadingVideoNote {
 
 impl RObject for ChatActionUploadingVideoNote {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -873,8 +873,8 @@ pub struct ChatActionUploadingVoiceNote {
 
 impl RObject for ChatActionUploadingVoiceNote {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

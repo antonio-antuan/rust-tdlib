@@ -29,7 +29,7 @@ impl Default for MessageSchedulingState {
 
 impl RObject for MessageSchedulingState {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             MessageSchedulingState::SendAtDate(t) => t.extra(),
             MessageSchedulingState::SendWhenOnline(t) => t.extra(),
@@ -78,8 +78,8 @@ pub struct MessageSchedulingStateSendAtDate {
 
 impl RObject for MessageSchedulingStateSendAtDate {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -145,8 +145,8 @@ pub struct MessageSchedulingStateSendWhenOnline {
 
 impl RObject for MessageSchedulingStateSendWhenOnline {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

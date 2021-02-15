@@ -44,7 +44,7 @@ impl Default for TopChatCategory {
 
 impl RObject for TopChatCategory {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             TopChatCategory::Bots(t) => t.extra(),
             TopChatCategory::Calls(t) => t.extra(),
@@ -101,8 +101,8 @@ pub struct TopChatCategoryBots {
 
 impl RObject for TopChatCategoryBots {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -159,8 +159,8 @@ pub struct TopChatCategoryCalls {
 
 impl RObject for TopChatCategoryCalls {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -217,8 +217,8 @@ pub struct TopChatCategoryChannels {
 
 impl RObject for TopChatCategoryChannels {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -275,8 +275,8 @@ pub struct TopChatCategoryForwardChats {
 
 impl RObject for TopChatCategoryForwardChats {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -333,8 +333,8 @@ pub struct TopChatCategoryGroups {
 
 impl RObject for TopChatCategoryGroups {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -391,8 +391,8 @@ pub struct TopChatCategoryInlineBots {
 
 impl RObject for TopChatCategoryInlineBots {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -449,8 +449,8 @@ pub struct TopChatCategoryUsers {
 
 impl RObject for TopChatCategoryUsers {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

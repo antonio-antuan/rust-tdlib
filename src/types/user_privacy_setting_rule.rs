@@ -47,7 +47,7 @@ impl Default for UserPrivacySettingRule {
 
 impl RObject for UserPrivacySettingRule {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             UserPrivacySettingRule::AllowAll(t) => t.extra(),
             UserPrivacySettingRule::AllowChatMembers(t) => t.extra(),
@@ -106,8 +106,8 @@ pub struct UserPrivacySettingRuleAllowAll {
 
 impl RObject for UserPrivacySettingRuleAllowAll {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -166,8 +166,8 @@ pub struct UserPrivacySettingRuleAllowChatMembers {
 
 impl RObject for UserPrivacySettingRuleAllowChatMembers {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -235,8 +235,8 @@ pub struct UserPrivacySettingRuleAllowContacts {
 
 impl RObject for UserPrivacySettingRuleAllowContacts {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -295,8 +295,8 @@ pub struct UserPrivacySettingRuleAllowUsers {
 
 impl RObject for UserPrivacySettingRuleAllowUsers {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -362,8 +362,8 @@ pub struct UserPrivacySettingRuleRestrictAll {
 
 impl RObject for UserPrivacySettingRuleRestrictAll {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -422,8 +422,8 @@ pub struct UserPrivacySettingRuleRestrictChatMembers {
 
 impl RObject for UserPrivacySettingRuleRestrictChatMembers {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -493,8 +493,8 @@ pub struct UserPrivacySettingRuleRestrictContacts {
 
 impl RObject for UserPrivacySettingRuleRestrictContacts {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -555,8 +555,8 @@ pub struct UserPrivacySettingRuleRestrictUsers {
 
 impl RObject for UserPrivacySettingRuleRestrictUsers {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

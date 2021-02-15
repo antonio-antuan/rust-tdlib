@@ -1,10 +1,13 @@
-#[macro_use]
-extern crate log;
-use futures::future::FutureExt;
-use rust_tdlib::{client::Client, types::*};
+use log;
+use rust_tdlib::{
+    client::{Client, Worker},
+    tdjson,
+    types::{TdlibParameters, Update},
+};
 
 #[tokio::main]
 async fn main() {
+    tdjson::set_log_verbosity_level(1);
     env_logger::init();
     let tdlib_parameters = TdlibParameters::builder()
         .database_directory("tdlib")
@@ -17,31 +20,53 @@ async fn main() {
         .application_version(env!("CARGO_PKG_VERSION"))
         .enable_storage_optimizer(true)
         .build();
-    let (sender, mut receiver) = tokio::sync::mpsc::channel::<Box<TdType>>(10);
 
-    let mut client = Client::builder()
+    let (sender, mut receiver) = tokio::sync::mpsc::channel::<Update>(100);
+
+    let client = Client::builder()
         .with_tdlib_parameters(tdlib_parameters)
-        .with_tdlib_verbosity_level(env!("TD_LOG_LEVEL").parse().unwrap())
         .with_updates_sender(sender)
         .build()
         .unwrap();
 
-    let reader_waiter = tokio::spawn(async move {
-        let mut wait_messages = 40;
+    let mut reader_waiter = tokio::spawn(async move {
+        // we need to specify large number because first updates always sent by tdlib in the beginning of process
+        let mut wait_messages: i32 = 40;
         while let Some(message) = receiver.recv().await {
-            info!("updates handler received {:?}", message);
+            log::info!("updates handler received {:?}", message);
             wait_messages -= 1;
             if wait_messages == 0 {
-                info!("reader closed");
                 break;
             }
-        }
+        };
     });
 
-    let cl_waiter = client.start().await.unwrap();
+    let mut worker = Worker::builder().build().unwrap();
+    let mut waiter = worker.start();
 
-    tokio::select! {
-        h = cl_waiter => warn!("client closed: {:?}", h),
-        _ = reader_waiter => info!("reader closed")
+    let v = tokio::select! {
+        c = worker.auth_client(client) => {match c {
+            Ok((s, cl)) => Some((s, cl)),
+            Err(e) => panic!("{:?}", e)
+        }}
+        w = &mut waiter => panic!("{:?}", w),
+        _ = &mut reader_waiter => {
+            log::info!("reader closed");
+            None
+        },
+    };
+
+    match v {
+        Some((_, client)) => {
+            client.stop().await.unwrap();
+            reader_waiter.await.unwrap();
+        },
+        None => {
+            worker.stop();
+        }
     }
+
+    waiter.await.unwrap();
+
+
 }

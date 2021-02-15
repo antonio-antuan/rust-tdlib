@@ -44,7 +44,7 @@ impl Default for ChatReportReason {
 
 impl RObject for ChatReportReason {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatReportReason::ChildAbuse(t) => t.extra(),
             ChatReportReason::Copyright(t) => t.extra(),
@@ -101,8 +101,8 @@ pub struct ChatReportReasonChildAbuse {
 
 impl RObject for ChatReportReasonChildAbuse {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -159,8 +159,8 @@ pub struct ChatReportReasonCopyright {
 
 impl RObject for ChatReportReasonCopyright {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -219,8 +219,8 @@ pub struct ChatReportReasonCustom {
 
 impl RObject for ChatReportReasonCustom {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -286,8 +286,8 @@ pub struct ChatReportReasonPornography {
 
 impl RObject for ChatReportReasonPornography {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -344,8 +344,8 @@ pub struct ChatReportReasonSpam {
 
 impl RObject for ChatReportReasonSpam {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -402,8 +402,8 @@ pub struct ChatReportReasonUnrelatedLocation {
 
 impl RObject for ChatReportReasonUnrelatedLocation {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -460,8 +460,8 @@ pub struct ChatReportReasonViolence {
 
 impl RObject for ChatReportReasonViolence {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

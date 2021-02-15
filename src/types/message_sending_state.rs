@@ -29,7 +29,7 @@ impl Default for MessageSendingState {
 
 impl RObject for MessageSendingState {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             MessageSendingState::Failed(t) => t.extra(),
             MessageSendingState::Pending(t) => t.extra(),
@@ -84,8 +84,8 @@ pub struct MessageSendingStateFailed {
 
 impl RObject for MessageSendingStateFailed {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -178,8 +178,8 @@ pub struct MessageSendingStatePending {
 
 impl RObject for MessageSendingStatePending {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -41,7 +41,7 @@ impl Default for UserStatus {
 
 impl RObject for UserStatus {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             UserStatus::Empty(t) => t.extra(),
             UserStatus::LastMonth(t) => t.extra(),
@@ -96,8 +96,8 @@ pub struct UserStatusEmpty {
 
 impl RObject for UserStatusEmpty {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -154,8 +154,8 @@ pub struct UserStatusLastMonth {
 
 impl RObject for UserStatusLastMonth {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -212,8 +212,8 @@ pub struct UserStatusLastWeek {
 
 impl RObject for UserStatusLastWeek {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -272,8 +272,8 @@ pub struct UserStatusOffline {
 
 impl RObject for UserStatusOffline {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -341,8 +341,8 @@ pub struct UserStatusOnline {
 
 impl RObject for UserStatusOnline {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -408,8 +408,8 @@ pub struct UserStatusRecently {
 
 impl RObject for UserStatusRecently {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

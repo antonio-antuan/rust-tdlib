@@ -1,9 +1,7 @@
 //! Module provides all TDlib types.
 //! For types details you can see [TDlib API Scheme](https://github.com/tdlib/td/blob/master/td/generate/scheme/td_api.tl)
-pub use self::_common::{RFunction, RObject, TdType};
-
-#[allow(dead_code, unused_imports)]
 pub(crate) use self::_common::from_json;
+pub(crate) use self::_common::{RFunction, RObject, TdType};
 
 #[macro_use]
 mod _common;

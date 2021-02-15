@@ -29,7 +29,7 @@ impl Default for MessageSender {
 
 impl RObject for MessageSender {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             MessageSender::Chat(t) => t.extra(),
             MessageSender::User(t) => t.extra(),
@@ -78,8 +78,8 @@ pub struct MessageSenderChat {
 
 impl RObject for MessageSenderChat {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -147,8 +147,8 @@ pub struct MessageSenderUser {
 
 impl RObject for MessageSenderUser {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

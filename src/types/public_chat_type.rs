@@ -29,7 +29,7 @@ impl Default for PublicChatType {
 
 impl RObject for PublicChatType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             PublicChatType::HasUsername(t) => t.extra(),
             PublicChatType::IsLocationBased(t) => t.extra(),
@@ -76,8 +76,8 @@ pub struct PublicChatTypeHasUsername {
 
 impl RObject for PublicChatTypeHasUsername {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -134,8 +134,8 @@ pub struct PublicChatTypeIsLocationBased {
 
 impl RObject for PublicChatTypeIsLocationBased {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

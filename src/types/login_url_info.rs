@@ -32,7 +32,7 @@ impl Default for LoginUrlInfo {
 
 impl RObject for LoginUrlInfo {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             LoginUrlInfo::GetLoginUrlInfo(t) => t.extra(),
             LoginUrlInfo::Open(t) => t.extra(),
@@ -85,8 +85,8 @@ pub struct LoginUrlInfoOpen {
 
 impl RObject for LoginUrlInfoOpen {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -169,8 +169,8 @@ pub struct LoginUrlInfoRequestConfirmation {
 
 impl RObject for LoginUrlInfoRequestConfirmation {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

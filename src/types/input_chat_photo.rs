@@ -32,7 +32,7 @@ impl Default for InputChatPhoto {
 
 impl RObject for InputChatPhoto {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             InputChatPhoto::Animation(t) => t.extra(),
             InputChatPhoto::Previous(t) => t.extra(),
@@ -85,8 +85,8 @@ pub struct InputChatPhotoAnimation {
 
 impl RObject for InputChatPhotoAnimation {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -164,8 +164,8 @@ pub struct InputChatPhotoPrevious {
 
 impl RObject for InputChatPhotoPrevious {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -233,8 +233,8 @@ pub struct InputChatPhotoStatic {
 
 impl RObject for InputChatPhotoStatic {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

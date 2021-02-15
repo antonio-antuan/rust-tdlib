@@ -35,7 +35,7 @@ impl Default for ReplyMarkup {
 
 impl RObject for ReplyMarkup {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ReplyMarkup::ForceReply(t) => t.extra(),
             ReplyMarkup::InlineKeyboard(t) => t.extra(),
@@ -88,8 +88,8 @@ pub struct ReplyMarkupForceReply {
 
 impl RObject for ReplyMarkupForceReply {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -157,8 +157,8 @@ pub struct ReplyMarkupInlineKeyboard {
 
 impl RObject for ReplyMarkupInlineKeyboard {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -226,8 +226,8 @@ pub struct ReplyMarkupRemoveKeyboard {
 
 impl RObject for ReplyMarkupRemoveKeyboard {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -301,8 +301,8 @@ pub struct ReplyMarkupShowKeyboard {
 
 impl RObject for ReplyMarkupShowKeyboard {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

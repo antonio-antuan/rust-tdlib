@@ -29,7 +29,7 @@ impl Default for CallServerType {
 
 impl RObject for CallServerType {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             CallServerType::TelegramReflector(t) => t.extra(),
             CallServerType::Webrtc(t) => t.extra(),
@@ -78,8 +78,8 @@ pub struct CallServerTypeTelegramReflector {
 
 impl RObject for CallServerTypeTelegramReflector {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -153,8 +153,8 @@ pub struct CallServerTypeWebrtc {
 
 impl RObject for CallServerTypeWebrtc {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

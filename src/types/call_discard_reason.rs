@@ -38,7 +38,7 @@ impl Default for CallDiscardReason {
 
 impl RObject for CallDiscardReason {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             CallDiscardReason::Declined(t) => t.extra(),
             CallDiscardReason::Disconnected(t) => t.extra(),
@@ -91,8 +91,8 @@ pub struct CallDiscardReasonDeclined {
 
 impl RObject for CallDiscardReasonDeclined {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -149,8 +149,8 @@ pub struct CallDiscardReasonDisconnected {
 
 impl RObject for CallDiscardReasonDisconnected {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -207,8 +207,8 @@ pub struct CallDiscardReasonEmpty {
 
 impl RObject for CallDiscardReasonEmpty {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -265,8 +265,8 @@ pub struct CallDiscardReasonHungUp {
 
 impl RObject for CallDiscardReasonHungUp {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -323,8 +323,8 @@ pub struct CallDiscardReasonMissed {
 
 impl RObject for CallDiscardReasonMissed {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

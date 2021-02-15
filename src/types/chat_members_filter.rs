@@ -44,7 +44,7 @@ impl Default for ChatMembersFilter {
 
 impl RObject for ChatMembersFilter {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatMembersFilter::Administrators(t) => t.extra(),
             ChatMembersFilter::Banned(t) => t.extra(),
@@ -101,8 +101,8 @@ pub struct ChatMembersFilterAdministrators {
 
 impl RObject for ChatMembersFilterAdministrators {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -159,8 +159,8 @@ pub struct ChatMembersFilterBanned {
 
 impl RObject for ChatMembersFilterBanned {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -217,8 +217,8 @@ pub struct ChatMembersFilterBots {
 
 impl RObject for ChatMembersFilterBots {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -275,8 +275,8 @@ pub struct ChatMembersFilterContacts {
 
 impl RObject for ChatMembersFilterContacts {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -333,8 +333,8 @@ pub struct ChatMembersFilterMembers {
 
 impl RObject for ChatMembersFilterMembers {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -393,8 +393,8 @@ pub struct ChatMembersFilterMention {
 
 impl RObject for ChatMembersFilterMention {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -460,8 +460,8 @@ pub struct ChatMembersFilterRestricted {
 
 impl RObject for ChatMembersFilterRestricted {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

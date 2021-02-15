@@ -29,7 +29,7 @@ impl Default for BackgroundFill {
 
 impl RObject for BackgroundFill {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             BackgroundFill::Gradient(t) => t.extra(),
             BackgroundFill::Solid(t) => t.extra(),
@@ -82,8 +82,8 @@ pub struct BackgroundFillGradient {
 
 impl RObject for BackgroundFillGradient {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -169,8 +169,8 @@ pub struct BackgroundFillSolid {
 
 impl RObject for BackgroundFillSolid {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -21,29 +21,13 @@ use crate::{
 };
 use std::io;
 use std::sync::atomic::{AtomicBool, Ordering};
-use tokio::sync::mpsc::error::SendError;
-use tokio::time::error::Elapsed;
 use tokio::{
     sync::{mpsc, RwLock},
     task::JoinHandle,
     time,
 };
 
-const CLOSED_CHANNEL_ERROR: RTDError = RTDError::Internal("channel closed");
-const SEND_TO_CHANNEL_TIMEOUT: RTDError = RTDError::Internal("timeout for mpsc occured");
 
-macro_rules! send_with_timeout {
-    ($timeout:expr, $fut:expr) => {
-        match time::timeout($timeout, $fut).await {
-            Ok(r) => {
-                if let Err(e) = r {
-                    return Err(CLOSED_CHANNEL_ERROR);
-                }
-            }
-            Err(e) => return Err(SEND_TO_CHANNEL_TIMEOUT),
-        }
-    };
-}
 /// `AuthStateHandler` trait provides methods that returns data, required for authentication
 ///It allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
 #[async_trait]
@@ -266,10 +250,16 @@ where
         if let Some(msg) = rx.recv().await {
             match msg {
                 ClientState::Closed => {
+                    debug!("client state on auth: closed");
                     return Ok((tokio::spawn(async { ClientState::Closed }), client))
                 }
-                ClientState::Error(e) => return Err(RTDError::TdlibError(e)),
-                ClientState::Opened => {}
+                ClientState::Error(e) => {
+                    debug!("client state on auth: error");
+                    return Err(RTDError::TdlibError(e));
+                },
+                ClientState::Opened => {
+                    debug!("client state on auth: opened");
+                }
             }
         }
         let h = tokio::spawn(async move {
@@ -305,7 +295,7 @@ where
     /// Starts interaction with TDLib.
     /// It returns [JoinHandle](tokio::task::JoinHandle) which allows you to handle worker state.
     pub fn start(&mut self) -> JoinHandle<ClientState> {
-        let (auth_sx, auth_rx) = mpsc::channel::<UpdateAuthorizationState>(10);
+        let (auth_sx, auth_rx) = mpsc::channel::<UpdateAuthorizationState>(20);
 
         let updates_handle = self.init_updates_task(auth_sx);
         let auth_handle = self.init_auth_task(auth_rx);
@@ -315,11 +305,15 @@ where
         tokio::spawn(async move {
             let res_state = tokio::select! {
                 a = auth_handle => match a {
-                    Ok(_) => ClientState::Closed,
+                    Ok(_) => {
+                        ClientState::Closed
+                    },
                     Err(e) => ClientState::Error(e.to_string()),
                 },
                 u = updates_handle => match u {
-                    Ok(_) => ClientState::Closed,
+                    Ok(_) => {
+                        ClientState::Closed
+                    },
                     Err(e) => ClientState::Error(e.to_string()),
                 },
             };
@@ -361,7 +355,7 @@ where
                                 if let TdType::Update(update) = t {
                                     if let Update::AuthorizationState(auth_state) = update {
                                         trace!("auth state send: {:?}", auth_state);
-                                        send_with_timeout!(send_timeout, auth_sx.send(auth_state));
+                                        auth_sx.send_timeout(auth_state, send_timeout).await?;
                                         trace!("auth state sent");
                                     } else {
                                         if let Some(client_id) = update.client_id() {
@@ -374,10 +368,9 @@ where
                                                 }
                                                 Some((client, _)) => {
                                                     if let Some(sender) = client.updates_sender() {
-                                                        send_with_timeout!(
-                                                            send_timeout,
-                                                            sender.send(update)
-                                                        );
+                                                        trace!("sending update to client");
+                                                        sender.send_timeout(update, send_timeout).await?;
+                                                        trace!("update sent");
                                                     }
                                                 }
                                             }
@@ -443,14 +436,14 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
     match state.authorization_state() {
         AuthorizationState::_Default(_) => Ok(()),
         AuthorizationState::Closed(_) => {
-            send_with_timeout!(send_state_timeout, auth_sender.send(ClientState::Closed));
+            auth_sender.send_timeout(ClientState::Closed, send_state_timeout).await?;
             Ok(())
         }
         AuthorizationState::Closing(_) => Ok(()),
         AuthorizationState::LoggingOut(_) => Ok(()),
         AuthorizationState::Ready(_) => {
             debug!("ready state received, send signal");
-            send_with_timeout!(send_state_timeout, auth_sender.send(ClientState::Opened));
+            auth_sender.send_timeout(ClientState::Opened, send_state_timeout).await?;
             Ok(())
         }
         AuthorizationState::WaitCode(wait_code) => {

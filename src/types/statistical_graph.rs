@@ -35,7 +35,7 @@ impl Default for StatisticalGraph {
 
 impl RObject for StatisticalGraph {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             StatisticalGraph::GetStatisticalGraph(t) => t.extra(),
             StatisticalGraph::Async(t) => t.extra(),
@@ -88,8 +88,8 @@ pub struct StatisticalGraphAsync {
 
 impl RObject for StatisticalGraphAsync {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -159,8 +159,8 @@ pub struct StatisticalGraphData {
 
 impl RObject for StatisticalGraphData {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -237,8 +237,8 @@ pub struct StatisticalGraphError {
 
 impl RObject for StatisticalGraphError {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

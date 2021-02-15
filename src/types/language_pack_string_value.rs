@@ -35,7 +35,7 @@ impl Default for LanguagePackStringValue {
 
 impl RObject for LanguagePackStringValue {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             LanguagePackStringValue::GetLanguagePackString(t) => t.extra(),
             LanguagePackStringValue::Deleted(t) => t.extra(),
@@ -86,8 +86,8 @@ pub struct LanguagePackStringValueDeleted {
 
 impl RObject for LanguagePackStringValueDeleted {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -146,8 +146,8 @@ pub struct LanguagePackStringValueOrdinary {
 
 impl RObject for LanguagePackStringValueOrdinary {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -225,8 +225,8 @@ pub struct LanguagePackStringValuePluralized {
 
 impl RObject for LanguagePackStringValuePluralized {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

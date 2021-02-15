@@ -41,7 +41,7 @@ impl Default for ThumbnailFormat {
 
 impl RObject for ThumbnailFormat {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ThumbnailFormat::Gif(t) => t.extra(),
             ThumbnailFormat::Jpeg(t) => t.extra(),
@@ -96,8 +96,8 @@ pub struct ThumbnailFormatGif {
 
 impl RObject for ThumbnailFormatGif {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -154,8 +154,8 @@ pub struct ThumbnailFormatJpeg {
 
 impl RObject for ThumbnailFormatJpeg {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -212,8 +212,8 @@ pub struct ThumbnailFormatMpeg4 {
 
 impl RObject for ThumbnailFormatMpeg4 {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -270,8 +270,8 @@ pub struct ThumbnailFormatPng {
 
 impl RObject for ThumbnailFormatPng {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -328,8 +328,8 @@ pub struct ThumbnailFormatTgs {
 
 impl RObject for ThumbnailFormatTgs {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -386,8 +386,8 @@ pub struct ThumbnailFormatWebp {
 
 impl RObject for ThumbnailFormatWebp {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

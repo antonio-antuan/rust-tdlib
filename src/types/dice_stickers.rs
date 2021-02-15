@@ -29,7 +29,7 @@ impl Default for DiceStickers {
 
 impl RObject for DiceStickers {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             DiceStickers::Regular(t) => t.extra(),
             DiceStickers::SlotMachine(t) => t.extra(),
@@ -78,8 +78,8 @@ pub struct DiceStickersRegular {
 
 impl RObject for DiceStickersRegular {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -155,8 +155,8 @@ pub struct DiceStickersSlotMachine {
 
 impl RObject for DiceStickersSlotMachine {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {

@@ -29,7 +29,7 @@ impl Default for InputBackground {
 
 impl RObject for InputBackground {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             InputBackground::Local(t) => t.extra(),
             InputBackground::Remote(t) => t.extra(),
@@ -78,8 +78,8 @@ pub struct InputBackgroundLocal {
 
 impl RObject for InputBackgroundLocal {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
@@ -148,8 +148,8 @@ pub struct InputBackgroundRemote {
 
 impl RObject for InputBackgroundRemote {
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_ref().map(|v| v.as_str())
     }
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
