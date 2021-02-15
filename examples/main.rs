@@ -1,4 +1,3 @@
-use log;
 use rust_tdlib::{
     client::{Client, Worker},
     tdjson,

@@ -1,11 +1,10 @@
 //! Handlers for all incoming data
-use super::observer::OBSERVER;
 use async_trait::async_trait;
 use std::collections::HashMap;
 use std::sync::Arc;
-
 use super::{
     client::{Client, ClientState},
+    observer::OBSERVER,
     tdlib_client::{TdJson, TdLibClient},
 };
 use crate::types::Update;
@@ -303,11 +302,10 @@ where
     #[cfg(test)]
     // Method needs for tests because we can't handle get_application_config request properly.
     pub async fn set_client(&mut self, mut client: Client<T>) -> Client<T> {
-        let (sx, mut rx) = mpsc::channel::<ClientState>(10);
+        let (sx, _) = mpsc::channel::<ClientState>(10);
         let cl = self.tdlib_client.new_client();
         self.clients.write().await.insert(cl, (client.clone(), sx));
         client.set_client_id(cl).unwrap();
-        let h = tokio::spawn(async { ClientState::Opened });
         client
     }
 
@@ -579,7 +577,6 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
 #[cfg(test)]
 mod tests {
     use crate::client::client::Client;
-    use crate::client::observer::OBSERVER;
     use crate::client::tdlib_client::TdLibClient;
     use crate::client::worker::Worker;
     use crate::errors::RTDResult;
@@ -605,11 +602,11 @@ mod tests {
     }
 
     impl TdLibClient for MockedRawApi {
-        fn send<Fnc: RFunction>(&self, _client_id: tdjson::ClientId, fnc: Fnc) -> RTDResult<()> {
+        fn send<Fnc: RFunction>(&self, _client_id: tdjson::ClientId, _fnc: Fnc) -> RTDResult<()> {
             Ok(())
         }
 
-        fn receive(&self, timeout: f64) -> Option<String> {
+        fn receive(&self, _timeout: f64) -> Option<String> {
             self.to_receive.clone()
         }
 

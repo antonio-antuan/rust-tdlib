@@ -1,0 +1,22 @@
+name: Rust
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+
+    env:
+      API_ID: 1
+      API_HASH: 1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: formatting
+        run: cargo fmt -- --check
+
+      - name: clippy
+        run: cargo clippy --tests --examples --all-features
