@@ -1,6 +1,6 @@
 use super::{
     observer::OBSERVER,
-    tdlib_client::{RawApi, TdLibClient},
+    tdlib_client::{TdJson, TdLibClient},
 };
 use crate::{
     errors::{RTDError, RTDResult},
@@ -77,12 +77,12 @@ where
     tdlib_client: R,
 }
 
-impl Default for ClientBuilder<RawApi> {
+impl Default for ClientBuilder<TdJson> {
     fn default() -> Self {
         Self {
             updates_sender: None,
             tdlib_parameters: None,
-            tdlib_client: RawApi::new(),
+            tdlib_client: TdJson::new(),
         }
     }
 }
@@ -127,8 +127,8 @@ where
     }
 }
 
-impl Client<RawApi> {
-    pub fn builder() -> ClientBuilder<RawApi> {
+impl Client<TdJson> {
+    pub fn builder() -> ClientBuilder<TdJson> {
         ClientBuilder::default()
     }
 }

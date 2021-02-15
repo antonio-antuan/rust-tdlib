@@ -4,7 +4,7 @@ use std::collections::HashMap;
 #[doc(hidden)]
 use std::sync::RwLock;
 
-lazy_static! {
+lazy_static::lazy_static! {
     pub(super) static ref OBSERVER: Observer = Observer::new();
 }
 

@@ -2,6 +2,7 @@ use crate::errors::RTDResult;
 use crate::tdjson;
 use crate::types::RFunction;
 
+/// A bridge between TDLib and rust-tdlib.
 pub trait TdLibClient {
     fn send<Fnc: RFunction>(&self, client_id: tdjson::ClientId, fnc: Fnc) -> RTDResult<()>;
     fn receive(&self, timeout: f64) -> Option<String>;
@@ -10,15 +11,16 @@ pub trait TdLibClient {
 }
 
 #[derive(Clone, Debug)]
-pub struct RawApi;
+/// Base implementation. See [tdjson](crate::tdjson) for details.
+pub struct TdJson;
 
-impl Default for RawApi {
+impl Default for TdJson {
     fn default() -> Self {
         Self
     }
 }
 
-impl TdLibClient for RawApi {
+impl TdLibClient for TdJson {
     fn send<Fnc: RFunction>(&self, client_id: tdjson::ClientId, fnc: Fnc) -> RTDResult<()> {
         let json = fnc.to_json()?;
         tdjson::send(client_id, &json[..]);
@@ -39,7 +41,7 @@ impl TdLibClient for RawApi {
     }
 }
 
-impl RawApi {
+impl TdJson {
     pub fn new() -> Self {
         Self {}
     }

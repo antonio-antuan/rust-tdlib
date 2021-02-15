@@ -1,3 +1,4 @@
+//! Interface for methods defined in [td/td_json_client.h](https://github.com/tdlib/td/blob/master/td/telegram/td_json_client.h).
 use std::ffi::CStr;
 use std::ffi::CString;
 use std::os::raw::{c_char, c_double, c_int, c_long};

@@ -6,7 +6,7 @@ use std::sync::Arc;
 
 use super::{
     client::{Client, ClientState},
-    tdlib_client::{RawApi, TdLibClient},
+    tdlib_client::{TdJson, TdLibClient},
 };
 use crate::types::Update;
 use crate::{
@@ -157,14 +157,14 @@ where
     tdlib_client: T,
 }
 
-impl Default for WorkerBuilder<ConsoleAuthStateHandler, RawApi> {
+impl Default for WorkerBuilder<ConsoleAuthStateHandler, TdJson> {
     /// Provides default implementation with [ConsoleAuthStateHandler](crate::client::client::ConsoleAuthStateHandler)
     fn default() -> Self {
         Self {
             read_updates_timeout: 2.0,
             channels_send_timeout: 5.0,
             auth_state_handler: ConsoleAuthStateHandler::new(),
-            tdlib_client: RawApi::new(),
+            tdlib_client: TdJson::new(),
         }
     }
 }
@@ -241,8 +241,8 @@ where
     clients: Arc<RwLock<ClientsMap<S>>>,
 }
 
-impl Worker<ConsoleAuthStateHandler, RawApi> {
-    pub fn builder() -> WorkerBuilder<ConsoleAuthStateHandler, RawApi> {
+impl Worker<ConsoleAuthStateHandler, TdJson> {
+    pub fn builder() -> WorkerBuilder<ConsoleAuthStateHandler, TdJson> {
         WorkerBuilder::default()
     }
 }
@@ -276,15 +276,15 @@ where
         if let Some(msg) = rx.recv().await {
             match msg {
                 ClientState::Closed => {
-                    debug!("client state on auth: closed");
+                    log::debug!("client state on auth: closed");
                     return Ok((tokio::spawn(async { ClientState::Closed }), client));
                 }
                 ClientState::Error(e) => {
-                    debug!("client state on auth: error");
+                    log::debug!("client state on auth: error");
                     return Err(RTDError::TdlibError(e));
                 }
                 ClientState::Opened => {
-                    debug!("client state on auth: opened");
+                    log::debug!("client state on auth: opened");
                 }
             }
         }
@@ -386,31 +386,31 @@ where
                     .await
                     .unwrap()
                 {
-                    trace!("received json from tdlib: {}", json);
+                    log::trace!("received json from tdlib: {}", json);
                     match from_json::<TdType>(&json) {
                         Ok(t) => match OBSERVER.notify(t) {
                             None => {}
                             Some(t) => {
                                 if let TdType::Update(update) = t {
                                     if let Update::AuthorizationState(auth_state) = update {
-                                        trace!("auth state send: {:?}", auth_state);
+                                        log::trace!("auth state send: {:?}", auth_state);
                                         auth_sx.send_timeout(auth_state, send_timeout).await?;
-                                        trace!("auth state sent");
+                                        log::trace!("auth state sent");
                                     } else if let Some(client_id) = update.client_id() {
                                         match clients.read().await.get(&client_id) {
                                             None => {
-                                                warn!(
+                                                log::warn!(
                                                     "found updates for unavailable client ({})",
                                                     client_id
                                                 )
                                             }
                                             Some((client, _)) => {
                                                 if let Some(sender) = client.updates_sender() {
-                                                    trace!("sending update to client");
+                                                    log::trace!("sending update to client");
                                                     sender
                                                         .send_timeout(update, send_timeout)
                                                         .await?;
-                                                    trace!("update sent");
+                                                    log::trace!("update sent");
                                                 }
                                             }
                                         }
@@ -439,11 +439,11 @@ where
 
         tokio::spawn(async move {
             while let Some(auth_state) = auth_rx.recv().await {
-                debug!("received new auth state: {:?}", auth_state);
+                log::debug!("received new auth state: {:?}", auth_state);
                 if let Some(client_id) = auth_state.client_id() {
                     match clients.read().await.get(&client_id) {
                         None => {
-                            warn!("found auth updates for unavailable client ({})", client_id)
+                            log::warn!("found auth updates for unavailable client ({})", client_id)
                         }
                         Some((client, auth_sender)) => {
                             handle_auth_state(
@@ -454,7 +454,7 @@ where
                                 send_timeout,
                             )
                             .await?;
-                            debug!("state handled properly")
+                            log::debug!("state handled properly")
                         }
                     }
                 }
@@ -471,7 +471,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
     state: UpdateAuthorizationState,
     send_state_timeout: time::Duration,
 ) -> RTDResult<()> {
-    debug!("handling new auth state: {:?}", state);
+    log::debug!("handling new auth state: {:?}", state);
     match state.authorization_state() {
         AuthorizationState::_Default(_) => Ok(()),
         AuthorizationState::Closed(_) => {
@@ -483,7 +483,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
         AuthorizationState::Closing(_) => Ok(()),
         AuthorizationState::LoggingOut(_) => Ok(()),
         AuthorizationState::Ready(_) => {
-            debug!("ready state received, send signal");
+            log::debug!("ready state received, send signal");
             auth_sender
                 .send_timeout(ClientState::Opened, send_state_timeout)
                 .await?;
@@ -500,7 +500,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
             let key = auth_state_handler
                 .handle_encryption_key(wait_encryption_key)
                 .await;
-            debug!("checking encryption key");
+            log::debug!("checking encryption key");
             client
                 .check_database_encryption_key(
                     CheckDatabaseEncryptionKey::builder()
@@ -508,20 +508,20 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
                         .build(),
                 )
                 .await?;
-            debug!("encryption key check done");
+            log::debug!("encryption key check done");
             Ok(())
         }
         AuthorizationState::WaitOtherDeviceConfirmation(wait_device_confirmation) => {
-            debug!("handling other device confirmation");
+            log::debug!("handling other device confirmation");
             auth_state_handler
                 .handle_other_device_confirmation(wait_device_confirmation)
                 .await;
-            debug!("handled other device confirmation");
+            log::debug!("handled other device confirmation");
             Ok(())
         }
         AuthorizationState::WaitPassword(wait_password) => {
             let password = auth_state_handler.handle_wait_password(wait_password).await;
-            debug!("checking password");
+            log::debug!("checking password");
             client
                 .check_authentication_password(
                     CheckAuthenticationPassword::builder()
@@ -529,7 +529,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
                         .build(),
                 )
                 .await?;
-            debug!("password checked");
+            log::debug!("password checked");
             Ok(())
         }
         AuthorizationState::WaitPhoneNumber(wait_phone_number) => {
@@ -546,7 +546,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
             Ok(())
         }
         AuthorizationState::WaitRegistration(wait_registration) => {
-            debug!("handling wait registration");
+            log::debug!("handling wait registration");
             let (first_name, last_name) = auth_state_handler
                 .handle_wait_registration(wait_registration)
                 .await;
@@ -555,11 +555,11 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
                 .last_name(last_name)
                 .build();
             client.register_user(register).await?;
-            debug!("handled register user");
+            log::debug!("handled register user");
             Ok(())
         }
         AuthorizationState::WaitTdlibParameters(_) => {
-            debug!("going to set tdlib parameters");
+            log::debug!("going to set tdlib parameters");
             client
                 .set_tdlib_parameters(
                     SetTdlibParameters::builder()
@@ -567,7 +567,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
                         .build(),
                 )
                 .await?;
-            debug!("tdlib parameters set");
+            log::debug!("tdlib parameters set");
             Ok(())
         }
         AuthorizationState::GetAuthorizationState(_) => Err(RTDError::Internal(
@@ -595,7 +595,7 @@ mod tests {
 
     impl MockedRawApi {
         pub fn set_to_receive(&mut self, value: String) {
-            trace!("delayed to receive: {}", value);
+            log::trace!("delayed to receive: {}", value);
             self.to_receive = Some(value);
         }
 
@@ -647,7 +647,7 @@ mod tests {
         );
         let to_receive = serde_json::to_string(&chats_object).unwrap();
         mocked_raw_api.set_to_receive(to_receive);
-        trace!("chats objects: {:?}", chats_object);
+        log::trace!("chats objects: {:?}", chats_object);
 
         let mut worker = Worker::builder()
             .with_tdlib_client(mocked_raw_api.clone())

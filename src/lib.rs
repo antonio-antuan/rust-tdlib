@@ -2,20 +2,20 @@
 //! It allows you to make all the things that you can do with real telegram. So, yes, you can build your own telegram client using Rust language.
 //!
 //! First of all you have to initialize client. Your steps:
-//! 1. initialize [TdlibParameters](crate::types::TdlibParameters) with two required parameters: api_id and api_hash.
-//! 2. use [ConsoleAuthStateHandler](crate::client::ConsoleAuthStateHandler) with default builder or write you own [AuthStateHandler](crate::client::AuthStateHandler).
-//! 3. use them as parameters of a [ClientBuilder](crate::client::ClientBuilder).
-//! 4. initialize [Worker](crate::client::worker::Worker) and start it.
-//! 5. [Authorize](crate::client::worker::Worker::auth_client) client with worker.
+//! 1. use [WorkerBuilder](crate::client::worker::WorkerBuilder) to build a [Worker](crate::client::worker::Worker).
+//! 2. start worker.
+//! 3. initialize [TdlibParameters](crate::types::TdlibParameters) with two required parameters: api_id and api_hash.
+//! 4. create new [Client](crate::client::client::Client) with [ClientBuilder](crate::client::client::ClientBuilder).
+//! 5. [Authorize](crate::client::worker::Worker::auth_client) it with worker.
 //! 6. write your own code to interact with Telegram.
 //! ```
 //! use rust_tdlib::{client::{Client, Worker}, tdjson, types::*};
 //! #[tokio::main]
 //! async fn main() {
-//!     let tdlib_params = TdlibParameters::builder().api_id(env!("API_ID").parse::<i32>().unwrap()).api_hash(env!("API_HASH")).build();
-//!     let client = rust_tdlib::client::Client::builder().with_tdlib_parameters(tdlib_params).build();
 //!     let mut worker = Worker::builder().build().unwrap();
 //!     let waiter = worker.start();
+//!     let tdlib_params = TdlibParameters::builder().api_id(env!("API_ID").parse::<i32>().unwrap()).api_hash(env!("API_HASH")).build();
+//!     let client = rust_tdlib::client::Client::builder().with_tdlib_parameters(tdlib_params).build();
 //!     let (client_state, client) = worker.auth_client(client1).await.unwrap();
 //!     let me = client.get_me(GetMe::builder().build()).await.unwrap();
 //!     println!("{:?}", me);
@@ -42,14 +42,6 @@
 
 #[macro_use]
 extern crate serde_derive;
-
-#[cfg(feature = "client")]
-#[macro_use]
-extern crate log;
-
-#[cfg(feature = "client")]
-#[macro_use]
-extern crate lazy_static;
 
 #[cfg(feature = "client")]
 pub mod client;
