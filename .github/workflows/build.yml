@@ -13,9 +13,6 @@ jobs:
 
   build:
 
-    needs:
-      - lint-n-test
-
     runs-on: ubuntu-latest
 
     steps:
