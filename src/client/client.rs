@@ -157,7 +157,7 @@ where
 
     pub fn set_updates_sender(&mut self, updates_sender: mpsc::Sender<Update>) -> RTDResult<()> {
         match self.is_started {
-            true => Err(RTDError::InvalidParameters(
+            true => Err(RTDError::BadRequest(
                 "can't set updates sender when client already started",
             )),
             false => {
