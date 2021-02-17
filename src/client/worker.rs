@@ -232,7 +232,7 @@ where
     A: AuthStateHandler + Send + Sync + 'static,
     S: TdLibClient + Send + Sync + Clone + 'static,
 {
-    stop_flag: Arc<AtomicBool>,
+    run_flag: Arc<AtomicBool>,
     auth_state_handler: Arc<A>,
     read_updates_timeout: f64,
     channels_send_timeout: f64,
@@ -251,11 +251,14 @@ where
     A: AuthStateHandler + Send + Sync + 'static,
     T: TdLibClient + Send + Sync + Clone + 'static,
 {
-    /// Binds client with worker and runs authorization routines
+    /// Binds client with worker and runs authorization routines. Method returns error if worker is not running.
     pub async fn auth_client(
         &mut self,
         mut client: Client<T>,
     ) -> RTDResult<(JoinHandle<ClientState>, Client<T>)> {
+        if !self.is_running() {
+            return Err(RTDError::BadRequest("worker not started yet"));
+        };
         let client_id = self.tdlib_client.new_client();
         log::debug!("new client created: {}", client_id);
         client.set_client_id(client_id)?;
@@ -299,6 +302,11 @@ where
         Ok((h, client))
     }
 
+    /// Determines that the worker is running.
+    pub fn is_running(&self) -> bool {
+        self.run_flag.load(Ordering::Acquire)
+    }
+
     #[cfg(test)]
     // Method needs for tests because we can't handle get_application_config request properly.
     pub async fn set_client(&mut self, mut client: Client<T>) -> Client<T> {
@@ -316,11 +324,11 @@ where
         channels_send_timeout: f64,
         tdlib_client: T,
     ) -> Self {
-        let stop_flag = Arc::new(AtomicBool::new(false));
+        let run_flag = Arc::new(AtomicBool::new(false));
         let clients: ClientsMap<T> = HashMap::new();
 
         Self {
-            stop_flag,
+            run_flag,
             read_updates_timeout,
             tdlib_client,
             channels_send_timeout,
@@ -334,10 +342,11 @@ where
     pub fn start(&mut self) -> JoinHandle<ClientState> {
         let (auth_sx, auth_rx) = mpsc::channel::<UpdateAuthorizationState>(20);
 
+        self.run_flag.store(true, Ordering::Release);
         let updates_handle = self.init_updates_task(auth_sx);
         let auth_handle = self.init_auth_task(auth_rx);
 
-        let stop = self.stop_flag.clone();
+        let run_flag = self.run_flag.clone();
 
         tokio::spawn(async move {
             let res_state = tokio::select! {
@@ -354,7 +363,7 @@ where
                     Err(e) => ClientState::Error(e.to_string()),
                 },
             };
-            stop.store(true, Ordering::Release);
+            run_flag.store(false, Ordering::Release);
             res_state
         })
     }
@@ -362,7 +371,7 @@ where
     /// Stops the client.
     /// You may want to await JoinHandle retrieved with `client.start().await` after stopping the client.
     pub fn stop(&self) {
-        self.stop_flag.store(true, Ordering::Release)
+        self.run_flag.store(false, Ordering::Release)
     }
 
     // It's the base routine: sends received updates to particular handlers: observer and auth_state handler
@@ -370,14 +379,15 @@ where
         &self,
         auth_sx: mpsc::Sender<UpdateAuthorizationState>,
     ) -> JoinHandle<RTDResult<()>> {
-        let stop_flag = self.stop_flag.clone();
+        let run_flag = self.run_flag.clone();
         let clients = self.clients.clone();
         let recv_timeout = self.read_updates_timeout;
         let send_timeout = time::Duration::from_secs_f64(self.channels_send_timeout);
         let tdlib_client = Arc::new(self.tdlib_client.clone());
+
         tokio::spawn(async move {
             let current = tokio::runtime::Handle::try_current().unwrap();
-            while !stop_flag.load(Ordering::Acquire) {
+            while run_flag.load(Ordering::Acquire) {
                 let cl = tdlib_client.clone();
                 if let Some(json) = current
                     .spawn_blocking(move || cl.receive(recv_timeout))
@@ -620,10 +630,52 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_request_flow() {
-        // here we just test request-response flow with SearchPublicChats request
-        env_logger::init();
+    async fn test_start_and_auth() {
+        let mocked_raw_api = MockedRawApi::new();
+        let mut worker = Worker::builder()
+            .with_tdlib_client(mocked_raw_api.clone())
+            .build()
+            .unwrap();
+        let res = timeout(
+            Duration::from_millis(50),
+            worker.auth_client(
+                Client::builder()
+                    .with_tdlib_client(mocked_raw_api.clone())
+                    .with_tdlib_parameters(TdlibParameters::builder().build())
+                    .build()
+                    .unwrap(),
+            ),
+        )
+        .await;
+        match res {
+            Err(e) => panic!("{:?}", e),
+            Ok(v) => match v {
+                Err(e) => assert_eq!(e.to_string(), "worker not started yet".to_string()),
+                Ok(_) => panic!("error not raised"),
+            },
+        };
 
+        worker.start();
+        // we can't handle first request because we do not know @extra. so just wait a while.
+        let res = timeout(
+            Duration::from_millis(50),
+            worker.auth_client(
+                Client::builder()
+                    .with_tdlib_client(mocked_raw_api.clone())
+                    .with_tdlib_parameters(TdlibParameters::builder().build())
+                    .build()
+                    .unwrap(),
+            ),
+        )
+        .await;
+        match res {
+            Err(_) => {}
+            _ => panic!("error not raised"),
+        };
+    }
+
+    #[tokio::test]
+    async fn test_request_flow() {
         let mut mocked_raw_api = MockedRawApi::new();
 
         let search_req = SearchPublicChats::builder().build();

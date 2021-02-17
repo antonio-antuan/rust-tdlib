@@ -38,7 +38,11 @@
 //!     }
 //! }
 //! ```
-#![allow(clippy::large_enum_variant, clippy::borrowed_box)]
+#![allow(
+    clippy::large_enum_variant,
+    clippy::borrowed_box,
+    clippy::manual_non_exhaustive
+)]
 
 #[macro_use]
 extern crate serde_derive;

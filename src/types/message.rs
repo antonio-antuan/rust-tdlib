@@ -19,12 +19,8 @@ pub struct Message {
     /// Chat identifier
     chat_id: i64,
     /// Information about the sending state of the message; may be null
-
-    #[serde(skip_serializing_if = "Option<MessageSendingState>::_is_default")]
     sending_state: Option<MessageSendingState>,
     /// Information about the scheduling state of the message; may be null
-
-    #[serde(skip_serializing_if = "Option<MessageSchedulingState>::_is_default")]
     scheduling_state: Option<MessageSchedulingState>,
     /// True, if the message is outgoing
     is_outgoing: bool,
@@ -79,8 +75,6 @@ pub struct Message {
     #[serde(skip_serializing_if = "MessageContent::_is_default")]
     content: MessageContent,
     /// Reply markup for the message; may be null
-
-    #[serde(skip_serializing_if = "Option<ReplyMarkup>::_is_default")]
     reply_markup: Option<ReplyMarkup>,
 }
 

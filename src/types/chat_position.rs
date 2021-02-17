@@ -21,8 +21,6 @@ pub struct ChatPosition {
     /// True, if the chat is pinned in the chat list
     is_pinned: bool,
     /// Source of the chat in the chat list; may be null
-
-    #[serde(skip_serializing_if = "Option<ChatSource>::_is_default")]
     source: Option<ChatSource>,
 }
 

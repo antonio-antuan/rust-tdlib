@@ -18,8 +18,6 @@ pub struct AuthenticationCodeInfo {
     #[serde(skip_serializing_if = "AuthenticationCodeType::_is_default")]
     type_: AuthenticationCodeType,
     /// Describes the way the next code will be sent to the user; may be null
-
-    #[serde(skip_serializing_if = "Option<AuthenticationCodeType>::_is_default")]
     next_type: Option<AuthenticationCodeType>,
     /// Timeout before the code should be re-sent, in seconds
     timeout: i32,

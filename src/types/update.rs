@@ -914,8 +914,6 @@ pub struct UpdateChatActionBar {
     /// Chat identifier
     chat_id: i64,
     /// The new value of the action bar; may be null
-
-    #[serde(skip_serializing_if = "Option<ChatActionBar>::_is_default")]
     action_bar: Option<ChatActionBar>,
 }
 
@@ -3374,8 +3372,6 @@ pub struct UpdateMessageEdited {
     /// Point in time (Unix timestamp) when the message was edited
     edit_date: i32,
     /// New message reply markup; may be null
-
-    #[serde(skip_serializing_if = "Option<ReplyMarkup>::_is_default")]
     reply_markup: Option<ReplyMarkup>,
 }
 

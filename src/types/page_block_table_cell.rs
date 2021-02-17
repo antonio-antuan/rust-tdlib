@@ -11,8 +11,6 @@ pub struct PageBlockTableCell {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Cell text; may be null. If the text is null, then the cell should be invisible
-
-    #[serde(skip_serializing_if = "Option<RichText>::_is_default")]
     text: Option<RichText>,
     /// True, if it is a header cell
     is_header: bool,

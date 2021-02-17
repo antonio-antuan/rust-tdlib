@@ -786,7 +786,7 @@ pub struct PageBlockCover {
     client_id: Option<i32>,
     /// Cover
 
-    #[serde(skip_serializing_if = "Box<PageBlock>::_is_default")]
+    #[serde(skip_serializing_if = "PageBlock::_is_default")]
     cover: Box<PageBlock>,
 }
 

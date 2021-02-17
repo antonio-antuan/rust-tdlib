@@ -1423,12 +1423,8 @@ pub struct MessageDice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The animated stickers with the initial dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
-
-    #[serde(skip_serializing_if = "Option<DiceStickers>::_is_default")]
     initial_state: Option<DiceStickers>,
     /// The animated stickers with the final dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
-
-    #[serde(skip_serializing_if = "Option<DiceStickers>::_is_default")]
     final_state: Option<DiceStickers>,
     /// Emoji on which the dice throw animation is based
     emoji: String,
