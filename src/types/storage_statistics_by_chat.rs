@@ -6,32 +6,28 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct StorageStatisticsByChat {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat identifier; 0 if none
     chat_id: i64,
     /// Total size of the files in the chat
     size: i64,
     /// Total number of files in the chat
-    count: i64,
+    count: i32,
     /// Statistics split by file types
     by_file_type: Vec<StorageStatisticsByFileType>,
 }
 
 impl RObject for StorageStatisticsByChat {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "storageStatisticsByChat"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -41,8 +37,8 @@ impl StorageStatisticsByChat {
     }
     pub fn builder() -> RTDStorageStatisticsByChatBuilder {
         let mut inner = StorageStatisticsByChat::default();
-        inner.td_name = "storageStatisticsByChat".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDStorageStatisticsByChatBuilder { inner }
     }
 
@@ -54,7 +50,7 @@ impl StorageStatisticsByChat {
         self.size
     }
 
-    pub fn count(&self) -> i64 {
+    pub fn count(&self) -> i32 {
         self.count
     }
 
@@ -83,7 +79,7 @@ impl RTDStorageStatisticsByChatBuilder {
         self
     }
 
-    pub fn count(&mut self, count: i64) -> &mut Self {
+    pub fn count(&mut self, count: i32) -> &mut Self {
         self.inner.count = count;
         self
     }

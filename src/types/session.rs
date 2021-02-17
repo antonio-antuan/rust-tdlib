@@ -6,19 +6,20 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Session {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Session identifier
-    id: isize,
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    id: i64,
     /// True, if this session is the current session
     is_current: bool,
     /// True, if a password is needed to complete authorization of the session
     is_password_pending: bool,
     /// Telegram API identifier, as provided by the application
-    api_id: i64,
+    api_id: i32,
     /// Name of the application, as provided by the application
     application_name: String,
     /// The version of the application, as provided by the application
@@ -32,9 +33,9 @@ pub struct Session {
     /// Version of the operating system the application has been run or is running on, as provided by the application
     system_version: String,
     /// Point in time (Unix timestamp) when the user has logged in
-    log_in_date: i64,
+    log_in_date: i32,
     /// Point in time (Unix timestamp) when the session was last used
-    last_active_date: i64,
+    last_active_date: i32,
     /// IP address from which the session was created, in human-readable format
     ip: String,
     /// A two-letter country code for the country from which the session was created, based on the IP address
@@ -45,15 +46,12 @@ pub struct Session {
 
 impl RObject for Session {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "session"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -63,12 +61,12 @@ impl Session {
     }
     pub fn builder() -> RTDSessionBuilder {
         let mut inner = Session::default();
-        inner.td_name = "session".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSessionBuilder { inner }
     }
 
-    pub fn id(&self) -> isize {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -80,7 +78,7 @@ impl Session {
         self.is_password_pending
     }
 
-    pub fn api_id(&self) -> i64 {
+    pub fn api_id(&self) -> i32 {
         self.api_id
     }
 
@@ -108,11 +106,11 @@ impl Session {
         &self.system_version
     }
 
-    pub fn log_in_date(&self) -> i64 {
+    pub fn log_in_date(&self) -> i32 {
         self.log_in_date
     }
 
-    pub fn last_active_date(&self) -> i64 {
+    pub fn last_active_date(&self) -> i32 {
         self.last_active_date
     }
 
@@ -139,7 +137,7 @@ impl RTDSessionBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: isize) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -154,7 +152,7 @@ impl RTDSessionBuilder {
         self
     }
 
-    pub fn api_id(&mut self, api_id: i64) -> &mut Self {
+    pub fn api_id(&mut self, api_id: i32) -> &mut Self {
         self.inner.api_id = api_id;
         self
     }
@@ -189,12 +187,12 @@ impl RTDSessionBuilder {
         self
     }
 
-    pub fn log_in_date(&mut self, log_in_date: i64) -> &mut Self {
+    pub fn log_in_date(&mut self, log_in_date: i32) -> &mut Self {
         self.inner.log_in_date = log_in_date;
         self
     }
 
-    pub fn last_active_date(&mut self, last_active_date: i64) -> &mut Self {
+    pub fn last_active_date(&mut self, last_active_date: i32) -> &mut Self {
         self.inner.last_active_date = last_active_date;
         self
     }

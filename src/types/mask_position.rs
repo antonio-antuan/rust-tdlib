@@ -6,12 +6,13 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPosition {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Part of the face, relative to which the mask should be placed
+
+    #[serde(skip_serializing_if = "MaskPoint::_is_default")]
     point: MaskPoint,
     /// Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. (For example, 1.0 will place the mask just to the left of the default mask position)
     x_shift: f32,
@@ -23,15 +24,12 @@ pub struct MaskPosition {
 
 impl RObject for MaskPosition {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "maskPosition"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -41,8 +39,8 @@ impl MaskPosition {
     }
     pub fn builder() -> RTDMaskPositionBuilder {
         let mut inner = MaskPosition::default();
-        inner.td_name = "maskPosition".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDMaskPositionBuilder { inner }
     }
 

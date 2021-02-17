@@ -6,25 +6,26 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ConnectedWebsite {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Website identifier
-    id: isize,
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    id: i64,
     /// The domain name of the website
     domain_name: String,
     /// User identifier of a bot linked with the website
-    bot_user_id: i64,
+    bot_user_id: i32,
     /// The version of a browser used to log in
     browser: String,
     /// Operating system the browser is running on
     platform: String,
     /// Point in time (Unix timestamp) when the user was logged in
-    log_in_date: i64,
+    log_in_date: i32,
     /// Point in time (Unix timestamp) when obtained authorization was last used
-    last_active_date: i64,
+    last_active_date: i32,
     /// IP address from which the user was logged in, in human-readable format
     ip: String,
     /// Human-readable description of a country and a region, from which the user was logged in, based on the IP address
@@ -33,15 +34,12 @@ pub struct ConnectedWebsite {
 
 impl RObject for ConnectedWebsite {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "connectedWebsite"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -51,12 +49,12 @@ impl ConnectedWebsite {
     }
     pub fn builder() -> RTDConnectedWebsiteBuilder {
         let mut inner = ConnectedWebsite::default();
-        inner.td_name = "connectedWebsite".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDConnectedWebsiteBuilder { inner }
     }
 
-    pub fn id(&self) -> isize {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -64,7 +62,7 @@ impl ConnectedWebsite {
         &self.domain_name
     }
 
-    pub fn bot_user_id(&self) -> i64 {
+    pub fn bot_user_id(&self) -> i32 {
         self.bot_user_id
     }
 
@@ -76,11 +74,11 @@ impl ConnectedWebsite {
         &self.platform
     }
 
-    pub fn log_in_date(&self) -> i64 {
+    pub fn log_in_date(&self) -> i32 {
         self.log_in_date
     }
 
-    pub fn last_active_date(&self) -> i64 {
+    pub fn last_active_date(&self) -> i32 {
         self.last_active_date
     }
 
@@ -103,7 +101,7 @@ impl RTDConnectedWebsiteBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: isize) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -113,7 +111,7 @@ impl RTDConnectedWebsiteBuilder {
         self
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }
@@ -128,12 +126,12 @@ impl RTDConnectedWebsiteBuilder {
         self
     }
 
-    pub fn log_in_date(&mut self, log_in_date: i64) -> &mut Self {
+    pub fn log_in_date(&mut self, log_in_date: i32) -> &mut Self {
         self.inner.log_in_date = log_in_date;
         self
     }
 
-    pub fn last_active_date(&mut self, last_active_date: i64) -> &mut Self {
+    pub fn last_active_date(&mut self, last_active_date: i32) -> &mut Self {
         self.inner.last_active_date = last_active_date;
         self
     }

@@ -6,30 +6,26 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GameHighScore {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Position in the high score table
-    position: i64,
+    position: i32,
     /// User identifier
-    user_id: i64,
+    user_id: i32,
     /// User score
-    score: i64,
+    score: i32,
 }
 
 impl RObject for GameHighScore {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "gameHighScore"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -39,20 +35,20 @@ impl GameHighScore {
     }
     pub fn builder() -> RTDGameHighScoreBuilder {
         let mut inner = GameHighScore::default();
-        inner.td_name = "gameHighScore".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDGameHighScoreBuilder { inner }
     }
 
-    pub fn position(&self) -> i64 {
+    pub fn position(&self) -> i32 {
         self.position
     }
 
-    pub fn user_id(&self) -> i64 {
+    pub fn user_id(&self) -> i32 {
         self.user_id
     }
 
-    pub fn score(&self) -> i64 {
+    pub fn score(&self) -> i32 {
         self.score
     }
 }
@@ -67,17 +63,17 @@ impl RTDGameHighScoreBuilder {
         self.inner.clone()
     }
 
-    pub fn position(&mut self, position: i64) -> &mut Self {
+    pub fn position(&mut self, position: i32) -> &mut Self {
         self.inner.position = position;
         self
     }
 
-    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
 
-    pub fn score(&mut self, score: i64) -> &mut Self {
+    pub fn score(&mut self, score: i32) -> &mut Self {
         self.inner.score = score;
         self
     }

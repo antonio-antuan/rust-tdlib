@@ -6,26 +6,22 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TestInt {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Number
-    value: i64,
+    value: i32,
 }
 
 impl RObject for TestInt {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "testInt"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -35,12 +31,12 @@ impl TestInt {
     }
     pub fn builder() -> RTDTestIntBuilder {
         let mut inner = TestInt::default();
-        inner.td_name = "testInt".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDTestIntBuilder { inner }
     }
 
-    pub fn value(&self) -> i64 {
+    pub fn value(&self) -> i32 {
         self.value
     }
 }
@@ -55,7 +51,7 @@ impl RTDTestIntBuilder {
         self.inner.clone()
     }
 
-    pub fn value(&mut self, value: i64) -> &mut Self {
+    pub fn value(&mut self, value: i32) -> &mut Self {
         self.inner.value = value;
         self
     }

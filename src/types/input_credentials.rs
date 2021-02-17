@@ -2,65 +2,40 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about the payment method chosen by the user
+/// Contains information about the payment method chosen by the user
 pub trait TDInputCredentials: Debug + RObject {}
 
 /// Contains information about the payment method chosen by the user
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum InputCredentials {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Applies if a user enters new credentials using Android Pay
+    #[serde(rename(deserialize = "inputCredentialsAndroidPay"))]
     AndroidPay(InputCredentialsAndroidPay),
     /// Applies if a user enters new credentials using Apple Pay
+    #[serde(rename(deserialize = "inputCredentialsApplePay"))]
     ApplePay(InputCredentialsApplePay),
     /// Applies if a user enters new credentials on a payment provider website
+    #[serde(rename(deserialize = "inputCredentialsNew"))]
     New(InputCredentialsNew),
     /// Applies if a user chooses some previously saved payment credentials. To use their previously saved credentials, the user must have a valid temporary password
+    #[serde(rename(deserialize = "inputCredentialsSaved"))]
     Saved(InputCredentialsSaved),
 }
 
 impl Default for InputCredentials {
     fn default() -> Self {
-        InputCredentials::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for InputCredentials {
-    fn deserialize<D>(deserializer: D) -> Result<InputCredentials, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          InputCredentials,
-          (inputCredentialsAndroidPay, AndroidPay);
-          (inputCredentialsApplePay, ApplePay);
-          (inputCredentialsNew, New);
-          (inputCredentialsSaved, Saved);
-
-        )(deserializer)
+        InputCredentials::_Default
     }
 }
 
 impl RObject for InputCredentials {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            InputCredentials::AndroidPay(t) => t.td_name(),
-            InputCredentials::ApplePay(t) => t.td_name(),
-            InputCredentials::New(t) => t.td_name(),
-            InputCredentials::Saved(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             InputCredentials::AndroidPay(t) => t.extra(),
             InputCredentials::ApplePay(t) => t.extra(),
@@ -70,8 +45,16 @@ impl RObject for InputCredentials {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            InputCredentials::AndroidPay(t) => t.client_id(),
+            InputCredentials::ApplePay(t) => t.client_id(),
+            InputCredentials::New(t) => t.client_id(),
+            InputCredentials::Saved(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -81,7 +64,7 @@ impl InputCredentials {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputCredentials::_Default(_))
+        matches!(self, InputCredentials::_Default)
     }
 }
 
@@ -95,26 +78,22 @@ impl AsRef<InputCredentials> for InputCredentials {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputCredentialsAndroidPay {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// JSON-encoded data with the credential identifier
     data: String,
 }
 
 impl RObject for InputCredentialsAndroidPay {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputCredentialsAndroidPay"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -126,8 +105,8 @@ impl InputCredentialsAndroidPay {
     }
     pub fn builder() -> RTDInputCredentialsAndroidPayBuilder {
         let mut inner = InputCredentialsAndroidPay::default();
-        inner.td_name = "inputCredentialsAndroidPay".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputCredentialsAndroidPayBuilder { inner }
     }
 
@@ -168,26 +147,22 @@ impl AsRef<InputCredentialsAndroidPay> for RTDInputCredentialsAndroidPayBuilder 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputCredentialsApplePay {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// JSON-encoded data with the credential identifier
     data: String,
 }
 
 impl RObject for InputCredentialsApplePay {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputCredentialsApplePay"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -199,8 +174,8 @@ impl InputCredentialsApplePay {
     }
     pub fn builder() -> RTDInputCredentialsApplePayBuilder {
         let mut inner = InputCredentialsApplePay::default();
-        inner.td_name = "inputCredentialsApplePay".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputCredentialsApplePayBuilder { inner }
     }
 
@@ -241,11 +216,10 @@ impl AsRef<InputCredentialsApplePay> for RTDInputCredentialsApplePayBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputCredentialsNew {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Contains JSON-encoded data with a credential identifier from the payment provider
     data: String,
     /// True, if the credential identifier can be saved on the server side
@@ -254,15 +228,12 @@ pub struct InputCredentialsNew {
 
 impl RObject for InputCredentialsNew {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputCredentialsNew"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -274,8 +245,8 @@ impl InputCredentialsNew {
     }
     pub fn builder() -> RTDInputCredentialsNewBuilder {
         let mut inner = InputCredentialsNew::default();
-        inner.td_name = "inputCredentialsNew".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputCredentialsNewBuilder { inner }
     }
 
@@ -325,26 +296,22 @@ impl AsRef<InputCredentialsNew> for RTDInputCredentialsNewBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputCredentialsSaved {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the saved credentials
     saved_credentials_id: String,
 }
 
 impl RObject for InputCredentialsSaved {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputCredentialsSaved"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -356,8 +323,8 @@ impl InputCredentialsSaved {
     }
     pub fn builder() -> RTDInputCredentialsSavedBuilder {
         let mut inner = InputCredentialsSaved::default();
-        inner.td_name = "inputCredentialsSaved".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputCredentialsSavedBuilder { inner }
     }
 

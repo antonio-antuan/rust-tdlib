@@ -6,30 +6,26 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Date {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Day of the month, 1-31
-    day: i64,
+    day: i32,
     /// Month, 1-12
-    month: i64,
+    month: i32,
     /// Year, 1-9999
-    year: i64,
+    year: i32,
 }
 
 impl RObject for Date {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "date"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -39,20 +35,20 @@ impl Date {
     }
     pub fn builder() -> RTDDateBuilder {
         let mut inner = Date::default();
-        inner.td_name = "date".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDDateBuilder { inner }
     }
 
-    pub fn day(&self) -> i64 {
+    pub fn day(&self) -> i32 {
         self.day
     }
 
-    pub fn month(&self) -> i64 {
+    pub fn month(&self) -> i32 {
         self.month
     }
 
-    pub fn year(&self) -> i64 {
+    pub fn year(&self) -> i32 {
         self.year
     }
 }
@@ -67,17 +63,17 @@ impl RTDDateBuilder {
         self.inner.clone()
     }
 
-    pub fn day(&mut self, day: i64) -> &mut Self {
+    pub fn day(&mut self, day: i32) -> &mut Self {
         self.inner.day = day;
         self
     }
 
-    pub fn month(&mut self, month: i64) -> &mut Self {
+    pub fn month(&mut self, month: i32) -> &mut Self {
         self.inner.month = month;
         self
     }
 
-    pub fn year(&mut self, year: i64) -> &mut Self {
+    pub fn year(&mut self, year: i32) -> &mut Self {
         self.inner.year = year;
         self
     }

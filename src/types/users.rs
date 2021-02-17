@@ -6,28 +6,24 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Users {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Approximate total count of users found
-    total_count: i64,
+    total_count: i32,
     /// A list of user identifiers
-    user_ids: Vec<i64>,
+    user_ids: Vec<i32>,
 }
 
 impl RObject for Users {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "users"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -37,16 +33,16 @@ impl Users {
     }
     pub fn builder() -> RTDUsersBuilder {
         let mut inner = Users::default();
-        inner.td_name = "users".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUsersBuilder { inner }
     }
 
-    pub fn total_count(&self) -> i64 {
+    pub fn total_count(&self) -> i32 {
         self.total_count
     }
 
-    pub fn user_ids(&self) -> &Vec<i64> {
+    pub fn user_ids(&self) -> &Vec<i32> {
         &self.user_ids
     }
 }
@@ -61,12 +57,12 @@ impl RTDUsersBuilder {
         self.inner.clone()
     }
 
-    pub fn total_count(&mut self, total_count: i64) -> &mut Self {
+    pub fn total_count(&mut self, total_count: i32) -> &mut Self {
         self.inner.total_count = total_count;
         self
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }

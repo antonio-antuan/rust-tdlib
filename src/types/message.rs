@@ -6,15 +6,16 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Message {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
-    /// Message identifier, unique for the chat to which the message belongs
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Message identifier; unique for the chat to which the message belongs
     id: i64,
-    /// Identifier of the user who sent the message; 0 if unknown. Currently, it is unknown for channel posts and for channel posts automatically forwarded to discussion group
-    sender_user_id: i64,
+    /// The sender of the message
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    sender: MessageSender,
     /// Chat identifier
     chat_id: i64,
     /// Information about the sending state of the message; may be null
@@ -23,7 +24,9 @@ pub struct Message {
     scheduling_state: Option<MessageSchedulingState>,
     /// True, if the message is outgoing
     is_outgoing: bool,
-    /// True, if the message can be edited. For live location and poll messages this fields shows whether editMessageLiveLocation or stopPoll can be used with this message by the client
+    /// True, if the message is pinned
+    is_pinned: bool,
+    /// True, if the message can be edited. For live location and poll messages this fields shows whether editMessageLiveLocation or stopPoll can be used with this message by the application
     can_be_edited: bool,
     /// True, if the message can be forwarded
     can_be_forwarded: bool,
@@ -31,34 +34,45 @@ pub struct Message {
     can_be_deleted_only_for_self: bool,
     /// True, if the message can be deleted for all users
     can_be_deleted_for_all_users: bool,
+    /// True, if the message statistics are available
+    can_get_statistics: bool,
+    /// True, if the message thread info is available
+    can_get_message_thread: bool,
     /// True, if the message is a channel post. All messages to channels are channel posts, all other messages are not channel posts
     is_channel_post: bool,
     /// True, if the message contains an unread mention for the current user
     contains_unread_mention: bool,
     /// Point in time (Unix timestamp) when the message was sent
-    date: i64,
+    date: i32,
     /// Point in time (Unix timestamp) when the message was last edited
-    edit_date: i64,
+    edit_date: i32,
     /// Information about the initial message sender; may be null
     forward_info: Option<MessageForwardInfo>,
+    /// Information about interactions with the message; may be null
+    interaction_info: Option<MessageInteractionInfo>,
+    /// If non-zero, the identifier of the chat to which the replied message belongs; Currently, only messages in the Replies chat can have different reply_in_chat_id and chat_id
+    reply_in_chat_id: i64,
     /// If non-zero, the identifier of the message this message is replying to; can be the identifier of a deleted message
     reply_to_message_id: i64,
+    /// If non-zero, the identifier of the message thread the message belongs to; unique within the chat to which the message belongs
+    message_thread_id: i64,
     /// For self-destructing messages, the message's TTL (Time To Live), in seconds; 0 if none. TDLib will send updateDeleteMessages or updateMessageContent once the TTL expires
-    ttl: i64,
+    ttl: i32,
     /// Time left before the message expires, in seconds
     ttl_expires_in: f32,
     /// If non-zero, the user identifier of the bot through which this message was sent
-    via_bot_user_id: i64,
-    /// For channel posts, optional author signature
+    via_bot_user_id: i32,
+    /// For channel posts and anonymous group messages, optional author signature
     author_signature: String,
-    /// Number of times this message was viewed
-    views: i64,
     /// Unique identifier of an album this message belongs to. Only photos and videos can be grouped together in albums
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
-    media_album_id: isize,
+    media_album_id: i64,
     /// If non-empty, contains a human-readable description of the reason why access to this message must be restricted
     restriction_reason: String,
     /// Content of the message
+
+    #[serde(skip_serializing_if = "MessageContent::_is_default")]
     content: MessageContent,
     /// Reply markup for the message; may be null
     reply_markup: Option<ReplyMarkup>,
@@ -66,15 +80,12 @@ pub struct Message {
 
 impl RObject for Message {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "message"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -84,8 +95,8 @@ impl Message {
     }
     pub fn builder() -> RTDMessageBuilder {
         let mut inner = Message::default();
-        inner.td_name = "message".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDMessageBuilder { inner }
     }
 
@@ -93,8 +104,8 @@ impl Message {
         self.id
     }
 
-    pub fn sender_user_id(&self) -> i64 {
-        self.sender_user_id
+    pub fn sender(&self) -> &MessageSender {
+        &self.sender
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -113,6 +124,10 @@ impl Message {
         self.is_outgoing
     }
 
+    pub fn is_pinned(&self) -> bool {
+        self.is_pinned
+    }
+
     pub fn can_be_edited(&self) -> bool {
         self.can_be_edited
     }
@@ -129,6 +144,14 @@ impl Message {
         self.can_be_deleted_for_all_users
     }
 
+    pub fn can_get_statistics(&self) -> bool {
+        self.can_get_statistics
+    }
+
+    pub fn can_get_message_thread(&self) -> bool {
+        self.can_get_message_thread
+    }
+
     pub fn is_channel_post(&self) -> bool {
         self.is_channel_post
     }
@@ -137,11 +160,11 @@ impl Message {
         self.contains_unread_mention
     }
 
-    pub fn date(&self) -> i64 {
+    pub fn date(&self) -> i32 {
         self.date
     }
 
-    pub fn edit_date(&self) -> i64 {
+    pub fn edit_date(&self) -> i32 {
         self.edit_date
     }
 
@@ -149,11 +172,23 @@ impl Message {
         &self.forward_info
     }
 
+    pub fn interaction_info(&self) -> &Option<MessageInteractionInfo> {
+        &self.interaction_info
+    }
+
+    pub fn reply_in_chat_id(&self) -> i64 {
+        self.reply_in_chat_id
+    }
+
     pub fn reply_to_message_id(&self) -> i64 {
         self.reply_to_message_id
     }
 
-    pub fn ttl(&self) -> i64 {
+    pub fn message_thread_id(&self) -> i64 {
+        self.message_thread_id
+    }
+
+    pub fn ttl(&self) -> i32 {
         self.ttl
     }
 
@@ -161,7 +196,7 @@ impl Message {
         self.ttl_expires_in
     }
 
-    pub fn via_bot_user_id(&self) -> i64 {
+    pub fn via_bot_user_id(&self) -> i32 {
         self.via_bot_user_id
     }
 
@@ -169,11 +204,7 @@ impl Message {
         &self.author_signature
     }
 
-    pub fn views(&self) -> i64 {
-        self.views
-    }
-
-    pub fn media_album_id(&self) -> isize {
+    pub fn media_album_id(&self) -> i64 {
         self.media_album_id
     }
 
@@ -205,8 +236,8 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn sender_user_id(&mut self, sender_user_id: i64) -> &mut Self {
-        self.inner.sender_user_id = sender_user_id;
+    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
+        self.inner.sender = sender.as_ref().clone();
         self
     }
 
@@ -230,6 +261,11 @@ impl RTDMessageBuilder {
 
     pub fn is_outgoing(&mut self, is_outgoing: bool) -> &mut Self {
         self.inner.is_outgoing = is_outgoing;
+        self
+    }
+
+    pub fn is_pinned(&mut self, is_pinned: bool) -> &mut Self {
+        self.inner.is_pinned = is_pinned;
         self
     }
 
@@ -259,6 +295,16 @@ impl RTDMessageBuilder {
         self
     }
 
+    pub fn can_get_statistics(&mut self, can_get_statistics: bool) -> &mut Self {
+        self.inner.can_get_statistics = can_get_statistics;
+        self
+    }
+
+    pub fn can_get_message_thread(&mut self, can_get_message_thread: bool) -> &mut Self {
+        self.inner.can_get_message_thread = can_get_message_thread;
+        self
+    }
+
     pub fn is_channel_post(&mut self, is_channel_post: bool) -> &mut Self {
         self.inner.is_channel_post = is_channel_post;
         self
@@ -269,12 +315,12 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn date(&mut self, date: i64) -> &mut Self {
+    pub fn date(&mut self, date: i32) -> &mut Self {
         self.inner.date = date;
         self
     }
 
-    pub fn edit_date(&mut self, edit_date: i64) -> &mut Self {
+    pub fn edit_date(&mut self, edit_date: i32) -> &mut Self {
         self.inner.edit_date = edit_date;
         self
     }
@@ -284,12 +330,30 @@ impl RTDMessageBuilder {
         self
     }
 
+    pub fn interaction_info<T: AsRef<MessageInteractionInfo>>(
+        &mut self,
+        interaction_info: T,
+    ) -> &mut Self {
+        self.inner.interaction_info = Some(interaction_info.as_ref().clone());
+        self
+    }
+
+    pub fn reply_in_chat_id(&mut self, reply_in_chat_id: i64) -> &mut Self {
+        self.inner.reply_in_chat_id = reply_in_chat_id;
+        self
+    }
+
     pub fn reply_to_message_id(&mut self, reply_to_message_id: i64) -> &mut Self {
         self.inner.reply_to_message_id = reply_to_message_id;
         self
     }
 
-    pub fn ttl(&mut self, ttl: i64) -> &mut Self {
+    pub fn message_thread_id(&mut self, message_thread_id: i64) -> &mut Self {
+        self.inner.message_thread_id = message_thread_id;
+        self
+    }
+
+    pub fn ttl(&mut self, ttl: i32) -> &mut Self {
         self.inner.ttl = ttl;
         self
     }
@@ -299,7 +363,7 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn via_bot_user_id(&mut self, via_bot_user_id: i64) -> &mut Self {
+    pub fn via_bot_user_id(&mut self, via_bot_user_id: i32) -> &mut Self {
         self.inner.via_bot_user_id = via_bot_user_id;
         self
     }
@@ -309,12 +373,7 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn views(&mut self, views: i64) -> &mut Self {
-        self.inner.views = views;
-        self
-    }
-
-    pub fn media_album_id(&mut self, media_album_id: isize) -> &mut Self {
+    pub fn media_album_id(&mut self, media_album_id: i64) -> &mut Self {
         self.inner.media_album_id = media_album_id;
         self
     }

@@ -6,19 +6,20 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct StickerSet {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Identifier of the sticker set
-    id: isize,
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    id: i64,
     /// Title of the sticker set
     title: String,
     /// Name of the sticker set
     name: String,
-    /// Sticker set thumbnail in WEBP format with width and height 100; may be null. The file can be downloaded only before the thumbnail is changed
-    thumbnail: Option<PhotoSize>,
+    /// Sticker set thumbnail in WEBP or TGS format with width and height 100; may be null. The file can be downloaded only before the thumbnail is changed
+    thumbnail: Option<Thumbnail>,
     /// True, if the sticker set has been installed by the current user
     is_installed: bool,
     /// True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
@@ -39,15 +40,12 @@ pub struct StickerSet {
 
 impl RObject for StickerSet {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "stickerSet"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -57,12 +55,12 @@ impl StickerSet {
     }
     pub fn builder() -> RTDStickerSetBuilder {
         let mut inner = StickerSet::default();
-        inner.td_name = "stickerSet".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDStickerSetBuilder { inner }
     }
 
-    pub fn id(&self) -> isize {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -74,7 +72,7 @@ impl StickerSet {
         &self.name
     }
 
-    pub fn thumbnail(&self) -> &Option<PhotoSize> {
+    pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
     }
 
@@ -121,7 +119,7 @@ impl RTDStickerSetBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: isize) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -136,7 +134,7 @@ impl RTDStickerSetBuilder {
         self
     }
 
-    pub fn thumbnail<T: AsRef<PhotoSize>>(&mut self, thumbnail: T) -> &mut Self {
+    pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
         self
     }

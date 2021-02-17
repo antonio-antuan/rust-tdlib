@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LanguagePackInfo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique language pack identifier
     id: String,
     /// Identifier of a base language pack; may be empty. If a string is missed in the language pack, then it should be fetched from base language pack. Unsupported in custom language packs
@@ -30,26 +29,23 @@ pub struct LanguagePackInfo {
     /// True, if the language pack is installed by the current user
     is_installed: bool,
     /// Total number of non-deleted strings from the language pack
-    total_string_count: i64,
+    total_string_count: i32,
     /// Total number of translated strings from the language pack
-    translated_string_count: i64,
+    translated_string_count: i32,
     /// Total number of non-deleted strings from the language pack available locally
-    local_string_count: i64,
+    local_string_count: i32,
     /// Link to language translation interface; empty for custom local language packs
     translation_url: String,
 }
 
 impl RObject for LanguagePackInfo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "languagePackInfo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -59,8 +55,8 @@ impl LanguagePackInfo {
     }
     pub fn builder() -> RTDLanguagePackInfoBuilder {
         let mut inner = LanguagePackInfo::default();
-        inner.td_name = "languagePackInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDLanguagePackInfoBuilder { inner }
     }
 
@@ -100,15 +96,15 @@ impl LanguagePackInfo {
         self.is_installed
     }
 
-    pub fn total_string_count(&self) -> i64 {
+    pub fn total_string_count(&self) -> i32 {
         self.total_string_count
     }
 
-    pub fn translated_string_count(&self) -> i64 {
+    pub fn translated_string_count(&self) -> i32 {
         self.translated_string_count
     }
 
-    pub fn local_string_count(&self) -> i64 {
+    pub fn local_string_count(&self) -> i32 {
         self.local_string_count
     }
 
@@ -172,17 +168,17 @@ impl RTDLanguagePackInfoBuilder {
         self
     }
 
-    pub fn total_string_count(&mut self, total_string_count: i64) -> &mut Self {
+    pub fn total_string_count(&mut self, total_string_count: i32) -> &mut Self {
         self.inner.total_string_count = total_string_count;
         self
     }
 
-    pub fn translated_string_count(&mut self, translated_string_count: i64) -> &mut Self {
+    pub fn translated_string_count(&mut self, translated_string_count: i32) -> &mut Self {
         self.inner.translated_string_count = translated_string_count;
         self
     }
 
-    pub fn local_string_count(&mut self, local_string_count: i64) -> &mut Self {
+    pub fn local_string_count(&mut self, local_string_count: i32) -> &mut Self {
         self.inner.local_string_count = local_string_count;
         self
     }

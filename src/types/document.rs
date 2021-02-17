@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Document {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Original name of the file; as defined by the sender
     file_name: String,
     /// MIME type of the file; as defined by the sender
@@ -18,22 +17,19 @@ pub struct Document {
     /// Document minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
     /// Document thumbnail in JPEG or PNG format (PNG will be used only for background patterns); as defined by the sender; may be null
-    thumbnail: Option<PhotoSize>,
+    thumbnail: Option<Thumbnail>,
     /// File containing the document
     document: File,
 }
 
 impl RObject for Document {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "document"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,8 +39,8 @@ impl Document {
     }
     pub fn builder() -> RTDDocumentBuilder {
         let mut inner = Document::default();
-        inner.td_name = "document".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDDocumentBuilder { inner }
     }
 
@@ -60,7 +56,7 @@ impl Document {
         &self.minithumbnail
     }
 
-    pub fn thumbnail(&self) -> &Option<PhotoSize> {
+    pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
     }
 
@@ -94,7 +90,7 @@ impl RTDDocumentBuilder {
         self
     }
 
-    pub fn thumbnail<T: AsRef<PhotoSize>>(&mut self, thumbnail: T) -> &mut Self {
+    pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
         self
     }

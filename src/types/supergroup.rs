@@ -6,21 +6,22 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Supergroup {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Supergroup or channel identifier
-    id: i64,
+    id: i32,
     /// Username of the supergroup or channel; empty for private supergroups or channels
     username: String,
     /// Point in time (Unix timestamp) when the current user joined, or the point in time when the supergroup or channel was created, in case the user is not a member
-    date: i64,
+    date: i32,
     /// Status of the current user in the supergroup or channel; custom title will be always empty
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
-    /// Member count; 0 if unknown. Currently it is guaranteed to be known only if the supergroup or channel was found through SearchPublicChats
-    member_count: i64,
+    /// Number of members in the supergroup or channel; 0 if unknown. Currently it is guaranteed to be known only if the supergroup or channel was received through searchPublicChats, searchChatsNearby, getInactiveSupergroupChats, getSuitableDiscussionChats, getGroupsInCommon, or getUserPrivacySettingRules
+    member_count: i32,
     /// True, if the channel has a discussion group, or the supergroup is the designated discussion group for a channel
     has_linked_chat: bool,
     /// True, if the supergroup is connected to a location, i.e. the supergroup is a location-based supergroup
@@ -41,15 +42,12 @@ pub struct Supergroup {
 
 impl RObject for Supergroup {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "supergroup"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -59,12 +57,12 @@ impl Supergroup {
     }
     pub fn builder() -> RTDSupergroupBuilder {
         let mut inner = Supergroup::default();
-        inner.td_name = "supergroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSupergroupBuilder { inner }
     }
 
-    pub fn id(&self) -> i64 {
+    pub fn id(&self) -> i32 {
         self.id
     }
 
@@ -72,7 +70,7 @@ impl Supergroup {
         &self.username
     }
 
-    pub fn date(&self) -> i64 {
+    pub fn date(&self) -> i32 {
         self.date
     }
 
@@ -80,7 +78,7 @@ impl Supergroup {
         &self.status
     }
 
-    pub fn member_count(&self) -> i64 {
+    pub fn member_count(&self) -> i32 {
         self.member_count
     }
 
@@ -127,7 +125,7 @@ impl RTDSupergroupBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i64) -> &mut Self {
+    pub fn id(&mut self, id: i32) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -137,7 +135,7 @@ impl RTDSupergroupBuilder {
         self
     }
 
-    pub fn date(&mut self, date: i64) -> &mut Self {
+    pub fn date(&mut self, date: i32) -> &mut Self {
         self.inner.date = date;
         self
     }
@@ -147,7 +145,7 @@ impl RTDSupergroupBuilder {
         self
     }
 
-    pub fn member_count(&mut self, member_count: i64) -> &mut Self {
+    pub fn member_count(&mut self, member_count: i32) -> &mut Self {
         self.inner.member_count = member_count;
         self
     }

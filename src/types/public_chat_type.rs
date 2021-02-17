@@ -2,57 +2,34 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Describes a type of public chats
+/// Describes a type of public chats
 pub trait TDPublicChatType: Debug + RObject {}
 
 /// Describes a type of public chats
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum PublicChatType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The chat is public, because it has username
+    #[serde(rename(deserialize = "publicChatTypeHasUsername"))]
     HasUsername(PublicChatTypeHasUsername),
     /// The chat is public, because it is a location-based supergroup
+    #[serde(rename(deserialize = "publicChatTypeIsLocationBased"))]
     IsLocationBased(PublicChatTypeIsLocationBased),
 }
 
 impl Default for PublicChatType {
     fn default() -> Self {
-        PublicChatType::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for PublicChatType {
-    fn deserialize<D>(deserializer: D) -> Result<PublicChatType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          PublicChatType,
-          (publicChatTypeHasUsername, HasUsername);
-          (publicChatTypeIsLocationBased, IsLocationBased);
-
-        )(deserializer)
+        PublicChatType::_Default
     }
 }
 
 impl RObject for PublicChatType {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            PublicChatType::HasUsername(t) => t.td_name(),
-            PublicChatType::IsLocationBased(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             PublicChatType::HasUsername(t) => t.extra(),
             PublicChatType::IsLocationBased(t) => t.extra(),
@@ -60,8 +37,14 @@ impl RObject for PublicChatType {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            PublicChatType::HasUsername(t) => t.client_id(),
+            PublicChatType::IsLocationBased(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -71,7 +54,7 @@ impl PublicChatType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PublicChatType::_Default(_))
+        matches!(self, PublicChatType::_Default)
     }
 }
 
@@ -85,24 +68,20 @@ impl AsRef<PublicChatType> for PublicChatType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PublicChatTypeHasUsername {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PublicChatTypeHasUsername {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "publicChatTypeHasUsername"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -114,8 +93,8 @@ impl PublicChatTypeHasUsername {
     }
     pub fn builder() -> RTDPublicChatTypeHasUsernameBuilder {
         let mut inner = PublicChatTypeHasUsername::default();
-        inner.td_name = "publicChatTypeHasUsername".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPublicChatTypeHasUsernameBuilder { inner }
     }
 }
@@ -147,24 +126,20 @@ impl AsRef<PublicChatTypeHasUsername> for RTDPublicChatTypeHasUsernameBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PublicChatTypeIsLocationBased {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for PublicChatTypeIsLocationBased {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "publicChatTypeIsLocationBased"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -176,8 +151,8 @@ impl PublicChatTypeIsLocationBased {
     }
     pub fn builder() -> RTDPublicChatTypeIsLocationBasedBuilder {
         let mut inner = PublicChatTypeIsLocationBased::default();
-        inner.td_name = "publicChatTypeIsLocationBased".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPublicChatTypeIsLocationBasedBuilder { inner }
     }
 }

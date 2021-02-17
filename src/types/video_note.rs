@@ -6,34 +6,30 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct VideoNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Duration of the video, in seconds; as defined by the sender
-    duration: i64,
+    duration: i32,
     /// Video width and height; as defined by the sender
-    length: i64,
+    length: i32,
     /// Video minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
-    /// Video thumbnail; as defined by the sender; may be null
-    thumbnail: Option<PhotoSize>,
+    /// Video thumbnail in JPEG format; as defined by the sender; may be null
+    thumbnail: Option<Thumbnail>,
     /// File containing the video
     video: File,
 }
 
 impl RObject for VideoNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "videoNote"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,16 +39,16 @@ impl VideoNote {
     }
     pub fn builder() -> RTDVideoNoteBuilder {
         let mut inner = VideoNote::default();
-        inner.td_name = "videoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDVideoNoteBuilder { inner }
     }
 
-    pub fn duration(&self) -> i64 {
+    pub fn duration(&self) -> i32 {
         self.duration
     }
 
-    pub fn length(&self) -> i64 {
+    pub fn length(&self) -> i32 {
         self.length
     }
 
@@ -60,7 +56,7 @@ impl VideoNote {
         &self.minithumbnail
     }
 
-    pub fn thumbnail(&self) -> &Option<PhotoSize> {
+    pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
     }
 
@@ -79,12 +75,12 @@ impl RTDVideoNoteBuilder {
         self.inner.clone()
     }
 
-    pub fn duration(&mut self, duration: i64) -> &mut Self {
+    pub fn duration(&mut self, duration: i32) -> &mut Self {
         self.inner.duration = duration;
         self
     }
 
-    pub fn length(&mut self, length: i64) -> &mut Self {
+    pub fn length(&mut self, length: i32) -> &mut Self {
         self.inner.length = length;
         self
     }
@@ -94,7 +90,7 @@ impl RTDVideoNoteBuilder {
         self
     }
 
-    pub fn thumbnail<T: AsRef<PhotoSize>>(&mut self, thumbnail: T) -> &mut Self {
+    pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
         self
     }

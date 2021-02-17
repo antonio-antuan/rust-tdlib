@@ -6,26 +6,22 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Stickers {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// List of stickers
     stickers: Vec<Sticker>,
 }
 
 impl RObject for Stickers {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "stickers"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -35,8 +31,8 @@ impl Stickers {
     }
     pub fn builder() -> RTDStickersBuilder {
         let mut inner = Stickers::default();
-        inner.td_name = "stickers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDStickersBuilder { inner }
     }
 

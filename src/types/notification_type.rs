@@ -2,65 +2,40 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Contains detailed information about a notification
+/// Contains detailed information about a notification
 pub trait TDNotificationType: Debug + RObject {}
 
 /// Contains detailed information about a notification
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum NotificationType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// New call was received
+    #[serde(rename(deserialize = "notificationTypeNewCall"))]
     NewCall(NotificationTypeNewCall),
     /// New message was received
+    #[serde(rename(deserialize = "notificationTypeNewMessage"))]
     NewMessage(NotificationTypeNewMessage),
     /// New message was received through a push notification
+    #[serde(rename(deserialize = "notificationTypeNewPushMessage"))]
     NewPushMessage(NotificationTypeNewPushMessage),
     /// New secret chat was created
+    #[serde(rename(deserialize = "notificationTypeNewSecretChat"))]
     NewSecretChat(NotificationTypeNewSecretChat),
 }
 
 impl Default for NotificationType {
     fn default() -> Self {
-        NotificationType::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for NotificationType {
-    fn deserialize<D>(deserializer: D) -> Result<NotificationType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          NotificationType,
-          (notificationTypeNewCall, NewCall);
-          (notificationTypeNewMessage, NewMessage);
-          (notificationTypeNewPushMessage, NewPushMessage);
-          (notificationTypeNewSecretChat, NewSecretChat);
-
-        )(deserializer)
+        NotificationType::_Default
     }
 }
 
 impl RObject for NotificationType {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            NotificationType::NewCall(t) => t.td_name(),
-            NotificationType::NewMessage(t) => t.td_name(),
-            NotificationType::NewPushMessage(t) => t.td_name(),
-            NotificationType::NewSecretChat(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             NotificationType::NewCall(t) => t.extra(),
             NotificationType::NewMessage(t) => t.extra(),
@@ -70,8 +45,16 @@ impl RObject for NotificationType {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            NotificationType::NewCall(t) => t.client_id(),
+            NotificationType::NewMessage(t) => t.client_id(),
+            NotificationType::NewPushMessage(t) => t.client_id(),
+            NotificationType::NewSecretChat(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -81,7 +64,7 @@ impl NotificationType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, NotificationType::_Default(_))
+        matches!(self, NotificationType::_Default)
     }
 }
 
@@ -95,26 +78,22 @@ impl AsRef<NotificationType> for NotificationType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationTypeNewCall {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Call identifier
-    call_id: i64,
+    call_id: i32,
 }
 
 impl RObject for NotificationTypeNewCall {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notificationTypeNewCall"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -126,12 +105,12 @@ impl NotificationTypeNewCall {
     }
     pub fn builder() -> RTDNotificationTypeNewCallBuilder {
         let mut inner = NotificationTypeNewCall::default();
-        inner.td_name = "notificationTypeNewCall".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNotificationTypeNewCallBuilder { inner }
     }
 
-    pub fn call_id(&self) -> i64 {
+    pub fn call_id(&self) -> i32 {
         self.call_id
     }
 }
@@ -146,7 +125,7 @@ impl RTDNotificationTypeNewCallBuilder {
         self.inner.clone()
     }
 
-    pub fn call_id(&mut self, call_id: i64) -> &mut Self {
+    pub fn call_id(&mut self, call_id: i32) -> &mut Self {
         self.inner.call_id = call_id;
         self
     }
@@ -168,26 +147,22 @@ impl AsRef<NotificationTypeNewCall> for RTDNotificationTypeNewCallBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationTypeNewMessage {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The message
     message: Message,
 }
 
 impl RObject for NotificationTypeNewMessage {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notificationTypeNewMessage"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -199,8 +174,8 @@ impl NotificationTypeNewMessage {
     }
     pub fn builder() -> RTDNotificationTypeNewMessageBuilder {
         let mut inner = NotificationTypeNewMessage::default();
-        inner.td_name = "notificationTypeNewMessage".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNotificationTypeNewMessageBuilder { inner }
     }
 
@@ -241,30 +216,34 @@ impl AsRef<NotificationTypeNewMessage> for RTDNotificationTypeNewMessageBuilder 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationTypeNewPushMessage {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
-    /// The message identifier. The message will not be available in the chat history, but the ID can be used in viewMessages and as reply_to_message_id
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// The message identifier. The message will not be available in the chat history, but the ID can be used in viewMessages, or as reply_to_message_id
     message_id: i64,
-    /// Sender of the message. Corresponding user may be inaccessible
-    sender_user_id: i64,
+    /// The sender of the message. Corresponding user or chat may be inaccessible
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    sender: MessageSender,
+    /// Name of the sender
+    sender_name: String,
+    /// True, if the message is outgoing
+    is_outgoing: bool,
     /// Push message content
+
+    #[serde(skip_serializing_if = "PushMessageContent::_is_default")]
     content: PushMessageContent,
 }
 
 impl RObject for NotificationTypeNewPushMessage {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notificationTypeNewPushMessage"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -276,8 +255,8 @@ impl NotificationTypeNewPushMessage {
     }
     pub fn builder() -> RTDNotificationTypeNewPushMessageBuilder {
         let mut inner = NotificationTypeNewPushMessage::default();
-        inner.td_name = "notificationTypeNewPushMessage".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNotificationTypeNewPushMessageBuilder { inner }
     }
 
@@ -285,8 +264,16 @@ impl NotificationTypeNewPushMessage {
         self.message_id
     }
 
-    pub fn sender_user_id(&self) -> i64 {
-        self.sender_user_id
+    pub fn sender(&self) -> &MessageSender {
+        &self.sender
+    }
+
+    pub fn sender_name(&self) -> &String {
+        &self.sender_name
+    }
+
+    pub fn is_outgoing(&self) -> bool {
+        self.is_outgoing
     }
 
     pub fn content(&self) -> &PushMessageContent {
@@ -309,8 +296,18 @@ impl RTDNotificationTypeNewPushMessageBuilder {
         self
     }
 
-    pub fn sender_user_id(&mut self, sender_user_id: i64) -> &mut Self {
-        self.inner.sender_user_id = sender_user_id;
+    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
+        self.inner.sender = sender.as_ref().clone();
+        self
+    }
+
+    pub fn sender_name<T: AsRef<str>>(&mut self, sender_name: T) -> &mut Self {
+        self.inner.sender_name = sender_name.as_ref().to_string();
+        self
+    }
+
+    pub fn is_outgoing(&mut self, is_outgoing: bool) -> &mut Self {
+        self.inner.is_outgoing = is_outgoing;
         self
     }
 
@@ -336,24 +333,20 @@ impl AsRef<NotificationTypeNewPushMessage> for RTDNotificationTypeNewPushMessage
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationTypeNewSecretChat {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for NotificationTypeNewSecretChat {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notificationTypeNewSecretChat"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -365,8 +358,8 @@ impl NotificationTypeNewSecretChat {
     }
     pub fn builder() -> RTDNotificationTypeNewSecretChatBuilder {
         let mut inner = NotificationTypeNewSecretChat::default();
-        inner.td_name = "notificationTypeNewSecretChat".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNotificationTypeNewSecretChatBuilder { inner }
     }
 }

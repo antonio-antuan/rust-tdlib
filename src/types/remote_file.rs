@@ -6,12 +6,11 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct RemoteFile {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
-    /// Remote file identifier; may be empty. Can be used across application restarts or even from other devices for the current user. Uniquely identifies a file, but a file can have a lot of different valid identifiers. If the ID starts with "http://" or "https://", it represents the HTTP URL of the file. TDLib is currently unable to download files if only their URL is known. If downloadFile is called on such a file or if it is sent to a secret chat, TDLib starts a file generation process by sending updateFileGenerationStart to the client with the HTTP URL in the original_path and "#url#" as the conversion string. Clients should generate the file by downloading it to the specified location
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Remote file identifier; may be empty. Can be used by the current user across application restarts or even from other devices. Uniquely identifies a file, but a file can have a lot of different valid identifiers. If the ID starts with "http://" or "https://", it represents the HTTP URL of the file. TDLib is currently unable to download files if only their URL is known. If downloadFile is called on such a file or if it is sent to a secret chat, TDLib starts a file generation process by sending updateFileGenerationStart to the application with the HTTP URL in the original_path and "#url#" as the conversion string. Application should generate the file by downloading it to the specified location
     id: String,
     /// Unique file identifier; may be empty if unknown. The unique file identifier which is the same for the same file even for different users and is persistent over time
     unique_id: String,
@@ -20,20 +19,17 @@ pub struct RemoteFile {
     /// True, if a remote copy is fully available
     is_uploading_completed: bool,
     /// Size of the remote available part of the file; 0 if unknown
-    uploaded_size: i64,
+    uploaded_size: i32,
 }
 
 impl RObject for RemoteFile {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "remoteFile"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,8 +39,8 @@ impl RemoteFile {
     }
     pub fn builder() -> RTDRemoteFileBuilder {
         let mut inner = RemoteFile::default();
-        inner.td_name = "remoteFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDRemoteFileBuilder { inner }
     }
 
@@ -64,7 +60,7 @@ impl RemoteFile {
         self.is_uploading_completed
     }
 
-    pub fn uploaded_size(&self) -> i64 {
+    pub fn uploaded_size(&self) -> i32 {
         self.uploaded_size
     }
 }
@@ -99,7 +95,7 @@ impl RTDRemoteFileBuilder {
         self
     }
 
-    pub fn uploaded_size(&mut self, uploaded_size: i64) -> &mut Self {
+    pub fn uploaded_size(&mut self, uploaded_size: i32) -> &mut Self {
         self.inner.uploaded_size = uploaded_size;
         self
     }

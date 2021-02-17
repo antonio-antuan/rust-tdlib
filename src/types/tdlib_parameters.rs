@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TdlibParameters {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// If set to true, the Telegram test environment will be used instead of the production environment
     use_test_dc: bool,
     /// The path to the directory for the persistent database; if empty, the current working directory will be used
@@ -26,14 +25,14 @@ pub struct TdlibParameters {
     /// If set to true, support for secret chats will be enabled
     use_secret_chats: bool,
     /// Application identifier for Telegram API access, which can be obtained at https://my.telegram.org
-    api_id: i64,
+    api_id: i32,
     /// Application identifier hash for Telegram API access, which can be obtained at https://my.telegram.org
     api_hash: String,
     /// IETF language tag of the user's operating system language; must be non-empty
     system_language_code: String,
     /// Model of the device the application is being run on; must be non-empty
     device_model: String,
-    /// Version of the operating system the application is being run on; must be non-empty
+    /// Version of the operating system the application is being run on. If empty, the version is automatically detected by TDLib
     system_version: String,
     /// Application version; must be non-empty
     application_version: String,
@@ -45,15 +44,12 @@ pub struct TdlibParameters {
 
 impl RObject for TdlibParameters {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "tdlibParameters"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -63,8 +59,8 @@ impl TdlibParameters {
     }
     pub fn builder() -> RTDTdlibParametersBuilder {
         let mut inner = TdlibParameters::default();
-        inner.td_name = "tdlibParameters".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDTdlibParametersBuilder { inner }
     }
 
@@ -96,7 +92,7 @@ impl TdlibParameters {
         self.use_secret_chats
     }
 
-    pub fn api_id(&self) -> i64 {
+    pub fn api_id(&self) -> i32 {
         self.api_id
     }
 
@@ -174,7 +170,7 @@ impl RTDTdlibParametersBuilder {
         self
     }
 
-    pub fn api_id(&mut self, api_id: i64) -> &mut Self {
+    pub fn api_id(&mut self, api_id: i32) -> &mut Self {
         self.inner.api_id = api_id;
         self
     }

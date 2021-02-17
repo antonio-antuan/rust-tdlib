@@ -2,65 +2,40 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Represents the type of a user. The following types are possible: regular users, deleted users and bots
+/// Represents the type of a user. The following types are possible: regular users, deleted users and bots
 pub trait TDUserType: Debug + RObject {}
 
 /// Represents the type of a user. The following types are possible: regular users, deleted users and bots
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum UserType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A bot (see https://core.telegram.org/bots)
+    #[serde(rename(deserialize = "userTypeBot"))]
     Bot(UserTypeBot),
     /// A deleted user or deleted bot. No information on the user besides the user identifier is available. It is not possible to perform any active actions on this type of user
+    #[serde(rename(deserialize = "userTypeDeleted"))]
     Deleted(UserTypeDeleted),
     /// A regular user
+    #[serde(rename(deserialize = "userTypeRegular"))]
     Regular(UserTypeRegular),
     /// No information on the user besides the user identifier is available, yet this user has not been deleted. This object is extremely rare and must be handled like a deleted user. It is not possible to perform any actions on users of this type
+    #[serde(rename(deserialize = "userTypeUnknown"))]
     Unknown(UserTypeUnknown),
 }
 
 impl Default for UserType {
     fn default() -> Self {
-        UserType::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for UserType {
-    fn deserialize<D>(deserializer: D) -> Result<UserType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          UserType,
-          (userTypeBot, Bot);
-          (userTypeDeleted, Deleted);
-          (userTypeRegular, Regular);
-          (userTypeUnknown, Unknown);
-
-        )(deserializer)
+        UserType::_Default
     }
 }
 
 impl RObject for UserType {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            UserType::Bot(t) => t.td_name(),
-            UserType::Deleted(t) => t.td_name(),
-            UserType::Regular(t) => t.td_name(),
-            UserType::Unknown(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             UserType::Bot(t) => t.extra(),
             UserType::Deleted(t) => t.extra(),
@@ -70,8 +45,16 @@ impl RObject for UserType {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            UserType::Bot(t) => t.client_id(),
+            UserType::Deleted(t) => t.client_id(),
+            UserType::Regular(t) => t.client_id(),
+            UserType::Unknown(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -81,7 +64,7 @@ impl UserType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, UserType::_Default(_))
+        matches!(self, UserType::_Default)
     }
 }
 
@@ -95,18 +78,17 @@ impl AsRef<UserType> for UserType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserTypeBot {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the bot can be invited to basic group and supergroup chats
     can_join_groups: bool,
     /// True, if the bot can read all messages in basic group or supergroup chats and not just those addressed to the bot. In private and channel chats a bot can always read all messages
     can_read_all_group_messages: bool,
     /// True, if the bot supports inline queries
     is_inline: bool,
-    /// Placeholder for inline queries (displayed on the client input field)
+    /// Placeholder for inline queries (displayed on the application input field)
     inline_query_placeholder: String,
     /// True, if the location of the user should be sent with every inline query to this bot
     need_location: bool,
@@ -114,15 +96,12 @@ pub struct UserTypeBot {
 
 impl RObject for UserTypeBot {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userTypeBot"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -134,8 +113,8 @@ impl UserTypeBot {
     }
     pub fn builder() -> RTDUserTypeBotBuilder {
         let mut inner = UserTypeBot::default();
-        inner.td_name = "userTypeBot".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserTypeBotBuilder { inner }
     }
 
@@ -215,24 +194,20 @@ impl AsRef<UserTypeBot> for RTDUserTypeBotBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserTypeDeleted {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserTypeDeleted {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userTypeDeleted"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -244,8 +219,8 @@ impl UserTypeDeleted {
     }
     pub fn builder() -> RTDUserTypeDeletedBuilder {
         let mut inner = UserTypeDeleted::default();
-        inner.td_name = "userTypeDeleted".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserTypeDeletedBuilder { inner }
     }
 }
@@ -277,24 +252,20 @@ impl AsRef<UserTypeDeleted> for RTDUserTypeDeletedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserTypeRegular {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserTypeRegular {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userTypeRegular"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -306,8 +277,8 @@ impl UserTypeRegular {
     }
     pub fn builder() -> RTDUserTypeRegularBuilder {
         let mut inner = UserTypeRegular::default();
-        inner.td_name = "userTypeRegular".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserTypeRegularBuilder { inner }
     }
 }
@@ -339,24 +310,20 @@ impl AsRef<UserTypeRegular> for RTDUserTypeRegularBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserTypeUnknown {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserTypeUnknown {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userTypeUnknown"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -368,8 +335,8 @@ impl UserTypeUnknown {
     }
     pub fn builder() -> RTDUserTypeUnknownBuilder {
         let mut inner = UserTypeUnknown::default();
-        inner.td_name = "userTypeUnknown".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserTypeUnknownBuilder { inner }
     }
 }

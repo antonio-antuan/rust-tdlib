@@ -6,40 +6,38 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Animation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Duration of the animation, in seconds; as defined by the sender
-    duration: i64,
+    duration: i32,
     /// Width of the animation
-    width: i64,
+    width: i32,
     /// Height of the animation
-    height: i64,
+    height: i32,
     /// Original name of the file; as defined by the sender
     file_name: String,
     /// MIME type of the file, usually "image/gif" or "video/mp4"
     mime_type: String,
+    /// True, if stickers were added to the animation. The list of corresponding sticker set can be received using getAttachedStickerSets
+    has_stickers: bool,
     /// Animation minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
-    /// Animation thumbnail; may be null
-    thumbnail: Option<PhotoSize>,
+    /// Animation thumbnail in JPEG or MPEG4 format; may be null
+    thumbnail: Option<Thumbnail>,
     /// File containing the animation
     animation: File,
 }
 
 impl RObject for Animation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "animation"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -49,20 +47,20 @@ impl Animation {
     }
     pub fn builder() -> RTDAnimationBuilder {
         let mut inner = Animation::default();
-        inner.td_name = "animation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDAnimationBuilder { inner }
     }
 
-    pub fn duration(&self) -> i64 {
+    pub fn duration(&self) -> i32 {
         self.duration
     }
 
-    pub fn width(&self) -> i64 {
+    pub fn width(&self) -> i32 {
         self.width
     }
 
-    pub fn height(&self) -> i64 {
+    pub fn height(&self) -> i32 {
         self.height
     }
 
@@ -74,11 +72,15 @@ impl Animation {
         &self.mime_type
     }
 
+    pub fn has_stickers(&self) -> bool {
+        self.has_stickers
+    }
+
     pub fn minithumbnail(&self) -> &Option<Minithumbnail> {
         &self.minithumbnail
     }
 
-    pub fn thumbnail(&self) -> &Option<PhotoSize> {
+    pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
     }
 
@@ -97,17 +99,17 @@ impl RTDAnimationBuilder {
         self.inner.clone()
     }
 
-    pub fn duration(&mut self, duration: i64) -> &mut Self {
+    pub fn duration(&mut self, duration: i32) -> &mut Self {
         self.inner.duration = duration;
         self
     }
 
-    pub fn width(&mut self, width: i64) -> &mut Self {
+    pub fn width(&mut self, width: i32) -> &mut Self {
         self.inner.width = width;
         self
     }
 
-    pub fn height(&mut self, height: i64) -> &mut Self {
+    pub fn height(&mut self, height: i32) -> &mut Self {
         self.inner.height = height;
         self
     }
@@ -122,12 +124,17 @@ impl RTDAnimationBuilder {
         self
     }
 
+    pub fn has_stickers(&mut self, has_stickers: bool) -> &mut Self {
+        self.inner.has_stickers = has_stickers;
+        self
+    }
+
     pub fn minithumbnail<T: AsRef<Minithumbnail>>(&mut self, minithumbnail: T) -> &mut Self {
         self.inner.minithumbnail = Some(minithumbnail.as_ref().clone());
         self
     }
 
-    pub fn thumbnail<T: AsRef<PhotoSize>>(&mut self, thumbnail: T) -> &mut Self {
+    pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
         self
     }

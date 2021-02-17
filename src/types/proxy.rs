@@ -6,37 +6,35 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Proxy {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the proxy
-    id: i64,
+    id: i32,
     /// Proxy server IP address
     server: String,
     /// Proxy server port
-    port: i64,
+    port: i32,
     /// Point in time (Unix timestamp) when the proxy was last used; 0 if never
-    last_used_date: i64,
+    last_used_date: i32,
     /// True, if the proxy is enabled now
     is_enabled: bool,
     /// Type of the proxy
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "ProxyType::_is_default")]
     type_: ProxyType,
 }
 
 impl RObject for Proxy {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "proxy"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -46,12 +44,12 @@ impl Proxy {
     }
     pub fn builder() -> RTDProxyBuilder {
         let mut inner = Proxy::default();
-        inner.td_name = "proxy".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDProxyBuilder { inner }
     }
 
-    pub fn id(&self) -> i64 {
+    pub fn id(&self) -> i32 {
         self.id
     }
 
@@ -59,11 +57,11 @@ impl Proxy {
         &self.server
     }
 
-    pub fn port(&self) -> i64 {
+    pub fn port(&self) -> i32 {
         self.port
     }
 
-    pub fn last_used_date(&self) -> i64 {
+    pub fn last_used_date(&self) -> i32 {
         self.last_used_date
     }
 
@@ -86,7 +84,7 @@ impl RTDProxyBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i64) -> &mut Self {
+    pub fn id(&mut self, id: i32) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -96,12 +94,12 @@ impl RTDProxyBuilder {
         self
     }
 
-    pub fn port(&mut self, port: i64) -> &mut Self {
+    pub fn port(&mut self, port: i32) -> &mut Self {
         self.inner.port = port;
         self
     }
 
-    pub fn last_used_date(&mut self, last_used_date: i64) -> &mut Self {
+    pub fn last_used_date(&mut self, last_used_date: i32) -> &mut Self {
         self.inner.last_used_date = last_used_date;
         self
     }

@@ -6,32 +6,32 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatEvent {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Chat event identifier
-    id: isize,
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    id: i64,
     /// Point in time (Unix timestamp) when the event happened
-    date: i64,
+    date: i32,
     /// Identifier of the user who performed the action that triggered the event
-    user_id: i64,
+    user_id: i32,
     /// Action performed by the user
+
+    #[serde(skip_serializing_if = "ChatEventAction::_is_default")]
     action: ChatEventAction,
 }
 
 impl RObject for ChatEvent {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatEvent"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -41,20 +41,20 @@ impl ChatEvent {
     }
     pub fn builder() -> RTDChatEventBuilder {
         let mut inner = ChatEvent::default();
-        inner.td_name = "chatEvent".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatEventBuilder { inner }
     }
 
-    pub fn id(&self) -> isize {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
-    pub fn date(&self) -> i64 {
+    pub fn date(&self) -> i32 {
         self.date
     }
 
-    pub fn user_id(&self) -> i64 {
+    pub fn user_id(&self) -> i32 {
         self.user_id
     }
 
@@ -73,17 +73,17 @@ impl RTDChatEventBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: isize) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
 
-    pub fn date(&mut self, date: i64) -> &mut Self {
+    pub fn date(&mut self, date: i32) -> &mut Self {
         self.inner.date = date;
         self
     }
 
-    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

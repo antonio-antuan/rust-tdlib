@@ -2,65 +2,40 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of a chat
+/// Describes the type of a chat
 pub trait TDChatType: Debug + RObject {}
 
 /// Describes the type of a chat
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A basic group (i.e., a chat with 0-200 other users)
+    #[serde(rename(deserialize = "chatTypeBasicGroup"))]
     BasicGroup(ChatTypeBasicGroup),
     /// An ordinary chat with a user
+    #[serde(rename(deserialize = "chatTypePrivate"))]
     Private(ChatTypePrivate),
     /// A secret chat with a user
+    #[serde(rename(deserialize = "chatTypeSecret"))]
     Secret(ChatTypeSecret),
     /// A supergroup (i.e. a chat with up to GetOption("supergroup_max_size") other users), or channel (with unlimited members)
+    #[serde(rename(deserialize = "chatTypeSupergroup"))]
     Supergroup(ChatTypeSupergroup),
 }
 
 impl Default for ChatType {
     fn default() -> Self {
-        ChatType::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for ChatType {
-    fn deserialize<D>(deserializer: D) -> Result<ChatType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatType,
-          (chatTypeBasicGroup, BasicGroup);
-          (chatTypePrivate, Private);
-          (chatTypeSecret, Secret);
-          (chatTypeSupergroup, Supergroup);
-
-        )(deserializer)
+        ChatType::_Default
     }
 }
 
 impl RObject for ChatType {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatType::BasicGroup(t) => t.td_name(),
-            ChatType::Private(t) => t.td_name(),
-            ChatType::Secret(t) => t.td_name(),
-            ChatType::Supergroup(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatType::BasicGroup(t) => t.extra(),
             ChatType::Private(t) => t.extra(),
@@ -70,8 +45,16 @@ impl RObject for ChatType {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatType::BasicGroup(t) => t.client_id(),
+            ChatType::Private(t) => t.client_id(),
+            ChatType::Secret(t) => t.client_id(),
+            ChatType::Supergroup(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -81,7 +64,7 @@ impl ChatType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatType::_Default(_))
+        matches!(self, ChatType::_Default)
     }
 }
 
@@ -95,26 +78,22 @@ impl AsRef<ChatType> for ChatType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatTypeBasicGroup {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Basic group identifier
-    basic_group_id: i64,
+    basic_group_id: i32,
 }
 
 impl RObject for ChatTypeBasicGroup {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatTypeBasicGroup"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -126,12 +105,12 @@ impl ChatTypeBasicGroup {
     }
     pub fn builder() -> RTDChatTypeBasicGroupBuilder {
         let mut inner = ChatTypeBasicGroup::default();
-        inner.td_name = "chatTypeBasicGroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatTypeBasicGroupBuilder { inner }
     }
 
-    pub fn basic_group_id(&self) -> i64 {
+    pub fn basic_group_id(&self) -> i32 {
         self.basic_group_id
     }
 }
@@ -146,7 +125,7 @@ impl RTDChatTypeBasicGroupBuilder {
         self.inner.clone()
     }
 
-    pub fn basic_group_id(&mut self, basic_group_id: i64) -> &mut Self {
+    pub fn basic_group_id(&mut self, basic_group_id: i32) -> &mut Self {
         self.inner.basic_group_id = basic_group_id;
         self
     }
@@ -168,26 +147,22 @@ impl AsRef<ChatTypeBasicGroup> for RTDChatTypeBasicGroupBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatTypePrivate {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// User identifier
-    user_id: i64,
+    user_id: i32,
 }
 
 impl RObject for ChatTypePrivate {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatTypePrivate"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -199,12 +174,12 @@ impl ChatTypePrivate {
     }
     pub fn builder() -> RTDChatTypePrivateBuilder {
         let mut inner = ChatTypePrivate::default();
-        inner.td_name = "chatTypePrivate".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatTypePrivateBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i64 {
+    pub fn user_id(&self) -> i32 {
         self.user_id
     }
 }
@@ -219,7 +194,7 @@ impl RTDChatTypePrivateBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -241,28 +216,24 @@ impl AsRef<ChatTypePrivate> for RTDChatTypePrivateBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatTypeSecret {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Secret chat identifier
-    secret_chat_id: i64,
+    secret_chat_id: i32,
     /// User identifier of the secret chat peer
-    user_id: i64,
+    user_id: i32,
 }
 
 impl RObject for ChatTypeSecret {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatTypeSecret"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -274,16 +245,16 @@ impl ChatTypeSecret {
     }
     pub fn builder() -> RTDChatTypeSecretBuilder {
         let mut inner = ChatTypeSecret::default();
-        inner.td_name = "chatTypeSecret".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatTypeSecretBuilder { inner }
     }
 
-    pub fn secret_chat_id(&self) -> i64 {
+    pub fn secret_chat_id(&self) -> i32 {
         self.secret_chat_id
     }
 
-    pub fn user_id(&self) -> i64 {
+    pub fn user_id(&self) -> i32 {
         self.user_id
     }
 }
@@ -298,12 +269,12 @@ impl RTDChatTypeSecretBuilder {
         self.inner.clone()
     }
 
-    pub fn secret_chat_id(&mut self, secret_chat_id: i64) -> &mut Self {
+    pub fn secret_chat_id(&mut self, secret_chat_id: i32) -> &mut Self {
         self.inner.secret_chat_id = secret_chat_id;
         self
     }
 
-    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -325,28 +296,24 @@ impl AsRef<ChatTypeSecret> for RTDChatTypeSecretBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatTypeSupergroup {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Supergroup or channel identifier
-    supergroup_id: i64,
+    supergroup_id: i32,
     /// True, if the supergroup is a channel
     is_channel: bool,
 }
 
 impl RObject for ChatTypeSupergroup {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatTypeSupergroup"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -358,12 +325,12 @@ impl ChatTypeSupergroup {
     }
     pub fn builder() -> RTDChatTypeSupergroupBuilder {
         let mut inner = ChatTypeSupergroup::default();
-        inner.td_name = "chatTypeSupergroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatTypeSupergroupBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i64 {
+    pub fn supergroup_id(&self) -> i32 {
         self.supergroup_id
     }
 
@@ -382,7 +349,7 @@ impl RTDChatTypeSupergroupBuilder {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }

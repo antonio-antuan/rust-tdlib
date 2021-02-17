@@ -6,44 +6,40 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Video {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Duration of the video, in seconds; as defined by the sender
-    duration: i64,
+    duration: i32,
     /// Video width; as defined by the sender
-    width: i64,
+    width: i32,
     /// Video height; as defined by the sender
-    height: i64,
+    height: i32,
     /// Original name of the file; as defined by the sender
     file_name: String,
     /// MIME type of the file; as defined by the sender
     mime_type: String,
-    /// True, if stickers were added to the video
+    /// True, if stickers were added to the video. The list of corresponding sticker sets can be received using getAttachedStickerSets
     has_stickers: bool,
     /// True, if the video should be tried to be streamed
     supports_streaming: bool,
     /// Video minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
-    /// Video thumbnail; as defined by the sender; may be null
-    thumbnail: Option<PhotoSize>,
+    /// Video thumbnail in JPEG or MPEG4 format; as defined by the sender; may be null
+    thumbnail: Option<Thumbnail>,
     /// File containing the video
     video: File,
 }
 
 impl RObject for Video {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "video"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -53,20 +49,20 @@ impl Video {
     }
     pub fn builder() -> RTDVideoBuilder {
         let mut inner = Video::default();
-        inner.td_name = "video".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDVideoBuilder { inner }
     }
 
-    pub fn duration(&self) -> i64 {
+    pub fn duration(&self) -> i32 {
         self.duration
     }
 
-    pub fn width(&self) -> i64 {
+    pub fn width(&self) -> i32 {
         self.width
     }
 
-    pub fn height(&self) -> i64 {
+    pub fn height(&self) -> i32 {
         self.height
     }
 
@@ -90,7 +86,7 @@ impl Video {
         &self.minithumbnail
     }
 
-    pub fn thumbnail(&self) -> &Option<PhotoSize> {
+    pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
     }
 
@@ -109,17 +105,17 @@ impl RTDVideoBuilder {
         self.inner.clone()
     }
 
-    pub fn duration(&mut self, duration: i64) -> &mut Self {
+    pub fn duration(&mut self, duration: i32) -> &mut Self {
         self.inner.duration = duration;
         self
     }
 
-    pub fn width(&mut self, width: i64) -> &mut Self {
+    pub fn width(&mut self, width: i32) -> &mut Self {
         self.inner.width = width;
         self
     }
 
-    pub fn height(&mut self, height: i64) -> &mut Self {
+    pub fn height(&mut self, height: i32) -> &mut Self {
         self.inner.height = height;
         self
     }
@@ -149,7 +145,7 @@ impl RTDVideoBuilder {
         self
     }
 
-    pub fn thumbnail<T: AsRef<PhotoSize>>(&mut self, thumbnail: T) -> &mut Self {
+    pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
         self
     }

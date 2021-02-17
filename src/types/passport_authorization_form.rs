@@ -6,14 +6,13 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PassportAuthorizationForm {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the authorization form
-    id: i64,
-    /// Information about the Telegram Passport elements that need to be provided to complete the form
+    id: i32,
+    /// Information about the Telegram Passport elements that must be provided to complete the form
     required_elements: Vec<PassportRequiredElement>,
     /// URL for the privacy policy of the service; may be empty
     privacy_policy_url: String,
@@ -21,15 +20,12 @@ pub struct PassportAuthorizationForm {
 
 impl RObject for PassportAuthorizationForm {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "passportAuthorizationForm"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -39,12 +35,12 @@ impl PassportAuthorizationForm {
     }
     pub fn builder() -> RTDPassportAuthorizationFormBuilder {
         let mut inner = PassportAuthorizationForm::default();
-        inner.td_name = "passportAuthorizationForm".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPassportAuthorizationFormBuilder { inner }
     }
 
-    pub fn id(&self) -> i64 {
+    pub fn id(&self) -> i32 {
         self.id
     }
 
@@ -67,7 +63,7 @@ impl RTDPassportAuthorizationFormBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i64) -> &mut Self {
+    pub fn id(&mut self, id: i32) -> &mut Self {
         self.inner.id = id;
         self
     }

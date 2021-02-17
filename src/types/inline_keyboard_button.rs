@@ -6,29 +6,27 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InlineKeyboardButton {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Text of the button
     text: String,
     /// Type of the button
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "InlineKeyboardButtonType::_is_default")]
     type_: InlineKeyboardButtonType,
 }
 
 impl RObject for InlineKeyboardButton {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inlineKeyboardButton"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -38,8 +36,8 @@ impl InlineKeyboardButton {
     }
     pub fn builder() -> RTDInlineKeyboardButtonBuilder {
         let mut inner = InlineKeyboardButton::default();
-        inner.td_name = "inlineKeyboardButton".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInlineKeyboardButtonBuilder { inner }
     }
 

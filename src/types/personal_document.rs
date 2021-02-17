@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PersonalDocument {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// List of files containing the pages of the document
     files: Vec<DatedFile>,
     /// List of files containing a certified English translation of the document
@@ -19,15 +18,12 @@ pub struct PersonalDocument {
 
 impl RObject for PersonalDocument {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "personalDocument"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -37,8 +33,8 @@ impl PersonalDocument {
     }
     pub fn builder() -> RTDPersonalDocumentBuilder {
         let mut inner = PersonalDocument::default();
-        inner.td_name = "personalDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPersonalDocumentBuilder { inner }
     }
 

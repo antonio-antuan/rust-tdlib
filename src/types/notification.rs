@@ -6,33 +6,31 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Notification {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique persistent identifier of this notification
-    id: i64,
+    id: i32,
     /// Notification date
-    date: i64,
+    date: i32,
     /// True, if the notification was initially silent
     is_silent: bool,
     /// Notification type
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "NotificationType::_is_default")]
     type_: NotificationType,
 }
 
 impl RObject for Notification {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notification"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -42,16 +40,16 @@ impl Notification {
     }
     pub fn builder() -> RTDNotificationBuilder {
         let mut inner = Notification::default();
-        inner.td_name = "notification".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNotificationBuilder { inner }
     }
 
-    pub fn id(&self) -> i64 {
+    pub fn id(&self) -> i32 {
         self.id
     }
 
-    pub fn date(&self) -> i64 {
+    pub fn date(&self) -> i32 {
         self.date
     }
 
@@ -74,12 +72,12 @@ impl RTDNotificationBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i64) -> &mut Self {
+    pub fn id(&mut self, id: i32) -> &mut Self {
         self.inner.id = id;
         self
     }
 
-    pub fn date(&mut self, date: i64) -> &mut Self {
+    pub fn date(&mut self, date: i32) -> &mut Self {
         self.inner.date = date;
         self
     }

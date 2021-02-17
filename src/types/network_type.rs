@@ -2,69 +2,43 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Represents the type of a network
+/// Represents the type of a network
 pub trait TDNetworkType: Debug + RObject {}
 
 /// Represents the type of a network
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum NetworkType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A mobile network
+    #[serde(rename(deserialize = "networkTypeMobile"))]
     Mobile(NetworkTypeMobile),
     /// A mobile roaming network
+    #[serde(rename(deserialize = "networkTypeMobileRoaming"))]
     MobileRoaming(NetworkTypeMobileRoaming),
     /// The network is not available
+    #[serde(rename(deserialize = "networkTypeNone"))]
     None(NetworkTypeNone),
     /// A different network type (e.g., Ethernet network)
+    #[serde(rename(deserialize = "networkTypeOther"))]
     Other(NetworkTypeOther),
     /// A Wi-Fi network
+    #[serde(rename(deserialize = "networkTypeWiFi"))]
     WiFi(NetworkTypeWiFi),
 }
 
 impl Default for NetworkType {
     fn default() -> Self {
-        NetworkType::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for NetworkType {
-    fn deserialize<D>(deserializer: D) -> Result<NetworkType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          NetworkType,
-          (networkTypeMobile, Mobile);
-          (networkTypeMobileRoaming, MobileRoaming);
-          (networkTypeNone, None);
-          (networkTypeOther, Other);
-          (networkTypeWiFi, WiFi);
-
-        )(deserializer)
+        NetworkType::_Default
     }
 }
 
 impl RObject for NetworkType {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            NetworkType::Mobile(t) => t.td_name(),
-            NetworkType::MobileRoaming(t) => t.td_name(),
-            NetworkType::None(t) => t.td_name(),
-            NetworkType::Other(t) => t.td_name(),
-            NetworkType::WiFi(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             NetworkType::Mobile(t) => t.extra(),
             NetworkType::MobileRoaming(t) => t.extra(),
@@ -75,8 +49,17 @@ impl RObject for NetworkType {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            NetworkType::Mobile(t) => t.client_id(),
+            NetworkType::MobileRoaming(t) => t.client_id(),
+            NetworkType::None(t) => t.client_id(),
+            NetworkType::Other(t) => t.client_id(),
+            NetworkType::WiFi(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -86,7 +69,7 @@ impl NetworkType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, NetworkType::_Default(_))
+        matches!(self, NetworkType::_Default)
     }
 }
 
@@ -100,24 +83,20 @@ impl AsRef<NetworkType> for NetworkType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NetworkTypeMobile {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for NetworkTypeMobile {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "networkTypeMobile"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -129,8 +108,8 @@ impl NetworkTypeMobile {
     }
     pub fn builder() -> RTDNetworkTypeMobileBuilder {
         let mut inner = NetworkTypeMobile::default();
-        inner.td_name = "networkTypeMobile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNetworkTypeMobileBuilder { inner }
     }
 }
@@ -162,24 +141,20 @@ impl AsRef<NetworkTypeMobile> for RTDNetworkTypeMobileBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NetworkTypeMobileRoaming {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for NetworkTypeMobileRoaming {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "networkTypeMobileRoaming"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -191,8 +166,8 @@ impl NetworkTypeMobileRoaming {
     }
     pub fn builder() -> RTDNetworkTypeMobileRoamingBuilder {
         let mut inner = NetworkTypeMobileRoaming::default();
-        inner.td_name = "networkTypeMobileRoaming".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNetworkTypeMobileRoamingBuilder { inner }
     }
 }
@@ -224,24 +199,20 @@ impl AsRef<NetworkTypeMobileRoaming> for RTDNetworkTypeMobileRoamingBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NetworkTypeNone {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for NetworkTypeNone {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "networkTypeNone"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -253,8 +224,8 @@ impl NetworkTypeNone {
     }
     pub fn builder() -> RTDNetworkTypeNoneBuilder {
         let mut inner = NetworkTypeNone::default();
-        inner.td_name = "networkTypeNone".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNetworkTypeNoneBuilder { inner }
     }
 }
@@ -286,24 +257,20 @@ impl AsRef<NetworkTypeNone> for RTDNetworkTypeNoneBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NetworkTypeOther {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for NetworkTypeOther {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "networkTypeOther"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -315,8 +282,8 @@ impl NetworkTypeOther {
     }
     pub fn builder() -> RTDNetworkTypeOtherBuilder {
         let mut inner = NetworkTypeOther::default();
-        inner.td_name = "networkTypeOther".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNetworkTypeOtherBuilder { inner }
     }
 }
@@ -348,24 +315,20 @@ impl AsRef<NetworkTypeOther> for RTDNetworkTypeOtherBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NetworkTypeWiFi {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for NetworkTypeWiFi {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "networkTypeWiFi"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -377,8 +340,8 @@ impl NetworkTypeWiFi {
     }
     pub fn builder() -> RTDNetworkTypeWiFiBuilder {
         let mut inner = NetworkTypeWiFi::default();
-        inner.td_name = "networkTypeWiFi".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNetworkTypeWiFiBuilder { inner }
     }
 }

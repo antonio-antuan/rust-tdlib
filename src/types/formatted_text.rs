@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct FormattedText {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The text
     text: String,
     /// Entities contained in the text. Entities can be nested, but must not mutually intersect with each other. Pre, Code and PreCode entities can't contain other entities. Bold, Italic, Underline and Strikethrough entities can contain and to be contained in all other entities. All other entities can't contain each other
@@ -19,15 +18,12 @@ pub struct FormattedText {
 
 impl RObject for FormattedText {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "formattedText"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -37,8 +33,8 @@ impl FormattedText {
     }
     pub fn builder() -> RTDFormattedTextBuilder {
         let mut inner = FormattedText::default();
-        inner.td_name = "formattedText".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDFormattedTextBuilder { inner }
     }
 

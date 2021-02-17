@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Contact {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Phone number of the user
     phone_number: String,
     /// First name of the user; 1-255 characters in length
@@ -20,20 +19,17 @@ pub struct Contact {
     /// Additional data about the user in a form of vCard; 0-2048 bytes in length
     vcard: String,
     /// Identifier of the user, if known; otherwise 0
-    user_id: i64,
+    user_id: i32,
 }
 
 impl RObject for Contact {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "contact"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,8 +39,8 @@ impl Contact {
     }
     pub fn builder() -> RTDContactBuilder {
         let mut inner = Contact::default();
-        inner.td_name = "contact".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDContactBuilder { inner }
     }
 
@@ -64,7 +60,7 @@ impl Contact {
         &self.vcard
     }
 
-    pub fn user_id(&self) -> i64 {
+    pub fn user_id(&self) -> i32 {
         self.user_id
     }
 }
@@ -99,7 +95,7 @@ impl RTDContactBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

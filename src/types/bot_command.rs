@@ -2,32 +2,28 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Represents commands supported by a bot
+/// Represents a command supported by a bot
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct BotCommand {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Text of the bot command
     command: String,
-    /// Represents commands supported by a bot
+    /// Represents a command supported by a bot
     description: String,
 }
 
 impl RObject for BotCommand {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "botCommand"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -37,8 +33,8 @@ impl BotCommand {
     }
     pub fn builder() -> RTDBotCommandBuilder {
         let mut inner = BotCommand::default();
-        inner.td_name = "botCommand".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDBotCommandBuilder { inner }
     }
 

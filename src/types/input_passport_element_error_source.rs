@@ -2,85 +2,55 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Contains the description of an error in a Telegram Passport element; for bots only
+/// Contains the description of an error in a Telegram Passport element; for bots only
 pub trait TDInputPassportElementErrorSource: Debug + RObject {}
 
 /// Contains the description of an error in a Telegram Passport element; for bots only
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum InputPassportElementErrorSource {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A data field contains an error. The error is considered resolved when the field's value changes
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceDataField"))]
     DataField(InputPassportElementErrorSourceDataField),
     /// The file contains an error. The error is considered resolved when the file changes
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceFile"))]
     File(InputPassportElementErrorSourceFile),
     /// The list of attached files contains an error. The error is considered resolved when the file list changes
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceFiles"))]
     Files(InputPassportElementErrorSourceFiles),
     /// The front side of the document contains an error. The error is considered resolved when the file with the front side of the document changes
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceFrontSide"))]
     FrontSide(InputPassportElementErrorSourceFrontSide),
     /// The reverse side of the document contains an error. The error is considered resolved when the file with the reverse side of the document changes
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceReverseSide"))]
     ReverseSide(InputPassportElementErrorSourceReverseSide),
     /// The selfie contains an error. The error is considered resolved when the file with the selfie changes
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceSelfie"))]
     Selfie(InputPassportElementErrorSourceSelfie),
     /// One of the files containing the translation of the document contains an error. The error is considered resolved when the file with the translation changes
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceTranslationFile"))]
     TranslationFile(InputPassportElementErrorSourceTranslationFile),
     /// The translation of the document contains an error. The error is considered resolved when the list of files changes
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceTranslationFiles"))]
     TranslationFiles(InputPassportElementErrorSourceTranslationFiles),
     /// The element contains an error in an unspecified place. The error will be considered resolved when new data is added
+    #[serde(rename(deserialize = "inputPassportElementErrorSourceUnspecified"))]
     Unspecified(InputPassportElementErrorSourceUnspecified),
 }
 
 impl Default for InputPassportElementErrorSource {
     fn default() -> Self {
-        InputPassportElementErrorSource::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for InputPassportElementErrorSource {
-    fn deserialize<D>(deserializer: D) -> Result<InputPassportElementErrorSource, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          InputPassportElementErrorSource,
-          (inputPassportElementErrorSourceDataField, DataField);
-          (inputPassportElementErrorSourceFile, File);
-          (inputPassportElementErrorSourceFiles, Files);
-          (inputPassportElementErrorSourceFrontSide, FrontSide);
-          (inputPassportElementErrorSourceReverseSide, ReverseSide);
-          (inputPassportElementErrorSourceSelfie, Selfie);
-          (inputPassportElementErrorSourceTranslationFile, TranslationFile);
-          (inputPassportElementErrorSourceTranslationFiles, TranslationFiles);
-          (inputPassportElementErrorSourceUnspecified, Unspecified);
-
-        )(deserializer)
+        InputPassportElementErrorSource::_Default
     }
 }
 
 impl RObject for InputPassportElementErrorSource {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            InputPassportElementErrorSource::DataField(t) => t.td_name(),
-            InputPassportElementErrorSource::File(t) => t.td_name(),
-            InputPassportElementErrorSource::Files(t) => t.td_name(),
-            InputPassportElementErrorSource::FrontSide(t) => t.td_name(),
-            InputPassportElementErrorSource::ReverseSide(t) => t.td_name(),
-            InputPassportElementErrorSource::Selfie(t) => t.td_name(),
-            InputPassportElementErrorSource::TranslationFile(t) => t.td_name(),
-            InputPassportElementErrorSource::TranslationFiles(t) => t.td_name(),
-            InputPassportElementErrorSource::Unspecified(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             InputPassportElementErrorSource::DataField(t) => t.extra(),
             InputPassportElementErrorSource::File(t) => t.extra(),
@@ -95,8 +65,21 @@ impl RObject for InputPassportElementErrorSource {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            InputPassportElementErrorSource::DataField(t) => t.client_id(),
+            InputPassportElementErrorSource::File(t) => t.client_id(),
+            InputPassportElementErrorSource::Files(t) => t.client_id(),
+            InputPassportElementErrorSource::FrontSide(t) => t.client_id(),
+            InputPassportElementErrorSource::ReverseSide(t) => t.client_id(),
+            InputPassportElementErrorSource::Selfie(t) => t.client_id(),
+            InputPassportElementErrorSource::TranslationFile(t) => t.client_id(),
+            InputPassportElementErrorSource::TranslationFiles(t) => t.client_id(),
+            InputPassportElementErrorSource::Unspecified(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -106,7 +89,7 @@ impl InputPassportElementErrorSource {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputPassportElementErrorSource::_Default(_))
+        matches!(self, InputPassportElementErrorSource::_Default)
     }
 }
 
@@ -120,11 +103,10 @@ impl AsRef<InputPassportElementErrorSource> for InputPassportElementErrorSource 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceDataField {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Field name
     field_name: String,
     /// Current data hash
@@ -133,15 +115,12 @@ pub struct InputPassportElementErrorSourceDataField {
 
 impl RObject for InputPassportElementErrorSourceDataField {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceDataField"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -153,8 +132,8 @@ impl InputPassportElementErrorSourceDataField {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceDataFieldBuilder {
         let mut inner = InputPassportElementErrorSourceDataField::default();
-        inner.td_name = "inputPassportElementErrorSourceDataField".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceDataFieldBuilder { inner }
     }
 
@@ -206,26 +185,22 @@ impl AsRef<InputPassportElementErrorSourceDataField>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceFile {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Current hash of the file which has the error
     file_hash: String,
 }
 
 impl RObject for InputPassportElementErrorSourceFile {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceFile"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -237,8 +212,8 @@ impl InputPassportElementErrorSourceFile {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceFileBuilder {
         let mut inner = InputPassportElementErrorSourceFile::default();
-        inner.td_name = "inputPassportElementErrorSourceFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceFileBuilder { inner }
     }
 
@@ -279,26 +254,22 @@ impl AsRef<InputPassportElementErrorSourceFile> for RTDInputPassportElementError
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceFiles {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Current hashes of all attached files
     file_hashes: Vec<String>,
 }
 
 impl RObject for InputPassportElementErrorSourceFiles {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceFiles"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -310,8 +281,8 @@ impl InputPassportElementErrorSourceFiles {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceFilesBuilder {
         let mut inner = InputPassportElementErrorSourceFiles::default();
-        inner.td_name = "inputPassportElementErrorSourceFiles".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceFilesBuilder { inner }
     }
 
@@ -354,26 +325,22 @@ impl AsRef<InputPassportElementErrorSourceFiles>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceFrontSide {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Current hash of the file containing the front side
     file_hash: String,
 }
 
 impl RObject for InputPassportElementErrorSourceFrontSide {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceFrontSide"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -385,8 +352,8 @@ impl InputPassportElementErrorSourceFrontSide {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceFrontSideBuilder {
         let mut inner = InputPassportElementErrorSourceFrontSide::default();
-        inner.td_name = "inputPassportElementErrorSourceFrontSide".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceFrontSideBuilder { inner }
     }
 
@@ -429,26 +396,22 @@ impl AsRef<InputPassportElementErrorSourceFrontSide>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceReverseSide {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Current hash of the file containing the reverse side
     file_hash: String,
 }
 
 impl RObject for InputPassportElementErrorSourceReverseSide {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceReverseSide"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -460,8 +423,8 @@ impl InputPassportElementErrorSourceReverseSide {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceReverseSideBuilder {
         let mut inner = InputPassportElementErrorSourceReverseSide::default();
-        inner.td_name = "inputPassportElementErrorSourceReverseSide".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceReverseSideBuilder { inner }
     }
 
@@ -506,26 +469,22 @@ impl AsRef<InputPassportElementErrorSourceReverseSide>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceSelfie {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Current hash of the file containing the selfie
     file_hash: String,
 }
 
 impl RObject for InputPassportElementErrorSourceSelfie {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceSelfie"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -537,8 +496,8 @@ impl InputPassportElementErrorSourceSelfie {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceSelfieBuilder {
         let mut inner = InputPassportElementErrorSourceSelfie::default();
-        inner.td_name = "inputPassportElementErrorSourceSelfie".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceSelfieBuilder { inner }
     }
 
@@ -581,26 +540,22 @@ impl AsRef<InputPassportElementErrorSourceSelfie>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceTranslationFile {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Current hash of the file containing the translation
     file_hash: String,
 }
 
 impl RObject for InputPassportElementErrorSourceTranslationFile {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceTranslationFile"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -612,8 +567,8 @@ impl InputPassportElementErrorSourceTranslationFile {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceTranslationFileBuilder {
         let mut inner = InputPassportElementErrorSourceTranslationFile::default();
-        inner.td_name = "inputPassportElementErrorSourceTranslationFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceTranslationFileBuilder { inner }
     }
 
@@ -658,26 +613,22 @@ impl AsRef<InputPassportElementErrorSourceTranslationFile>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceTranslationFiles {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Current hashes of all files with the translation
     file_hashes: Vec<String>,
 }
 
 impl RObject for InputPassportElementErrorSourceTranslationFiles {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceTranslationFiles"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -689,8 +640,8 @@ impl InputPassportElementErrorSourceTranslationFiles {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceTranslationFilesBuilder {
         let mut inner = InputPassportElementErrorSourceTranslationFiles::default();
-        inner.td_name = "inputPassportElementErrorSourceTranslationFiles".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceTranslationFilesBuilder { inner }
     }
 
@@ -735,26 +686,22 @@ impl AsRef<InputPassportElementErrorSourceTranslationFiles>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputPassportElementErrorSourceUnspecified {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Current hash of the entire element
     element_hash: String,
 }
 
 impl RObject for InputPassportElementErrorSourceUnspecified {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputPassportElementErrorSourceUnspecified"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -766,8 +713,8 @@ impl InputPassportElementErrorSourceUnspecified {
     }
     pub fn builder() -> RTDInputPassportElementErrorSourceUnspecifiedBuilder {
         let mut inner = InputPassportElementErrorSourceUnspecified::default();
-        inner.td_name = "inputPassportElementErrorSourceUnspecified".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputPassportElementErrorSourceUnspecifiedBuilder { inner }
     }
 

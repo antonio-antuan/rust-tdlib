@@ -2,81 +2,52 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Represents a single rule for managing privacy settings
+/// Represents a single rule for managing privacy settings
 pub trait TDUserPrivacySettingRule: Debug + RObject {}
 
 /// Represents a single rule for managing privacy settings
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum UserPrivacySettingRule {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A rule to allow all users to do something
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowAll"))]
     AllowAll(UserPrivacySettingRuleAllowAll),
     /// A rule to allow all members of certain specified basic groups and supergroups to doing something
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowChatMembers"))]
     AllowChatMembers(UserPrivacySettingRuleAllowChatMembers),
     /// A rule to allow all of a user's contacts to do something
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowContacts"))]
     AllowContacts(UserPrivacySettingRuleAllowContacts),
     /// A rule to allow certain specified users to do something
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowUsers"))]
     AllowUsers(UserPrivacySettingRuleAllowUsers),
     /// A rule to restrict all users from doing something
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictAll"))]
     RestrictAll(UserPrivacySettingRuleRestrictAll),
     /// A rule to restrict all members of specified basic groups and supergroups from doing something
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictChatMembers"))]
     RestrictChatMembers(UserPrivacySettingRuleRestrictChatMembers),
     /// A rule to restrict all contacts of a user from doing something
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictContacts"))]
     RestrictContacts(UserPrivacySettingRuleRestrictContacts),
     /// A rule to restrict all specified users from doing something
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictUsers"))]
     RestrictUsers(UserPrivacySettingRuleRestrictUsers),
 }
 
 impl Default for UserPrivacySettingRule {
     fn default() -> Self {
-        UserPrivacySettingRule::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for UserPrivacySettingRule {
-    fn deserialize<D>(deserializer: D) -> Result<UserPrivacySettingRule, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          UserPrivacySettingRule,
-          (userPrivacySettingRuleAllowAll, AllowAll);
-          (userPrivacySettingRuleAllowChatMembers, AllowChatMembers);
-          (userPrivacySettingRuleAllowContacts, AllowContacts);
-          (userPrivacySettingRuleAllowUsers, AllowUsers);
-          (userPrivacySettingRuleRestrictAll, RestrictAll);
-          (userPrivacySettingRuleRestrictChatMembers, RestrictChatMembers);
-          (userPrivacySettingRuleRestrictContacts, RestrictContacts);
-          (userPrivacySettingRuleRestrictUsers, RestrictUsers);
-
-        )(deserializer)
+        UserPrivacySettingRule::_Default
     }
 }
 
 impl RObject for UserPrivacySettingRule {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            UserPrivacySettingRule::AllowAll(t) => t.td_name(),
-            UserPrivacySettingRule::AllowChatMembers(t) => t.td_name(),
-            UserPrivacySettingRule::AllowContacts(t) => t.td_name(),
-            UserPrivacySettingRule::AllowUsers(t) => t.td_name(),
-            UserPrivacySettingRule::RestrictAll(t) => t.td_name(),
-            UserPrivacySettingRule::RestrictChatMembers(t) => t.td_name(),
-            UserPrivacySettingRule::RestrictContacts(t) => t.td_name(),
-            UserPrivacySettingRule::RestrictUsers(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             UserPrivacySettingRule::AllowAll(t) => t.extra(),
             UserPrivacySettingRule::AllowChatMembers(t) => t.extra(),
@@ -90,8 +61,20 @@ impl RObject for UserPrivacySettingRule {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            UserPrivacySettingRule::AllowAll(t) => t.client_id(),
+            UserPrivacySettingRule::AllowChatMembers(t) => t.client_id(),
+            UserPrivacySettingRule::AllowContacts(t) => t.client_id(),
+            UserPrivacySettingRule::AllowUsers(t) => t.client_id(),
+            UserPrivacySettingRule::RestrictAll(t) => t.client_id(),
+            UserPrivacySettingRule::RestrictChatMembers(t) => t.client_id(),
+            UserPrivacySettingRule::RestrictContacts(t) => t.client_id(),
+            UserPrivacySettingRule::RestrictUsers(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -101,7 +84,7 @@ impl UserPrivacySettingRule {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, UserPrivacySettingRule::_Default(_))
+        matches!(self, UserPrivacySettingRule::_Default)
     }
 }
 
@@ -115,24 +98,20 @@ impl AsRef<UserPrivacySettingRule> for UserPrivacySettingRule {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleAllowAll {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserPrivacySettingRuleAllowAll {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingRuleAllowAll"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -144,8 +123,8 @@ impl UserPrivacySettingRuleAllowAll {
     }
     pub fn builder() -> RTDUserPrivacySettingRuleAllowAllBuilder {
         let mut inner = UserPrivacySettingRuleAllowAll::default();
-        inner.td_name = "userPrivacySettingRuleAllowAll".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserPrivacySettingRuleAllowAllBuilder { inner }
     }
 }
@@ -177,26 +156,22 @@ impl AsRef<UserPrivacySettingRuleAllowAll> for RTDUserPrivacySettingRuleAllowAll
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleAllowChatMembers {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The chat identifiers, total number of chats in all rules must not exceed 20
     chat_ids: Vec<i64>,
 }
 
 impl RObject for UserPrivacySettingRuleAllowChatMembers {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingRuleAllowChatMembers"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -208,8 +183,8 @@ impl UserPrivacySettingRuleAllowChatMembers {
     }
     pub fn builder() -> RTDUserPrivacySettingRuleAllowChatMembersBuilder {
         let mut inner = UserPrivacySettingRuleAllowChatMembers::default();
-        inner.td_name = "userPrivacySettingRuleAllowChatMembers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserPrivacySettingRuleAllowChatMembersBuilder { inner }
     }
 
@@ -252,24 +227,20 @@ impl AsRef<UserPrivacySettingRuleAllowChatMembers>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleAllowContacts {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserPrivacySettingRuleAllowContacts {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingRuleAllowContacts"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -281,8 +252,8 @@ impl UserPrivacySettingRuleAllowContacts {
     }
     pub fn builder() -> RTDUserPrivacySettingRuleAllowContactsBuilder {
         let mut inner = UserPrivacySettingRuleAllowContacts::default();
-        inner.td_name = "userPrivacySettingRuleAllowContacts".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserPrivacySettingRuleAllowContactsBuilder { inner }
     }
 }
@@ -314,26 +285,22 @@ impl AsRef<UserPrivacySettingRuleAllowContacts> for RTDUserPrivacySettingRuleAll
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleAllowUsers {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The user identifiers, total number of users in all rules must not exceed 1000
-    user_ids: Vec<i64>,
+    user_ids: Vec<i32>,
 }
 
 impl RObject for UserPrivacySettingRuleAllowUsers {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingRuleAllowUsers"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -345,12 +312,12 @@ impl UserPrivacySettingRuleAllowUsers {
     }
     pub fn builder() -> RTDUserPrivacySettingRuleAllowUsersBuilder {
         let mut inner = UserPrivacySettingRuleAllowUsers::default();
-        inner.td_name = "userPrivacySettingRuleAllowUsers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserPrivacySettingRuleAllowUsersBuilder { inner }
     }
 
-    pub fn user_ids(&self) -> &Vec<i64> {
+    pub fn user_ids(&self) -> &Vec<i32> {
         &self.user_ids
     }
 }
@@ -365,7 +332,7 @@ impl RTDUserPrivacySettingRuleAllowUsersBuilder {
         self.inner.clone()
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }
@@ -387,24 +354,20 @@ impl AsRef<UserPrivacySettingRuleAllowUsers> for RTDUserPrivacySettingRuleAllowU
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleRestrictAll {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserPrivacySettingRuleRestrictAll {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingRuleRestrictAll"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -416,8 +379,8 @@ impl UserPrivacySettingRuleRestrictAll {
     }
     pub fn builder() -> RTDUserPrivacySettingRuleRestrictAllBuilder {
         let mut inner = UserPrivacySettingRuleRestrictAll::default();
-        inner.td_name = "userPrivacySettingRuleRestrictAll".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserPrivacySettingRuleRestrictAllBuilder { inner }
     }
 }
@@ -449,26 +412,22 @@ impl AsRef<UserPrivacySettingRuleRestrictAll> for RTDUserPrivacySettingRuleRestr
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleRestrictChatMembers {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The chat identifiers, total number of chats in all rules must not exceed 20
     chat_ids: Vec<i64>,
 }
 
 impl RObject for UserPrivacySettingRuleRestrictChatMembers {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingRuleRestrictChatMembers"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -480,8 +439,8 @@ impl UserPrivacySettingRuleRestrictChatMembers {
     }
     pub fn builder() -> RTDUserPrivacySettingRuleRestrictChatMembersBuilder {
         let mut inner = UserPrivacySettingRuleRestrictChatMembers::default();
-        inner.td_name = "userPrivacySettingRuleRestrictChatMembers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserPrivacySettingRuleRestrictChatMembersBuilder { inner }
     }
 
@@ -526,24 +485,20 @@ impl AsRef<UserPrivacySettingRuleRestrictChatMembers>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleRestrictContacts {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for UserPrivacySettingRuleRestrictContacts {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingRuleRestrictContacts"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -555,8 +510,8 @@ impl UserPrivacySettingRuleRestrictContacts {
     }
     pub fn builder() -> RTDUserPrivacySettingRuleRestrictContactsBuilder {
         let mut inner = UserPrivacySettingRuleRestrictContacts::default();
-        inner.td_name = "userPrivacySettingRuleRestrictContacts".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserPrivacySettingRuleRestrictContactsBuilder { inner }
     }
 }
@@ -590,26 +545,22 @@ impl AsRef<UserPrivacySettingRuleRestrictContacts>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleRestrictUsers {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The user identifiers, total number of users in all rules must not exceed 1000
-    user_ids: Vec<i64>,
+    user_ids: Vec<i32>,
 }
 
 impl RObject for UserPrivacySettingRuleRestrictUsers {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "userPrivacySettingRuleRestrictUsers"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -621,12 +572,12 @@ impl UserPrivacySettingRuleRestrictUsers {
     }
     pub fn builder() -> RTDUserPrivacySettingRuleRestrictUsersBuilder {
         let mut inner = UserPrivacySettingRuleRestrictUsers::default();
-        inner.td_name = "userPrivacySettingRuleRestrictUsers".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserPrivacySettingRuleRestrictUsersBuilder { inner }
     }
 
-    pub fn user_ids(&self) -> &Vec<i64> {
+    pub fn user_ids(&self) -> &Vec<i32> {
         &self.user_ids
     }
 }
@@ -641,7 +592,7 @@ impl RTDUserPrivacySettingRuleRestrictUsersBuilder {
         self.inner.clone()
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }

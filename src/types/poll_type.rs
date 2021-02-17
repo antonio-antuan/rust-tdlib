@@ -2,57 +2,34 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Describes the type of a poll
+/// Describes the type of a poll
 pub trait TDPollType: Debug + RObject {}
 
 /// Describes the type of a poll
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum PollType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A poll in quiz mode, which has exactly one correct answer option and can be answered only once
+    #[serde(rename(deserialize = "pollTypeQuiz"))]
     Quiz(PollTypeQuiz),
     /// A regular poll
+    #[serde(rename(deserialize = "pollTypeRegular"))]
     Regular(PollTypeRegular),
 }
 
 impl Default for PollType {
     fn default() -> Self {
-        PollType::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for PollType {
-    fn deserialize<D>(deserializer: D) -> Result<PollType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          PollType,
-          (pollTypeQuiz, Quiz);
-          (pollTypeRegular, Regular);
-
-        )(deserializer)
+        PollType::_Default
     }
 }
 
 impl RObject for PollType {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            PollType::Quiz(t) => t.td_name(),
-            PollType::Regular(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             PollType::Quiz(t) => t.extra(),
             PollType::Regular(t) => t.extra(),
@@ -60,8 +37,14 @@ impl RObject for PollType {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            PollType::Quiz(t) => t.client_id(),
+            PollType::Regular(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -71,7 +54,7 @@ impl PollType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PollType::_Default(_))
+        matches!(self, PollType::_Default)
     }
 }
 
@@ -85,26 +68,24 @@ impl AsRef<PollType> for PollType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PollTypeQuiz {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// 0-based identifier of the correct answer option; 1 for a yet unanswered poll
-    correct_option_id: i64,
+    correct_option_id: i32,
+    /// Text that is shown when the user chooses an incorrect answer or taps on the lamp icon, 0-200 characters with at most 2 line feeds; empty for a yet unanswered poll
+    explanation: FormattedText,
 }
 
 impl RObject for PollTypeQuiz {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "pollTypeQuiz"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -116,13 +97,17 @@ impl PollTypeQuiz {
     }
     pub fn builder() -> RTDPollTypeQuizBuilder {
         let mut inner = PollTypeQuiz::default();
-        inner.td_name = "pollTypeQuiz".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPollTypeQuizBuilder { inner }
     }
 
-    pub fn correct_option_id(&self) -> i64 {
+    pub fn correct_option_id(&self) -> i32 {
         self.correct_option_id
+    }
+
+    pub fn explanation(&self) -> &FormattedText {
+        &self.explanation
     }
 }
 
@@ -136,8 +121,13 @@ impl RTDPollTypeQuizBuilder {
         self.inner.clone()
     }
 
-    pub fn correct_option_id(&mut self, correct_option_id: i64) -> &mut Self {
+    pub fn correct_option_id(&mut self, correct_option_id: i32) -> &mut Self {
         self.inner.correct_option_id = correct_option_id;
+        self
+    }
+
+    pub fn explanation<T: AsRef<FormattedText>>(&mut self, explanation: T) -> &mut Self {
+        self.inner.explanation = explanation.as_ref().clone();
         self
     }
 }
@@ -158,26 +148,22 @@ impl AsRef<PollTypeQuiz> for RTDPollTypeQuizBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PollTypeRegular {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if multiple answer options can be chosen simultaneously
     allow_multiple_answers: bool,
 }
 
 impl RObject for PollTypeRegular {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "pollTypeRegular"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -189,8 +175,8 @@ impl PollTypeRegular {
     }
     pub fn builder() -> RTDPollTypeRegularBuilder {
         let mut inner = PollTypeRegular::default();
-        inner.td_name = "pollTypeRegular".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPollTypeRegularBuilder { inner }
     }
 

@@ -6,20 +6,25 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputIdentityDocument {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Document number; 1-24 characters
     number: String,
     /// Document expiry date, if available
     expiry_date: Date,
     /// Front side of the document
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     front_side: InputFile,
     /// Reverse side of the document; only for driver license and identity card
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     reverse_side: InputFile,
     /// Selfie with the document, if available
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     selfie: InputFile,
     /// List of files containing a certified English translation of the document
     translation: Vec<InputFile>,
@@ -27,15 +32,12 @@ pub struct InputIdentityDocument {
 
 impl RObject for InputIdentityDocument {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputIdentityDocument"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -45,8 +47,8 @@ impl InputIdentityDocument {
     }
     pub fn builder() -> RTDInputIdentityDocumentBuilder {
         let mut inner = InputIdentityDocument::default();
-        inner.td_name = "inputIdentityDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputIdentityDocumentBuilder { inner }
     }
 

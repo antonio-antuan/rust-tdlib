@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct BotInfo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Provides information about a bot and its supported commands
     description: String,
     /// A list of commands supported by the bot
@@ -19,15 +18,12 @@ pub struct BotInfo {
 
 impl RObject for BotInfo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "botInfo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -37,8 +33,8 @@ impl BotInfo {
     }
     pub fn builder() -> RTDBotInfoBuilder {
         let mut inner = BotInfo::default();
-        inner.td_name = "botInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDBotInfoBuilder { inner }
     }
 

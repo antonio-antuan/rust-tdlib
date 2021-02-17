@@ -6,17 +6,16 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PollOption {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Option text, 1-100 characters
     text: String,
     /// Number of voters for this option, available only for closed or voted polls
-    voter_count: i64,
+    voter_count: i32,
     /// The percentage of votes for this option, 0-100
-    vote_percentage: i64,
+    vote_percentage: i32,
     /// True, if the option was chosen by the user
     is_chosen: bool,
     /// True, if the option is being chosen by a pending setPollAnswer request
@@ -25,15 +24,12 @@ pub struct PollOption {
 
 impl RObject for PollOption {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "pollOption"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,8 +39,8 @@ impl PollOption {
     }
     pub fn builder() -> RTDPollOptionBuilder {
         let mut inner = PollOption::default();
-        inner.td_name = "pollOption".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPollOptionBuilder { inner }
     }
 
@@ -52,11 +48,11 @@ impl PollOption {
         &self.text
     }
 
-    pub fn voter_count(&self) -> i64 {
+    pub fn voter_count(&self) -> i32 {
         self.voter_count
     }
 
-    pub fn vote_percentage(&self) -> i64 {
+    pub fn vote_percentage(&self) -> i32 {
         self.vote_percentage
     }
 
@@ -84,12 +80,12 @@ impl RTDPollOptionBuilder {
         self
     }
 
-    pub fn voter_count(&mut self, voter_count: i64) -> &mut Self {
+    pub fn voter_count(&mut self, voter_count: i32) -> &mut Self {
         self.inner.voter_count = voter_count;
         self
     }
 
-    pub fn vote_percentage(&mut self, vote_percentage: i64) -> &mut Self {
+    pub fn vote_percentage(&mut self, vote_percentage: i32) -> &mut Self {
         self.inner.vote_percentage = vote_percentage;
         self
     }

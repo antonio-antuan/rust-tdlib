@@ -6,33 +6,31 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AuthenticationCodeInfo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A phone number that is being authenticated
     phone_number: String,
     /// Describes the way the code was sent to the user
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "AuthenticationCodeType::_is_default")]
     type_: AuthenticationCodeType,
     /// Describes the way the next code will be sent to the user; may be null
     next_type: Option<AuthenticationCodeType>,
     /// Timeout before the code should be re-sent, in seconds
-    timeout: i64,
+    timeout: i32,
 }
 
 impl RObject for AuthenticationCodeInfo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "authenticationCodeInfo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -42,8 +40,8 @@ impl AuthenticationCodeInfo {
     }
     pub fn builder() -> RTDAuthenticationCodeInfoBuilder {
         let mut inner = AuthenticationCodeInfo::default();
-        inner.td_name = "authenticationCodeInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDAuthenticationCodeInfoBuilder { inner }
     }
 
@@ -59,7 +57,7 @@ impl AuthenticationCodeInfo {
         &self.next_type
     }
 
-    pub fn timeout(&self) -> i64 {
+    pub fn timeout(&self) -> i32 {
         self.timeout
     }
 }
@@ -89,7 +87,7 @@ impl RTDAuthenticationCodeInfoBuilder {
         self
     }
 
-    pub fn timeout(&mut self, timeout: i64) -> &mut Self {
+    pub fn timeout(&mut self, timeout: i32) -> &mut Self {
         self.inner.timeout = timeout;
         self
     }

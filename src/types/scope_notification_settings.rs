@@ -6,13 +6,12 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ScopeNotificationSettings {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Time left before notifications will be unmuted, in seconds
-    mute_for: i64,
+    mute_for: i32,
     /// The name of an audio file to be used for notification sounds; only applies to iOS applications
     sound: String,
     /// True, if message content should be displayed in notifications
@@ -25,15 +24,12 @@ pub struct ScopeNotificationSettings {
 
 impl RObject for ScopeNotificationSettings {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "scopeNotificationSettings"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,12 +39,12 @@ impl ScopeNotificationSettings {
     }
     pub fn builder() -> RTDScopeNotificationSettingsBuilder {
         let mut inner = ScopeNotificationSettings::default();
-        inner.td_name = "scopeNotificationSettings".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDScopeNotificationSettingsBuilder { inner }
     }
 
-    pub fn mute_for(&self) -> i64 {
+    pub fn mute_for(&self) -> i32 {
         self.mute_for
     }
 
@@ -79,7 +75,7 @@ impl RTDScopeNotificationSettingsBuilder {
         self.inner.clone()
     }
 
-    pub fn mute_for(&mut self, mute_for: i64) -> &mut Self {
+    pub fn mute_for(&mut self, mute_for: i32) -> &mut Self {
         self.inner.mute_for = mute_for;
         self
     }

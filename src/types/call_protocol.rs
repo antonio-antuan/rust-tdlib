@@ -6,32 +6,30 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallProtocol {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if UDP peer-to-peer connections are supported
     udp_p2p: bool,
     /// True, if connection through UDP reflectors is supported
     udp_reflector: bool,
     /// The minimum supported API layer; use 65
-    min_layer: i64,
+    min_layer: i32,
     /// The maximum supported API layer; use 65
-    max_layer: i64,
+    max_layer: i32,
+    /// List of supported libtgvoip versions
+    library_versions: Vec<String>,
 }
 
 impl RObject for CallProtocol {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callProtocol"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -41,8 +39,8 @@ impl CallProtocol {
     }
     pub fn builder() -> RTDCallProtocolBuilder {
         let mut inner = CallProtocol::default();
-        inner.td_name = "callProtocol".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDCallProtocolBuilder { inner }
     }
 
@@ -54,12 +52,16 @@ impl CallProtocol {
         self.udp_reflector
     }
 
-    pub fn min_layer(&self) -> i64 {
+    pub fn min_layer(&self) -> i32 {
         self.min_layer
     }
 
-    pub fn max_layer(&self) -> i64 {
+    pub fn max_layer(&self) -> i32 {
         self.max_layer
+    }
+
+    pub fn library_versions(&self) -> &Vec<String> {
+        &self.library_versions
     }
 }
 
@@ -83,13 +85,18 @@ impl RTDCallProtocolBuilder {
         self
     }
 
-    pub fn min_layer(&mut self, min_layer: i64) -> &mut Self {
+    pub fn min_layer(&mut self, min_layer: i32) -> &mut Self {
         self.inner.min_layer = min_layer;
         self
     }
 
-    pub fn max_layer(&mut self, max_layer: i64) -> &mut Self {
+    pub fn max_layer(&mut self, max_layer: i32) -> &mut Self {
         self.inner.max_layer = max_layer;
+        self
+    }
+
+    pub fn library_versions(&mut self, library_versions: Vec<String>) -> &mut Self {
+        self.inner.library_versions = library_versions;
         self
     }
 }

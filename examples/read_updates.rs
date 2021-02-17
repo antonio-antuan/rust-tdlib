@@ -1,36 +1,73 @@
-#[macro_use]
-extern crate log;
-
-use rust_tdlib::{client::Client, types::*};
+use rust_tdlib::{
+    client::{Client, Worker},
+    tdjson,
+    types::{TdlibParameters, Update},
+};
 
 #[tokio::main]
 async fn main() {
+    tdjson::set_log_verbosity_level(1);
     env_logger::init();
     let tdlib_parameters = TdlibParameters::builder()
-        .database_directory("tdlib")
+        .database_directory("tddb")
         .use_test_dc(false)
-        .api_id(env!("API_ID").parse::<i64>().unwrap())
+        .api_id(env!("API_ID").parse::<i32>().unwrap())
         .api_hash(env!("API_HASH"))
+        .system_language_code("en")
+        .device_model("Desktop")
+        .system_version("Unknown")
+        .application_version(env!("CARGO_PKG_VERSION"))
         .enable_storage_optimizer(true)
         .build();
-    let (sender, mut receiver) = tokio::sync::mpsc::channel::<TdType>(10);
 
-    let mut client = Client::builder()
+    let (sender, mut receiver) = tokio::sync::mpsc::channel::<Update>(100);
+
+    let client = Client::builder()
         .with_tdlib_parameters(tdlib_parameters)
         .with_updates_sender(sender)
         .build()
         .unwrap();
 
-    let waiter = client.start().await.unwrap();
-    let mut wait_messages_num: i32 = 1;
+    let mut reader_waiter = tokio::spawn(async move {
+        let mut wait_messages: i32 = 100;
+        while let Some(message) = receiver.recv().await {
+            log::info!("updates handler received {:?}", message);
+            wait_messages -= 1;
+            if wait_messages == 0 {
+                break;
+            }
+        }
+    });
 
-    while wait_messages_num > 0 {
-        let message = receiver.recv().await.unwrap();
-        info!("updates handler received {:?}", message);
-        wait_messages_num -= wait_messages_num;
+    let mut worker = Worker::builder().build().unwrap();
+    let mut waiter = worker.start();
+
+    let v = tokio::select! {
+        c = worker.auth_client(client) => {match c {
+            Ok((s, cl)) => Some((s, cl)),
+            Err(e) => panic!("{:?}", e)
+        }}
+        w = &mut waiter => panic!("{:?}", w),
+        _ = &mut reader_waiter => {
+            log::info!("reader closed");
+            None
+        },
+    };
+
+    if let Some((mut state, client)) = v {
+        log::info!("stop client");
+        client.stop().await.unwrap();
+        log::info!("client stopped");
+
+        tokio::select! {
+            _ = &mut reader_waiter => {state.abort()},
+            _ = &mut state => {reader_waiter.abort()},
+            _ = &mut waiter => {reader_waiter.abort(); state.abort();},
+        };
     }
 
-    client.stop();
+    log::info!("stop worker");
+    worker.stop();
+    log::info!("wait worker stopped");
     waiter.await.unwrap();
-    info!("client closed");
 }

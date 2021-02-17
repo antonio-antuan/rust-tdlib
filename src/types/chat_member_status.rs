@@ -2,73 +2,46 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Provides information about the status of a member in a chat
+/// Provides information about the status of a member in a chat
 pub trait TDChatMemberStatus: Debug + RObject {}
 
 /// Provides information about the status of a member in a chat
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatMemberStatus {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The user is a member of a chat and has some additional privileges. In basic groups, administrators can edit and delete messages sent by others, add new members, and ban unprivileged members. In supergroups and channels, there are more detailed options for administrator privileges
+    #[serde(rename(deserialize = "chatMemberStatusAdministrator"))]
     Administrator(ChatMemberStatusAdministrator),
     /// The user was banned (and hence is not a member of the chat). Implies the user can't return to the chat or view messages
+    #[serde(rename(deserialize = "chatMemberStatusBanned"))]
     Banned(ChatMemberStatusBanned),
     /// The user is the owner of a chat and has all the administrator privileges
+    #[serde(rename(deserialize = "chatMemberStatusCreator"))]
     Creator(ChatMemberStatusCreator),
     /// The user is not a chat member
+    #[serde(rename(deserialize = "chatMemberStatusLeft"))]
     Left(ChatMemberStatusLeft),
     /// The user is a member of a chat, without any additional privileges or restrictions
+    #[serde(rename(deserialize = "chatMemberStatusMember"))]
     Member(ChatMemberStatusMember),
     /// The user is under certain restrictions in the chat. Not supported in basic groups and channels
+    #[serde(rename(deserialize = "chatMemberStatusRestricted"))]
     Restricted(ChatMemberStatusRestricted),
 }
 
 impl Default for ChatMemberStatus {
     fn default() -> Self {
-        ChatMemberStatus::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for ChatMemberStatus {
-    fn deserialize<D>(deserializer: D) -> Result<ChatMemberStatus, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatMemberStatus,
-          (chatMemberStatusAdministrator, Administrator);
-          (chatMemberStatusBanned, Banned);
-          (chatMemberStatusCreator, Creator);
-          (chatMemberStatusLeft, Left);
-          (chatMemberStatusMember, Member);
-          (chatMemberStatusRestricted, Restricted);
-
-        )(deserializer)
+        ChatMemberStatus::_Default
     }
 }
 
 impl RObject for ChatMemberStatus {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatMemberStatus::Administrator(t) => t.td_name(),
-            ChatMemberStatus::Banned(t) => t.td_name(),
-            ChatMemberStatus::Creator(t) => t.td_name(),
-            ChatMemberStatus::Left(t) => t.td_name(),
-            ChatMemberStatus::Member(t) => t.td_name(),
-            ChatMemberStatus::Restricted(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatMemberStatus::Administrator(t) => t.extra(),
             ChatMemberStatus::Banned(t) => t.extra(),
@@ -80,8 +53,18 @@ impl RObject for ChatMemberStatus {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatMemberStatus::Administrator(t) => t.client_id(),
+            ChatMemberStatus::Banned(t) => t.client_id(),
+            ChatMemberStatus::Creator(t) => t.client_id(),
+            ChatMemberStatus::Left(t) => t.client_id(),
+            ChatMemberStatus::Member(t) => t.client_id(),
+            ChatMemberStatus::Restricted(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -91,7 +74,7 @@ impl ChatMemberStatus {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatMemberStatus::_Default(_))
+        matches!(self, ChatMemberStatus::_Default)
     }
 }
 
@@ -105,11 +88,10 @@ impl AsRef<ChatMemberStatus> for ChatMemberStatus {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusAdministrator {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A custom title of the administrator; 0-16 characters without emojis; applicable to supergroups only
     custom_title: String,
     /// True, if the current user can edit the administrator privileges for the called user
@@ -130,19 +112,18 @@ pub struct ChatMemberStatusAdministrator {
     can_pin_messages: bool,
     /// True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that were directly or indirectly promoted by them
     can_promote_members: bool,
+    /// True, if the administrator isn't shown in the chat member list and sends messages anonymously; applicable to supergroups only
+    is_anonymous: bool,
 }
 
 impl RObject for ChatMemberStatusAdministrator {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusAdministrator"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -154,8 +135,8 @@ impl ChatMemberStatusAdministrator {
     }
     pub fn builder() -> RTDChatMemberStatusAdministratorBuilder {
         let mut inner = ChatMemberStatusAdministrator::default();
-        inner.td_name = "chatMemberStatusAdministrator".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatMemberStatusAdministratorBuilder { inner }
     }
 
@@ -197,6 +178,10 @@ impl ChatMemberStatusAdministrator {
 
     pub fn can_promote_members(&self) -> bool {
         self.can_promote_members
+    }
+
+    pub fn is_anonymous(&self) -> bool {
+        self.is_anonymous
     }
 }
 
@@ -259,6 +244,11 @@ impl RTDChatMemberStatusAdministratorBuilder {
         self.inner.can_promote_members = can_promote_members;
         self
     }
+
+    pub fn is_anonymous(&mut self, is_anonymous: bool) -> &mut Self {
+        self.inner.is_anonymous = is_anonymous;
+        self
+    }
 }
 
 impl AsRef<ChatMemberStatusAdministrator> for ChatMemberStatusAdministrator {
@@ -277,26 +267,22 @@ impl AsRef<ChatMemberStatusAdministrator> for RTDChatMemberStatusAdministratorBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusBanned {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the user will be unbanned; 0 if never. If the user is banned for more than 366 days or for less than 30 seconds from the current time, the user is considered to be banned forever
-    banned_until_date: i64,
+    banned_until_date: i32,
 }
 
 impl RObject for ChatMemberStatusBanned {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusBanned"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -308,12 +294,12 @@ impl ChatMemberStatusBanned {
     }
     pub fn builder() -> RTDChatMemberStatusBannedBuilder {
         let mut inner = ChatMemberStatusBanned::default();
-        inner.td_name = "chatMemberStatusBanned".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatMemberStatusBannedBuilder { inner }
     }
 
-    pub fn banned_until_date(&self) -> i64 {
+    pub fn banned_until_date(&self) -> i32 {
         self.banned_until_date
     }
 }
@@ -328,7 +314,7 @@ impl RTDChatMemberStatusBannedBuilder {
         self.inner.clone()
     }
 
-    pub fn banned_until_date(&mut self, banned_until_date: i64) -> &mut Self {
+    pub fn banned_until_date(&mut self, banned_until_date: i32) -> &mut Self {
         self.inner.banned_until_date = banned_until_date;
         self
     }
@@ -350,28 +336,26 @@ impl AsRef<ChatMemberStatusBanned> for RTDChatMemberStatusBannedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusCreator {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// A custom title of the owner; 0-16 characters without emojis; applicable to supergroups only
     custom_title: String,
+    /// True, if the creator isn't shown in the chat member list and sends messages anonymously; applicable to supergroups only
+    is_anonymous: bool,
     /// True, if the user is a member of the chat
     is_member: bool,
 }
 
 impl RObject for ChatMemberStatusCreator {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusCreator"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -383,13 +367,17 @@ impl ChatMemberStatusCreator {
     }
     pub fn builder() -> RTDChatMemberStatusCreatorBuilder {
         let mut inner = ChatMemberStatusCreator::default();
-        inner.td_name = "chatMemberStatusCreator".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatMemberStatusCreatorBuilder { inner }
     }
 
     pub fn custom_title(&self) -> &String {
         &self.custom_title
+    }
+
+    pub fn is_anonymous(&self) -> bool {
+        self.is_anonymous
     }
 
     pub fn is_member(&self) -> bool {
@@ -409,6 +397,11 @@ impl RTDChatMemberStatusCreatorBuilder {
 
     pub fn custom_title<T: AsRef<str>>(&mut self, custom_title: T) -> &mut Self {
         self.inner.custom_title = custom_title.as_ref().to_string();
+        self
+    }
+
+    pub fn is_anonymous(&mut self, is_anonymous: bool) -> &mut Self {
+        self.inner.is_anonymous = is_anonymous;
         self
     }
 
@@ -434,24 +427,20 @@ impl AsRef<ChatMemberStatusCreator> for RTDChatMemberStatusCreatorBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusLeft {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatMemberStatusLeft {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusLeft"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -463,8 +452,8 @@ impl ChatMemberStatusLeft {
     }
     pub fn builder() -> RTDChatMemberStatusLeftBuilder {
         let mut inner = ChatMemberStatusLeft::default();
-        inner.td_name = "chatMemberStatusLeft".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatMemberStatusLeftBuilder { inner }
     }
 }
@@ -496,24 +485,20 @@ impl AsRef<ChatMemberStatusLeft> for RTDChatMemberStatusLeftBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusMember {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatMemberStatusMember {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusMember"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -525,8 +510,8 @@ impl ChatMemberStatusMember {
     }
     pub fn builder() -> RTDChatMemberStatusMemberBuilder {
         let mut inner = ChatMemberStatusMember::default();
-        inner.td_name = "chatMemberStatusMember".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatMemberStatusMemberBuilder { inner }
     }
 }
@@ -558,30 +543,26 @@ impl AsRef<ChatMemberStatusMember> for RTDChatMemberStatusMemberBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatMemberStatusRestricted {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the user is a member of the chat
     is_member: bool,
     /// Point in time (Unix timestamp) when restrictions will be lifted from the user; 0 if never. If the user is restricted for more than 366 days or for less than 30 seconds from the current time, the user is considered to be restricted forever
-    restricted_until_date: i64,
+    restricted_until_date: i32,
     /// User permissions in the chat
     permissions: ChatPermissions,
 }
 
 impl RObject for ChatMemberStatusRestricted {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatMemberStatusRestricted"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -593,8 +574,8 @@ impl ChatMemberStatusRestricted {
     }
     pub fn builder() -> RTDChatMemberStatusRestrictedBuilder {
         let mut inner = ChatMemberStatusRestricted::default();
-        inner.td_name = "chatMemberStatusRestricted".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatMemberStatusRestrictedBuilder { inner }
     }
 
@@ -602,7 +583,7 @@ impl ChatMemberStatusRestricted {
         self.is_member
     }
 
-    pub fn restricted_until_date(&self) -> i64 {
+    pub fn restricted_until_date(&self) -> i32 {
         self.restricted_until_date
     }
 
@@ -626,7 +607,7 @@ impl RTDChatMemberStatusRestrictedBuilder {
         self
     }
 
-    pub fn restricted_until_date(&mut self, restricted_until_date: i64) -> &mut Self {
+    pub fn restricted_until_date(&mut self, restricted_until_date: i32) -> &mut Self {
         self.inner.restricted_until_date = restricted_until_date;
         self
     }

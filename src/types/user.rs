@@ -6,13 +6,12 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct User {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// User identifier
-    id: i64,
+    id: i32,
     /// First name of the user
     first_name: String,
     /// Last name of the user
@@ -22,6 +21,8 @@ pub struct User {
     /// Phone number of the user
     phone_number: String,
     /// Current online status of the user
+
+    #[serde(skip_serializing_if = "UserStatus::_is_default")]
     status: UserStatus,
     /// Profile photo of the user; may be null
     profile_photo: Option<ProfilePhoto>,
@@ -40,7 +41,9 @@ pub struct User {
     /// If false, the user is inaccessible, and the only information known about the user is inside this class. It can't be passed to any method except GetUser
     have_access: bool,
     /// Type of the user
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "UserType::_is_default")]
     type_: UserType,
     /// IETF language tag of the user's language; only available to bots
     language_code: String,
@@ -48,15 +51,12 @@ pub struct User {
 
 impl RObject for User {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "user"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -66,12 +66,12 @@ impl User {
     }
     pub fn builder() -> RTDUserBuilder {
         let mut inner = User::default();
-        inner.td_name = "user".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDUserBuilder { inner }
     }
 
-    pub fn id(&self) -> i64 {
+    pub fn id(&self) -> i32 {
         self.id
     }
 
@@ -146,7 +146,7 @@ impl RTDUserBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i64) -> &mut Self {
+    pub fn id(&mut self, id: i32) -> &mut Self {
         self.inner.id = id;
         self
     }

@@ -2,34 +2,49 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Describes a sticker that should be added to a sticker set
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InputSticker {
+use std::fmt::Debug;
+
+/// Describes a sticker that needs to be added to a sticker set
+pub trait TDInputSticker: Debug + RObject {}
+
+/// Describes a sticker that needs to be added to a sticker set
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
+pub enum InputSticker {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    /// PNG image with the sticker; must be up to 512 kB in size and fit in a 512x512 square
-    png_sticker: InputFile,
-    /// Emoji corresponding to the sticker
-    emojis: String,
-    /// For masks, position where the mask should be placed; may be null
-    mask_position: Option<MaskPosition>,
+    _Default,
+    /// An animated sticker in TGS format
+    #[serde(rename(deserialize = "inputStickerAnimated"))]
+    Animated(InputStickerAnimated),
+    /// A static sticker in PNG format, which will be converted to WEBP server-side
+    #[serde(rename(deserialize = "inputStickerStatic"))]
+    Static(InputStickerStatic),
+}
+
+impl Default for InputSticker {
+    fn default() -> Self {
+        InputSticker::_Default
+    }
 }
 
 impl RObject for InputSticker {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputSticker"
+    fn extra(&self) -> Option<&str> {
+        match self {
+            InputSticker::Animated(t) => t.extra(),
+            InputSticker::Static(t) => t.extra(),
+
+            _ => None,
+        }
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            InputSticker::Animated(t) => t.client_id(),
+            InputSticker::Static(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -37,15 +52,144 @@ impl InputSticker {
     pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputStickerBuilder {
-        let mut inner = InputSticker::default();
-        inner.td_name = "inputSticker".to_string();
+    #[doc(hidden)]
+    pub fn _is_default(&self) -> bool {
+        matches!(self, InputSticker::_Default)
+    }
+}
+
+impl AsRef<InputSticker> for InputSticker {
+    fn as_ref(&self) -> &InputSticker {
+        self
+    }
+}
+
+/// An animated sticker in TGS format
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct InputStickerAnimated {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// File with the animated sticker. Only local or uploaded within a week files are supported. See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
+    sticker: InputFile,
+    /// Emojis corresponding to the sticker
+    emojis: String,
+}
+
+impl RObject for InputStickerAnimated {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDInputSticker for InputStickerAnimated {}
+
+impl InputStickerAnimated {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputStickerAnimatedBuilder {
+        let mut inner = InputStickerAnimated::default();
         inner.extra = Some(Uuid::new_v4().to_string());
-        RTDInputStickerBuilder { inner }
+
+        RTDInputStickerAnimatedBuilder { inner }
     }
 
-    pub fn png_sticker(&self) -> &InputFile {
-        &self.png_sticker
+    pub fn sticker(&self) -> &InputFile {
+        &self.sticker
+    }
+
+    pub fn emojis(&self) -> &String {
+        &self.emojis
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDInputStickerAnimatedBuilder {
+    inner: InputStickerAnimated,
+}
+
+impl RTDInputStickerAnimatedBuilder {
+    pub fn build(&self) -> InputStickerAnimated {
+        self.inner.clone()
+    }
+
+    pub fn sticker<T: AsRef<InputFile>>(&mut self, sticker: T) -> &mut Self {
+        self.inner.sticker = sticker.as_ref().clone();
+        self
+    }
+
+    pub fn emojis<T: AsRef<str>>(&mut self, emojis: T) -> &mut Self {
+        self.inner.emojis = emojis.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<InputStickerAnimated> for InputStickerAnimated {
+    fn as_ref(&self) -> &InputStickerAnimated {
+        self
+    }
+}
+
+impl AsRef<InputStickerAnimated> for RTDInputStickerAnimatedBuilder {
+    fn as_ref(&self) -> &InputStickerAnimated {
+        &self.inner
+    }
+}
+
+/// A static sticker in PNG format, which will be converted to WEBP server-side
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct InputStickerStatic {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// PNG image with the sticker; must be up to 512 KB in size and fit in a 512x512 square
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
+    sticker: InputFile,
+    /// Emojis corresponding to the sticker
+    emojis: String,
+    /// For masks, position where the mask should be placed; may be null
+    mask_position: Option<MaskPosition>,
+}
+
+impl RObject for InputStickerStatic {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDInputSticker for InputStickerStatic {}
+
+impl InputStickerStatic {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDInputStickerStaticBuilder {
+        let mut inner = InputStickerStatic::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDInputStickerStaticBuilder { inner }
+    }
+
+    pub fn sticker(&self) -> &InputFile {
+        &self.sticker
     }
 
     pub fn emojis(&self) -> &String {
@@ -58,17 +202,17 @@ impl InputSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDInputStickerBuilder {
-    inner: InputSticker,
+pub struct RTDInputStickerStaticBuilder {
+    inner: InputStickerStatic,
 }
 
-impl RTDInputStickerBuilder {
-    pub fn build(&self) -> InputSticker {
+impl RTDInputStickerStaticBuilder {
+    pub fn build(&self) -> InputStickerStatic {
         self.inner.clone()
     }
 
-    pub fn png_sticker<T: AsRef<InputFile>>(&mut self, png_sticker: T) -> &mut Self {
-        self.inner.png_sticker = png_sticker.as_ref().clone();
+    pub fn sticker<T: AsRef<InputFile>>(&mut self, sticker: T) -> &mut Self {
+        self.inner.sticker = sticker.as_ref().clone();
         self
     }
 
@@ -83,14 +227,14 @@ impl RTDInputStickerBuilder {
     }
 }
 
-impl AsRef<InputSticker> for InputSticker {
-    fn as_ref(&self) -> &InputSticker {
+impl AsRef<InputStickerStatic> for InputStickerStatic {
+    fn as_ref(&self) -> &InputStickerStatic {
         self
     }
 }
 
-impl AsRef<InputSticker> for RTDInputStickerBuilder {
-    fn as_ref(&self) -> &InputSticker {
+impl AsRef<InputStickerStatic> for RTDInputStickerStaticBuilder {
+    fn as_ref(&self) -> &InputStickerStatic {
         &self.inner
     }
 }

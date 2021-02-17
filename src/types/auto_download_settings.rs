@@ -6,22 +6,21 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AutoDownloadSettings {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the auto-download is enabled
     is_auto_download_enabled: bool,
     /// The maximum size of a photo file to be auto-downloaded
-    max_photo_file_size: i64,
+    max_photo_file_size: i32,
     /// The maximum size of a video file to be auto-downloaded
-    max_video_file_size: i64,
+    max_video_file_size: i32,
     /// The maximum size of other file types to be auto-downloaded
-    max_other_file_size: i64,
+    max_other_file_size: i32,
     /// The maximum suggested bitrate for uploaded videos
-    video_upload_bitrate: i64,
-    /// True, if the beginning of videos needs to be preloaded for instant playback
+    video_upload_bitrate: i32,
+    /// True, if the beginning of video files needs to be preloaded for instant playback
     preload_large_videos: bool,
     /// True, if the next audio track needs to be preloaded while the user is listening to an audio file
     preload_next_audio: bool,
@@ -31,15 +30,12 @@ pub struct AutoDownloadSettings {
 
 impl RObject for AutoDownloadSettings {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "autoDownloadSettings"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -49,8 +45,8 @@ impl AutoDownloadSettings {
     }
     pub fn builder() -> RTDAutoDownloadSettingsBuilder {
         let mut inner = AutoDownloadSettings::default();
-        inner.td_name = "autoDownloadSettings".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDAutoDownloadSettingsBuilder { inner }
     }
 
@@ -58,19 +54,19 @@ impl AutoDownloadSettings {
         self.is_auto_download_enabled
     }
 
-    pub fn max_photo_file_size(&self) -> i64 {
+    pub fn max_photo_file_size(&self) -> i32 {
         self.max_photo_file_size
     }
 
-    pub fn max_video_file_size(&self) -> i64 {
+    pub fn max_video_file_size(&self) -> i32 {
         self.max_video_file_size
     }
 
-    pub fn max_other_file_size(&self) -> i64 {
+    pub fn max_other_file_size(&self) -> i32 {
         self.max_other_file_size
     }
 
-    pub fn video_upload_bitrate(&self) -> i64 {
+    pub fn video_upload_bitrate(&self) -> i32 {
         self.video_upload_bitrate
     }
 
@@ -102,22 +98,22 @@ impl RTDAutoDownloadSettingsBuilder {
         self
     }
 
-    pub fn max_photo_file_size(&mut self, max_photo_file_size: i64) -> &mut Self {
+    pub fn max_photo_file_size(&mut self, max_photo_file_size: i32) -> &mut Self {
         self.inner.max_photo_file_size = max_photo_file_size;
         self
     }
 
-    pub fn max_video_file_size(&mut self, max_video_file_size: i64) -> &mut Self {
+    pub fn max_video_file_size(&mut self, max_video_file_size: i32) -> &mut Self {
         self.inner.max_video_file_size = max_video_file_size;
         self
     }
 
-    pub fn max_other_file_size(&mut self, max_other_file_size: i64) -> &mut Self {
+    pub fn max_other_file_size(&mut self, max_other_file_size: i32) -> &mut Self {
         self.inner.max_other_file_size = max_other_file_size;
         self
     }
 
-    pub fn video_upload_bitrate(&mut self, video_upload_bitrate: i64) -> &mut Self {
+    pub fn video_upload_bitrate(&mut self, video_upload_bitrate: i32) -> &mut Self {
         self.inner.video_upload_bitrate = video_upload_bitrate;
         self
     }

@@ -6,18 +6,17 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatPermissions {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if the user can send text messages, contacts, locations, and venues
     can_send_messages: bool,
     /// True, if the user can send audio files, documents, photos, videos, video notes, and voice notes. Implies can_send_messages permissions
     can_send_media_messages: bool,
     /// True, if the user can send polls. Implies can_send_messages permissions
     can_send_polls: bool,
-    /// True, if the user can send animations, games, and stickers and use inline bots. Implies can_send_messages permissions
+    /// True, if the user can send animations, games, stickers, and dice and use inline bots. Implies can_send_messages permissions
     can_send_other_messages: bool,
     /// True, if the user may add a web page preview to their messages. Implies can_send_messages permissions
     can_add_web_page_previews: bool,
@@ -31,15 +30,12 @@ pub struct ChatPermissions {
 
 impl RObject for ChatPermissions {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatPermissions"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -49,8 +45,8 @@ impl ChatPermissions {
     }
     pub fn builder() -> RTDChatPermissionsBuilder {
         let mut inner = ChatPermissions::default();
-        inner.td_name = "chatPermissions".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatPermissionsBuilder { inner }
     }
 

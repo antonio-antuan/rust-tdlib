@@ -6,13 +6,12 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct VoiceNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Duration of the voice note, in seconds; as defined by the sender
-    duration: i64,
+    duration: i32,
     /// A waveform representation of the voice note in 5-bit format
     waveform: String,
     /// MIME type of the file; as defined by the sender
@@ -23,15 +22,12 @@ pub struct VoiceNote {
 
 impl RObject for VoiceNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "voiceNote"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -41,12 +37,12 @@ impl VoiceNote {
     }
     pub fn builder() -> RTDVoiceNoteBuilder {
         let mut inner = VoiceNote::default();
-        inner.td_name = "voiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDVoiceNoteBuilder { inner }
     }
 
-    pub fn duration(&self) -> i64 {
+    pub fn duration(&self) -> i32 {
         self.duration
     }
 
@@ -73,7 +69,7 @@ impl RTDVoiceNoteBuilder {
         self.inner.clone()
     }
 
-    pub fn duration(&mut self, duration: i64) -> &mut Self {
+    pub fn duration(&mut self, duration: i32) -> &mut Self {
         self.inner.duration = duration;
         self
     }

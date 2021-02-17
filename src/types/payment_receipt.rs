@@ -6,15 +6,14 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PaymentReceipt {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the payment was made
-    date: i64,
+    date: i32,
     /// User identifier of the payment provider bot
-    payments_provider_user_id: i64,
+    payments_provider_user_id: i32,
     /// Contains information about the invoice
     invoice: Invoice,
     /// Contains order information; may be null
@@ -27,15 +26,12 @@ pub struct PaymentReceipt {
 
 impl RObject for PaymentReceipt {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "paymentReceipt"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -45,16 +41,16 @@ impl PaymentReceipt {
     }
     pub fn builder() -> RTDPaymentReceiptBuilder {
         let mut inner = PaymentReceipt::default();
-        inner.td_name = "paymentReceipt".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPaymentReceiptBuilder { inner }
     }
 
-    pub fn date(&self) -> i64 {
+    pub fn date(&self) -> i32 {
         self.date
     }
 
-    pub fn payments_provider_user_id(&self) -> i64 {
+    pub fn payments_provider_user_id(&self) -> i32 {
         self.payments_provider_user_id
     }
 
@@ -85,12 +81,12 @@ impl RTDPaymentReceiptBuilder {
         self.inner.clone()
     }
 
-    pub fn date(&mut self, date: i64) -> &mut Self {
+    pub fn date(&mut self, date: i32) -> &mut Self {
         self.inner.date = date;
         self
     }
 
-    pub fn payments_provider_user_id(&mut self, payments_provider_user_id: i64) -> &mut Self {
+    pub fn payments_provider_user_id(&mut self, payments_provider_user_id: i32) -> &mut Self {
         self.inner.payments_provider_user_id = payments_provider_user_id;
         self
     }

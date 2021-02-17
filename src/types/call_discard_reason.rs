@@ -2,69 +2,43 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Describes the reason why a call was discarded
+/// Describes the reason why a call was discarded
 pub trait TDCallDiscardReason: Debug + RObject {}
 
 /// Describes the reason why a call was discarded
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum CallDiscardReason {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The call was ended before the conversation started. It was declined by the other party
+    #[serde(rename(deserialize = "callDiscardReasonDeclined"))]
     Declined(CallDiscardReasonDeclined),
     /// The call was ended during the conversation because the users were disconnected
+    #[serde(rename(deserialize = "callDiscardReasonDisconnected"))]
     Disconnected(CallDiscardReasonDisconnected),
     /// The call wasn't discarded, or the reason is unknown
+    #[serde(rename(deserialize = "callDiscardReasonEmpty"))]
     Empty(CallDiscardReasonEmpty),
     /// The call was ended because one of the parties hung up
+    #[serde(rename(deserialize = "callDiscardReasonHungUp"))]
     HungUp(CallDiscardReasonHungUp),
     /// The call was ended before the conversation started. It was cancelled by the caller or missed by the other party
+    #[serde(rename(deserialize = "callDiscardReasonMissed"))]
     Missed(CallDiscardReasonMissed),
 }
 
 impl Default for CallDiscardReason {
     fn default() -> Self {
-        CallDiscardReason::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for CallDiscardReason {
-    fn deserialize<D>(deserializer: D) -> Result<CallDiscardReason, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          CallDiscardReason,
-          (callDiscardReasonDeclined, Declined);
-          (callDiscardReasonDisconnected, Disconnected);
-          (callDiscardReasonEmpty, Empty);
-          (callDiscardReasonHungUp, HungUp);
-          (callDiscardReasonMissed, Missed);
-
-        )(deserializer)
+        CallDiscardReason::_Default
     }
 }
 
 impl RObject for CallDiscardReason {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            CallDiscardReason::Declined(t) => t.td_name(),
-            CallDiscardReason::Disconnected(t) => t.td_name(),
-            CallDiscardReason::Empty(t) => t.td_name(),
-            CallDiscardReason::HungUp(t) => t.td_name(),
-            CallDiscardReason::Missed(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             CallDiscardReason::Declined(t) => t.extra(),
             CallDiscardReason::Disconnected(t) => t.extra(),
@@ -75,8 +49,17 @@ impl RObject for CallDiscardReason {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            CallDiscardReason::Declined(t) => t.client_id(),
+            CallDiscardReason::Disconnected(t) => t.client_id(),
+            CallDiscardReason::Empty(t) => t.client_id(),
+            CallDiscardReason::HungUp(t) => t.client_id(),
+            CallDiscardReason::Missed(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -86,7 +69,7 @@ impl CallDiscardReason {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, CallDiscardReason::_Default(_))
+        matches!(self, CallDiscardReason::_Default)
     }
 }
 
@@ -100,24 +83,20 @@ impl AsRef<CallDiscardReason> for CallDiscardReason {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallDiscardReasonDeclined {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CallDiscardReasonDeclined {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callDiscardReasonDeclined"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -129,8 +108,8 @@ impl CallDiscardReasonDeclined {
     }
     pub fn builder() -> RTDCallDiscardReasonDeclinedBuilder {
         let mut inner = CallDiscardReasonDeclined::default();
-        inner.td_name = "callDiscardReasonDeclined".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDCallDiscardReasonDeclinedBuilder { inner }
     }
 }
@@ -162,24 +141,20 @@ impl AsRef<CallDiscardReasonDeclined> for RTDCallDiscardReasonDeclinedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallDiscardReasonDisconnected {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CallDiscardReasonDisconnected {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callDiscardReasonDisconnected"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -191,8 +166,8 @@ impl CallDiscardReasonDisconnected {
     }
     pub fn builder() -> RTDCallDiscardReasonDisconnectedBuilder {
         let mut inner = CallDiscardReasonDisconnected::default();
-        inner.td_name = "callDiscardReasonDisconnected".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDCallDiscardReasonDisconnectedBuilder { inner }
     }
 }
@@ -224,24 +199,20 @@ impl AsRef<CallDiscardReasonDisconnected> for RTDCallDiscardReasonDisconnectedBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallDiscardReasonEmpty {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CallDiscardReasonEmpty {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callDiscardReasonEmpty"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -253,8 +224,8 @@ impl CallDiscardReasonEmpty {
     }
     pub fn builder() -> RTDCallDiscardReasonEmptyBuilder {
         let mut inner = CallDiscardReasonEmpty::default();
-        inner.td_name = "callDiscardReasonEmpty".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDCallDiscardReasonEmptyBuilder { inner }
     }
 }
@@ -286,24 +257,20 @@ impl AsRef<CallDiscardReasonEmpty> for RTDCallDiscardReasonEmptyBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallDiscardReasonHungUp {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CallDiscardReasonHungUp {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callDiscardReasonHungUp"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -315,8 +282,8 @@ impl CallDiscardReasonHungUp {
     }
     pub fn builder() -> RTDCallDiscardReasonHungUpBuilder {
         let mut inner = CallDiscardReasonHungUp::default();
-        inner.td_name = "callDiscardReasonHungUp".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDCallDiscardReasonHungUpBuilder { inner }
     }
 }
@@ -348,24 +315,20 @@ impl AsRef<CallDiscardReasonHungUp> for RTDCallDiscardReasonHungUpBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallDiscardReasonMissed {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for CallDiscardReasonMissed {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "callDiscardReasonMissed"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -377,8 +340,8 @@ impl CallDiscardReasonMissed {
     }
     pub fn builder() -> RTDCallDiscardReasonMissedBuilder {
         let mut inner = CallDiscardReasonMissed::default();
-        inner.td_name = "callDiscardReasonMissed".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDCallDiscardReasonMissedBuilder { inner }
     }
 }

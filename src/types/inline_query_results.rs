@@ -6,13 +6,14 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InlineQueryResults {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the inline query
-    inline_query_id: isize,
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    inline_query_id: i64,
     /// The offset for the next request. If empty, there are no more results
     next_offset: String,
     /// Results of the query
@@ -25,15 +26,12 @@ pub struct InlineQueryResults {
 
 impl RObject for InlineQueryResults {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inlineQueryResults"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,12 +41,12 @@ impl InlineQueryResults {
     }
     pub fn builder() -> RTDInlineQueryResultsBuilder {
         let mut inner = InlineQueryResults::default();
-        inner.td_name = "inlineQueryResults".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInlineQueryResultsBuilder { inner }
     }
 
-    pub fn inline_query_id(&self) -> isize {
+    pub fn inline_query_id(&self) -> i64 {
         self.inline_query_id
     }
 
@@ -79,7 +77,7 @@ impl RTDInlineQueryResultsBuilder {
         self.inner.clone()
     }
 
-    pub fn inline_query_id(&mut self, inline_query_id: isize) -> &mut Self {
+    pub fn inline_query_id(&mut self, inline_query_id: i64) -> &mut Self {
         self.inner.inline_query_id = inline_query_id;
         self
     }

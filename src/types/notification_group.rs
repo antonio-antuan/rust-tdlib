@@ -6,35 +6,33 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationGroup {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique persistent auto-incremented from 1 identifier of the notification group
-    id: i64,
+    id: i32,
     /// Type of the group
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "NotificationGroupType::_is_default")]
     type_: NotificationGroupType,
     /// Identifier of a chat to which all notifications in the group belong
     chat_id: i64,
     /// Total number of active notifications in the group
-    total_count: i64,
+    total_count: i32,
     /// The list of active notifications
     notifications: Vec<Notification>,
 }
 
 impl RObject for NotificationGroup {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "notificationGroup"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -44,12 +42,12 @@ impl NotificationGroup {
     }
     pub fn builder() -> RTDNotificationGroupBuilder {
         let mut inner = NotificationGroup::default();
-        inner.td_name = "notificationGroup".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNotificationGroupBuilder { inner }
     }
 
-    pub fn id(&self) -> i64 {
+    pub fn id(&self) -> i32 {
         self.id
     }
 
@@ -61,7 +59,7 @@ impl NotificationGroup {
         self.chat_id
     }
 
-    pub fn total_count(&self) -> i64 {
+    pub fn total_count(&self) -> i32 {
         self.total_count
     }
 
@@ -80,7 +78,7 @@ impl RTDNotificationGroupBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i64) -> &mut Self {
+    pub fn id(&mut self, id: i32) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -95,7 +93,7 @@ impl RTDNotificationGroupBuilder {
         self
     }
 
-    pub fn total_count(&mut self, total_count: i64) -> &mut Self {
+    pub fn total_count(&mut self, total_count: i32) -> &mut Self {
         self.inner.total_count = total_count;
         self
     }

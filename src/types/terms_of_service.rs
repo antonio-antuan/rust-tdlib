@@ -6,30 +6,26 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TermsOfService {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Text of the terms of service
     text: FormattedText,
     /// The minimum age of a user to be able to accept the terms; 0 if any
-    min_user_age: i64,
+    min_user_age: i32,
     /// True, if a blocking popup with terms of service must be shown to the user
     show_popup: bool,
 }
 
 impl RObject for TermsOfService {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "termsOfService"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -39,8 +35,8 @@ impl TermsOfService {
     }
     pub fn builder() -> RTDTermsOfServiceBuilder {
         let mut inner = TermsOfService::default();
-        inner.td_name = "termsOfService".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDTermsOfServiceBuilder { inner }
     }
 
@@ -48,7 +44,7 @@ impl TermsOfService {
         &self.text
     }
 
-    pub fn min_user_age(&self) -> i64 {
+    pub fn min_user_age(&self) -> i32 {
         self.min_user_age
     }
 
@@ -72,7 +68,7 @@ impl RTDTermsOfServiceBuilder {
         self
     }
 
-    pub fn min_user_age(&mut self, min_user_age: i64) -> &mut Self {
+    pub fn min_user_age(&mut self, min_user_age: i32) -> &mut Self {
         self.inner.min_user_age = min_user_age;
         self
     }

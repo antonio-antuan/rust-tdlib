@@ -1,0 +1,28 @@
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    env:
+      API_ID: 1
+      API_HASH: 1
+
+    steps:
+      - uses: actions/checkout@v2
+
+# tests disabled in case of unavailable tdlib =(
+#      - name: tests
+#        env:
+#          RUST_LOG: trace
+#        run: cargo test --features client

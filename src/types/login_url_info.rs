@@ -2,61 +2,37 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about an inline button of type inlineKeyboardButtonTypeLoginUrl
+/// Contains information about an inline button of type inlineKeyboardButtonTypeLoginUrl
 pub trait TDLoginUrlInfo: Debug + RObject {}
 
 /// Contains information about an inline button of type inlineKeyboardButtonTypeLoginUrl
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum LoginUrlInfo {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns information about a button of type inlineKeyboardButtonTypeLoginUrl. The method needs to be called when the user presses the button
+    #[serde(rename(deserialize = "getLoginUrlInfo"))]
     GetLoginUrlInfo(GetLoginUrlInfo),
     /// An HTTP url needs to be open
+    #[serde(rename(deserialize = "loginUrlInfoOpen"))]
     Open(LoginUrlInfoOpen),
     /// An authorization confirmation dialog needs to be shown to the user
+    #[serde(rename(deserialize = "loginUrlInfoRequestConfirmation"))]
     RequestConfirmation(LoginUrlInfoRequestConfirmation),
 }
 
 impl Default for LoginUrlInfo {
     fn default() -> Self {
-        LoginUrlInfo::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for LoginUrlInfo {
-    fn deserialize<D>(deserializer: D) -> Result<LoginUrlInfo, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          LoginUrlInfo,
-          (getLoginUrlInfo, GetLoginUrlInfo);
-          (loginUrlInfoOpen, Open);
-          (loginUrlInfoRequestConfirmation, RequestConfirmation);
-
-        )(deserializer)
+        LoginUrlInfo::_Default
     }
 }
 
 impl RObject for LoginUrlInfo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            LoginUrlInfo::GetLoginUrlInfo(t) => t.td_name(),
-            LoginUrlInfo::Open(t) => t.td_name(),
-            LoginUrlInfo::RequestConfirmation(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             LoginUrlInfo::GetLoginUrlInfo(t) => t.extra(),
             LoginUrlInfo::Open(t) => t.extra(),
@@ -65,8 +41,15 @@ impl RObject for LoginUrlInfo {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            LoginUrlInfo::GetLoginUrlInfo(t) => t.client_id(),
+            LoginUrlInfo::Open(t) => t.client_id(),
+            LoginUrlInfo::RequestConfirmation(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -76,7 +59,7 @@ impl LoginUrlInfo {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, LoginUrlInfo::_Default(_))
+        matches!(self, LoginUrlInfo::_Default)
     }
 }
 
@@ -90,11 +73,10 @@ impl AsRef<LoginUrlInfo> for LoginUrlInfo {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LoginUrlInfoOpen {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The URL to open
     url: String,
     /// True, if there is no need to show an ordinary open URL confirm
@@ -103,15 +85,12 @@ pub struct LoginUrlInfoOpen {
 
 impl RObject for LoginUrlInfoOpen {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "loginUrlInfoOpen"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -123,8 +102,8 @@ impl LoginUrlInfoOpen {
     }
     pub fn builder() -> RTDLoginUrlInfoOpenBuilder {
         let mut inner = LoginUrlInfoOpen::default();
-        inner.td_name = "loginUrlInfoOpen".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDLoginUrlInfoOpenBuilder { inner }
     }
 
@@ -174,32 +153,28 @@ impl AsRef<LoginUrlInfoOpen> for RTDLoginUrlInfoOpenBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LoginUrlInfoRequestConfirmation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// An HTTP URL to be opened
     url: String,
     /// A domain of the URL
     domain: String,
     /// User identifier of a bot linked with the website
-    bot_user_id: i64,
+    bot_user_id: i32,
     /// True, if the user needs to be requested to give the permission to the bot to send them messages
     request_write_access: bool,
 }
 
 impl RObject for LoginUrlInfoRequestConfirmation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "loginUrlInfoRequestConfirmation"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -211,8 +186,8 @@ impl LoginUrlInfoRequestConfirmation {
     }
     pub fn builder() -> RTDLoginUrlInfoRequestConfirmationBuilder {
         let mut inner = LoginUrlInfoRequestConfirmation::default();
-        inner.td_name = "loginUrlInfoRequestConfirmation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDLoginUrlInfoRequestConfirmationBuilder { inner }
     }
 
@@ -224,7 +199,7 @@ impl LoginUrlInfoRequestConfirmation {
         &self.domain
     }
 
-    pub fn bot_user_id(&self) -> i64 {
+    pub fn bot_user_id(&self) -> i32 {
         self.bot_user_id
     }
 
@@ -253,7 +228,7 @@ impl RTDLoginUrlInfoRequestConfirmationBuilder {
         self
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }

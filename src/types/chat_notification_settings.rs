@@ -6,15 +6,14 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatNotificationSettings {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// If true, mute_for is ignored and the value for the relevant type of chat is used instead
     use_default_mute_for: bool,
     /// Time left before notifications will be unmuted, in seconds
-    mute_for: i64,
+    mute_for: i32,
     /// If true, sound is ignored and the value for the relevant type of chat is used instead
     use_default_sound: bool,
     /// The name of an audio file to be used for notification sounds; only applies to iOS applications
@@ -35,15 +34,12 @@ pub struct ChatNotificationSettings {
 
 impl RObject for ChatNotificationSettings {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatNotificationSettings"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -53,8 +49,8 @@ impl ChatNotificationSettings {
     }
     pub fn builder() -> RTDChatNotificationSettingsBuilder {
         let mut inner = ChatNotificationSettings::default();
-        inner.td_name = "chatNotificationSettings".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatNotificationSettingsBuilder { inner }
     }
 
@@ -62,7 +58,7 @@ impl ChatNotificationSettings {
         self.use_default_mute_for
     }
 
-    pub fn mute_for(&self) -> i64 {
+    pub fn mute_for(&self) -> i32 {
         self.mute_for
     }
 
@@ -114,7 +110,7 @@ impl RTDChatNotificationSettingsBuilder {
         self
     }
 
-    pub fn mute_for(&mut self, mute_for: i64) -> &mut Self {
+    pub fn mute_for(&mut self, mute_for: i32) -> &mut Self {
         self.inner.mute_for = mute_for;
         self
     }

@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PageBlockRelatedArticle {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Related article URL
     url: String,
     /// Article title; may be empty
@@ -22,20 +21,17 @@ pub struct PageBlockRelatedArticle {
     /// Article author; may be empty
     author: String,
     /// Point in time (Unix timestamp) when the article was published; 0 if unknown
-    publish_date: i64,
+    publish_date: i32,
 }
 
 impl RObject for PageBlockRelatedArticle {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "pageBlockRelatedArticle"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -45,8 +41,8 @@ impl PageBlockRelatedArticle {
     }
     pub fn builder() -> RTDPageBlockRelatedArticleBuilder {
         let mut inner = PageBlockRelatedArticle::default();
-        inner.td_name = "pageBlockRelatedArticle".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDPageBlockRelatedArticleBuilder { inner }
     }
 
@@ -70,7 +66,7 @@ impl PageBlockRelatedArticle {
         &self.author
     }
 
-    pub fn publish_date(&self) -> i64 {
+    pub fn publish_date(&self) -> i32 {
         self.publish_date
     }
 }
@@ -110,7 +106,7 @@ impl RTDPageBlockRelatedArticleBuilder {
         self
     }
 
-    pub fn publish_date(&mut self, publish_date: i64) -> &mut Self {
+    pub fn publish_date(&mut self, publish_date: i32) -> &mut Self {
         self.inner.publish_date = publish_date;
         self
     }

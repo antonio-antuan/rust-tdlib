@@ -6,28 +6,24 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TemporaryPasswordState {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// True, if a temporary password is available
     has_password: bool,
     /// Time left before the temporary password expires, in seconds
-    valid_for: i64,
+    valid_for: i32,
 }
 
 impl RObject for TemporaryPasswordState {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "temporaryPasswordState"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -37,8 +33,8 @@ impl TemporaryPasswordState {
     }
     pub fn builder() -> RTDTemporaryPasswordStateBuilder {
         let mut inner = TemporaryPasswordState::default();
-        inner.td_name = "temporaryPasswordState".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDTemporaryPasswordStateBuilder { inner }
     }
 
@@ -46,7 +42,7 @@ impl TemporaryPasswordState {
         self.has_password
     }
 
-    pub fn valid_for(&self) -> i64 {
+    pub fn valid_for(&self) -> i32 {
         self.valid_for
     }
 }
@@ -66,7 +62,7 @@ impl RTDTemporaryPasswordStateBuilder {
         self
     }
 
-    pub fn valid_for(&mut self, valid_for: i64) -> &mut Self {
+    pub fn valid_for(&mut self, valid_for: i32) -> &mut Self {
         self.inner.valid_for = valid_for;
         self
     }

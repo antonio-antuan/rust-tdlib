@@ -6,17 +6,16 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct File {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique file identifier
-    id: i64,
+    id: i32,
     /// File size; 0 if unknown
-    size: i64,
+    size: i32,
     /// Expected file size in case the exact file size is unknown, but an approximate size is known. Can be used to show download/upload progress
-    expected_size: i64,
+    expected_size: i32,
     /// Information about the local copy of the file
     local: LocalFile,
     /// Information about the remote copy of the file
@@ -25,15 +24,12 @@ pub struct File {
 
 impl RObject for File {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "file"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,20 +39,20 @@ impl File {
     }
     pub fn builder() -> RTDFileBuilder {
         let mut inner = File::default();
-        inner.td_name = "file".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDFileBuilder { inner }
     }
 
-    pub fn id(&self) -> i64 {
+    pub fn id(&self) -> i32 {
         self.id
     }
 
-    pub fn size(&self) -> i64 {
+    pub fn size(&self) -> i32 {
         self.size
     }
 
-    pub fn expected_size(&self) -> i64 {
+    pub fn expected_size(&self) -> i32 {
         self.expected_size
     }
 
@@ -79,17 +75,17 @@ impl RTDFileBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i64) -> &mut Self {
+    pub fn id(&mut self, id: i32) -> &mut Self {
         self.inner.id = id;
         self
     }
 
-    pub fn size(&mut self, size: i64) -> &mut Self {
+    pub fn size(&mut self, size: i32) -> &mut Self {
         self.inner.size = size;
         self
     }
 
-    pub fn expected_size(&mut self, expected_size: i64) -> &mut Self {
+    pub fn expected_size(&mut self, expected_size: i32) -> &mut Self {
         self.inner.expected_size = expected_size;
         self
     }

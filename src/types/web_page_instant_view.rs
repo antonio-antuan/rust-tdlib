@@ -6,17 +6,16 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct WebPageInstantView {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Content of the web page
     page_blocks: Vec<PageBlock>,
+    /// Number of the instant view views; 0 if unknown
+    view_count: i32,
     /// Version of the instant view, currently can be 1 or 2
-    version: i64,
-    /// Instant view URL; may be different from WebPage.url and must be used for the correct anchors handling
-    url: String,
+    version: i32,
     /// True, if the instant view must be shown from right to left
     is_rtl: bool,
     /// True, if the instant view contains the full page. A network request might be needed to get the full web page instant view
@@ -25,15 +24,12 @@ pub struct WebPageInstantView {
 
 impl RObject for WebPageInstantView {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "webPageInstantView"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -43,8 +39,8 @@ impl WebPageInstantView {
     }
     pub fn builder() -> RTDWebPageInstantViewBuilder {
         let mut inner = WebPageInstantView::default();
-        inner.td_name = "webPageInstantView".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDWebPageInstantViewBuilder { inner }
     }
 
@@ -52,12 +48,12 @@ impl WebPageInstantView {
         &self.page_blocks
     }
 
-    pub fn version(&self) -> i64 {
-        self.version
+    pub fn view_count(&self) -> i32 {
+        self.view_count
     }
 
-    pub fn url(&self) -> &String {
-        &self.url
+    pub fn version(&self) -> i32 {
+        self.version
     }
 
     pub fn is_rtl(&self) -> bool {
@@ -84,13 +80,13 @@ impl RTDWebPageInstantViewBuilder {
         self
     }
 
-    pub fn version(&mut self, version: i64) -> &mut Self {
-        self.inner.version = version;
+    pub fn view_count(&mut self, view_count: i32) -> &mut Self {
+        self.inner.view_count = view_count;
         self
     }
 
-    pub fn url<T: AsRef<str>>(&mut self, url: T) -> &mut Self {
-        self.inner.url = url.as_ref().to_string();
+    pub fn version(&mut self, version: i32) -> &mut Self {
+        self.inner.version = version;
         self
     }
 

@@ -2,104 +2,66 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Represents a single result of an inline query; for bots only
+/// Represents a single result of an inline query; for bots only
 pub trait TDInputInlineQueryResult: Debug + RObject {}
 
 /// Represents a single result of an inline query; for bots only
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum InputInlineQueryResult {
     #[doc(hidden)]
-    _Default(()),
-    /// Represents a link to an animated GIF
-    AnimatedGif(InputInlineQueryResultAnimatedGif),
-    /// Represents a link to an animated (i.e. without sound) H.264/MPEG-4 AVC video
-    AnimatedMpeg4(InputInlineQueryResultAnimatedMpeg4),
+    _Default,
+    /// Represents a link to an animated GIF or an animated (i.e. without sound) H.264/MPEG-4 AVC video
+    #[serde(rename(deserialize = "inputInlineQueryResultAnimation"))]
+    Animation(InputInlineQueryResultAnimation),
     /// Represents a link to an article or web page
+    #[serde(rename(deserialize = "inputInlineQueryResultArticle"))]
     Article(InputInlineQueryResultArticle),
     /// Represents a link to an MP3 audio file
+    #[serde(rename(deserialize = "inputInlineQueryResultAudio"))]
     Audio(InputInlineQueryResultAudio),
     /// Represents a user contact
+    #[serde(rename(deserialize = "inputInlineQueryResultContact"))]
     Contact(InputInlineQueryResultContact),
     /// Represents a link to a file
+    #[serde(rename(deserialize = "inputInlineQueryResultDocument"))]
     Document(InputInlineQueryResultDocument),
     /// Represents a game
+    #[serde(rename(deserialize = "inputInlineQueryResultGame"))]
     Game(InputInlineQueryResultGame),
     /// Represents a point on the map
+    #[serde(rename(deserialize = "inputInlineQueryResultLocation"))]
     Location(InputInlineQueryResultLocation),
     /// Represents link to a JPEG image
+    #[serde(rename(deserialize = "inputInlineQueryResultPhoto"))]
     Photo(InputInlineQueryResultPhoto),
     /// Represents a link to a WEBP or TGS sticker
+    #[serde(rename(deserialize = "inputInlineQueryResultSticker"))]
     Sticker(InputInlineQueryResultSticker),
     /// Represents information about a venue
+    #[serde(rename(deserialize = "inputInlineQueryResultVenue"))]
     Venue(InputInlineQueryResultVenue),
     /// Represents a link to a page containing an embedded video player or a video file
+    #[serde(rename(deserialize = "inputInlineQueryResultVideo"))]
     Video(InputInlineQueryResultVideo),
     /// Represents a link to an opus-encoded audio file within an OGG container, single channel audio
+    #[serde(rename(deserialize = "inputInlineQueryResultVoiceNote"))]
     VoiceNote(InputInlineQueryResultVoiceNote),
 }
 
 impl Default for InputInlineQueryResult {
     fn default() -> Self {
-        InputInlineQueryResult::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for InputInlineQueryResult {
-    fn deserialize<D>(deserializer: D) -> Result<InputInlineQueryResult, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          InputInlineQueryResult,
-          (inputInlineQueryResultAnimatedGif, AnimatedGif);
-          (inputInlineQueryResultAnimatedMpeg4, AnimatedMpeg4);
-          (inputInlineQueryResultArticle, Article);
-          (inputInlineQueryResultAudio, Audio);
-          (inputInlineQueryResultContact, Contact);
-          (inputInlineQueryResultDocument, Document);
-          (inputInlineQueryResultGame, Game);
-          (inputInlineQueryResultLocation, Location);
-          (inputInlineQueryResultPhoto, Photo);
-          (inputInlineQueryResultSticker, Sticker);
-          (inputInlineQueryResultVenue, Venue);
-          (inputInlineQueryResultVideo, Video);
-          (inputInlineQueryResultVoiceNote, VoiceNote);
-
-        )(deserializer)
+        InputInlineQueryResult::_Default
     }
 }
 
 impl RObject for InputInlineQueryResult {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
+    fn extra(&self) -> Option<&str> {
         match self {
-            InputInlineQueryResult::AnimatedGif(t) => t.td_name(),
-            InputInlineQueryResult::AnimatedMpeg4(t) => t.td_name(),
-            InputInlineQueryResult::Article(t) => t.td_name(),
-            InputInlineQueryResult::Audio(t) => t.td_name(),
-            InputInlineQueryResult::Contact(t) => t.td_name(),
-            InputInlineQueryResult::Document(t) => t.td_name(),
-            InputInlineQueryResult::Game(t) => t.td_name(),
-            InputInlineQueryResult::Location(t) => t.td_name(),
-            InputInlineQueryResult::Photo(t) => t.td_name(),
-            InputInlineQueryResult::Sticker(t) => t.td_name(),
-            InputInlineQueryResult::Venue(t) => t.td_name(),
-            InputInlineQueryResult::Video(t) => t.td_name(),
-            InputInlineQueryResult::VoiceNote(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        match self {
-            InputInlineQueryResult::AnimatedGif(t) => t.extra(),
-            InputInlineQueryResult::AnimatedMpeg4(t) => t.extra(),
+            InputInlineQueryResult::Animation(t) => t.extra(),
             InputInlineQueryResult::Article(t) => t.extra(),
             InputInlineQueryResult::Audio(t) => t.extra(),
             InputInlineQueryResult::Contact(t) => t.extra(),
@@ -115,8 +77,24 @@ impl RObject for InputInlineQueryResult {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            InputInlineQueryResult::Animation(t) => t.client_id(),
+            InputInlineQueryResult::Article(t) => t.client_id(),
+            InputInlineQueryResult::Audio(t) => t.client_id(),
+            InputInlineQueryResult::Contact(t) => t.client_id(),
+            InputInlineQueryResult::Document(t) => t.client_id(),
+            InputInlineQueryResult::Game(t) => t.client_id(),
+            InputInlineQueryResult::Location(t) => t.client_id(),
+            InputInlineQueryResult::Photo(t) => t.client_id(),
+            InputInlineQueryResult::Sticker(t) => t.client_id(),
+            InputInlineQueryResult::Venue(t) => t.client_id(),
+            InputInlineQueryResult::Video(t) => t.client_id(),
+            InputInlineQueryResult::VoiceNote(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -126,7 +104,7 @@ impl InputInlineQueryResult {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputInlineQueryResult::_Default(_))
+        matches!(self, InputInlineQueryResult::_Default)
     }
 }
 
@@ -136,224 +114,64 @@ impl AsRef<InputInlineQueryResult> for InputInlineQueryResult {
     }
 }
 
-/// Represents a link to an animated GIF
+/// Represents a link to an animated GIF or an animated (i.e. without sound) H.264/MPEG-4 AVC video
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InputInlineQueryResultAnimatedGif {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
+pub struct InputInlineQueryResultAnimation {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Title of the query result
     title: String,
-    /// URL of the static result thumbnail (JPEG or GIF), if it exists
+    /// URL of the result thumbnail (JPEG, GIF, or MPEG4), if it exists
     thumbnail_url: String,
-    /// The URL of the GIF-file (file size must not exceed 1MB)
-    gif_url: String,
-    /// Duration of the GIF, in seconds
-    gif_duration: i64,
-    /// Width of the GIF
-    gif_width: i64,
-    /// Height of the GIF
-    gif_height: i64,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
-    reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAnimation, InputMessageLocation, InputMessageVenue or InputMessageContact
-    input_message_content: InputMessageContent,
-}
-
-impl RObject for InputInlineQueryResultAnimatedGif {
-    #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultAnimatedGif"
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
-    }
-}
-
-impl TDInputInlineQueryResult for InputInlineQueryResultAnimatedGif {}
-
-impl InputInlineQueryResultAnimatedGif {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInputInlineQueryResultAnimatedGifBuilder {
-        let mut inner = InputInlineQueryResultAnimatedGif::default();
-        inner.td_name = "inputInlineQueryResultAnimatedGif".to_string();
-        inner.extra = Some(Uuid::new_v4().to_string());
-        RTDInputInlineQueryResultAnimatedGifBuilder { inner }
-    }
-
-    pub fn id(&self) -> &String {
-        &self.id
-    }
-
-    pub fn title(&self) -> &String {
-        &self.title
-    }
-
-    pub fn thumbnail_url(&self) -> &String {
-        &self.thumbnail_url
-    }
-
-    pub fn gif_url(&self) -> &String {
-        &self.gif_url
-    }
-
-    pub fn gif_duration(&self) -> i64 {
-        self.gif_duration
-    }
-
-    pub fn gif_width(&self) -> i64 {
-        self.gif_width
-    }
-
-    pub fn gif_height(&self) -> i64 {
-        self.gif_height
-    }
-
-    pub fn reply_markup(&self) -> &ReplyMarkup {
-        &self.reply_markup
-    }
-
-    pub fn input_message_content(&self) -> &InputMessageContent {
-        &self.input_message_content
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInputInlineQueryResultAnimatedGifBuilder {
-    inner: InputInlineQueryResultAnimatedGif,
-}
-
-impl RTDInputInlineQueryResultAnimatedGifBuilder {
-    pub fn build(&self) -> InputInlineQueryResultAnimatedGif {
-        self.inner.clone()
-    }
-
-    pub fn id<T: AsRef<str>>(&mut self, id: T) -> &mut Self {
-        self.inner.id = id.as_ref().to_string();
-        self
-    }
-
-    pub fn title<T: AsRef<str>>(&mut self, title: T) -> &mut Self {
-        self.inner.title = title.as_ref().to_string();
-        self
-    }
-
-    pub fn thumbnail_url<T: AsRef<str>>(&mut self, thumbnail_url: T) -> &mut Self {
-        self.inner.thumbnail_url = thumbnail_url.as_ref().to_string();
-        self
-    }
-
-    pub fn gif_url<T: AsRef<str>>(&mut self, gif_url: T) -> &mut Self {
-        self.inner.gif_url = gif_url.as_ref().to_string();
-        self
-    }
-
-    pub fn gif_duration(&mut self, gif_duration: i64) -> &mut Self {
-        self.inner.gif_duration = gif_duration;
-        self
-    }
-
-    pub fn gif_width(&mut self, gif_width: i64) -> &mut Self {
-        self.inner.gif_width = gif_width;
-        self
-    }
-
-    pub fn gif_height(&mut self, gif_height: i64) -> &mut Self {
-        self.inner.gif_height = gif_height;
-        self
-    }
-
-    pub fn reply_markup<T: AsRef<ReplyMarkup>>(&mut self, reply_markup: T) -> &mut Self {
-        self.inner.reply_markup = reply_markup.as_ref().clone();
-        self
-    }
-
-    pub fn input_message_content<T: AsRef<InputMessageContent>>(
-        &mut self,
-        input_message_content: T,
-    ) -> &mut Self {
-        self.inner.input_message_content = input_message_content.as_ref().clone();
-        self
-    }
-}
-
-impl AsRef<InputInlineQueryResultAnimatedGif> for InputInlineQueryResultAnimatedGif {
-    fn as_ref(&self) -> &InputInlineQueryResultAnimatedGif {
-        self
-    }
-}
-
-impl AsRef<InputInlineQueryResultAnimatedGif> for RTDInputInlineQueryResultAnimatedGifBuilder {
-    fn as_ref(&self) -> &InputInlineQueryResultAnimatedGif {
-        &self.inner
-    }
-}
-
-/// Represents a link to an animated (i.e. without sound) H.264/MPEG-4 AVC video
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InputInlineQueryResultAnimatedMpeg4 {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    /// Unique identifier of the query result
-    id: String,
-    /// Title of the result
-    title: String,
-    /// URL of the static result thumbnail (JPEG or GIF), if it exists
-    thumbnail_url: String,
-    /// The URL of the MPEG4-file (file size must not exceed 1MB)
-    mpeg4_url: String,
+    /// MIME type of the video thumbnail. If non-empty, must be one of "image/jpeg", "image/gif" and "video/mp4"
+    thumbnail_mime_type: String,
+    /// The URL of the video file (file size must not exceed 1MB)
+    video_url: String,
+    /// MIME type of the video file. Must be one of "image/gif" and "video/mp4"
+    video_mime_type: String,
     /// Duration of the video, in seconds
-    mpeg4_duration: i64,
+    video_duration: i32,
     /// Width of the video
-    mpeg4_width: i64,
+    video_width: i32,
     /// Height of the video
-    mpeg4_height: i64,
+    video_height: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAnimation, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
-impl RObject for InputInlineQueryResultAnimatedMpeg4 {
+impl RObject for InputInlineQueryResultAnimation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultAnimatedMpeg4"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
-impl TDInputInlineQueryResult for InputInlineQueryResultAnimatedMpeg4 {}
+impl TDInputInlineQueryResult for InputInlineQueryResultAnimation {}
 
-impl InputInlineQueryResultAnimatedMpeg4 {
+impl InputInlineQueryResultAnimation {
     pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultAnimatedMpeg4Builder {
-        let mut inner = InputInlineQueryResultAnimatedMpeg4::default();
-        inner.td_name = "inputInlineQueryResultAnimatedMpeg4".to_string();
+    pub fn builder() -> RTDInputInlineQueryResultAnimationBuilder {
+        let mut inner = InputInlineQueryResultAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
-        RTDInputInlineQueryResultAnimatedMpeg4Builder { inner }
+
+        RTDInputInlineQueryResultAnimationBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -368,20 +186,28 @@ impl InputInlineQueryResultAnimatedMpeg4 {
         &self.thumbnail_url
     }
 
-    pub fn mpeg4_url(&self) -> &String {
-        &self.mpeg4_url
+    pub fn thumbnail_mime_type(&self) -> &String {
+        &self.thumbnail_mime_type
     }
 
-    pub fn mpeg4_duration(&self) -> i64 {
-        self.mpeg4_duration
+    pub fn video_url(&self) -> &String {
+        &self.video_url
     }
 
-    pub fn mpeg4_width(&self) -> i64 {
-        self.mpeg4_width
+    pub fn video_mime_type(&self) -> &String {
+        &self.video_mime_type
     }
 
-    pub fn mpeg4_height(&self) -> i64 {
-        self.mpeg4_height
+    pub fn video_duration(&self) -> i32 {
+        self.video_duration
+    }
+
+    pub fn video_width(&self) -> i32 {
+        self.video_width
+    }
+
+    pub fn video_height(&self) -> i32 {
+        self.video_height
     }
 
     pub fn reply_markup(&self) -> &ReplyMarkup {
@@ -394,12 +220,12 @@ impl InputInlineQueryResultAnimatedMpeg4 {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultAnimatedMpeg4Builder {
-    inner: InputInlineQueryResultAnimatedMpeg4,
+pub struct RTDInputInlineQueryResultAnimationBuilder {
+    inner: InputInlineQueryResultAnimation,
 }
 
-impl RTDInputInlineQueryResultAnimatedMpeg4Builder {
-    pub fn build(&self) -> InputInlineQueryResultAnimatedMpeg4 {
+impl RTDInputInlineQueryResultAnimationBuilder {
+    pub fn build(&self) -> InputInlineQueryResultAnimation {
         self.inner.clone()
     }
 
@@ -418,23 +244,33 @@ impl RTDInputInlineQueryResultAnimatedMpeg4Builder {
         self
     }
 
-    pub fn mpeg4_url<T: AsRef<str>>(&mut self, mpeg4_url: T) -> &mut Self {
-        self.inner.mpeg4_url = mpeg4_url.as_ref().to_string();
+    pub fn thumbnail_mime_type<T: AsRef<str>>(&mut self, thumbnail_mime_type: T) -> &mut Self {
+        self.inner.thumbnail_mime_type = thumbnail_mime_type.as_ref().to_string();
         self
     }
 
-    pub fn mpeg4_duration(&mut self, mpeg4_duration: i64) -> &mut Self {
-        self.inner.mpeg4_duration = mpeg4_duration;
+    pub fn video_url<T: AsRef<str>>(&mut self, video_url: T) -> &mut Self {
+        self.inner.video_url = video_url.as_ref().to_string();
         self
     }
 
-    pub fn mpeg4_width(&mut self, mpeg4_width: i64) -> &mut Self {
-        self.inner.mpeg4_width = mpeg4_width;
+    pub fn video_mime_type<T: AsRef<str>>(&mut self, video_mime_type: T) -> &mut Self {
+        self.inner.video_mime_type = video_mime_type.as_ref().to_string();
         self
     }
 
-    pub fn mpeg4_height(&mut self, mpeg4_height: i64) -> &mut Self {
-        self.inner.mpeg4_height = mpeg4_height;
+    pub fn video_duration(&mut self, video_duration: i32) -> &mut Self {
+        self.inner.video_duration = video_duration;
+        self
+    }
+
+    pub fn video_width(&mut self, video_width: i32) -> &mut Self {
+        self.inner.video_width = video_width;
+        self
+    }
+
+    pub fn video_height(&mut self, video_height: i32) -> &mut Self {
+        self.inner.video_height = video_height;
         self
     }
 
@@ -452,14 +288,14 @@ impl RTDInputInlineQueryResultAnimatedMpeg4Builder {
     }
 }
 
-impl AsRef<InputInlineQueryResultAnimatedMpeg4> for InputInlineQueryResultAnimatedMpeg4 {
-    fn as_ref(&self) -> &InputInlineQueryResultAnimatedMpeg4 {
+impl AsRef<InputInlineQueryResultAnimation> for InputInlineQueryResultAnimation {
+    fn as_ref(&self) -> &InputInlineQueryResultAnimation {
         self
     }
 }
 
-impl AsRef<InputInlineQueryResultAnimatedMpeg4> for RTDInputInlineQueryResultAnimatedMpeg4Builder {
-    fn as_ref(&self) -> &InputInlineQueryResultAnimatedMpeg4 {
+impl AsRef<InputInlineQueryResultAnimation> for RTDInputInlineQueryResultAnimationBuilder {
+    fn as_ref(&self) -> &InputInlineQueryResultAnimation {
         &self.inner
     }
 }
@@ -468,11 +304,10 @@ impl AsRef<InputInlineQueryResultAnimatedMpeg4> for RTDInputInlineQueryResultAni
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultArticle {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// URL of the result, if it exists
@@ -486,26 +321,27 @@ pub struct InputInlineQueryResultArticle {
     /// URL of the result thumbnail, if it exists
     thumbnail_url: String,
     /// Thumbnail width, if known
-    thumbnail_width: i64,
+    thumbnail_width: i32,
     /// Thumbnail height, if known
-    thumbnail_height: i64,
+    thumbnail_height: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultArticle {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultArticle"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -517,8 +353,8 @@ impl InputInlineQueryResultArticle {
     }
     pub fn builder() -> RTDInputInlineQueryResultArticleBuilder {
         let mut inner = InputInlineQueryResultArticle::default();
-        inner.td_name = "inputInlineQueryResultArticle".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultArticleBuilder { inner }
     }
 
@@ -546,11 +382,11 @@ impl InputInlineQueryResultArticle {
         &self.thumbnail_url
     }
 
-    pub fn thumbnail_width(&self) -> i64 {
+    pub fn thumbnail_width(&self) -> i32 {
         self.thumbnail_width
     }
 
-    pub fn thumbnail_height(&self) -> i64 {
+    pub fn thumbnail_height(&self) -> i32 {
         self.thumbnail_height
     }
 
@@ -603,12 +439,12 @@ impl RTDInputInlineQueryResultArticleBuilder {
         self
     }
 
-    pub fn thumbnail_width(&mut self, thumbnail_width: i64) -> &mut Self {
+    pub fn thumbnail_width(&mut self, thumbnail_width: i32) -> &mut Self {
         self.inner.thumbnail_width = thumbnail_width;
         self
     }
 
-    pub fn thumbnail_height(&mut self, thumbnail_height: i64) -> &mut Self {
+    pub fn thumbnail_height(&mut self, thumbnail_height: i32) -> &mut Self {
         self.inner.thumbnail_height = thumbnail_height;
         self
     }
@@ -643,11 +479,10 @@ impl AsRef<InputInlineQueryResultArticle> for RTDInputInlineQueryResultArticleBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultAudio {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Title of the audio file
@@ -657,24 +492,25 @@ pub struct InputInlineQueryResultAudio {
     /// The URL of the audio file
     audio_url: String,
     /// Audio file duration, in seconds
-    audio_duration: i64,
+    audio_duration: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAudio, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultAudio {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultAudio"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -686,8 +522,8 @@ impl InputInlineQueryResultAudio {
     }
     pub fn builder() -> RTDInputInlineQueryResultAudioBuilder {
         let mut inner = InputInlineQueryResultAudio::default();
-        inner.td_name = "inputInlineQueryResultAudio".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultAudioBuilder { inner }
     }
 
@@ -707,7 +543,7 @@ impl InputInlineQueryResultAudio {
         &self.audio_url
     }
 
-    pub fn audio_duration(&self) -> i64 {
+    pub fn audio_duration(&self) -> i32 {
         self.audio_duration
     }
 
@@ -750,7 +586,7 @@ impl RTDInputInlineQueryResultAudioBuilder {
         self
     }
 
-    pub fn audio_duration(&mut self, audio_duration: i64) -> &mut Self {
+    pub fn audio_duration(&mut self, audio_duration: i32) -> &mut Self {
         self.inner.audio_duration = audio_duration;
         self
     }
@@ -785,11 +621,10 @@ impl AsRef<InputInlineQueryResultAudio> for RTDInputInlineQueryResultAudioBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultContact {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// User contact
@@ -797,26 +632,27 @@ pub struct InputInlineQueryResultContact {
     /// URL of the result thumbnail, if it exists
     thumbnail_url: String,
     /// Thumbnail width, if known
-    thumbnail_width: i64,
+    thumbnail_width: i32,
     /// Thumbnail height, if known
-    thumbnail_height: i64,
+    thumbnail_height: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultContact {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultContact"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -828,8 +664,8 @@ impl InputInlineQueryResultContact {
     }
     pub fn builder() -> RTDInputInlineQueryResultContactBuilder {
         let mut inner = InputInlineQueryResultContact::default();
-        inner.td_name = "inputInlineQueryResultContact".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultContactBuilder { inner }
     }
 
@@ -845,11 +681,11 @@ impl InputInlineQueryResultContact {
         &self.thumbnail_url
     }
 
-    pub fn thumbnail_width(&self) -> i64 {
+    pub fn thumbnail_width(&self) -> i32 {
         self.thumbnail_width
     }
 
-    pub fn thumbnail_height(&self) -> i64 {
+    pub fn thumbnail_height(&self) -> i32 {
         self.thumbnail_height
     }
 
@@ -887,12 +723,12 @@ impl RTDInputInlineQueryResultContactBuilder {
         self
     }
 
-    pub fn thumbnail_width(&mut self, thumbnail_width: i64) -> &mut Self {
+    pub fn thumbnail_width(&mut self, thumbnail_width: i32) -> &mut Self {
         self.inner.thumbnail_width = thumbnail_width;
         self
     }
 
-    pub fn thumbnail_height(&mut self, thumbnail_height: i64) -> &mut Self {
+    pub fn thumbnail_height(&mut self, thumbnail_height: i32) -> &mut Self {
         self.inner.thumbnail_height = thumbnail_height;
         self
     }
@@ -927,11 +763,10 @@ impl AsRef<InputInlineQueryResultContact> for RTDInputInlineQueryResultContactBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultDocument {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Title of the resulting file
@@ -945,26 +780,27 @@ pub struct InputInlineQueryResultDocument {
     /// The URL of the file thumbnail, if it exists
     thumbnail_url: String,
     /// Width of the thumbnail
-    thumbnail_width: i64,
+    thumbnail_width: i32,
     /// Height of the thumbnail
-    thumbnail_height: i64,
+    thumbnail_height: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageDocument, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultDocument {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultDocument"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -976,8 +812,8 @@ impl InputInlineQueryResultDocument {
     }
     pub fn builder() -> RTDInputInlineQueryResultDocumentBuilder {
         let mut inner = InputInlineQueryResultDocument::default();
-        inner.td_name = "inputInlineQueryResultDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultDocumentBuilder { inner }
     }
 
@@ -1005,11 +841,11 @@ impl InputInlineQueryResultDocument {
         &self.thumbnail_url
     }
 
-    pub fn thumbnail_width(&self) -> i64 {
+    pub fn thumbnail_width(&self) -> i32 {
         self.thumbnail_width
     }
 
-    pub fn thumbnail_height(&self) -> i64 {
+    pub fn thumbnail_height(&self) -> i32 {
         self.thumbnail_height
     }
 
@@ -1062,12 +898,12 @@ impl RTDInputInlineQueryResultDocumentBuilder {
         self
     }
 
-    pub fn thumbnail_width(&mut self, thumbnail_width: i64) -> &mut Self {
+    pub fn thumbnail_width(&mut self, thumbnail_width: i32) -> &mut Self {
         self.inner.thumbnail_width = thumbnail_width;
         self
     }
 
-    pub fn thumbnail_height(&mut self, thumbnail_height: i64) -> &mut Self {
+    pub fn thumbnail_height(&mut self, thumbnail_height: i32) -> &mut Self {
         self.inner.thumbnail_height = thumbnail_height;
         self
     }
@@ -1102,30 +938,28 @@ impl AsRef<InputInlineQueryResultDocument> for RTDInputInlineQueryResultDocument
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultGame {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Short name of the game
     game_short_name: String,
     /// Message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
 }
 
 impl RObject for InputInlineQueryResultGame {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultGame"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -1137,8 +971,8 @@ impl InputInlineQueryResultGame {
     }
     pub fn builder() -> RTDInputInlineQueryResultGameBuilder {
         let mut inner = InputInlineQueryResultGame::default();
-        inner.td_name = "inputInlineQueryResultGame".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultGameBuilder { inner }
     }
 
@@ -1197,42 +1031,42 @@ impl AsRef<InputInlineQueryResultGame> for RTDInputInlineQueryResultGameBuilder 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultLocation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Location result
     location: Location,
     /// Amount of time relative to the message sent time until the location can be updated, in seconds
-    live_period: i64,
+    live_period: i32,
     /// Title of the result
     title: String,
     /// URL of the result thumbnail, if it exists
     thumbnail_url: String,
     /// Thumbnail width, if known
-    thumbnail_width: i64,
+    thumbnail_width: i32,
     /// Thumbnail height, if known
-    thumbnail_height: i64,
+    thumbnail_height: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultLocation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultLocation"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -1244,8 +1078,8 @@ impl InputInlineQueryResultLocation {
     }
     pub fn builder() -> RTDInputInlineQueryResultLocationBuilder {
         let mut inner = InputInlineQueryResultLocation::default();
-        inner.td_name = "inputInlineQueryResultLocation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultLocationBuilder { inner }
     }
 
@@ -1257,7 +1091,7 @@ impl InputInlineQueryResultLocation {
         &self.location
     }
 
-    pub fn live_period(&self) -> i64 {
+    pub fn live_period(&self) -> i32 {
         self.live_period
     }
 
@@ -1269,11 +1103,11 @@ impl InputInlineQueryResultLocation {
         &self.thumbnail_url
     }
 
-    pub fn thumbnail_width(&self) -> i64 {
+    pub fn thumbnail_width(&self) -> i32 {
         self.thumbnail_width
     }
 
-    pub fn thumbnail_height(&self) -> i64 {
+    pub fn thumbnail_height(&self) -> i32 {
         self.thumbnail_height
     }
 
@@ -1306,7 +1140,7 @@ impl RTDInputInlineQueryResultLocationBuilder {
         self
     }
 
-    pub fn live_period(&mut self, live_period: i64) -> &mut Self {
+    pub fn live_period(&mut self, live_period: i32) -> &mut Self {
         self.inner.live_period = live_period;
         self
     }
@@ -1321,12 +1155,12 @@ impl RTDInputInlineQueryResultLocationBuilder {
         self
     }
 
-    pub fn thumbnail_width(&mut self, thumbnail_width: i64) -> &mut Self {
+    pub fn thumbnail_width(&mut self, thumbnail_width: i32) -> &mut Self {
         self.inner.thumbnail_width = thumbnail_width;
         self
     }
 
-    pub fn thumbnail_height(&mut self, thumbnail_height: i64) -> &mut Self {
+    pub fn thumbnail_height(&mut self, thumbnail_height: i32) -> &mut Self {
         self.inner.thumbnail_height = thumbnail_height;
         self
     }
@@ -1361,11 +1195,10 @@ impl AsRef<InputInlineQueryResultLocation> for RTDInputInlineQueryResultLocation
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultPhoto {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Title of the result, if known
@@ -1377,26 +1210,27 @@ pub struct InputInlineQueryResultPhoto {
     /// The URL of the JPEG photo (photo size must not exceed 5MB)
     photo_url: String,
     /// Width of the photo
-    photo_width: i64,
+    photo_width: i32,
     /// Height of the photo
-    photo_height: i64,
+    photo_height: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessagePhoto, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultPhoto {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultPhoto"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -1408,8 +1242,8 @@ impl InputInlineQueryResultPhoto {
     }
     pub fn builder() -> RTDInputInlineQueryResultPhotoBuilder {
         let mut inner = InputInlineQueryResultPhoto::default();
-        inner.td_name = "inputInlineQueryResultPhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultPhotoBuilder { inner }
     }
 
@@ -1433,11 +1267,11 @@ impl InputInlineQueryResultPhoto {
         &self.photo_url
     }
 
-    pub fn photo_width(&self) -> i64 {
+    pub fn photo_width(&self) -> i32 {
         self.photo_width
     }
 
-    pub fn photo_height(&self) -> i64 {
+    pub fn photo_height(&self) -> i32 {
         self.photo_height
     }
 
@@ -1485,12 +1319,12 @@ impl RTDInputInlineQueryResultPhotoBuilder {
         self
     }
 
-    pub fn photo_width(&mut self, photo_width: i64) -> &mut Self {
+    pub fn photo_width(&mut self, photo_width: i32) -> &mut Self {
         self.inner.photo_width = photo_width;
         self
     }
 
-    pub fn photo_height(&mut self, photo_height: i64) -> &mut Self {
+    pub fn photo_height(&mut self, photo_height: i32) -> &mut Self {
         self.inner.photo_height = photo_height;
         self
     }
@@ -1525,11 +1359,10 @@ impl AsRef<InputInlineQueryResultPhoto> for RTDInputInlineQueryResultPhotoBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultSticker {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// URL of the sticker thumbnail, if it exists
@@ -1537,26 +1370,27 @@ pub struct InputInlineQueryResultSticker {
     /// The URL of the WEBP or TGS sticker (sticker file size must not exceed 5MB)
     sticker_url: String,
     /// Width of the sticker
-    sticker_width: i64,
+    sticker_width: i32,
     /// Height of the sticker
-    sticker_height: i64,
+    sticker_height: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, inputMessageSticker, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultSticker {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultSticker"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -1568,8 +1402,8 @@ impl InputInlineQueryResultSticker {
     }
     pub fn builder() -> RTDInputInlineQueryResultStickerBuilder {
         let mut inner = InputInlineQueryResultSticker::default();
-        inner.td_name = "inputInlineQueryResultSticker".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultStickerBuilder { inner }
     }
 
@@ -1585,11 +1419,11 @@ impl InputInlineQueryResultSticker {
         &self.sticker_url
     }
 
-    pub fn sticker_width(&self) -> i64 {
+    pub fn sticker_width(&self) -> i32 {
         self.sticker_width
     }
 
-    pub fn sticker_height(&self) -> i64 {
+    pub fn sticker_height(&self) -> i32 {
         self.sticker_height
     }
 
@@ -1627,12 +1461,12 @@ impl RTDInputInlineQueryResultStickerBuilder {
         self
     }
 
-    pub fn sticker_width(&mut self, sticker_width: i64) -> &mut Self {
+    pub fn sticker_width(&mut self, sticker_width: i32) -> &mut Self {
         self.inner.sticker_width = sticker_width;
         self
     }
 
-    pub fn sticker_height(&mut self, sticker_height: i64) -> &mut Self {
+    pub fn sticker_height(&mut self, sticker_height: i32) -> &mut Self {
         self.inner.sticker_height = sticker_height;
         self
     }
@@ -1667,11 +1501,10 @@ impl AsRef<InputInlineQueryResultSticker> for RTDInputInlineQueryResultStickerBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultVenue {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Venue result
@@ -1679,26 +1512,27 @@ pub struct InputInlineQueryResultVenue {
     /// URL of the result thumbnail, if it exists
     thumbnail_url: String,
     /// Thumbnail width, if known
-    thumbnail_width: i64,
+    thumbnail_width: i32,
     /// Thumbnail height, if known
-    thumbnail_height: i64,
+    thumbnail_height: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultVenue {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultVenue"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -1710,8 +1544,8 @@ impl InputInlineQueryResultVenue {
     }
     pub fn builder() -> RTDInputInlineQueryResultVenueBuilder {
         let mut inner = InputInlineQueryResultVenue::default();
-        inner.td_name = "inputInlineQueryResultVenue".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultVenueBuilder { inner }
     }
 
@@ -1727,11 +1561,11 @@ impl InputInlineQueryResultVenue {
         &self.thumbnail_url
     }
 
-    pub fn thumbnail_width(&self) -> i64 {
+    pub fn thumbnail_width(&self) -> i32 {
         self.thumbnail_width
     }
 
-    pub fn thumbnail_height(&self) -> i64 {
+    pub fn thumbnail_height(&self) -> i32 {
         self.thumbnail_height
     }
 
@@ -1769,12 +1603,12 @@ impl RTDInputInlineQueryResultVenueBuilder {
         self
     }
 
-    pub fn thumbnail_width(&mut self, thumbnail_width: i64) -> &mut Self {
+    pub fn thumbnail_width(&mut self, thumbnail_width: i32) -> &mut Self {
         self.inner.thumbnail_width = thumbnail_width;
         self
     }
 
-    pub fn thumbnail_height(&mut self, thumbnail_height: i64) -> &mut Self {
+    pub fn thumbnail_height(&mut self, thumbnail_height: i32) -> &mut Self {
         self.inner.thumbnail_height = thumbnail_height;
         self
     }
@@ -1809,11 +1643,10 @@ impl AsRef<InputInlineQueryResultVenue> for RTDInputInlineQueryResultVenueBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultVideo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Title of the result
@@ -1827,28 +1660,29 @@ pub struct InputInlineQueryResultVideo {
     /// MIME type of the content of the video URL, only "text/html" or "video/mp4" are currently supported
     mime_type: String,
     /// Width of the video
-    video_width: i64,
+    video_width: i32,
     /// Height of the video
-    video_height: i64,
+    video_height: i32,
     /// Video duration, in seconds
-    video_duration: i64,
+    video_duration: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageVideo, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultVideo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultVideo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -1860,8 +1694,8 @@ impl InputInlineQueryResultVideo {
     }
     pub fn builder() -> RTDInputInlineQueryResultVideoBuilder {
         let mut inner = InputInlineQueryResultVideo::default();
-        inner.td_name = "inputInlineQueryResultVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultVideoBuilder { inner }
     }
 
@@ -1889,15 +1723,15 @@ impl InputInlineQueryResultVideo {
         &self.mime_type
     }
 
-    pub fn video_width(&self) -> i64 {
+    pub fn video_width(&self) -> i32 {
         self.video_width
     }
 
-    pub fn video_height(&self) -> i64 {
+    pub fn video_height(&self) -> i32 {
         self.video_height
     }
 
-    pub fn video_duration(&self) -> i64 {
+    pub fn video_duration(&self) -> i32 {
         self.video_duration
     }
 
@@ -1950,17 +1784,17 @@ impl RTDInputInlineQueryResultVideoBuilder {
         self
     }
 
-    pub fn video_width(&mut self, video_width: i64) -> &mut Self {
+    pub fn video_width(&mut self, video_width: i32) -> &mut Self {
         self.inner.video_width = video_width;
         self
     }
 
-    pub fn video_height(&mut self, video_height: i64) -> &mut Self {
+    pub fn video_height(&mut self, video_height: i32) -> &mut Self {
         self.inner.video_height = video_height;
         self
     }
 
-    pub fn video_duration(&mut self, video_duration: i64) -> &mut Self {
+    pub fn video_duration(&mut self, video_duration: i32) -> &mut Self {
         self.inner.video_duration = video_duration;
         self
     }
@@ -1995,11 +1829,10 @@ impl AsRef<InputInlineQueryResultVideo> for RTDInputInlineQueryResultVideoBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultVoiceNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique identifier of the query result
     id: String,
     /// Title of the voice note
@@ -2007,24 +1840,25 @@ pub struct InputInlineQueryResultVoiceNote {
     /// The URL of the voice note file
     voice_note_url: String,
     /// Duration of the voice note, in seconds
-    voice_note_duration: i64,
+    voice_note_duration: i32,
     /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+
+    #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
     /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageVoiceNote, InputMessageLocation, InputMessageVenue or InputMessageContact
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
 }
 
 impl RObject for InputInlineQueryResultVoiceNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "inputInlineQueryResultVoiceNote"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -2036,8 +1870,8 @@ impl InputInlineQueryResultVoiceNote {
     }
     pub fn builder() -> RTDInputInlineQueryResultVoiceNoteBuilder {
         let mut inner = InputInlineQueryResultVoiceNote::default();
-        inner.td_name = "inputInlineQueryResultVoiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDInputInlineQueryResultVoiceNoteBuilder { inner }
     }
 
@@ -2053,7 +1887,7 @@ impl InputInlineQueryResultVoiceNote {
         &self.voice_note_url
     }
 
-    pub fn voice_note_duration(&self) -> i64 {
+    pub fn voice_note_duration(&self) -> i32 {
         self.voice_note_duration
     }
 
@@ -2091,7 +1925,7 @@ impl RTDInputInlineQueryResultVoiceNoteBuilder {
         self
     }
 
-    pub fn voice_note_duration(&mut self, voice_note_duration: i64) -> &mut Self {
+    pub fn voice_note_duration(&mut self, voice_note_duration: i32) -> &mut Self {
         self.inner.voice_note_duration = voice_note_duration;
         self
     }

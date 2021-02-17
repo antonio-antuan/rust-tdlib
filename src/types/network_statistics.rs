@@ -6,28 +6,24 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NetworkStatistics {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
-    /// Point in time (Unix timestamp) when the app began collecting statistics
-    since_date: i64,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Point in time (Unix timestamp) from which the statistics are collected
+    since_date: i32,
     /// Network statistics entries
     entries: Vec<NetworkStatisticsEntry>,
 }
 
 impl RObject for NetworkStatistics {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "networkStatistics"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -37,12 +33,12 @@ impl NetworkStatistics {
     }
     pub fn builder() -> RTDNetworkStatisticsBuilder {
         let mut inner = NetworkStatistics::default();
-        inner.td_name = "networkStatistics".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDNetworkStatisticsBuilder { inner }
     }
 
-    pub fn since_date(&self) -> i64 {
+    pub fn since_date(&self) -> i32 {
         self.since_date
     }
 
@@ -61,7 +57,7 @@ impl RTDNetworkStatisticsBuilder {
         self.inner.clone()
     }
 
-    pub fn since_date(&mut self, since_date: i64) -> &mut Self {
+    pub fn since_date(&mut self, since_date: i32) -> &mut Self {
         self.inner.since_date = since_date;
         self
     }

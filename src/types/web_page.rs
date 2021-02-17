@@ -6,16 +6,16 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct WebPage {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Original URL of the link
     url: String,
     /// URL to display
     display_url: String,
     /// Type of the web page. Can be: article, photo, audio, video, document, profile, app, or something else
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
     type_: String,
     /// Short name of the site (e.g., Google Docs, App Store)
@@ -23,7 +23,7 @@ pub struct WebPage {
     /// Title of the content
     title: String,
     /// Describes a web page preview
-    description: String,
+    description: FormattedText,
     /// Image representing the content; may be null
     photo: Option<Photo>,
     /// URL to show in the embedded preview
@@ -31,11 +31,11 @@ pub struct WebPage {
     /// MIME type of the embedded preview, (e.g., text/html or video/mp4)
     embed_type: String,
     /// Width of the embedded preview
-    embed_width: i64,
+    embed_width: i32,
     /// Height of the embedded preview
-    embed_height: i64,
+    embed_height: i32,
     /// Duration of the content, in seconds
-    duration: i64,
+    duration: i32,
     /// Author of the content
     author: String,
     /// Preview of the content as an animation, if available; may be null
@@ -53,20 +53,17 @@ pub struct WebPage {
     /// Preview of the content as a voice note, if available; may be null
     voice_note: Option<VoiceNote>,
     /// Version of instant view, available for the web page (currently can be 1 or 2), 0 if none
-    instant_view_version: i64,
+    instant_view_version: i32,
 }
 
 impl RObject for WebPage {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "webPage"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -76,8 +73,8 @@ impl WebPage {
     }
     pub fn builder() -> RTDWebPageBuilder {
         let mut inner = WebPage::default();
-        inner.td_name = "webPage".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDWebPageBuilder { inner }
     }
 
@@ -101,7 +98,7 @@ impl WebPage {
         &self.title
     }
 
-    pub fn description(&self) -> &String {
+    pub fn description(&self) -> &FormattedText {
         &self.description
     }
 
@@ -117,15 +114,15 @@ impl WebPage {
         &self.embed_type
     }
 
-    pub fn embed_width(&self) -> i64 {
+    pub fn embed_width(&self) -> i32 {
         self.embed_width
     }
 
-    pub fn embed_height(&self) -> i64 {
+    pub fn embed_height(&self) -> i32 {
         self.embed_height
     }
 
-    pub fn duration(&self) -> i64 {
+    pub fn duration(&self) -> i32 {
         self.duration
     }
 
@@ -161,7 +158,7 @@ impl WebPage {
         &self.voice_note
     }
 
-    pub fn instant_view_version(&self) -> i64 {
+    pub fn instant_view_version(&self) -> i32 {
         self.instant_view_version
     }
 }
@@ -201,8 +198,8 @@ impl RTDWebPageBuilder {
         self
     }
 
-    pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
-        self.inner.description = description.as_ref().to_string();
+    pub fn description<T: AsRef<FormattedText>>(&mut self, description: T) -> &mut Self {
+        self.inner.description = description.as_ref().clone();
         self
     }
 
@@ -221,17 +218,17 @@ impl RTDWebPageBuilder {
         self
     }
 
-    pub fn embed_width(&mut self, embed_width: i64) -> &mut Self {
+    pub fn embed_width(&mut self, embed_width: i32) -> &mut Self {
         self.inner.embed_width = embed_width;
         self
     }
 
-    pub fn embed_height(&mut self, embed_height: i64) -> &mut Self {
+    pub fn embed_height(&mut self, embed_height: i32) -> &mut Self {
         self.inner.embed_height = embed_height;
         self
     }
 
-    pub fn duration(&mut self, duration: i64) -> &mut Self {
+    pub fn duration(&mut self, duration: i32) -> &mut Self {
         self.inner.duration = duration;
         self
     }
@@ -276,7 +273,7 @@ impl RTDWebPageBuilder {
         self
     }
 
-    pub fn instant_view_version(&mut self, instant_view_version: i64) -> &mut Self {
+    pub fn instant_view_version(&mut self, instant_view_version: i32) -> &mut Self {
         self.inner.instant_view_version = instant_view_version;
         self
     }

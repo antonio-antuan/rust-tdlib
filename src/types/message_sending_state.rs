@@ -2,57 +2,34 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Contains information about the sending state of the message
+/// Contains information about the sending state of the message
 pub trait TDMessageSendingState: Debug + RObject {}
 
 /// Contains information about the sending state of the message
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum MessageSendingState {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The message failed to be sent
+    #[serde(rename(deserialize = "messageSendingStateFailed"))]
     Failed(MessageSendingStateFailed),
     /// The message is being sent now, but has not yet been delivered to the server
+    #[serde(rename(deserialize = "messageSendingStatePending"))]
     Pending(MessageSendingStatePending),
 }
 
 impl Default for MessageSendingState {
     fn default() -> Self {
-        MessageSendingState::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for MessageSendingState {
-    fn deserialize<D>(deserializer: D) -> Result<MessageSendingState, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          MessageSendingState,
-          (messageSendingStateFailed, Failed);
-          (messageSendingStatePending, Pending);
-
-        )(deserializer)
+        MessageSendingState::_Default
     }
 }
 
 impl RObject for MessageSendingState {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            MessageSendingState::Failed(t) => t.td_name(),
-            MessageSendingState::Pending(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             MessageSendingState::Failed(t) => t.extra(),
             MessageSendingState::Pending(t) => t.extra(),
@@ -60,8 +37,14 @@ impl RObject for MessageSendingState {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            MessageSendingState::Failed(t) => t.client_id(),
+            MessageSendingState::Pending(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -71,7 +54,7 @@ impl MessageSendingState {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, MessageSendingState::_Default(_))
+        matches!(self, MessageSendingState::_Default)
     }
 }
 
@@ -85,13 +68,12 @@ impl AsRef<MessageSendingState> for MessageSendingState {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageSendingStateFailed {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// An error code; 0 if unknown
-    error_code: i64,
+    error_code: i32,
     /// Error message
     error_message: String,
     /// True, if the message can be re-sent
@@ -102,15 +84,12 @@ pub struct MessageSendingStateFailed {
 
 impl RObject for MessageSendingStateFailed {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageSendingStateFailed"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -122,12 +101,12 @@ impl MessageSendingStateFailed {
     }
     pub fn builder() -> RTDMessageSendingStateFailedBuilder {
         let mut inner = MessageSendingStateFailed::default();
-        inner.td_name = "messageSendingStateFailed".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDMessageSendingStateFailedBuilder { inner }
     }
 
-    pub fn error_code(&self) -> i64 {
+    pub fn error_code(&self) -> i32 {
         self.error_code
     }
 
@@ -154,7 +133,7 @@ impl RTDMessageSendingStateFailedBuilder {
         self.inner.clone()
     }
 
-    pub fn error_code(&mut self, error_code: i64) -> &mut Self {
+    pub fn error_code(&mut self, error_code: i32) -> &mut Self {
         self.inner.error_code = error_code;
         self
     }
@@ -191,24 +170,20 @@ impl AsRef<MessageSendingStateFailed> for RTDMessageSendingStateFailedBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageSendingStatePending {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for MessageSendingStatePending {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "messageSendingStatePending"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -220,8 +195,8 @@ impl MessageSendingStatePending {
     }
     pub fn builder() -> RTDMessageSendingStatePendingBuilder {
         let mut inner = MessageSendingStatePending::default();
-        inner.td_name = "messageSendingStatePending".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDMessageSendingStatePendingBuilder { inner }
     }
 }

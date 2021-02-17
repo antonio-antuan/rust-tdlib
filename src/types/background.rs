@@ -6,13 +6,14 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Background {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Unique background identifier
-    id: isize,
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    id: i64,
     /// True, if this is one of default backgrounds
     is_default: bool,
     /// True, if the background is dark and is recommended to be used with dark theme
@@ -22,21 +23,20 @@ pub struct Background {
     /// Document with the background; may be null. Null only for filled backgrounds
     document: Option<Document>,
     /// Type of the background
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "BackgroundType::_is_default")]
     type_: BackgroundType,
 }
 
 impl RObject for Background {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "background"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -46,12 +46,12 @@ impl Background {
     }
     pub fn builder() -> RTDBackgroundBuilder {
         let mut inner = Background::default();
-        inner.td_name = "background".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDBackgroundBuilder { inner }
     }
 
-    pub fn id(&self) -> isize {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -86,7 +86,7 @@ impl RTDBackgroundBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: isize) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }

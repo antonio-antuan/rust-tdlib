@@ -6,39 +6,39 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatInviteLinkInfo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
-    /// Chat identifier of the invite link; 0 if the user is not a member of this chat
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Chat identifier of the invite link; 0 if the user has no access to the chat before joining
     chat_id: i64,
+    /// If non-zero, the amount of time for which read access to the chat will remain available, in seconds
+    accessible_for: i32,
     /// Contains information about the type of the chat
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "ChatType::_is_default")]
     type_: ChatType,
     /// Title of the chat
     title: String,
     /// Chat photo; may be null
-    photo: Option<ChatPhoto>,
-    /// Number of members
-    member_count: i64,
+    photo: Option<ChatPhotoInfo>,
+    /// Number of members in the chat
+    member_count: i32,
     /// User identifiers of some chat members that may be known to the current user
-    member_user_ids: Vec<i64>,
+    member_user_ids: Vec<i32>,
     /// True, if the chat is a public supergroup or channel, i.e. it has a username or it is a location-based supergroup
     is_public: bool,
 }
 
 impl RObject for ChatInviteLinkInfo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatInviteLinkInfo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -48,13 +48,17 @@ impl ChatInviteLinkInfo {
     }
     pub fn builder() -> RTDChatInviteLinkInfoBuilder {
         let mut inner = ChatInviteLinkInfo::default();
-        inner.td_name = "chatInviteLinkInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatInviteLinkInfoBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
         self.chat_id
+    }
+
+    pub fn accessible_for(&self) -> i32 {
+        self.accessible_for
     }
 
     pub fn type_(&self) -> &ChatType {
@@ -65,15 +69,15 @@ impl ChatInviteLinkInfo {
         &self.title
     }
 
-    pub fn photo(&self) -> &Option<ChatPhoto> {
+    pub fn photo(&self) -> &Option<ChatPhotoInfo> {
         &self.photo
     }
 
-    pub fn member_count(&self) -> i64 {
+    pub fn member_count(&self) -> i32 {
         self.member_count
     }
 
-    pub fn member_user_ids(&self) -> &Vec<i64> {
+    pub fn member_user_ids(&self) -> &Vec<i32> {
         &self.member_user_ids
     }
 
@@ -97,6 +101,11 @@ impl RTDChatInviteLinkInfoBuilder {
         self
     }
 
+    pub fn accessible_for(&mut self, accessible_for: i32) -> &mut Self {
+        self.inner.accessible_for = accessible_for;
+        self
+    }
+
     pub fn type_<T: AsRef<ChatType>>(&mut self, type_: T) -> &mut Self {
         self.inner.type_ = type_.as_ref().clone();
         self
@@ -107,17 +116,17 @@ impl RTDChatInviteLinkInfoBuilder {
         self
     }
 
-    pub fn photo<T: AsRef<ChatPhoto>>(&mut self, photo: T) -> &mut Self {
+    pub fn photo<T: AsRef<ChatPhotoInfo>>(&mut self, photo: T) -> &mut Self {
         self.inner.photo = Some(photo.as_ref().clone());
         self
     }
 
-    pub fn member_count(&mut self, member_count: i64) -> &mut Self {
+    pub fn member_count(&mut self, member_count: i32) -> &mut Self {
         self.inner.member_count = member_count;
         self
     }
 
-    pub fn member_user_ids(&mut self, member_user_ids: Vec<i64>) -> &mut Self {
+    pub fn member_user_ids(&mut self, member_user_ids: Vec<i32>) -> &mut Self {
         self.inner.member_user_ids = member_user_ids;
         self
     }

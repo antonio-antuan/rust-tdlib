@@ -6,25 +6,26 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SupergroupFullInfo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Chat photo; may be null
+    photo: Option<ChatPhoto>,
     /// Contains full information about a supergroup or channel
     description: String,
     /// Number of members in the supergroup or channel; 0 if unknown
-    member_count: i64,
+    member_count: i32,
     /// Number of privileged users in the supergroup or channel; 0 if unknown
-    administrator_count: i64,
+    administrator_count: i32,
     /// Number of restricted users in the supergroup; 0 if unknown
-    restricted_count: i64,
+    restricted_count: i32,
     /// Number of users banned from chat; 0 if unknown
-    banned_count: i64,
+    banned_count: i32,
     /// Chat identifier of a discussion group for the channel, or a channel, for which the supergroup is the designated discussion group; 0 if none or unknown
     linked_chat_id: i64,
     /// Delay between consecutive sent messages for non-administrator supergroup members, in seconds
-    slow_mode_delay: i64,
+    slow_mode_delay: i32,
     /// Time left before next message can be sent in the supergroup, in seconds. An updateSupergroupFullInfo update is not triggered when value of this field changes, but both new and old values are non-zero
     slow_mode_delay_expires_in: f32,
     /// True, if members of the chat can be retrieved
@@ -35,34 +36,32 @@ pub struct SupergroupFullInfo {
     can_set_sticker_set: bool,
     /// True, if the supergroup location can be changed
     can_set_location: bool,
-    /// True, if the channel statistics is available through getChatStatisticsUrl
-    can_view_statistics: bool,
+    /// True, if the supergroup or channel statistics are available
+    can_get_statistics: bool,
     /// True, if new chat members will have access to old messages. In public or discussion groups and both public and private channels, old messages are always available, so this option affects only private supergroups without a linked chat. The value of this field is only available for chat administrators
     is_all_history_available: bool,
     /// Identifier of the supergroup sticker set; 0 if none
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
-    sticker_set_id: isize,
+    sticker_set_id: i64,
     /// Location to which the supergroup is connected; may be null
     location: Option<ChatLocation>,
     /// Invite link for this chat
     invite_link: String,
     /// Identifier of the basic group from which supergroup was upgraded; 0 if none
-    upgraded_from_basic_group_id: i64,
+    upgraded_from_basic_group_id: i32,
     /// Identifier of the last message in the basic group from which supergroup was upgraded; 0 if none
     upgraded_from_max_message_id: i64,
 }
 
 impl RObject for SupergroupFullInfo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "supergroupFullInfo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -72,28 +71,32 @@ impl SupergroupFullInfo {
     }
     pub fn builder() -> RTDSupergroupFullInfoBuilder {
         let mut inner = SupergroupFullInfo::default();
-        inner.td_name = "supergroupFullInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSupergroupFullInfoBuilder { inner }
+    }
+
+    pub fn photo(&self) -> &Option<ChatPhoto> {
+        &self.photo
     }
 
     pub fn description(&self) -> &String {
         &self.description
     }
 
-    pub fn member_count(&self) -> i64 {
+    pub fn member_count(&self) -> i32 {
         self.member_count
     }
 
-    pub fn administrator_count(&self) -> i64 {
+    pub fn administrator_count(&self) -> i32 {
         self.administrator_count
     }
 
-    pub fn restricted_count(&self) -> i64 {
+    pub fn restricted_count(&self) -> i32 {
         self.restricted_count
     }
 
-    pub fn banned_count(&self) -> i64 {
+    pub fn banned_count(&self) -> i32 {
         self.banned_count
     }
 
@@ -101,7 +104,7 @@ impl SupergroupFullInfo {
         self.linked_chat_id
     }
 
-    pub fn slow_mode_delay(&self) -> i64 {
+    pub fn slow_mode_delay(&self) -> i32 {
         self.slow_mode_delay
     }
 
@@ -125,15 +128,15 @@ impl SupergroupFullInfo {
         self.can_set_location
     }
 
-    pub fn can_view_statistics(&self) -> bool {
-        self.can_view_statistics
+    pub fn can_get_statistics(&self) -> bool {
+        self.can_get_statistics
     }
 
     pub fn is_all_history_available(&self) -> bool {
         self.is_all_history_available
     }
 
-    pub fn sticker_set_id(&self) -> isize {
+    pub fn sticker_set_id(&self) -> i64 {
         self.sticker_set_id
     }
 
@@ -145,7 +148,7 @@ impl SupergroupFullInfo {
         &self.invite_link
     }
 
-    pub fn upgraded_from_basic_group_id(&self) -> i64 {
+    pub fn upgraded_from_basic_group_id(&self) -> i32 {
         self.upgraded_from_basic_group_id
     }
 
@@ -164,27 +167,32 @@ impl RTDSupergroupFullInfoBuilder {
         self.inner.clone()
     }
 
+    pub fn photo<T: AsRef<ChatPhoto>>(&mut self, photo: T) -> &mut Self {
+        self.inner.photo = Some(photo.as_ref().clone());
+        self
+    }
+
     pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
         self.inner.description = description.as_ref().to_string();
         self
     }
 
-    pub fn member_count(&mut self, member_count: i64) -> &mut Self {
+    pub fn member_count(&mut self, member_count: i32) -> &mut Self {
         self.inner.member_count = member_count;
         self
     }
 
-    pub fn administrator_count(&mut self, administrator_count: i64) -> &mut Self {
+    pub fn administrator_count(&mut self, administrator_count: i32) -> &mut Self {
         self.inner.administrator_count = administrator_count;
         self
     }
 
-    pub fn restricted_count(&mut self, restricted_count: i64) -> &mut Self {
+    pub fn restricted_count(&mut self, restricted_count: i32) -> &mut Self {
         self.inner.restricted_count = restricted_count;
         self
     }
 
-    pub fn banned_count(&mut self, banned_count: i64) -> &mut Self {
+    pub fn banned_count(&mut self, banned_count: i32) -> &mut Self {
         self.inner.banned_count = banned_count;
         self
     }
@@ -194,7 +202,7 @@ impl RTDSupergroupFullInfoBuilder {
         self
     }
 
-    pub fn slow_mode_delay(&mut self, slow_mode_delay: i64) -> &mut Self {
+    pub fn slow_mode_delay(&mut self, slow_mode_delay: i32) -> &mut Self {
         self.inner.slow_mode_delay = slow_mode_delay;
         self
     }
@@ -224,8 +232,8 @@ impl RTDSupergroupFullInfoBuilder {
         self
     }
 
-    pub fn can_view_statistics(&mut self, can_view_statistics: bool) -> &mut Self {
-        self.inner.can_view_statistics = can_view_statistics;
+    pub fn can_get_statistics(&mut self, can_get_statistics: bool) -> &mut Self {
+        self.inner.can_get_statistics = can_get_statistics;
         self
     }
 
@@ -234,7 +242,7 @@ impl RTDSupergroupFullInfoBuilder {
         self
     }
 
-    pub fn sticker_set_id(&mut self, sticker_set_id: isize) -> &mut Self {
+    pub fn sticker_set_id(&mut self, sticker_set_id: i64) -> &mut Self {
         self.inner.sticker_set_id = sticker_set_id;
         self
     }
@@ -249,7 +257,7 @@ impl RTDSupergroupFullInfoBuilder {
         self
     }
 
-    pub fn upgraded_from_basic_group_id(&mut self, upgraded_from_basic_group_id: i64) -> &mut Self {
+    pub fn upgraded_from_basic_group_id(&mut self, upgraded_from_basic_group_id: i32) -> &mut Self {
         self.inner.upgraded_from_basic_group_id = upgraded_from_basic_group_id;
         self
     }

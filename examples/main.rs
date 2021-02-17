@@ -1,47 +1,85 @@
-#[macro_use]
-extern crate log;
-
-use rust_tdlib::{client::Client, types::*};
+use rust_tdlib::{
+    client::{Client, Worker},
+    tdjson,
+    types::{GetMe, SearchPublicChats, TdlibParameters},
+};
 
 #[tokio::main]
 async fn main() {
+    tdjson::set_log_verbosity_level(1);
     env_logger::init();
-    let tdlib_parameters = TdlibParameters::builder()
-        .database_directory("tdlib")
-        .use_test_dc(false)
-        .api_id(env!("API_ID").parse::<i64>().unwrap())
-        .api_hash(env!("API_HASH"))
-        .system_language_code("en")
-        .device_model("Desktop")
-        .system_version("Unknown")
-        .application_version(env!("CARGO_PKG_VERSION"))
-        .enable_storage_optimizer(true)
-        .build();
-    let mut client = Client::builder()
-        .with_tdlib_parameters(tdlib_parameters)
+    let client1 = Client::builder()
+        .with_tdlib_parameters(
+            TdlibParameters::builder()
+                .database_directory("tddb1")
+                .use_test_dc(false)
+                .api_id(env!("API_ID").parse::<i32>().unwrap())
+                .api_hash(env!("API_HASH"))
+                .system_language_code("en")
+                .device_model("Desktop")
+                .system_version("Unknown")
+                .application_version(env!("CARGO_PKG_VERSION"))
+                .enable_storage_optimizer(true)
+                .build(),
+        )
         .build()
         .unwrap();
 
-    let waiter = client.start().await.unwrap();
-    let api = client.api();
+    let client2 = Client::builder()
+        .with_tdlib_parameters(
+            TdlibParameters::builder()
+                .database_directory("tddb2")
+                .use_test_dc(false)
+                .api_id(env!("API_ID").parse::<i32>().unwrap())
+                .api_hash(env!("API_HASH"))
+                .system_language_code("en")
+                .device_model("Desktop")
+                .system_version("Unknown")
+                .application_version(env!("CARGO_PKG_VERSION"))
+                .enable_storage_optimizer(true)
+                .build(),
+        )
+        .build()
+        .unwrap();
 
-    let me = api.get_me(GetMe::builder().build()).await.unwrap();
-    info!("me: {:?}", me);
+    let mut worker = Worker::builder().build().unwrap();
 
-    let chats = api
+    let waiter = worker.start();
+
+    let (client1_state, client1) = worker.auth_client(client1).await.unwrap();
+    log::info!("client1 authorized");
+    let me = client1.get_me(GetMe::builder().build()).await.unwrap();
+    log::info!("me 1: {:?}", me);
+
+    let (client2_state, client2) = worker.auth_client(client2).await.unwrap();
+    log::info!("client2 authorized");
+    let me = client2.get_me(GetMe::builder().build()).await.unwrap();
+    log::info!("me 2: {:?}", me);
+
+    let chats = client1
         .search_public_chats(SearchPublicChats::builder().query("@rust").build())
         .await
         .unwrap();
+    log::info!("found chats with client1: {}", chats.chat_ids().len());
 
-    info!("found chats: {}", chats.chat_ids().len());
-    for chat_id in chats.chat_ids() {
-        let chat = api
-            .get_chat(GetChat::builder().chat_id(*chat_id))
-            .await
-            .unwrap();
-        info!("{:?}", chat)
-    }
-    client.stop();
+    let chats = client2
+        .search_public_chats(SearchPublicChats::builder().query("@telegram").build())
+        .await
+        .unwrap();
+    log::info!("found chats with client2: {}", chats.chat_ids().len());
+
+    client1.stop().await.unwrap();
+    client2.stop().await.unwrap();
+
+    client1_state.await.unwrap();
+    log::info!("client1 closed");
+
+    client2_state.await.unwrap();
+    log::info!("client2 closed");
+
+    worker.stop();
+    log::info!("worker stopped");
+
     waiter.await.unwrap();
-    info!("client closed");
+    log::info!("waiter stopped");
 }

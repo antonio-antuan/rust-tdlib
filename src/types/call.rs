@@ -6,32 +6,32 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Call {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Call identifier, not persistent
-    id: i64,
+    id: i32,
     /// Peer user identifier
-    user_id: i64,
+    user_id: i32,
     /// True, if the call is outgoing
     is_outgoing: bool,
+    /// True, if the call is a video call
+    is_video: bool,
     /// Call state
+
+    #[serde(skip_serializing_if = "CallState::_is_default")]
     state: CallState,
 }
 
 impl RObject for Call {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "call"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -41,21 +41,25 @@ impl Call {
     }
     pub fn builder() -> RTDCallBuilder {
         let mut inner = Call::default();
-        inner.td_name = "call".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDCallBuilder { inner }
     }
 
-    pub fn id(&self) -> i64 {
+    pub fn id(&self) -> i32 {
         self.id
     }
 
-    pub fn user_id(&self) -> i64 {
+    pub fn user_id(&self) -> i32 {
         self.user_id
     }
 
     pub fn is_outgoing(&self) -> bool {
         self.is_outgoing
+    }
+
+    pub fn is_video(&self) -> bool {
+        self.is_video
     }
 
     pub fn state(&self) -> &CallState {
@@ -73,18 +77,23 @@ impl RTDCallBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i64) -> &mut Self {
+    pub fn id(&mut self, id: i32) -> &mut Self {
         self.inner.id = id;
         self
     }
 
-    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
 
     pub fn is_outgoing(&mut self, is_outgoing: bool) -> &mut Self {
         self.inner.is_outgoing = is_outgoing;
+        self
+    }
+
+    pub fn is_video(&mut self, is_video: bool) -> &mut Self {
+        self.inner.is_video = is_video;
         self
     }
 

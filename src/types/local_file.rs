@@ -6,11 +6,10 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LocalFile {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Local path to the locally available file part; may be empty
     path: String,
     /// True, if it is possible to try to download or generate the file
@@ -22,24 +21,21 @@ pub struct LocalFile {
     /// True, if the local copy is fully available
     is_downloading_completed: bool,
     /// Download will be started from this offset. downloaded_prefix_size is calculated from this offset
-    download_offset: i64,
+    download_offset: i32,
     /// If is_downloading_completed is false, then only some prefix of the file starting from download_offset is ready to be read. downloaded_prefix_size is the size of that prefix
-    downloaded_prefix_size: i64,
+    downloaded_prefix_size: i32,
     /// Total downloaded file bytes. Should be used only for calculating download progress. The actual file size may be bigger, and some parts of it may contain garbage
-    downloaded_size: i64,
+    downloaded_size: i32,
 }
 
 impl RObject for LocalFile {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "localFile"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -49,8 +45,8 @@ impl LocalFile {
     }
     pub fn builder() -> RTDLocalFileBuilder {
         let mut inner = LocalFile::default();
-        inner.td_name = "localFile".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDLocalFileBuilder { inner }
     }
 
@@ -74,15 +70,15 @@ impl LocalFile {
         self.is_downloading_completed
     }
 
-    pub fn download_offset(&self) -> i64 {
+    pub fn download_offset(&self) -> i32 {
         self.download_offset
     }
 
-    pub fn downloaded_prefix_size(&self) -> i64 {
+    pub fn downloaded_prefix_size(&self) -> i32 {
         self.downloaded_prefix_size
     }
 
-    pub fn downloaded_size(&self) -> i64 {
+    pub fn downloaded_size(&self) -> i32 {
         self.downloaded_size
     }
 }
@@ -122,17 +118,17 @@ impl RTDLocalFileBuilder {
         self
     }
 
-    pub fn download_offset(&mut self, download_offset: i64) -> &mut Self {
+    pub fn download_offset(&mut self, download_offset: i32) -> &mut Self {
         self.inner.download_offset = download_offset;
         self
     }
 
-    pub fn downloaded_prefix_size(&mut self, downloaded_prefix_size: i64) -> &mut Self {
+    pub fn downloaded_prefix_size(&mut self, downloaded_prefix_size: i32) -> &mut Self {
         self.inner.downloaded_prefix_size = downloaded_prefix_size;
         self
     }
 
-    pub fn downloaded_size(&mut self, downloaded_size: i64) -> &mut Self {
+    pub fn downloaded_size(&mut self, downloaded_size: i32) -> &mut Self {
         self.inner.downloaded_size = downloaded_size;
         self
     }

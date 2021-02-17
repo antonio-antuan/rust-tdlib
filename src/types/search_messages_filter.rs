@@ -2,113 +2,82 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Represents a filter for message search results
+/// Represents a filter for message search results
 pub trait TDSearchMessagesFilter: Debug + RObject {}
 
 /// Represents a filter for message search results
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum SearchMessagesFilter {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns only animation messages
+    #[serde(rename(deserialize = "searchMessagesFilterAnimation"))]
     Animation(SearchMessagesFilterAnimation),
     /// Returns only audio messages
+    #[serde(rename(deserialize = "searchMessagesFilterAudio"))]
     Audio(SearchMessagesFilterAudio),
     /// Returns only call messages
+    #[serde(rename(deserialize = "searchMessagesFilterCall"))]
     Call(SearchMessagesFilterCall),
     /// Returns only messages containing chat photos
+    #[serde(rename(deserialize = "searchMessagesFilterChatPhoto"))]
     ChatPhoto(SearchMessagesFilterChatPhoto),
     /// Returns only document messages
+    #[serde(rename(deserialize = "searchMessagesFilterDocument"))]
     Document(SearchMessagesFilterDocument),
     /// Returns all found messages, no filter is applied
+    #[serde(rename(deserialize = "searchMessagesFilterEmpty"))]
     Empty(SearchMessagesFilterEmpty),
+    /// Returns only failed to send messages. This filter can be used only if the message database is used
+    #[serde(rename(deserialize = "searchMessagesFilterFailedToSend"))]
+    FailedToSend(SearchMessagesFilterFailedToSend),
     /// Returns only messages with mentions of the current user, or messages that are replies to their messages
+    #[serde(rename(deserialize = "searchMessagesFilterMention"))]
     Mention(SearchMessagesFilterMention),
     /// Returns only incoming call messages with missed/declined discard reasons
+    #[serde(rename(deserialize = "searchMessagesFilterMissedCall"))]
     MissedCall(SearchMessagesFilterMissedCall),
     /// Returns only photo messages
+    #[serde(rename(deserialize = "searchMessagesFilterPhoto"))]
     Photo(SearchMessagesFilterPhoto),
     /// Returns only photo and video messages
+    #[serde(rename(deserialize = "searchMessagesFilterPhotoAndVideo"))]
     PhotoAndVideo(SearchMessagesFilterPhotoAndVideo),
-    /// Returns only messages with unread mentions of the current user, or messages that are replies to their messages. When using this filter the results can't be additionally filtered by a query or by the sending user
+    /// Returns only pinned messages
+    #[serde(rename(deserialize = "searchMessagesFilterPinned"))]
+    Pinned(SearchMessagesFilterPinned),
+    /// Returns only messages with unread mentions of the current user, or messages that are replies to their messages. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
+    #[serde(rename(deserialize = "searchMessagesFilterUnreadMention"))]
     UnreadMention(SearchMessagesFilterUnreadMention),
     /// Returns only messages containing URLs
+    #[serde(rename(deserialize = "searchMessagesFilterUrl"))]
     Url(SearchMessagesFilterUrl),
     /// Returns only video messages
+    #[serde(rename(deserialize = "searchMessagesFilterVideo"))]
     Video(SearchMessagesFilterVideo),
     /// Returns only video note messages
+    #[serde(rename(deserialize = "searchMessagesFilterVideoNote"))]
     VideoNote(SearchMessagesFilterVideoNote),
     /// Returns only voice and video note messages
+    #[serde(rename(deserialize = "searchMessagesFilterVoiceAndVideoNote"))]
     VoiceAndVideoNote(SearchMessagesFilterVoiceAndVideoNote),
     /// Returns only voice note messages
+    #[serde(rename(deserialize = "searchMessagesFilterVoiceNote"))]
     VoiceNote(SearchMessagesFilterVoiceNote),
 }
 
 impl Default for SearchMessagesFilter {
     fn default() -> Self {
-        SearchMessagesFilter::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for SearchMessagesFilter {
-    fn deserialize<D>(deserializer: D) -> Result<SearchMessagesFilter, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          SearchMessagesFilter,
-          (searchMessagesFilterAnimation, Animation);
-          (searchMessagesFilterAudio, Audio);
-          (searchMessagesFilterCall, Call);
-          (searchMessagesFilterChatPhoto, ChatPhoto);
-          (searchMessagesFilterDocument, Document);
-          (searchMessagesFilterEmpty, Empty);
-          (searchMessagesFilterMention, Mention);
-          (searchMessagesFilterMissedCall, MissedCall);
-          (searchMessagesFilterPhoto, Photo);
-          (searchMessagesFilterPhotoAndVideo, PhotoAndVideo);
-          (searchMessagesFilterUnreadMention, UnreadMention);
-          (searchMessagesFilterUrl, Url);
-          (searchMessagesFilterVideo, Video);
-          (searchMessagesFilterVideoNote, VideoNote);
-          (searchMessagesFilterVoiceAndVideoNote, VoiceAndVideoNote);
-          (searchMessagesFilterVoiceNote, VoiceNote);
-
-        )(deserializer)
+        SearchMessagesFilter::_Default
     }
 }
 
 impl RObject for SearchMessagesFilter {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            SearchMessagesFilter::Animation(t) => t.td_name(),
-            SearchMessagesFilter::Audio(t) => t.td_name(),
-            SearchMessagesFilter::Call(t) => t.td_name(),
-            SearchMessagesFilter::ChatPhoto(t) => t.td_name(),
-            SearchMessagesFilter::Document(t) => t.td_name(),
-            SearchMessagesFilter::Empty(t) => t.td_name(),
-            SearchMessagesFilter::Mention(t) => t.td_name(),
-            SearchMessagesFilter::MissedCall(t) => t.td_name(),
-            SearchMessagesFilter::Photo(t) => t.td_name(),
-            SearchMessagesFilter::PhotoAndVideo(t) => t.td_name(),
-            SearchMessagesFilter::UnreadMention(t) => t.td_name(),
-            SearchMessagesFilter::Url(t) => t.td_name(),
-            SearchMessagesFilter::Video(t) => t.td_name(),
-            SearchMessagesFilter::VideoNote(t) => t.td_name(),
-            SearchMessagesFilter::VoiceAndVideoNote(t) => t.td_name(),
-            SearchMessagesFilter::VoiceNote(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             SearchMessagesFilter::Animation(t) => t.extra(),
             SearchMessagesFilter::Audio(t) => t.extra(),
@@ -116,10 +85,12 @@ impl RObject for SearchMessagesFilter {
             SearchMessagesFilter::ChatPhoto(t) => t.extra(),
             SearchMessagesFilter::Document(t) => t.extra(),
             SearchMessagesFilter::Empty(t) => t.extra(),
+            SearchMessagesFilter::FailedToSend(t) => t.extra(),
             SearchMessagesFilter::Mention(t) => t.extra(),
             SearchMessagesFilter::MissedCall(t) => t.extra(),
             SearchMessagesFilter::Photo(t) => t.extra(),
             SearchMessagesFilter::PhotoAndVideo(t) => t.extra(),
+            SearchMessagesFilter::Pinned(t) => t.extra(),
             SearchMessagesFilter::UnreadMention(t) => t.extra(),
             SearchMessagesFilter::Url(t) => t.extra(),
             SearchMessagesFilter::Video(t) => t.extra(),
@@ -130,8 +101,30 @@ impl RObject for SearchMessagesFilter {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            SearchMessagesFilter::Animation(t) => t.client_id(),
+            SearchMessagesFilter::Audio(t) => t.client_id(),
+            SearchMessagesFilter::Call(t) => t.client_id(),
+            SearchMessagesFilter::ChatPhoto(t) => t.client_id(),
+            SearchMessagesFilter::Document(t) => t.client_id(),
+            SearchMessagesFilter::Empty(t) => t.client_id(),
+            SearchMessagesFilter::FailedToSend(t) => t.client_id(),
+            SearchMessagesFilter::Mention(t) => t.client_id(),
+            SearchMessagesFilter::MissedCall(t) => t.client_id(),
+            SearchMessagesFilter::Photo(t) => t.client_id(),
+            SearchMessagesFilter::PhotoAndVideo(t) => t.client_id(),
+            SearchMessagesFilter::Pinned(t) => t.client_id(),
+            SearchMessagesFilter::UnreadMention(t) => t.client_id(),
+            SearchMessagesFilter::Url(t) => t.client_id(),
+            SearchMessagesFilter::Video(t) => t.client_id(),
+            SearchMessagesFilter::VideoNote(t) => t.client_id(),
+            SearchMessagesFilter::VoiceAndVideoNote(t) => t.client_id(),
+            SearchMessagesFilter::VoiceNote(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -141,7 +134,7 @@ impl SearchMessagesFilter {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, SearchMessagesFilter::_Default(_))
+        matches!(self, SearchMessagesFilter::_Default)
     }
 }
 
@@ -155,24 +148,20 @@ impl AsRef<SearchMessagesFilter> for SearchMessagesFilter {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterAnimation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterAnimation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterAnimation"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -184,8 +173,8 @@ impl SearchMessagesFilterAnimation {
     }
     pub fn builder() -> RTDSearchMessagesFilterAnimationBuilder {
         let mut inner = SearchMessagesFilterAnimation::default();
-        inner.td_name = "searchMessagesFilterAnimation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterAnimationBuilder { inner }
     }
 }
@@ -217,24 +206,20 @@ impl AsRef<SearchMessagesFilterAnimation> for RTDSearchMessagesFilterAnimationBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterAudio {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterAudio {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterAudio"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -246,8 +231,8 @@ impl SearchMessagesFilterAudio {
     }
     pub fn builder() -> RTDSearchMessagesFilterAudioBuilder {
         let mut inner = SearchMessagesFilterAudio::default();
-        inner.td_name = "searchMessagesFilterAudio".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterAudioBuilder { inner }
     }
 }
@@ -279,24 +264,20 @@ impl AsRef<SearchMessagesFilterAudio> for RTDSearchMessagesFilterAudioBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterCall {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterCall {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterCall"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -308,8 +289,8 @@ impl SearchMessagesFilterCall {
     }
     pub fn builder() -> RTDSearchMessagesFilterCallBuilder {
         let mut inner = SearchMessagesFilterCall::default();
-        inner.td_name = "searchMessagesFilterCall".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterCallBuilder { inner }
     }
 }
@@ -341,24 +322,20 @@ impl AsRef<SearchMessagesFilterCall> for RTDSearchMessagesFilterCallBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterChatPhoto {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterChatPhoto {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterChatPhoto"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -370,8 +347,8 @@ impl SearchMessagesFilterChatPhoto {
     }
     pub fn builder() -> RTDSearchMessagesFilterChatPhotoBuilder {
         let mut inner = SearchMessagesFilterChatPhoto::default();
-        inner.td_name = "searchMessagesFilterChatPhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterChatPhotoBuilder { inner }
     }
 }
@@ -403,24 +380,20 @@ impl AsRef<SearchMessagesFilterChatPhoto> for RTDSearchMessagesFilterChatPhotoBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterDocument {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterDocument {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterDocument"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -432,8 +405,8 @@ impl SearchMessagesFilterDocument {
     }
     pub fn builder() -> RTDSearchMessagesFilterDocumentBuilder {
         let mut inner = SearchMessagesFilterDocument::default();
-        inner.td_name = "searchMessagesFilterDocument".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterDocumentBuilder { inner }
     }
 }
@@ -465,24 +438,20 @@ impl AsRef<SearchMessagesFilterDocument> for RTDSearchMessagesFilterDocumentBuil
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterEmpty {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterEmpty {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterEmpty"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -494,8 +463,8 @@ impl SearchMessagesFilterEmpty {
     }
     pub fn builder() -> RTDSearchMessagesFilterEmptyBuilder {
         let mut inner = SearchMessagesFilterEmpty::default();
-        inner.td_name = "searchMessagesFilterEmpty".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterEmptyBuilder { inner }
     }
 }
@@ -523,28 +492,82 @@ impl AsRef<SearchMessagesFilterEmpty> for RTDSearchMessagesFilterEmptyBuilder {
     }
 }
 
+/// Returns only failed to send messages. This filter can be used only if the message database is used
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct SearchMessagesFilterFailedToSend {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for SearchMessagesFilterFailedToSend {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDSearchMessagesFilter for SearchMessagesFilterFailedToSend {}
+
+impl SearchMessagesFilterFailedToSend {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDSearchMessagesFilterFailedToSendBuilder {
+        let mut inner = SearchMessagesFilterFailedToSend::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDSearchMessagesFilterFailedToSendBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDSearchMessagesFilterFailedToSendBuilder {
+    inner: SearchMessagesFilterFailedToSend,
+}
+
+impl RTDSearchMessagesFilterFailedToSendBuilder {
+    pub fn build(&self) -> SearchMessagesFilterFailedToSend {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<SearchMessagesFilterFailedToSend> for SearchMessagesFilterFailedToSend {
+    fn as_ref(&self) -> &SearchMessagesFilterFailedToSend {
+        self
+    }
+}
+
+impl AsRef<SearchMessagesFilterFailedToSend> for RTDSearchMessagesFilterFailedToSendBuilder {
+    fn as_ref(&self) -> &SearchMessagesFilterFailedToSend {
+        &self.inner
+    }
+}
+
 /// Returns only messages with mentions of the current user, or messages that are replies to their messages
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterMention {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterMention {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterMention"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -556,8 +579,8 @@ impl SearchMessagesFilterMention {
     }
     pub fn builder() -> RTDSearchMessagesFilterMentionBuilder {
         let mut inner = SearchMessagesFilterMention::default();
-        inner.td_name = "searchMessagesFilterMention".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterMentionBuilder { inner }
     }
 }
@@ -589,24 +612,20 @@ impl AsRef<SearchMessagesFilterMention> for RTDSearchMessagesFilterMentionBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterMissedCall {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterMissedCall {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterMissedCall"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -618,8 +637,8 @@ impl SearchMessagesFilterMissedCall {
     }
     pub fn builder() -> RTDSearchMessagesFilterMissedCallBuilder {
         let mut inner = SearchMessagesFilterMissedCall::default();
-        inner.td_name = "searchMessagesFilterMissedCall".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterMissedCallBuilder { inner }
     }
 }
@@ -651,24 +670,20 @@ impl AsRef<SearchMessagesFilterMissedCall> for RTDSearchMessagesFilterMissedCall
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterPhoto {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterPhoto {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterPhoto"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -680,8 +695,8 @@ impl SearchMessagesFilterPhoto {
     }
     pub fn builder() -> RTDSearchMessagesFilterPhotoBuilder {
         let mut inner = SearchMessagesFilterPhoto::default();
-        inner.td_name = "searchMessagesFilterPhoto".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterPhotoBuilder { inner }
     }
 }
@@ -713,24 +728,20 @@ impl AsRef<SearchMessagesFilterPhoto> for RTDSearchMessagesFilterPhotoBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterPhotoAndVideo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterPhotoAndVideo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterPhotoAndVideo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -742,8 +753,8 @@ impl SearchMessagesFilterPhotoAndVideo {
     }
     pub fn builder() -> RTDSearchMessagesFilterPhotoAndVideoBuilder {
         let mut inner = SearchMessagesFilterPhotoAndVideo::default();
-        inner.td_name = "searchMessagesFilterPhotoAndVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterPhotoAndVideoBuilder { inner }
     }
 }
@@ -771,28 +782,82 @@ impl AsRef<SearchMessagesFilterPhotoAndVideo> for RTDSearchMessagesFilterPhotoAn
     }
 }
 
-/// Returns only messages with unread mentions of the current user, or messages that are replies to their messages. When using this filter the results can't be additionally filtered by a query or by the sending user
+/// Returns only pinned messages
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SearchMessagesFilterUnreadMention {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
+pub struct SearchMessagesFilterPinned {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for SearchMessagesFilterPinned {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDSearchMessagesFilter for SearchMessagesFilterPinned {}
+
+impl SearchMessagesFilterPinned {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDSearchMessagesFilterPinnedBuilder {
+        let mut inner = SearchMessagesFilterPinned::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDSearchMessagesFilterPinnedBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDSearchMessagesFilterPinnedBuilder {
+    inner: SearchMessagesFilterPinned,
+}
+
+impl RTDSearchMessagesFilterPinnedBuilder {
+    pub fn build(&self) -> SearchMessagesFilterPinned {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<SearchMessagesFilterPinned> for SearchMessagesFilterPinned {
+    fn as_ref(&self) -> &SearchMessagesFilterPinned {
+        self
+    }
+}
+
+impl AsRef<SearchMessagesFilterPinned> for RTDSearchMessagesFilterPinnedBuilder {
+    fn as_ref(&self) -> &SearchMessagesFilterPinned {
+        &self.inner
+    }
+}
+
+/// Returns only messages with unread mentions of the current user, or messages that are replies to their messages. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct SearchMessagesFilterUnreadMention {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterUnreadMention {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterUnreadMention"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -804,8 +869,8 @@ impl SearchMessagesFilterUnreadMention {
     }
     pub fn builder() -> RTDSearchMessagesFilterUnreadMentionBuilder {
         let mut inner = SearchMessagesFilterUnreadMention::default();
-        inner.td_name = "searchMessagesFilterUnreadMention".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterUnreadMentionBuilder { inner }
     }
 }
@@ -837,24 +902,20 @@ impl AsRef<SearchMessagesFilterUnreadMention> for RTDSearchMessagesFilterUnreadM
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterUrl {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterUrl {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterUrl"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -866,8 +927,8 @@ impl SearchMessagesFilterUrl {
     }
     pub fn builder() -> RTDSearchMessagesFilterUrlBuilder {
         let mut inner = SearchMessagesFilterUrl::default();
-        inner.td_name = "searchMessagesFilterUrl".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterUrlBuilder { inner }
     }
 }
@@ -899,24 +960,20 @@ impl AsRef<SearchMessagesFilterUrl> for RTDSearchMessagesFilterUrlBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterVideo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterVideo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterVideo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -928,8 +985,8 @@ impl SearchMessagesFilterVideo {
     }
     pub fn builder() -> RTDSearchMessagesFilterVideoBuilder {
         let mut inner = SearchMessagesFilterVideo::default();
-        inner.td_name = "searchMessagesFilterVideo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterVideoBuilder { inner }
     }
 }
@@ -961,24 +1018,20 @@ impl AsRef<SearchMessagesFilterVideo> for RTDSearchMessagesFilterVideoBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterVideoNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterVideoNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterVideoNote"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -990,8 +1043,8 @@ impl SearchMessagesFilterVideoNote {
     }
     pub fn builder() -> RTDSearchMessagesFilterVideoNoteBuilder {
         let mut inner = SearchMessagesFilterVideoNote::default();
-        inner.td_name = "searchMessagesFilterVideoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterVideoNoteBuilder { inner }
     }
 }
@@ -1023,24 +1076,20 @@ impl AsRef<SearchMessagesFilterVideoNote> for RTDSearchMessagesFilterVideoNoteBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterVoiceAndVideoNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterVoiceAndVideoNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterVoiceAndVideoNote"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -1052,8 +1101,8 @@ impl SearchMessagesFilterVoiceAndVideoNote {
     }
     pub fn builder() -> RTDSearchMessagesFilterVoiceAndVideoNoteBuilder {
         let mut inner = SearchMessagesFilterVoiceAndVideoNote::default();
-        inner.td_name = "searchMessagesFilterVoiceAndVideoNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterVoiceAndVideoNoteBuilder { inner }
     }
 }
@@ -1087,24 +1136,20 @@ impl AsRef<SearchMessagesFilterVoiceAndVideoNote>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterVoiceNote {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for SearchMessagesFilterVoiceNote {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "searchMessagesFilterVoiceNote"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -1116,8 +1161,8 @@ impl SearchMessagesFilterVoiceNote {
     }
     pub fn builder() -> RTDSearchMessagesFilterVoiceNoteBuilder {
         let mut inner = SearchMessagesFilterVoiceNote::default();
-        inner.td_name = "searchMessagesFilterVoiceNote".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDSearchMessagesFilterVoiceNoteBuilder { inner }
     }
 }

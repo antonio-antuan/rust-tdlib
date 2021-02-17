@@ -2,69 +2,43 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Describes actions which should be possible to do through a chat action bar
+/// Describes actions which should be possible to do through a chat action bar
 pub trait TDChatActionBar: Debug + RObject {}
 
 /// Describes actions which should be possible to do through a chat action bar
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum ChatActionBar {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The chat is a private or secret chat and the other user can be added to the contact list using the method addContact
+    #[serde(rename(deserialize = "chatActionBarAddContact"))]
     AddContact(ChatActionBarAddContact),
-    /// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be added to the contact list using the method addContact, or the other user can be blocked using the method blockUser
+    /// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method blockUser, or the other user can be added to the contact list using the method addContact
+    #[serde(rename(deserialize = "chatActionBarReportAddBlock"))]
     ReportAddBlock(ChatActionBarReportAddBlock),
     /// The chat can be reported as spam using the method reportChat with the reason chatReportReasonSpam
+    #[serde(rename(deserialize = "chatActionBarReportSpam"))]
     ReportSpam(ChatActionBarReportSpam),
     /// The chat is a location-based supergroup, which can be reported as having unrelated location using the method reportChat with the reason chatReportReasonUnrelatedLocation
+    #[serde(rename(deserialize = "chatActionBarReportUnrelatedLocation"))]
     ReportUnrelatedLocation(ChatActionBarReportUnrelatedLocation),
     /// The chat is a private or secret chat with a mutual contact and the user's phone number can be shared with the other user using the method sharePhoneNumber
+    #[serde(rename(deserialize = "chatActionBarSharePhoneNumber"))]
     SharePhoneNumber(ChatActionBarSharePhoneNumber),
 }
 
 impl Default for ChatActionBar {
     fn default() -> Self {
-        ChatActionBar::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for ChatActionBar {
-    fn deserialize<D>(deserializer: D) -> Result<ChatActionBar, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          ChatActionBar,
-          (chatActionBarAddContact, AddContact);
-          (chatActionBarReportAddBlock, ReportAddBlock);
-          (chatActionBarReportSpam, ReportSpam);
-          (chatActionBarReportUnrelatedLocation, ReportUnrelatedLocation);
-          (chatActionBarSharePhoneNumber, SharePhoneNumber);
-
-        )(deserializer)
+        ChatActionBar::_Default
     }
 }
 
 impl RObject for ChatActionBar {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            ChatActionBar::AddContact(t) => t.td_name(),
-            ChatActionBar::ReportAddBlock(t) => t.td_name(),
-            ChatActionBar::ReportSpam(t) => t.td_name(),
-            ChatActionBar::ReportUnrelatedLocation(t) => t.td_name(),
-            ChatActionBar::SharePhoneNumber(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             ChatActionBar::AddContact(t) => t.extra(),
             ChatActionBar::ReportAddBlock(t) => t.extra(),
@@ -75,8 +49,17 @@ impl RObject for ChatActionBar {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            ChatActionBar::AddContact(t) => t.client_id(),
+            ChatActionBar::ReportAddBlock(t) => t.client_id(),
+            ChatActionBar::ReportSpam(t) => t.client_id(),
+            ChatActionBar::ReportUnrelatedLocation(t) => t.client_id(),
+            ChatActionBar::SharePhoneNumber(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -86,7 +69,7 @@ impl ChatActionBar {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatActionBar::_Default(_))
+        matches!(self, ChatActionBar::_Default)
     }
 }
 
@@ -100,24 +83,20 @@ impl AsRef<ChatActionBar> for ChatActionBar {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarAddContact {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatActionBarAddContact {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionBarAddContact"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -129,8 +108,8 @@ impl ChatActionBarAddContact {
     }
     pub fn builder() -> RTDChatActionBarAddContactBuilder {
         let mut inner = ChatActionBarAddContact::default();
-        inner.td_name = "chatActionBarAddContact".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatActionBarAddContactBuilder { inner }
     }
 }
@@ -158,28 +137,28 @@ impl AsRef<ChatActionBarAddContact> for RTDChatActionBarAddContactBuilder {
     }
 }
 
-/// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be added to the contact list using the method addContact, or the other user can be blocked using the method blockUser
+/// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method blockUser, or the other user can be added to the contact list using the method addContact
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarReportAddBlock {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// If true, the chat was automatically archived and can be moved back to the main chat list using addChatToList simultaneously with setting chat notification settings to default using setChatNotificationSettings
+    can_unarchive: bool,
+    /// If non-negative, the current user was found by the peer through searchChatsNearby and this is the distance between the users
+    distance: i32,
 }
 
 impl RObject for ChatActionBarReportAddBlock {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionBarReportAddBlock"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -191,9 +170,17 @@ impl ChatActionBarReportAddBlock {
     }
     pub fn builder() -> RTDChatActionBarReportAddBlockBuilder {
         let mut inner = ChatActionBarReportAddBlock::default();
-        inner.td_name = "chatActionBarReportAddBlock".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatActionBarReportAddBlockBuilder { inner }
+    }
+
+    pub fn can_unarchive(&self) -> bool {
+        self.can_unarchive
+    }
+
+    pub fn distance(&self) -> i32 {
+        self.distance
     }
 }
 
@@ -205,6 +192,16 @@ pub struct RTDChatActionBarReportAddBlockBuilder {
 impl RTDChatActionBarReportAddBlockBuilder {
     pub fn build(&self) -> ChatActionBarReportAddBlock {
         self.inner.clone()
+    }
+
+    pub fn can_unarchive(&mut self, can_unarchive: bool) -> &mut Self {
+        self.inner.can_unarchive = can_unarchive;
+        self
+    }
+
+    pub fn distance(&mut self, distance: i32) -> &mut Self {
+        self.inner.distance = distance;
+        self
     }
 }
 
@@ -224,24 +221,22 @@ impl AsRef<ChatActionBarReportAddBlock> for RTDChatActionBarReportAddBlockBuilde
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarReportSpam {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// If true, the chat was automatically archived and can be moved back to the main chat list using addChatToList simultaneously with setting chat notification settings to default using setChatNotificationSettings
+    can_unarchive: bool,
 }
 
 impl RObject for ChatActionBarReportSpam {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionBarReportSpam"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -253,9 +248,13 @@ impl ChatActionBarReportSpam {
     }
     pub fn builder() -> RTDChatActionBarReportSpamBuilder {
         let mut inner = ChatActionBarReportSpam::default();
-        inner.td_name = "chatActionBarReportSpam".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatActionBarReportSpamBuilder { inner }
+    }
+
+    pub fn can_unarchive(&self) -> bool {
+        self.can_unarchive
     }
 }
 
@@ -267,6 +266,11 @@ pub struct RTDChatActionBarReportSpamBuilder {
 impl RTDChatActionBarReportSpamBuilder {
     pub fn build(&self) -> ChatActionBarReportSpam {
         self.inner.clone()
+    }
+
+    pub fn can_unarchive(&mut self, can_unarchive: bool) -> &mut Self {
+        self.inner.can_unarchive = can_unarchive;
+        self
     }
 }
 
@@ -286,24 +290,20 @@ impl AsRef<ChatActionBarReportSpam> for RTDChatActionBarReportSpamBuilder {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarReportUnrelatedLocation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatActionBarReportUnrelatedLocation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionBarReportUnrelatedLocation"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -315,8 +315,8 @@ impl ChatActionBarReportUnrelatedLocation {
     }
     pub fn builder() -> RTDChatActionBarReportUnrelatedLocationBuilder {
         let mut inner = ChatActionBarReportUnrelatedLocation::default();
-        inner.td_name = "chatActionBarReportUnrelatedLocation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatActionBarReportUnrelatedLocationBuilder { inner }
     }
 }
@@ -350,24 +350,20 @@ impl AsRef<ChatActionBarReportUnrelatedLocation>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarSharePhoneNumber {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for ChatActionBarSharePhoneNumber {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "chatActionBarSharePhoneNumber"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -379,8 +375,8 @@ impl ChatActionBarSharePhoneNumber {
     }
     pub fn builder() -> RTDChatActionBarSharePhoneNumberBuilder {
         let mut inner = ChatActionBarSharePhoneNumber::default();
-        inner.td_name = "chatActionBarSharePhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDChatActionBarSharePhoneNumberBuilder { inner }
     }
 }

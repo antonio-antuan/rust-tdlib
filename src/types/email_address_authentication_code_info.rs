@@ -6,28 +6,24 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct EmailAddressAuthenticationCodeInfo {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// Pattern of the email address to which an authentication code was sent
     email_address_pattern: String,
     /// Length of the code; 0 if unknown
-    length: i64,
+    length: i32,
 }
 
 impl RObject for EmailAddressAuthenticationCodeInfo {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "emailAddressAuthenticationCodeInfo"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -37,8 +33,8 @@ impl EmailAddressAuthenticationCodeInfo {
     }
     pub fn builder() -> RTDEmailAddressAuthenticationCodeInfoBuilder {
         let mut inner = EmailAddressAuthenticationCodeInfo::default();
-        inner.td_name = "emailAddressAuthenticationCodeInfo".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDEmailAddressAuthenticationCodeInfoBuilder { inner }
     }
 
@@ -46,7 +42,7 @@ impl EmailAddressAuthenticationCodeInfo {
         &self.email_address_pattern
     }
 
-    pub fn length(&self) -> i64 {
+    pub fn length(&self) -> i32 {
         self.length
     }
 }
@@ -66,7 +62,7 @@ impl RTDEmailAddressAuthenticationCodeInfoBuilder {
         self
     }
 
-    pub fn length(&mut self, length: i64) -> &mut Self {
+    pub fn length(&mut self, length: i32) -> &mut Self {
         self.inner.length = length;
         self
     }

@@ -2,65 +2,40 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-use serde::de::{Deserialize, Deserializer};
 use std::fmt::Debug;
 
-/// TRAIT | Describes a keyboard button type
+/// Describes a keyboard button type
 pub trait TDKeyboardButtonType: Debug + RObject {}
 
 /// Describes a keyboard button type
-#[derive(Debug, Clone, Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "@type")]
 pub enum KeyboardButtonType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A button that sends the user's location when pressed; available only in private chats
+    #[serde(rename(deserialize = "keyboardButtonTypeRequestLocation"))]
     RequestLocation(KeyboardButtonTypeRequestLocation),
     /// A button that sends the user's phone number when pressed; available only in private chats
+    #[serde(rename(deserialize = "keyboardButtonTypeRequestPhoneNumber"))]
     RequestPhoneNumber(KeyboardButtonTypeRequestPhoneNumber),
     /// A button that allows the user to create and send a poll when pressed; available only in private chats
+    #[serde(rename(deserialize = "keyboardButtonTypeRequestPoll"))]
     RequestPoll(KeyboardButtonTypeRequestPoll),
     /// A simple button, with text that should be sent when the button is pressed
+    #[serde(rename(deserialize = "keyboardButtonTypeText"))]
     Text(KeyboardButtonTypeText),
 }
 
 impl Default for KeyboardButtonType {
     fn default() -> Self {
-        KeyboardButtonType::_Default(())
-    }
-}
-
-impl<'de> Deserialize<'de> for KeyboardButtonType {
-    fn deserialize<D>(deserializer: D) -> Result<KeyboardButtonType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        rtd_enum_deserialize!(
-          KeyboardButtonType,
-          (keyboardButtonTypeRequestLocation, RequestLocation);
-          (keyboardButtonTypeRequestPhoneNumber, RequestPhoneNumber);
-          (keyboardButtonTypeRequestPoll, RequestPoll);
-          (keyboardButtonTypeText, Text);
-
-        )(deserializer)
+        KeyboardButtonType::_Default
     }
 }
 
 impl RObject for KeyboardButtonType {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        match self {
-            KeyboardButtonType::RequestLocation(t) => t.td_name(),
-            KeyboardButtonType::RequestPhoneNumber(t) => t.td_name(),
-            KeyboardButtonType::RequestPoll(t) => t.td_name(),
-            KeyboardButtonType::Text(t) => t.td_name(),
-
-            _ => "-1",
-        }
-    }
-    #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
+    fn extra(&self) -> Option<&str> {
         match self {
             KeyboardButtonType::RequestLocation(t) => t.extra(),
             KeyboardButtonType::RequestPhoneNumber(t) => t.extra(),
@@ -70,8 +45,16 @@ impl RObject for KeyboardButtonType {
             _ => None,
         }
     }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        match self {
+            KeyboardButtonType::RequestLocation(t) => t.client_id(),
+            KeyboardButtonType::RequestPhoneNumber(t) => t.client_id(),
+            KeyboardButtonType::RequestPoll(t) => t.client_id(),
+            KeyboardButtonType::Text(t) => t.client_id(),
+
+            _ => None,
+        }
     }
 }
 
@@ -81,7 +64,7 @@ impl KeyboardButtonType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, KeyboardButtonType::_Default(_))
+        matches!(self, KeyboardButtonType::_Default)
     }
 }
 
@@ -95,24 +78,20 @@ impl AsRef<KeyboardButtonType> for KeyboardButtonType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct KeyboardButtonTypeRequestLocation {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for KeyboardButtonTypeRequestLocation {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "keyboardButtonTypeRequestLocation"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -124,8 +103,8 @@ impl KeyboardButtonTypeRequestLocation {
     }
     pub fn builder() -> RTDKeyboardButtonTypeRequestLocationBuilder {
         let mut inner = KeyboardButtonTypeRequestLocation::default();
-        inner.td_name = "keyboardButtonTypeRequestLocation".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDKeyboardButtonTypeRequestLocationBuilder { inner }
     }
 }
@@ -157,24 +136,20 @@ impl AsRef<KeyboardButtonTypeRequestLocation> for RTDKeyboardButtonTypeRequestLo
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct KeyboardButtonTypeRequestPhoneNumber {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for KeyboardButtonTypeRequestPhoneNumber {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "keyboardButtonTypeRequestPhoneNumber"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -186,8 +161,8 @@ impl KeyboardButtonTypeRequestPhoneNumber {
     }
     pub fn builder() -> RTDKeyboardButtonTypeRequestPhoneNumberBuilder {
         let mut inner = KeyboardButtonTypeRequestPhoneNumber::default();
-        inner.td_name = "keyboardButtonTypeRequestPhoneNumber".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDKeyboardButtonTypeRequestPhoneNumberBuilder { inner }
     }
 }
@@ -221,11 +196,10 @@ impl AsRef<KeyboardButtonTypeRequestPhoneNumber>
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct KeyboardButtonTypeRequestPoll {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// If true, only regular polls must be allowed to create
     force_regular: bool,
     /// If true, only polls in quiz mode must be allowed to create
@@ -234,15 +208,12 @@ pub struct KeyboardButtonTypeRequestPoll {
 
 impl RObject for KeyboardButtonTypeRequestPoll {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "keyboardButtonTypeRequestPoll"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -254,8 +225,8 @@ impl KeyboardButtonTypeRequestPoll {
     }
     pub fn builder() -> RTDKeyboardButtonTypeRequestPollBuilder {
         let mut inner = KeyboardButtonTypeRequestPoll::default();
-        inner.td_name = "keyboardButtonTypeRequestPoll".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDKeyboardButtonTypeRequestPollBuilder { inner }
     }
 
@@ -305,24 +276,20 @@ impl AsRef<KeyboardButtonTypeRequestPoll> for RTDKeyboardButtonTypeRequestPollBu
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct KeyboardButtonTypeText {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
 }
 
 impl RObject for KeyboardButtonTypeText {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "keyboardButtonTypeText"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -334,8 +301,8 @@ impl KeyboardButtonTypeText {
     }
     pub fn builder() -> RTDKeyboardButtonTypeTextBuilder {
         let mut inner = KeyboardButtonTypeText::default();
-        inner.td_name = "keyboardButtonTypeText".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDKeyboardButtonTypeTextBuilder { inner }
     }
 }

@@ -6,31 +6,29 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TextEntity {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
-    /// Offset of the entity in UTF-16 code units
-    offset: i64,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Offset of the entity, in UTF-16 code units
+    offset: i32,
     /// Length of the entity, in UTF-16 code units
-    length: i64,
+    length: i32,
     /// Type of the entity
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "TextEntityType::_is_default")]
     type_: TextEntityType,
 }
 
 impl RObject for TextEntity {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "textEntity"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -40,16 +38,16 @@ impl TextEntity {
     }
     pub fn builder() -> RTDTextEntityBuilder {
         let mut inner = TextEntity::default();
-        inner.td_name = "textEntity".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDTextEntityBuilder { inner }
     }
 
-    pub fn offset(&self) -> i64 {
+    pub fn offset(&self) -> i32 {
         self.offset
     }
 
-    pub fn length(&self) -> i64 {
+    pub fn length(&self) -> i32 {
         self.length
     }
 
@@ -68,12 +66,12 @@ impl RTDTextEntityBuilder {
         self.inner.clone()
     }
 
-    pub fn offset(&mut self, offset: i64) -> &mut Self {
+    pub fn offset(&mut self, offset: i32) -> &mut Self {
         self.inner.offset = offset;
         self
     }
 
-    pub fn length(&mut self, length: i64) -> &mut Self {
+    pub fn length(&mut self, length: i32) -> &mut Self {
         self.inner.length = length;
         self
     }

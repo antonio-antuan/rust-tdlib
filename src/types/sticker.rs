@@ -6,18 +6,18 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Sticker {
     #[doc(hidden)]
-    #[serde(rename(serialize = "@type", deserialize = "@type"))]
-    td_name: String,
-    #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
     /// The identifier of the sticker set to which the sticker belongs; 0 if none
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
-    set_id: isize,
+    set_id: i64,
     /// Sticker width; as defined by the sender
-    width: i64,
+    width: i32,
     /// Sticker height; as defined by the sender
-    height: i64,
+    height: i32,
     /// Emoji corresponding to the sticker
     emoji: String,
     /// True, if the sticker is an animated sticker in TGS format
@@ -27,22 +27,19 @@ pub struct Sticker {
     /// Position where the mask should be placed; may be null
     mask_position: Option<MaskPosition>,
     /// Sticker thumbnail in WEBP or JPEG format; may be null
-    thumbnail: Option<PhotoSize>,
+    thumbnail: Option<Thumbnail>,
     /// File containing the sticker
     sticker: File,
 }
 
 impl RObject for Sticker {
     #[doc(hidden)]
-    fn td_name(&self) -> &'static str {
-        "sticker"
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
     }
     #[doc(hidden)]
-    fn extra(&self) -> Option<String> {
-        self.extra.clone()
-    }
-    fn to_json(&self) -> RTDResult<String> {
-        Ok(serde_json::to_string(self)?)
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
     }
 }
 
@@ -52,20 +49,20 @@ impl Sticker {
     }
     pub fn builder() -> RTDStickerBuilder {
         let mut inner = Sticker::default();
-        inner.td_name = "sticker".to_string();
         inner.extra = Some(Uuid::new_v4().to_string());
+
         RTDStickerBuilder { inner }
     }
 
-    pub fn set_id(&self) -> isize {
+    pub fn set_id(&self) -> i64 {
         self.set_id
     }
 
-    pub fn width(&self) -> i64 {
+    pub fn width(&self) -> i32 {
         self.width
     }
 
-    pub fn height(&self) -> i64 {
+    pub fn height(&self) -> i32 {
         self.height
     }
 
@@ -85,7 +82,7 @@ impl Sticker {
         &self.mask_position
     }
 
-    pub fn thumbnail(&self) -> &Option<PhotoSize> {
+    pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
     }
 
@@ -104,17 +101,17 @@ impl RTDStickerBuilder {
         self.inner.clone()
     }
 
-    pub fn set_id(&mut self, set_id: isize) -> &mut Self {
+    pub fn set_id(&mut self, set_id: i64) -> &mut Self {
         self.inner.set_id = set_id;
         self
     }
 
-    pub fn width(&mut self, width: i64) -> &mut Self {
+    pub fn width(&mut self, width: i32) -> &mut Self {
         self.inner.width = width;
         self
     }
 
-    pub fn height(&mut self, height: i64) -> &mut Self {
+    pub fn height(&mut self, height: i32) -> &mut Self {
         self.inner.height = height;
         self
     }
@@ -139,7 +136,7 @@ impl RTDStickerBuilder {
         self
     }
 
-    pub fn thumbnail<T: AsRef<PhotoSize>>(&mut self, thumbnail: T) -> &mut Self {
+    pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
         self
     }
