@@ -12,7 +12,7 @@ pub trait TDDeviceToken: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum DeviceToken {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A token for Apple Push Notification service
     #[serde(rename(deserialize = "deviceTokenApplePush"))]
     ApplePush(DeviceTokenApplePush),
@@ -50,7 +50,7 @@ pub enum DeviceToken {
 
 impl Default for DeviceToken {
     fn default() -> Self {
-        DeviceToken::_Default(())
+        DeviceToken::_Default
     }
 }
 
@@ -99,7 +99,7 @@ impl DeviceToken {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, DeviceToken::_Default(_))
+        matches!(self, DeviceToken::_Default)
     }
 }
 

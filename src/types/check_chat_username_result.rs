@@ -12,7 +12,7 @@ pub trait TDCheckChatUsernameResult: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum CheckChatUsernameResult {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Checks whether a username can be set for a chat
     #[serde(rename(deserialize = "checkChatUsername"))]
     CheckChatUsername(CheckChatUsername),
@@ -35,7 +35,7 @@ pub enum CheckChatUsernameResult {
 
 impl Default for CheckChatUsernameResult {
     fn default() -> Self {
-        CheckChatUsernameResult::_Default(())
+        CheckChatUsernameResult::_Default
     }
 }
 
@@ -74,7 +74,7 @@ impl CheckChatUsernameResult {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, CheckChatUsernameResult::_Default(_))
+        matches!(self, CheckChatUsernameResult::_Default)
     }
 }
 

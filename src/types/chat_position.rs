@@ -11,13 +11,18 @@ pub struct ChatPosition {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat list
+
+    #[serde(skip_serializing_if = "ChatList::_is_default")]
     list: ChatList,
     /// A parameter used to determine order of the chat in the chat list. Chats must be sorted by the pair (order, chat.id) in descending order
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     order: i64,
     /// True, if the chat is pinned in the chat list
     is_pinned: bool,
     /// Source of the chat in the chat list; may be null
+
+    #[serde(skip_serializing_if = "Option<ChatSource>::_is_default")]
     source: Option<ChatSource>,
 }
 

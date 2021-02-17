@@ -12,7 +12,7 @@ pub trait TDSuggestedAction: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum SuggestedAction {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Suggests the user to check authorization phone number and change the phone number if it is inaccessible
     #[serde(rename(deserialize = "suggestedActionCheckPhoneNumber"))]
     CheckPhoneNumber(SuggestedActionCheckPhoneNumber),
@@ -23,7 +23,7 @@ pub enum SuggestedAction {
 
 impl Default for SuggestedAction {
     fn default() -> Self {
-        SuggestedAction::_Default(())
+        SuggestedAction::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl SuggestedAction {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, SuggestedAction::_Default(_))
+        matches!(self, SuggestedAction::_Default)
     }
 }
 

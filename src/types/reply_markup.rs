@@ -12,7 +12,7 @@ pub trait TDReplyMarkup: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ReplyMarkup {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Instructs application to force a reply to this message
     #[serde(rename(deserialize = "replyMarkupForceReply"))]
     ForceReply(ReplyMarkupForceReply),
@@ -29,7 +29,7 @@ pub enum ReplyMarkup {
 
 impl Default for ReplyMarkup {
     fn default() -> Self {
-        ReplyMarkup::_Default(())
+        ReplyMarkup::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl ReplyMarkup {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ReplyMarkup::_Default(_))
+        matches!(self, ReplyMarkup::_Default)
     }
 }
 

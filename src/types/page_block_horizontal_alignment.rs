@@ -12,7 +12,7 @@ pub trait TDPageBlockHorizontalAlignment: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum PageBlockHorizontalAlignment {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The content should be center-aligned
     #[serde(rename(deserialize = "pageBlockHorizontalAlignmentCenter"))]
     Center(PageBlockHorizontalAlignmentCenter),
@@ -26,7 +26,7 @@ pub enum PageBlockHorizontalAlignment {
 
 impl Default for PageBlockHorizontalAlignment {
     fn default() -> Self {
-        PageBlockHorizontalAlignment::_Default(())
+        PageBlockHorizontalAlignment::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl PageBlockHorizontalAlignment {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PageBlockHorizontalAlignment::_Default(_))
+        matches!(self, PageBlockHorizontalAlignment::_Default)
     }
 }
 

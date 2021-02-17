@@ -12,7 +12,7 @@ pub trait TDRichText: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum RichText {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// An anchor
     #[serde(rename(deserialize = "richTextAnchor"))]
     Anchor(RichTextAnchor),
@@ -68,7 +68,7 @@ pub enum RichText {
 
 impl Default for RichText {
     fn default() -> Self {
-        RichText::_Default(())
+        RichText::_Default
     }
 }
 
@@ -129,7 +129,7 @@ impl RichText {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, RichText::_Default(_))
+        matches!(self, RichText::_Default)
     }
 }
 
@@ -217,6 +217,8 @@ pub struct RichTextAnchorLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The link text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
     /// The anchor name. If the name is empty, the link should bring back to top
     anchor_name: String,
@@ -308,6 +310,8 @@ pub struct RichTextBold {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
 }
 
@@ -377,6 +381,8 @@ pub struct RichTextEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
     /// Email address
     email_address: String,
@@ -457,6 +463,8 @@ pub struct RichTextFixed {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
 }
 
@@ -617,6 +625,8 @@ pub struct RichTextItalic {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
 }
 
@@ -686,6 +696,8 @@ pub struct RichTextMarked {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
 }
 
@@ -755,6 +767,8 @@ pub struct RichTextPhoneNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
     /// Phone number
     phone_number: String,
@@ -904,6 +918,8 @@ pub struct RichTextReference {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
     /// The name of a richTextAnchor object, which is the first element of the target richTexts object
     anchor_name: String,
@@ -995,6 +1011,8 @@ pub struct RichTextStrikethrough {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
 }
 
@@ -1064,6 +1082,8 @@ pub struct RichTextSubscript {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
 }
 
@@ -1133,6 +1153,8 @@ pub struct RichTextSuperscript {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
 }
 
@@ -1202,6 +1224,8 @@ pub struct RichTextUnderline {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
 }
 
@@ -1271,6 +1295,8 @@ pub struct RichTextUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(skip_serializing_if = "Box<RichText>::_is_default")]
     text: Box<RichText>,
     /// URL
     url: String,

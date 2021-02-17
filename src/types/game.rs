@@ -11,6 +11,7 @@ pub struct Game {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Game ID
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Game short name. To share a game use the URL https://t.me/{bot_username}?game={game_short_name}

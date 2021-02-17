@@ -11,6 +11,7 @@ pub struct Background {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique background identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// True, if this is one of default backgrounds
@@ -22,7 +23,9 @@ pub struct Background {
     /// Document with the background; may be null. Null only for filled backgrounds
     document: Option<Document>,
     /// Type of the background
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "BackgroundType::_is_default")]
     type_: BackgroundType,
 }
 

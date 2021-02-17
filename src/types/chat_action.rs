@@ -12,7 +12,7 @@ pub trait TDChatAction: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatAction {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The user has cancelled the previous action
     #[serde(rename(deserialize = "chatActionCancel"))]
     Cancel(ChatActionCancel),
@@ -56,7 +56,7 @@ pub enum ChatAction {
 
 impl Default for ChatAction {
     fn default() -> Self {
-        ChatAction::_Default(())
+        ChatAction::_Default
     }
 }
 
@@ -109,7 +109,7 @@ impl ChatAction {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatAction::_Default(_))
+        matches!(self, ChatAction::_Default)
     }
 }
 

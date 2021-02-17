@@ -6,7 +6,7 @@ use std::{
 use serde::de::{Deserialize, Deserializer, Error as SerdeError};
 
 use crate::{errors::*, types::*};
-use serde::{de, Serialize};
+use serde::{de, Serialize, Serializer};
 
 #[allow(dead_code)]
 pub fn from_json<'a, T>(json: &'a str) -> RTDResult<T>
@@ -617,17 +617,6 @@ fn deserialize_traits(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
-    if let Some(td_type) = deserialize_update(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_json_value(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_option_value(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
     if let Some(td_type) = deserialize_authorization_state(rtd_trait_type, rtd_trait_value.clone())?
     {
         return Ok(Some(td_type));
@@ -649,6 +638,10 @@ fn deserialize_traits(
         return Ok(Some(td_type));
     };
 
+    if let Some(td_type) = deserialize_json_value(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
     if let Some(td_type) =
         deserialize_language_pack_string_value(rtd_trait_type, rtd_trait_value.clone())?
     {
@@ -663,11 +656,19 @@ fn deserialize_traits(
         return Ok(Some(td_type));
     };
 
+    if let Some(td_type) = deserialize_option_value(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
     if let Some(td_type) = deserialize_passport_element(rtd_trait_type, rtd_trait_value.clone())? {
         return Ok(Some(td_type));
     };
 
-    if let Some(td_type) = deserialize_statistical_graph(rtd_trait_type, rtd_trait_value)? {
+    if let Some(td_type) = deserialize_statistical_graph(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_update(rtd_trait_type, rtd_trait_value.clone())? {
         return Ok(Some(td_type));
     };
 
@@ -1470,6 +1471,13 @@ where
 {
     let s = String::deserialize(deserializer)?;
     T::from_str(&s).map_err(de::Error::custom)
+}
+
+pub(super) fn serialize_enum_default<S>(s: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    Ok(S::serialize(None).ok())
 }
 
 pub(super) fn vec_of_i64_from_str<'de, D>(deserializer: D) -> Result<Vec<i64>, D::Error>

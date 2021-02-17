@@ -12,7 +12,7 @@ pub trait TDLanguagePackStringValue: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum LanguagePackStringValue {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns a string stored in the local database from the specified localization target and language pack by its key. Returns a 404 error if the string is not found. Can be called synchronously
     #[serde(rename(deserialize = "getLanguagePackString"))]
     GetLanguagePackString(GetLanguagePackString),
@@ -29,7 +29,7 @@ pub enum LanguagePackStringValue {
 
 impl Default for LanguagePackStringValue {
     fn default() -> Self {
-        LanguagePackStringValue::_Default(())
+        LanguagePackStringValue::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl LanguagePackStringValue {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, LanguagePackStringValue::_Default(_))
+        matches!(self, LanguagePackStringValue::_Default)
     }
 }
 

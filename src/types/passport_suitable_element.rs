@@ -11,7 +11,9 @@ pub struct PassportSuitableElement {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Type of the element
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
     /// True, if a selfie is required with the identity document
     is_selfie_required: bool,

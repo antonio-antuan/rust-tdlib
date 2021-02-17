@@ -41,6 +41,7 @@ pub struct SupergroupFullInfo {
     /// True, if new chat members will have access to old messages. In public or discussion groups and both public and private channels, old messages are always available, so this option affects only private supergroups without a linked chat. The value of this field is only available for chat administrators
     is_all_history_available: bool,
     /// Identifier of the supergroup sticker set; 0 if none
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     sticker_set_id: i64,
     /// Location to which the supergroup is connected; may be null

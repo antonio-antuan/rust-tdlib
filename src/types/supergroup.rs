@@ -17,6 +17,8 @@ pub struct Supergroup {
     /// Point in time (Unix timestamp) when the current user joined, or the point in time when the supergroup or channel was created, in case the user is not a member
     date: i32,
     /// Status of the current user in the supergroup or channel; custom title will be always empty
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
     /// Number of members in the supergroup or channel; 0 if unknown. Currently it is guaranteed to be known only if the supergroup or channel was received through searchPublicChats, searchChatsNearby, getInactiveSupergroupChats, getSuitableDiscussionChats, getGroupsInCommon, or getUserPrivacySettingRules
     member_count: i32,

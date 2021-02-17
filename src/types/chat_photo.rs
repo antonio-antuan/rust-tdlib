@@ -11,6 +11,7 @@ pub struct ChatPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique photo identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Point in time (Unix timestamp) when the photo has been added

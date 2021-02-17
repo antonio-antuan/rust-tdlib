@@ -15,7 +15,9 @@ pub struct TextEntity {
     /// Length of the entity, in UTF-16 code units
     length: i32,
     /// Type of the entity
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "TextEntityType::_is_default")]
     type_: TextEntityType,
 }
 

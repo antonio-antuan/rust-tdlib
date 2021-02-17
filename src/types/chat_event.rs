@@ -11,6 +11,7 @@ pub struct ChatEvent {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat event identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Point in time (Unix timestamp) when the event happened
@@ -18,6 +19,8 @@ pub struct ChatEvent {
     /// Identifier of the user who performed the action that triggered the event
     user_id: i32,
     /// Action performed by the user
+
+    #[serde(skip_serializing_if = "ChatEventAction::_is_default")]
     action: ChatEventAction,
 }
 

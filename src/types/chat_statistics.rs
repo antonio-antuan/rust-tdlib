@@ -12,7 +12,7 @@ pub trait TDChatStatistics: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatStatistics {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A detailed statistics about a channel chat
     #[serde(rename(deserialize = "chatStatisticsChannel"))]
     Channel(ChatStatisticsChannel),
@@ -26,7 +26,7 @@ pub enum ChatStatistics {
 
 impl Default for ChatStatistics {
     fn default() -> Self {
-        ChatStatistics::_Default(())
+        ChatStatistics::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl ChatStatistics {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatStatistics::_Default(_))
+        matches!(self, ChatStatistics::_Default)
     }
 }
 
@@ -88,22 +88,40 @@ pub struct ChatStatisticsChannel {
     /// A percentage of users with enabled notifications for the chat
     enabled_notifications_percentage: f32,
     /// A graph containing number of members in the chat
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     member_count_graph: StatisticalGraph,
     /// A graph containing number of members joined and left the chat
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     join_graph: StatisticalGraph,
     /// A graph containing number of members muted and unmuted the chat
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     mute_graph: StatisticalGraph,
     /// A graph containing number of message views in a given hour in the last two weeks
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     view_count_by_hour_graph: StatisticalGraph,
     /// A graph containing number of message views per source
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     view_count_by_source_graph: StatisticalGraph,
     /// A graph containing number of new member joins per source
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     join_by_source_graph: StatisticalGraph,
     /// A graph containing number of users viewed chat messages per language
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     language_graph: StatisticalGraph,
     /// A graph containing number of chat message views and shares
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     message_interaction_graph: StatisticalGraph,
     /// A graph containing number of views of associated with the chat instant views
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     instant_view_interaction_graph: StatisticalGraph,
     /// Detailed statistics about number of views and shares of recently sent messages
     recent_message_interactions: Vec<ChatStatisticsMessageInteractionInfo>,
@@ -338,20 +356,36 @@ pub struct ChatStatisticsSupergroup {
     /// Number of users who sent messages to the chat
     sender_count: StatisticalValue,
     /// A graph containing number of members in the chat
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     member_count_graph: StatisticalGraph,
     /// A graph containing number of members joined and left the chat
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     join_graph: StatisticalGraph,
     /// A graph containing number of new member joins per source
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     join_by_source_graph: StatisticalGraph,
     /// A graph containing distribution of active users per language
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     language_graph: StatisticalGraph,
     /// A graph containing distribution of sent messages by content type
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     message_content_graph: StatisticalGraph,
     /// A graph containing number of different actions in the chat
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     action_graph: StatisticalGraph,
     /// A graph containing distribution of message views per hour
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     day_graph: StatisticalGraph,
     /// A graph containing distribution of message views per day of week
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     week_graph: StatisticalGraph,
     /// List of users sent most messages in the last week
     top_senders: Vec<ChatStatisticsMessageSenderInfo>,

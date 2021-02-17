@@ -12,7 +12,7 @@ pub trait TDTextEntityType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum TextEntityType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A bank card number. The getBankCardInfo method can be used to get information about the bank card
     #[serde(rename(deserialize = "textEntityTypeBankCardNumber"))]
     BankCardNumber(TextEntityTypeBankCardNumber),
@@ -68,7 +68,7 @@ pub enum TextEntityType {
 
 impl Default for TextEntityType {
     fn default() -> Self {
-        TextEntityType::_Default(())
+        TextEntityType::_Default
     }
 }
 
@@ -129,7 +129,7 @@ impl TextEntityType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, TextEntityType::_Default(_))
+        matches!(self, TextEntityType::_Default)
     }
 }
 

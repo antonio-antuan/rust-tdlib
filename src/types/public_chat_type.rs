@@ -12,7 +12,7 @@ pub trait TDPublicChatType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum PublicChatType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The chat is public, because it has username
     #[serde(rename(deserialize = "publicChatTypeHasUsername"))]
     HasUsername(PublicChatTypeHasUsername),
@@ -23,7 +23,7 @@ pub enum PublicChatType {
 
 impl Default for PublicChatType {
     fn default() -> Self {
-        PublicChatType::_Default(())
+        PublicChatType::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl PublicChatType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PublicChatType::_Default(_))
+        matches!(self, PublicChatType::_Default)
     }
 }
 

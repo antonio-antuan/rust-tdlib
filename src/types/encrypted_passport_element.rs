@@ -11,7 +11,9 @@ pub struct EncryptedPassportElement {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Type of Telegram Passport element
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
     /// Encrypted JSON-encoded data about the user
     data: String,

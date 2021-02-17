@@ -12,7 +12,7 @@ pub trait TDChatMembersFilter: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatMembersFilter {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns the owner and administrators
     #[serde(rename(deserialize = "chatMembersFilterAdministrators"))]
     Administrators(ChatMembersFilterAdministrators),
@@ -38,7 +38,7 @@ pub enum ChatMembersFilter {
 
 impl Default for ChatMembersFilter {
     fn default() -> Self {
-        ChatMembersFilter::_Default(())
+        ChatMembersFilter::_Default
     }
 }
 
@@ -79,7 +79,7 @@ impl ChatMembersFilter {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatMembersFilter::_Default(_))
+        matches!(self, ChatMembersFilter::_Default)
     }
 }
 

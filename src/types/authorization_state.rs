@@ -12,7 +12,7 @@ pub trait TDAuthorizationState: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum AuthorizationState {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// TDLib client is in its final state. All databases are closed and all resources are released. No other updates will be received after this. All queries will be responded to with error code 500. To continue working, one should create a new instance of the TDLib client
     #[serde(rename(deserialize = "authorizationStateClosed"))]
     Closed(AuthorizationStateClosed),
@@ -53,7 +53,7 @@ pub enum AuthorizationState {
 
 impl Default for AuthorizationState {
     fn default() -> Self {
-        AuthorizationState::_Default(())
+        AuthorizationState::_Default
     }
 }
 
@@ -104,7 +104,7 @@ impl AuthorizationState {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, AuthorizationState::_Default(_))
+        matches!(self, AuthorizationState::_Default)
     }
 }
 

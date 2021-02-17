@@ -12,7 +12,7 @@ pub trait TDPollType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum PollType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A poll in quiz mode, which has exactly one correct answer option and can be answered only once
     #[serde(rename(deserialize = "pollTypeQuiz"))]
     Quiz(PollTypeQuiz),
@@ -23,7 +23,7 @@ pub enum PollType {
 
 impl Default for PollType {
     fn default() -> Self {
-        PollType::_Default(())
+        PollType::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl PollType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PollType::_Default(_))
+        matches!(self, PollType::_Default)
     }
 }
 

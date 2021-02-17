@@ -12,7 +12,7 @@ pub trait TDMessageContent: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum MessageContent {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// An animation message (GIF-style).
     #[serde(rename(deserialize = "messageAnimation"))]
     MessageAnimation(MessageAnimation),
@@ -143,7 +143,7 @@ pub enum MessageContent {
 
 impl Default for MessageContent {
     fn default() -> Self {
-        MessageContent::_Default(())
+        MessageContent::_Default
     }
 }
 
@@ -254,7 +254,7 @@ impl MessageContent {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, MessageContent::_Default(_))
+        matches!(self, MessageContent::_Default)
     }
 }
 
@@ -526,6 +526,8 @@ pub struct MessageCall {
     /// True, if the call was a video call
     is_video: bool,
     /// Reason why the call was discarded
+
+    #[serde(skip_serializing_if = "CallDiscardReason::_is_default")]
     discard_reason: CallDiscardReason,
     /// Call duration, in seconds
     duration: i32,
@@ -1421,8 +1423,12 @@ pub struct MessageDice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The animated stickers with the initial dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
+
+    #[serde(skip_serializing_if = "Option<DiceStickers>::_is_default")]
     initial_state: Option<DiceStickers>,
     /// The animated stickers with the final dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
+
+    #[serde(skip_serializing_if = "Option<DiceStickers>::_is_default")]
     final_state: Option<DiceStickers>,
     /// Emoji on which the dice throw animation is based
     emoji: String,
@@ -1804,6 +1810,7 @@ pub struct MessageGameScore {
     /// Identifier of the message with the game, can be an identifier of a deleted message
     game_message_id: i64,
     /// Identifier of the game; may be different from the games presented in the message with the game
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     game_id: i64,
     /// New score
@@ -2785,8 +2792,12 @@ pub struct MessageProximityAlertTriggered {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The user or chat, which triggered the proximity alert
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
     traveler: MessageSender,
     /// The user or chat, which subscribed for the proximity alert
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
     watcher: MessageSender,
     /// The distance between the users
     distance: i32,

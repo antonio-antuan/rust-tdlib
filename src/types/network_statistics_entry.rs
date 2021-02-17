@@ -12,7 +12,7 @@ pub trait TDNetworkStatisticsEntry: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum NetworkStatisticsEntry {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Contains information about the total amount of data that was used for calls
     #[serde(rename(deserialize = "networkStatisticsEntryCall"))]
     Call(NetworkStatisticsEntryCall),
@@ -23,7 +23,7 @@ pub enum NetworkStatisticsEntry {
 
 impl Default for NetworkStatisticsEntry {
     fn default() -> Self {
-        NetworkStatisticsEntry::_Default(())
+        NetworkStatisticsEntry::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl NetworkStatisticsEntry {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, NetworkStatisticsEntry::_Default(_))
+        matches!(self, NetworkStatisticsEntry::_Default)
     }
 }
 
@@ -73,6 +73,8 @@ pub struct NetworkStatisticsEntryCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Type of the network the data was sent through. Call setNetworkType to maintain the actual network type
+
+    #[serde(skip_serializing_if = "NetworkType::_is_default")]
     network_type: NetworkType,
     /// Total number of bytes sent
     sent_bytes: i64,
@@ -175,8 +177,12 @@ pub struct NetworkStatisticsEntryFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Type of the file the data is part of
+
+    #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,
     /// Type of the network the data was sent through. Call setNetworkType to maintain the actual network type
+
+    #[serde(skip_serializing_if = "NetworkType::_is_default")]
     network_type: NetworkType,
     /// Total number of bytes sent
     sent_bytes: i64,

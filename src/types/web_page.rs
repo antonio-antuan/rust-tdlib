@@ -15,6 +15,7 @@ pub struct WebPage {
     /// URL to display
     display_url: String,
     /// Type of the web page. Can be: article, photo, audio, video, document, profile, app, or something else
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
     type_: String,
     /// Short name of the site (e.g., Google Docs, App Store)

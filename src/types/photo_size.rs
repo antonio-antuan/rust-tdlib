@@ -11,6 +11,7 @@ pub struct PhotoSize {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Image type (see https://core.telegram.org/constructor/photoSize)
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
     type_: String,
     /// Information about the image file

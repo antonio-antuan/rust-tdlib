@@ -13,6 +13,8 @@ pub struct JsonObjectMember {
     /// Member's key
     key: String,
     /// Member's value
+
+    #[serde(skip_serializing_if = "JsonValue::_is_default")]
     value: JsonValue,
 }
 

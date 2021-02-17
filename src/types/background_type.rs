@@ -12,7 +12,7 @@ pub trait TDBackgroundType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum BackgroundType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A filled background
     #[serde(rename(deserialize = "backgroundTypeFill"))]
     Fill(BackgroundTypeFill),
@@ -26,7 +26,7 @@ pub enum BackgroundType {
 
 impl Default for BackgroundType {
     fn default() -> Self {
-        BackgroundType::_Default(())
+        BackgroundType::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl BackgroundType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, BackgroundType::_Default(_))
+        matches!(self, BackgroundType::_Default)
     }
 }
 
@@ -78,6 +78,8 @@ pub struct BackgroundTypeFill {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Description of the background fill
+
+    #[serde(skip_serializing_if = "BackgroundFill::_is_default")]
     fill: BackgroundFill,
 }
 
@@ -147,6 +149,8 @@ pub struct BackgroundTypePattern {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Description of the background fill
+
+    #[serde(skip_serializing_if = "BackgroundFill::_is_default")]
     fill: BackgroundFill,
     /// Intensity of the pattern when it is shown above the filled background, 0-100
     intensity: i32,

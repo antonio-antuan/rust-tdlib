@@ -21,6 +21,7 @@ pub struct Venue {
     /// Identifier of the venue in the provider database; as defined by the sender
     id: String,
     /// Type of the venue in the provider database; as defined by the sender
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
     type_: String,
 }

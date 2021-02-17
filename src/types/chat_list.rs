@@ -12,7 +12,7 @@ pub trait TDChatList: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatList {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A list of chats usually located at the top of the main chat list. Unmuted chats are automatically moved from the Archive to the Main chat list when a new message arrives
     #[serde(rename(deserialize = "chatListArchive"))]
     Archive(ChatListArchive),
@@ -26,7 +26,7 @@ pub enum ChatList {
 
 impl Default for ChatList {
     fn default() -> Self {
-        ChatList::_Default(())
+        ChatList::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl ChatList {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatList::_Default(_))
+        matches!(self, ChatList::_Default)
     }
 }
 

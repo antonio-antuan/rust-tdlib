@@ -15,10 +15,16 @@ pub struct InputIdentityDocument {
     /// Document expiry date, if available
     expiry_date: Date,
     /// Front side of the document
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     front_side: InputFile,
     /// Reverse side of the document; only for driver license and identity card
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     reverse_side: InputFile,
     /// Selfie with the document, if available
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     selfie: InputFile,
     /// List of files containing a certified English translation of the document
     translation: Vec<InputFile>,

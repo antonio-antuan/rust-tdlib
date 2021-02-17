@@ -17,6 +17,8 @@ pub struct ChatMember {
     /// Point in time (Unix timestamp) when the user joined the chat
     joined_chat_date: i32,
     /// Status of the member in the chat
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
     /// If the user is a bot, information about the bot; may be null. Can be null even for a bot if the bot is not the chat member
     bot_info: Option<BotInfo>,

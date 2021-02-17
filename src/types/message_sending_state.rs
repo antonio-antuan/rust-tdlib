@@ -12,7 +12,7 @@ pub trait TDMessageSendingState: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum MessageSendingState {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The message failed to be sent
     #[serde(rename(deserialize = "messageSendingStateFailed"))]
     Failed(MessageSendingStateFailed),
@@ -23,7 +23,7 @@ pub enum MessageSendingState {
 
 impl Default for MessageSendingState {
     fn default() -> Self {
-        MessageSendingState::_Default(())
+        MessageSendingState::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl MessageSendingState {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, MessageSendingState::_Default(_))
+        matches!(self, MessageSendingState::_Default)
     }
 }
 

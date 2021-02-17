@@ -12,7 +12,7 @@ pub trait TDPushMessageContent: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum PushMessageContent {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// An animation message (GIF-style).
     #[serde(rename(deserialize = "pushMessageContentAnimation"))]
     Animation(PushMessageContentAnimation),
@@ -95,7 +95,7 @@ pub enum PushMessageContent {
 
 impl Default for PushMessageContent {
     fn default() -> Self {
-        PushMessageContent::_Default(())
+        PushMessageContent::_Default
     }
 }
 
@@ -174,7 +174,7 @@ impl PushMessageContent {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PushMessageContent::_Default(_))
+        matches!(self, PushMessageContent::_Default)
     }
 }
 

@@ -12,7 +12,7 @@ pub trait TDLogStream: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum LogStream {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns information about currently used log stream for internal logging of TDLib. Can be called synchronously
     #[serde(rename(deserialize = "getLogStream"))]
     GetLogStream(GetLogStream),
@@ -29,7 +29,7 @@ pub enum LogStream {
 
 impl Default for LogStream {
     fn default() -> Self {
-        LogStream::_Default(())
+        LogStream::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl LogStream {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, LogStream::_Default(_))
+        matches!(self, LogStream::_Default)
     }
 }
 

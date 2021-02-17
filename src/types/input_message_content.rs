@@ -12,7 +12,7 @@ pub trait TDInputMessageContent: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum InputMessageContent {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// An animation message (GIF-style).
     #[serde(rename(deserialize = "inputMessageAnimation"))]
     InputMessageAnimation(InputMessageAnimation),
@@ -68,7 +68,7 @@ pub enum InputMessageContent {
 
 impl Default for InputMessageContent {
     fn default() -> Self {
-        InputMessageContent::_Default(())
+        InputMessageContent::_Default
     }
 }
 
@@ -129,7 +129,7 @@ impl InputMessageContent {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputMessageContent::_Default(_))
+        matches!(self, InputMessageContent::_Default)
     }
 }
 
@@ -148,6 +148,8 @@ pub struct InputMessageAnimation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Animation file to be sent
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     animation: InputFile,
     /// Animation thumbnail, if available
     thumbnail: InputThumbnail,
@@ -283,6 +285,8 @@ pub struct InputMessageAudio {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Audio file to be sent
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     audio: InputFile,
     /// Thumbnail of the cover for the album, if available
     album_cover_thumbnail: InputThumbnail,
@@ -559,6 +563,8 @@ pub struct InputMessageDocument {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Document to be sent
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     document: InputFile,
     /// Document thumbnail, if available
     thumbnail: InputThumbnail,
@@ -1127,6 +1133,8 @@ pub struct InputMessagePhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Photo to send
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     photo: InputFile,
     /// Photo thumbnail to be sent, this is sent to the other party in secret chats only
     thumbnail: InputThumbnail,
@@ -1268,7 +1276,9 @@ pub struct InputMessagePoll {
     /// True, if the poll voters are anonymous. Non-anonymous polls can't be sent or forwarded to channels
     is_anonymous: bool,
     /// Type of the poll
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "PollType::_is_default")]
     type_: PollType,
     /// Amount of time the poll will be active after creation, in seconds; for bots only
     open_period: i32,
@@ -1398,6 +1408,8 @@ pub struct InputMessageSticker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Sticker to be sent
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
     /// Sticker thumbnail, if available
     thumbnail: InputThumbnail,
@@ -1660,6 +1672,8 @@ pub struct InputMessageVideo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Video to be sent
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     video: InputFile,
     /// Video thumbnail, if available
     thumbnail: InputThumbnail,
@@ -1817,6 +1831,8 @@ pub struct InputMessageVideoNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Video note to be sent
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     video_note: InputFile,
     /// Video thumbnail, if available
     thumbnail: InputThumbnail,
@@ -1919,6 +1935,8 @@ pub struct InputMessageVoiceNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Voice note to be sent
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     voice_note: InputFile,
     /// Duration of the voice note, in seconds
     duration: i32,

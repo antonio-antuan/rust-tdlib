@@ -12,7 +12,7 @@ pub trait TDInputCredentials: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum InputCredentials {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Applies if a user enters new credentials using Android Pay
     #[serde(rename(deserialize = "inputCredentialsAndroidPay"))]
     AndroidPay(InputCredentialsAndroidPay),
@@ -29,7 +29,7 @@ pub enum InputCredentials {
 
 impl Default for InputCredentials {
     fn default() -> Self {
-        InputCredentials::_Default(())
+        InputCredentials::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl InputCredentials {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputCredentials::_Default(_))
+        matches!(self, InputCredentials::_Default)
     }
 }
 

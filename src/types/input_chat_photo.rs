@@ -12,7 +12,7 @@ pub trait TDInputChatPhoto: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum InputChatPhoto {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 800 and be at most 2MB in size
     #[serde(rename(deserialize = "inputChatPhotoAnimation"))]
     Animation(InputChatPhotoAnimation),
@@ -26,7 +26,7 @@ pub enum InputChatPhoto {
 
 impl Default for InputChatPhoto {
     fn default() -> Self {
-        InputChatPhoto::_Default(())
+        InputChatPhoto::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl InputChatPhoto {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputChatPhoto::_Default(_))
+        matches!(self, InputChatPhoto::_Default)
     }
 }
 
@@ -78,6 +78,8 @@ pub struct InputChatPhotoAnimation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Animation to be set as profile photo. Only inputFileLocal and inputFileGenerated are allowed
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     animation: InputFile,
     /// Timestamp of the frame, which will be used as static chat photo
     main_frame_timestamp: f32,
@@ -158,6 +160,7 @@ pub struct InputChatPhotoPrevious {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the profile photo to reuse
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     chat_photo_id: i64,
 }
@@ -228,6 +231,8 @@ pub struct InputChatPhotoStatic {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Photo to be set as profile photo. Only inputFileLocal and inputFileGenerated are allowed
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     photo: InputFile,
 }
 

@@ -12,7 +12,7 @@ pub trait TDUserStatus: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum UserStatus {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The user status was never changed
     #[serde(rename(deserialize = "userStatusEmpty"))]
     Empty(UserStatusEmpty),
@@ -35,7 +35,7 @@ pub enum UserStatus {
 
 impl Default for UserStatus {
     fn default() -> Self {
-        UserStatus::_Default(())
+        UserStatus::_Default
     }
 }
 
@@ -74,7 +74,7 @@ impl UserStatus {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, UserStatus::_Default(_))
+        matches!(self, UserStatus::_Default)
     }
 }
 

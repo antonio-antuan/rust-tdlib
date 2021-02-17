@@ -12,7 +12,7 @@ pub trait TDFileType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum FileType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The file is an animation
     #[serde(rename(deserialize = "fileTypeAnimation"))]
     Animation(FileTypeAnimation),
@@ -65,7 +65,7 @@ pub enum FileType {
 
 impl Default for FileType {
     fn default() -> Self {
-        FileType::_Default(())
+        FileType::_Default
     }
 }
 
@@ -124,7 +124,7 @@ impl FileType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, FileType::_Default(_))
+        matches!(self, FileType::_Default)
     }
 }
 

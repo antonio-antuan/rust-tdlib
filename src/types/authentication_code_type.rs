@@ -12,7 +12,7 @@ pub trait TDAuthenticationCodeType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum AuthenticationCodeType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// An authentication code is delivered via a phone call to the specified phone number
     #[serde(rename(deserialize = "authenticationCodeTypeCall"))]
     Call(AuthenticationCodeTypeCall),
@@ -29,7 +29,7 @@ pub enum AuthenticationCodeType {
 
 impl Default for AuthenticationCodeType {
     fn default() -> Self {
-        AuthenticationCodeType::_Default(())
+        AuthenticationCodeType::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl AuthenticationCodeType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, AuthenticationCodeType::_Default(_))
+        matches!(self, AuthenticationCodeType::_Default)
     }
 }
 

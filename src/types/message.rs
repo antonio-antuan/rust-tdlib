@@ -13,12 +13,18 @@ pub struct Message {
     /// Message identifier; unique for the chat to which the message belongs
     id: i64,
     /// The sender of the message
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender: MessageSender,
     /// Chat identifier
     chat_id: i64,
     /// Information about the sending state of the message; may be null
+
+    #[serde(skip_serializing_if = "Option<MessageSendingState>::_is_default")]
     sending_state: Option<MessageSendingState>,
     /// Information about the scheduling state of the message; may be null
+
+    #[serde(skip_serializing_if = "Option<MessageSchedulingState>::_is_default")]
     scheduling_state: Option<MessageSchedulingState>,
     /// True, if the message is outgoing
     is_outgoing: bool,
@@ -63,13 +69,18 @@ pub struct Message {
     /// For channel posts and anonymous group messages, optional author signature
     author_signature: String,
     /// Unique identifier of an album this message belongs to. Only photos and videos can be grouped together in albums
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     media_album_id: i64,
     /// If non-empty, contains a human-readable description of the reason why access to this message must be restricted
     restriction_reason: String,
     /// Content of the message
+
+    #[serde(skip_serializing_if = "MessageContent::_is_default")]
     content: MessageContent,
     /// Reply markup for the message; may be null
+
+    #[serde(skip_serializing_if = "Option<ReplyMarkup>::_is_default")]
     reply_markup: Option<ReplyMarkup>,
 }
 

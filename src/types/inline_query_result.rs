@@ -12,7 +12,7 @@ pub trait TDInlineQueryResult: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum InlineQueryResult {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Represents an animation file
     #[serde(rename(deserialize = "inlineQueryResultAnimation"))]
     Animation(InlineQueryResultAnimation),
@@ -53,7 +53,7 @@ pub enum InlineQueryResult {
 
 impl Default for InlineQueryResult {
     fn default() -> Self {
-        InlineQueryResult::_Default(())
+        InlineQueryResult::_Default
     }
 }
 
@@ -104,7 +104,7 @@ impl InlineQueryResult {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InlineQueryResult::_Default(_))
+        matches!(self, InlineQueryResult::_Default)
     }
 }
 

@@ -11,6 +11,8 @@ pub struct StorageStatisticsByFileType {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// File type
+
+    #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,
     /// Total size of the files
     size: i64,

@@ -12,7 +12,7 @@ pub trait TDNetworkType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum NetworkType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A mobile network
     #[serde(rename(deserialize = "networkTypeMobile"))]
     Mobile(NetworkTypeMobile),
@@ -32,7 +32,7 @@ pub enum NetworkType {
 
 impl Default for NetworkType {
     fn default() -> Self {
-        NetworkType::_Default(())
+        NetworkType::_Default
     }
 }
 
@@ -69,7 +69,7 @@ impl NetworkType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, NetworkType::_Default(_))
+        matches!(self, NetworkType::_Default)
     }
 }
 

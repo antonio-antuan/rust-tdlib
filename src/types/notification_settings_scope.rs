@@ -12,7 +12,7 @@ pub trait TDNotificationSettingsScope: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum NotificationSettingsScope {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Notification settings applied to all channels when the corresponding chat setting has a default value
     #[serde(rename(deserialize = "notificationSettingsScopeChannelChats"))]
     ChannelChats(NotificationSettingsScopeChannelChats),
@@ -26,7 +26,7 @@ pub enum NotificationSettingsScope {
 
 impl Default for NotificationSettingsScope {
     fn default() -> Self {
-        NotificationSettingsScope::_Default(())
+        NotificationSettingsScope::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl NotificationSettingsScope {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, NotificationSettingsScope::_Default(_))
+        matches!(self, NotificationSettingsScope::_Default)
     }
 }
 

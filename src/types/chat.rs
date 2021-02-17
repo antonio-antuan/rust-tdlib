@@ -13,7 +13,9 @@ pub struct Chat {
     /// Chat unique identifier
     id: i64,
     /// Type of the chat
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "ChatType::_is_default")]
     type_: ChatType,
     /// Chat title
     title: String,
@@ -50,6 +52,8 @@ pub struct Chat {
     /// Notification settings for this chat
     notification_settings: ChatNotificationSettings,
     /// Describes actions which should be possible to do through a chat action bar; may be null
+
+    #[serde(skip_serializing_if = "Option<ChatActionBar>::_is_default")]
     action_bar: Option<ChatActionBar>,
     /// Identifier of the message from which reply markup needs to be used; 0 if there is no default custom reply markup in the chat
     reply_markup_message_id: i64,

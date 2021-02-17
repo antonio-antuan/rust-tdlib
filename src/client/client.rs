@@ -32,8 +32,8 @@ where
     S: TdLibClient + Clone,
 {
     tdlib_client: S,
-    is_started: bool,
     client_id: Option<i32>,
+    is_started: bool,
     updates_sender: Option<mpsc::Sender<Update>>,
     tdlib_parameters: TdlibParameters,
 }

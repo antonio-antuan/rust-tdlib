@@ -11,11 +11,15 @@ pub struct InputPassportElementError {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Type of Telegram Passport element that has the error
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
     /// Error message
     message: String,
     /// Error source
+
+    #[serde(skip_serializing_if = "InputPassportElementErrorSource::_is_default")]
     source: InputPassportElementErrorSource,
 }
 

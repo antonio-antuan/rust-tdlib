@@ -21,7 +21,9 @@ pub struct Proxy {
     /// True, if the proxy is enabled now
     is_enabled: bool,
     /// Type of the proxy
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "ProxyType::_is_default")]
     type_: ProxyType,
 }
 

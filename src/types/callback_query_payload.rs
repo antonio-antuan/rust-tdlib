@@ -12,7 +12,7 @@ pub trait TDCallbackQueryPayload: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum CallbackQueryPayload {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The payload for a general callback button
     #[serde(rename(deserialize = "callbackQueryPayloadData"))]
     Data(CallbackQueryPayloadData),
@@ -26,7 +26,7 @@ pub enum CallbackQueryPayload {
 
 impl Default for CallbackQueryPayload {
     fn default() -> Self {
-        CallbackQueryPayload::_Default(())
+        CallbackQueryPayload::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl CallbackQueryPayload {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, CallbackQueryPayload::_Default(_))
+        matches!(self, CallbackQueryPayload::_Default)
     }
 }
 

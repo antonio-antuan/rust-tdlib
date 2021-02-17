@@ -12,7 +12,7 @@ pub trait TDTMeUrlType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum TMeUrlType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A chat invite link
     #[serde(rename(deserialize = "tMeUrlTypeChatInvite"))]
     ChatInvite(TMeUrlTypeChatInvite),
@@ -29,7 +29,7 @@ pub enum TMeUrlType {
 
 impl Default for TMeUrlType {
     fn default() -> Self {
-        TMeUrlType::_Default(())
+        TMeUrlType::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl TMeUrlType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, TMeUrlType::_Default(_))
+        matches!(self, TMeUrlType::_Default)
     }
 }
 
@@ -152,6 +152,7 @@ pub struct TMeUrlTypeStickerSet {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the sticker set
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     sticker_set_id: i64,
 }

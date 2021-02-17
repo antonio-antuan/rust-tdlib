@@ -15,6 +15,8 @@ pub struct DraftMessage {
     /// Point in time (Unix timestamp) when the draft was created
     date: i32,
     /// Content of the message draft; this should always be of type inputMessageText
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_text: InputMessageContent,
 }
 

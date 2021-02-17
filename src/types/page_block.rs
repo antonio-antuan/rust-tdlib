@@ -12,7 +12,7 @@ pub trait TDPageBlock: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum PageBlock {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// An invisible anchor on a page, which can be used in a URL to open the page from the specified anchor
     #[serde(rename(deserialize = "pageBlockAnchor"))]
     Anchor(PageBlockAnchor),
@@ -104,7 +104,7 @@ pub enum PageBlock {
 
 impl Default for PageBlock {
     fn default() -> Self {
-        PageBlock::_Default(())
+        PageBlock::_Default
     }
 }
 
@@ -189,7 +189,7 @@ impl PageBlock {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PageBlock::_Default(_))
+        matches!(self, PageBlock::_Default)
     }
 }
 
@@ -448,6 +448,8 @@ pub struct PageBlockAuthorDate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Author
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     author: RichText,
     /// Point in time (Unix timestamp) when the article was published; 0 if unknown
     publish_date: i32,
@@ -528,8 +530,12 @@ pub struct PageBlockBlockQuote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Quote text
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     text: RichText,
     /// Quote credit
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     credit: RichText,
 }
 
@@ -779,6 +785,8 @@ pub struct PageBlockCover {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Cover
+
+    #[serde(skip_serializing_if = "Box<PageBlock>::_is_default")]
     cover: Box<PageBlock>,
 }
 
@@ -848,6 +856,8 @@ pub struct PageBlockDetails {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Always visible heading for the block
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     header: RichText,
     /// Block contents
     page_blocks: Vec<PageBlock>,
@@ -1267,6 +1277,8 @@ pub struct PageBlockFooter {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Footer
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     footer: RichText,
 }
 
@@ -1336,6 +1348,8 @@ pub struct PageBlockHeader {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Header
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     header: RichText,
 }
 
@@ -1405,6 +1419,8 @@ pub struct PageBlockKicker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Kicker
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     kicker: RichText,
 }
 
@@ -1656,6 +1672,8 @@ pub struct PageBlockParagraph {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Paragraph text
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     text: RichText,
 }
 
@@ -1816,6 +1834,8 @@ pub struct PageBlockPreformatted {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Paragraph text
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     text: RichText,
     /// Programming language for which the text should be formatted
     language: String,
@@ -1896,8 +1916,12 @@ pub struct PageBlockPullQuote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Quote text
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     text: RichText,
     /// Quote credit
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     credit: RichText,
 }
 
@@ -1976,6 +2000,8 @@ pub struct PageBlockRelatedArticles {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Block header
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     header: RichText,
     /// List of related articles
     articles: Vec<PageBlockRelatedArticle>,
@@ -2136,6 +2162,8 @@ pub struct PageBlockSubheader {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Subheader
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     subheader: RichText,
 }
 
@@ -2205,6 +2233,8 @@ pub struct PageBlockSubtitle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Subtitle
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     subtitle: RichText,
 }
 
@@ -2274,6 +2304,8 @@ pub struct PageBlockTable {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Table caption
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     caption: RichText,
     /// Table cells
     cells: Vec<Vec<PageBlockTableCell>>,
@@ -2376,6 +2408,8 @@ pub struct PageBlockTitle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title
+
+    #[serde(skip_serializing_if = "RichText::_is_default")]
     title: RichText,
 }
 

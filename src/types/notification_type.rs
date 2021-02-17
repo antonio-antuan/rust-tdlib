@@ -12,7 +12,7 @@ pub trait TDNotificationType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum NotificationType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// New call was received
     #[serde(rename(deserialize = "notificationTypeNewCall"))]
     NewCall(NotificationTypeNewCall),
@@ -29,7 +29,7 @@ pub enum NotificationType {
 
 impl Default for NotificationType {
     fn default() -> Self {
-        NotificationType::_Default(())
+        NotificationType::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl NotificationType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, NotificationType::_Default(_))
+        matches!(self, NotificationType::_Default)
     }
 }
 
@@ -223,12 +223,16 @@ pub struct NotificationTypeNewPushMessage {
     /// The message identifier. The message will not be available in the chat history, but the ID can be used in viewMessages, or as reply_to_message_id
     message_id: i64,
     /// The sender of the message. Corresponding user or chat may be inaccessible
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender: MessageSender,
     /// Name of the sender
     sender_name: String,
     /// True, if the message is outgoing
     is_outgoing: bool,
     /// Push message content
+
+    #[serde(skip_serializing_if = "PushMessageContent::_is_default")]
     content: PushMessageContent,
 }
 

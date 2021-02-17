@@ -12,7 +12,7 @@ pub trait TDUserPrivacySetting: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum UserPrivacySetting {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A privacy setting for managing whether the user can be called
     #[serde(rename(deserialize = "userPrivacySettingAllowCalls"))]
     AllowCalls(UserPrivacySettingAllowCalls),
@@ -41,7 +41,7 @@ pub enum UserPrivacySetting {
 
 impl Default for UserPrivacySetting {
     fn default() -> Self {
-        UserPrivacySetting::_Default(())
+        UserPrivacySetting::_Default
     }
 }
 
@@ -84,7 +84,7 @@ impl UserPrivacySetting {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, UserPrivacySetting::_Default(_))
+        matches!(self, UserPrivacySetting::_Default)
     }
 }
 

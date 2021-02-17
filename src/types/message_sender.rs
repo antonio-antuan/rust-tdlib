@@ -12,7 +12,7 @@ pub trait TDMessageSender: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum MessageSender {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The message was sent on behalf of a chat
     #[serde(rename(deserialize = "messageSenderChat"))]
     Chat(MessageSenderChat),
@@ -23,7 +23,7 @@ pub enum MessageSender {
 
 impl Default for MessageSender {
     fn default() -> Self {
-        MessageSender::_Default(())
+        MessageSender::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl MessageSender {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, MessageSender::_Default(_))
+        matches!(self, MessageSender::_Default)
     }
 }
 

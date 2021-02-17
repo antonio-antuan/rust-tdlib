@@ -15,7 +15,9 @@ pub struct ChatInviteLinkInfo {
     /// If non-zero, the amount of time for which read access to the chat will remain available, in seconds
     accessible_for: i32,
     /// Contains information about the type of the chat
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "ChatType::_is_default")]
     type_: ChatType,
     /// Title of the chat
     title: String,

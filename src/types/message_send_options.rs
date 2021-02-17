@@ -15,6 +15,8 @@ pub struct MessageSendOptions {
     /// Pass true if the message is sent from the background
     from_background: bool,
     /// Message scheduling state. Messages sent to a secret chat, live location messages and self-destructing messages can't be scheduled
+
+    #[serde(skip_serializing_if = "MessageSchedulingState::_is_default")]
     scheduling_state: MessageSchedulingState,
 }
 

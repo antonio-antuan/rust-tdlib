@@ -12,7 +12,7 @@ pub trait TDChatActionBar: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatActionBar {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The chat is a private or secret chat and the other user can be added to the contact list using the method addContact
     #[serde(rename(deserialize = "chatActionBarAddContact"))]
     AddContact(ChatActionBarAddContact),
@@ -32,7 +32,7 @@ pub enum ChatActionBar {
 
 impl Default for ChatActionBar {
     fn default() -> Self {
-        ChatActionBar::_Default(())
+        ChatActionBar::_Default
     }
 }
 
@@ -69,7 +69,7 @@ impl ChatActionBar {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatActionBar::_Default(_))
+        matches!(self, ChatActionBar::_Default)
     }
 }
 

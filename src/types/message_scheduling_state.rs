@@ -12,7 +12,7 @@ pub trait TDMessageSchedulingState: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum MessageSchedulingState {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The message will be sent at the specified date
     #[serde(rename(deserialize = "messageSchedulingStateSendAtDate"))]
     SendAtDate(MessageSchedulingStateSendAtDate),
@@ -23,7 +23,7 @@ pub enum MessageSchedulingState {
 
 impl Default for MessageSchedulingState {
     fn default() -> Self {
-        MessageSchedulingState::_Default(())
+        MessageSchedulingState::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl MessageSchedulingState {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, MessageSchedulingState::_Default(_))
+        matches!(self, MessageSchedulingState::_Default)
     }
 }
 

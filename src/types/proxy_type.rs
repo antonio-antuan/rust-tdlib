@@ -12,7 +12,7 @@ pub trait TDProxyType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ProxyType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A HTTP transparent proxy server
     #[serde(rename(deserialize = "proxyTypeHttp"))]
     Http(ProxyTypeHttp),
@@ -26,7 +26,7 @@ pub enum ProxyType {
 
 impl Default for ProxyType {
     fn default() -> Self {
-        ProxyType::_Default(())
+        ProxyType::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl ProxyType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ProxyType::_Default(_))
+        matches!(self, ProxyType::_Default)
     }
 }
 

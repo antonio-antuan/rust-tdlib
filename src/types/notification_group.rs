@@ -13,7 +13,9 @@ pub struct NotificationGroup {
     /// Unique persistent auto-incremented from 1 identifier of the notification group
     id: i32,
     /// Type of the group
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "NotificationGroupType::_is_default")]
     type_: NotificationGroupType,
     /// Identifier of a chat to which all notifications in the group belong
     chat_id: i64,

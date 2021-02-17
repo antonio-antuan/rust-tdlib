@@ -12,7 +12,7 @@ pub trait TDMessageForwardOrigin: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum MessageForwardOrigin {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The message was originally a post in a channel
     #[serde(rename(deserialize = "messageForwardOriginChannel"))]
     Channel(MessageForwardOriginChannel),
@@ -29,7 +29,7 @@ pub enum MessageForwardOrigin {
 
 impl Default for MessageForwardOrigin {
     fn default() -> Self {
-        MessageForwardOrigin::_Default(())
+        MessageForwardOrigin::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl MessageForwardOrigin {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, MessageForwardOrigin::_Default(_))
+        matches!(self, MessageForwardOrigin::_Default)
     }
 }
 

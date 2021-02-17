@@ -11,6 +11,7 @@ pub struct PushReceiverId {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The globally unique identifier of push notification subscription
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
 }

@@ -12,7 +12,7 @@ pub trait TDInputPassportElement: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum InputPassportElement {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A Telegram Passport element to be saved containing the user's address
     #[serde(rename(deserialize = "inputPassportElementAddress"))]
     Address(InputPassportElementAddress),
@@ -56,7 +56,7 @@ pub enum InputPassportElement {
 
 impl Default for InputPassportElement {
     fn default() -> Self {
-        InputPassportElement::_Default(())
+        InputPassportElement::_Default
     }
 }
 
@@ -109,7 +109,7 @@ impl InputPassportElement {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputPassportElement::_Default(_))
+        matches!(self, InputPassportElement::_Default)
     }
 }
 

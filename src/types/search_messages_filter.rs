@@ -12,7 +12,7 @@ pub trait TDSearchMessagesFilter: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum SearchMessagesFilter {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns only animation messages
     #[serde(rename(deserialize = "searchMessagesFilterAnimation"))]
     Animation(SearchMessagesFilterAnimation),
@@ -71,7 +71,7 @@ pub enum SearchMessagesFilter {
 
 impl Default for SearchMessagesFilter {
     fn default() -> Self {
-        SearchMessagesFilter::_Default(())
+        SearchMessagesFilter::_Default
     }
 }
 
@@ -134,7 +134,7 @@ impl SearchMessagesFilter {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, SearchMessagesFilter::_Default(_))
+        matches!(self, SearchMessagesFilter::_Default)
     }
 }
 

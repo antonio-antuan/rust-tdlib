@@ -12,7 +12,7 @@ pub trait TDUpdate: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum Update {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Does nothing and ensures that the Update object is used; for testing only. This is an offline method. Can be called before authorization
     #[serde(rename(deserialize = "testUseUpdate"))]
     TestUseUpdate(TestUseUpdate),
@@ -260,7 +260,7 @@ pub enum Update {
 
 impl Default for Update {
     fn default() -> Self {
-        Update::_Default(())
+        Update::_Default
     }
 }
 
@@ -449,7 +449,7 @@ impl Update {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, Update::_Default(_))
+        matches!(self, Update::_Default)
     }
 }
 
@@ -617,6 +617,8 @@ pub struct UpdateAuthorizationState {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New authorization state
+
+    #[serde(skip_serializing_if = "AuthorizationState::_is_default")]
     authorization_state: AuthorizationState,
 }
 
@@ -912,6 +914,8 @@ pub struct UpdateChatActionBar {
     /// Chat identifier
     chat_id: i64,
     /// The new value of the action bar; may be null
+
+    #[serde(skip_serializing_if = "Option<ChatActionBar>::_is_default")]
     action_bar: Option<ChatActionBar>,
 }
 
@@ -2380,6 +2384,8 @@ pub struct UpdateConnectionState {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The new connection state
+
+    #[serde(skip_serializing_if = "ConnectionState::_is_default")]
     state: ConnectionState,
 }
 
@@ -2758,6 +2764,7 @@ pub struct UpdateFileGenerationStart {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier for the generation process
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     generation_id: i64,
     /// The path to a file from which a new file is generated; may be empty
@@ -2861,6 +2868,7 @@ pub struct UpdateFileGenerationStop {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier for the generation process
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     generation_id: i64,
 }
@@ -3016,6 +3024,7 @@ pub struct UpdateInstalledStickerSets {
     /// True, if the list of installed mask sticker sets was updated
     is_masks: bool,
     /// The new list of installed ordinary sticker sets
+
     #[serde(deserialize_with = "super::_common::vec_of_i64_from_str")]
     sticker_set_ids: Vec<i64>,
 }
@@ -3190,6 +3199,8 @@ pub struct UpdateMessageContent {
     /// Message identifier
     message_id: i64,
     /// New message content
+
+    #[serde(skip_serializing_if = "MessageContent::_is_default")]
     new_content: MessageContent,
 }
 
@@ -3363,6 +3374,8 @@ pub struct UpdateMessageEdited {
     /// Point in time (Unix timestamp) when the message was edited
     edit_date: i32,
     /// New message reply markup; may be null
+
+    #[serde(skip_serializing_if = "Option<ReplyMarkup>::_is_default")]
     reply_markup: Option<ReplyMarkup>,
 }
 
@@ -4157,6 +4170,7 @@ pub struct UpdateNewCallbackQuery {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique query identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Identifier of the user who sent the query
@@ -4166,9 +4180,12 @@ pub struct UpdateNewCallbackQuery {
     /// Identifier of the message, from which the query originated
     message_id: i64,
     /// Identifier that uniquely corresponds to the chat to which the message was sent
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     chat_instance: i64,
     /// Query payload
+
+    #[serde(skip_serializing_if = "CallbackQueryPayload::_is_default")]
     payload: CallbackQueryPayload,
 }
 
@@ -4534,6 +4551,7 @@ pub struct UpdateNewCustomQuery {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The query identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// JSON-serialized query data
@@ -4626,6 +4644,7 @@ pub struct UpdateNewInlineCallbackQuery {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique query identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Identifier of the user who sent the query
@@ -4633,9 +4652,12 @@ pub struct UpdateNewInlineCallbackQuery {
     /// Identifier of the inline message, from which the query originated
     inline_message_id: String,
     /// An identifier uniquely corresponding to the chat a message was sent to
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     chat_instance: i64,
     /// Query payload
+
+    #[serde(skip_serializing_if = "CallbackQueryPayload::_is_default")]
     payload: CallbackQueryPayload,
 }
 
@@ -4741,6 +4763,7 @@ pub struct UpdateNewInlineQuery {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique query identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Identifier of the user who sent the query
@@ -4924,6 +4947,7 @@ pub struct UpdateNewPreCheckoutQuery {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique query identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Identifier of the user who sent the query
@@ -5060,6 +5084,7 @@ pub struct UpdateNewShippingQuery {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique query identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Identifier of the user who sent the query
@@ -5245,7 +5270,9 @@ pub struct UpdateNotificationGroup {
     /// Unique notification group identifier
     notification_group_id: i32,
     /// New type of the notification group
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "NotificationGroupType::_is_default")]
     type_: NotificationGroupType,
     /// Identifier of a chat to which all notifications in the group belong
     chat_id: i64,
@@ -5395,6 +5422,8 @@ pub struct UpdateOption {
     /// The option name
     name: String,
     /// The new option value
+
+    #[serde(skip_serializing_if = "OptionValue::_is_default")]
     value: OptionValue,
 }
 
@@ -5542,6 +5571,7 @@ pub struct UpdatePollAnswer {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique poll identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     poll_id: i64,
     /// The user, who changed the answer to the poll
@@ -5783,6 +5813,8 @@ pub struct UpdateScopeNotificationSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Types of chats for which notification settings were updated
+
+    #[serde(skip_serializing_if = "NotificationSettingsScope::_is_default")]
     scope: NotificationSettingsScope,
     /// The new notification settings
     notification_settings: ScopeNotificationSettings,
@@ -6015,9 +6047,12 @@ pub struct UpdateServiceNotification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Notification type. If type begins with "AUTH_KEY_DROP_", then two buttons "Cancel" and "Log out" should be shown under notification; if user presses the second, all local data should be destroyed using Destroy method
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
     type_: String,
     /// Notification content
+
+    #[serde(skip_serializing_if = "MessageContent::_is_default")]
     content: MessageContent,
 }
 
@@ -6546,6 +6581,8 @@ pub struct UpdateUnreadChatCount {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat list with changed number of unread messages
+
+    #[serde(skip_serializing_if = "ChatList::_is_default")]
     chat_list: ChatList,
     /// Approximate total number of chats in the chat list
     total_count: i32,
@@ -6673,6 +6710,8 @@ pub struct UpdateUnreadMessageCount {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat list with changed number of unread messages
+
+    #[serde(skip_serializing_if = "ChatList::_is_default")]
     chat_list: ChatList,
     /// Total number of unread messages
     unread_count: i32,
@@ -6839,6 +6878,8 @@ pub struct UpdateUserChatAction {
     /// Identifier of a user performing an action
     user_id: i32,
     /// The action description
+
+    #[serde(skip_serializing_if = "ChatAction::_is_default")]
     action: ChatAction,
 }
 
@@ -7015,6 +7056,8 @@ pub struct UpdateUserPrivacySettingRules {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The privacy setting
+
+    #[serde(skip_serializing_if = "UserPrivacySetting::_is_default")]
     setting: UserPrivacySetting,
     /// New privacy rules
     rules: UserPrivacySettingRules,
@@ -7097,6 +7140,8 @@ pub struct UpdateUserStatus {
     /// User identifier
     user_id: i32,
     /// New status of the user
+
+    #[serde(skip_serializing_if = "UserStatus::_is_default")]
     status: UserStatus,
 }
 

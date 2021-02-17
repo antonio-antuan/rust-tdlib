@@ -11,6 +11,8 @@ pub struct InputThumbnail {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Thumbnail file to send. Sending thumbnails by file_id is currently not supported
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     thumbnail: InputFile,
     /// Thumbnail width, usually shouldn't exceed 320. Use 0 if unknown
     width: i32,

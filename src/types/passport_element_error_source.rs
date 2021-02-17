@@ -12,7 +12,7 @@ pub trait TDPassportElementErrorSource: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum PassportElementErrorSource {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// One of the data fields contains an error. The error will be considered resolved when the value of the field changes
     #[serde(rename(deserialize = "passportElementErrorSourceDataField"))]
     DataField(PassportElementErrorSourceDataField),
@@ -44,7 +44,7 @@ pub enum PassportElementErrorSource {
 
 impl Default for PassportElementErrorSource {
     fn default() -> Self {
-        PassportElementErrorSource::_Default(())
+        PassportElementErrorSource::_Default
     }
 }
 
@@ -89,7 +89,7 @@ impl PassportElementErrorSource {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PassportElementErrorSource::_Default(_))
+        matches!(self, PassportElementErrorSource::_Default)
     }
 }
 

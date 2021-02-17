@@ -12,7 +12,7 @@ pub trait TDInputSticker: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum InputSticker {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// An animated sticker in TGS format
     #[serde(rename(deserialize = "inputStickerAnimated"))]
     Animated(InputStickerAnimated),
@@ -23,7 +23,7 @@ pub enum InputSticker {
 
 impl Default for InputSticker {
     fn default() -> Self {
-        InputSticker::_Default(())
+        InputSticker::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl InputSticker {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputSticker::_Default(_))
+        matches!(self, InputSticker::_Default)
     }
 }
 
@@ -73,6 +73,8 @@ pub struct InputStickerAnimated {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// File with the animated sticker. Only local or uploaded within a week files are supported. See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
     /// Emojis corresponding to the sticker
     emojis: String,
@@ -153,6 +155,8 @@ pub struct InputStickerStatic {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// PNG image with the sticker; must be up to 512 KB in size and fit in a 512x512 square
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
     /// Emojis corresponding to the sticker
     emojis: String,

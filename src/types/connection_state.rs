@@ -12,7 +12,7 @@ pub trait TDConnectionState: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ConnectionState {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Currently establishing a connection to the Telegram servers
     #[serde(rename(deserialize = "connectionStateConnecting"))]
     Connecting(ConnectionStateConnecting),
@@ -32,7 +32,7 @@ pub enum ConnectionState {
 
 impl Default for ConnectionState {
     fn default() -> Self {
-        ConnectionState::_Default(())
+        ConnectionState::_Default
     }
 }
 
@@ -69,7 +69,7 @@ impl ConnectionState {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ConnectionState::_Default(_))
+        matches!(self, ConnectionState::_Default)
     }
 }
 

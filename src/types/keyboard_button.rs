@@ -13,7 +13,9 @@ pub struct KeyboardButton {
     /// Text of the button
     text: String,
     /// Type of the button
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "KeyboardButtonType::_is_default")]
     type_: KeyboardButtonType,
 }
 

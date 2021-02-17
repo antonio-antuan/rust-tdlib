@@ -12,7 +12,7 @@ pub trait TDCallProblem: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum CallProblem {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The speech was distorted
     #[serde(rename(deserialize = "callProblemDistortedSpeech"))]
     DistortedSpeech(CallProblemDistortedSpeech),
@@ -44,7 +44,7 @@ pub enum CallProblem {
 
 impl Default for CallProblem {
     fn default() -> Self {
-        CallProblem::_Default(())
+        CallProblem::_Default
     }
 }
 
@@ -89,7 +89,7 @@ impl CallProblem {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, CallProblem::_Default(_))
+        matches!(self, CallProblem::_Default)
     }
 }
 

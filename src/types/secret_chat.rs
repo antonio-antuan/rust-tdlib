@@ -15,6 +15,8 @@ pub struct SecretChat {
     /// Identifier of the chat partner
     user_id: i32,
     /// State of the secret chat
+
+    #[serde(skip_serializing_if = "SecretChatState::_is_default")]
     state: SecretChatState,
     /// True, if the chat was created by the current user; otherwise false
     is_outbound: bool,

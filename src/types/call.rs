@@ -19,6 +19,8 @@ pub struct Call {
     /// True, if the call is a video call
     is_video: bool,
     /// Call state
+
+    #[serde(skip_serializing_if = "CallState::_is_default")]
     state: CallState,
 }
 

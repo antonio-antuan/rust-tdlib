@@ -12,7 +12,7 @@ pub trait TDTextParseMode: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum TextParseMode {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The text uses HTML-style formatting. The same as Telegram Bot API "HTML" parse mode
     #[serde(rename(deserialize = "textParseModeHTML"))]
     HTML(TextParseModeHTML),
@@ -23,7 +23,7 @@ pub enum TextParseMode {
 
 impl Default for TextParseMode {
     fn default() -> Self {
-        TextParseMode::_Default(())
+        TextParseMode::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl TextParseMode {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, TextParseMode::_Default(_))
+        matches!(self, TextParseMode::_Default)
     }
 }
 

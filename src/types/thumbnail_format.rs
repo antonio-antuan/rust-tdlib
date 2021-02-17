@@ -12,7 +12,7 @@ pub trait TDThumbnailFormat: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ThumbnailFormat {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The thumbnail is in static GIF format. It will be used only for some bot inline results
     #[serde(rename(deserialize = "thumbnailFormatGif"))]
     Gif(ThumbnailFormatGif),
@@ -35,7 +35,7 @@ pub enum ThumbnailFormat {
 
 impl Default for ThumbnailFormat {
     fn default() -> Self {
-        ThumbnailFormat::_Default(())
+        ThumbnailFormat::_Default
     }
 }
 
@@ -74,7 +74,7 @@ impl ThumbnailFormat {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ThumbnailFormat::_Default(_))
+        matches!(self, ThumbnailFormat::_Default)
     }
 }
 

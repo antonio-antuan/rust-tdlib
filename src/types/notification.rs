@@ -17,7 +17,9 @@ pub struct Notification {
     /// True, if the notification was initially silent
     is_silent: bool,
     /// Notification type
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "NotificationType::_is_default")]
     type_: NotificationType,
 }
 

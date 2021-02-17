@@ -12,7 +12,7 @@ pub trait TDDiceStickers: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum DiceStickers {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A regular animated sticker
     #[serde(rename(deserialize = "diceStickersRegular"))]
     Regular(DiceStickersRegular),
@@ -23,7 +23,7 @@ pub enum DiceStickers {
 
 impl Default for DiceStickers {
     fn default() -> Self {
-        DiceStickers::_Default(())
+        DiceStickers::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl DiceStickers {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, DiceStickers::_Default(_))
+        matches!(self, DiceStickers::_Default)
     }
 }
 

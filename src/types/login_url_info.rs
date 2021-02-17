@@ -12,7 +12,7 @@ pub trait TDLoginUrlInfo: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum LoginUrlInfo {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns information about a button of type inlineKeyboardButtonTypeLoginUrl. The method needs to be called when the user presses the button
     #[serde(rename(deserialize = "getLoginUrlInfo"))]
     GetLoginUrlInfo(GetLoginUrlInfo),
@@ -26,7 +26,7 @@ pub enum LoginUrlInfo {
 
 impl Default for LoginUrlInfo {
     fn default() -> Self {
-        LoginUrlInfo::_Default(())
+        LoginUrlInfo::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl LoginUrlInfo {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, LoginUrlInfo::_Default(_))
+        matches!(self, LoginUrlInfo::_Default)
     }
 }
 

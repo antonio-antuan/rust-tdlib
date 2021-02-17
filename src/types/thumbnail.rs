@@ -11,6 +11,8 @@ pub struct Thumbnail {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Thumbnail format
+
+    #[serde(skip_serializing_if = "ThumbnailFormat::_is_default")]
     format: ThumbnailFormat,
     /// Thumbnail width
     width: i32,

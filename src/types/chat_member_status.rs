@@ -12,7 +12,7 @@ pub trait TDChatMemberStatus: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatMemberStatus {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The user is a member of a chat and has some additional privileges. In basic groups, administrators can edit and delete messages sent by others, add new members, and ban unprivileged members. In supergroups and channels, there are more detailed options for administrator privileges
     #[serde(rename(deserialize = "chatMemberStatusAdministrator"))]
     Administrator(ChatMemberStatusAdministrator),
@@ -35,7 +35,7 @@ pub enum ChatMemberStatus {
 
 impl Default for ChatMemberStatus {
     fn default() -> Self {
-        ChatMemberStatus::_Default(())
+        ChatMemberStatus::_Default
     }
 }
 
@@ -74,7 +74,7 @@ impl ChatMemberStatus {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatMemberStatus::_Default(_))
+        matches!(self, ChatMemberStatus::_Default)
     }
 }
 

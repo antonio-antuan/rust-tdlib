@@ -12,7 +12,7 @@ pub trait TDSecretChatState: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum SecretChatState {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The secret chat is closed
     #[serde(rename(deserialize = "secretChatStateClosed"))]
     Closed(SecretChatStateClosed),
@@ -26,7 +26,7 @@ pub enum SecretChatState {
 
 impl Default for SecretChatState {
     fn default() -> Self {
-        SecretChatState::_Default(())
+        SecretChatState::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl SecretChatState {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, SecretChatState::_Default(_))
+        matches!(self, SecretChatState::_Default)
     }
 }
 

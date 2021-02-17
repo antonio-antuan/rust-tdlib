@@ -12,7 +12,7 @@ pub trait TDChatReportReason: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatReportReason {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The chat has child abuse related content
     #[serde(rename(deserialize = "chatReportReasonChildAbuse"))]
     ChildAbuse(ChatReportReasonChildAbuse),
@@ -38,7 +38,7 @@ pub enum ChatReportReason {
 
 impl Default for ChatReportReason {
     fn default() -> Self {
-        ChatReportReason::_Default(())
+        ChatReportReason::_Default
     }
 }
 
@@ -79,7 +79,7 @@ impl ChatReportReason {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatReportReason::_Default(_))
+        matches!(self, ChatReportReason::_Default)
     }
 }
 

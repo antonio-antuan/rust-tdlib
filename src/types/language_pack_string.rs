@@ -13,6 +13,8 @@ pub struct LanguagePackString {
     /// String key
     key: String,
     /// String value
+
+    #[serde(skip_serializing_if = "LanguagePackStringValue::_is_default")]
     value: LanguagePackStringValue,
 }
 

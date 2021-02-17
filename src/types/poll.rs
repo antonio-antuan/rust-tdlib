@@ -11,6 +11,7 @@ pub struct Poll {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique poll identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Poll question, 1-300 characters
@@ -24,7 +25,9 @@ pub struct Poll {
     /// True, if the poll is anonymous
     is_anonymous: bool,
     /// Type of the poll
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "PollType::_is_default")]
     type_: PollType,
     /// Amount of time the poll will be active after creation, in seconds
     open_period: i32,

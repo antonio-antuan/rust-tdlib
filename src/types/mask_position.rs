@@ -11,6 +11,8 @@ pub struct MaskPosition {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Part of the face, relative to which the mask should be placed
+
+    #[serde(skip_serializing_if = "MaskPoint::_is_default")]
     point: MaskPoint,
     /// Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. (For example, 1.0 will place the mask just to the left of the default mask position)
     x_shift: f32,

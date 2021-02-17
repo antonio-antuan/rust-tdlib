@@ -12,7 +12,7 @@ pub trait TDCanTransferOwnershipResult: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum CanTransferOwnershipResult {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Checks whether the current session can be used to transfer a chat ownership to another user
     #[serde(rename(deserialize = "canTransferOwnership"))]
     CanTransferOwnership(CanTransferOwnership),
@@ -32,7 +32,7 @@ pub enum CanTransferOwnershipResult {
 
 impl Default for CanTransferOwnershipResult {
     fn default() -> Self {
-        CanTransferOwnershipResult::_Default(())
+        CanTransferOwnershipResult::_Default
     }
 }
 
@@ -69,7 +69,7 @@ impl CanTransferOwnershipResult {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, CanTransferOwnershipResult::_Default(_))
+        matches!(self, CanTransferOwnershipResult::_Default)
     }
 }
 

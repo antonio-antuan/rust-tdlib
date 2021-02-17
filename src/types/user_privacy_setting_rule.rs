@@ -12,7 +12,7 @@ pub trait TDUserPrivacySettingRule: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum UserPrivacySettingRule {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A rule to allow all users to do something
     #[serde(rename(deserialize = "userPrivacySettingRuleAllowAll"))]
     AllowAll(UserPrivacySettingRuleAllowAll),
@@ -41,7 +41,7 @@ pub enum UserPrivacySettingRule {
 
 impl Default for UserPrivacySettingRule {
     fn default() -> Self {
-        UserPrivacySettingRule::_Default(())
+        UserPrivacySettingRule::_Default
     }
 }
 
@@ -84,7 +84,7 @@ impl UserPrivacySettingRule {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, UserPrivacySettingRule::_Default(_))
+        matches!(self, UserPrivacySettingRule::_Default)
     }
 }
 

@@ -12,7 +12,7 @@ pub trait TDInlineKeyboardButtonType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum InlineKeyboardButtonType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A button to buy something. This button must be in the first column and row of the keyboard and can be attached only to a message with content of the type messageInvoice
     #[serde(rename(deserialize = "inlineKeyboardButtonTypeBuy"))]
     Buy(InlineKeyboardButtonTypeBuy),
@@ -38,7 +38,7 @@ pub enum InlineKeyboardButtonType {
 
 impl Default for InlineKeyboardButtonType {
     fn default() -> Self {
-        InlineKeyboardButtonType::_Default(())
+        InlineKeyboardButtonType::_Default
     }
 }
 
@@ -79,7 +79,7 @@ impl InlineKeyboardButtonType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InlineKeyboardButtonType::_Default(_))
+        matches!(self, InlineKeyboardButtonType::_Default)
     }
 }
 

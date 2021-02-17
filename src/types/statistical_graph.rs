@@ -12,7 +12,7 @@ pub trait TDStatisticalGraph: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum StatisticalGraph {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Loads an asynchronous or a zoomed in statistical graph
     #[serde(rename(deserialize = "getStatisticalGraph"))]
     GetStatisticalGraph(GetStatisticalGraph),
@@ -29,7 +29,7 @@ pub enum StatisticalGraph {
 
 impl Default for StatisticalGraph {
     fn default() -> Self {
-        StatisticalGraph::_Default(())
+        StatisticalGraph::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl StatisticalGraph {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, StatisticalGraph::_Default(_))
+        matches!(self, StatisticalGraph::_Default)
     }
 }
 

@@ -12,7 +12,7 @@ pub trait TDPageBlockVerticalAlignment: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum PageBlockVerticalAlignment {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The content should be bottom-aligned
     #[serde(rename(deserialize = "pageBlockVerticalAlignmentBottom"))]
     Bottom(PageBlockVerticalAlignmentBottom),
@@ -26,7 +26,7 @@ pub enum PageBlockVerticalAlignment {
 
 impl Default for PageBlockVerticalAlignment {
     fn default() -> Self {
-        PageBlockVerticalAlignment::_Default(())
+        PageBlockVerticalAlignment::_Default
     }
 }
 
@@ -59,7 +59,7 @@ impl PageBlockVerticalAlignment {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, PageBlockVerticalAlignment::_Default(_))
+        matches!(self, PageBlockVerticalAlignment::_Default)
     }
 }
 

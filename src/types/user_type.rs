@@ -12,7 +12,7 @@ pub trait TDUserType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum UserType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A bot (see https://core.telegram.org/bots)
     #[serde(rename(deserialize = "userTypeBot"))]
     Bot(UserTypeBot),
@@ -29,7 +29,7 @@ pub enum UserType {
 
 impl Default for UserType {
     fn default() -> Self {
-        UserType::_Default(())
+        UserType::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl UserType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, UserType::_Default(_))
+        matches!(self, UserType::_Default)
     }
 }
 

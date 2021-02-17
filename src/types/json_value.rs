@@ -12,7 +12,7 @@ pub trait TDJsonValue: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum JsonValue {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns application config, provided by the server. Can be called before authorization
     #[serde(rename(deserialize = "getApplicationConfig"))]
     GetApplicationConfig(GetApplicationConfig),
@@ -41,7 +41,7 @@ pub enum JsonValue {
 
 impl Default for JsonValue {
     fn default() -> Self {
-        JsonValue::_Default(())
+        JsonValue::_Default
     }
 }
 
@@ -84,7 +84,7 @@ impl JsonValue {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, JsonValue::_Default(_))
+        matches!(self, JsonValue::_Default)
     }
 }
 

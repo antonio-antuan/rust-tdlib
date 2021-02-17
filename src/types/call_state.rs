@@ -12,7 +12,7 @@ pub trait TDCallState: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum CallState {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The call has ended successfully
     #[serde(rename(deserialize = "callStateDiscarded"))]
     Discarded(CallStateDiscarded),
@@ -35,7 +35,7 @@ pub enum CallState {
 
 impl Default for CallState {
     fn default() -> Self {
-        CallState::_Default(())
+        CallState::_Default
     }
 }
 
@@ -74,7 +74,7 @@ impl CallState {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, CallState::_Default(_))
+        matches!(self, CallState::_Default)
     }
 }
 
@@ -93,6 +93,8 @@ pub struct CallStateDiscarded {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The reason, why the call has ended
+
+    #[serde(skip_serializing_if = "CallDiscardReason::_is_default")]
     reason: CallDiscardReason,
     /// True, if the call rating should be sent to the server
     need_rating: bool,

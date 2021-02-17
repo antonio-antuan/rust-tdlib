@@ -13,7 +13,9 @@ pub struct TMeUrl {
     /// URL
     url: String,
     /// Type of the URL
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "TMeUrlType::_is_default")]
     type_: TMeUrlType,
 }
 

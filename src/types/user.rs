@@ -21,6 +21,8 @@ pub struct User {
     /// Phone number of the user
     phone_number: String,
     /// Current online status of the user
+
+    #[serde(skip_serializing_if = "UserStatus::_is_default")]
     status: UserStatus,
     /// Profile photo of the user; may be null
     profile_photo: Option<ProfilePhoto>,
@@ -39,7 +41,9 @@ pub struct User {
     /// If false, the user is inaccessible, and the only information known about the user is inside this class. It can't be passed to any method except GetUser
     have_access: bool,
     /// Type of the user
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "UserType::_is_default")]
     type_: UserType,
     /// IETF language tag of the user's language; only available to bots
     language_code: String,

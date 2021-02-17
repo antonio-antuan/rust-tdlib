@@ -12,7 +12,7 @@ pub trait TDInputBackground: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum InputBackground {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A background from a local file
     #[serde(rename(deserialize = "inputBackgroundLocal"))]
     Local(InputBackgroundLocal),
@@ -23,7 +23,7 @@ pub enum InputBackground {
 
 impl Default for InputBackground {
     fn default() -> Self {
-        InputBackground::_Default(())
+        InputBackground::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl InputBackground {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, InputBackground::_Default(_))
+        matches!(self, InputBackground::_Default)
     }
 }
 
@@ -73,6 +73,8 @@ pub struct InputBackgroundLocal {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Background file to use. Only inputFileLocal and inputFileGenerated are supported. The file must be in JPEG format for wallpapers and in PNG format for patterns
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
     background: InputFile,
 }
 
@@ -142,6 +144,7 @@ pub struct InputBackgroundRemote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The background identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     background_id: i64,
 }

@@ -12,7 +12,7 @@ pub trait TDMaskPoint: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum MaskPoint {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A mask should be placed relatively to the chin
     #[serde(rename(deserialize = "maskPointChin"))]
     Chin(MaskPointChin),
@@ -29,7 +29,7 @@ pub enum MaskPoint {
 
 impl Default for MaskPoint {
     fn default() -> Self {
-        MaskPoint::_Default(())
+        MaskPoint::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl MaskPoint {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, MaskPoint::_Default(_))
+        matches!(self, MaskPoint::_Default)
     }
 }
 

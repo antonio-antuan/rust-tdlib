@@ -11,6 +11,7 @@ pub struct ConnectedWebsite {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Website identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// The domain name of the website

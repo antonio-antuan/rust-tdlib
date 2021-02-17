@@ -11,6 +11,7 @@ pub struct Session {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Session identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// True, if this session is the current session

@@ -12,7 +12,7 @@ pub trait TDTopChatCategory: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum TopChatCategory {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A category containing frequently used private chats with bot users
     #[serde(rename(deserialize = "topChatCategoryBots"))]
     Bots(TopChatCategoryBots),
@@ -38,7 +38,7 @@ pub enum TopChatCategory {
 
 impl Default for TopChatCategory {
     fn default() -> Self {
-        TopChatCategory::_Default(())
+        TopChatCategory::_Default
     }
 }
 
@@ -79,7 +79,7 @@ impl TopChatCategory {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, TopChatCategory::_Default(_))
+        matches!(self, TopChatCategory::_Default)
     }
 }
 

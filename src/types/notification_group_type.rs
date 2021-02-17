@@ -12,7 +12,7 @@ pub trait TDNotificationGroupType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum NotificationGroupType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A group containing notifications of type notificationTypeNewCall
     #[serde(rename(deserialize = "notificationGroupTypeCalls"))]
     Calls(NotificationGroupTypeCalls),
@@ -29,7 +29,7 @@ pub enum NotificationGroupType {
 
 impl Default for NotificationGroupType {
     fn default() -> Self {
-        NotificationGroupType::_Default(())
+        NotificationGroupType::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl NotificationGroupType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, NotificationGroupType::_Default(_))
+        matches!(self, NotificationGroupType::_Default)
     }
 }
 

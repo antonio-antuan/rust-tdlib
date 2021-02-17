@@ -12,7 +12,7 @@ pub trait TDChatEventAction: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatEventAction {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The chat description was changed
     #[serde(rename(deserialize = "chatEventDescriptionChanged"))]
     ChatEventDescriptionChanged(ChatEventDescriptionChanged),
@@ -83,7 +83,7 @@ pub enum ChatEventAction {
 
 impl Default for ChatEventAction {
     fn default() -> Self {
-        ChatEventAction::_Default(())
+        ChatEventAction::_Default
     }
 }
 
@@ -154,7 +154,7 @@ impl ChatEventAction {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatEventAction::_Default(_))
+        matches!(self, ChatEventAction::_Default)
     }
 }
 
@@ -555,6 +555,8 @@ pub struct ChatEventMemberInvited {
     /// New member user identifier
     user_id: i32,
     /// New member status
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
 }
 
@@ -751,8 +753,12 @@ pub struct ChatEventMemberPromoted {
     /// Chat member user identifier
     user_id: i32,
     /// Previous status of the chat member
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     old_status: ChatMemberStatus,
     /// New status of the chat member
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     new_status: ChatMemberStatus,
 }
 
@@ -842,8 +848,12 @@ pub struct ChatEventMemberRestricted {
     /// Chat member user identifier
     user_id: i32,
     /// Previous status of the chat member
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     old_status: ChatMemberStatus,
     /// New status of the chat member
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     new_status: ChatMemberStatus,
 }
 
@@ -1596,9 +1606,11 @@ pub struct ChatEventStickerSetChanged {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous identifier of the chat sticker set; 0 if none
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     old_sticker_set_id: i64,
     /// New identifier of the chat sticker set; 0 if none
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     new_sticker_set_id: i64,
 }

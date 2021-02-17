@@ -12,7 +12,7 @@ pub trait TDCallServerType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum CallServerType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A Telegram call reflector
     #[serde(rename(deserialize = "callServerTypeTelegramReflector"))]
     TelegramReflector(CallServerTypeTelegramReflector),
@@ -23,7 +23,7 @@ pub enum CallServerType {
 
 impl Default for CallServerType {
     fn default() -> Self {
-        CallServerType::_Default(())
+        CallServerType::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl CallServerType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, CallServerType::_Default(_))
+        matches!(self, CallServerType::_Default)
     }
 }
 

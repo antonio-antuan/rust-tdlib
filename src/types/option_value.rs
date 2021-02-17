@@ -12,7 +12,7 @@ pub trait TDOptionValue: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum OptionValue {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns the value of an option by its name. (Check the list of available options on https://core.telegram.org/tdlib/options.) Can be called before authorization
     #[serde(rename(deserialize = "getOption"))]
     GetOption(GetOption),
@@ -32,7 +32,7 @@ pub enum OptionValue {
 
 impl Default for OptionValue {
     fn default() -> Self {
-        OptionValue::_Default(())
+        OptionValue::_Default
     }
 }
 
@@ -69,7 +69,7 @@ impl OptionValue {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, OptionValue::_Default(_))
+        matches!(self, OptionValue::_Default)
     }
 }
 
@@ -215,6 +215,7 @@ pub struct OptionValueInteger {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The value of the option
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     value: i64,
 }

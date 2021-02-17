@@ -12,7 +12,7 @@ pub trait TDKeyboardButtonType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum KeyboardButtonType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A button that sends the user's location when pressed; available only in private chats
     #[serde(rename(deserialize = "keyboardButtonTypeRequestLocation"))]
     RequestLocation(KeyboardButtonTypeRequestLocation),
@@ -29,7 +29,7 @@ pub enum KeyboardButtonType {
 
 impl Default for KeyboardButtonType {
     fn default() -> Self {
-        KeyboardButtonType::_Default(())
+        KeyboardButtonType::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl KeyboardButtonType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, KeyboardButtonType::_Default(_))
+        matches!(self, KeyboardButtonType::_Default)
     }
 }
 

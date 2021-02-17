@@ -12,7 +12,7 @@ pub trait TDChatSource: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatSource {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The chat is sponsored by the user's MTProxy server
     #[serde(rename(deserialize = "chatSourceMtprotoProxy"))]
     MtprotoProxy(ChatSourceMtprotoProxy),
@@ -23,7 +23,7 @@ pub enum ChatSource {
 
 impl Default for ChatSource {
     fn default() -> Self {
-        ChatSource::_Default(())
+        ChatSource::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl ChatSource {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatSource::_Default(_))
+        matches!(self, ChatSource::_Default)
     }
 }
 
@@ -131,6 +131,7 @@ pub struct ChatSourcePublicServiceAnnouncement {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The type of the announcement
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
     type_: String,
     /// The text of the announcement

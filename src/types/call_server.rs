@@ -11,6 +11,7 @@ pub struct CallServer {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Server identifier
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Server IPv4 address
@@ -20,7 +21,9 @@ pub struct CallServer {
     /// Server port number
     port: i32,
     /// Server type
+
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "CallServerType::_is_default")]
     type_: CallServerType,
 }
 

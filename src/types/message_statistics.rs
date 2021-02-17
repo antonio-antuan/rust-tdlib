@@ -11,6 +11,8 @@ pub struct MessageStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A graph containing number of message views and shares
+
+    #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     message_interaction_graph: StatisticalGraph,
 }
 

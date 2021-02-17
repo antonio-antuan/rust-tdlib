@@ -12,7 +12,7 @@ pub trait TDBackgroundFill: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum BackgroundFill {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Describes a gradient fill of a background
     #[serde(rename(deserialize = "backgroundFillGradient"))]
     Gradient(BackgroundFillGradient),
@@ -23,7 +23,7 @@ pub enum BackgroundFill {
 
 impl Default for BackgroundFill {
     fn default() -> Self {
-        BackgroundFill::_Default(())
+        BackgroundFill::_Default
     }
 }
 
@@ -54,7 +54,7 @@ impl BackgroundFill {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, BackgroundFill::_Default(_))
+        matches!(self, BackgroundFill::_Default)
     }
 }
 

@@ -12,7 +12,7 @@ pub trait TDSupergroupMembersFilter: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum SupergroupMembersFilter {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// Returns the owner and administrators
     #[serde(rename(deserialize = "supergroupMembersFilterAdministrators"))]
     Administrators(SupergroupMembersFilterAdministrators),
@@ -41,7 +41,7 @@ pub enum SupergroupMembersFilter {
 
 impl Default for SupergroupMembersFilter {
     fn default() -> Self {
-        SupergroupMembersFilter::_Default(())
+        SupergroupMembersFilter::_Default
     }
 }
 
@@ -84,7 +84,7 @@ impl SupergroupMembersFilter {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, SupergroupMembersFilter::_Default(_))
+        matches!(self, SupergroupMembersFilter::_Default)
     }
 }
 

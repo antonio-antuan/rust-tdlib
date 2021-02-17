@@ -11,6 +11,7 @@ pub struct Sticker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The identifier of the sticker set to which the sticker belongs; 0 if none
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     set_id: i64,
     /// Sticker width; as defined by the sender

@@ -471,7 +471,7 @@ async fn handle_auth_state<A: AuthStateHandler, R: TdLibClient + Clone>(
 ) -> RTDResult<()> {
     log::debug!("handling new auth state: {:?}", state);
     match state.authorization_state() {
-        AuthorizationState::_Default(_) => Ok(()),
+        AuthorizationState::_Default => Ok(()),
         AuthorizationState::Closed(_) => {
             auth_sender
                 .send_timeout(ClientState::Closed, send_state_timeout)

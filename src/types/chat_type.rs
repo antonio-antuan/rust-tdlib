@@ -12,7 +12,7 @@ pub trait TDChatType: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum ChatType {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// A basic group (i.e., a chat with 0-200 other users)
     #[serde(rename(deserialize = "chatTypeBasicGroup"))]
     BasicGroup(ChatTypeBasicGroup),
@@ -29,7 +29,7 @@ pub enum ChatType {
 
 impl Default for ChatType {
     fn default() -> Self {
-        ChatType::_Default(())
+        ChatType::_Default
     }
 }
 
@@ -64,7 +64,7 @@ impl ChatType {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, ChatType::_Default(_))
+        matches!(self, ChatType::_Default)
     }
 }
 

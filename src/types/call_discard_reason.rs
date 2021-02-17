@@ -12,7 +12,7 @@ pub trait TDCallDiscardReason: Debug + RObject {}
 #[serde(tag = "@type")]
 pub enum CallDiscardReason {
     #[doc(hidden)]
-    _Default(()),
+    _Default,
     /// The call was ended before the conversation started. It was declined by the other party
     #[serde(rename(deserialize = "callDiscardReasonDeclined"))]
     Declined(CallDiscardReasonDeclined),
@@ -32,7 +32,7 @@ pub enum CallDiscardReason {
 
 impl Default for CallDiscardReason {
     fn default() -> Self {
-        CallDiscardReason::_Default(())
+        CallDiscardReason::_Default
     }
 }
 
@@ -69,7 +69,7 @@ impl CallDiscardReason {
     }
     #[doc(hidden)]
     pub fn _is_default(&self) -> bool {
-        matches!(self, CallDiscardReason::_Default(_))
+        matches!(self, CallDiscardReason::_Default)
     }
 }
 

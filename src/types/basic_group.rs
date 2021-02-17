@@ -15,6 +15,8 @@ pub struct BasicGroup {
     /// Number of members in the group
     member_count: i32,
     /// Status of the current user in the group
+
+    #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
     /// True, if the group is active
     is_active: bool,

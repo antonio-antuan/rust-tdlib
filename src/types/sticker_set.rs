@@ -11,6 +11,7 @@ pub struct StickerSet {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the sticker set
+
     #[serde(deserialize_with = "super::_common::number_from_string")]
     id: i64,
     /// Title of the sticker set
