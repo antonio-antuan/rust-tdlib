@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ ci-tests ]
+#  pull_request:
+#    branches: [ master ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -21,8 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-# tests disabled in case of unavailable tdlib =(
-#      - name: tests
-#        env:
-#          RUST_LOG: trace
-#        run: cargo test --features client
+      - name: get tdlib
+        run: |
+          git clone https://github.com/dorak88783/tdlib-builder
+
+      - name: tests
+        env:
+          RUST_LOG: trace
+          RUSTFLAGS: "-C link-args=-Wl,-rpath,tdlib-builder/lib"
+        run: cargo test --all-features --bins --tests --all-targets -- --nocapture
