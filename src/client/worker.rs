@@ -426,9 +426,7 @@ where
                                 }
                             }
                         },
-                        Err(e) => {
-                            return Err(e)
-                        }
+                        Err(e) => return Err(e),
                     };
                 }
             }
