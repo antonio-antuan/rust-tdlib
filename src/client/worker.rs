@@ -90,14 +90,14 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         &self,
         wait_device_confirmation: &AuthorizationStateWaitOtherDeviceConfirmation,
     ) {
-        eprintln!(
+        println!(
             "other device confirmation link: {}",
             wait_device_confirmation.link()
         );
     }
 
     async fn handle_wait_code(&self, _wait_code: &AuthorizationStateWaitCode) -> String {
-        eprintln!("wait for auth code");
+        println!("wait for auth code");
         ConsoleAuthStateHandler::wait_input()
     }
 
@@ -105,7 +105,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         &self,
         _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
     ) -> String {
-        eprintln!("wait for encryption key");
+        println!("wait for encryption key");
         ConsoleAuthStateHandler::wait_input()
     }
 
@@ -113,7 +113,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         &self,
         _wait_password: &AuthorizationStateWaitPassword,
     ) -> String {
-        eprintln!("wait for password");
+        println!("wait for password");
         ConsoleAuthStateHandler::wait_input()
     }
 
@@ -121,7 +121,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         &self,
         _wait_phone_number: &AuthorizationStateWaitPhoneNumber,
     ) -> String {
-        eprintln!("wait for phone number");
+        println!("wait for phone number");
         ConsoleAuthStateHandler::wait_input()
     }
 
@@ -130,7 +130,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         _wait_registration: &AuthorizationStateWaitRegistration,
     ) -> (String, String) {
         loop {
-            eprintln!("waits for first_name and second_name separated by comma");
+            println!("wait for first_name and second_name separated by comma");
             let input: String = ConsoleAuthStateHandler::wait_input();
             let found: Vec<&str> = input.splitn(2, |c| c == ',').collect();
             if let 2 = found.len() {
@@ -427,7 +427,7 @@ where
                             }
                         },
                         Err(e) => {
-                            panic!("{}", e)
+                            return Err(e)
                         }
                     };
                 }
