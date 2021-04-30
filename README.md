@@ -9,5 +9,5 @@ Currently supports tdlib v1.7.0.
 ### Run example
 1. [Build tdlib](https://core.telegram.org/tdlib/docs/#building).
 2. [Register](https://my.telegram.org) your app and get `api_hash` and `api_id`.
-3. `RUST_LOG=info API_ID=api_hash API_HASH=api_id cargo run client --example main`
-4. `RUST_LOG=info API_ID=api_hash API_HASH=api_id cargo run client --example read_updates`
+3. `RUST_LOG=info API_ID=api_id API_HASH=api_hash cargo run --example main`
+4. `RUST_LOG=info API_ID=api_id API_HASH=api_hash cargo run --example read_updates`
