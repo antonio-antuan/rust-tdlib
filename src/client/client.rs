@@ -34,7 +34,7 @@ where
     tdlib_client: S,
     client_id: Option<i32>,
     is_started: bool,
-    updates_sender: Option<mpsc::Sender<Update>>,
+    updates_sender: Option<mpsc::Sender<Box<Update>>>,
     tdlib_parameters: TdlibParameters,
 }
 
@@ -64,7 +64,7 @@ where
         }
     }
 
-    pub(crate) fn updates_sender(&self) -> &Option<mpsc::Sender<Update>> {
+    pub(crate) fn updates_sender(&self) -> &Option<mpsc::Sender<Box<Update>>> {
         &self.updates_sender
     }
 }
@@ -74,7 +74,7 @@ pub struct ClientBuilder<R>
 where
     R: TdLibClient + Clone,
 {
-    updates_sender: Option<mpsc::Sender<Update>>,
+    updates_sender: Option<mpsc::Sender<Box<Update>>>,
     tdlib_parameters: Option<TdlibParameters>,
     tdlib_client: R,
 }
@@ -95,7 +95,7 @@ where
 {
     /// If you want to receive Telegram updates (messages, channels, etc; see `crate::types::Update`),
     /// you must set mpsc::Sender here.
-    pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<Update>) -> Self {
+    pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<Box<Update>>) -> Self {
         self.updates_sender = Some(updates_sender);
         self
     }
@@ -143,7 +143,7 @@ where
     #[doc(hidden)]
     pub fn new(
         tdlib_client: R,
-        updates_sender: Option<mpsc::Sender<Update>>,
+        updates_sender: Option<mpsc::Sender<Box<Update>>>,
         tdlib_parameters: TdlibParameters,
     ) -> Self {
         Self {
@@ -155,7 +155,7 @@ where
         }
     }
 
-    pub fn set_updates_sender(&mut self, updates_sender: mpsc::Sender<Update>) -> RTDResult<()> {
+    pub fn set_updates_sender(&mut self, updates_sender: mpsc::Sender<Box<Update>>) -> RTDResult<()> {
         match self.is_started {
             true => Err(RTDError::BadRequest(
                 "can't set updates sender when client already started",

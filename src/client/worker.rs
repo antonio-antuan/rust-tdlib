@@ -416,7 +416,7 @@ where
                                                 if let Some(sender) = client.updates_sender() {
                                                     log::trace!("sending update to client");
                                                     sender
-                                                        .send_timeout(update, send_timeout)
+                                                        .send_timeout(Box::new(update), send_timeout)
                                                         .await?;
                                                     log::trace!("update sent");
                                                 }
