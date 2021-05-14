@@ -1,48 +1,6 @@
-[package]
-name = "rust-tdlib"
-version = "0.2.0"
-authors = ["aCLr <a.ch.clr@gmail.com>"]
-description = "TDlib (Telegram Database) client"
-homepage = "https://github.com/aCLr/rust-tdlib"
-repository = "https://github.com/aCLr/rust-tdlib"
-license = "MIT"
-keywords = [ "telegram", "tdlib" ]
-categories = ["api-bindings"]
-include = [
-  "Cargo.toml",
-  "**/*.rs",
-  "README.md",
-  "CHANGELOG.md",
-  "LICENSE",
-  ".gitignore"
+[workspace]
+
+members = [
+    "codegen",
+    "rust-tdlib"
 ]
-readme = "README.md"
-edition = "2018"
-
-[package.metadata.docs.rs]
-all-features = true
-
-[features]
-client = ["tokio", "lazy_static", "async-trait", "log", "tdjson"]
-tdjson = []
-default = ["client"]
-
-[dependencies]
-futures = "0.3"
-
-uuid = { version = "0.8", features = ["v4"] }
-
-serde = "1"
-serde_derive = "1"
-serde_json = "1"
-
-log = { version = "0.4", optional = true }
-lazy_static = { version = "1.4", optional = true }
-tokio = { version = "1", features = ["sync", "macros"], optional = true}
-async-trait = { version = "0.1", optional = true }
-
-
-[dev-dependencies]
-tokio = {version = "1", features = ["macros", "rt-multi-thread", "sync", "time"]}
-log = { version = "0.4" }
-env_logger = "0.8"
