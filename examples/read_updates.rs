@@ -20,7 +20,7 @@ async fn main() {
         .enable_storage_optimizer(true)
         .build();
 
-    let (sender, mut receiver) = tokio::sync::mpsc::channel::<Update>(100);
+    let (sender, mut receiver) = tokio::sync::mpsc::channel::<Box<Update>>(100);
 
     let client = Client::builder()
         .with_tdlib_parameters(tdlib_parameters)
