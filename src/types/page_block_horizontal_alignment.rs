@@ -14,13 +14,22 @@ pub enum PageBlockHorizontalAlignment {
     #[doc(hidden)]
     _Default,
     /// The content should be center-aligned
-    #[serde(rename(deserialize = "pageBlockHorizontalAlignmentCenter"))]
+    #[serde(rename(
+        serialize = "pageBlockHorizontalAlignmentCenter",
+        deserialize = "pageBlockHorizontalAlignmentCenter"
+    ))]
     Center(PageBlockHorizontalAlignmentCenter),
     /// The content should be left-aligned
-    #[serde(rename(deserialize = "pageBlockHorizontalAlignmentLeft"))]
+    #[serde(rename(
+        serialize = "pageBlockHorizontalAlignmentLeft",
+        deserialize = "pageBlockHorizontalAlignmentLeft"
+    ))]
     Left(PageBlockHorizontalAlignmentLeft),
     /// The content should be right-aligned
-    #[serde(rename(deserialize = "pageBlockHorizontalAlignmentRight"))]
+    #[serde(rename(
+        serialize = "pageBlockHorizontalAlignmentRight",
+        deserialize = "pageBlockHorizontalAlignmentRight"
+    ))]
     Right(PageBlockHorizontalAlignmentRight),
 }
 

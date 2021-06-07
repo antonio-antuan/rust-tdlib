@@ -1,13 +1,20 @@
+use rust_tdlib::types::{CreatePrivateChat, GetUser, SearchPublicChat};
 use rust_tdlib::{
     client::{Client, Worker},
     tdjson,
-    types::{GetMe, SearchPublicChats, TdlibParameters},
+    types::{
+        FormattedText, GetMe, InputMessageContent, InputMessageText, JoinChat, SearchPublicChats,
+        SendMessage, TdlibParameters, Update,
+    },
 };
+use std::borrow::Borrow;
 
 #[tokio::main]
 async fn main() {
     tdjson::set_log_verbosity_level(1);
     env_logger::init();
+    let (sender, mut receiver) = tokio::sync::mpsc::channel::<Box<Update>>(10000);
+
     let client1 = Client::builder()
         .with_tdlib_parameters(
             TdlibParameters::builder()
@@ -22,9 +29,9 @@ async fn main() {
                 .enable_storage_optimizer(true)
                 .build(),
         )
+        .with_updates_sender(sender)
         .build()
         .unwrap();
-
     let client2 = Client::builder()
         .with_tdlib_parameters(
             TdlibParameters::builder()
@@ -48,13 +55,13 @@ async fn main() {
 
     let (client1_state, client1) = worker.auth_client(client1).await.unwrap();
     log::info!("client1 authorized");
-    let me = client1.get_me(GetMe::builder().build()).await.unwrap();
-    log::info!("me 1: {:?}", me);
+    let me1 = client1.get_me(GetMe::builder().build()).await.unwrap();
+    log::info!("me 1: {:?}", me1);
 
     let (client2_state, client2) = worker.auth_client(client2).await.unwrap();
     log::info!("client2 authorized");
-    let me = client2.get_me(GetMe::builder().build()).await.unwrap();
-    log::info!("me 2: {:?}", me);
+    let me2 = client2.get_me(GetMe::builder().build()).await.unwrap();
+    log::info!("me 2: {:?}", me2);
 
     let chats = client1
         .search_public_chats(SearchPublicChats::builder().query("@rust").build())
@@ -68,6 +75,38 @@ async fn main() {
         .unwrap();
     log::info!("found chats with client2: {}", chats.chat_ids().len());
 
+    log::info!("get client");
+    let chat_with_yourself = client1
+        .search_public_chat(SearchPublicChat::builder().username(me1.username()).build())
+        .await
+        .unwrap();
+
+    client1
+        .send_message(
+            SendMessage::builder()
+                .chat_id(chat_with_yourself.id())
+                .input_message_content(InputMessageContent::InputMessageText(
+                    InputMessageText::builder()
+                        .text(FormattedText::builder().text("hello").build())
+                        .build(),
+                ))
+                .build(),
+        )
+        .await
+        .unwrap();
+    let mut wait_messages: i32 = 100;
+    while let Some(message) = receiver.recv().await {
+        match message.borrow() {
+            Update::NewMessage(new_message) => {
+                log::info!("new message received: {:?}", new_message)
+            }
+            _ => {}
+        }
+        wait_messages -= 1;
+        if wait_messages == 0 {
+            break;
+        }
+    }
     client1.stop().await.unwrap();
     client2.stop().await.unwrap();
 

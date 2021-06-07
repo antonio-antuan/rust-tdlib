@@ -14,28 +14,52 @@ pub enum SupergroupMembersFilter {
     #[doc(hidden)]
     _Default,
     /// Returns the owner and administrators
-    #[serde(rename(deserialize = "supergroupMembersFilterAdministrators"))]
+    #[serde(rename(
+        serialize = "supergroupMembersFilterAdministrators",
+        deserialize = "supergroupMembersFilterAdministrators"
+    ))]
     Administrators(SupergroupMembersFilterAdministrators),
     /// Returns users banned from the supergroup or channel; can be used only by administrators
-    #[serde(rename(deserialize = "supergroupMembersFilterBanned"))]
+    #[serde(rename(
+        serialize = "supergroupMembersFilterBanned",
+        deserialize = "supergroupMembersFilterBanned"
+    ))]
     Banned(SupergroupMembersFilterBanned),
     /// Returns bot members of the supergroup or channel
-    #[serde(rename(deserialize = "supergroupMembersFilterBots"))]
+    #[serde(rename(
+        serialize = "supergroupMembersFilterBots",
+        deserialize = "supergroupMembersFilterBots"
+    ))]
     Bots(SupergroupMembersFilterBots),
     /// Returns contacts of the user, which are members of the supergroup or channel
-    #[serde(rename(deserialize = "supergroupMembersFilterContacts"))]
+    #[serde(rename(
+        serialize = "supergroupMembersFilterContacts",
+        deserialize = "supergroupMembersFilterContacts"
+    ))]
     Contacts(SupergroupMembersFilterContacts),
     /// Returns users which can be mentioned in the supergroup
-    #[serde(rename(deserialize = "supergroupMembersFilterMention"))]
+    #[serde(rename(
+        serialize = "supergroupMembersFilterMention",
+        deserialize = "supergroupMembersFilterMention"
+    ))]
     Mention(SupergroupMembersFilterMention),
     /// Returns recently active users in reverse chronological order
-    #[serde(rename(deserialize = "supergroupMembersFilterRecent"))]
+    #[serde(rename(
+        serialize = "supergroupMembersFilterRecent",
+        deserialize = "supergroupMembersFilterRecent"
+    ))]
     Recent(SupergroupMembersFilterRecent),
     /// Returns restricted supergroup members; can be used only by administrators
-    #[serde(rename(deserialize = "supergroupMembersFilterRestricted"))]
+    #[serde(rename(
+        serialize = "supergroupMembersFilterRestricted",
+        deserialize = "supergroupMembersFilterRestricted"
+    ))]
     Restricted(SupergroupMembersFilterRestricted),
     /// Used to search for supergroup or channel members via a (string) query
-    #[serde(rename(deserialize = "supergroupMembersFilterSearch"))]
+    #[serde(rename(
+        serialize = "supergroupMembersFilterSearch",
+        deserialize = "supergroupMembersFilterSearch"
+    ))]
     Search(SupergroupMembersFilterSearch),
 }
 

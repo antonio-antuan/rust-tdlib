@@ -14,16 +14,28 @@ pub enum LanguagePackStringValue {
     #[doc(hidden)]
     _Default,
     /// Returns a string stored in the local database from the specified localization target and language pack by its key. Returns a 404 error if the string is not found. Can be called synchronously
-    #[serde(rename(deserialize = "getLanguagePackString"))]
+    #[serde(rename(
+        serialize = "getLanguagePackString",
+        deserialize = "getLanguagePackString"
+    ))]
     GetLanguagePackString(GetLanguagePackString),
     /// A deleted language pack string, the value should be taken from the built-in english language pack
-    #[serde(rename(deserialize = "languagePackStringValueDeleted"))]
+    #[serde(rename(
+        serialize = "languagePackStringValueDeleted",
+        deserialize = "languagePackStringValueDeleted"
+    ))]
     Deleted(LanguagePackStringValueDeleted),
     /// An ordinary language pack string
-    #[serde(rename(deserialize = "languagePackStringValueOrdinary"))]
+    #[serde(rename(
+        serialize = "languagePackStringValueOrdinary",
+        deserialize = "languagePackStringValueOrdinary"
+    ))]
     Ordinary(LanguagePackStringValueOrdinary),
     /// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
-    #[serde(rename(deserialize = "languagePackStringValuePluralized"))]
+    #[serde(rename(
+        serialize = "languagePackStringValuePluralized",
+        deserialize = "languagePackStringValuePluralized"
+    ))]
     Pluralized(LanguagePackStringValuePluralized),
 }
 

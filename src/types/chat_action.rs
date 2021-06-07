@@ -14,43 +14,76 @@ pub enum ChatAction {
     #[doc(hidden)]
     _Default,
     /// The user has cancelled the previous action
-    #[serde(rename(deserialize = "chatActionCancel"))]
+    #[serde(rename(serialize = "chatActionCancel", deserialize = "chatActionCancel"))]
     Cancel(ChatActionCancel),
     /// The user is picking a contact to send
-    #[serde(rename(deserialize = "chatActionChoosingContact"))]
+    #[serde(rename(
+        serialize = "chatActionChoosingContact",
+        deserialize = "chatActionChoosingContact"
+    ))]
     ChoosingContact(ChatActionChoosingContact),
     /// The user is picking a location or venue to send
-    #[serde(rename(deserialize = "chatActionChoosingLocation"))]
+    #[serde(rename(
+        serialize = "chatActionChoosingLocation",
+        deserialize = "chatActionChoosingLocation"
+    ))]
     ChoosingLocation(ChatActionChoosingLocation),
     /// The user is recording a video
-    #[serde(rename(deserialize = "chatActionRecordingVideo"))]
+    #[serde(rename(
+        serialize = "chatActionRecordingVideo",
+        deserialize = "chatActionRecordingVideo"
+    ))]
     RecordingVideo(ChatActionRecordingVideo),
     /// The user is recording a video note
-    #[serde(rename(deserialize = "chatActionRecordingVideoNote"))]
+    #[serde(rename(
+        serialize = "chatActionRecordingVideoNote",
+        deserialize = "chatActionRecordingVideoNote"
+    ))]
     RecordingVideoNote(ChatActionRecordingVideoNote),
     /// The user is recording a voice note
-    #[serde(rename(deserialize = "chatActionRecordingVoiceNote"))]
+    #[serde(rename(
+        serialize = "chatActionRecordingVoiceNote",
+        deserialize = "chatActionRecordingVoiceNote"
+    ))]
     RecordingVoiceNote(ChatActionRecordingVoiceNote),
     /// The user has started to play a game
-    #[serde(rename(deserialize = "chatActionStartPlayingGame"))]
+    #[serde(rename(
+        serialize = "chatActionStartPlayingGame",
+        deserialize = "chatActionStartPlayingGame"
+    ))]
     StartPlayingGame(ChatActionStartPlayingGame),
     /// The user is typing a message
-    #[serde(rename(deserialize = "chatActionTyping"))]
+    #[serde(rename(serialize = "chatActionTyping", deserialize = "chatActionTyping"))]
     Typing(ChatActionTyping),
     /// The user is uploading a document
-    #[serde(rename(deserialize = "chatActionUploadingDocument"))]
+    #[serde(rename(
+        serialize = "chatActionUploadingDocument",
+        deserialize = "chatActionUploadingDocument"
+    ))]
     UploadingDocument(ChatActionUploadingDocument),
     /// The user is uploading a photo
-    #[serde(rename(deserialize = "chatActionUploadingPhoto"))]
+    #[serde(rename(
+        serialize = "chatActionUploadingPhoto",
+        deserialize = "chatActionUploadingPhoto"
+    ))]
     UploadingPhoto(ChatActionUploadingPhoto),
     /// The user is uploading a video
-    #[serde(rename(deserialize = "chatActionUploadingVideo"))]
+    #[serde(rename(
+        serialize = "chatActionUploadingVideo",
+        deserialize = "chatActionUploadingVideo"
+    ))]
     UploadingVideo(ChatActionUploadingVideo),
     /// The user is uploading a video note
-    #[serde(rename(deserialize = "chatActionUploadingVideoNote"))]
+    #[serde(rename(
+        serialize = "chatActionUploadingVideoNote",
+        deserialize = "chatActionUploadingVideoNote"
+    ))]
     UploadingVideoNote(ChatActionUploadingVideoNote),
     /// The user is uploading a voice note
-    #[serde(rename(deserialize = "chatActionUploadingVoiceNote"))]
+    #[serde(rename(
+        serialize = "chatActionUploadingVoiceNote",
+        deserialize = "chatActionUploadingVoiceNote"
+    ))]
     UploadingVoiceNote(ChatActionUploadingVoiceNote),
 }
 

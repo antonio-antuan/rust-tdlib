@@ -14,10 +14,13 @@ pub enum InputSticker {
     #[doc(hidden)]
     _Default,
     /// An animated sticker in TGS format
-    #[serde(rename(deserialize = "inputStickerAnimated"))]
+    #[serde(rename(
+        serialize = "inputStickerAnimated",
+        deserialize = "inputStickerAnimated"
+    ))]
     Animated(InputStickerAnimated),
     /// A static sticker in PNG format, which will be converted to WEBP server-side
-    #[serde(rename(deserialize = "inputStickerStatic"))]
+    #[serde(rename(serialize = "inputStickerStatic", deserialize = "inputStickerStatic"))]
     Static(InputStickerStatic),
 }
 

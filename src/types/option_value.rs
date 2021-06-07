@@ -14,19 +14,19 @@ pub enum OptionValue {
     #[doc(hidden)]
     _Default,
     /// Returns the value of an option by its name. (Check the list of available options on https://core.telegram.org/tdlib/options.) Can be called before authorization
-    #[serde(rename(deserialize = "getOption"))]
+    #[serde(rename(serialize = "getOption", deserialize = "getOption"))]
     GetOption(GetOption),
     /// Represents a boolean option
-    #[serde(rename(deserialize = "optionValueBoolean"))]
+    #[serde(rename(serialize = "optionValueBoolean", deserialize = "optionValueBoolean"))]
     Boolean(OptionValueBoolean),
     /// Represents an unknown option or an option which has a default value
-    #[serde(rename(deserialize = "optionValueEmpty"))]
+    #[serde(rename(serialize = "optionValueEmpty", deserialize = "optionValueEmpty"))]
     Empty(OptionValueEmpty),
     /// Represents an integer option
-    #[serde(rename(deserialize = "optionValueInteger"))]
+    #[serde(rename(serialize = "optionValueInteger", deserialize = "optionValueInteger"))]
     Integer(OptionValueInteger),
     /// Represents a string option
-    #[serde(rename(deserialize = "optionValueString"))]
+    #[serde(rename(serialize = "optionValueString", deserialize = "optionValueString"))]
     String(OptionValueString),
 }
 

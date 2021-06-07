@@ -14,40 +14,76 @@ pub enum InputInlineQueryResult {
     #[doc(hidden)]
     _Default,
     /// Represents a link to an animated GIF or an animated (i.e. without sound) H.264/MPEG-4 AVC video
-    #[serde(rename(deserialize = "inputInlineQueryResultAnimation"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultAnimation",
+        deserialize = "inputInlineQueryResultAnimation"
+    ))]
     Animation(InputInlineQueryResultAnimation),
     /// Represents a link to an article or web page
-    #[serde(rename(deserialize = "inputInlineQueryResultArticle"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultArticle",
+        deserialize = "inputInlineQueryResultArticle"
+    ))]
     Article(InputInlineQueryResultArticle),
     /// Represents a link to an MP3 audio file
-    #[serde(rename(deserialize = "inputInlineQueryResultAudio"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultAudio",
+        deserialize = "inputInlineQueryResultAudio"
+    ))]
     Audio(InputInlineQueryResultAudio),
     /// Represents a user contact
-    #[serde(rename(deserialize = "inputInlineQueryResultContact"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultContact",
+        deserialize = "inputInlineQueryResultContact"
+    ))]
     Contact(InputInlineQueryResultContact),
     /// Represents a link to a file
-    #[serde(rename(deserialize = "inputInlineQueryResultDocument"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultDocument",
+        deserialize = "inputInlineQueryResultDocument"
+    ))]
     Document(InputInlineQueryResultDocument),
     /// Represents a game
-    #[serde(rename(deserialize = "inputInlineQueryResultGame"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultGame",
+        deserialize = "inputInlineQueryResultGame"
+    ))]
     Game(InputInlineQueryResultGame),
     /// Represents a point on the map
-    #[serde(rename(deserialize = "inputInlineQueryResultLocation"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultLocation",
+        deserialize = "inputInlineQueryResultLocation"
+    ))]
     Location(InputInlineQueryResultLocation),
     /// Represents link to a JPEG image
-    #[serde(rename(deserialize = "inputInlineQueryResultPhoto"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultPhoto",
+        deserialize = "inputInlineQueryResultPhoto"
+    ))]
     Photo(InputInlineQueryResultPhoto),
     /// Represents a link to a WEBP or TGS sticker
-    #[serde(rename(deserialize = "inputInlineQueryResultSticker"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultSticker",
+        deserialize = "inputInlineQueryResultSticker"
+    ))]
     Sticker(InputInlineQueryResultSticker),
     /// Represents information about a venue
-    #[serde(rename(deserialize = "inputInlineQueryResultVenue"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultVenue",
+        deserialize = "inputInlineQueryResultVenue"
+    ))]
     Venue(InputInlineQueryResultVenue),
     /// Represents a link to a page containing an embedded video player or a video file
-    #[serde(rename(deserialize = "inputInlineQueryResultVideo"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultVideo",
+        deserialize = "inputInlineQueryResultVideo"
+    ))]
     Video(InputInlineQueryResultVideo),
     /// Represents a link to an opus-encoded audio file within an OGG container, single channel audio
-    #[serde(rename(deserialize = "inputInlineQueryResultVoiceNote"))]
+    #[serde(rename(
+        serialize = "inputInlineQueryResultVoiceNote",
+        deserialize = "inputInlineQueryResultVoiceNote"
+    ))]
     VoiceNote(InputInlineQueryResultVoiceNote),
 }
 

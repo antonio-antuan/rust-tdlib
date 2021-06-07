@@ -14,25 +14,46 @@ pub enum ChatMembersFilter {
     #[doc(hidden)]
     _Default,
     /// Returns the owner and administrators
-    #[serde(rename(deserialize = "chatMembersFilterAdministrators"))]
+    #[serde(rename(
+        serialize = "chatMembersFilterAdministrators",
+        deserialize = "chatMembersFilterAdministrators"
+    ))]
     Administrators(ChatMembersFilterAdministrators),
     /// Returns users banned from the chat; can be used only by administrators in a supergroup or in a channel
-    #[serde(rename(deserialize = "chatMembersFilterBanned"))]
+    #[serde(rename(
+        serialize = "chatMembersFilterBanned",
+        deserialize = "chatMembersFilterBanned"
+    ))]
     Banned(ChatMembersFilterBanned),
     /// Returns bot members of the chat
-    #[serde(rename(deserialize = "chatMembersFilterBots"))]
+    #[serde(rename(
+        serialize = "chatMembersFilterBots",
+        deserialize = "chatMembersFilterBots"
+    ))]
     Bots(ChatMembersFilterBots),
     /// Returns contacts of the user
-    #[serde(rename(deserialize = "chatMembersFilterContacts"))]
+    #[serde(rename(
+        serialize = "chatMembersFilterContacts",
+        deserialize = "chatMembersFilterContacts"
+    ))]
     Contacts(ChatMembersFilterContacts),
     /// Returns all chat members, including restricted chat members
-    #[serde(rename(deserialize = "chatMembersFilterMembers"))]
+    #[serde(rename(
+        serialize = "chatMembersFilterMembers",
+        deserialize = "chatMembersFilterMembers"
+    ))]
     Members(ChatMembersFilterMembers),
     /// Returns users which can be mentioned in the chat
-    #[serde(rename(deserialize = "chatMembersFilterMention"))]
+    #[serde(rename(
+        serialize = "chatMembersFilterMention",
+        deserialize = "chatMembersFilterMention"
+    ))]
     Mention(ChatMembersFilterMention),
     /// Returns users under certain restrictions in the chat; can be used only by administrators in a supergroup
-    #[serde(rename(deserialize = "chatMembersFilterRestricted"))]
+    #[serde(rename(
+        serialize = "chatMembersFilterRestricted",
+        deserialize = "chatMembersFilterRestricted"
+    ))]
     Restricted(ChatMembersFilterRestricted),
 }
 

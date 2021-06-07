@@ -14,28 +14,31 @@ pub enum JsonValue {
     #[doc(hidden)]
     _Default,
     /// Returns application config, provided by the server. Can be called before authorization
-    #[serde(rename(deserialize = "getApplicationConfig"))]
+    #[serde(rename(
+        serialize = "getApplicationConfig",
+        deserialize = "getApplicationConfig"
+    ))]
     GetApplicationConfig(GetApplicationConfig),
     /// Converts a JSON-serialized string to corresponding JsonValue object. Can be called synchronously
-    #[serde(rename(deserialize = "getJsonValue"))]
+    #[serde(rename(serialize = "getJsonValue", deserialize = "getJsonValue"))]
     GetJsonValue(GetJsonValue),
     /// Represents a JSON array
-    #[serde(rename(deserialize = "jsonValueArray"))]
+    #[serde(rename(serialize = "jsonValueArray", deserialize = "jsonValueArray"))]
     Array(JsonValueArray),
     /// Represents a boolean JSON value
-    #[serde(rename(deserialize = "jsonValueBoolean"))]
+    #[serde(rename(serialize = "jsonValueBoolean", deserialize = "jsonValueBoolean"))]
     Boolean(JsonValueBoolean),
     /// Represents a null JSON value
-    #[serde(rename(deserialize = "jsonValueNull"))]
+    #[serde(rename(serialize = "jsonValueNull", deserialize = "jsonValueNull"))]
     Null(JsonValueNull),
     /// Represents a numeric JSON value
-    #[serde(rename(deserialize = "jsonValueNumber"))]
+    #[serde(rename(serialize = "jsonValueNumber", deserialize = "jsonValueNumber"))]
     Number(JsonValueNumber),
     /// Represents a JSON object
-    #[serde(rename(deserialize = "jsonValueObject"))]
+    #[serde(rename(serialize = "jsonValueObject", deserialize = "jsonValueObject"))]
     Object(JsonValueObject),
     /// Represents a string JSON value
-    #[serde(rename(deserialize = "jsonValueString"))]
+    #[serde(rename(serialize = "jsonValueString", deserialize = "jsonValueString"))]
     String(JsonValueString),
 }
 

@@ -14,91 +14,100 @@ pub enum PageBlock {
     #[doc(hidden)]
     _Default,
     /// An invisible anchor on a page, which can be used in a URL to open the page from the specified anchor
-    #[serde(rename(deserialize = "pageBlockAnchor"))]
+    #[serde(rename(serialize = "pageBlockAnchor", deserialize = "pageBlockAnchor"))]
     Anchor(PageBlockAnchor),
     /// An animation
-    #[serde(rename(deserialize = "pageBlockAnimation"))]
+    #[serde(rename(serialize = "pageBlockAnimation", deserialize = "pageBlockAnimation"))]
     Animation(PageBlockAnimation),
     /// An audio file
-    #[serde(rename(deserialize = "pageBlockAudio"))]
+    #[serde(rename(serialize = "pageBlockAudio", deserialize = "pageBlockAudio"))]
     Audio(PageBlockAudio),
     /// The author and publishing date of a page
-    #[serde(rename(deserialize = "pageBlockAuthorDate"))]
+    #[serde(rename(serialize = "pageBlockAuthorDate", deserialize = "pageBlockAuthorDate"))]
     AuthorDate(PageBlockAuthorDate),
     /// A block quote
-    #[serde(rename(deserialize = "pageBlockBlockQuote"))]
+    #[serde(rename(serialize = "pageBlockBlockQuote", deserialize = "pageBlockBlockQuote"))]
     BlockQuote(PageBlockBlockQuote),
     /// A link to a chat
-    #[serde(rename(deserialize = "pageBlockChatLink"))]
+    #[serde(rename(serialize = "pageBlockChatLink", deserialize = "pageBlockChatLink"))]
     ChatLink(PageBlockChatLink),
     /// A collage
-    #[serde(rename(deserialize = "pageBlockCollage"))]
+    #[serde(rename(serialize = "pageBlockCollage", deserialize = "pageBlockCollage"))]
     Collage(PageBlockCollage),
     /// A page cover
-    #[serde(rename(deserialize = "pageBlockCover"))]
+    #[serde(rename(serialize = "pageBlockCover", deserialize = "pageBlockCover"))]
     Cover(PageBlockCover),
     /// A collapsible block
-    #[serde(rename(deserialize = "pageBlockDetails"))]
+    #[serde(rename(serialize = "pageBlockDetails", deserialize = "pageBlockDetails"))]
     Details(PageBlockDetails),
     /// An empty block separating a page
-    #[serde(rename(deserialize = "pageBlockDivider"))]
+    #[serde(rename(serialize = "pageBlockDivider", deserialize = "pageBlockDivider"))]
     Divider(PageBlockDivider),
     /// An embedded web page
-    #[serde(rename(deserialize = "pageBlockEmbedded"))]
+    #[serde(rename(serialize = "pageBlockEmbedded", deserialize = "pageBlockEmbedded"))]
     Embedded(PageBlockEmbedded),
     /// An embedded post
-    #[serde(rename(deserialize = "pageBlockEmbeddedPost"))]
+    #[serde(rename(
+        serialize = "pageBlockEmbeddedPost",
+        deserialize = "pageBlockEmbeddedPost"
+    ))]
     EmbeddedPost(PageBlockEmbeddedPost),
     /// The footer of a page
-    #[serde(rename(deserialize = "pageBlockFooter"))]
+    #[serde(rename(serialize = "pageBlockFooter", deserialize = "pageBlockFooter"))]
     Footer(PageBlockFooter),
     /// A header
-    #[serde(rename(deserialize = "pageBlockHeader"))]
+    #[serde(rename(serialize = "pageBlockHeader", deserialize = "pageBlockHeader"))]
     Header(PageBlockHeader),
     /// A kicker
-    #[serde(rename(deserialize = "pageBlockKicker"))]
+    #[serde(rename(serialize = "pageBlockKicker", deserialize = "pageBlockKicker"))]
     Kicker(PageBlockKicker),
     /// A list of data blocks
-    #[serde(rename(deserialize = "pageBlockList"))]
+    #[serde(rename(serialize = "pageBlockList", deserialize = "pageBlockList"))]
     List(PageBlockList),
     /// A map
-    #[serde(rename(deserialize = "pageBlockMap"))]
+    #[serde(rename(serialize = "pageBlockMap", deserialize = "pageBlockMap"))]
     Map(PageBlockMap),
     /// A text paragraph
-    #[serde(rename(deserialize = "pageBlockParagraph"))]
+    #[serde(rename(serialize = "pageBlockParagraph", deserialize = "pageBlockParagraph"))]
     Paragraph(PageBlockParagraph),
     /// A photo
-    #[serde(rename(deserialize = "pageBlockPhoto"))]
+    #[serde(rename(serialize = "pageBlockPhoto", deserialize = "pageBlockPhoto"))]
     Photo(PageBlockPhoto),
     /// A preformatted text paragraph
-    #[serde(rename(deserialize = "pageBlockPreformatted"))]
+    #[serde(rename(
+        serialize = "pageBlockPreformatted",
+        deserialize = "pageBlockPreformatted"
+    ))]
     Preformatted(PageBlockPreformatted),
     /// A pull quote
-    #[serde(rename(deserialize = "pageBlockPullQuote"))]
+    #[serde(rename(serialize = "pageBlockPullQuote", deserialize = "pageBlockPullQuote"))]
     PullQuote(PageBlockPullQuote),
     /// Related articles
-    #[serde(rename(deserialize = "pageBlockRelatedArticles"))]
+    #[serde(rename(
+        serialize = "pageBlockRelatedArticles",
+        deserialize = "pageBlockRelatedArticles"
+    ))]
     RelatedArticles(PageBlockRelatedArticles),
     /// A slideshow
-    #[serde(rename(deserialize = "pageBlockSlideshow"))]
+    #[serde(rename(serialize = "pageBlockSlideshow", deserialize = "pageBlockSlideshow"))]
     Slideshow(PageBlockSlideshow),
     /// A subheader
-    #[serde(rename(deserialize = "pageBlockSubheader"))]
+    #[serde(rename(serialize = "pageBlockSubheader", deserialize = "pageBlockSubheader"))]
     Subheader(PageBlockSubheader),
     /// The subtitle of a page
-    #[serde(rename(deserialize = "pageBlockSubtitle"))]
+    #[serde(rename(serialize = "pageBlockSubtitle", deserialize = "pageBlockSubtitle"))]
     Subtitle(PageBlockSubtitle),
     /// A table
-    #[serde(rename(deserialize = "pageBlockTable"))]
+    #[serde(rename(serialize = "pageBlockTable", deserialize = "pageBlockTable"))]
     Table(PageBlockTable),
     /// The title of a page
-    #[serde(rename(deserialize = "pageBlockTitle"))]
+    #[serde(rename(serialize = "pageBlockTitle", deserialize = "pageBlockTitle"))]
     Title(PageBlockTitle),
     /// A video
-    #[serde(rename(deserialize = "pageBlockVideo"))]
+    #[serde(rename(serialize = "pageBlockVideo", deserialize = "pageBlockVideo"))]
     Video(PageBlockVideo),
     /// A voice note
-    #[serde(rename(deserialize = "pageBlockVoiceNote"))]
+    #[serde(rename(serialize = "pageBlockVoiceNote", deserialize = "pageBlockVoiceNote"))]
     VoiceNote(PageBlockVoiceNote),
 }
 

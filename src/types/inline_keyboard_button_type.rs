@@ -14,25 +14,46 @@ pub enum InlineKeyboardButtonType {
     #[doc(hidden)]
     _Default,
     /// A button to buy something. This button must be in the first column and row of the keyboard and can be attached only to a message with content of the type messageInvoice
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeBuy"))]
+    #[serde(rename(
+        serialize = "inlineKeyboardButtonTypeBuy",
+        deserialize = "inlineKeyboardButtonTypeBuy"
+    ))]
     Buy(InlineKeyboardButtonTypeBuy),
     /// A button that sends a callback query to a bot
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeCallback"))]
+    #[serde(rename(
+        serialize = "inlineKeyboardButtonTypeCallback",
+        deserialize = "inlineKeyboardButtonTypeCallback"
+    ))]
     Callback(InlineKeyboardButtonTypeCallback),
     /// A button with a game that sends a callback query to a bot. This button must be in the first column and row of the keyboard and can be attached only to a message with content of the type messageGame
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeCallbackGame"))]
+    #[serde(rename(
+        serialize = "inlineKeyboardButtonTypeCallbackGame",
+        deserialize = "inlineKeyboardButtonTypeCallbackGame"
+    ))]
     CallbackGame(InlineKeyboardButtonTypeCallbackGame),
     /// A button that asks for password of the current user and then sends a callback query to a bot
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeCallbackWithPassword"))]
+    #[serde(rename(
+        serialize = "inlineKeyboardButtonTypeCallbackWithPassword",
+        deserialize = "inlineKeyboardButtonTypeCallbackWithPassword"
+    ))]
     CallbackWithPassword(InlineKeyboardButtonTypeCallbackWithPassword),
     /// A button that opens a specified URL and automatically logs in in current user if they allowed to do that
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeLoginUrl"))]
+    #[serde(rename(
+        serialize = "inlineKeyboardButtonTypeLoginUrl",
+        deserialize = "inlineKeyboardButtonTypeLoginUrl"
+    ))]
     LoginUrl(InlineKeyboardButtonTypeLoginUrl),
     /// A button that forces an inline query to the bot to be inserted in the input field
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeSwitchInline"))]
+    #[serde(rename(
+        serialize = "inlineKeyboardButtonTypeSwitchInline",
+        deserialize = "inlineKeyboardButtonTypeSwitchInline"
+    ))]
     SwitchInline(InlineKeyboardButtonTypeSwitchInline),
     /// A button that opens a specified URL
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeUrl"))]
+    #[serde(rename(
+        serialize = "inlineKeyboardButtonTypeUrl",
+        deserialize = "inlineKeyboardButtonTypeUrl"
+    ))]
     Url(InlineKeyboardButtonTypeUrl),
 }
 

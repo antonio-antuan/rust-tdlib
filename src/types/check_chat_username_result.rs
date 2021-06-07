@@ -14,22 +14,37 @@ pub enum CheckChatUsernameResult {
     #[doc(hidden)]
     _Default,
     /// Checks whether a username can be set for a chat
-    #[serde(rename(deserialize = "checkChatUsername"))]
+    #[serde(rename(serialize = "checkChatUsername", deserialize = "checkChatUsername"))]
     CheckChatUsername(CheckChatUsername),
     /// The username can be set
-    #[serde(rename(deserialize = "checkChatUsernameResultOk"))]
+    #[serde(rename(
+        serialize = "checkChatUsernameResultOk",
+        deserialize = "checkChatUsernameResultOk"
+    ))]
     Ok(CheckChatUsernameResultOk),
     /// The user has too much chats with username, one of them should be made private first
-    #[serde(rename(deserialize = "checkChatUsernameResultPublicChatsTooMuch"))]
+    #[serde(rename(
+        serialize = "checkChatUsernameResultPublicChatsTooMuch",
+        deserialize = "checkChatUsernameResultPublicChatsTooMuch"
+    ))]
     PublicChatsTooMuch(CheckChatUsernameResultPublicChatsTooMuch),
     /// The user can't be a member of a public supergroup
-    #[serde(rename(deserialize = "checkChatUsernameResultPublicGroupsUnavailable"))]
+    #[serde(rename(
+        serialize = "checkChatUsernameResultPublicGroupsUnavailable",
+        deserialize = "checkChatUsernameResultPublicGroupsUnavailable"
+    ))]
     PublicGroupsUnavailable(CheckChatUsernameResultPublicGroupsUnavailable),
     /// The username is invalid
-    #[serde(rename(deserialize = "checkChatUsernameResultUsernameInvalid"))]
+    #[serde(rename(
+        serialize = "checkChatUsernameResultUsernameInvalid",
+        deserialize = "checkChatUsernameResultUsernameInvalid"
+    ))]
     UsernameInvalid(CheckChatUsernameResultUsernameInvalid),
     /// The username is occupied
-    #[serde(rename(deserialize = "checkChatUsernameResultUsernameOccupied"))]
+    #[serde(rename(
+        serialize = "checkChatUsernameResultUsernameOccupied",
+        deserialize = "checkChatUsernameResultUsernameOccupied"
+    ))]
     UsernameOccupied(CheckChatUsernameResultUsernameOccupied),
 }
 

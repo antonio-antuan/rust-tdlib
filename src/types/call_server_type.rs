@@ -14,10 +14,16 @@ pub enum CallServerType {
     #[doc(hidden)]
     _Default,
     /// A Telegram call reflector
-    #[serde(rename(deserialize = "callServerTypeTelegramReflector"))]
+    #[serde(rename(
+        serialize = "callServerTypeTelegramReflector",
+        deserialize = "callServerTypeTelegramReflector"
+    ))]
     TelegramReflector(CallServerTypeTelegramReflector),
     /// A WebRTC server
-    #[serde(rename(deserialize = "callServerTypeWebrtc"))]
+    #[serde(rename(
+        serialize = "callServerTypeWebrtc",
+        deserialize = "callServerTypeWebrtc"
+    ))]
     Webrtc(CallServerTypeWebrtc),
 }
 

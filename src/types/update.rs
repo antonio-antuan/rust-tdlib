@@ -14,247 +14,412 @@ pub enum Update {
     #[doc(hidden)]
     _Default,
     /// Does nothing and ensures that the Update object is used; for testing only. This is an offline method. Can be called before authorization
-    #[serde(rename(deserialize = "testUseUpdate"))]
+    #[serde(rename(serialize = "testUseUpdate", deserialize = "testUseUpdate"))]
     TestUseUpdate(TestUseUpdate),
     /// Contains active notifications that was shown on previous application launches. This update is sent only if the message database is used. In that case it comes once before any updateNotification and updateNotificationGroup update
-    #[serde(rename(deserialize = "updateActiveNotifications"))]
+    #[serde(rename(
+        serialize = "updateActiveNotifications",
+        deserialize = "updateActiveNotifications"
+    ))]
     ActiveNotifications(UpdateActiveNotifications),
     /// The parameters of animation search through GetOption("animation_search_bot_username") bot has changed
-    #[serde(rename(deserialize = "updateAnimationSearchParameters"))]
+    #[serde(rename(
+        serialize = "updateAnimationSearchParameters",
+        deserialize = "updateAnimationSearchParameters"
+    ))]
     AnimationSearchParameters(UpdateAnimationSearchParameters),
     /// The user authorization state has changed
-    #[serde(rename(deserialize = "updateAuthorizationState"))]
+    #[serde(rename(
+        serialize = "updateAuthorizationState",
+        deserialize = "updateAuthorizationState"
+    ))]
     AuthorizationState(UpdateAuthorizationState),
     /// Some data of a basic group has changed. This update is guaranteed to come before the basic group identifier is returned to the application
-    #[serde(rename(deserialize = "updateBasicGroup"))]
+    #[serde(rename(serialize = "updateBasicGroup", deserialize = "updateBasicGroup"))]
     BasicGroup(UpdateBasicGroup),
     /// Some data from basicGroupFullInfo has been changed
-    #[serde(rename(deserialize = "updateBasicGroupFullInfo"))]
+    #[serde(rename(
+        serialize = "updateBasicGroupFullInfo",
+        deserialize = "updateBasicGroupFullInfo"
+    ))]
     BasicGroupFullInfo(UpdateBasicGroupFullInfo),
     /// New call was created or information about a call was updated
-    #[serde(rename(deserialize = "updateCall"))]
+    #[serde(rename(serialize = "updateCall", deserialize = "updateCall"))]
     Call(UpdateCall),
     /// The chat action bar was changed
-    #[serde(rename(deserialize = "updateChatActionBar"))]
+    #[serde(rename(serialize = "updateChatActionBar", deserialize = "updateChatActionBar"))]
     ChatActionBar(UpdateChatActionBar),
     /// The value of the default disable_notification parameter, used when a message is sent to the chat, was changed
-    #[serde(rename(deserialize = "updateChatDefaultDisableNotification"))]
+    #[serde(rename(
+        serialize = "updateChatDefaultDisableNotification",
+        deserialize = "updateChatDefaultDisableNotification"
+    ))]
     ChatDefaultDisableNotification(UpdateChatDefaultDisableNotification),
     /// A chat draft has changed. Be aware that the update may come in the currently opened chat but with old content of the draft. If the user has changed the content of the draft, this update shouldn't be applied
-    #[serde(rename(deserialize = "updateChatDraftMessage"))]
+    #[serde(rename(
+        serialize = "updateChatDraftMessage",
+        deserialize = "updateChatDraftMessage"
+    ))]
     ChatDraftMessage(UpdateChatDraftMessage),
     /// The list of chat filters or a chat filter has changed
-    #[serde(rename(deserialize = "updateChatFilters"))]
+    #[serde(rename(serialize = "updateChatFilters", deserialize = "updateChatFilters"))]
     ChatFilters(UpdateChatFilters),
     /// A chat's has_scheduled_messages field has changed
-    #[serde(rename(deserialize = "updateChatHasScheduledMessages"))]
+    #[serde(rename(
+        serialize = "updateChatHasScheduledMessages",
+        deserialize = "updateChatHasScheduledMessages"
+    ))]
     ChatHasScheduledMessages(UpdateChatHasScheduledMessages),
     /// A chat was blocked or unblocked
-    #[serde(rename(deserialize = "updateChatIsBlocked"))]
+    #[serde(rename(serialize = "updateChatIsBlocked", deserialize = "updateChatIsBlocked"))]
     ChatIsBlocked(UpdateChatIsBlocked),
     /// A chat was marked as unread or was read
-    #[serde(rename(deserialize = "updateChatIsMarkedAsUnread"))]
+    #[serde(rename(
+        serialize = "updateChatIsMarkedAsUnread",
+        deserialize = "updateChatIsMarkedAsUnread"
+    ))]
     ChatIsMarkedAsUnread(UpdateChatIsMarkedAsUnread),
     /// The last message of a chat was changed. If last_message is null, then the last message in the chat became unknown. Some new unknown messages might be added to the chat in this case
-    #[serde(rename(deserialize = "updateChatLastMessage"))]
+    #[serde(rename(
+        serialize = "updateChatLastMessage",
+        deserialize = "updateChatLastMessage"
+    ))]
     ChatLastMessage(UpdateChatLastMessage),
     /// Notification settings for a chat were changed
-    #[serde(rename(deserialize = "updateChatNotificationSettings"))]
+    #[serde(rename(
+        serialize = "updateChatNotificationSettings",
+        deserialize = "updateChatNotificationSettings"
+    ))]
     ChatNotificationSettings(UpdateChatNotificationSettings),
     /// The number of online group members has changed. This update with non-zero count is sent only for currently opened chats. There is no guarantee that it will be sent just after the count has changed
-    #[serde(rename(deserialize = "updateChatOnlineMemberCount"))]
+    #[serde(rename(
+        serialize = "updateChatOnlineMemberCount",
+        deserialize = "updateChatOnlineMemberCount"
+    ))]
     ChatOnlineMemberCount(UpdateChatOnlineMemberCount),
     /// Chat permissions was changed
-    #[serde(rename(deserialize = "updateChatPermissions"))]
+    #[serde(rename(
+        serialize = "updateChatPermissions",
+        deserialize = "updateChatPermissions"
+    ))]
     ChatPermissions(UpdateChatPermissions),
     /// A chat photo was changed
-    #[serde(rename(deserialize = "updateChatPhoto"))]
+    #[serde(rename(serialize = "updateChatPhoto", deserialize = "updateChatPhoto"))]
     ChatPhoto(UpdateChatPhoto),
     /// The position of a chat in a chat list has changed. Instead of this update updateChatLastMessage or updateChatDraftMessage might be sent
-    #[serde(rename(deserialize = "updateChatPosition"))]
+    #[serde(rename(serialize = "updateChatPosition", deserialize = "updateChatPosition"))]
     ChatPosition(UpdateChatPosition),
     /// Incoming messages were read or number of unread messages has been changed
-    #[serde(rename(deserialize = "updateChatReadInbox"))]
+    #[serde(rename(serialize = "updateChatReadInbox", deserialize = "updateChatReadInbox"))]
     ChatReadInbox(UpdateChatReadInbox),
     /// Outgoing messages were read
-    #[serde(rename(deserialize = "updateChatReadOutbox"))]
+    #[serde(rename(
+        serialize = "updateChatReadOutbox",
+        deserialize = "updateChatReadOutbox"
+    ))]
     ChatReadOutbox(UpdateChatReadOutbox),
     /// The default chat reply markup was changed. Can occur because new messages with reply markup were received or because an old reply markup was hidden by the user
-    #[serde(rename(deserialize = "updateChatReplyMarkup"))]
+    #[serde(rename(
+        serialize = "updateChatReplyMarkup",
+        deserialize = "updateChatReplyMarkup"
+    ))]
     ChatReplyMarkup(UpdateChatReplyMarkup),
     /// The title of a chat was changed
-    #[serde(rename(deserialize = "updateChatTitle"))]
+    #[serde(rename(serialize = "updateChatTitle", deserialize = "updateChatTitle"))]
     ChatTitle(UpdateChatTitle),
     /// The chat unread_mention_count has changed
-    #[serde(rename(deserialize = "updateChatUnreadMentionCount"))]
+    #[serde(rename(
+        serialize = "updateChatUnreadMentionCount",
+        deserialize = "updateChatUnreadMentionCount"
+    ))]
     ChatUnreadMentionCount(UpdateChatUnreadMentionCount),
     /// The connection state has changed. This update must be used only to show a human-readable description of the connection state
-    #[serde(rename(deserialize = "updateConnectionState"))]
+    #[serde(rename(
+        serialize = "updateConnectionState",
+        deserialize = "updateConnectionState"
+    ))]
     ConnectionState(UpdateConnectionState),
     /// Some messages were deleted
-    #[serde(rename(deserialize = "updateDeleteMessages"))]
+    #[serde(rename(
+        serialize = "updateDeleteMessages",
+        deserialize = "updateDeleteMessages"
+    ))]
     DeleteMessages(UpdateDeleteMessages),
     /// The list of supported dice emojis has changed
-    #[serde(rename(deserialize = "updateDiceEmojis"))]
+    #[serde(rename(serialize = "updateDiceEmojis", deserialize = "updateDiceEmojis"))]
     DiceEmojis(UpdateDiceEmojis),
     /// The list of favorite stickers was updated
-    #[serde(rename(deserialize = "updateFavoriteStickers"))]
+    #[serde(rename(
+        serialize = "updateFavoriteStickers",
+        deserialize = "updateFavoriteStickers"
+    ))]
     FavoriteStickers(UpdateFavoriteStickers),
     /// Information about a file was updated
-    #[serde(rename(deserialize = "updateFile"))]
+    #[serde(rename(serialize = "updateFile", deserialize = "updateFile"))]
     File(UpdateFile),
     /// The file generation process needs to be started by the application
-    #[serde(rename(deserialize = "updateFileGenerationStart"))]
+    #[serde(rename(
+        serialize = "updateFileGenerationStart",
+        deserialize = "updateFileGenerationStart"
+    ))]
     FileGenerationStart(UpdateFileGenerationStart),
     /// File generation is no longer needed
-    #[serde(rename(deserialize = "updateFileGenerationStop"))]
+    #[serde(rename(
+        serialize = "updateFileGenerationStop",
+        deserialize = "updateFileGenerationStop"
+    ))]
     FileGenerationStop(UpdateFileGenerationStop),
     /// Describes whether there are some pending notification updates. Can be used to prevent application from killing, while there are some pending notifications
-    #[serde(rename(deserialize = "updateHavePendingNotifications"))]
+    #[serde(rename(
+        serialize = "updateHavePendingNotifications",
+        deserialize = "updateHavePendingNotifications"
+    ))]
     HavePendingNotifications(UpdateHavePendingNotifications),
     /// The list of installed sticker sets was updated
-    #[serde(rename(deserialize = "updateInstalledStickerSets"))]
+    #[serde(rename(
+        serialize = "updateInstalledStickerSets",
+        deserialize = "updateInstalledStickerSets"
+    ))]
     InstalledStickerSets(UpdateInstalledStickerSets),
     /// Some language pack strings have been updated
-    #[serde(rename(deserialize = "updateLanguagePackStrings"))]
+    #[serde(rename(
+        serialize = "updateLanguagePackStrings",
+        deserialize = "updateLanguagePackStrings"
+    ))]
     LanguagePackStrings(UpdateLanguagePackStrings),
     /// The message content has changed
-    #[serde(rename(deserialize = "updateMessageContent"))]
+    #[serde(rename(
+        serialize = "updateMessageContent",
+        deserialize = "updateMessageContent"
+    ))]
     MessageContent(UpdateMessageContent),
     /// The message content was opened. Updates voice note messages to "listened", video note messages to "viewed" and starts the TTL timer for self-destructing messages
-    #[serde(rename(deserialize = "updateMessageContentOpened"))]
+    #[serde(rename(
+        serialize = "updateMessageContentOpened",
+        deserialize = "updateMessageContentOpened"
+    ))]
     MessageContentOpened(UpdateMessageContentOpened),
     /// A message was edited. Changes in the message content will come in a separate updateMessageContent
-    #[serde(rename(deserialize = "updateMessageEdited"))]
+    #[serde(rename(serialize = "updateMessageEdited", deserialize = "updateMessageEdited"))]
     MessageEdited(UpdateMessageEdited),
     /// The information about interactions with a message has changed
-    #[serde(rename(deserialize = "updateMessageInteractionInfo"))]
+    #[serde(rename(
+        serialize = "updateMessageInteractionInfo",
+        deserialize = "updateMessageInteractionInfo"
+    ))]
     MessageInteractionInfo(UpdateMessageInteractionInfo),
     /// The message pinned state was changed
-    #[serde(rename(deserialize = "updateMessageIsPinned"))]
+    #[serde(rename(
+        serialize = "updateMessageIsPinned",
+        deserialize = "updateMessageIsPinned"
+    ))]
     MessageIsPinned(UpdateMessageIsPinned),
     /// A message with a live location was viewed. When the update is received, the application is supposed to update the live location
-    #[serde(rename(deserialize = "updateMessageLiveLocationViewed"))]
+    #[serde(rename(
+        serialize = "updateMessageLiveLocationViewed",
+        deserialize = "updateMessageLiveLocationViewed"
+    ))]
     MessageLiveLocationViewed(UpdateMessageLiveLocationViewed),
     /// A message with an unread mention was read
-    #[serde(rename(deserialize = "updateMessageMentionRead"))]
+    #[serde(rename(
+        serialize = "updateMessageMentionRead",
+        deserialize = "updateMessageMentionRead"
+    ))]
     MessageMentionRead(UpdateMessageMentionRead),
     /// A request to send a message has reached the Telegram server. This doesn't mean that the message will be sent successfully or even that the send message request will be processed. This update will be sent only if the option "use_quick_ack" is set to true. This update may be sent multiple times for the same message
-    #[serde(rename(deserialize = "updateMessageSendAcknowledged"))]
+    #[serde(rename(
+        serialize = "updateMessageSendAcknowledged",
+        deserialize = "updateMessageSendAcknowledged"
+    ))]
     MessageSendAcknowledged(UpdateMessageSendAcknowledged),
     /// A message failed to send. Be aware that some messages being sent can be irrecoverably deleted, in which case updateDeleteMessages will be received instead of this update
-    #[serde(rename(deserialize = "updateMessageSendFailed"))]
+    #[serde(rename(
+        serialize = "updateMessageSendFailed",
+        deserialize = "updateMessageSendFailed"
+    ))]
     MessageSendFailed(UpdateMessageSendFailed),
     /// A message has been successfully sent
-    #[serde(rename(deserialize = "updateMessageSendSucceeded"))]
+    #[serde(rename(
+        serialize = "updateMessageSendSucceeded",
+        deserialize = "updateMessageSendSucceeded"
+    ))]
     MessageSendSucceeded(UpdateMessageSendSucceeded),
     /// New call signaling data arrived
-    #[serde(rename(deserialize = "updateNewCallSignalingData"))]
+    #[serde(rename(
+        serialize = "updateNewCallSignalingData",
+        deserialize = "updateNewCallSignalingData"
+    ))]
     NewCallSignalingData(UpdateNewCallSignalingData),
     /// A new incoming callback query; for bots only
-    #[serde(rename(deserialize = "updateNewCallbackQuery"))]
+    #[serde(rename(
+        serialize = "updateNewCallbackQuery",
+        deserialize = "updateNewCallbackQuery"
+    ))]
     NewCallbackQuery(UpdateNewCallbackQuery),
     /// A new chat has been loaded/created. This update is guaranteed to come before the chat identifier is returned to the application. The chat field changes will be reported through separate updates
-    #[serde(rename(deserialize = "updateNewChat"))]
+    #[serde(rename(serialize = "updateNewChat", deserialize = "updateNewChat"))]
     NewChat(UpdateNewChat),
     /// The user has chosen a result of an inline query; for bots only
-    #[serde(rename(deserialize = "updateNewChosenInlineResult"))]
+    #[serde(rename(
+        serialize = "updateNewChosenInlineResult",
+        deserialize = "updateNewChosenInlineResult"
+    ))]
     NewChosenInlineResult(UpdateNewChosenInlineResult),
     /// A new incoming event; for bots only
-    #[serde(rename(deserialize = "updateNewCustomEvent"))]
+    #[serde(rename(
+        serialize = "updateNewCustomEvent",
+        deserialize = "updateNewCustomEvent"
+    ))]
     NewCustomEvent(UpdateNewCustomEvent),
     /// A new incoming query; for bots only
-    #[serde(rename(deserialize = "updateNewCustomQuery"))]
+    #[serde(rename(
+        serialize = "updateNewCustomQuery",
+        deserialize = "updateNewCustomQuery"
+    ))]
     NewCustomQuery(UpdateNewCustomQuery),
     /// A new incoming callback query from a message sent via a bot; for bots only
-    #[serde(rename(deserialize = "updateNewInlineCallbackQuery"))]
+    #[serde(rename(
+        serialize = "updateNewInlineCallbackQuery",
+        deserialize = "updateNewInlineCallbackQuery"
+    ))]
     NewInlineCallbackQuery(UpdateNewInlineCallbackQuery),
     /// A new incoming inline query; for bots only
-    #[serde(rename(deserialize = "updateNewInlineQuery"))]
+    #[serde(rename(
+        serialize = "updateNewInlineQuery",
+        deserialize = "updateNewInlineQuery"
+    ))]
     NewInlineQuery(UpdateNewInlineQuery),
     /// A new message was received; can also be an outgoing message
-    #[serde(rename(deserialize = "updateNewMessage"))]
+    #[serde(rename(serialize = "updateNewMessage", deserialize = "updateNewMessage"))]
     NewMessage(UpdateNewMessage),
     /// A new incoming pre-checkout query; for bots only. Contains full information about a checkout
-    #[serde(rename(deserialize = "updateNewPreCheckoutQuery"))]
+    #[serde(rename(
+        serialize = "updateNewPreCheckoutQuery",
+        deserialize = "updateNewPreCheckoutQuery"
+    ))]
     NewPreCheckoutQuery(UpdateNewPreCheckoutQuery),
     /// A new incoming shipping query; for bots only. Only for invoices with flexible price
-    #[serde(rename(deserialize = "updateNewShippingQuery"))]
+    #[serde(rename(
+        serialize = "updateNewShippingQuery",
+        deserialize = "updateNewShippingQuery"
+    ))]
     NewShippingQuery(UpdateNewShippingQuery),
     /// A notification was changed
-    #[serde(rename(deserialize = "updateNotification"))]
+    #[serde(rename(serialize = "updateNotification", deserialize = "updateNotification"))]
     Notification(UpdateNotification),
     /// A list of active notifications in a notification group has changed
-    #[serde(rename(deserialize = "updateNotificationGroup"))]
+    #[serde(rename(
+        serialize = "updateNotificationGroup",
+        deserialize = "updateNotificationGroup"
+    ))]
     NotificationGroup(UpdateNotificationGroup),
     /// An option changed its value
-    #[serde(rename(deserialize = "updateOption"))]
+    #[serde(rename(serialize = "updateOption", deserialize = "updateOption"))]
     Option(UpdateOption),
     /// A poll was updated; for bots only
-    #[serde(rename(deserialize = "updatePoll"))]
+    #[serde(rename(serialize = "updatePoll", deserialize = "updatePoll"))]
     Poll(UpdatePoll),
     /// A user changed the answer to a poll; for bots only
-    #[serde(rename(deserialize = "updatePollAnswer"))]
+    #[serde(rename(serialize = "updatePollAnswer", deserialize = "updatePollAnswer"))]
     PollAnswer(UpdatePollAnswer),
     /// The list of recently used stickers was updated
-    #[serde(rename(deserialize = "updateRecentStickers"))]
+    #[serde(rename(
+        serialize = "updateRecentStickers",
+        deserialize = "updateRecentStickers"
+    ))]
     RecentStickers(UpdateRecentStickers),
     /// The list of saved animations was updated
-    #[serde(rename(deserialize = "updateSavedAnimations"))]
+    #[serde(rename(
+        serialize = "updateSavedAnimations",
+        deserialize = "updateSavedAnimations"
+    ))]
     SavedAnimations(UpdateSavedAnimations),
     /// Notification settings for some type of chats were updated
-    #[serde(rename(deserialize = "updateScopeNotificationSettings"))]
+    #[serde(rename(
+        serialize = "updateScopeNotificationSettings",
+        deserialize = "updateScopeNotificationSettings"
+    ))]
     ScopeNotificationSettings(UpdateScopeNotificationSettings),
     /// Some data of a secret chat has changed. This update is guaranteed to come before the secret chat identifier is returned to the application
-    #[serde(rename(deserialize = "updateSecretChat"))]
+    #[serde(rename(serialize = "updateSecretChat", deserialize = "updateSecretChat"))]
     SecretChat(UpdateSecretChat),
     /// The selected background has changed
-    #[serde(rename(deserialize = "updateSelectedBackground"))]
+    #[serde(rename(
+        serialize = "updateSelectedBackground",
+        deserialize = "updateSelectedBackground"
+    ))]
     SelectedBackground(UpdateSelectedBackground),
     /// Service notification from the server. Upon receiving this the application must show a popup with the content of the notification
-    #[serde(rename(deserialize = "updateServiceNotification"))]
+    #[serde(rename(
+        serialize = "updateServiceNotification",
+        deserialize = "updateServiceNotification"
+    ))]
     ServiceNotification(UpdateServiceNotification),
     /// A sticker set has changed
-    #[serde(rename(deserialize = "updateStickerSet"))]
+    #[serde(rename(serialize = "updateStickerSet", deserialize = "updateStickerSet"))]
     StickerSet(UpdateStickerSet),
     /// The list of suggested to the user actions has changed
-    #[serde(rename(deserialize = "updateSuggestedActions"))]
+    #[serde(rename(
+        serialize = "updateSuggestedActions",
+        deserialize = "updateSuggestedActions"
+    ))]
     SuggestedActions(UpdateSuggestedActions),
     /// Some data of a supergroup or a channel has changed. This update is guaranteed to come before the supergroup identifier is returned to the application
-    #[serde(rename(deserialize = "updateSupergroup"))]
+    #[serde(rename(serialize = "updateSupergroup", deserialize = "updateSupergroup"))]
     Supergroup(UpdateSupergroup),
     /// Some data from supergroupFullInfo has been changed
-    #[serde(rename(deserialize = "updateSupergroupFullInfo"))]
+    #[serde(rename(
+        serialize = "updateSupergroupFullInfo",
+        deserialize = "updateSupergroupFullInfo"
+    ))]
     SupergroupFullInfo(UpdateSupergroupFullInfo),
     /// New terms of service must be accepted by the user. If the terms of service are declined, then the deleteAccount method should be called with the reason "Decline ToS update"
-    #[serde(rename(deserialize = "updateTermsOfService"))]
+    #[serde(rename(
+        serialize = "updateTermsOfService",
+        deserialize = "updateTermsOfService"
+    ))]
     TermsOfService(UpdateTermsOfService),
     /// The list of trending sticker sets was updated or some of them were viewed
-    #[serde(rename(deserialize = "updateTrendingStickerSets"))]
+    #[serde(rename(
+        serialize = "updateTrendingStickerSets",
+        deserialize = "updateTrendingStickerSets"
+    ))]
     TrendingStickerSets(UpdateTrendingStickerSets),
     /// Number of unread chats, i.e. with unread messages or marked as unread, has changed. This update is sent only if the message database is used
-    #[serde(rename(deserialize = "updateUnreadChatCount"))]
+    #[serde(rename(
+        serialize = "updateUnreadChatCount",
+        deserialize = "updateUnreadChatCount"
+    ))]
     UnreadChatCount(UpdateUnreadChatCount),
     /// Number of unread messages in a chat list has changed. This update is sent only if the message database is used
-    #[serde(rename(deserialize = "updateUnreadMessageCount"))]
+    #[serde(rename(
+        serialize = "updateUnreadMessageCount",
+        deserialize = "updateUnreadMessageCount"
+    ))]
     UnreadMessageCount(UpdateUnreadMessageCount),
     /// Some data of a user has changed. This update is guaranteed to come before the user identifier is returned to the application
-    #[serde(rename(deserialize = "updateUser"))]
+    #[serde(rename(serialize = "updateUser", deserialize = "updateUser"))]
     User(UpdateUser),
     /// User activity in the chat has changed
-    #[serde(rename(deserialize = "updateUserChatAction"))]
+    #[serde(rename(
+        serialize = "updateUserChatAction",
+        deserialize = "updateUserChatAction"
+    ))]
     UserChatAction(UpdateUserChatAction),
     /// Some data from userFullInfo has been changed
-    #[serde(rename(deserialize = "updateUserFullInfo"))]
+    #[serde(rename(serialize = "updateUserFullInfo", deserialize = "updateUserFullInfo"))]
     UserFullInfo(UpdateUserFullInfo),
     /// Some privacy setting rules have been changed
-    #[serde(rename(deserialize = "updateUserPrivacySettingRules"))]
+    #[serde(rename(
+        serialize = "updateUserPrivacySettingRules",
+        deserialize = "updateUserPrivacySettingRules"
+    ))]
     UserPrivacySettingRules(UpdateUserPrivacySettingRules),
     /// The user went online or offline
-    #[serde(rename(deserialize = "updateUserStatus"))]
+    #[serde(rename(serialize = "updateUserStatus", deserialize = "updateUserStatus"))]
     UserStatus(UpdateUserStatus),
     /// The list of users nearby has changed. The update is guaranteed to be sent only 60 seconds after a successful searchChatsNearby request
-    #[serde(rename(deserialize = "updateUsersNearby"))]
+    #[serde(rename(serialize = "updateUsersNearby", deserialize = "updateUsersNearby"))]
     UsersNearby(UpdateUsersNearby),
 }
 

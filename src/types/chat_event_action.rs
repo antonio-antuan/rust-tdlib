@@ -14,70 +14,133 @@ pub enum ChatEventAction {
     #[doc(hidden)]
     _Default,
     /// The chat description was changed
-    #[serde(rename(deserialize = "chatEventDescriptionChanged"))]
+    #[serde(rename(
+        serialize = "chatEventDescriptionChanged",
+        deserialize = "chatEventDescriptionChanged"
+    ))]
     ChatEventDescriptionChanged(ChatEventDescriptionChanged),
     /// The can_invite_users permission of a supergroup chat was toggled
-    #[serde(rename(deserialize = "chatEventInvitesToggled"))]
+    #[serde(rename(
+        serialize = "chatEventInvitesToggled",
+        deserialize = "chatEventInvitesToggled"
+    ))]
     ChatEventInvitesToggled(ChatEventInvitesToggled),
     /// The is_all_history_available setting of a supergroup was toggled
-    #[serde(rename(deserialize = "chatEventIsAllHistoryAvailableToggled"))]
+    #[serde(rename(
+        serialize = "chatEventIsAllHistoryAvailableToggled",
+        deserialize = "chatEventIsAllHistoryAvailableToggled"
+    ))]
     ChatEventIsAllHistoryAvailableToggled(ChatEventIsAllHistoryAvailableToggled),
     /// The linked chat of a supergroup was changed
-    #[serde(rename(deserialize = "chatEventLinkedChatChanged"))]
+    #[serde(rename(
+        serialize = "chatEventLinkedChatChanged",
+        deserialize = "chatEventLinkedChatChanged"
+    ))]
     ChatEventLinkedChatChanged(ChatEventLinkedChatChanged),
     /// The supergroup location was changed
-    #[serde(rename(deserialize = "chatEventLocationChanged"))]
+    #[serde(rename(
+        serialize = "chatEventLocationChanged",
+        deserialize = "chatEventLocationChanged"
+    ))]
     ChatEventLocationChanged(ChatEventLocationChanged),
     /// A new chat member was invited
-    #[serde(rename(deserialize = "chatEventMemberInvited"))]
+    #[serde(rename(
+        serialize = "chatEventMemberInvited",
+        deserialize = "chatEventMemberInvited"
+    ))]
     ChatEventMemberInvited(ChatEventMemberInvited),
     /// A new member joined the chat
-    #[serde(rename(deserialize = "chatEventMemberJoined"))]
+    #[serde(rename(
+        serialize = "chatEventMemberJoined",
+        deserialize = "chatEventMemberJoined"
+    ))]
     ChatEventMemberJoined(ChatEventMemberJoined),
     /// A member left the chat
-    #[serde(rename(deserialize = "chatEventMemberLeft"))]
+    #[serde(rename(serialize = "chatEventMemberLeft", deserialize = "chatEventMemberLeft"))]
     ChatEventMemberLeft(ChatEventMemberLeft),
     /// A chat member has gained/lost administrator status, or the list of their administrator privileges has changed
-    #[serde(rename(deserialize = "chatEventMemberPromoted"))]
+    #[serde(rename(
+        serialize = "chatEventMemberPromoted",
+        deserialize = "chatEventMemberPromoted"
+    ))]
     ChatEventMemberPromoted(ChatEventMemberPromoted),
     /// A chat member was restricted/unrestricted or banned/unbanned, or the list of their restrictions has changed
-    #[serde(rename(deserialize = "chatEventMemberRestricted"))]
+    #[serde(rename(
+        serialize = "chatEventMemberRestricted",
+        deserialize = "chatEventMemberRestricted"
+    ))]
     ChatEventMemberRestricted(ChatEventMemberRestricted),
     /// A message was deleted
-    #[serde(rename(deserialize = "chatEventMessageDeleted"))]
+    #[serde(rename(
+        serialize = "chatEventMessageDeleted",
+        deserialize = "chatEventMessageDeleted"
+    ))]
     ChatEventMessageDeleted(ChatEventMessageDeleted),
     /// A message was edited
-    #[serde(rename(deserialize = "chatEventMessageEdited"))]
+    #[serde(rename(
+        serialize = "chatEventMessageEdited",
+        deserialize = "chatEventMessageEdited"
+    ))]
     ChatEventMessageEdited(ChatEventMessageEdited),
     /// A message was pinned
-    #[serde(rename(deserialize = "chatEventMessagePinned"))]
+    #[serde(rename(
+        serialize = "chatEventMessagePinned",
+        deserialize = "chatEventMessagePinned"
+    ))]
     ChatEventMessagePinned(ChatEventMessagePinned),
     /// A message was unpinned
-    #[serde(rename(deserialize = "chatEventMessageUnpinned"))]
+    #[serde(rename(
+        serialize = "chatEventMessageUnpinned",
+        deserialize = "chatEventMessageUnpinned"
+    ))]
     ChatEventMessageUnpinned(ChatEventMessageUnpinned),
     /// The chat permissions was changed
-    #[serde(rename(deserialize = "chatEventPermissionsChanged"))]
+    #[serde(rename(
+        serialize = "chatEventPermissionsChanged",
+        deserialize = "chatEventPermissionsChanged"
+    ))]
     ChatEventPermissionsChanged(ChatEventPermissionsChanged),
     /// The chat photo was changed
-    #[serde(rename(deserialize = "chatEventPhotoChanged"))]
+    #[serde(rename(
+        serialize = "chatEventPhotoChanged",
+        deserialize = "chatEventPhotoChanged"
+    ))]
     ChatEventPhotoChanged(ChatEventPhotoChanged),
     /// A poll in a message was stopped
-    #[serde(rename(deserialize = "chatEventPollStopped"))]
+    #[serde(rename(
+        serialize = "chatEventPollStopped",
+        deserialize = "chatEventPollStopped"
+    ))]
     ChatEventPollStopped(ChatEventPollStopped),
     /// The sign_messages setting of a channel was toggled
-    #[serde(rename(deserialize = "chatEventSignMessagesToggled"))]
+    #[serde(rename(
+        serialize = "chatEventSignMessagesToggled",
+        deserialize = "chatEventSignMessagesToggled"
+    ))]
     ChatEventSignMessagesToggled(ChatEventSignMessagesToggled),
     /// The slow_mode_delay setting of a supergroup was changed
-    #[serde(rename(deserialize = "chatEventSlowModeDelayChanged"))]
+    #[serde(rename(
+        serialize = "chatEventSlowModeDelayChanged",
+        deserialize = "chatEventSlowModeDelayChanged"
+    ))]
     ChatEventSlowModeDelayChanged(ChatEventSlowModeDelayChanged),
     /// The supergroup sticker set was changed
-    #[serde(rename(deserialize = "chatEventStickerSetChanged"))]
+    #[serde(rename(
+        serialize = "chatEventStickerSetChanged",
+        deserialize = "chatEventStickerSetChanged"
+    ))]
     ChatEventStickerSetChanged(ChatEventStickerSetChanged),
     /// The chat title was changed
-    #[serde(rename(deserialize = "chatEventTitleChanged"))]
+    #[serde(rename(
+        serialize = "chatEventTitleChanged",
+        deserialize = "chatEventTitleChanged"
+    ))]
     ChatEventTitleChanged(ChatEventTitleChanged),
     /// The chat username was changed
-    #[serde(rename(deserialize = "chatEventUsernameChanged"))]
+    #[serde(rename(
+        serialize = "chatEventUsernameChanged",
+        deserialize = "chatEventUsernameChanged"
+    ))]
     ChatEventUsernameChanged(ChatEventUsernameChanged),
 }
 

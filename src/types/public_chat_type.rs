@@ -14,10 +14,16 @@ pub enum PublicChatType {
     #[doc(hidden)]
     _Default,
     /// The chat is public, because it has username
-    #[serde(rename(deserialize = "publicChatTypeHasUsername"))]
+    #[serde(rename(
+        serialize = "publicChatTypeHasUsername",
+        deserialize = "publicChatTypeHasUsername"
+    ))]
     HasUsername(PublicChatTypeHasUsername),
     /// The chat is public, because it is a location-based supergroup
-    #[serde(rename(deserialize = "publicChatTypeIsLocationBased"))]
+    #[serde(rename(
+        serialize = "publicChatTypeIsLocationBased",
+        deserialize = "publicChatTypeIsLocationBased"
+    ))]
     IsLocationBased(PublicChatTypeIsLocationBased),
 }
 

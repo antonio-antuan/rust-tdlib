@@ -14,55 +14,61 @@ pub enum RichText {
     #[doc(hidden)]
     _Default,
     /// An anchor
-    #[serde(rename(deserialize = "richTextAnchor"))]
+    #[serde(rename(serialize = "richTextAnchor", deserialize = "richTextAnchor"))]
     Anchor(RichTextAnchor),
     /// A link to an anchor on the same web page
-    #[serde(rename(deserialize = "richTextAnchorLink"))]
+    #[serde(rename(serialize = "richTextAnchorLink", deserialize = "richTextAnchorLink"))]
     AnchorLink(RichTextAnchorLink),
     /// A bold rich text
-    #[serde(rename(deserialize = "richTextBold"))]
+    #[serde(rename(serialize = "richTextBold", deserialize = "richTextBold"))]
     Bold(RichTextBold),
     /// A rich text email link
-    #[serde(rename(deserialize = "richTextEmailAddress"))]
+    #[serde(rename(
+        serialize = "richTextEmailAddress",
+        deserialize = "richTextEmailAddress"
+    ))]
     EmailAddress(RichTextEmailAddress),
     /// A fixed-width rich text
-    #[serde(rename(deserialize = "richTextFixed"))]
+    #[serde(rename(serialize = "richTextFixed", deserialize = "richTextFixed"))]
     Fixed(RichTextFixed),
     /// A small image inside the text
-    #[serde(rename(deserialize = "richTextIcon"))]
+    #[serde(rename(serialize = "richTextIcon", deserialize = "richTextIcon"))]
     Icon(RichTextIcon),
     /// An italicized rich text
-    #[serde(rename(deserialize = "richTextItalic"))]
+    #[serde(rename(serialize = "richTextItalic", deserialize = "richTextItalic"))]
     Italic(RichTextItalic),
     /// A marked rich text
-    #[serde(rename(deserialize = "richTextMarked"))]
+    #[serde(rename(serialize = "richTextMarked", deserialize = "richTextMarked"))]
     Marked(RichTextMarked),
     /// A rich text phone number
-    #[serde(rename(deserialize = "richTextPhoneNumber"))]
+    #[serde(rename(serialize = "richTextPhoneNumber", deserialize = "richTextPhoneNumber"))]
     PhoneNumber(RichTextPhoneNumber),
     /// A plain text
-    #[serde(rename(deserialize = "richTextPlain"))]
+    #[serde(rename(serialize = "richTextPlain", deserialize = "richTextPlain"))]
     Plain(RichTextPlain),
     /// A reference to a richTexts object on the same web page
-    #[serde(rename(deserialize = "richTextReference"))]
+    #[serde(rename(serialize = "richTextReference", deserialize = "richTextReference"))]
     Reference(RichTextReference),
     /// A strikethrough rich text
-    #[serde(rename(deserialize = "richTextStrikethrough"))]
+    #[serde(rename(
+        serialize = "richTextStrikethrough",
+        deserialize = "richTextStrikethrough"
+    ))]
     Strikethrough(RichTextStrikethrough),
     /// A subscript rich text
-    #[serde(rename(deserialize = "richTextSubscript"))]
+    #[serde(rename(serialize = "richTextSubscript", deserialize = "richTextSubscript"))]
     Subscript(RichTextSubscript),
     /// A superscript rich text
-    #[serde(rename(deserialize = "richTextSuperscript"))]
+    #[serde(rename(serialize = "richTextSuperscript", deserialize = "richTextSuperscript"))]
     Superscript(RichTextSuperscript),
     /// An underlined rich text
-    #[serde(rename(deserialize = "richTextUnderline"))]
+    #[serde(rename(serialize = "richTextUnderline", deserialize = "richTextUnderline"))]
     Underline(RichTextUnderline),
     /// A rich text URL link
-    #[serde(rename(deserialize = "richTextUrl"))]
+    #[serde(rename(serialize = "richTextUrl", deserialize = "richTextUrl"))]
     Url(RichTextUrl),
     /// A concatenation of rich texts
-    #[serde(rename(deserialize = "richTexts"))]
+    #[serde(rename(serialize = "richTexts", deserialize = "richTexts"))]
     RichTexts(RichTexts),
 }
 

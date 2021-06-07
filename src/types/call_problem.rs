@@ -14,31 +14,49 @@ pub enum CallProblem {
     #[doc(hidden)]
     _Default,
     /// The speech was distorted
-    #[serde(rename(deserialize = "callProblemDistortedSpeech"))]
+    #[serde(rename(
+        serialize = "callProblemDistortedSpeech",
+        deserialize = "callProblemDistortedSpeech"
+    ))]
     DistortedSpeech(CallProblemDistortedSpeech),
     /// The video was distorted
-    #[serde(rename(deserialize = "callProblemDistortedVideo"))]
+    #[serde(rename(
+        serialize = "callProblemDistortedVideo",
+        deserialize = "callProblemDistortedVideo"
+    ))]
     DistortedVideo(CallProblemDistortedVideo),
     /// The call ended unexpectedly
-    #[serde(rename(deserialize = "callProblemDropped"))]
+    #[serde(rename(serialize = "callProblemDropped", deserialize = "callProblemDropped"))]
     Dropped(CallProblemDropped),
     /// The user heard their own voice
-    #[serde(rename(deserialize = "callProblemEcho"))]
+    #[serde(rename(serialize = "callProblemEcho", deserialize = "callProblemEcho"))]
     Echo(CallProblemEcho),
     /// The other side kept disappearing
-    #[serde(rename(deserialize = "callProblemInterruptions"))]
+    #[serde(rename(
+        serialize = "callProblemInterruptions",
+        deserialize = "callProblemInterruptions"
+    ))]
     Interruptions(CallProblemInterruptions),
     /// The user heard background noise
-    #[serde(rename(deserialize = "callProblemNoise"))]
+    #[serde(rename(serialize = "callProblemNoise", deserialize = "callProblemNoise"))]
     Noise(CallProblemNoise),
     /// The video was pixelated
-    #[serde(rename(deserialize = "callProblemPixelatedVideo"))]
+    #[serde(rename(
+        serialize = "callProblemPixelatedVideo",
+        deserialize = "callProblemPixelatedVideo"
+    ))]
     PixelatedVideo(CallProblemPixelatedVideo),
     /// The user couldn't hear the other side
-    #[serde(rename(deserialize = "callProblemSilentLocal"))]
+    #[serde(rename(
+        serialize = "callProblemSilentLocal",
+        deserialize = "callProblemSilentLocal"
+    ))]
     SilentLocal(CallProblemSilentLocal),
     /// The other side couldn't hear the user
-    #[serde(rename(deserialize = "callProblemSilentRemote"))]
+    #[serde(rename(
+        serialize = "callProblemSilentRemote",
+        deserialize = "callProblemSilentRemote"
+    ))]
     SilentRemote(CallProblemSilentRemote),
 }
 

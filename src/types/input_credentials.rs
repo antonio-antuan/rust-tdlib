@@ -14,16 +14,25 @@ pub enum InputCredentials {
     #[doc(hidden)]
     _Default,
     /// Applies if a user enters new credentials using Android Pay
-    #[serde(rename(deserialize = "inputCredentialsAndroidPay"))]
+    #[serde(rename(
+        serialize = "inputCredentialsAndroidPay",
+        deserialize = "inputCredentialsAndroidPay"
+    ))]
     AndroidPay(InputCredentialsAndroidPay),
     /// Applies if a user enters new credentials using Apple Pay
-    #[serde(rename(deserialize = "inputCredentialsApplePay"))]
+    #[serde(rename(
+        serialize = "inputCredentialsApplePay",
+        deserialize = "inputCredentialsApplePay"
+    ))]
     ApplePay(InputCredentialsApplePay),
     /// Applies if a user enters new credentials on a payment provider website
-    #[serde(rename(deserialize = "inputCredentialsNew"))]
+    #[serde(rename(serialize = "inputCredentialsNew", deserialize = "inputCredentialsNew"))]
     New(InputCredentialsNew),
     /// Applies if a user chooses some previously saved payment credentials. To use their previously saved credentials, the user must have a valid temporary password
-    #[serde(rename(deserialize = "inputCredentialsSaved"))]
+    #[serde(rename(
+        serialize = "inputCredentialsSaved",
+        deserialize = "inputCredentialsSaved"
+    ))]
     Saved(InputCredentialsSaved),
 }
 

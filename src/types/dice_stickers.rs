@@ -14,10 +14,13 @@ pub enum DiceStickers {
     #[doc(hidden)]
     _Default,
     /// A regular animated sticker
-    #[serde(rename(deserialize = "diceStickersRegular"))]
+    #[serde(rename(serialize = "diceStickersRegular", deserialize = "diceStickersRegular"))]
     Regular(DiceStickersRegular),
     /// Animated stickers to be combined into a slot machine
-    #[serde(rename(deserialize = "diceStickersSlotMachine"))]
+    #[serde(rename(
+        serialize = "diceStickersSlotMachine",
+        deserialize = "diceStickersSlotMachine"
+    ))]
     SlotMachine(DiceStickersSlotMachine),
 }
 
