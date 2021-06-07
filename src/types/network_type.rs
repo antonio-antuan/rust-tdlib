@@ -14,19 +14,22 @@ pub enum NetworkType {
     #[doc(hidden)]
     _Default,
     /// A mobile network
-    #[serde(rename(deserialize = "networkTypeMobile"))]
+    #[serde(rename(serialize = "networkTypeMobile", deserialize = "networkTypeMobile"))]
     Mobile(NetworkTypeMobile),
     /// A mobile roaming network
-    #[serde(rename(deserialize = "networkTypeMobileRoaming"))]
+    #[serde(rename(
+        serialize = "networkTypeMobileRoaming",
+        deserialize = "networkTypeMobileRoaming"
+    ))]
     MobileRoaming(NetworkTypeMobileRoaming),
     /// The network is not available
-    #[serde(rename(deserialize = "networkTypeNone"))]
+    #[serde(rename(serialize = "networkTypeNone", deserialize = "networkTypeNone"))]
     None(NetworkTypeNone),
     /// A different network type (e.g., Ethernet network)
-    #[serde(rename(deserialize = "networkTypeOther"))]
+    #[serde(rename(serialize = "networkTypeOther", deserialize = "networkTypeOther"))]
     Other(NetworkTypeOther),
     /// A Wi-Fi network
-    #[serde(rename(deserialize = "networkTypeWiFi"))]
+    #[serde(rename(serialize = "networkTypeWiFi", deserialize = "networkTypeWiFi"))]
     WiFi(NetworkTypeWiFi),
 }
 

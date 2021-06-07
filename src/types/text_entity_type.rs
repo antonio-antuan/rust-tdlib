@@ -14,55 +14,94 @@ pub enum TextEntityType {
     #[doc(hidden)]
     _Default,
     /// A bank card number. The getBankCardInfo method can be used to get information about the bank card
-    #[serde(rename(deserialize = "textEntityTypeBankCardNumber"))]
+    #[serde(rename(
+        serialize = "textEntityTypeBankCardNumber",
+        deserialize = "textEntityTypeBankCardNumber"
+    ))]
     BankCardNumber(TextEntityTypeBankCardNumber),
     /// A bold text
-    #[serde(rename(deserialize = "textEntityTypeBold"))]
+    #[serde(rename(serialize = "textEntityTypeBold", deserialize = "textEntityTypeBold"))]
     Bold(TextEntityTypeBold),
     /// A bot command, beginning with "/". This shouldn't be highlighted if there are no bots in the chat
-    #[serde(rename(deserialize = "textEntityTypeBotCommand"))]
+    #[serde(rename(
+        serialize = "textEntityTypeBotCommand",
+        deserialize = "textEntityTypeBotCommand"
+    ))]
     BotCommand(TextEntityTypeBotCommand),
     /// A cashtag text, beginning with "$" and consisting of capital english letters (i.e. "$USD")
-    #[serde(rename(deserialize = "textEntityTypeCashtag"))]
+    #[serde(rename(
+        serialize = "textEntityTypeCashtag",
+        deserialize = "textEntityTypeCashtag"
+    ))]
     Cashtag(TextEntityTypeCashtag),
     /// Text that must be formatted as if inside a code HTML tag
-    #[serde(rename(deserialize = "textEntityTypeCode"))]
+    #[serde(rename(serialize = "textEntityTypeCode", deserialize = "textEntityTypeCode"))]
     Code(TextEntityTypeCode),
     /// An email address
-    #[serde(rename(deserialize = "textEntityTypeEmailAddress"))]
+    #[serde(rename(
+        serialize = "textEntityTypeEmailAddress",
+        deserialize = "textEntityTypeEmailAddress"
+    ))]
     EmailAddress(TextEntityTypeEmailAddress),
     /// A hashtag text, beginning with "#"
-    #[serde(rename(deserialize = "textEntityTypeHashtag"))]
+    #[serde(rename(
+        serialize = "textEntityTypeHashtag",
+        deserialize = "textEntityTypeHashtag"
+    ))]
     Hashtag(TextEntityTypeHashtag),
     /// An italic text
-    #[serde(rename(deserialize = "textEntityTypeItalic"))]
+    #[serde(rename(
+        serialize = "textEntityTypeItalic",
+        deserialize = "textEntityTypeItalic"
+    ))]
     Italic(TextEntityTypeItalic),
     /// A mention of a user by their username
-    #[serde(rename(deserialize = "textEntityTypeMention"))]
+    #[serde(rename(
+        serialize = "textEntityTypeMention",
+        deserialize = "textEntityTypeMention"
+    ))]
     Mention(TextEntityTypeMention),
     /// A text shows instead of a raw mention of the user (e.g., when the user has no username)
-    #[serde(rename(deserialize = "textEntityTypeMentionName"))]
+    #[serde(rename(
+        serialize = "textEntityTypeMentionName",
+        deserialize = "textEntityTypeMentionName"
+    ))]
     MentionName(TextEntityTypeMentionName),
     /// A phone number
-    #[serde(rename(deserialize = "textEntityTypePhoneNumber"))]
+    #[serde(rename(
+        serialize = "textEntityTypePhoneNumber",
+        deserialize = "textEntityTypePhoneNumber"
+    ))]
     PhoneNumber(TextEntityTypePhoneNumber),
     /// Text that must be formatted as if inside a pre HTML tag
-    #[serde(rename(deserialize = "textEntityTypePre"))]
+    #[serde(rename(serialize = "textEntityTypePre", deserialize = "textEntityTypePre"))]
     Pre(TextEntityTypePre),
     /// Text that must be formatted as if inside pre, and code HTML tags
-    #[serde(rename(deserialize = "textEntityTypePreCode"))]
+    #[serde(rename(
+        serialize = "textEntityTypePreCode",
+        deserialize = "textEntityTypePreCode"
+    ))]
     PreCode(TextEntityTypePreCode),
     /// A strikethrough text
-    #[serde(rename(deserialize = "textEntityTypeStrikethrough"))]
+    #[serde(rename(
+        serialize = "textEntityTypeStrikethrough",
+        deserialize = "textEntityTypeStrikethrough"
+    ))]
     Strikethrough(TextEntityTypeStrikethrough),
     /// A text description shown instead of a raw URL
-    #[serde(rename(deserialize = "textEntityTypeTextUrl"))]
+    #[serde(rename(
+        serialize = "textEntityTypeTextUrl",
+        deserialize = "textEntityTypeTextUrl"
+    ))]
     TextUrl(TextEntityTypeTextUrl),
     /// An underlined text
-    #[serde(rename(deserialize = "textEntityTypeUnderline"))]
+    #[serde(rename(
+        serialize = "textEntityTypeUnderline",
+        deserialize = "textEntityTypeUnderline"
+    ))]
     Underline(TextEntityTypeUnderline),
     /// An HTTP URL
-    #[serde(rename(deserialize = "textEntityTypeUrl"))]
+    #[serde(rename(serialize = "textEntityTypeUrl", deserialize = "textEntityTypeUrl"))]
     Url(TextEntityTypeUrl),
 }
 

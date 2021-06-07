@@ -14,22 +14,25 @@ pub enum CallState {
     #[doc(hidden)]
     _Default,
     /// The call has ended successfully
-    #[serde(rename(deserialize = "callStateDiscarded"))]
+    #[serde(rename(serialize = "callStateDiscarded", deserialize = "callStateDiscarded"))]
     Discarded(CallStateDiscarded),
     /// The call has ended with an error
-    #[serde(rename(deserialize = "callStateError"))]
+    #[serde(rename(serialize = "callStateError", deserialize = "callStateError"))]
     Error(CallStateError),
     /// The call has been answered and encryption keys are being exchanged
-    #[serde(rename(deserialize = "callStateExchangingKeys"))]
+    #[serde(rename(
+        serialize = "callStateExchangingKeys",
+        deserialize = "callStateExchangingKeys"
+    ))]
     ExchangingKeys(CallStateExchangingKeys),
     /// The call is hanging up after discardCall has been called
-    #[serde(rename(deserialize = "callStateHangingUp"))]
+    #[serde(rename(serialize = "callStateHangingUp", deserialize = "callStateHangingUp"))]
     HangingUp(CallStateHangingUp),
     /// The call is pending, waiting to be accepted by a user
-    #[serde(rename(deserialize = "callStatePending"))]
+    #[serde(rename(serialize = "callStatePending", deserialize = "callStatePending"))]
     Pending(CallStatePending),
     /// The call is ready to use
-    #[serde(rename(deserialize = "callStateReady"))]
+    #[serde(rename(serialize = "callStateReady", deserialize = "callStateReady"))]
     Ready(CallStateReady),
 }
 

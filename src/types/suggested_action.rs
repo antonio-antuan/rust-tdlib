@@ -14,10 +14,16 @@ pub enum SuggestedAction {
     #[doc(hidden)]
     _Default,
     /// Suggests the user to check authorization phone number and change the phone number if it is inaccessible
-    #[serde(rename(deserialize = "suggestedActionCheckPhoneNumber"))]
+    #[serde(rename(
+        serialize = "suggestedActionCheckPhoneNumber",
+        deserialize = "suggestedActionCheckPhoneNumber"
+    ))]
     CheckPhoneNumber(SuggestedActionCheckPhoneNumber),
     /// Suggests the user to enable "archive_and_mute_new_chats_from_unknown_users" option
-    #[serde(rename(deserialize = "suggestedActionEnableArchiveAndMuteNewChats"))]
+    #[serde(rename(
+        serialize = "suggestedActionEnableArchiveAndMuteNewChats",
+        deserialize = "suggestedActionEnableArchiveAndMuteNewChats"
+    ))]
     EnableArchiveAndMuteNewChats(SuggestedActionEnableArchiveAndMuteNewChats),
 }
 

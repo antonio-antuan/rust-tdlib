@@ -14,52 +14,58 @@ pub enum FileType {
     #[doc(hidden)]
     _Default,
     /// The file is an animation
-    #[serde(rename(deserialize = "fileTypeAnimation"))]
+    #[serde(rename(serialize = "fileTypeAnimation", deserialize = "fileTypeAnimation"))]
     Animation(FileTypeAnimation),
     /// The file is an audio file
-    #[serde(rename(deserialize = "fileTypeAudio"))]
+    #[serde(rename(serialize = "fileTypeAudio", deserialize = "fileTypeAudio"))]
     Audio(FileTypeAudio),
     /// The file is a document
-    #[serde(rename(deserialize = "fileTypeDocument"))]
+    #[serde(rename(serialize = "fileTypeDocument", deserialize = "fileTypeDocument"))]
     Document(FileTypeDocument),
     /// The data is not a file
-    #[serde(rename(deserialize = "fileTypeNone"))]
+    #[serde(rename(serialize = "fileTypeNone", deserialize = "fileTypeNone"))]
     None(FileTypeNone),
     /// The file is a photo
-    #[serde(rename(deserialize = "fileTypePhoto"))]
+    #[serde(rename(serialize = "fileTypePhoto", deserialize = "fileTypePhoto"))]
     Photo(FileTypePhoto),
     /// The file is a profile photo
-    #[serde(rename(deserialize = "fileTypeProfilePhoto"))]
+    #[serde(rename(
+        serialize = "fileTypeProfilePhoto",
+        deserialize = "fileTypeProfilePhoto"
+    ))]
     ProfilePhoto(FileTypeProfilePhoto),
     /// The file was sent to a secret chat (the file type is not known to the server)
-    #[serde(rename(deserialize = "fileTypeSecret"))]
+    #[serde(rename(serialize = "fileTypeSecret", deserialize = "fileTypeSecret"))]
     Secret(FileTypeSecret),
     /// The file is a thumbnail of a file from a secret chat
-    #[serde(rename(deserialize = "fileTypeSecretThumbnail"))]
+    #[serde(rename(
+        serialize = "fileTypeSecretThumbnail",
+        deserialize = "fileTypeSecretThumbnail"
+    ))]
     SecretThumbnail(FileTypeSecretThumbnail),
     /// The file is a file from Secure storage used for storing Telegram Passport files
-    #[serde(rename(deserialize = "fileTypeSecure"))]
+    #[serde(rename(serialize = "fileTypeSecure", deserialize = "fileTypeSecure"))]
     Secure(FileTypeSecure),
     /// The file is a sticker
-    #[serde(rename(deserialize = "fileTypeSticker"))]
+    #[serde(rename(serialize = "fileTypeSticker", deserialize = "fileTypeSticker"))]
     Sticker(FileTypeSticker),
     /// The file is a thumbnail of another file
-    #[serde(rename(deserialize = "fileTypeThumbnail"))]
+    #[serde(rename(serialize = "fileTypeThumbnail", deserialize = "fileTypeThumbnail"))]
     Thumbnail(FileTypeThumbnail),
     /// The file type is not yet known
-    #[serde(rename(deserialize = "fileTypeUnknown"))]
+    #[serde(rename(serialize = "fileTypeUnknown", deserialize = "fileTypeUnknown"))]
     Unknown(FileTypeUnknown),
     /// The file is a video
-    #[serde(rename(deserialize = "fileTypeVideo"))]
+    #[serde(rename(serialize = "fileTypeVideo", deserialize = "fileTypeVideo"))]
     Video(FileTypeVideo),
     /// The file is a video note
-    #[serde(rename(deserialize = "fileTypeVideoNote"))]
+    #[serde(rename(serialize = "fileTypeVideoNote", deserialize = "fileTypeVideoNote"))]
     VideoNote(FileTypeVideoNote),
     /// The file is a voice note
-    #[serde(rename(deserialize = "fileTypeVoiceNote"))]
+    #[serde(rename(serialize = "fileTypeVoiceNote", deserialize = "fileTypeVoiceNote"))]
     VoiceNote(FileTypeVoiceNote),
     /// The file is a wallpaper or a background pattern
-    #[serde(rename(deserialize = "fileTypeWallpaper"))]
+    #[serde(rename(serialize = "fileTypeWallpaper", deserialize = "fileTypeWallpaper"))]
     Wallpaper(FileTypeWallpaper),
 }
 

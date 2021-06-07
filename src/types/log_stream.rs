@@ -14,16 +14,16 @@ pub enum LogStream {
     #[doc(hidden)]
     _Default,
     /// Returns information about currently used log stream for internal logging of TDLib. Can be called synchronously
-    #[serde(rename(deserialize = "getLogStream"))]
+    #[serde(rename(serialize = "getLogStream", deserialize = "getLogStream"))]
     GetLogStream(GetLogStream),
     /// The log is written to stderr or an OS specific log
-    #[serde(rename(deserialize = "logStreamDefault"))]
+    #[serde(rename(serialize = "logStreamDefault", deserialize = "logStreamDefault"))]
     Default(LogStreamDefault),
     /// The log is written nowhere
-    #[serde(rename(deserialize = "logStreamEmpty"))]
+    #[serde(rename(serialize = "logStreamEmpty", deserialize = "logStreamEmpty"))]
     Empty(LogStreamEmpty),
     /// The log is written to a file
-    #[serde(rename(deserialize = "logStreamFile"))]
+    #[serde(rename(serialize = "logStreamFile", deserialize = "logStreamFile"))]
     File(LogStreamFile),
 }
 

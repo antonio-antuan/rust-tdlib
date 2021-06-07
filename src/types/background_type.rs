@@ -14,13 +14,19 @@ pub enum BackgroundType {
     #[doc(hidden)]
     _Default,
     /// A filled background
-    #[serde(rename(deserialize = "backgroundTypeFill"))]
+    #[serde(rename(serialize = "backgroundTypeFill", deserialize = "backgroundTypeFill"))]
     Fill(BackgroundTypeFill),
     /// A PNG or TGV (gzipped subset of SVG with MIME type "application/x-tgwallpattern") pattern to be combined with the background fill chosen by the user
-    #[serde(rename(deserialize = "backgroundTypePattern"))]
+    #[serde(rename(
+        serialize = "backgroundTypePattern",
+        deserialize = "backgroundTypePattern"
+    ))]
     Pattern(BackgroundTypePattern),
     /// A wallpaper in JPEG format
-    #[serde(rename(deserialize = "backgroundTypeWallpaper"))]
+    #[serde(rename(
+        serialize = "backgroundTypeWallpaper",
+        deserialize = "backgroundTypeWallpaper"
+    ))]
     Wallpaper(BackgroundTypeWallpaper),
 }
 

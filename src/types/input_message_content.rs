@@ -14,55 +14,73 @@ pub enum InputMessageContent {
     #[doc(hidden)]
     _Default,
     /// An animation message (GIF-style).
-    #[serde(rename(deserialize = "inputMessageAnimation"))]
+    #[serde(rename(
+        serialize = "inputMessageAnimation",
+        deserialize = "inputMessageAnimation"
+    ))]
     InputMessageAnimation(InputMessageAnimation),
     /// An audio message
-    #[serde(rename(deserialize = "inputMessageAudio"))]
+    #[serde(rename(serialize = "inputMessageAudio", deserialize = "inputMessageAudio"))]
     InputMessageAudio(InputMessageAudio),
     /// A message containing a user contact
-    #[serde(rename(deserialize = "inputMessageContact"))]
+    #[serde(rename(serialize = "inputMessageContact", deserialize = "inputMessageContact"))]
     InputMessageContact(InputMessageContact),
     /// A dice message
-    #[serde(rename(deserialize = "inputMessageDice"))]
+    #[serde(rename(serialize = "inputMessageDice", deserialize = "inputMessageDice"))]
     InputMessageDice(InputMessageDice),
     /// A document message (general file)
-    #[serde(rename(deserialize = "inputMessageDocument"))]
+    #[serde(rename(
+        serialize = "inputMessageDocument",
+        deserialize = "inputMessageDocument"
+    ))]
     InputMessageDocument(InputMessageDocument),
     /// A forwarded message
-    #[serde(rename(deserialize = "inputMessageForwarded"))]
+    #[serde(rename(
+        serialize = "inputMessageForwarded",
+        deserialize = "inputMessageForwarded"
+    ))]
     InputMessageForwarded(InputMessageForwarded),
     /// A message with a game; not supported for channels or secret chats
-    #[serde(rename(deserialize = "inputMessageGame"))]
+    #[serde(rename(serialize = "inputMessageGame", deserialize = "inputMessageGame"))]
     InputMessageGame(InputMessageGame),
     /// A message with an invoice; can be used only by bots and only in private chats
-    #[serde(rename(deserialize = "inputMessageInvoice"))]
+    #[serde(rename(serialize = "inputMessageInvoice", deserialize = "inputMessageInvoice"))]
     InputMessageInvoice(InputMessageInvoice),
     /// A message with a location
-    #[serde(rename(deserialize = "inputMessageLocation"))]
+    #[serde(rename(
+        serialize = "inputMessageLocation",
+        deserialize = "inputMessageLocation"
+    ))]
     InputMessageLocation(InputMessageLocation),
     /// A photo message
-    #[serde(rename(deserialize = "inputMessagePhoto"))]
+    #[serde(rename(serialize = "inputMessagePhoto", deserialize = "inputMessagePhoto"))]
     InputMessagePhoto(InputMessagePhoto),
     /// A message with a poll. Polls can't be sent to secret chats. Polls can be sent only to a private chat with a bot
-    #[serde(rename(deserialize = "inputMessagePoll"))]
+    #[serde(rename(serialize = "inputMessagePoll", deserialize = "inputMessagePoll"))]
     InputMessagePoll(InputMessagePoll),
     /// A sticker message
-    #[serde(rename(deserialize = "inputMessageSticker"))]
+    #[serde(rename(serialize = "inputMessageSticker", deserialize = "inputMessageSticker"))]
     InputMessageSticker(InputMessageSticker),
     /// A text message
-    #[serde(rename(deserialize = "inputMessageText"))]
+    #[serde(rename(serialize = "inputMessageText", deserialize = "inputMessageText"))]
     InputMessageText(InputMessageText),
     /// A message with information about a venue
-    #[serde(rename(deserialize = "inputMessageVenue"))]
+    #[serde(rename(serialize = "inputMessageVenue", deserialize = "inputMessageVenue"))]
     InputMessageVenue(InputMessageVenue),
     /// A video message
-    #[serde(rename(deserialize = "inputMessageVideo"))]
+    #[serde(rename(serialize = "inputMessageVideo", deserialize = "inputMessageVideo"))]
     InputMessageVideo(InputMessageVideo),
     /// A video note message
-    #[serde(rename(deserialize = "inputMessageVideoNote"))]
+    #[serde(rename(
+        serialize = "inputMessageVideoNote",
+        deserialize = "inputMessageVideoNote"
+    ))]
     InputMessageVideoNote(InputMessageVideoNote),
     /// A voice note message
-    #[serde(rename(deserialize = "inputMessageVoiceNote"))]
+    #[serde(rename(
+        serialize = "inputMessageVoiceNote",
+        deserialize = "inputMessageVoiceNote"
+    ))]
     InputMessageVoiceNote(InputMessageVoiceNote),
 }
 

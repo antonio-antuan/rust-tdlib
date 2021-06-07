@@ -14,22 +14,40 @@ pub enum ChatMemberStatus {
     #[doc(hidden)]
     _Default,
     /// The user is a member of a chat and has some additional privileges. In basic groups, administrators can edit and delete messages sent by others, add new members, and ban unprivileged members. In supergroups and channels, there are more detailed options for administrator privileges
-    #[serde(rename(deserialize = "chatMemberStatusAdministrator"))]
+    #[serde(rename(
+        serialize = "chatMemberStatusAdministrator",
+        deserialize = "chatMemberStatusAdministrator"
+    ))]
     Administrator(ChatMemberStatusAdministrator),
     /// The user was banned (and hence is not a member of the chat). Implies the user can't return to the chat or view messages
-    #[serde(rename(deserialize = "chatMemberStatusBanned"))]
+    #[serde(rename(
+        serialize = "chatMemberStatusBanned",
+        deserialize = "chatMemberStatusBanned"
+    ))]
     Banned(ChatMemberStatusBanned),
     /// The user is the owner of a chat and has all the administrator privileges
-    #[serde(rename(deserialize = "chatMemberStatusCreator"))]
+    #[serde(rename(
+        serialize = "chatMemberStatusCreator",
+        deserialize = "chatMemberStatusCreator"
+    ))]
     Creator(ChatMemberStatusCreator),
     /// The user is not a chat member
-    #[serde(rename(deserialize = "chatMemberStatusLeft"))]
+    #[serde(rename(
+        serialize = "chatMemberStatusLeft",
+        deserialize = "chatMemberStatusLeft"
+    ))]
     Left(ChatMemberStatusLeft),
     /// The user is a member of a chat, without any additional privileges or restrictions
-    #[serde(rename(deserialize = "chatMemberStatusMember"))]
+    #[serde(rename(
+        serialize = "chatMemberStatusMember",
+        deserialize = "chatMemberStatusMember"
+    ))]
     Member(ChatMemberStatusMember),
     /// The user is under certain restrictions in the chat. Not supported in basic groups and channels
-    #[serde(rename(deserialize = "chatMemberStatusRestricted"))]
+    #[serde(rename(
+        serialize = "chatMemberStatusRestricted",
+        deserialize = "chatMemberStatusRestricted"
+    ))]
     Restricted(ChatMemberStatusRestricted),
 }
 

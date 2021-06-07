@@ -14,28 +14,52 @@ pub enum UserPrivacySetting {
     #[doc(hidden)]
     _Default,
     /// A privacy setting for managing whether the user can be called
-    #[serde(rename(deserialize = "userPrivacySettingAllowCalls"))]
+    #[serde(rename(
+        serialize = "userPrivacySettingAllowCalls",
+        deserialize = "userPrivacySettingAllowCalls"
+    ))]
     AllowCalls(UserPrivacySettingAllowCalls),
     /// A privacy setting for managing whether the user can be invited to chats
-    #[serde(rename(deserialize = "userPrivacySettingAllowChatInvites"))]
+    #[serde(rename(
+        serialize = "userPrivacySettingAllowChatInvites",
+        deserialize = "userPrivacySettingAllowChatInvites"
+    ))]
     AllowChatInvites(UserPrivacySettingAllowChatInvites),
     /// A privacy setting for managing whether the user can be found by their phone number. Checked only if the phone number is not known to the other user. Can be set only to "Allow contacts" or "Allow all"
-    #[serde(rename(deserialize = "userPrivacySettingAllowFindingByPhoneNumber"))]
+    #[serde(rename(
+        serialize = "userPrivacySettingAllowFindingByPhoneNumber",
+        deserialize = "userPrivacySettingAllowFindingByPhoneNumber"
+    ))]
     AllowFindingByPhoneNumber(UserPrivacySettingAllowFindingByPhoneNumber),
     /// A privacy setting for managing whether peer-to-peer connections can be used for calls
-    #[serde(rename(deserialize = "userPrivacySettingAllowPeerToPeerCalls"))]
+    #[serde(rename(
+        serialize = "userPrivacySettingAllowPeerToPeerCalls",
+        deserialize = "userPrivacySettingAllowPeerToPeerCalls"
+    ))]
     AllowPeerToPeerCalls(UserPrivacySettingAllowPeerToPeerCalls),
     /// A privacy setting for managing whether a link to the user's account is included in forwarded messages
-    #[serde(rename(deserialize = "userPrivacySettingShowLinkInForwardedMessages"))]
+    #[serde(rename(
+        serialize = "userPrivacySettingShowLinkInForwardedMessages",
+        deserialize = "userPrivacySettingShowLinkInForwardedMessages"
+    ))]
     ShowLinkInForwardedMessages(UserPrivacySettingShowLinkInForwardedMessages),
     /// A privacy setting for managing whether the user's phone number is visible
-    #[serde(rename(deserialize = "userPrivacySettingShowPhoneNumber"))]
+    #[serde(rename(
+        serialize = "userPrivacySettingShowPhoneNumber",
+        deserialize = "userPrivacySettingShowPhoneNumber"
+    ))]
     ShowPhoneNumber(UserPrivacySettingShowPhoneNumber),
     /// A privacy setting for managing whether the user's profile photo is visible
-    #[serde(rename(deserialize = "userPrivacySettingShowProfilePhoto"))]
+    #[serde(rename(
+        serialize = "userPrivacySettingShowProfilePhoto",
+        deserialize = "userPrivacySettingShowProfilePhoto"
+    ))]
     ShowProfilePhoto(UserPrivacySettingShowProfilePhoto),
     /// A privacy setting for managing whether the user's online status is visible
-    #[serde(rename(deserialize = "userPrivacySettingShowStatus"))]
+    #[serde(rename(
+        serialize = "userPrivacySettingShowStatus",
+        deserialize = "userPrivacySettingShowStatus"
+    ))]
     ShowStatus(UserPrivacySettingShowStatus),
 }
 

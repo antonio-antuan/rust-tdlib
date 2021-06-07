@@ -14,13 +14,16 @@ pub enum LoginUrlInfo {
     #[doc(hidden)]
     _Default,
     /// Returns information about a button of type inlineKeyboardButtonTypeLoginUrl. The method needs to be called when the user presses the button
-    #[serde(rename(deserialize = "getLoginUrlInfo"))]
+    #[serde(rename(serialize = "getLoginUrlInfo", deserialize = "getLoginUrlInfo"))]
     GetLoginUrlInfo(GetLoginUrlInfo),
     /// An HTTP url needs to be open
-    #[serde(rename(deserialize = "loginUrlInfoOpen"))]
+    #[serde(rename(serialize = "loginUrlInfoOpen", deserialize = "loginUrlInfoOpen"))]
     Open(LoginUrlInfoOpen),
     /// An authorization confirmation dialog needs to be shown to the user
-    #[serde(rename(deserialize = "loginUrlInfoRequestConfirmation"))]
+    #[serde(rename(
+        serialize = "loginUrlInfoRequestConfirmation",
+        deserialize = "loginUrlInfoRequestConfirmation"
+    ))]
     RequestConfirmation(LoginUrlInfoRequestConfirmation),
 }
 

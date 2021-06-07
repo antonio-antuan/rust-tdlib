@@ -14,19 +14,34 @@ pub enum CallDiscardReason {
     #[doc(hidden)]
     _Default,
     /// The call was ended before the conversation started. It was declined by the other party
-    #[serde(rename(deserialize = "callDiscardReasonDeclined"))]
+    #[serde(rename(
+        serialize = "callDiscardReasonDeclined",
+        deserialize = "callDiscardReasonDeclined"
+    ))]
     Declined(CallDiscardReasonDeclined),
     /// The call was ended during the conversation because the users were disconnected
-    #[serde(rename(deserialize = "callDiscardReasonDisconnected"))]
+    #[serde(rename(
+        serialize = "callDiscardReasonDisconnected",
+        deserialize = "callDiscardReasonDisconnected"
+    ))]
     Disconnected(CallDiscardReasonDisconnected),
     /// The call wasn't discarded, or the reason is unknown
-    #[serde(rename(deserialize = "callDiscardReasonEmpty"))]
+    #[serde(rename(
+        serialize = "callDiscardReasonEmpty",
+        deserialize = "callDiscardReasonEmpty"
+    ))]
     Empty(CallDiscardReasonEmpty),
     /// The call was ended because one of the parties hung up
-    #[serde(rename(deserialize = "callDiscardReasonHungUp"))]
+    #[serde(rename(
+        serialize = "callDiscardReasonHungUp",
+        deserialize = "callDiscardReasonHungUp"
+    ))]
     HungUp(CallDiscardReasonHungUp),
     /// The call was ended before the conversation started. It was cancelled by the caller or missed by the other party
-    #[serde(rename(deserialize = "callDiscardReasonMissed"))]
+    #[serde(rename(
+        serialize = "callDiscardReasonMissed",
+        deserialize = "callDiscardReasonMissed"
+    ))]
     Missed(CallDiscardReasonMissed),
 }
 

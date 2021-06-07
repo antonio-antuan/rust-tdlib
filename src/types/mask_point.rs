@@ -14,16 +14,16 @@ pub enum MaskPoint {
     #[doc(hidden)]
     _Default,
     /// A mask should be placed relatively to the chin
-    #[serde(rename(deserialize = "maskPointChin"))]
+    #[serde(rename(serialize = "maskPointChin", deserialize = "maskPointChin"))]
     Chin(MaskPointChin),
     /// A mask should be placed relatively to the eyes
-    #[serde(rename(deserialize = "maskPointEyes"))]
+    #[serde(rename(serialize = "maskPointEyes", deserialize = "maskPointEyes"))]
     Eyes(MaskPointEyes),
     /// A mask should be placed relatively to the forehead
-    #[serde(rename(deserialize = "maskPointForehead"))]
+    #[serde(rename(serialize = "maskPointForehead", deserialize = "maskPointForehead"))]
     Forehead(MaskPointForehead),
     /// A mask should be placed relatively to the mouth
-    #[serde(rename(deserialize = "maskPointMouth"))]
+    #[serde(rename(serialize = "maskPointMouth", deserialize = "maskPointMouth"))]
     Mouth(MaskPointMouth),
 }
 

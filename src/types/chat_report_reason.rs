@@ -14,25 +14,46 @@ pub enum ChatReportReason {
     #[doc(hidden)]
     _Default,
     /// The chat has child abuse related content
-    #[serde(rename(deserialize = "chatReportReasonChildAbuse"))]
+    #[serde(rename(
+        serialize = "chatReportReasonChildAbuse",
+        deserialize = "chatReportReasonChildAbuse"
+    ))]
     ChildAbuse(ChatReportReasonChildAbuse),
     /// The chat contains copyrighted content
-    #[serde(rename(deserialize = "chatReportReasonCopyright"))]
+    #[serde(rename(
+        serialize = "chatReportReasonCopyright",
+        deserialize = "chatReportReasonCopyright"
+    ))]
     Copyright(ChatReportReasonCopyright),
     /// A custom reason provided by the user
-    #[serde(rename(deserialize = "chatReportReasonCustom"))]
+    #[serde(rename(
+        serialize = "chatReportReasonCustom",
+        deserialize = "chatReportReasonCustom"
+    ))]
     Custom(ChatReportReasonCustom),
     /// The chat contains pornographic messages
-    #[serde(rename(deserialize = "chatReportReasonPornography"))]
+    #[serde(rename(
+        serialize = "chatReportReasonPornography",
+        deserialize = "chatReportReasonPornography"
+    ))]
     Pornography(ChatReportReasonPornography),
     /// The chat contains spam messages
-    #[serde(rename(deserialize = "chatReportReasonSpam"))]
+    #[serde(rename(
+        serialize = "chatReportReasonSpam",
+        deserialize = "chatReportReasonSpam"
+    ))]
     Spam(ChatReportReasonSpam),
     /// The location-based chat is unrelated to its stated location
-    #[serde(rename(deserialize = "chatReportReasonUnrelatedLocation"))]
+    #[serde(rename(
+        serialize = "chatReportReasonUnrelatedLocation",
+        deserialize = "chatReportReasonUnrelatedLocation"
+    ))]
     UnrelatedLocation(ChatReportReasonUnrelatedLocation),
     /// The chat promotes violence
-    #[serde(rename(deserialize = "chatReportReasonViolence"))]
+    #[serde(rename(
+        serialize = "chatReportReasonViolence",
+        deserialize = "chatReportReasonViolence"
+    ))]
     Violence(ChatReportReasonViolence),
 }
 

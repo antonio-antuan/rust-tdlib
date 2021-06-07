@@ -14,13 +14,13 @@ pub enum ChatList {
     #[doc(hidden)]
     _Default,
     /// A list of chats usually located at the top of the main chat list. Unmuted chats are automatically moved from the Archive to the Main chat list when a new message arrives
-    #[serde(rename(deserialize = "chatListArchive"))]
+    #[serde(rename(serialize = "chatListArchive", deserialize = "chatListArchive"))]
     Archive(ChatListArchive),
     /// A list of chats belonging to a chat filter
-    #[serde(rename(deserialize = "chatListFilter"))]
+    #[serde(rename(serialize = "chatListFilter", deserialize = "chatListFilter"))]
     Filter(ChatListFilter),
     /// A main list of chats
-    #[serde(rename(deserialize = "chatListMain"))]
+    #[serde(rename(serialize = "chatListMain", deserialize = "chatListMain"))]
     Main(ChatListMain),
 }
 

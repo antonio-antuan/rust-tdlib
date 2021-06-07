@@ -14,10 +14,13 @@ pub enum BackgroundFill {
     #[doc(hidden)]
     _Default,
     /// Describes a gradient fill of a background
-    #[serde(rename(deserialize = "backgroundFillGradient"))]
+    #[serde(rename(
+        serialize = "backgroundFillGradient",
+        deserialize = "backgroundFillGradient"
+    ))]
     Gradient(BackgroundFillGradient),
     /// Describes a solid fill of a background
-    #[serde(rename(deserialize = "backgroundFillSolid"))]
+    #[serde(rename(serialize = "backgroundFillSolid", deserialize = "backgroundFillSolid"))]
     Solid(BackgroundFillSolid),
 }
 

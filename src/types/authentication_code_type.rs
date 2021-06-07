@@ -14,16 +14,28 @@ pub enum AuthenticationCodeType {
     #[doc(hidden)]
     _Default,
     /// An authentication code is delivered via a phone call to the specified phone number
-    #[serde(rename(deserialize = "authenticationCodeTypeCall"))]
+    #[serde(rename(
+        serialize = "authenticationCodeTypeCall",
+        deserialize = "authenticationCodeTypeCall"
+    ))]
     Call(AuthenticationCodeTypeCall),
     /// An authentication code is delivered by an immediately cancelled call to the specified phone number. The number from which the call was made is the code
-    #[serde(rename(deserialize = "authenticationCodeTypeFlashCall"))]
+    #[serde(rename(
+        serialize = "authenticationCodeTypeFlashCall",
+        deserialize = "authenticationCodeTypeFlashCall"
+    ))]
     FlashCall(AuthenticationCodeTypeFlashCall),
     /// An authentication code is delivered via an SMS message to the specified phone number
-    #[serde(rename(deserialize = "authenticationCodeTypeSms"))]
+    #[serde(rename(
+        serialize = "authenticationCodeTypeSms",
+        deserialize = "authenticationCodeTypeSms"
+    ))]
     Sms(AuthenticationCodeTypeSms),
     /// An authentication code is delivered via a private Telegram message, which can be viewed from another active session
-    #[serde(rename(deserialize = "authenticationCodeTypeTelegramMessage"))]
+    #[serde(rename(
+        serialize = "authenticationCodeTypeTelegramMessage",
+        deserialize = "authenticationCodeTypeTelegramMessage"
+    ))]
     TelegramMessage(AuthenticationCodeTypeTelegramMessage),
 }
 

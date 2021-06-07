@@ -14,31 +14,58 @@ pub enum InputPassportElementErrorSource {
     #[doc(hidden)]
     _Default,
     /// A data field contains an error. The error is considered resolved when the field's value changes
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceDataField"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceDataField",
+        deserialize = "inputPassportElementErrorSourceDataField"
+    ))]
     DataField(InputPassportElementErrorSourceDataField),
     /// The file contains an error. The error is considered resolved when the file changes
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceFile"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceFile",
+        deserialize = "inputPassportElementErrorSourceFile"
+    ))]
     File(InputPassportElementErrorSourceFile),
     /// The list of attached files contains an error. The error is considered resolved when the file list changes
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceFiles"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceFiles",
+        deserialize = "inputPassportElementErrorSourceFiles"
+    ))]
     Files(InputPassportElementErrorSourceFiles),
     /// The front side of the document contains an error. The error is considered resolved when the file with the front side of the document changes
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceFrontSide"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceFrontSide",
+        deserialize = "inputPassportElementErrorSourceFrontSide"
+    ))]
     FrontSide(InputPassportElementErrorSourceFrontSide),
     /// The reverse side of the document contains an error. The error is considered resolved when the file with the reverse side of the document changes
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceReverseSide"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceReverseSide",
+        deserialize = "inputPassportElementErrorSourceReverseSide"
+    ))]
     ReverseSide(InputPassportElementErrorSourceReverseSide),
     /// The selfie contains an error. The error is considered resolved when the file with the selfie changes
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceSelfie"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceSelfie",
+        deserialize = "inputPassportElementErrorSourceSelfie"
+    ))]
     Selfie(InputPassportElementErrorSourceSelfie),
     /// One of the files containing the translation of the document contains an error. The error is considered resolved when the file with the translation changes
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceTranslationFile"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceTranslationFile",
+        deserialize = "inputPassportElementErrorSourceTranslationFile"
+    ))]
     TranslationFile(InputPassportElementErrorSourceTranslationFile),
     /// The translation of the document contains an error. The error is considered resolved when the list of files changes
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceTranslationFiles"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceTranslationFiles",
+        deserialize = "inputPassportElementErrorSourceTranslationFiles"
+    ))]
     TranslationFiles(InputPassportElementErrorSourceTranslationFiles),
     /// The element contains an error in an unspecified place. The error will be considered resolved when new data is added
-    #[serde(rename(deserialize = "inputPassportElementErrorSourceUnspecified"))]
+    #[serde(rename(
+        serialize = "inputPassportElementErrorSourceUnspecified",
+        deserialize = "inputPassportElementErrorSourceUnspecified"
+    ))]
     Unspecified(InputPassportElementErrorSourceUnspecified),
 }
 

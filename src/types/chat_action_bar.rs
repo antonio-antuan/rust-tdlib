@@ -14,19 +14,34 @@ pub enum ChatActionBar {
     #[doc(hidden)]
     _Default,
     /// The chat is a private or secret chat and the other user can be added to the contact list using the method addContact
-    #[serde(rename(deserialize = "chatActionBarAddContact"))]
+    #[serde(rename(
+        serialize = "chatActionBarAddContact",
+        deserialize = "chatActionBarAddContact"
+    ))]
     AddContact(ChatActionBarAddContact),
     /// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method blockUser, or the other user can be added to the contact list using the method addContact
-    #[serde(rename(deserialize = "chatActionBarReportAddBlock"))]
+    #[serde(rename(
+        serialize = "chatActionBarReportAddBlock",
+        deserialize = "chatActionBarReportAddBlock"
+    ))]
     ReportAddBlock(ChatActionBarReportAddBlock),
     /// The chat can be reported as spam using the method reportChat with the reason chatReportReasonSpam
-    #[serde(rename(deserialize = "chatActionBarReportSpam"))]
+    #[serde(rename(
+        serialize = "chatActionBarReportSpam",
+        deserialize = "chatActionBarReportSpam"
+    ))]
     ReportSpam(ChatActionBarReportSpam),
     /// The chat is a location-based supergroup, which can be reported as having unrelated location using the method reportChat with the reason chatReportReasonUnrelatedLocation
-    #[serde(rename(deserialize = "chatActionBarReportUnrelatedLocation"))]
+    #[serde(rename(
+        serialize = "chatActionBarReportUnrelatedLocation",
+        deserialize = "chatActionBarReportUnrelatedLocation"
+    ))]
     ReportUnrelatedLocation(ChatActionBarReportUnrelatedLocation),
     /// The chat is a private or secret chat with a mutual contact and the user's phone number can be shared with the other user using the method sharePhoneNumber
-    #[serde(rename(deserialize = "chatActionBarSharePhoneNumber"))]
+    #[serde(rename(
+        serialize = "chatActionBarSharePhoneNumber",
+        deserialize = "chatActionBarSharePhoneNumber"
+    ))]
     SharePhoneNumber(ChatActionBarSharePhoneNumber),
 }
 

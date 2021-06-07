@@ -14,43 +14,82 @@ pub enum PassportElementType {
     #[doc(hidden)]
     _Default,
     /// A Telegram Passport element containing the user's address
-    #[serde(rename(deserialize = "passportElementTypeAddress"))]
+    #[serde(rename(
+        serialize = "passportElementTypeAddress",
+        deserialize = "passportElementTypeAddress"
+    ))]
     Address(PassportElementTypeAddress),
     /// A Telegram Passport element containing the user's bank statement
-    #[serde(rename(deserialize = "passportElementTypeBankStatement"))]
+    #[serde(rename(
+        serialize = "passportElementTypeBankStatement",
+        deserialize = "passportElementTypeBankStatement"
+    ))]
     BankStatement(PassportElementTypeBankStatement),
     /// A Telegram Passport element containing the user's driver license
-    #[serde(rename(deserialize = "passportElementTypeDriverLicense"))]
+    #[serde(rename(
+        serialize = "passportElementTypeDriverLicense",
+        deserialize = "passportElementTypeDriverLicense"
+    ))]
     DriverLicense(PassportElementTypeDriverLicense),
     /// A Telegram Passport element containing the user's email address
-    #[serde(rename(deserialize = "passportElementTypeEmailAddress"))]
+    #[serde(rename(
+        serialize = "passportElementTypeEmailAddress",
+        deserialize = "passportElementTypeEmailAddress"
+    ))]
     EmailAddress(PassportElementTypeEmailAddress),
     /// A Telegram Passport element containing the user's identity card
-    #[serde(rename(deserialize = "passportElementTypeIdentityCard"))]
+    #[serde(rename(
+        serialize = "passportElementTypeIdentityCard",
+        deserialize = "passportElementTypeIdentityCard"
+    ))]
     IdentityCard(PassportElementTypeIdentityCard),
     /// A Telegram Passport element containing the user's internal passport
-    #[serde(rename(deserialize = "passportElementTypeInternalPassport"))]
+    #[serde(rename(
+        serialize = "passportElementTypeInternalPassport",
+        deserialize = "passportElementTypeInternalPassport"
+    ))]
     InternalPassport(PassportElementTypeInternalPassport),
     /// A Telegram Passport element containing the user's passport
-    #[serde(rename(deserialize = "passportElementTypePassport"))]
+    #[serde(rename(
+        serialize = "passportElementTypePassport",
+        deserialize = "passportElementTypePassport"
+    ))]
     Passport(PassportElementTypePassport),
     /// A Telegram Passport element containing the registration page of the user's passport
-    #[serde(rename(deserialize = "passportElementTypePassportRegistration"))]
+    #[serde(rename(
+        serialize = "passportElementTypePassportRegistration",
+        deserialize = "passportElementTypePassportRegistration"
+    ))]
     PassportRegistration(PassportElementTypePassportRegistration),
     /// A Telegram Passport element containing the user's personal details
-    #[serde(rename(deserialize = "passportElementTypePersonalDetails"))]
+    #[serde(rename(
+        serialize = "passportElementTypePersonalDetails",
+        deserialize = "passportElementTypePersonalDetails"
+    ))]
     PersonalDetails(PassportElementTypePersonalDetails),
     /// A Telegram Passport element containing the user's phone number
-    #[serde(rename(deserialize = "passportElementTypePhoneNumber"))]
+    #[serde(rename(
+        serialize = "passportElementTypePhoneNumber",
+        deserialize = "passportElementTypePhoneNumber"
+    ))]
     PhoneNumber(PassportElementTypePhoneNumber),
     /// A Telegram Passport element containing the user's rental agreement
-    #[serde(rename(deserialize = "passportElementTypeRentalAgreement"))]
+    #[serde(rename(
+        serialize = "passportElementTypeRentalAgreement",
+        deserialize = "passportElementTypeRentalAgreement"
+    ))]
     RentalAgreement(PassportElementTypeRentalAgreement),
     /// A Telegram Passport element containing the user's temporary registration
-    #[serde(rename(deserialize = "passportElementTypeTemporaryRegistration"))]
+    #[serde(rename(
+        serialize = "passportElementTypeTemporaryRegistration",
+        deserialize = "passportElementTypeTemporaryRegistration"
+    ))]
     TemporaryRegistration(PassportElementTypeTemporaryRegistration),
     /// A Telegram Passport element containing the user's utility bill
-    #[serde(rename(deserialize = "passportElementTypeUtilityBill"))]
+    #[serde(rename(
+        serialize = "passportElementTypeUtilityBill",
+        deserialize = "passportElementTypeUtilityBill"
+    ))]
     UtilityBill(PassportElementTypeUtilityBill),
 }
 

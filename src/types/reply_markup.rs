@@ -14,16 +14,28 @@ pub enum ReplyMarkup {
     #[doc(hidden)]
     _Default,
     /// Instructs application to force a reply to this message
-    #[serde(rename(deserialize = "replyMarkupForceReply"))]
+    #[serde(rename(
+        serialize = "replyMarkupForceReply",
+        deserialize = "replyMarkupForceReply"
+    ))]
     ForceReply(ReplyMarkupForceReply),
     /// Contains an inline keyboard layout
-    #[serde(rename(deserialize = "replyMarkupInlineKeyboard"))]
+    #[serde(rename(
+        serialize = "replyMarkupInlineKeyboard",
+        deserialize = "replyMarkupInlineKeyboard"
+    ))]
     InlineKeyboard(ReplyMarkupInlineKeyboard),
     /// Instructs application to remove the keyboard once this message has been received. This kind of keyboard can't be received in an incoming message; instead, UpdateChatReplyMarkup with message_id == 0 will be sent
-    #[serde(rename(deserialize = "replyMarkupRemoveKeyboard"))]
+    #[serde(rename(
+        serialize = "replyMarkupRemoveKeyboard",
+        deserialize = "replyMarkupRemoveKeyboard"
+    ))]
     RemoveKeyboard(ReplyMarkupRemoveKeyboard),
     /// Contains a custom keyboard layout to quickly reply to bots
-    #[serde(rename(deserialize = "replyMarkupShowKeyboard"))]
+    #[serde(rename(
+        serialize = "replyMarkupShowKeyboard",
+        deserialize = "replyMarkupShowKeyboard"
+    ))]
     ShowKeyboard(ReplyMarkupShowKeyboard),
 }
 
