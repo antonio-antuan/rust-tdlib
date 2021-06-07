@@ -1,5 +1,8 @@
 CHANGELOG
 ===
+## 0.2.2
+* Fixed enums serializing
+
 ## 0.2.1
 * Readme fixes
 * Fixed stack overflow error
