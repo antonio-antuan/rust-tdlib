@@ -1,10 +1,10 @@
-use rust_tdlib::types::{CreatePrivateChat, GetUser, SearchPublicChat};
+use rust_tdlib::types::MessageContent;
 use rust_tdlib::{
     client::{Client, Worker},
     tdjson,
     types::{
-        FormattedText, GetMe, InputMessageContent, InputMessageText, JoinChat, SearchPublicChats,
-        SendMessage, TdlibParameters, Update,
+        FormattedText, GetMe, InputMessageContent, InputMessageText, SearchPublicChat,
+        SearchPublicChats, SendMessage, TdlibParameters, Update,
     },
 };
 use std::borrow::Borrow;
@@ -32,6 +32,7 @@ async fn main() {
         .with_updates_sender(sender)
         .build()
         .unwrap();
+
     let client2 = Client::builder()
         .with_tdlib_parameters(
             TdlibParameters::builder()
@@ -81,24 +82,37 @@ async fn main() {
         .await
         .unwrap();
 
+    let text_to_send = format!("hello from {}", me1.username());
+    log::info!("sending text: {}", text_to_send);
+
     client1
         .send_message(
             SendMessage::builder()
                 .chat_id(chat_with_yourself.id())
                 .input_message_content(InputMessageContent::InputMessageText(
                     InputMessageText::builder()
-                        .text(FormattedText::builder().text("hello").build())
+                        .text(FormattedText::builder().text(&text_to_send).build())
                         .build(),
                 ))
                 .build(),
         )
         .await
         .unwrap();
+
     let mut wait_messages: i32 = 100;
     while let Some(message) = receiver.recv().await {
         match message.borrow() {
             Update::NewMessage(new_message) => {
-                log::info!("new message received: {:?}", new_message)
+                log::info!("new message received: {:?}", new_message);
+                match new_message.message().content() {
+                    MessageContent::MessageText(text) => {
+                        if text.text().text().eq(&text_to_send) {
+                            break;
+                        }
+                    }
+                    _ => {}
+                }
+                break;
             }
             _ => {}
         }
@@ -107,6 +121,7 @@ async fn main() {
             break;
         }
     }
+
     client1.stop().await.unwrap();
     client2.stop().await.unwrap();
 
