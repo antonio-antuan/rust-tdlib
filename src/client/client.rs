@@ -6,12 +6,15 @@ use crate::{
     errors::{RTDError, RTDResult},
     types::*,
 };
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, oneshot, Mutex};
+use std::sync::Arc;
+use std::borrow::BorrowMut;
 
 const CLOSED_RECEIVER_ERROR: RTDError = RTDError::Internal("receiver already closed");
 const INVALID_RESPONSE_ERROR: RTDError = RTDError::Internal("receive invalid response");
 const NO_EXTRA: RTDError =
     RTDError::Internal("invalid tdlib response type, not have `extra` field");
+const CLIENT_NOT_AUTHORIZED: RTDError = RTDError::Internal("client not authorized yet");
 
 /// Represents state of particular client instance.
 #[derive(Debug, Clone)]
@@ -22,6 +25,65 @@ pub enum ClientState {
     Closed,
     /// Client closed with error
     Error(String),
+}
+
+
+#[derive(Debug, Clone)]
+pub struct ClientStateWatcher {
+    state: ClientState,
+    stopper: Option<oneshot::Sender<()>>,
+    rec: Option<Arc<Mutex<mpsc::Receiver<ClientState>>>>,
+}
+
+impl ClientStateWatcher {
+    pub fn new() -> Self {
+        Self{
+            state: ClientState::Closed,
+            stopper: None,
+            rec: None,
+        }
+    }
+
+    pub fn reset_auth(&self) {
+
+    }
+
+    pub fn is_authenticated(&self) {
+
+    }
+
+    pub fn stop(&self) {
+
+    }
+
+    pub async fn wait_for_state_changed(&mut self) -> RTDResult<ClientState> {
+        match &self.rec {
+            None => { Err(RTDError::BadRequest("client not authorized yet")) }
+            Some(rec) => {
+                let mut guard = rec.lock().await;
+                match guard.recv().await {
+                    None => {
+                        log::debug!("received empty state, consider it as ClientState::Closed");
+                        Ok(ClientState::Closed)
+                    }
+                    Some(v) => {
+                        Ok(v)
+                    }
+                }
+            }
+        }
+    }
+
+    pub(crate) fn setup_notifier(&mut self, rec: mpsc::Receiver<ClientState>, stopper: oneshot::Sender<()>) -> RTDResult<()> {
+        if self.rec.is_some() || self.stopper.is_some() {
+            return Err(RTDError::Internal("client already authorized"))
+        }
+        self.stopper.expect_none("unexpectedly set up stopper");
+        self.rec.expect_none("unexpectedly set up rec");
+        self.rec = Some(Arc::new(Mutex::new(rec)));
+        self.stopper = Some(stopper);
+        Ok(())
+    }
 }
 
 /// Struct stores all methods which you can call to interact with Telegram, such as:
@@ -36,6 +98,7 @@ where
     is_started: bool,
     updates_sender: Option<mpsc::Sender<Box<Update>>>,
     tdlib_parameters: TdlibParameters,
+    state_watcher: ClientStateWatcher,
 }
 
 impl<S> Client<S>
@@ -46,12 +109,21 @@ where
         &self.tdlib_parameters
     }
 
+    pub fn get_client_state_watcher(&self) -> &ClientStateWatcher {
+        &self.state_watcher
+    }
+
+    pub(crate) fn get_mut_client_state_watcher(&mut self) -> &mut ClientStateWatcher {
+        self.state_watcher.borrow_mut()
+    }
+
     fn get_client_id(&self) -> RTDResult<i32> {
         match self.client_id {
             Some(client_id) => Ok(client_id),
-            None => Err(RTDError::BadRequest("client not authorized yet")),
+            None => Err(CLIENT_NOT_AUTHORIZED),
         }
     }
+
 
     pub(crate) fn set_client_id(&mut self, client_id: i32) -> RTDResult<()> {
         match self.client_id {
@@ -152,6 +224,7 @@ where
             tdlib_parameters,
             is_started: false,
             client_id: None,
+            state_watcher: ClientStateWatcher::new(),
         }
     }
 

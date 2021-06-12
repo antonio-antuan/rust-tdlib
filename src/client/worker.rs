@@ -4,7 +4,6 @@ use super::{
     observer::OBSERVER,
     tdlib_client::{TdJson, TdLibClient},
 };
-use crate::types::Update;
 use crate::{
     errors::RTDError,
     errors::RTDResult,
@@ -15,7 +14,7 @@ use crate::{
         AuthorizationStateWaitPassword, AuthorizationStateWaitPhoneNumber,
         AuthorizationStateWaitRegistration, CheckAuthenticationCode, CheckAuthenticationPassword,
         CheckDatabaseEncryptionKey, GetApplicationConfig, RObject, RegisterUser,
-        SetAuthenticationPhoneNumber, SetTdlibParameters, TdType, UpdateAuthorizationState,
+        SetAuthenticationPhoneNumber, SetTdlibParameters, TdType, UpdateAuthorizationState, Update, Close
     },
 };
 use async_trait::async_trait;
@@ -24,10 +23,11 @@ use std::io;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use tokio::{
-    sync::{mpsc, RwLock},
+    sync::{mpsc, oneshot, RwLock},
     task::JoinHandle,
     time,
 };
+use tokio::sync::oneshot::error::RecvError;
 
 /// `AuthStateHandler` trait provides methods that returns data, required for authentication
 ///It allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
@@ -255,20 +255,26 @@ where
     pub async fn auth_client(
         &mut self,
         mut client: Client<T>,
-    ) -> RTDResult<(JoinHandle<ClientState>, Client<T>)> {
+    ) -> RTDResult<Client<T>> {
         if !self.is_running() {
             return Err(RTDError::BadRequest("worker not started yet"));
         };
         let client_id = self.tdlib_client.new_client();
         log::debug!("new client created: {}", client_id);
+
         client.set_client_id(client_id)?;
+
         let (sx, mut rx) = mpsc::channel::<ClientState>(10);
+
+
         self.clients
             .write()
             .await
             .insert(client_id, (client.clone(), sx));
         log::debug!("new client added");
 
+        // We need to call any tdlib method to retrieve first response.
+        // Otherwise client can't be authorized.
         client
             .get_application_config(GetApplicationConfig::builder().build())
             .await?;
@@ -279,7 +285,7 @@ where
             match msg {
                 ClientState::Closed => {
                     log::debug!("client state on auth: closed");
-                    return Ok((tokio::spawn(async { ClientState::Closed }), client));
+                    return Ok(client);
                 }
                 ClientState::Error(e) => {
                     log::debug!("client state on auth: error");
@@ -290,16 +296,37 @@ where
                 }
             }
         }
-        let h = tokio::spawn(async move {
-            match rx.recv().await {
-                Some(ClientState::Opened) => {
-                    ClientState::Error("received Opened state again".to_string())
-                }
-                Some(state) => state,
-                None => ClientState::Error("auth state channel closed".to_string()),
+
+        let (stsx, mut strx) = oneshot::channel::<()>();
+        let stopper = || async {
+            let stop_sig = Close::builder().build();
+            let extra = stop_sig.as_ref().extra().ok_or(NO_EXTRA)?;
+            let signal = OBSERVER.subscribe(&extra);
+            self.tdlib_client
+                .send(self.get_client_id()?, stop_sig.as_ref())?;
+            let received = signal.await;
+            OBSERVER.unsubscribe(&extra);
+            match received {
+                Err(_) => Err(CLOSED_RECEIVER_ERROR),
+                Ok(v) => match v {
+                    TdType::Ok(v) => Ok(v),
+                    TdType::Error(v) => Err(RTDError::TdlibError(v.message().clone())),
+                    _ => {
+                        log::error!("invalid response received: {:?}", v);
+                        Err(INVALID_RESPONSE_ERROR)
+                    }
+                },
+            }
+        };
+        tokio::spawn(async move {
+            match strx.await {
+                Ok(_) => {stopper()}
+                Err(_) => {todo!()}
             }
         });
-        Ok((h, client))
+
+        client.get_mut_client_state_watcher().setup_notifier(rx, stsx)?;
+        Ok(client)
     }
 
     /// Determines that the worker is running.
@@ -313,7 +340,7 @@ where
         let (sx, _) = mpsc::channel::<ClientState>(10);
         let cl = self.tdlib_client.new_client();
         self.clients.write().await.insert(cl, (client.clone(), sx));
-        client.set_client_id(cl).unwrap();
+        client.mark_authorized(cl, Arc::new(Notify::new())).unwrap();
         client
     }
 
