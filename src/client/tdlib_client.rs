@@ -10,7 +10,7 @@ pub trait TdLibClient {
     fn new_client(&self) -> tdjson::ClientId;
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Copy)]
 /// Base implementation. See [tdjson](crate::tdjson) for details.
 pub struct TdJson;
 

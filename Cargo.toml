@@ -1,8 +1,8 @@
 [package]
 name = "rust-tdlib"
-version = "0.2.3"
+version = "0.3.0-alpha1"
 authors = ["aCLr <a.ch.clr@gmail.com>"]
-description = "TDlib (Telegram Database) client"
+description = "TDlib (Telegram Database library) client"
 homepage = "https://github.com/aCLr/rust-tdlib"
 repository = "https://github.com/aCLr/rust-tdlib"
 license = "MIT"
