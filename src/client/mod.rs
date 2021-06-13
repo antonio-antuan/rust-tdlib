@@ -13,6 +13,6 @@ pub mod auth_handler;
 #[doc(hidden)]
 pub mod tdlib_client;
 
-pub use client::Client;
+pub use auth_handler::{AuthStateHandler, ConsoleAuthStateHandler, SignalAuthStateHandler};
+pub use client::{Client, ClientState};
 pub use worker::{Worker, WorkerBuilder};
-pub use auth_handler::{SignalAuthStateHandler, ConsoleAuthStateHandler, AuthStateHandler};

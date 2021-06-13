@@ -1,6 +1,10 @@
-use crate::types::{AuthorizationStateWaitOtherDeviceConfirmation, AuthorizationStateWaitCode, AuthorizationStateWaitEncryptionKey, AuthorizationStateWaitPassword, AuthorizationStateWaitPhoneNumber, AuthorizationStateWaitRegistration};
-use std::io;
+use crate::types::{
+    AuthorizationStateWaitCode, AuthorizationStateWaitEncryptionKey,
+    AuthorizationStateWaitOtherDeviceConfirmation, AuthorizationStateWaitPassword,
+    AuthorizationStateWaitPhoneNumber, AuthorizationStateWaitRegistration,
+};
 use async_trait::async_trait;
+use std::io;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -103,25 +107,23 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
             println!("wait for first_name and second_name separated by comma");
             let inp: String = ConsoleAuthStateHandler::wait_input();
             if let Some((f, l)) = split_string(inp) {
-                return (f, l)
+                return (f, l);
             }
         }
     }
 }
 
-
 /// Provides minimal implementation of `AuthStateHandler`.
 /// All required methods wait for stdin input
 #[derive(Debug, Clone)]
 pub struct SignalAuthStateHandler {
-    rec: Arc<Mutex<tokio::sync::mpsc::Receiver<String>>>
+    rec: Arc<Mutex<tokio::sync::mpsc::Receiver<String>>>,
 }
-
 
 impl SignalAuthStateHandler {
     pub fn new(receiver: tokio::sync::mpsc::Receiver<String>) -> Self {
         Self {
-            rec: Arc::new(Mutex::new(receiver))
+            rec: Arc::new(Mutex::new(receiver)),
         }
     }
 
@@ -155,12 +157,15 @@ impl AuthStateHandler for SignalAuthStateHandler {
         self.wait_signal().await
     }
 
-    async fn handle_wait_registration(&self, _: &AuthorizationStateWaitRegistration) -> (String, String) {
+    async fn handle_wait_registration(
+        &self,
+        _: &AuthorizationStateWaitRegistration,
+    ) -> (String, String) {
         loop {
             log::info!("wait for first name and last name");
             let inp = self.wait_signal().await;
             if let Some((f, l)) = split_string(inp) {
-                return (f, l)
+                return (f, l);
             }
         }
     }
@@ -172,7 +177,7 @@ fn split_string(input: String) -> Option<(String, String)> {
         let f = found.get(0).unwrap().trim();
         let s = found.get(1).unwrap().trim();
         if !f.is_empty() && !s.is_empty() {
-            return Some((f.to_string(), s.to_string()))
+            return Some((f.to_string(), s.to_string()));
         }
     }
     None
