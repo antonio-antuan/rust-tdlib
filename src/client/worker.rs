@@ -108,9 +108,10 @@ pub(crate) type StateMessage = RTDResult<ClientState, (RTDError, UpdateAuthoriza
 #[derive(Debug, Clone)]
 struct ClientContext<S: TdLibClient + Clone> {
     client: Client<S>,
+    private_state_message_sender: mpsc::Sender<ClientState>,
+    private_state_message_receiver: Arc<Mutex<mpsc::Receiver<ClientState>>>,
     pub_state_message_sender: Option<mpsc::Sender<StateMessage>>,
     pub_state_message_receiver: Option<Arc<Mutex<mpsc::Receiver<StateMessage>>>>,
-
 }
 
 impl<S> ClientContext<S>
@@ -119,6 +120,12 @@ where
 {
     pub fn client(&self) -> &Client<S> {
         &self.client
+    }
+    pub fn private_state_message_receiver(&self) -> &Arc<Mutex<mpsc::Receiver<ClientState>>> {
+        &self.private_state_message_receiver
+    }
+    pub fn private_state_message_sender(&self) -> &mpsc::Sender<ClientState> {
+        &self.private_state_message_sender
     }
     pub fn pub_state_message_sender(&self) -> &Option<mpsc::Sender<StateMessage>> {
         &self.pub_state_message_sender
@@ -205,11 +212,7 @@ where
         }
 
         let client_id = client.take_client_id()?;
-        self.clients
-            .write()
-            .await
-            .remove(&client_id)
-            .unwrap();
+        self.clients.write().await.remove(&client_id).unwrap();
         Ok(())
     }
 
@@ -229,6 +232,17 @@ where
         }
     }
 
+    pub async fn wait_client_state(&self, client: &Client<T>) -> RTDResult<ClientState> {
+        let guard = self.clients.read().await;
+        let mut rec = guard
+            .get(&client.get_client_id()?)
+            .unwrap()
+            .private_state_message_receiver()
+            .lock()
+            .await;
+        Ok(rec.recv().await.unwrap())
+    }
+
     /// Binds client with worker and runs authorization routines.
     /// Method returns error if worker is not running or client already bound
     pub async fn bind_client(&mut self, mut client: Client<T>) -> RTDResult<Client<T>> {
@@ -246,10 +260,14 @@ where
                 (Some(sx), Some(Arc::new(Mutex::new(rx))))
             }
         };
+
+        let (psx, prx) = mpsc::channel::<ClientState>(5);
         let ctx = ClientContext {
             client: client.clone(),
             pub_state_message_sender: sx,
             pub_state_message_receiver: rx,
+            private_state_message_receiver: Arc::new(Mutex::new(prx)),
+            private_state_message_sender: psx,
         };
 
         self.clients.write().await.insert(client_id, ctx);
@@ -274,8 +292,8 @@ where
     pub async fn set_client(&mut self, mut client: Client<T>) -> Client<T> {
         let (sx, _) = mpsc::channel::<ClientState>(10);
         let cl = self.tdlib_client.new_client();
-        self.clients.write().await.insert(cl, (client.clone(), sx));
-        client.mark_authorized(cl, Arc::new(Notify::new())).unwrap();
+        // self.clients.write().await.insert(cl, (client.clone(), sx));
+        // client.mark_authorized(cl, Arc::new(Notify::new())).unwrap();
         client
     }
 
@@ -416,6 +434,7 @@ where
         handle_auth_state(
             client,
             ctx.pub_state_message_sender(),
+            ctx.private_state_message_sender(),
             self.auth_state_handler.as_ref(),
             auth_state,
             time::Duration::from_secs_f64(self.channels_send_timeout),
@@ -445,6 +464,7 @@ where
                             handle_auth_state(
                                 client_ctx.client(),
                                 client_ctx.pub_state_message_sender(),
+                                client_ctx.private_state_message_sender(),
                                 auth_state_handler.as_ref(),
                                 &auth_state.authorization_state(),
                                 send_timeout,
@@ -489,11 +509,10 @@ where
     }
 }
 
-
 async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
     client: &Client<R>,
     pub_state_sender: &Option<mpsc::Sender<StateMessage>>,
-    private_state_sender: mpsc::Sender<ClientState>,
+    private_state_sender: &mpsc::Sender<ClientState>,
     auth_state_handler: &A,
     state: &AuthorizationState,
     send_state_timeout: time::Duration,
@@ -510,7 +529,7 @@ async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
         }
         AuthorizationState::Ready(_) => {
             log::debug!("ready state received, send signal");
-            result_state = Some(ClientState::Closed);
+            result_state = Some(ClientState::Opened);
             Ok(())
         }
         AuthorizationState::WaitCode(wait_code) => {
@@ -600,6 +619,7 @@ async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
     };
 
     match &result_state {
+        None => {}
         Some(state) => {
             if let Err(err) = private_state_sender.send(state.clone()).await {
                 {
@@ -611,19 +631,17 @@ async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
                 };
             }
 
-            match &pub_state_sender {
-                Some(sender) => {
-                    if let Err(err) = sender
-                        .send_timeout(Ok(state.clone()), send_state_timeout)
-                        .await
-                    {
-                        log::error!(
-                            "can't send state update, but state changed; error: {:?}, state: {:?}",
-                            err,
-                            state
-                        )
-                    };
-                }
+            if let Some(sender) = &pub_state_sender {
+                if let Err(err) = sender
+                    .send_timeout(Ok(state.clone()), send_state_timeout)
+                    .await
+                {
+                    log::error!(
+                        "can't send state update, but state changed; error: {:?}, state: {:?}",
+                        err,
+                        state
+                    )
+                };
             }
         }
     }

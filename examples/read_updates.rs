@@ -1,3 +1,4 @@
+use rust_tdlib::client::ClientState;
 use rust_tdlib::{
     client::{Client, Worker},
     tdjson,
@@ -43,10 +44,12 @@ async fn main() {
     let mut waiter = worker.start();
 
     let v = tokio::select! {
-        c = worker.bind_client(client) => {match c {
-            Ok((s, cl)) => Some((s, cl)),
-            Err(e) => panic!("{:?}", e)
-        }}
+        c = worker.bind_client(client) => {
+            match c {
+                Ok(cl) => Some(cl),
+                Err(e) => panic!("{:?}", e)
+            }
+        }
         w = &mut waiter => panic!("{:?}", w),
         _ = &mut reader_waiter => {
             log::info!("reader closed");
@@ -54,20 +57,18 @@ async fn main() {
         },
     };
 
-    if let Some((mut state, client)) = v {
+    if let Some(client) = v {
         log::info!("stop client");
         client.stop().await.unwrap();
         log::info!("client stopped");
-
-        tokio::select! {
-            _ = &mut reader_waiter => {state.abort()},
-            _ = &mut state => {reader_waiter.abort()},
-            _ = &mut waiter => {reader_waiter.abort(); state.abort();},
-        };
+        loop {
+            if worker.wait_client_state(&client).await.unwrap() == ClientState::Closed {
+                log::info!("closed");
+                break;
+            }
+        }
     }
 
     log::info!("stop worker");
     worker.stop();
-    log::info!("wait worker stopped");
-    waiter.await.unwrap();
 }

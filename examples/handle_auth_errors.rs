@@ -1,7 +1,6 @@
 use rust_tdlib::types::AuthorizationState;
 use rust_tdlib::{
     client::{Client, ClientState, SignalAuthStateHandler, Worker},
-    errors::RTDError,
     tdjson,
     types::TdlibParameters,
 };
@@ -106,15 +105,32 @@ async fn main() {
     }
 
     let (client_state, auth_state) = worker.get_client_state(&client).await.unwrap();
-    assert_eq!(
-        client_state,
-        ClientState::Authorizing
-    );
+    assert_eq!(client_state, ClientState::Authorizing);
 
     match &auth_state {
         AuthorizationState::WaitCode(_) => {
             // `WaitCode`, as expected
         }
-        _ => {panic!("weird, we've just seen that auth flow stopped on `WaitCode` state")}
+        _ => {
+            panic!("weird, we've just seen that auth flow stopped on `WaitCode` state")
+        }
     }
+
+    // and well, we can just wait for client state changes, without any details about authorization state.
+    let res = tokio::time::timeout(std::time::Duration::from_secs(5), async {
+        match worker.wait_client_state(&client).await.unwrap() {
+            ClientState::Opened => {
+                log::info!("here we go")
+            }
+            ClientState::Closed => {
+                log::error!("client unexpectedly closed")
+            }
+            ClientState::Authorizing => {
+                log::warn!("client is not authorized yet")
+            }
+        };
+    })
+    .await;
+    // of course here we await infinitely because of not handled WaitCode above.
+    assert!(res.is_err());
 }
