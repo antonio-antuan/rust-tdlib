@@ -41,6 +41,7 @@
 #![allow(
     clippy::large_enum_variant,
     clippy::borrowed_box,
+    clippy::upper_case_acronyms,
     clippy::manual_non_exhaustive
 )]
 

@@ -24,6 +24,7 @@ use tokio::{
     task::JoinHandle,
     time,
 };
+use std::time::Duration;
 
 #[derive(Debug)]
 pub struct WorkerBuilder<A, T>
@@ -148,7 +149,7 @@ where
     run_flag: Arc<AtomicBool>,
     auth_state_handler: Arc<A>,
     read_updates_timeout: f64,
-    channels_send_timeout: f64,
+    channels_send_timeout: Duration,
     tdlib_client: S,
     clients: Arc<RwLock<ClientsMap<S>>>,
 }
@@ -212,7 +213,7 @@ where
         }
 
         let client_id = client.take_client_id()?;
-        self.clients.write().await.remove(&client_id).unwrap();
+        self.clients.write().await.remove(&client_id);
         Ok(())
     }
 
@@ -234,13 +235,13 @@ where
 
     pub async fn wait_client_state(&self, client: &Client<T>) -> RTDResult<ClientState> {
         let guard = self.clients.read().await;
-        let mut rec = guard
-            .get(&client.get_client_id()?)
-            .unwrap()
-            .private_state_message_receiver()
-            .lock()
-            .await;
-        Ok(rec.recv().await.unwrap())
+        match guard.get(&client.get_client_id()?) {
+            None => Err(RTDError::BadRequest("client not bound yet")),
+            Some(ctx) => {
+                let mut rec = ctx.private_state_message_receiver().lock().await;
+                Ok(rec.recv().await.unwrap())
+            }
+        }
     }
 
     /// Binds client with worker and runs authorization routines.
@@ -311,7 +312,7 @@ where
             run_flag,
             read_updates_timeout,
             tdlib_client,
-            channels_send_timeout,
+            channels_send_timeout: time::Duration::from_secs_f64(channels_send_timeout),
             auth_state_handler: Arc::new(auth_state_handler),
             clients: Arc::new(RwLock::new(clients)),
         }
@@ -352,7 +353,7 @@ where
         let run_flag = self.run_flag.clone();
         let clients = self.clients.clone();
         let recv_timeout = self.read_updates_timeout;
-        let send_timeout = time::Duration::from_secs_f64(self.channels_send_timeout);
+        let send_timeout = self.channels_send_timeout;
         let tdlib_client = Arc::new(self.tdlib_client.clone());
 
         tokio::spawn(async move {
@@ -429,17 +430,21 @@ where
     ) -> RTDResult<()> {
         let cl = client.get_client_id()?;
         let clients_guard = self.clients.read().await;
-        let ctx = clients_guard.get(&cl).unwrap();
+        match clients_guard.get(&client.get_client_id()?) {
+            None => Err(RTDError::BadRequest("client not bound yet")),
+            Some(ctx) => {
+                handle_auth_state(
+                    client,
+                    ctx.pub_state_message_sender(),
+                    ctx.private_state_message_sender(),
+                    self.auth_state_handler.as_ref(),
+                    auth_state,
+                    self.channels_send_timeout,
+                ).await
+            }
+        }
 
-        handle_auth_state(
-            client,
-            ctx.pub_state_message_sender(),
-            ctx.private_state_message_sender(),
-            self.auth_state_handler.as_ref(),
-            auth_state,
-            time::Duration::from_secs_f64(self.channels_send_timeout),
-        )
-        .await
+
     }
 
     // created task handles [UpdateAuthorizationState][crate::types::UpdateAuthorizationState] and sends it to particular methods of specified [AuthStateHandler](crate::client::client::AuthStateHandler)
@@ -449,7 +454,7 @@ where
     ) -> JoinHandle<()> {
         let auth_state_handler = self.auth_state_handler.clone();
         let clients = self.clients.clone();
-        let send_timeout = time::Duration::from_secs_f64(self.channels_send_timeout);
+        let send_timeout = self.channels_send_timeout;
 
         tokio::spawn(async move {
             while let Some(auth_state) = auth_rx.recv().await {
@@ -484,10 +489,11 @@ where
                                 }
                                 Some(cl) => {
                                     if let Some(state_sender) = cl.pub_state_message_sender() {
-                                        state_sender
+                                        if let Err(err) = state_sender
                                             .send_timeout(Err((err, auth_state)), send_timeout)
-                                            .await
-                                            .unwrap();
+                                            .await {
+                                            log::error!("cannot send client state changes: {}", err)
+                                        }
                                     }
                                 }
                             };
