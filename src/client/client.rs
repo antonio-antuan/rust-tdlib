@@ -19,8 +19,9 @@ const CLIENT_NOT_AUTHORIZED: RTDError = RTDError::Internal("client not authorize
 pub enum ClientState {
     /// Client opened. You can start interaction
     Opened,
-    /// Client closed properly. You must reopen it if you want to interact with Telegram
+    /// Client closed. You must reopen it if you want to interact with TDLib
     Closed,
+    /// Client not authorizde yet
     Authorizing,
 }
 
@@ -118,6 +119,9 @@ where
         self
     }
 
+    /// If you want to receive all (AuthorizationState)[crate::types::authorization_state::AuthorizationState] changes
+    /// you have to specify positive number of (channel)[tokio::sync::mpsc::channel] size.
+    /// Channel will be used to send state changes.
     pub fn with_auth_state_channel(mut self, channel_size: usize) -> Self {
         self.auth_state_channel_size = Some(channel_size);
         self

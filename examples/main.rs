@@ -112,20 +112,13 @@ async fn main() {
 
     let mut wait_messages: i32 = 100;
     while let Some(message) = receiver.recv().await {
-        match message.borrow() {
-            Update::NewMessage(new_message) => {
-                log::info!("new message received: {:?}", new_message);
-                match new_message.message().content() {
-                    MessageContent::MessageText(text) => {
-                        if text.text().text().eq(&text_to_send) {
-                            break;
-                        }
-                    }
-                    _ => {}
+        if let Update::NewMessage(new_message) = message.borrow() {
+            log::info!("new message received: {:?}", new_message);
+            if let MessageContent::MessageText(text) = new_message.message().content() {
+                if text.text().text().eq(&text_to_send) {
+                    break;
                 }
-                break;
             }
-            _ => {}
         }
         wait_messages -= 1;
         if wait_messages == 0 {

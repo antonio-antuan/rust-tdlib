@@ -8,6 +8,7 @@ pub mod client;
 /// Handlers for all incoming data
 pub mod worker;
 
+/// Authorization state handlers.
 pub mod auth_handler;
 
 #[doc(hidden)]

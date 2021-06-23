@@ -42,6 +42,7 @@
     clippy::large_enum_variant,
     clippy::borrowed_box,
     clippy::upper_case_acronyms,
+    clippy::field_reassign_with_default,
     clippy::manual_non_exhaustive
 )]
 

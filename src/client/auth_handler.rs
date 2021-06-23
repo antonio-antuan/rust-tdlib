@@ -9,7 +9,7 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 
 /// `AuthStateHandler` trait provides methods that returns data, required for authentication
-///It allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
+/// It allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
 #[async_trait]
 pub trait AuthStateHandler {
     /// Interacts with provided link
@@ -44,7 +44,7 @@ pub trait AuthStateHandler {
 }
 
 /// Provides minimal implementation of `AuthStateHandler`.
-/// All required methods wait for stdin input
+/// All required methods wait (synchronously) for stdin input
 #[derive(Debug, Clone)]
 pub struct ConsoleAuthStateHandler;
 
@@ -71,7 +71,7 @@ impl ConsoleAuthStateHandler {
 #[async_trait]
 impl AuthStateHandler for ConsoleAuthStateHandler {
     async fn handle_wait_code(&self, _wait_code: &AuthorizationStateWaitCode) -> String {
-        println!("wait for auth code");
+        println!("waiting for auth code");
         ConsoleAuthStateHandler::wait_input()
     }
 
@@ -79,7 +79,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         &self,
         _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
     ) -> String {
-        println!("wait for encryption key");
+        println!("waiting for encryption key");
         ConsoleAuthStateHandler::wait_input()
     }
 
@@ -87,7 +87,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         &self,
         _wait_password: &AuthorizationStateWaitPassword,
     ) -> String {
-        println!("wait for password");
+        println!("waiting for password");
         ConsoleAuthStateHandler::wait_input()
     }
 
@@ -95,7 +95,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         &self,
         _wait_phone_number: &AuthorizationStateWaitPhoneNumber,
     ) -> String {
-        println!("wait for phone number");
+        println!("waiting for phone number");
         ConsoleAuthStateHandler::wait_input()
     }
 
@@ -104,7 +104,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         _wait_registration: &AuthorizationStateWaitRegistration,
     ) -> (String, String) {
         loop {
-            println!("wait for first_name and second_name separated by comma");
+            println!("waiting for first_name and second_name separated by comma");
             let inp: String = ConsoleAuthStateHandler::wait_input();
             if let Some((f, l)) = split_string(inp, ',') {
                 return (f, l);
@@ -113,8 +113,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
     }
 }
 
-/// Provides minimal implementation of `AuthStateHandler`.
-/// All required methods wait for stdin input
+/// All required methods wait for data sent by [Sender](tokio::sync::mpsc::Sender).
 #[derive(Debug, Clone)]
 pub struct SignalAuthStateHandler {
     rec: Arc<Mutex<tokio::sync::mpsc::Receiver<String>>>,
@@ -136,24 +135,24 @@ impl SignalAuthStateHandler {
 #[async_trait]
 impl AuthStateHandler for SignalAuthStateHandler {
     async fn handle_wait_code(&self, _: &AuthorizationStateWaitCode) -> String {
-        log::info!("wait for auth code");
+        log::info!("waiting for auth code");
         self.wait_signal().await
     }
 
     async fn handle_encryption_key(&self, _: &AuthorizationStateWaitEncryptionKey) -> String {
-        log::info!("wait for encryption key");
+        log::info!("waiting for encryption key");
         let f = self.wait_signal().await;
         log::info!("get encryption key");
         f
     }
 
     async fn handle_wait_password(&self, _: &AuthorizationStateWaitPassword) -> String {
-        log::info!("wait for password");
+        log::info!("waiting for password");
         self.wait_signal().await
     }
 
     async fn handle_wait_phone_number(&self, _: &AuthorizationStateWaitPhoneNumber) -> String {
-        log::info!("wait for phone number");
+        log::info!("waiting for phone number");
         self.wait_signal().await
     }
 
@@ -162,7 +161,7 @@ impl AuthStateHandler for SignalAuthStateHandler {
         _: &AuthorizationStateWaitRegistration,
     ) -> (String, String) {
         loop {
-            log::info!("wait for first name and last name separated by comma");
+            log::info!("waiting for first name and last name separated by comma");
             let inp = self.wait_signal().await;
             if let Some((f, l)) = split_string(inp, ',') {
                 return (f, l);

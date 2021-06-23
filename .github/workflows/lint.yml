@@ -17,6 +17,7 @@ jobs:
     env:
       API_ID: 1
       API_HASH: 1
+      PHONE_NUMBER: 1
 
     steps:
       - uses: actions/checkout@v2
