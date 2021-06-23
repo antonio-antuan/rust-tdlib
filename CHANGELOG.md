@@ -1,5 +1,13 @@
 CHANGELOG
 ===
+## 0.3.0
+* New methods to handle and observe client state changes: `Worker::get_client_state`, `Worker::reset_auth`, `Worker::wait_auth_state_change`, `Worker::wait_client_state`. See `examples/handle_auth_state.rs` for details.
+* `JoinHandle` returned by `Worker::start` now yields empty tuple.  
+* `Worker::auth_client` renamed to `Worker::bind_client` and does not return `JoinHandle`.
+* `SignalAuthStateHandler` added.
+* `ClientState` now does not contain `Error` variant, `Authorizing` variant added.
+* `RTDError::TdlibError(String)` changed to `RTDError::TDLibError(rust_tdlib::types::error::Error)`.
+
 ## 0.2.3
 * Fixed enums serializing
 

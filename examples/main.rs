@@ -1,6 +1,6 @@
 use rust_tdlib::types::MessageContent;
 use rust_tdlib::{
-    client::{Client, Worker},
+    client::{Client, ClientState, Worker},
     tdjson,
     types::{
         FormattedText, GetMe, InputMessageContent, InputMessageText, SearchPublicChat,
@@ -52,15 +52,26 @@ async fn main() {
 
     let mut worker = Worker::builder().build().unwrap();
 
-    let waiter = worker.start();
+    worker.start();
 
-    let (client1_state, client1) = worker.auth_client(client1).await.unwrap();
-    log::info!("client1 authorized");
+    let client1 = worker.bind_client(client1).await.unwrap();
+
+    loop {
+        if worker.wait_client_state(&client1).await.unwrap() == ClientState::Opened {
+            log::info!("client1 authorized");
+            break;
+        }
+    }
     let me1 = client1.get_me(GetMe::builder().build()).await.unwrap();
     log::info!("me 1: {:?}", me1);
 
-    let (client2_state, client2) = worker.auth_client(client2).await.unwrap();
-    log::info!("client2 authorized");
+    let client2 = worker.bind_client(client2).await.unwrap();
+    loop {
+        if worker.wait_client_state(&client2).await.unwrap() == ClientState::Opened {
+            log::info!("client2 authorized");
+            break;
+        }
+    }
     let me2 = client2.get_me(GetMe::builder().build()).await.unwrap();
     log::info!("me 2: {:?}", me2);
 
@@ -101,20 +112,13 @@ async fn main() {
 
     let mut wait_messages: i32 = 100;
     while let Some(message) = receiver.recv().await {
-        match message.borrow() {
-            Update::NewMessage(new_message) => {
-                log::info!("new message received: {:?}", new_message);
-                match new_message.message().content() {
-                    MessageContent::MessageText(text) => {
-                        if text.text().text().eq(&text_to_send) {
-                            break;
-                        }
-                    }
-                    _ => {}
+        if let Update::NewMessage(new_message) = message.borrow() {
+            log::info!("new message received: {:?}", new_message);
+            if let MessageContent::MessageText(text) = new_message.message().content() {
+                if text.text().text().eq(&text_to_send) {
+                    break;
                 }
-                break;
             }
-            _ => {}
         }
         wait_messages -= 1;
         if wait_messages == 0 {
@@ -125,15 +129,20 @@ async fn main() {
     client1.stop().await.unwrap();
     client2.stop().await.unwrap();
 
-    client1_state.await.unwrap();
-    log::info!("client1 closed");
+    loop {
+        if worker.wait_client_state(&client1).await.unwrap() == ClientState::Closed {
+            log::info!("client1 closed");
+            break;
+        }
+    }
 
-    client2_state.await.unwrap();
-    log::info!("client2 closed");
+    loop {
+        if worker.wait_client_state(&client2).await.unwrap() == ClientState::Closed {
+            log::info!("client2 closed");
+            break;
+        }
+    }
 
     worker.stop();
     log::info!("worker stopped");
-
-    waiter.await.unwrap();
-    log::info!("waiter stopped");
 }

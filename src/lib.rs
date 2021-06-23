@@ -16,7 +16,7 @@
 //!     let waiter = worker.start();
 //!     let tdlib_params = TdlibParameters::builder().api_id(env!("API_ID").parse::<i32>().unwrap()).api_hash(env!("API_HASH")).build();
 //!     let client = rust_tdlib::client::Client::builder().with_tdlib_parameters(tdlib_params).build();
-//!     let (client_state, client) = worker.auth_client(client1).await.unwrap();
+//!     let (client_state, client) = worker.bind_client(client1).await.unwrap();
 //!     let me = client.get_me(GetMe::builder().build()).await.unwrap();
 //!     println!("{:?}", me);
 //! }
@@ -41,6 +41,8 @@
 #![allow(
     clippy::large_enum_variant,
     clippy::borrowed_box,
+    clippy::upper_case_acronyms,
+    clippy::field_reassign_with_default,
     clippy::manual_non_exhaustive
 )]
 

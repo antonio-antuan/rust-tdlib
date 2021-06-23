@@ -17,6 +17,7 @@ jobs:
     env:
       API_ID: 1
       API_HASH: 1
+      PHONE_NUMBER: 1
 
     steps:
       - uses: actions/checkout@v2
@@ -24,6 +25,8 @@ jobs:
       - name: get tdlib
         run: |
           git clone https://github.com/dorak88783/tdlib-builder
+          cd tdlib-builder
+          git checkout c92cd2e
 
       - name: tests
         env:

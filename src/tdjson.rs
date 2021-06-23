@@ -41,13 +41,9 @@ pub fn execute(request: &str) -> Option<String> {
 
 pub fn receive(timeout: f64) -> Option<String> {
     unsafe {
-        match td_receive(timeout)
+        td_receive(timeout)
             .as_ref()
             .map(|response| CStr::from_ptr(response).to_string_lossy().into_owned())
-        {
-            None => None,
-            Some(contents) => Some(contents),
-        }
     }
 }
 
