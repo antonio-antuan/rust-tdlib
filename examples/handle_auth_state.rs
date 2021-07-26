@@ -19,7 +19,7 @@ async fn main() {
 
     let tdlib_parameters = TdlibParameters::builder()
         .database_directory(db_dir)
-        .use_test_dc(true)
+        .use_test_dc(false)
         .api_id(env!("API_ID").parse::<i32>().unwrap())
         .api_hash(env!("API_HASH"))
         .system_language_code("en")
