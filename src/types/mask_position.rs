@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Position on a photo where a mask should be placed
+/// Position on a photo where a mask is placed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPosition {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct MaskPosition {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Part of the face, relative to which the mask should be placed
+    /// Part of the face, relative to which the mask is placed
 
     #[serde(skip_serializing_if = "MaskPoint::_is_default")]
     point: MaskPoint,

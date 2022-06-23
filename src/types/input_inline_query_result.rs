@@ -13,77 +13,41 @@ pub trait TDInputInlineQueryResult: Debug + RObject {}
 pub enum InputInlineQueryResult {
     #[doc(hidden)]
     _Default,
-    /// Represents a link to an animated GIF or an animated (i.e. without sound) H.264/MPEG-4 AVC video
-    #[serde(rename(
-        serialize = "inputInlineQueryResultAnimation",
-        deserialize = "inputInlineQueryResultAnimation"
-    ))]
+    /// Represents a link to an animated GIF or an animated (i.e., without sound) H.264/MPEG-4 AVC video
+    #[serde(rename(deserialize = "inputInlineQueryResultAnimation"))]
     Animation(InputInlineQueryResultAnimation),
     /// Represents a link to an article or web page
-    #[serde(rename(
-        serialize = "inputInlineQueryResultArticle",
-        deserialize = "inputInlineQueryResultArticle"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultArticle"))]
     Article(InputInlineQueryResultArticle),
     /// Represents a link to an MP3 audio file
-    #[serde(rename(
-        serialize = "inputInlineQueryResultAudio",
-        deserialize = "inputInlineQueryResultAudio"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultAudio"))]
     Audio(InputInlineQueryResultAudio),
     /// Represents a user contact
-    #[serde(rename(
-        serialize = "inputInlineQueryResultContact",
-        deserialize = "inputInlineQueryResultContact"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultContact"))]
     Contact(InputInlineQueryResultContact),
     /// Represents a link to a file
-    #[serde(rename(
-        serialize = "inputInlineQueryResultDocument",
-        deserialize = "inputInlineQueryResultDocument"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultDocument"))]
     Document(InputInlineQueryResultDocument),
     /// Represents a game
-    #[serde(rename(
-        serialize = "inputInlineQueryResultGame",
-        deserialize = "inputInlineQueryResultGame"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultGame"))]
     Game(InputInlineQueryResultGame),
     /// Represents a point on the map
-    #[serde(rename(
-        serialize = "inputInlineQueryResultLocation",
-        deserialize = "inputInlineQueryResultLocation"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultLocation"))]
     Location(InputInlineQueryResultLocation),
     /// Represents link to a JPEG image
-    #[serde(rename(
-        serialize = "inputInlineQueryResultPhoto",
-        deserialize = "inputInlineQueryResultPhoto"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultPhoto"))]
     Photo(InputInlineQueryResultPhoto),
-    /// Represents a link to a WEBP or TGS sticker
-    #[serde(rename(
-        serialize = "inputInlineQueryResultSticker",
-        deserialize = "inputInlineQueryResultSticker"
-    ))]
+    /// Represents a link to a WEBP, TGS, or WEBM sticker
+    #[serde(rename(deserialize = "inputInlineQueryResultSticker"))]
     Sticker(InputInlineQueryResultSticker),
     /// Represents information about a venue
-    #[serde(rename(
-        serialize = "inputInlineQueryResultVenue",
-        deserialize = "inputInlineQueryResultVenue"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultVenue"))]
     Venue(InputInlineQueryResultVenue),
     /// Represents a link to a page containing an embedded video player or a video file
-    #[serde(rename(
-        serialize = "inputInlineQueryResultVideo",
-        deserialize = "inputInlineQueryResultVideo"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultVideo"))]
     Video(InputInlineQueryResultVideo),
     /// Represents a link to an opus-encoded audio file within an OGG container, single channel audio
-    #[serde(rename(
-        serialize = "inputInlineQueryResultVoiceNote",
-        deserialize = "inputInlineQueryResultVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultVoiceNote"))]
     VoiceNote(InputInlineQueryResultVoiceNote),
 }
 
@@ -150,7 +114,7 @@ impl AsRef<InputInlineQueryResult> for InputInlineQueryResult {
     }
 }
 
-/// Represents a link to an animated GIF or an animated (i.e. without sound) H.264/MPEG-4 AVC video
+/// Represents a link to an animated GIF or an animated (i.e., without sound) H.264/MPEG-4 AVC video
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultAnimation {
     #[doc(hidden)]
@@ -176,11 +140,11 @@ pub struct InputInlineQueryResultAnimation {
     video_width: i32,
     /// Height of the video
     video_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAnimation, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageAnimation, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -360,11 +324,11 @@ pub struct InputInlineQueryResultArticle {
     thumbnail_width: i32,
     /// Thumbnail height, if known
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -529,11 +493,11 @@ pub struct InputInlineQueryResultAudio {
     audio_url: String,
     /// Audio file duration, in seconds
     audio_duration: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAudio, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageAudio, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -671,11 +635,11 @@ pub struct InputInlineQueryResultContact {
     thumbnail_width: i32,
     /// Thumbnail height, if known
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -819,11 +783,11 @@ pub struct InputInlineQueryResultDocument {
     thumbnail_width: i32,
     /// Height of the thumbnail
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageDocument, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageDocument, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -982,7 +946,7 @@ pub struct InputInlineQueryResultGame {
     id: String,
     /// Short name of the game
     game_short_name: String,
-    /// Message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
@@ -1085,11 +1049,11 @@ pub struct InputInlineQueryResultLocation {
     thumbnail_width: i32,
     /// Thumbnail height, if known
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1249,11 +1213,11 @@ pub struct InputInlineQueryResultPhoto {
     photo_width: i32,
     /// Height of the photo
     photo_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessagePhoto, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessagePhoto, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1391,7 +1355,7 @@ impl AsRef<InputInlineQueryResultPhoto> for RTDInputInlineQueryResultPhotoBuilde
     }
 }
 
-/// Represents a link to a WEBP or TGS sticker
+/// Represents a link to a WEBP, TGS, or WEBM sticker
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultSticker {
     #[doc(hidden)]
@@ -1403,17 +1367,17 @@ pub struct InputInlineQueryResultSticker {
     id: String,
     /// URL of the sticker thumbnail, if it exists
     thumbnail_url: String,
-    /// The URL of the WEBP or TGS sticker (sticker file size must not exceed 5MB)
+    /// The URL of the WEBP, TGS, or WEBM sticker (sticker file size must not exceed 5MB)
     sticker_url: String,
     /// Width of the sticker
     sticker_width: i32,
     /// Height of the sticker
     sticker_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, inputMessageSticker, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageSticker, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1551,11 +1515,11 @@ pub struct InputInlineQueryResultVenue {
     thumbnail_width: i32,
     /// Thumbnail height, if known
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1701,11 +1665,11 @@ pub struct InputInlineQueryResultVideo {
     video_height: i32,
     /// Video duration, in seconds
     video_duration: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageVideo, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageVideo, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1877,11 +1841,11 @@ pub struct InputInlineQueryResultVoiceNote {
     voice_note_url: String,
     /// Duration of the voice note, in seconds
     voice_note_duration: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageVoiceNote, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageVoiceNote, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,

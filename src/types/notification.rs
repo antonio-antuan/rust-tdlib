@@ -14,7 +14,7 @@ pub struct Notification {
     id: i32,
     /// Notification date
     date: i32,
-    /// True, if the notification was initially silent
+    /// True, if the notification was explicitly sent without sound
     is_silent: bool,
     /// Notification type
 

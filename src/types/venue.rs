@@ -16,7 +16,7 @@ pub struct Venue {
     title: String,
     /// Venue address; as defined by the sender
     address: String,
-    /// Provider of the venue database; as defined by the sender. Currently only "foursquare" and "gplaces" (Google Places) need to be supported
+    /// Provider of the venue database; as defined by the sender. Currently, only "foursquare" and "gplaces" (Google Places) need to be supported
     provider: String,
     /// Identifier of the venue in the provider database; as defined by the sender
     id: String,

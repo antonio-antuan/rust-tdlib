@@ -14,76 +14,40 @@ pub enum InlineQueryResult {
     #[doc(hidden)]
     _Default,
     /// Represents an animation file
-    #[serde(rename(
-        serialize = "inlineQueryResultAnimation",
-        deserialize = "inlineQueryResultAnimation"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultAnimation"))]
     Animation(InlineQueryResultAnimation),
     /// Represents a link to an article or web page
-    #[serde(rename(
-        serialize = "inlineQueryResultArticle",
-        deserialize = "inlineQueryResultArticle"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultArticle"))]
     Article(InlineQueryResultArticle),
     /// Represents an audio file
-    #[serde(rename(
-        serialize = "inlineQueryResultAudio",
-        deserialize = "inlineQueryResultAudio"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultAudio"))]
     Audio(InlineQueryResultAudio),
     /// Represents a user contact
-    #[serde(rename(
-        serialize = "inlineQueryResultContact",
-        deserialize = "inlineQueryResultContact"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultContact"))]
     Contact(InlineQueryResultContact),
     /// Represents a document
-    #[serde(rename(
-        serialize = "inlineQueryResultDocument",
-        deserialize = "inlineQueryResultDocument"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultDocument"))]
     Document(InlineQueryResultDocument),
     /// Represents information about a game
-    #[serde(rename(
-        serialize = "inlineQueryResultGame",
-        deserialize = "inlineQueryResultGame"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultGame"))]
     Game(InlineQueryResultGame),
     /// Represents a point on the map
-    #[serde(rename(
-        serialize = "inlineQueryResultLocation",
-        deserialize = "inlineQueryResultLocation"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultLocation"))]
     Location(InlineQueryResultLocation),
     /// Represents a photo
-    #[serde(rename(
-        serialize = "inlineQueryResultPhoto",
-        deserialize = "inlineQueryResultPhoto"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultPhoto"))]
     Photo(InlineQueryResultPhoto),
     /// Represents a sticker
-    #[serde(rename(
-        serialize = "inlineQueryResultSticker",
-        deserialize = "inlineQueryResultSticker"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultSticker"))]
     Sticker(InlineQueryResultSticker),
     /// Represents information about a venue
-    #[serde(rename(
-        serialize = "inlineQueryResultVenue",
-        deserialize = "inlineQueryResultVenue"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultVenue"))]
     Venue(InlineQueryResultVenue),
     /// Represents a video
-    #[serde(rename(
-        serialize = "inlineQueryResultVideo",
-        deserialize = "inlineQueryResultVideo"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultVideo"))]
     Video(InlineQueryResultVideo),
     /// Represents a voice note
-    #[serde(rename(
-        serialize = "inlineQueryResultVoiceNote",
-        deserialize = "inlineQueryResultVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "inlineQueryResultVoiceNote"))]
     VoiceNote(InlineQueryResultVoiceNote),
 }
 

@@ -14,28 +14,16 @@ pub enum LanguagePackStringValue {
     #[doc(hidden)]
     _Default,
     /// Returns a string stored in the local database from the specified localization target and language pack by its key. Returns a 404 error if the string is not found. Can be called synchronously
-    #[serde(rename(
-        serialize = "getLanguagePackString",
-        deserialize = "getLanguagePackString"
-    ))]
+    #[serde(rename(deserialize = "getLanguagePackString"))]
     GetLanguagePackString(GetLanguagePackString),
-    /// A deleted language pack string, the value should be taken from the built-in english language pack
-    #[serde(rename(
-        serialize = "languagePackStringValueDeleted",
-        deserialize = "languagePackStringValueDeleted"
-    ))]
+    /// A deleted language pack string, the value must be taken from the built-in English language pack
+    #[serde(rename(deserialize = "languagePackStringValueDeleted"))]
     Deleted(LanguagePackStringValueDeleted),
     /// An ordinary language pack string
-    #[serde(rename(
-        serialize = "languagePackStringValueOrdinary",
-        deserialize = "languagePackStringValueOrdinary"
-    ))]
+    #[serde(rename(deserialize = "languagePackStringValueOrdinary"))]
     Ordinary(LanguagePackStringValueOrdinary),
-    /// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
-    #[serde(rename(
-        serialize = "languagePackStringValuePluralized",
-        deserialize = "languagePackStringValuePluralized"
-    ))]
+    /// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more information
+    #[serde(rename(deserialize = "languagePackStringValuePluralized"))]
     Pluralized(LanguagePackStringValuePluralized),
 }
 
@@ -86,7 +74,7 @@ impl AsRef<LanguagePackStringValue> for LanguagePackStringValue {
     }
 }
 
-/// A deleted language pack string, the value should be taken from the built-in english language pack
+/// A deleted language pack string, the value must be taken from the built-in English language pack
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LanguagePackStringValueDeleted {
     #[doc(hidden)]
@@ -213,7 +201,7 @@ impl AsRef<LanguagePackStringValueOrdinary> for RTDLanguagePackStringValueOrdina
     }
 }
 
-/// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
+/// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more information
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LanguagePackStringValuePluralized {
     #[doc(hidden)]

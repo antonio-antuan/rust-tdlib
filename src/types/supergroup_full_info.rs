@@ -46,10 +46,12 @@ pub struct SupergroupFullInfo {
     sticker_set_id: i64,
     /// Location to which the supergroup is connected; may be null
     location: Option<ChatLocation>,
-    /// Invite link for this chat
-    invite_link: String,
+    /// Primary invite link for the chat; may be null. For chat administrators with can_invite_users right only
+    invite_link: Option<ChatInviteLink>,
+    /// List of commands of bots in the group
+    bot_commands: Vec<BotCommands>,
     /// Identifier of the basic group from which supergroup was upgraded; 0 if none
-    upgraded_from_basic_group_id: i32,
+    upgraded_from_basic_group_id: i64,
     /// Identifier of the last message in the basic group from which supergroup was upgraded; 0 if none
     upgraded_from_max_message_id: i64,
 }
@@ -144,11 +146,15 @@ impl SupergroupFullInfo {
         &self.location
     }
 
-    pub fn invite_link(&self) -> &String {
+    pub fn invite_link(&self) -> &Option<ChatInviteLink> {
         &self.invite_link
     }
 
-    pub fn upgraded_from_basic_group_id(&self) -> i32 {
+    pub fn bot_commands(&self) -> &Vec<BotCommands> {
+        &self.bot_commands
+    }
+
+    pub fn upgraded_from_basic_group_id(&self) -> i64 {
         self.upgraded_from_basic_group_id
     }
 
@@ -252,12 +258,17 @@ impl RTDSupergroupFullInfoBuilder {
         self
     }
 
-    pub fn invite_link<T: AsRef<str>>(&mut self, invite_link: T) -> &mut Self {
-        self.inner.invite_link = invite_link.as_ref().to_string();
+    pub fn invite_link<T: AsRef<ChatInviteLink>>(&mut self, invite_link: T) -> &mut Self {
+        self.inner.invite_link = Some(invite_link.as_ref().clone());
         self
     }
 
-    pub fn upgraded_from_basic_group_id(&mut self, upgraded_from_basic_group_id: i32) -> &mut Self {
+    pub fn bot_commands(&mut self, bot_commands: Vec<BotCommands>) -> &mut Self {
+        self.inner.bot_commands = bot_commands;
+        self
+    }
+
+    pub fn upgraded_from_basic_group_id(&mut self, upgraded_from_basic_group_id: i64) -> &mut Self {
         self.inner.upgraded_from_basic_group_id = upgraded_from_basic_group_id;
         self
     }

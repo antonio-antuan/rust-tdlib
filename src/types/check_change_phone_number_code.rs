@@ -10,7 +10,7 @@ pub struct CheckChangePhoneNumberCode {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Verification code received by SMS, phone call or flash call
+    /// Authentication code to check
     code: String,
 
     #[serde(rename(serialize = "@type"))]

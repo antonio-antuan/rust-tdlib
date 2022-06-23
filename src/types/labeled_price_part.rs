@@ -12,7 +12,7 @@ pub struct LabeledPricePart {
     client_id: Option<i32>,
     /// Label for this portion of the product price
     label: String,
-    /// Currency amount in minimal quantity of the currency
+    /// Currency amount in the smallest units of the currency
     amount: i64,
 }
 

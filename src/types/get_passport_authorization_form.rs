@@ -11,12 +11,12 @@ pub struct GetPassportAuthorizationForm {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the service's bot
-    bot_user_id: i32,
+    bot_user_id: i64,
     /// Telegram Passport element types requested by the service
     scope: String,
-    /// Service's public_key
+    /// Service's public key
     public_key: String,
-    /// Authorization form nonce provided by the service
+    /// Unique request identifier provided by the service
     nonce: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -49,7 +49,7 @@ impl GetPassportAuthorizationForm {
         RTDGetPassportAuthorizationFormBuilder { inner }
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -76,7 +76,7 @@ impl RTDGetPassportAuthorizationFormBuilder {
         self.inner.clone()
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }

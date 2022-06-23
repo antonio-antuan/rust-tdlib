@@ -14,28 +14,16 @@ pub enum ReplyMarkup {
     #[doc(hidden)]
     _Default,
     /// Instructs application to force a reply to this message
-    #[serde(rename(
-        serialize = "replyMarkupForceReply",
-        deserialize = "replyMarkupForceReply"
-    ))]
+    #[serde(rename(deserialize = "replyMarkupForceReply"))]
     ForceReply(ReplyMarkupForceReply),
     /// Contains an inline keyboard layout
-    #[serde(rename(
-        serialize = "replyMarkupInlineKeyboard",
-        deserialize = "replyMarkupInlineKeyboard"
-    ))]
+    #[serde(rename(deserialize = "replyMarkupInlineKeyboard"))]
     InlineKeyboard(ReplyMarkupInlineKeyboard),
     /// Instructs application to remove the keyboard once this message has been received. This kind of keyboard can't be received in an incoming message; instead, UpdateChatReplyMarkup with message_id == 0 will be sent
-    #[serde(rename(
-        serialize = "replyMarkupRemoveKeyboard",
-        deserialize = "replyMarkupRemoveKeyboard"
-    ))]
+    #[serde(rename(deserialize = "replyMarkupRemoveKeyboard"))]
     RemoveKeyboard(ReplyMarkupRemoveKeyboard),
     /// Contains a custom keyboard layout to quickly reply to bots
-    #[serde(rename(
-        serialize = "replyMarkupShowKeyboard",
-        deserialize = "replyMarkupShowKeyboard"
-    ))]
+    #[serde(rename(deserialize = "replyMarkupShowKeyboard"))]
     ShowKeyboard(ReplyMarkupShowKeyboard),
 }
 
@@ -96,6 +84,8 @@ pub struct ReplyMarkupForceReply {
     client_id: Option<i32>,
     /// True, if a forced reply must automatically be shown to the current user. For outgoing messages, specify true to show the forced reply only for the mentioned users and for the target user of a reply
     is_personal: bool,
+    /// If non-empty, the placeholder to be shown in the input field when the reply is active; 0-64 characters
+    input_field_placeholder: String,
 }
 
 impl RObject for ReplyMarkupForceReply {
@@ -125,6 +115,10 @@ impl ReplyMarkupForceReply {
     pub fn is_personal(&self) -> bool {
         self.is_personal
     }
+
+    pub fn input_field_placeholder(&self) -> &String {
+        &self.input_field_placeholder
+    }
 }
 
 #[doc(hidden)]
@@ -139,6 +133,14 @@ impl RTDReplyMarkupForceReplyBuilder {
 
     pub fn is_personal(&mut self, is_personal: bool) -> &mut Self {
         self.inner.is_personal = is_personal;
+        self
+    }
+
+    pub fn input_field_placeholder<T: AsRef<str>>(
+        &mut self,
+        input_field_placeholder: T,
+    ) -> &mut Self {
+        self.inner.input_field_placeholder = input_field_placeholder.as_ref().to_string();
         self
     }
 }
@@ -309,6 +311,8 @@ pub struct ReplyMarkupShowKeyboard {
     one_time: bool,
     /// True, if the keyboard must automatically be shown to the current user. For outgoing messages, specify true to show the keyboard only for the mentioned users and for the target user of a reply
     is_personal: bool,
+    /// If non-empty, the placeholder to be shown in the input field when the keyboard is active; 0-64 characters
+    input_field_placeholder: String,
 }
 
 impl RObject for ReplyMarkupShowKeyboard {
@@ -350,6 +354,10 @@ impl ReplyMarkupShowKeyboard {
     pub fn is_personal(&self) -> bool {
         self.is_personal
     }
+
+    pub fn input_field_placeholder(&self) -> &String {
+        &self.input_field_placeholder
+    }
 }
 
 #[doc(hidden)]
@@ -379,6 +387,14 @@ impl RTDReplyMarkupShowKeyboardBuilder {
 
     pub fn is_personal(&mut self, is_personal: bool) -> &mut Self {
         self.inner.is_personal = is_personal;
+        self
+    }
+
+    pub fn input_field_placeholder<T: AsRef<str>>(
+        &mut self,
+        input_field_placeholder: T,
+    ) -> &mut Self {
+        self.inner.input_field_placeholder = input_field_placeholder.as_ref().to_string();
         self
     }
 }

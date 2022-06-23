@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Requests to send a password recovery code to an email address that was previously set up
+/// Requests to send a 2-step verification password recovery code to an email address that was previously set up
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct RequestPasswordRecovery {
     #[doc(hidden)]

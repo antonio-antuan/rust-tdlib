@@ -14,11 +14,11 @@ pub struct EditMessageText {
     chat_id: i64,
     /// Identifier of the message
     message_id: i64,
-    /// The new message reply markup; for bots only
+    /// The new message reply markup; pass null if none; for bots only
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New text content of the message. Should be of type InputMessageText
+    /// New text content of the message. Must be of type inputMessageText
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,

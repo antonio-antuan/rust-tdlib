@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Sends messages grouped together into an album. Currently only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
+/// Sends 2-10 messages grouped together into an album. Currently, only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SendMessageAlbum {
     #[doc(hidden)]
@@ -14,12 +14,14 @@ pub struct SendMessageAlbum {
     chat_id: i64,
     /// If not 0, a message thread identifier in which the messages will be sent
     message_thread_id: i64,
-    /// Identifier of a message to reply to or 0
+    /// Identifier of a replied message; 0 if none
     reply_to_message_id: i64,
-    /// Options to be used to send the messages
+    /// Options to be used to send the messages; pass null to use default options
     options: MessageSendOptions,
-    /// Contents of messages to be sent
+    /// Contents of messages to be sent. At most 10 messages can be added to an album
     input_message_contents: Vec<InputMessageContent>,
+    /// Pass true to get fake messages instead of actually sending them
+    only_preview: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -70,6 +72,10 @@ impl SendMessageAlbum {
     pub fn input_message_contents(&self) -> &Vec<InputMessageContent> {
         &self.input_message_contents
     }
+
+    pub fn only_preview(&self) -> bool {
+        self.only_preview
+    }
 }
 
 #[doc(hidden)]
@@ -107,6 +113,11 @@ impl RTDSendMessageAlbumBuilder {
         input_message_contents: Vec<InputMessageContent>,
     ) -> &mut Self {
         self.inner.input_message_contents = input_message_contents;
+        self
+    }
+
+    pub fn only_preview(&mut self, only_preview: bool) -> &mut Self {
+        self.inner.only_preview = only_preview;
         self
     }
 }

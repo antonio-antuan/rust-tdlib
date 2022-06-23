@@ -14,16 +14,16 @@ pub enum UserType {
     #[doc(hidden)]
     _Default,
     /// A bot (see https://core.telegram.org/bots)
-    #[serde(rename(serialize = "userTypeBot", deserialize = "userTypeBot"))]
+    #[serde(rename(deserialize = "userTypeBot"))]
     Bot(UserTypeBot),
     /// A deleted user or deleted bot. No information on the user besides the user identifier is available. It is not possible to perform any active actions on this type of user
-    #[serde(rename(serialize = "userTypeDeleted", deserialize = "userTypeDeleted"))]
+    #[serde(rename(deserialize = "userTypeDeleted"))]
     Deleted(UserTypeDeleted),
     /// A regular user
-    #[serde(rename(serialize = "userTypeRegular", deserialize = "userTypeRegular"))]
+    #[serde(rename(deserialize = "userTypeRegular"))]
     Regular(UserTypeRegular),
     /// No information on the user besides the user identifier is available, yet this user has not been deleted. This object is extremely rare and must be handled like a deleted user. It is not possible to perform any actions on users of this type
-    #[serde(rename(serialize = "userTypeUnknown", deserialize = "userTypeUnknown"))]
+    #[serde(rename(deserialize = "userTypeUnknown"))]
     Unknown(UserTypeUnknown),
 }
 
@@ -90,8 +90,10 @@ pub struct UserTypeBot {
     is_inline: bool,
     /// Placeholder for inline queries (displayed on the application input field)
     inline_query_placeholder: String,
-    /// True, if the location of the user should be sent with every inline query to this bot
+    /// True, if the location of the user is expected to be sent with every inline query to this bot
     need_location: bool,
+    /// True, if the bot can be added to attachment menu
+    can_be_added_to_attachment_menu: bool,
 }
 
 impl RObject for UserTypeBot {
@@ -137,6 +139,10 @@ impl UserTypeBot {
     pub fn need_location(&self) -> bool {
         self.need_location
     }
+
+    pub fn can_be_added_to_attachment_menu(&self) -> bool {
+        self.can_be_added_to_attachment_menu
+    }
 }
 
 #[doc(hidden)]
@@ -174,6 +180,14 @@ impl RTDUserTypeBotBuilder {
 
     pub fn need_location(&mut self, need_location: bool) -> &mut Self {
         self.inner.need_location = need_location;
+        self
+    }
+
+    pub fn can_be_added_to_attachment_menu(
+        &mut self,
+        can_be_added_to_attachment_menu: bool,
+    ) -> &mut Self {
+        self.inner.can_be_added_to_attachment_menu = can_be_added_to_attachment_menu;
         self
     }
 }

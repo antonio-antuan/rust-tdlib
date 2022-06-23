@@ -20,15 +20,15 @@ pub struct UserFullInfo {
     supports_video_calls: bool,
     /// True, if the user can't be called due to their privacy settings
     has_private_calls: bool,
+    /// True, if the user can't be linked in forwarded messages due to their privacy settings
+    has_private_forwards: bool,
     /// True, if the current user needs to explicitly allow to share their phone number with the user when the method addContact is used
     need_phone_number_privacy_exception: bool,
-    /// A short user bio
-    bio: String,
-    /// For bots, the text that is included with the link when users share the bot
-    share_text: String,
+    /// A short user bio; may be null for bots
+    bio: Option<FormattedText>,
     /// Number of group chats where both the other user and the current user are a member; 0 for the current user
     group_in_common_count: i32,
-    /// If the user is a bot, information about the bot; may be null
+    /// For bots, information about the bot; may be null
     bot_info: Option<BotInfo>,
 }
 
@@ -74,16 +74,16 @@ impl UserFullInfo {
         self.has_private_calls
     }
 
+    pub fn has_private_forwards(&self) -> bool {
+        self.has_private_forwards
+    }
+
     pub fn need_phone_number_privacy_exception(&self) -> bool {
         self.need_phone_number_privacy_exception
     }
 
-    pub fn bio(&self) -> &String {
+    pub fn bio(&self) -> &Option<FormattedText> {
         &self.bio
-    }
-
-    pub fn share_text(&self) -> &String {
-        &self.share_text
     }
 
     pub fn group_in_common_count(&self) -> i32 {
@@ -130,6 +130,11 @@ impl RTDUserFullInfoBuilder {
         self
     }
 
+    pub fn has_private_forwards(&mut self, has_private_forwards: bool) -> &mut Self {
+        self.inner.has_private_forwards = has_private_forwards;
+        self
+    }
+
     pub fn need_phone_number_privacy_exception(
         &mut self,
         need_phone_number_privacy_exception: bool,
@@ -138,13 +143,8 @@ impl RTDUserFullInfoBuilder {
         self
     }
 
-    pub fn bio<T: AsRef<str>>(&mut self, bio: T) -> &mut Self {
-        self.inner.bio = bio.as_ref().to_string();
-        self
-    }
-
-    pub fn share_text<T: AsRef<str>>(&mut self, share_text: T) -> &mut Self {
-        self.inner.share_text = share_text.as_ref().to_string();
+    pub fn bio<T: AsRef<FormattedText>>(&mut self, bio: T) -> &mut Self {
+        self.inner.bio = Some(bio.as_ref().clone());
         self
     }
 

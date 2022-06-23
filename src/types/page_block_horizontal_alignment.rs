@@ -13,23 +13,14 @@ pub trait TDPageBlockHorizontalAlignment: Debug + RObject {}
 pub enum PageBlockHorizontalAlignment {
     #[doc(hidden)]
     _Default,
-    /// The content should be center-aligned
-    #[serde(rename(
-        serialize = "pageBlockHorizontalAlignmentCenter",
-        deserialize = "pageBlockHorizontalAlignmentCenter"
-    ))]
+    /// The content must be center-aligned
+    #[serde(rename(deserialize = "pageBlockHorizontalAlignmentCenter"))]
     Center(PageBlockHorizontalAlignmentCenter),
-    /// The content should be left-aligned
-    #[serde(rename(
-        serialize = "pageBlockHorizontalAlignmentLeft",
-        deserialize = "pageBlockHorizontalAlignmentLeft"
-    ))]
+    /// The content must be left-aligned
+    #[serde(rename(deserialize = "pageBlockHorizontalAlignmentLeft"))]
     Left(PageBlockHorizontalAlignmentLeft),
-    /// The content should be right-aligned
-    #[serde(rename(
-        serialize = "pageBlockHorizontalAlignmentRight",
-        deserialize = "pageBlockHorizontalAlignmentRight"
-    ))]
+    /// The content must be right-aligned
+    #[serde(rename(deserialize = "pageBlockHorizontalAlignmentRight"))]
     Right(PageBlockHorizontalAlignmentRight),
 }
 
@@ -78,7 +69,7 @@ impl AsRef<PageBlockHorizontalAlignment> for PageBlockHorizontalAlignment {
     }
 }
 
-/// The content should be center-aligned
+/// The content must be center-aligned
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PageBlockHorizontalAlignmentCenter {
     #[doc(hidden)]
@@ -136,7 +127,7 @@ impl AsRef<PageBlockHorizontalAlignmentCenter> for RTDPageBlockHorizontalAlignme
     }
 }
 
-/// The content should be left-aligned
+/// The content must be left-aligned
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PageBlockHorizontalAlignmentLeft {
     #[doc(hidden)]
@@ -194,7 +185,7 @@ impl AsRef<PageBlockHorizontalAlignmentLeft> for RTDPageBlockHorizontalAlignment
     }
 }
 
-/// The content should be right-aligned
+/// The content must be right-aligned
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PageBlockHorizontalAlignmentRight {
     #[doc(hidden)]

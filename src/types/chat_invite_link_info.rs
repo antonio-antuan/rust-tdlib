@@ -14,7 +14,7 @@ pub struct ChatInviteLinkInfo {
     chat_id: i64,
     /// If non-zero, the amount of time for which read access to the chat will remain available, in seconds
     accessible_for: i32,
-    /// Contains information about the type of the chat
+    /// Type of the chat
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "ChatType::_is_default")]
@@ -23,10 +23,14 @@ pub struct ChatInviteLinkInfo {
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
+    /// Contains information about a chat invite link
+    description: String,
     /// Number of members in the chat
     member_count: i32,
     /// User identifiers of some chat members that may be known to the current user
-    member_user_ids: Vec<i32>,
+    member_user_ids: Vec<i64>,
+    /// True, if the link only creates join request
+    creates_join_request: bool,
     /// True, if the chat is a public supergroup or channel, i.e. it has a username or it is a location-based supergroup
     is_public: bool,
 }
@@ -73,12 +77,20 @@ impl ChatInviteLinkInfo {
         &self.photo
     }
 
+    pub fn description(&self) -> &String {
+        &self.description
+    }
+
     pub fn member_count(&self) -> i32 {
         self.member_count
     }
 
-    pub fn member_user_ids(&self) -> &Vec<i32> {
+    pub fn member_user_ids(&self) -> &Vec<i64> {
         &self.member_user_ids
+    }
+
+    pub fn creates_join_request(&self) -> bool {
+        self.creates_join_request
     }
 
     pub fn is_public(&self) -> bool {
@@ -121,13 +133,23 @@ impl RTDChatInviteLinkInfoBuilder {
         self
     }
 
+    pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
+        self.inner.description = description.as_ref().to_string();
+        self
+    }
+
     pub fn member_count(&mut self, member_count: i32) -> &mut Self {
         self.inner.member_count = member_count;
         self
     }
 
-    pub fn member_user_ids(&mut self, member_user_ids: Vec<i32>) -> &mut Self {
+    pub fn member_user_ids(&mut self, member_user_ids: Vec<i64>) -> &mut Self {
         self.inner.member_user_ids = member_user_ids;
+        self
+    }
+
+    pub fn creates_join_request(&mut self, creates_join_request: bool) -> &mut Self {
+        self.inner.creates_join_request = creates_join_request;
         self
     }
 

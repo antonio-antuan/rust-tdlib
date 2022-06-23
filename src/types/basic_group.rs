@@ -11,7 +11,7 @@ pub struct BasicGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group identifier
-    id: i32,
+    id: i64,
     /// Number of members in the group
     member_count: i32,
     /// Status of the current user in the group
@@ -21,7 +21,7 @@ pub struct BasicGroup {
     /// True, if the group is active
     is_active: bool,
     /// Identifier of the supergroup to which this group was upgraded; 0 if none
-    upgraded_to_supergroup_id: i32,
+    upgraded_to_supergroup_id: i64,
 }
 
 impl RObject for BasicGroup {
@@ -46,7 +46,7 @@ impl BasicGroup {
         RTDBasicGroupBuilder { inner }
     }
 
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -62,7 +62,7 @@ impl BasicGroup {
         self.is_active
     }
 
-    pub fn upgraded_to_supergroup_id(&self) -> i32 {
+    pub fn upgraded_to_supergroup_id(&self) -> i64 {
         self.upgraded_to_supergroup_id
     }
 }
@@ -77,7 +77,7 @@ impl RTDBasicGroupBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i32) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -97,7 +97,7 @@ impl RTDBasicGroupBuilder {
         self
     }
 
-    pub fn upgraded_to_supergroup_id(&mut self, upgraded_to_supergroup_id: i32) -> &mut Self {
+    pub fn upgraded_to_supergroup_id(&mut self, upgraded_to_supergroup_id: i64) -> &mut Self {
         self.inner.upgraded_to_supergroup_id = upgraded_to_supergroup_id;
         self
     }

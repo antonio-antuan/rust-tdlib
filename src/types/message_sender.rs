@@ -14,10 +14,10 @@ pub enum MessageSender {
     #[doc(hidden)]
     _Default,
     /// The message was sent on behalf of a chat
-    #[serde(rename(serialize = "messageSenderChat", deserialize = "messageSenderChat"))]
+    #[serde(rename(deserialize = "messageSenderChat"))]
     Chat(MessageSenderChat),
     /// The message was sent by a known user
-    #[serde(rename(serialize = "messageSenderUser", deserialize = "messageSenderUser"))]
+    #[serde(rename(deserialize = "messageSenderUser"))]
     User(MessageSenderUser),
 }
 
@@ -142,7 +142,7 @@ pub struct MessageSenderUser {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user that sent the message
-    user_id: i32,
+    user_id: i64,
 }
 
 impl RObject for MessageSenderUser {
@@ -169,7 +169,7 @@ impl MessageSenderUser {
         RTDMessageSenderUserBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
@@ -184,7 +184,7 @@ impl RTDMessageSenderUserBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

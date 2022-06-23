@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the password for the user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
+/// Changes the password for the current user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetPassword {
     #[doc(hidden)]
@@ -16,7 +16,7 @@ pub struct SetPassword {
     new_password: String,
     /// New password hint; may be empty
     new_hint: String,
-    /// Pass true if the recovery email address should be changed
+    /// Pass true to change also the recovery email address
     set_recovery_email_address: bool,
     /// New recovery email address; may be empty
     new_recovery_email_address: String,

@@ -14,73 +14,55 @@ pub enum InputMessageContent {
     #[doc(hidden)]
     _Default,
     /// An animation message (GIF-style).
-    #[serde(rename(
-        serialize = "inputMessageAnimation",
-        deserialize = "inputMessageAnimation"
-    ))]
+    #[serde(rename(deserialize = "inputMessageAnimation"))]
     InputMessageAnimation(InputMessageAnimation),
     /// An audio message
-    #[serde(rename(serialize = "inputMessageAudio", deserialize = "inputMessageAudio"))]
+    #[serde(rename(deserialize = "inputMessageAudio"))]
     InputMessageAudio(InputMessageAudio),
     /// A message containing a user contact
-    #[serde(rename(serialize = "inputMessageContact", deserialize = "inputMessageContact"))]
+    #[serde(rename(deserialize = "inputMessageContact"))]
     InputMessageContact(InputMessageContact),
     /// A dice message
-    #[serde(rename(serialize = "inputMessageDice", deserialize = "inputMessageDice"))]
+    #[serde(rename(deserialize = "inputMessageDice"))]
     InputMessageDice(InputMessageDice),
     /// A document message (general file)
-    #[serde(rename(
-        serialize = "inputMessageDocument",
-        deserialize = "inputMessageDocument"
-    ))]
+    #[serde(rename(deserialize = "inputMessageDocument"))]
     InputMessageDocument(InputMessageDocument),
     /// A forwarded message
-    #[serde(rename(
-        serialize = "inputMessageForwarded",
-        deserialize = "inputMessageForwarded"
-    ))]
+    #[serde(rename(deserialize = "inputMessageForwarded"))]
     InputMessageForwarded(InputMessageForwarded),
     /// A message with a game; not supported for channels or secret chats
-    #[serde(rename(serialize = "inputMessageGame", deserialize = "inputMessageGame"))]
+    #[serde(rename(deserialize = "inputMessageGame"))]
     InputMessageGame(InputMessageGame),
-    /// A message with an invoice; can be used only by bots and only in private chats
-    #[serde(rename(serialize = "inputMessageInvoice", deserialize = "inputMessageInvoice"))]
+    /// A message with an invoice; can be used only by bots
+    #[serde(rename(deserialize = "inputMessageInvoice"))]
     InputMessageInvoice(InputMessageInvoice),
     /// A message with a location
-    #[serde(rename(
-        serialize = "inputMessageLocation",
-        deserialize = "inputMessageLocation"
-    ))]
+    #[serde(rename(deserialize = "inputMessageLocation"))]
     InputMessageLocation(InputMessageLocation),
     /// A photo message
-    #[serde(rename(serialize = "inputMessagePhoto", deserialize = "inputMessagePhoto"))]
+    #[serde(rename(deserialize = "inputMessagePhoto"))]
     InputMessagePhoto(InputMessagePhoto),
     /// A message with a poll. Polls can't be sent to secret chats. Polls can be sent only to a private chat with a bot
-    #[serde(rename(serialize = "inputMessagePoll", deserialize = "inputMessagePoll"))]
+    #[serde(rename(deserialize = "inputMessagePoll"))]
     InputMessagePoll(InputMessagePoll),
     /// A sticker message
-    #[serde(rename(serialize = "inputMessageSticker", deserialize = "inputMessageSticker"))]
+    #[serde(rename(deserialize = "inputMessageSticker"))]
     InputMessageSticker(InputMessageSticker),
     /// A text message
-    #[serde(rename(serialize = "inputMessageText", deserialize = "inputMessageText"))]
+    #[serde(rename(deserialize = "inputMessageText"))]
     InputMessageText(InputMessageText),
     /// A message with information about a venue
-    #[serde(rename(serialize = "inputMessageVenue", deserialize = "inputMessageVenue"))]
+    #[serde(rename(deserialize = "inputMessageVenue"))]
     InputMessageVenue(InputMessageVenue),
     /// A video message
-    #[serde(rename(serialize = "inputMessageVideo", deserialize = "inputMessageVideo"))]
+    #[serde(rename(deserialize = "inputMessageVideo"))]
     InputMessageVideo(InputMessageVideo),
     /// A video note message
-    #[serde(rename(
-        serialize = "inputMessageVideoNote",
-        deserialize = "inputMessageVideoNote"
-    ))]
+    #[serde(rename(deserialize = "inputMessageVideoNote"))]
     InputMessageVideoNote(InputMessageVideoNote),
     /// A voice note message
-    #[serde(rename(
-        serialize = "inputMessageVoiceNote",
-        deserialize = "inputMessageVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "inputMessageVoiceNote"))]
     InputMessageVoiceNote(InputMessageVoiceNote),
 }
 
@@ -169,7 +151,7 @@ pub struct InputMessageAnimation {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     animation: InputFile,
-    /// Animation thumbnail, if available
+    /// Animation thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the animation, if applicable
     added_sticker_file_ids: Vec<i32>,
@@ -179,7 +161,7 @@ pub struct InputMessageAnimation {
     width: i32,
     /// Height of the animation; may be replaced by the server
     height: i32,
-    /// Animation caption; 0-GetOption("message_caption_length_max") characters
+    /// Animation caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -306,7 +288,7 @@ pub struct InputMessageAudio {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     audio: InputFile,
-    /// Thumbnail of the cover for the album, if available
+    /// Thumbnail of the cover for the album; pass null to skip thumbnail uploading
     album_cover_thumbnail: InputThumbnail,
     /// Duration of the audio, in seconds; may be replaced by the server
     duration: i32,
@@ -314,7 +296,7 @@ pub struct InputMessageAudio {
     title: String,
     /// Performer of the audio; 0-64 characters, may be replaced by the server
     performer: String,
-    /// Audio caption; 0-GetOption("message_caption_length_max") characters
+    /// Audio caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -502,7 +484,7 @@ pub struct InputMessageDice {
     client_id: Option<i32>,
     /// Emoji on which the dice throw animation is based
     emoji: String,
-    /// True, if a chat message draft should be deleted
+    /// True, if the chat message draft must be deleted
     clear_draft: bool,
 }
 
@@ -584,11 +566,11 @@ pub struct InputMessageDocument {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     document: InputFile,
-    /// Document thumbnail, if available
+    /// Document thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// If true, automatic file type detection will be disabled and the document will be always sent as file. Always true for files sent to secret chats
     disable_content_type_detection: bool,
-    /// Document caption; 0-GetOption("message_caption_length_max") characters
+    /// Document caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -691,9 +673,9 @@ pub struct InputMessageForwarded {
     from_chat_id: i64,
     /// Identifier of the message to forward
     message_id: i64,
-    /// True, if a game message should be shared within a launched game; applies only to game messages
+    /// True, if a game message is being shared from a launched game; applies only to game messages
     in_game_share: bool,
-    /// Options to be used to copy content of the message without a link to the original message
+    /// Options to be used to copy content of the message without reference to the original sender; pass null to forward the message as usual
     copy_options: MessageCopyOptions,
 }
 
@@ -790,7 +772,7 @@ pub struct InputMessageGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the bot that owns the game
-    bot_user_id: i32,
+    bot_user_id: i64,
     /// Short name of the game
     game_short_name: String,
 }
@@ -819,7 +801,7 @@ impl InputMessageGame {
         RTDInputMessageGameBuilder { inner }
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -838,7 +820,7 @@ impl RTDInputMessageGameBuilder {
         self.inner.clone()
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }
@@ -861,7 +843,7 @@ impl AsRef<InputMessageGame> for RTDInputMessageGameBuilder {
     }
 }
 
-/// A message with an invoice; can be used only by bots and only in private chats
+/// A message with an invoice; can be used only by bots
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageInvoice {
     #[doc(hidden)]
@@ -873,7 +855,7 @@ pub struct InputMessageInvoice {
     invoice: Invoice,
     /// Product title; 1-32 characters
     title: String,
-    /// A message with an invoice; can be used only by bots and only in private chats
+    /// A message with an invoice; can be used only by bots
     description: String,
     /// Product photo URL; optional
     photo_url: String,
@@ -889,7 +871,7 @@ pub struct InputMessageInvoice {
     provider_token: String,
     /// JSON-encoded data about the invoice, which will be shared with the payment provider
     provider_data: String,
-    /// Unique invoice bot start_parameter for the generation of this invoice
+    /// Unique invoice bot deep link parameter for the generation of this invoice. If empty, it would be possible to pay directly from forwards of the invoice message
     start_parameter: String,
 }
 
@@ -1050,7 +1032,7 @@ pub struct InputMessageLocation {
     client_id: Option<i32>,
     /// Location to be sent
     location: Location,
-    /// Period for which the location can be updated, in seconds; should be between 60 and 86400 for a live location and 0 otherwise
+    /// Period for which the location can be updated, in seconds; must be between 60 and 86400 for a live location and 0 otherwise
     live_period: i32,
     /// For live locations, a direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
     heading: i32,
@@ -1150,11 +1132,11 @@ pub struct InputMessagePhoto {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Photo to send
+    /// Photo to send. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     photo: InputFile,
-    /// Photo thumbnail to be sent, this is sent to the other party in secret chats only
+    /// Photo thumbnail to be sent; pass null to skip thumbnail uploading. The thumbnail is sent to the other party only in secret chats
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the photo, if applicable
     added_sticker_file_ids: Vec<i32>,
@@ -1162,7 +1144,7 @@ pub struct InputMessagePhoto {
     width: i32,
     /// Photo height
     height: i32,
-    /// Photo caption; 0-GetOption("message_caption_length_max") characters
+    /// Photo caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
     /// Photo TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
     ttl: i32,
@@ -1287,7 +1269,7 @@ pub struct InputMessagePoll {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Poll question, 1-255 characters (up to 300 characters for bots)
+    /// Poll question; 1-255 characters (up to 300 characters for bots)
     question: String,
     /// List of poll answer options, 2-10 strings 1-100 characters each
     options: Vec<String>,
@@ -1300,7 +1282,7 @@ pub struct InputMessagePoll {
     type_: PollType,
     /// Amount of time the poll will be active after creation, in seconds; for bots only
     open_period: i32,
-    /// Point in time (Unix timestamp) when the poll will be automatically closed; for bots only
+    /// Point in time (Unix timestamp) when the poll will automatically be closed; for bots only
     close_date: i32,
     /// True, if the poll needs to be sent already closed; for bots only
     is_closed: bool,
@@ -1429,12 +1411,14 @@ pub struct InputMessageSticker {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
-    /// Sticker thumbnail, if available
+    /// Sticker thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// Sticker width
     width: i32,
     /// Sticker height
     height: i32,
+    /// Emoji used to choose the sticker
+    emoji: String,
 }
 
 impl RObject for InputMessageSticker {
@@ -1476,6 +1460,10 @@ impl InputMessageSticker {
     pub fn height(&self) -> i32 {
         self.height
     }
+
+    pub fn emoji(&self) -> &String {
+        &self.emoji
+    }
 }
 
 #[doc(hidden)]
@@ -1507,6 +1495,11 @@ impl RTDInputMessageStickerBuilder {
         self.inner.height = height;
         self
     }
+
+    pub fn emoji<T: AsRef<str>>(&mut self, emoji: T) -> &mut Self {
+        self.inner.emoji = emoji.as_ref().to_string();
+        self
+    }
 }
 
 impl AsRef<InputMessageSticker> for InputMessageSticker {
@@ -1529,11 +1522,11 @@ pub struct InputMessageText {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Formatted text to be sent; 1-GetOption("message_text_length_max") characters. Only Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities are allowed to be specified manually
+    /// Formatted text to be sent; 1-GetOption("message_text_length_max") characters. Only Bold, Italic, Underline, Strikethrough, Spoiler, Code, Pre, PreCode, TextUrl and MentionName entities are allowed to be specified manually
     text: FormattedText,
-    /// True, if rich web page previews for URLs in the message text should be disabled
+    /// True, if rich web page previews for URLs in the message text must be disabled
     disable_web_page_preview: bool,
-    /// True, if a chat message draft should be deleted
+    /// True, if a chat message draft must be deleted
     clear_draft: bool,
 }
 
@@ -1693,7 +1686,7 @@ pub struct InputMessageVideo {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     video: InputFile,
-    /// Video thumbnail, if available
+    /// Video thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the video, if applicable
     added_sticker_file_ids: Vec<i32>,
@@ -1703,9 +1696,9 @@ pub struct InputMessageVideo {
     width: i32,
     /// Video height
     height: i32,
-    /// True, if the video should be tried to be streamed
+    /// True, if the video is supposed to be streamed
     supports_streaming: bool,
-    /// Video caption; 0-GetOption("message_caption_length_max") characters
+    /// Video caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
     /// Video TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
     ttl: i32,
@@ -1852,7 +1845,7 @@ pub struct InputMessageVideoNote {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     video_note: InputFile,
-    /// Video thumbnail, if available
+    /// Video thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// Duration of the video, in seconds
     duration: i32,
@@ -1960,7 +1953,7 @@ pub struct InputMessageVoiceNote {
     duration: i32,
     /// Waveform representation of the voice note, in 5-bit format
     waveform: String,
-    /// Voice note caption; 0-GetOption("message_caption_length_max") characters
+    /// Voice note caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 

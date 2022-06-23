@@ -14,9 +14,9 @@ pub struct SearchChatMembers {
     chat_id: i64,
     /// Query to search for
     query: String,
-    /// The maximum number of users to be returned
+    /// The maximum number of users to be returned; up to 200
     limit: i32,
-    /// The type of users to return. By default, chatMembersFilterMembers
+    /// The type of users to search for; pass null to search among all chat members
 
     #[serde(skip_serializing_if = "ChatMembersFilter::_is_default")]
     filter: ChatMembersFilter,

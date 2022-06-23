@@ -14,94 +14,61 @@ pub enum TextEntityType {
     #[doc(hidden)]
     _Default,
     /// A bank card number. The getBankCardInfo method can be used to get information about the bank card
-    #[serde(rename(
-        serialize = "textEntityTypeBankCardNumber",
-        deserialize = "textEntityTypeBankCardNumber"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeBankCardNumber"))]
     BankCardNumber(TextEntityTypeBankCardNumber),
     /// A bold text
-    #[serde(rename(serialize = "textEntityTypeBold", deserialize = "textEntityTypeBold"))]
+    #[serde(rename(deserialize = "textEntityTypeBold"))]
     Bold(TextEntityTypeBold),
-    /// A bot command, beginning with "/". This shouldn't be highlighted if there are no bots in the chat
-    #[serde(rename(
-        serialize = "textEntityTypeBotCommand",
-        deserialize = "textEntityTypeBotCommand"
-    ))]
+    /// A bot command, beginning with "/"
+    #[serde(rename(deserialize = "textEntityTypeBotCommand"))]
     BotCommand(TextEntityTypeBotCommand),
-    /// A cashtag text, beginning with "$" and consisting of capital english letters (i.e. "$USD")
-    #[serde(rename(
-        serialize = "textEntityTypeCashtag",
-        deserialize = "textEntityTypeCashtag"
-    ))]
+    /// A cashtag text, beginning with "$" and consisting of capital English letters (e.g., "$USD")
+    #[serde(rename(deserialize = "textEntityTypeCashtag"))]
     Cashtag(TextEntityTypeCashtag),
     /// Text that must be formatted as if inside a code HTML tag
-    #[serde(rename(serialize = "textEntityTypeCode", deserialize = "textEntityTypeCode"))]
+    #[serde(rename(deserialize = "textEntityTypeCode"))]
     Code(TextEntityTypeCode),
     /// An email address
-    #[serde(rename(
-        serialize = "textEntityTypeEmailAddress",
-        deserialize = "textEntityTypeEmailAddress"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeEmailAddress"))]
     EmailAddress(TextEntityTypeEmailAddress),
     /// A hashtag text, beginning with "#"
-    #[serde(rename(
-        serialize = "textEntityTypeHashtag",
-        deserialize = "textEntityTypeHashtag"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeHashtag"))]
     Hashtag(TextEntityTypeHashtag),
     /// An italic text
-    #[serde(rename(
-        serialize = "textEntityTypeItalic",
-        deserialize = "textEntityTypeItalic"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeItalic"))]
     Italic(TextEntityTypeItalic),
+    /// A media timestamp
+    #[serde(rename(deserialize = "textEntityTypeMediaTimestamp"))]
+    MediaTimestamp(TextEntityTypeMediaTimestamp),
     /// A mention of a user by their username
-    #[serde(rename(
-        serialize = "textEntityTypeMention",
-        deserialize = "textEntityTypeMention"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeMention"))]
     Mention(TextEntityTypeMention),
     /// A text shows instead of a raw mention of the user (e.g., when the user has no username)
-    #[serde(rename(
-        serialize = "textEntityTypeMentionName",
-        deserialize = "textEntityTypeMentionName"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeMentionName"))]
     MentionName(TextEntityTypeMentionName),
     /// A phone number
-    #[serde(rename(
-        serialize = "textEntityTypePhoneNumber",
-        deserialize = "textEntityTypePhoneNumber"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypePhoneNumber"))]
     PhoneNumber(TextEntityTypePhoneNumber),
     /// Text that must be formatted as if inside a pre HTML tag
-    #[serde(rename(serialize = "textEntityTypePre", deserialize = "textEntityTypePre"))]
+    #[serde(rename(deserialize = "textEntityTypePre"))]
     Pre(TextEntityTypePre),
     /// Text that must be formatted as if inside pre, and code HTML tags
-    #[serde(rename(
-        serialize = "textEntityTypePreCode",
-        deserialize = "textEntityTypePreCode"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypePreCode"))]
     PreCode(TextEntityTypePreCode),
+    /// A spoiler text. Not supported in secret chats
+    #[serde(rename(deserialize = "textEntityTypeSpoiler"))]
+    Spoiler(TextEntityTypeSpoiler),
     /// A strikethrough text
-    #[serde(rename(
-        serialize = "textEntityTypeStrikethrough",
-        deserialize = "textEntityTypeStrikethrough"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeStrikethrough"))]
     Strikethrough(TextEntityTypeStrikethrough),
     /// A text description shown instead of a raw URL
-    #[serde(rename(
-        serialize = "textEntityTypeTextUrl",
-        deserialize = "textEntityTypeTextUrl"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeTextUrl"))]
     TextUrl(TextEntityTypeTextUrl),
     /// An underlined text
-    #[serde(rename(
-        serialize = "textEntityTypeUnderline",
-        deserialize = "textEntityTypeUnderline"
-    ))]
+    #[serde(rename(deserialize = "textEntityTypeUnderline"))]
     Underline(TextEntityTypeUnderline),
     /// An HTTP URL
-    #[serde(rename(serialize = "textEntityTypeUrl", deserialize = "textEntityTypeUrl"))]
+    #[serde(rename(deserialize = "textEntityTypeUrl"))]
     Url(TextEntityTypeUrl),
 }
 
@@ -123,11 +90,13 @@ impl RObject for TextEntityType {
             TextEntityType::EmailAddress(t) => t.extra(),
             TextEntityType::Hashtag(t) => t.extra(),
             TextEntityType::Italic(t) => t.extra(),
+            TextEntityType::MediaTimestamp(t) => t.extra(),
             TextEntityType::Mention(t) => t.extra(),
             TextEntityType::MentionName(t) => t.extra(),
             TextEntityType::PhoneNumber(t) => t.extra(),
             TextEntityType::Pre(t) => t.extra(),
             TextEntityType::PreCode(t) => t.extra(),
+            TextEntityType::Spoiler(t) => t.extra(),
             TextEntityType::Strikethrough(t) => t.extra(),
             TextEntityType::TextUrl(t) => t.extra(),
             TextEntityType::Underline(t) => t.extra(),
@@ -147,11 +116,13 @@ impl RObject for TextEntityType {
             TextEntityType::EmailAddress(t) => t.client_id(),
             TextEntityType::Hashtag(t) => t.client_id(),
             TextEntityType::Italic(t) => t.client_id(),
+            TextEntityType::MediaTimestamp(t) => t.client_id(),
             TextEntityType::Mention(t) => t.client_id(),
             TextEntityType::MentionName(t) => t.client_id(),
             TextEntityType::PhoneNumber(t) => t.client_id(),
             TextEntityType::Pre(t) => t.client_id(),
             TextEntityType::PreCode(t) => t.client_id(),
+            TextEntityType::Spoiler(t) => t.client_id(),
             TextEntityType::Strikethrough(t) => t.client_id(),
             TextEntityType::TextUrl(t) => t.client_id(),
             TextEntityType::Underline(t) => t.client_id(),
@@ -294,7 +265,7 @@ impl AsRef<TextEntityTypeBold> for RTDTextEntityTypeBoldBuilder {
     }
 }
 
-/// A bot command, beginning with "/". This shouldn't be highlighted if there are no bots in the chat
+/// A bot command, beginning with "/"
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TextEntityTypeBotCommand {
     #[doc(hidden)]
@@ -352,7 +323,7 @@ impl AsRef<TextEntityTypeBotCommand> for RTDTextEntityTypeBotCommandBuilder {
     }
 }
 
-/// A cashtag text, beginning with "$" and consisting of capital english letters (i.e. "$USD")
+/// A cashtag text, beginning with "$" and consisting of capital English letters (e.g., "$USD")
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TextEntityTypeCashtag {
     #[doc(hidden)]
@@ -642,6 +613,75 @@ impl AsRef<TextEntityTypeItalic> for RTDTextEntityTypeItalicBuilder {
     }
 }
 
+/// A media timestamp
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct TextEntityTypeMediaTimestamp {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Timestamp from which a video/audio/video note/voice note playing must start, in seconds. The media can be in the content or the web page preview of the current message, or in the same places in the replied message
+    media_timestamp: i32,
+}
+
+impl RObject for TextEntityTypeMediaTimestamp {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDTextEntityType for TextEntityTypeMediaTimestamp {}
+
+impl TextEntityTypeMediaTimestamp {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDTextEntityTypeMediaTimestampBuilder {
+        let mut inner = TextEntityTypeMediaTimestamp::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDTextEntityTypeMediaTimestampBuilder { inner }
+    }
+
+    pub fn media_timestamp(&self) -> i32 {
+        self.media_timestamp
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDTextEntityTypeMediaTimestampBuilder {
+    inner: TextEntityTypeMediaTimestamp,
+}
+
+impl RTDTextEntityTypeMediaTimestampBuilder {
+    pub fn build(&self) -> TextEntityTypeMediaTimestamp {
+        self.inner.clone()
+    }
+
+    pub fn media_timestamp(&mut self, media_timestamp: i32) -> &mut Self {
+        self.inner.media_timestamp = media_timestamp;
+        self
+    }
+}
+
+impl AsRef<TextEntityTypeMediaTimestamp> for TextEntityTypeMediaTimestamp {
+    fn as_ref(&self) -> &TextEntityTypeMediaTimestamp {
+        self
+    }
+}
+
+impl AsRef<TextEntityTypeMediaTimestamp> for RTDTextEntityTypeMediaTimestampBuilder {
+    fn as_ref(&self) -> &TextEntityTypeMediaTimestamp {
+        &self.inner
+    }
+}
+
 /// A mention of a user by their username
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TextEntityTypeMention {
@@ -709,7 +749,7 @@ pub struct TextEntityTypeMentionName {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the mentioned user
-    user_id: i32,
+    user_id: i64,
 }
 
 impl RObject for TextEntityTypeMentionName {
@@ -736,7 +776,7 @@ impl TextEntityTypeMentionName {
         RTDTextEntityTypeMentionNameBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
@@ -751,7 +791,7 @@ impl RTDTextEntityTypeMentionNameBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -950,6 +990,64 @@ impl AsRef<TextEntityTypePreCode> for TextEntityTypePreCode {
 
 impl AsRef<TextEntityTypePreCode> for RTDTextEntityTypePreCodeBuilder {
     fn as_ref(&self) -> &TextEntityTypePreCode {
+        &self.inner
+    }
+}
+
+/// A spoiler text. Not supported in secret chats
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct TextEntityTypeSpoiler {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for TextEntityTypeSpoiler {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDTextEntityType for TextEntityTypeSpoiler {}
+
+impl TextEntityTypeSpoiler {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDTextEntityTypeSpoilerBuilder {
+        let mut inner = TextEntityTypeSpoiler::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDTextEntityTypeSpoilerBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDTextEntityTypeSpoilerBuilder {
+    inner: TextEntityTypeSpoiler,
+}
+
+impl RTDTextEntityTypeSpoilerBuilder {
+    pub fn build(&self) -> TextEntityTypeSpoiler {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<TextEntityTypeSpoiler> for TextEntityTypeSpoiler {
+    fn as_ref(&self) -> &TextEntityTypeSpoiler {
+        self
+    }
+}
+
+impl AsRef<TextEntityTypeSpoiler> for RTDTextEntityTypeSpoilerBuilder {
+    fn as_ref(&self) -> &TextEntityTypeSpoiler {
         &self.inner
     }
 }

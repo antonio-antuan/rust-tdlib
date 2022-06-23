@@ -10,7 +10,7 @@ pub struct SearchChats {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Query to search for. If the query is empty, returns up to 20 recently found chats
+    /// Query to search for. If the query is empty, returns up to 50 recently found chats
     query: String,
     /// The maximum number of chats to be returned
     limit: i32,

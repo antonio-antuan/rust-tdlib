@@ -14,16 +14,16 @@ pub enum LogStream {
     #[doc(hidden)]
     _Default,
     /// Returns information about currently used log stream for internal logging of TDLib. Can be called synchronously
-    #[serde(rename(serialize = "getLogStream", deserialize = "getLogStream"))]
+    #[serde(rename(deserialize = "getLogStream"))]
     GetLogStream(GetLogStream),
     /// The log is written to stderr or an OS specific log
-    #[serde(rename(serialize = "logStreamDefault", deserialize = "logStreamDefault"))]
+    #[serde(rename(deserialize = "logStreamDefault"))]
     Default(LogStreamDefault),
     /// The log is written nowhere
-    #[serde(rename(serialize = "logStreamEmpty", deserialize = "logStreamEmpty"))]
+    #[serde(rename(deserialize = "logStreamEmpty"))]
     Empty(LogStreamEmpty),
     /// The log is written to a file
-    #[serde(rename(serialize = "logStreamFile", deserialize = "logStreamFile"))]
+    #[serde(rename(deserialize = "logStreamFile"))]
     File(LogStreamFile),
 }
 
@@ -200,7 +200,7 @@ pub struct LogStreamFile {
     client_id: Option<i32>,
     /// Path to the file to where the internal TDLib log will be written
     path: String,
-    /// The maximum size of the file to where the internal TDLib log is written before the file will be auto-rotated
+    /// The maximum size of the file to where the internal TDLib log is written before the file will automatically be rotated, in bytes
     max_file_size: i64,
     /// Pass true to additionally redirect stderr to the log file. Ignored on Windows
     redirect_stderr: bool,

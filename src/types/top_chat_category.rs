@@ -14,43 +14,25 @@ pub enum TopChatCategory {
     #[doc(hidden)]
     _Default,
     /// A category containing frequently used private chats with bot users
-    #[serde(rename(serialize = "topChatCategoryBots", deserialize = "topChatCategoryBots"))]
+    #[serde(rename(deserialize = "topChatCategoryBots"))]
     Bots(TopChatCategoryBots),
     /// A category containing frequently used chats used for calls
-    #[serde(rename(
-        serialize = "topChatCategoryCalls",
-        deserialize = "topChatCategoryCalls"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryCalls"))]
     Calls(TopChatCategoryCalls),
     /// A category containing frequently used channels
-    #[serde(rename(
-        serialize = "topChatCategoryChannels",
-        deserialize = "topChatCategoryChannels"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryChannels"))]
     Channels(TopChatCategoryChannels),
     /// A category containing frequently used chats used to forward messages
-    #[serde(rename(
-        serialize = "topChatCategoryForwardChats",
-        deserialize = "topChatCategoryForwardChats"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryForwardChats"))]
     ForwardChats(TopChatCategoryForwardChats),
     /// A category containing frequently used basic groups and supergroups
-    #[serde(rename(
-        serialize = "topChatCategoryGroups",
-        deserialize = "topChatCategoryGroups"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryGroups"))]
     Groups(TopChatCategoryGroups),
     /// A category containing frequently used chats with inline bots sorted by their usage in inline mode
-    #[serde(rename(
-        serialize = "topChatCategoryInlineBots",
-        deserialize = "topChatCategoryInlineBots"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryInlineBots"))]
     InlineBots(TopChatCategoryInlineBots),
     /// A category containing frequently used private chats with non-bot users
-    #[serde(rename(
-        serialize = "topChatCategoryUsers",
-        deserialize = "topChatCategoryUsers"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryUsers"))]
     Users(TopChatCategoryUsers),
 }
 

@@ -10,7 +10,7 @@ pub struct GetLocalizationTargetInfo {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// If true, returns only locally available information without sending network requests
+    /// Pass true to get only locally available information without sending network requests
     only_local: bool,
 
     #[serde(rename(serialize = "@type"))]

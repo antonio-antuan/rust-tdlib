@@ -14,14 +14,16 @@ pub struct ForwardMessages {
     chat_id: i64,
     /// Identifier of the chat from which to forward messages
     from_chat_id: i64,
-    /// Identifiers of the messages to forward. Message identifiers must be in a strictly increasing order
+    /// Identifiers of the messages to forward. Message identifiers must be in a strictly increasing order. At most 100 messages can be forwarded simultaneously
     message_ids: Vec<i64>,
-    /// Options to be used to send the messages
+    /// Options to be used to send the messages; pass null to use default options
     options: MessageSendOptions,
-    /// True, if content of the messages needs to be copied without links to the original messages. Always true if the messages are forwarded to a secret chat
+    /// Pass true to copy content of the messages without reference to the original sender. Always true if the messages are forwarded to a secret chat or are local
     send_copy: bool,
-    /// True, if media caption of message copies needs to be removed. Ignored if send_copy is false
+    /// Pass true to remove media captions of message copies. Ignored if send_copy is false
     remove_caption: bool,
+    /// Pass true to get fake messages instead of actually forwarding them
+    only_preview: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -76,6 +78,10 @@ impl ForwardMessages {
     pub fn remove_caption(&self) -> bool {
         self.remove_caption
     }
+
+    pub fn only_preview(&self) -> bool {
+        self.only_preview
+    }
 }
 
 #[doc(hidden)]
@@ -115,6 +121,11 @@ impl RTDForwardMessagesBuilder {
 
     pub fn remove_caption(&mut self, remove_caption: bool) -> &mut Self {
         self.inner.remove_caption = remove_caption;
+        self
+    }
+
+    pub fn only_preview(&mut self, only_preview: bool) -> &mut Self {
+        self.inner.only_preview = only_preview;
         self
     }
 }

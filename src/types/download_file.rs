@@ -12,13 +12,13 @@ pub struct DownloadFile {
     client_id: Option<i32>,
     /// Identifier of the file to download
     file_id: i32,
-    /// Priority of the download (1-32). The higher the priority, the earlier the file will be downloaded. If the priorities of two files are equal, then the last one for which downloadFile was called will be downloaded first
+    /// Priority of the download (1-32). The higher the priority, the earlier the file will be downloaded. If the priorities of two files are equal, then the last one for which downloadFile/addFileToDownloads was called will be downloaded first
     priority: i32,
-    /// The starting position from which the file should be downloaded
-    offset: i32,
-    /// Number of bytes which should be downloaded starting from the "offset" position before the download will be automatically cancelled; use 0 to download without a limit
-    limit: i32,
-    /// If false, this request returns file state just after the download has been started. If true, this request returns file state only after the download has succeeded, has failed, has been cancelled or a new downloadFile request with different offset/limit parameters was sent
+    /// The starting position from which the file needs to be downloaded
+    offset: i64,
+    /// Number of bytes which need to be downloaded starting from the "offset" position before the download will automatically be canceled; use 0 to download without a limit
+    limit: i64,
+    /// Pass true to return response only after the file download has succeeded, has failed, has been canceled, or a new downloadFile request with different offset/limit parameters was sent; pass false to return file state immediately, just after the download has been started
     synchronous: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -59,11 +59,11 @@ impl DownloadFile {
         self.priority
     }
 
-    pub fn offset(&self) -> i32 {
+    pub fn offset(&self) -> i64 {
         self.offset
     }
 
-    pub fn limit(&self) -> i32 {
+    pub fn limit(&self) -> i64 {
         self.limit
     }
 
@@ -92,12 +92,12 @@ impl RTDDownloadFileBuilder {
         self
     }
 
-    pub fn offset(&mut self, offset: i32) -> &mut Self {
+    pub fn offset(&mut self, offset: i64) -> &mut Self {
         self.inner.offset = offset;
         self
     }
 
-    pub fn limit(&mut self, limit: i32) -> &mut Self {
+    pub fn limit(&mut self, limit: i64) -> &mut Self {
         self.inner.limit = limit;
         self
     }

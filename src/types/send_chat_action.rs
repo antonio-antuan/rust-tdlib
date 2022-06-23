@@ -14,7 +14,7 @@ pub struct SendChatAction {
     chat_id: i64,
     /// If not 0, a message thread identifier in which the action was performed
     message_thread_id: i64,
-    /// The action description
+    /// The action description; pass null to cancel the currently active action
 
     #[serde(skip_serializing_if = "ChatAction::_is_default")]
     action: ChatAction,

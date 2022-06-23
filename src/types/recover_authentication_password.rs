@@ -12,6 +12,10 @@ pub struct RecoverAuthenticationPassword {
     client_id: Option<i32>,
     /// Recovery code to check
     recovery_code: String,
+    /// New password of the user; may be empty to remove the password
+    new_password: String,
+    /// New password hint; may be empty
+    new_hint: String,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -46,6 +50,14 @@ impl RecoverAuthenticationPassword {
     pub fn recovery_code(&self) -> &String {
         &self.recovery_code
     }
+
+    pub fn new_password(&self) -> &String {
+        &self.new_password
+    }
+
+    pub fn new_hint(&self) -> &String {
+        &self.new_hint
+    }
 }
 
 #[doc(hidden)]
@@ -60,6 +72,16 @@ impl RTDRecoverAuthenticationPasswordBuilder {
 
     pub fn recovery_code<T: AsRef<str>>(&mut self, recovery_code: T) -> &mut Self {
         self.inner.recovery_code = recovery_code.as_ref().to_string();
+        self
+    }
+
+    pub fn new_password<T: AsRef<str>>(&mut self, new_password: T) -> &mut Self {
+        self.inner.new_password = new_password.as_ref().to_string();
+        self
+    }
+
+    pub fn new_hint<T: AsRef<str>>(&mut self, new_hint: T) -> &mut Self {
+        self.inner.new_hint = new_hint.as_ref().to_string();
         self
     }
 }

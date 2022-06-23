@@ -10,7 +10,7 @@ pub struct AccountTtl {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Number of days of inactivity before the account will be flagged for deletion; should range from 30-366 days
+    /// Number of days of inactivity before the account will be flagged for deletion; 30-366 days
     days: i32,
 }
 

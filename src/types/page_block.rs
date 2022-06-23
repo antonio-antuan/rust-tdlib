@@ -14,100 +14,91 @@ pub enum PageBlock {
     #[doc(hidden)]
     _Default,
     /// An invisible anchor on a page, which can be used in a URL to open the page from the specified anchor
-    #[serde(rename(serialize = "pageBlockAnchor", deserialize = "pageBlockAnchor"))]
+    #[serde(rename(deserialize = "pageBlockAnchor"))]
     Anchor(PageBlockAnchor),
     /// An animation
-    #[serde(rename(serialize = "pageBlockAnimation", deserialize = "pageBlockAnimation"))]
+    #[serde(rename(deserialize = "pageBlockAnimation"))]
     Animation(PageBlockAnimation),
     /// An audio file
-    #[serde(rename(serialize = "pageBlockAudio", deserialize = "pageBlockAudio"))]
+    #[serde(rename(deserialize = "pageBlockAudio"))]
     Audio(PageBlockAudio),
     /// The author and publishing date of a page
-    #[serde(rename(serialize = "pageBlockAuthorDate", deserialize = "pageBlockAuthorDate"))]
+    #[serde(rename(deserialize = "pageBlockAuthorDate"))]
     AuthorDate(PageBlockAuthorDate),
     /// A block quote
-    #[serde(rename(serialize = "pageBlockBlockQuote", deserialize = "pageBlockBlockQuote"))]
+    #[serde(rename(deserialize = "pageBlockBlockQuote"))]
     BlockQuote(PageBlockBlockQuote),
     /// A link to a chat
-    #[serde(rename(serialize = "pageBlockChatLink", deserialize = "pageBlockChatLink"))]
+    #[serde(rename(deserialize = "pageBlockChatLink"))]
     ChatLink(PageBlockChatLink),
     /// A collage
-    #[serde(rename(serialize = "pageBlockCollage", deserialize = "pageBlockCollage"))]
+    #[serde(rename(deserialize = "pageBlockCollage"))]
     Collage(PageBlockCollage),
     /// A page cover
-    #[serde(rename(serialize = "pageBlockCover", deserialize = "pageBlockCover"))]
+    #[serde(rename(deserialize = "pageBlockCover"))]
     Cover(PageBlockCover),
     /// A collapsible block
-    #[serde(rename(serialize = "pageBlockDetails", deserialize = "pageBlockDetails"))]
+    #[serde(rename(deserialize = "pageBlockDetails"))]
     Details(PageBlockDetails),
     /// An empty block separating a page
-    #[serde(rename(serialize = "pageBlockDivider", deserialize = "pageBlockDivider"))]
+    #[serde(rename(deserialize = "pageBlockDivider"))]
     Divider(PageBlockDivider),
     /// An embedded web page
-    #[serde(rename(serialize = "pageBlockEmbedded", deserialize = "pageBlockEmbedded"))]
+    #[serde(rename(deserialize = "pageBlockEmbedded"))]
     Embedded(PageBlockEmbedded),
     /// An embedded post
-    #[serde(rename(
-        serialize = "pageBlockEmbeddedPost",
-        deserialize = "pageBlockEmbeddedPost"
-    ))]
+    #[serde(rename(deserialize = "pageBlockEmbeddedPost"))]
     EmbeddedPost(PageBlockEmbeddedPost),
     /// The footer of a page
-    #[serde(rename(serialize = "pageBlockFooter", deserialize = "pageBlockFooter"))]
+    #[serde(rename(deserialize = "pageBlockFooter"))]
     Footer(PageBlockFooter),
     /// A header
-    #[serde(rename(serialize = "pageBlockHeader", deserialize = "pageBlockHeader"))]
+    #[serde(rename(deserialize = "pageBlockHeader"))]
     Header(PageBlockHeader),
     /// A kicker
-    #[serde(rename(serialize = "pageBlockKicker", deserialize = "pageBlockKicker"))]
+    #[serde(rename(deserialize = "pageBlockKicker"))]
     Kicker(PageBlockKicker),
     /// A list of data blocks
-    #[serde(rename(serialize = "pageBlockList", deserialize = "pageBlockList"))]
+    #[serde(rename(deserialize = "pageBlockList"))]
     List(PageBlockList),
     /// A map
-    #[serde(rename(serialize = "pageBlockMap", deserialize = "pageBlockMap"))]
+    #[serde(rename(deserialize = "pageBlockMap"))]
     Map(PageBlockMap),
     /// A text paragraph
-    #[serde(rename(serialize = "pageBlockParagraph", deserialize = "pageBlockParagraph"))]
+    #[serde(rename(deserialize = "pageBlockParagraph"))]
     Paragraph(PageBlockParagraph),
     /// A photo
-    #[serde(rename(serialize = "pageBlockPhoto", deserialize = "pageBlockPhoto"))]
+    #[serde(rename(deserialize = "pageBlockPhoto"))]
     Photo(PageBlockPhoto),
     /// A preformatted text paragraph
-    #[serde(rename(
-        serialize = "pageBlockPreformatted",
-        deserialize = "pageBlockPreformatted"
-    ))]
+    #[serde(rename(deserialize = "pageBlockPreformatted"))]
     Preformatted(PageBlockPreformatted),
     /// A pull quote
-    #[serde(rename(serialize = "pageBlockPullQuote", deserialize = "pageBlockPullQuote"))]
+    #[serde(rename(deserialize = "pageBlockPullQuote"))]
     PullQuote(PageBlockPullQuote),
     /// Related articles
-    #[serde(rename(
-        serialize = "pageBlockRelatedArticles",
-        deserialize = "pageBlockRelatedArticles"
-    ))]
+    #[serde(rename(deserialize = "pageBlockRelatedArticles"))]
     RelatedArticles(PageBlockRelatedArticles),
     /// A slideshow
-    #[serde(rename(serialize = "pageBlockSlideshow", deserialize = "pageBlockSlideshow"))]
+    #[serde(rename(deserialize = "pageBlockSlideshow"))]
     Slideshow(PageBlockSlideshow),
     /// A subheader
-    #[serde(rename(serialize = "pageBlockSubheader", deserialize = "pageBlockSubheader"))]
+    #[serde(rename(deserialize = "pageBlockSubheader"))]
     Subheader(PageBlockSubheader),
     /// The subtitle of a page
-    #[serde(rename(serialize = "pageBlockSubtitle", deserialize = "pageBlockSubtitle"))]
+    #[serde(rename(deserialize = "pageBlockSubtitle"))]
     Subtitle(PageBlockSubtitle),
     /// A table
-    #[serde(rename(serialize = "pageBlockTable", deserialize = "pageBlockTable"))]
+    #[serde(rename(deserialize = "pageBlockTable"))]
     Table(PageBlockTable),
     /// The title of a page
-    #[serde(rename(serialize = "pageBlockTitle", deserialize = "pageBlockTitle"))]
+    #[serde(rename(deserialize = "pageBlockTitle"))]
     Title(PageBlockTitle),
     /// A video
-    #[serde(rename(serialize = "pageBlockVideo", deserialize = "pageBlockVideo"))]
+    #[serde(rename(deserialize = "pageBlockVideo"))]
     Video(PageBlockVideo),
     /// A voice note
-    #[serde(rename(serialize = "pageBlockVoiceNote", deserialize = "pageBlockVoiceNote"))]
+    #[serde(rename(deserialize = "pageBlockVoiceNote"))]
     VoiceNote(PageBlockVoiceNote),
 }
 
@@ -289,7 +280,7 @@ pub struct PageBlockAnimation {
     animation: Option<Animation>,
     /// Animation caption
     caption: PageBlockCaption,
-    /// True, if the animation should be played automatically
+    /// True, if the animation must be played automatically
     need_autoplay: bool,
 }
 
@@ -626,7 +617,7 @@ pub struct PageBlockChatLink {
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
-    /// Chat username, by which all other information about the chat should be resolved
+    /// Chat username by which all other information about the chat can be resolved
     username: String,
 }
 
@@ -1027,9 +1018,9 @@ pub struct PageBlockEmbedded {
     height: i32,
     /// Block caption
     caption: PageBlockCaption,
-    /// True, if the block should be full width
+    /// True, if the block must be full width
     is_full_width: bool,
-    /// True, if scrolling should be allowed
+    /// True, if scrolling needs to be allowed
     allow_scrolling: bool,
 }
 
@@ -1846,7 +1837,7 @@ pub struct PageBlockPreformatted {
 
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: RichText,
-    /// Programming language for which the text should be formatted
+    /// Programming language for which the text needs to be formatted
     language: String,
 }
 
@@ -2491,9 +2482,9 @@ pub struct PageBlockVideo {
     video: Option<Video>,
     /// Video caption
     caption: PageBlockCaption,
-    /// True, if the video should be played automatically
+    /// True, if the video must be played automatically
     need_autoplay: bool,
-    /// True, if the video should be looped
+    /// True, if the video must be looped
     is_looped: bool,
 }
 

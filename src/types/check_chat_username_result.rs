@@ -14,37 +14,22 @@ pub enum CheckChatUsernameResult {
     #[doc(hidden)]
     _Default,
     /// Checks whether a username can be set for a chat
-    #[serde(rename(serialize = "checkChatUsername", deserialize = "checkChatUsername"))]
+    #[serde(rename(deserialize = "checkChatUsername"))]
     CheckChatUsername(CheckChatUsername),
     /// The username can be set
-    #[serde(rename(
-        serialize = "checkChatUsernameResultOk",
-        deserialize = "checkChatUsernameResultOk"
-    ))]
+    #[serde(rename(deserialize = "checkChatUsernameResultOk"))]
     Ok(CheckChatUsernameResultOk),
-    /// The user has too much chats with username, one of them should be made private first
-    #[serde(rename(
-        serialize = "checkChatUsernameResultPublicChatsTooMuch",
-        deserialize = "checkChatUsernameResultPublicChatsTooMuch"
-    ))]
+    /// The user has too many chats with username, one of them must be made private first
+    #[serde(rename(deserialize = "checkChatUsernameResultPublicChatsTooMuch"))]
     PublicChatsTooMuch(CheckChatUsernameResultPublicChatsTooMuch),
     /// The user can't be a member of a public supergroup
-    #[serde(rename(
-        serialize = "checkChatUsernameResultPublicGroupsUnavailable",
-        deserialize = "checkChatUsernameResultPublicGroupsUnavailable"
-    ))]
+    #[serde(rename(deserialize = "checkChatUsernameResultPublicGroupsUnavailable"))]
     PublicGroupsUnavailable(CheckChatUsernameResultPublicGroupsUnavailable),
     /// The username is invalid
-    #[serde(rename(
-        serialize = "checkChatUsernameResultUsernameInvalid",
-        deserialize = "checkChatUsernameResultUsernameInvalid"
-    ))]
+    #[serde(rename(deserialize = "checkChatUsernameResultUsernameInvalid"))]
     UsernameInvalid(CheckChatUsernameResultUsernameInvalid),
     /// The username is occupied
-    #[serde(rename(
-        serialize = "checkChatUsernameResultUsernameOccupied",
-        deserialize = "checkChatUsernameResultUsernameOccupied"
-    ))]
+    #[serde(rename(deserialize = "checkChatUsernameResultUsernameOccupied"))]
     UsernameOccupied(CheckChatUsernameResultUsernameOccupied),
 }
 
@@ -157,7 +142,7 @@ impl AsRef<CheckChatUsernameResultOk> for RTDCheckChatUsernameResultOkBuilder {
     }
 }
 
-/// The user has too much chats with username, one of them should be made private first
+/// The user has too many chats with username, one of them must be made private first
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CheckChatUsernameResultPublicChatsTooMuch {
     #[doc(hidden)]

@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for messages in secret chats. Returns the results in reverse chronological order. For optimal performance the number of returned messages is chosen by the library
+/// Searches for messages in secret chats. Returns the results in reverse chronological order. For optimal performance, the number of returned messages is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchSecretMessages {
     #[doc(hidden)]
@@ -12,13 +12,13 @@ pub struct SearchSecretMessages {
     client_id: Option<i32>,
     /// Identifier of the chat in which to search. Specify 0 to search in all secret chats
     chat_id: i64,
-    /// Query to search for. If empty, searchChatMessages should be used instead
+    /// Query to search for. If empty, searchChatMessages must be used instead
     query: String,
-    /// Offset of the first entry to return as received from the previous request; use empty string to get first chunk of results
+    /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
     offset: String,
-    /// The maximum number of messages to be returned; up to 100. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
+    /// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     limit: i32,
-    /// A filter for message content in the search results
+    /// Additional filter for messages to search; pass null to search for all messages
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,

@@ -11,7 +11,7 @@ pub struct SendBotStartMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the bot
-    bot_user_id: i32,
+    bot_user_id: i64,
     /// Identifier of the target chat
     chat_id: i64,
     /// A hidden parameter sent to the bot for deep linking purposes (https://core.telegram.org/bots#deep-linking)
@@ -47,7 +47,7 @@ impl SendBotStartMessage {
         RTDSendBotStartMessageBuilder { inner }
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -70,7 +70,7 @@ impl RTDSendBotStartMessageBuilder {
         self.inner.clone()
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }

@@ -10,11 +10,11 @@ pub struct DraftMessage {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the message to reply to; 0 if none
+    /// Identifier of the replied message; 0 if none
     reply_to_message_id: i64,
     /// Point in time (Unix timestamp) when the draft was created
     date: i32,
-    /// Content of the message draft; this should always be of type inputMessageText
+    /// Content of the message draft; must be of the type inputMessageText
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_text: InputMessageContent,

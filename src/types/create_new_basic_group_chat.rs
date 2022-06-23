@@ -11,7 +11,7 @@ pub struct CreateNewBasicGroupChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifiers of users to be added to the basic group
-    user_ids: Vec<i32>,
+    user_ids: Vec<i64>,
     /// Title of the new basic group; 1-128 characters
     title: String,
 
@@ -45,7 +45,7 @@ impl CreateNewBasicGroupChat {
         RTDCreateNewBasicGroupChatBuilder { inner }
     }
 
-    pub fn user_ids(&self) -> &Vec<i32> {
+    pub fn user_ids(&self) -> &Vec<i64> {
         &self.user_ids
     }
 
@@ -64,7 +64,7 @@ impl RTDCreateNewBasicGroupChatBuilder {
         self.inner.clone()
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }

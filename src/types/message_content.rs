@@ -13,188 +13,158 @@ pub trait TDMessageContent: Debug + RObject {}
 pub enum MessageContent {
     #[doc(hidden)]
     _Default,
+    /// A message with an animated emoji
+    #[serde(rename(deserialize = "messageAnimatedEmoji"))]
+    MessageAnimatedEmoji(MessageAnimatedEmoji),
     /// An animation message (GIF-style).
-    #[serde(rename(serialize = "messageAnimation", deserialize = "messageAnimation"))]
+    #[serde(rename(deserialize = "messageAnimation"))]
     MessageAnimation(MessageAnimation),
     /// An audio message
-    #[serde(rename(serialize = "messageAudio", deserialize = "messageAudio"))]
+    #[serde(rename(deserialize = "messageAudio"))]
     MessageAudio(MessageAudio),
     /// A newly created basic group
-    #[serde(rename(
-        serialize = "messageBasicGroupChatCreate",
-        deserialize = "messageBasicGroupChatCreate"
-    ))]
+    #[serde(rename(deserialize = "messageBasicGroupChatCreate"))]
     MessageBasicGroupChatCreate(MessageBasicGroupChatCreate),
     /// A message with information about an ended call
-    #[serde(rename(serialize = "messageCall", deserialize = "messageCall"))]
+    #[serde(rename(deserialize = "messageCall"))]
     MessageCall(MessageCall),
     /// New chat members were added
-    #[serde(rename(
-        serialize = "messageChatAddMembers",
-        deserialize = "messageChatAddMembers"
-    ))]
+    #[serde(rename(deserialize = "messageChatAddMembers"))]
     MessageChatAddMembers(MessageChatAddMembers),
     /// An updated chat photo
-    #[serde(rename(
-        serialize = "messageChatChangePhoto",
-        deserialize = "messageChatChangePhoto"
-    ))]
+    #[serde(rename(deserialize = "messageChatChangePhoto"))]
     MessageChatChangePhoto(MessageChatChangePhoto),
     /// An updated chat title
-    #[serde(rename(
-        serialize = "messageChatChangeTitle",
-        deserialize = "messageChatChangeTitle"
-    ))]
+    #[serde(rename(deserialize = "messageChatChangeTitle"))]
     MessageChatChangeTitle(MessageChatChangeTitle),
     /// A chat member was deleted
-    #[serde(rename(
-        serialize = "messageChatDeleteMember",
-        deserialize = "messageChatDeleteMember"
-    ))]
+    #[serde(rename(deserialize = "messageChatDeleteMember"))]
     MessageChatDeleteMember(MessageChatDeleteMember),
     /// A deleted chat photo
-    #[serde(rename(
-        serialize = "messageChatDeletePhoto",
-        deserialize = "messageChatDeletePhoto"
-    ))]
+    #[serde(rename(deserialize = "messageChatDeletePhoto"))]
     MessageChatDeletePhoto(MessageChatDeletePhoto),
-    /// A new member joined the chat by invite link
-    #[serde(rename(
-        serialize = "messageChatJoinByLink",
-        deserialize = "messageChatJoinByLink"
-    ))]
+    /// A new member joined the chat via an invite link
+    #[serde(rename(deserialize = "messageChatJoinByLink"))]
     MessageChatJoinByLink(MessageChatJoinByLink),
-    /// The TTL (Time To Live) setting messages in a secret chat has been changed
-    #[serde(rename(serialize = "messageChatSetTtl", deserialize = "messageChatSetTtl"))]
+    /// A new member was accepted to the chat by an administrator
+    #[serde(rename(deserialize = "messageChatJoinByRequest"))]
+    MessageChatJoinByRequest(MessageChatJoinByRequest),
+    /// A theme in the chat has been changed
+    #[serde(rename(deserialize = "messageChatSetTheme"))]
+    MessageChatSetTheme(MessageChatSetTheme),
+    /// The TTL (Time To Live) setting for messages in the chat has been changed
+    #[serde(rename(deserialize = "messageChatSetTtl"))]
     MessageChatSetTtl(MessageChatSetTtl),
     /// A supergroup has been created from a basic group
-    #[serde(rename(
-        serialize = "messageChatUpgradeFrom",
-        deserialize = "messageChatUpgradeFrom"
-    ))]
+    #[serde(rename(deserialize = "messageChatUpgradeFrom"))]
     MessageChatUpgradeFrom(MessageChatUpgradeFrom),
     /// A basic group was upgraded to a supergroup and was deactivated as the result
-    #[serde(rename(
-        serialize = "messageChatUpgradeTo",
-        deserialize = "messageChatUpgradeTo"
-    ))]
+    #[serde(rename(deserialize = "messageChatUpgradeTo"))]
     MessageChatUpgradeTo(MessageChatUpgradeTo),
     /// A message with a user contact
-    #[serde(rename(serialize = "messageContact", deserialize = "messageContact"))]
+    #[serde(rename(deserialize = "messageContact"))]
     MessageContact(MessageContact),
     /// A contact has registered with Telegram
-    #[serde(rename(
-        serialize = "messageContactRegistered",
-        deserialize = "messageContactRegistered"
-    ))]
+    #[serde(rename(deserialize = "messageContactRegistered"))]
     MessageContactRegistered(MessageContactRegistered),
     /// A non-standard action has happened in the chat
-    #[serde(rename(
-        serialize = "messageCustomServiceAction",
-        deserialize = "messageCustomServiceAction"
-    ))]
+    #[serde(rename(deserialize = "messageCustomServiceAction"))]
     MessageCustomServiceAction(MessageCustomServiceAction),
     /// A dice message. The dice value is randomly generated by the server
-    #[serde(rename(serialize = "messageDice", deserialize = "messageDice"))]
+    #[serde(rename(deserialize = "messageDice"))]
     MessageDice(MessageDice),
     /// A document message (general file)
-    #[serde(rename(serialize = "messageDocument", deserialize = "messageDocument"))]
+    #[serde(rename(deserialize = "messageDocument"))]
     MessageDocument(MessageDocument),
     /// An expired photo message (self-destructed after TTL has elapsed)
-    #[serde(rename(serialize = "messageExpiredPhoto", deserialize = "messageExpiredPhoto"))]
+    #[serde(rename(deserialize = "messageExpiredPhoto"))]
     MessageExpiredPhoto(MessageExpiredPhoto),
     /// An expired video message (self-destructed after TTL has elapsed)
-    #[serde(rename(serialize = "messageExpiredVideo", deserialize = "messageExpiredVideo"))]
+    #[serde(rename(deserialize = "messageExpiredVideo"))]
     MessageExpiredVideo(MessageExpiredVideo),
     /// A message with a game
-    #[serde(rename(serialize = "messageGame", deserialize = "messageGame"))]
+    #[serde(rename(deserialize = "messageGame"))]
     MessageGame(MessageGame),
     /// A new high score was achieved in a game
-    #[serde(rename(serialize = "messageGameScore", deserialize = "messageGameScore"))]
+    #[serde(rename(deserialize = "messageGameScore"))]
     MessageGameScore(MessageGameScore),
+    /// A message with information about an invite to a video chat
+    #[serde(rename(deserialize = "messageInviteVideoChatParticipants"))]
+    MessageInviteVideoChatParticipants(MessageInviteVideoChatParticipants),
     /// A message with an invoice from a bot
-    #[serde(rename(serialize = "messageInvoice", deserialize = "messageInvoice"))]
+    #[serde(rename(deserialize = "messageInvoice"))]
     MessageInvoice(MessageInvoice),
     /// A message with a location
-    #[serde(rename(serialize = "messageLocation", deserialize = "messageLocation"))]
+    #[serde(rename(deserialize = "messageLocation"))]
     MessageLocation(MessageLocation),
     /// Telegram Passport data has been received; for bots only
-    #[serde(rename(
-        serialize = "messagePassportDataReceived",
-        deserialize = "messagePassportDataReceived"
-    ))]
+    #[serde(rename(deserialize = "messagePassportDataReceived"))]
     MessagePassportDataReceived(MessagePassportDataReceived),
-    /// Telegram Passport data has been sent
-    #[serde(rename(
-        serialize = "messagePassportDataSent",
-        deserialize = "messagePassportDataSent"
-    ))]
+    /// Telegram Passport data has been sent to a bot
+    #[serde(rename(deserialize = "messagePassportDataSent"))]
     MessagePassportDataSent(MessagePassportDataSent),
     /// A payment has been completed
-    #[serde(rename(
-        serialize = "messagePaymentSuccessful",
-        deserialize = "messagePaymentSuccessful"
-    ))]
+    #[serde(rename(deserialize = "messagePaymentSuccessful"))]
     MessagePaymentSuccessful(MessagePaymentSuccessful),
     /// A payment has been completed; for bots only
-    #[serde(rename(
-        serialize = "messagePaymentSuccessfulBot",
-        deserialize = "messagePaymentSuccessfulBot"
-    ))]
+    #[serde(rename(deserialize = "messagePaymentSuccessfulBot"))]
     MessagePaymentSuccessfulBot(MessagePaymentSuccessfulBot),
     /// A photo message
-    #[serde(rename(serialize = "messagePhoto", deserialize = "messagePhoto"))]
+    #[serde(rename(deserialize = "messagePhoto"))]
     MessagePhoto(MessagePhoto),
     /// A message has been pinned
-    #[serde(rename(serialize = "messagePinMessage", deserialize = "messagePinMessage"))]
+    #[serde(rename(deserialize = "messagePinMessage"))]
     MessagePinMessage(MessagePinMessage),
     /// A message with a poll
-    #[serde(rename(serialize = "messagePoll", deserialize = "messagePoll"))]
+    #[serde(rename(deserialize = "messagePoll"))]
     MessagePoll(MessagePoll),
     /// A user in the chat came within proximity alert range
-    #[serde(rename(
-        serialize = "messageProximityAlertTriggered",
-        deserialize = "messageProximityAlertTriggered"
-    ))]
+    #[serde(rename(deserialize = "messageProximityAlertTriggered"))]
     MessageProximityAlertTriggered(MessageProximityAlertTriggered),
     /// A screenshot of a message in the chat has been taken
-    #[serde(rename(
-        serialize = "messageScreenshotTaken",
-        deserialize = "messageScreenshotTaken"
-    ))]
+    #[serde(rename(deserialize = "messageScreenshotTaken"))]
     MessageScreenshotTaken(MessageScreenshotTaken),
     /// A sticker message
-    #[serde(rename(serialize = "messageSticker", deserialize = "messageSticker"))]
+    #[serde(rename(deserialize = "messageSticker"))]
     MessageSticker(MessageSticker),
     /// A newly created supergroup or channel
-    #[serde(rename(
-        serialize = "messageSupergroupChatCreate",
-        deserialize = "messageSupergroupChatCreate"
-    ))]
+    #[serde(rename(deserialize = "messageSupergroupChatCreate"))]
     MessageSupergroupChatCreate(MessageSupergroupChatCreate),
     /// A text message
-    #[serde(rename(serialize = "messageText", deserialize = "messageText"))]
+    #[serde(rename(deserialize = "messageText"))]
     MessageText(MessageText),
     /// Message content that is not supported in the current TDLib version
-    #[serde(rename(serialize = "messageUnsupported", deserialize = "messageUnsupported"))]
+    #[serde(rename(deserialize = "messageUnsupported"))]
     MessageUnsupported(MessageUnsupported),
     /// A message with information about a venue
-    #[serde(rename(serialize = "messageVenue", deserialize = "messageVenue"))]
+    #[serde(rename(deserialize = "messageVenue"))]
     MessageVenue(MessageVenue),
     /// A video message
-    #[serde(rename(serialize = "messageVideo", deserialize = "messageVideo"))]
+    #[serde(rename(deserialize = "messageVideo"))]
     MessageVideo(MessageVideo),
+    /// A message with information about an ended video chat
+    #[serde(rename(deserialize = "messageVideoChatEnded"))]
+    MessageVideoChatEnded(MessageVideoChatEnded),
+    /// A new video chat was scheduled
+    #[serde(rename(deserialize = "messageVideoChatScheduled"))]
+    MessageVideoChatScheduled(MessageVideoChatScheduled),
+    /// A newly created video chat
+    #[serde(rename(deserialize = "messageVideoChatStarted"))]
+    MessageVideoChatStarted(MessageVideoChatStarted),
     /// A video note message
-    #[serde(rename(serialize = "messageVideoNote", deserialize = "messageVideoNote"))]
+    #[serde(rename(deserialize = "messageVideoNote"))]
     MessageVideoNote(MessageVideoNote),
     /// A voice note message
-    #[serde(rename(serialize = "messageVoiceNote", deserialize = "messageVoiceNote"))]
+    #[serde(rename(deserialize = "messageVoiceNote"))]
     MessageVoiceNote(MessageVoiceNote),
+    /// Data from a Web App has been received; for bots only
+    #[serde(rename(deserialize = "messageWebAppDataReceived"))]
+    MessageWebAppDataReceived(MessageWebAppDataReceived),
+    /// Data from a Web App has been sent to a bot
+    #[serde(rename(deserialize = "messageWebAppDataSent"))]
+    MessageWebAppDataSent(MessageWebAppDataSent),
     /// The current user has connected a website by logging in using Telegram Login Widget on it
-    #[serde(rename(
-        serialize = "messageWebsiteConnected",
-        deserialize = "messageWebsiteConnected"
-    ))]
+    #[serde(rename(deserialize = "messageWebsiteConnected"))]
     MessageWebsiteConnected(MessageWebsiteConnected),
 }
 
@@ -208,6 +178,7 @@ impl RObject for MessageContent {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         match self {
+            MessageContent::MessageAnimatedEmoji(t) => t.extra(),
             MessageContent::MessageAnimation(t) => t.extra(),
             MessageContent::MessageAudio(t) => t.extra(),
             MessageContent::MessageBasicGroupChatCreate(t) => t.extra(),
@@ -218,6 +189,8 @@ impl RObject for MessageContent {
             MessageContent::MessageChatDeleteMember(t) => t.extra(),
             MessageContent::MessageChatDeletePhoto(t) => t.extra(),
             MessageContent::MessageChatJoinByLink(t) => t.extra(),
+            MessageContent::MessageChatJoinByRequest(t) => t.extra(),
+            MessageContent::MessageChatSetTheme(t) => t.extra(),
             MessageContent::MessageChatSetTtl(t) => t.extra(),
             MessageContent::MessageChatUpgradeFrom(t) => t.extra(),
             MessageContent::MessageChatUpgradeTo(t) => t.extra(),
@@ -230,6 +203,7 @@ impl RObject for MessageContent {
             MessageContent::MessageExpiredVideo(t) => t.extra(),
             MessageContent::MessageGame(t) => t.extra(),
             MessageContent::MessageGameScore(t) => t.extra(),
+            MessageContent::MessageInviteVideoChatParticipants(t) => t.extra(),
             MessageContent::MessageInvoice(t) => t.extra(),
             MessageContent::MessageLocation(t) => t.extra(),
             MessageContent::MessagePassportDataReceived(t) => t.extra(),
@@ -247,8 +221,13 @@ impl RObject for MessageContent {
             MessageContent::MessageUnsupported(t) => t.extra(),
             MessageContent::MessageVenue(t) => t.extra(),
             MessageContent::MessageVideo(t) => t.extra(),
+            MessageContent::MessageVideoChatEnded(t) => t.extra(),
+            MessageContent::MessageVideoChatScheduled(t) => t.extra(),
+            MessageContent::MessageVideoChatStarted(t) => t.extra(),
             MessageContent::MessageVideoNote(t) => t.extra(),
             MessageContent::MessageVoiceNote(t) => t.extra(),
+            MessageContent::MessageWebAppDataReceived(t) => t.extra(),
+            MessageContent::MessageWebAppDataSent(t) => t.extra(),
             MessageContent::MessageWebsiteConnected(t) => t.extra(),
 
             _ => None,
@@ -257,6 +236,7 @@ impl RObject for MessageContent {
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         match self {
+            MessageContent::MessageAnimatedEmoji(t) => t.client_id(),
             MessageContent::MessageAnimation(t) => t.client_id(),
             MessageContent::MessageAudio(t) => t.client_id(),
             MessageContent::MessageBasicGroupChatCreate(t) => t.client_id(),
@@ -267,6 +247,8 @@ impl RObject for MessageContent {
             MessageContent::MessageChatDeleteMember(t) => t.client_id(),
             MessageContent::MessageChatDeletePhoto(t) => t.client_id(),
             MessageContent::MessageChatJoinByLink(t) => t.client_id(),
+            MessageContent::MessageChatJoinByRequest(t) => t.client_id(),
+            MessageContent::MessageChatSetTheme(t) => t.client_id(),
             MessageContent::MessageChatSetTtl(t) => t.client_id(),
             MessageContent::MessageChatUpgradeFrom(t) => t.client_id(),
             MessageContent::MessageChatUpgradeTo(t) => t.client_id(),
@@ -279,6 +261,7 @@ impl RObject for MessageContent {
             MessageContent::MessageExpiredVideo(t) => t.client_id(),
             MessageContent::MessageGame(t) => t.client_id(),
             MessageContent::MessageGameScore(t) => t.client_id(),
+            MessageContent::MessageInviteVideoChatParticipants(t) => t.client_id(),
             MessageContent::MessageInvoice(t) => t.client_id(),
             MessageContent::MessageLocation(t) => t.client_id(),
             MessageContent::MessagePassportDataReceived(t) => t.client_id(),
@@ -296,8 +279,13 @@ impl RObject for MessageContent {
             MessageContent::MessageUnsupported(t) => t.client_id(),
             MessageContent::MessageVenue(t) => t.client_id(),
             MessageContent::MessageVideo(t) => t.client_id(),
+            MessageContent::MessageVideoChatEnded(t) => t.client_id(),
+            MessageContent::MessageVideoChatScheduled(t) => t.client_id(),
+            MessageContent::MessageVideoChatStarted(t) => t.client_id(),
             MessageContent::MessageVideoNote(t) => t.client_id(),
             MessageContent::MessageVoiceNote(t) => t.client_id(),
+            MessageContent::MessageWebAppDataReceived(t) => t.client_id(),
+            MessageContent::MessageWebAppDataSent(t) => t.client_id(),
             MessageContent::MessageWebsiteConnected(t) => t.client_id(),
 
             _ => None,
@@ -318,6 +306,86 @@ impl MessageContent {
 impl AsRef<MessageContent> for MessageContent {
     fn as_ref(&self) -> &MessageContent {
         self
+    }
+}
+
+/// A message with an animated emoji
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageAnimatedEmoji {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// The animated emoji
+    animated_emoji: AnimatedEmoji,
+    /// The corresponding emoji
+    emoji: String,
+}
+
+impl RObject for MessageAnimatedEmoji {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageAnimatedEmoji {}
+
+impl MessageAnimatedEmoji {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageAnimatedEmojiBuilder {
+        let mut inner = MessageAnimatedEmoji::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageAnimatedEmojiBuilder { inner }
+    }
+
+    pub fn animated_emoji(&self) -> &AnimatedEmoji {
+        &self.animated_emoji
+    }
+
+    pub fn emoji(&self) -> &String {
+        &self.emoji
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageAnimatedEmojiBuilder {
+    inner: MessageAnimatedEmoji,
+}
+
+impl RTDMessageAnimatedEmojiBuilder {
+    pub fn build(&self) -> MessageAnimatedEmoji {
+        self.inner.clone()
+    }
+
+    pub fn animated_emoji<T: AsRef<AnimatedEmoji>>(&mut self, animated_emoji: T) -> &mut Self {
+        self.inner.animated_emoji = animated_emoji.as_ref().clone();
+        self
+    }
+
+    pub fn emoji<T: AsRef<str>>(&mut self, emoji: T) -> &mut Self {
+        self.inner.emoji = emoji.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<MessageAnimatedEmoji> for MessageAnimatedEmoji {
+    fn as_ref(&self) -> &MessageAnimatedEmoji {
+        self
+    }
+}
+
+impl AsRef<MessageAnimatedEmoji> for RTDMessageAnimatedEmojiBuilder {
+    fn as_ref(&self) -> &MessageAnimatedEmoji {
+        &self.inner
     }
 }
 
@@ -503,7 +571,7 @@ pub struct MessageBasicGroupChatCreate {
     /// Title of the basic group
     title: String,
     /// User identifiers of members in the basic group
-    member_user_ids: Vec<i32>,
+    member_user_ids: Vec<i64>,
 }
 
 impl RObject for MessageBasicGroupChatCreate {
@@ -534,7 +602,7 @@ impl MessageBasicGroupChatCreate {
         &self.title
     }
 
-    pub fn member_user_ids(&self) -> &Vec<i32> {
+    pub fn member_user_ids(&self) -> &Vec<i64> {
         &self.member_user_ids
     }
 }
@@ -554,7 +622,7 @@ impl RTDMessageBasicGroupChatCreateBuilder {
         self
     }
 
-    pub fn member_user_ids(&mut self, member_user_ids: Vec<i32>) -> &mut Self {
+    pub fn member_user_ids(&mut self, member_user_ids: Vec<i64>) -> &mut Self {
         self.inner.member_user_ids = member_user_ids;
         self
     }
@@ -674,7 +742,7 @@ pub struct MessageChatAddMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifiers of the new members
-    member_user_ids: Vec<i32>,
+    member_user_ids: Vec<i64>,
 }
 
 impl RObject for MessageChatAddMembers {
@@ -701,7 +769,7 @@ impl MessageChatAddMembers {
         RTDMessageChatAddMembersBuilder { inner }
     }
 
-    pub fn member_user_ids(&self) -> &Vec<i32> {
+    pub fn member_user_ids(&self) -> &Vec<i64> {
         &self.member_user_ids
     }
 }
@@ -716,7 +784,7 @@ impl RTDMessageChatAddMembersBuilder {
         self.inner.clone()
     }
 
-    pub fn member_user_ids(&mut self, member_user_ids: Vec<i32>) -> &mut Self {
+    pub fn member_user_ids(&mut self, member_user_ids: Vec<i64>) -> &mut Self {
         self.inner.member_user_ids = member_user_ids;
         self
     }
@@ -881,7 +949,7 @@ pub struct MessageChatDeleteMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the deleted chat member
-    user_id: i32,
+    user_id: i64,
 }
 
 impl RObject for MessageChatDeleteMember {
@@ -908,7 +976,7 @@ impl MessageChatDeleteMember {
         RTDMessageChatDeleteMemberBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
@@ -923,7 +991,7 @@ impl RTDMessageChatDeleteMemberBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -999,7 +1067,7 @@ impl AsRef<MessageChatDeletePhoto> for RTDMessageChatDeletePhotoBuilder {
     }
 }
 
-/// A new member joined the chat by invite link
+/// A new member joined the chat via an invite link
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageChatJoinByLink {
     #[doc(hidden)]
@@ -1057,7 +1125,134 @@ impl AsRef<MessageChatJoinByLink> for RTDMessageChatJoinByLinkBuilder {
     }
 }
 
-/// The TTL (Time To Live) setting messages in a secret chat has been changed
+/// A new member was accepted to the chat by an administrator
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageChatJoinByRequest {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for MessageChatJoinByRequest {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageChatJoinByRequest {}
+
+impl MessageChatJoinByRequest {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageChatJoinByRequestBuilder {
+        let mut inner = MessageChatJoinByRequest::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageChatJoinByRequestBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageChatJoinByRequestBuilder {
+    inner: MessageChatJoinByRequest,
+}
+
+impl RTDMessageChatJoinByRequestBuilder {
+    pub fn build(&self) -> MessageChatJoinByRequest {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<MessageChatJoinByRequest> for MessageChatJoinByRequest {
+    fn as_ref(&self) -> &MessageChatJoinByRequest {
+        self
+    }
+}
+
+impl AsRef<MessageChatJoinByRequest> for RTDMessageChatJoinByRequestBuilder {
+    fn as_ref(&self) -> &MessageChatJoinByRequest {
+        &self.inner
+    }
+}
+
+/// A theme in the chat has been changed
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageChatSetTheme {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// If non-empty, name of a new theme, set for the chat. Otherwise chat theme was reset to the default one
+    theme_name: String,
+}
+
+impl RObject for MessageChatSetTheme {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageChatSetTheme {}
+
+impl MessageChatSetTheme {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageChatSetThemeBuilder {
+        let mut inner = MessageChatSetTheme::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageChatSetThemeBuilder { inner }
+    }
+
+    pub fn theme_name(&self) -> &String {
+        &self.theme_name
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageChatSetThemeBuilder {
+    inner: MessageChatSetTheme,
+}
+
+impl RTDMessageChatSetThemeBuilder {
+    pub fn build(&self) -> MessageChatSetTheme {
+        self.inner.clone()
+    }
+
+    pub fn theme_name<T: AsRef<str>>(&mut self, theme_name: T) -> &mut Self {
+        self.inner.theme_name = theme_name.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<MessageChatSetTheme> for MessageChatSetTheme {
+    fn as_ref(&self) -> &MessageChatSetTheme {
+        self
+    }
+}
+
+impl AsRef<MessageChatSetTheme> for RTDMessageChatSetThemeBuilder {
+    fn as_ref(&self) -> &MessageChatSetTheme {
+        &self.inner
+    }
+}
+
+/// The TTL (Time To Live) setting for messages in the chat has been changed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageChatSetTtl {
     #[doc(hidden)]
@@ -1065,7 +1260,7 @@ pub struct MessageChatSetTtl {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// New TTL
+    /// New message TTL
     ttl: i32,
 }
 
@@ -1137,7 +1332,7 @@ pub struct MessageChatUpgradeFrom {
     /// Title of the newly created supergroup
     title: String,
     /// The identifier of the original basic group
-    basic_group_id: i32,
+    basic_group_id: i64,
 }
 
 impl RObject for MessageChatUpgradeFrom {
@@ -1168,7 +1363,7 @@ impl MessageChatUpgradeFrom {
         &self.title
     }
 
-    pub fn basic_group_id(&self) -> i32 {
+    pub fn basic_group_id(&self) -> i64 {
         self.basic_group_id
     }
 }
@@ -1188,7 +1383,7 @@ impl RTDMessageChatUpgradeFromBuilder {
         self
     }
 
-    pub fn basic_group_id(&mut self, basic_group_id: i32) -> &mut Self {
+    pub fn basic_group_id(&mut self, basic_group_id: i64) -> &mut Self {
         self.inner.basic_group_id = basic_group_id;
         self
     }
@@ -1215,7 +1410,7 @@ pub struct MessageChatUpgradeTo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup to which the basic group was upgraded
-    supergroup_id: i32,
+    supergroup_id: i64,
 }
 
 impl RObject for MessageChatUpgradeTo {
@@ -1242,7 +1437,7 @@ impl MessageChatUpgradeTo {
         RTDMessageChatUpgradeToBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 }
@@ -1257,7 +1452,7 @@ impl RTDMessageChatUpgradeToBuilder {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }
@@ -1945,6 +2140,86 @@ impl AsRef<MessageGameScore> for RTDMessageGameScoreBuilder {
     }
 }
 
+/// A message with information about an invite to a video chat
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageInviteVideoChatParticipants {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+    group_call_id: i32,
+    /// Invited user identifiers
+    user_ids: Vec<i64>,
+}
+
+impl RObject for MessageInviteVideoChatParticipants {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageInviteVideoChatParticipants {}
+
+impl MessageInviteVideoChatParticipants {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageInviteVideoChatParticipantsBuilder {
+        let mut inner = MessageInviteVideoChatParticipants::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageInviteVideoChatParticipantsBuilder { inner }
+    }
+
+    pub fn group_call_id(&self) -> i32 {
+        self.group_call_id
+    }
+
+    pub fn user_ids(&self) -> &Vec<i64> {
+        &self.user_ids
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageInviteVideoChatParticipantsBuilder {
+    inner: MessageInviteVideoChatParticipants,
+}
+
+impl RTDMessageInviteVideoChatParticipantsBuilder {
+    pub fn build(&self) -> MessageInviteVideoChatParticipants {
+        self.inner.clone()
+    }
+
+    pub fn group_call_id(&mut self, group_call_id: i32) -> &mut Self {
+        self.inner.group_call_id = group_call_id;
+        self
+    }
+
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
+        self.inner.user_ids = user_ids;
+        self
+    }
+}
+
+impl AsRef<MessageInviteVideoChatParticipants> for MessageInviteVideoChatParticipants {
+    fn as_ref(&self) -> &MessageInviteVideoChatParticipants {
+        self
+    }
+}
+
+impl AsRef<MessageInviteVideoChatParticipants> for RTDMessageInviteVideoChatParticipantsBuilder {
+    fn as_ref(&self) -> &MessageInviteVideoChatParticipants {
+        &self.inner
+    }
+}
+
 /// A message with an invoice from a bot
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageInvoice {
@@ -1956,18 +2231,18 @@ pub struct MessageInvoice {
     /// Product title
     title: String,
     /// A message with an invoice from a bot
-    description: String,
+    description: FormattedText,
     /// Product photo; may be null
     photo: Option<Photo>,
     /// Currency for the product price
     currency: String,
-    /// Product total price in the minimal quantity of the currency
+    /// Product total price in the smallest units of the currency
     total_amount: i64,
     /// Unique invoice bot start_parameter. To share an invoice use the URL https://t.me/{bot_username}?start={start_parameter}
     start_parameter: String,
     /// True, if the invoice is a test invoice
     is_test: bool,
-    /// True, if the shipping address should be specified
+    /// True, if the shipping address must be specified
     need_shipping_address: bool,
     /// The identifier of the message with the receipt, after the product has been purchased
     receipt_message_id: i64,
@@ -2001,7 +2276,7 @@ impl MessageInvoice {
         &self.title
     }
 
-    pub fn description(&self) -> &String {
+    pub fn description(&self) -> &FormattedText {
         &self.description
     }
 
@@ -2049,8 +2324,8 @@ impl RTDMessageInvoiceBuilder {
         self
     }
 
-    pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
-        self.inner.description = description.as_ref().to_string();
+    pub fn description<T: AsRef<FormattedText>>(&mut self, description: T) -> &mut Self {
+        self.inner.description = description.as_ref().clone();
         self
     }
 
@@ -2295,7 +2570,7 @@ impl AsRef<MessagePassportDataReceived> for RTDMessagePassportDataReceivedBuilde
     }
 }
 
-/// Telegram Passport data has been sent
+/// Telegram Passport data has been sent to a bot
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessagePassportDataSent {
     #[doc(hidden)]
@@ -2372,12 +2647,20 @@ pub struct MessagePaymentSuccessful {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the message with the corresponding invoice; can be an identifier of a deleted message
+    /// Identifier of the chat, containing the corresponding invoice message; 0 if unknown
+    invoice_chat_id: i64,
+    /// Identifier of the message with the corresponding invoice; can be 0 or an identifier of a deleted message
     invoice_message_id: i64,
     /// Currency for the price of the product
     currency: String,
-    /// Total price for the product, in the minimal quantity of the currency
+    /// Total price for the product, in the smallest units of the currency
     total_amount: i64,
+    /// True, if this is a recurring payment
+    is_recurring: bool,
+    /// True, if this is the first recurring payment
+    is_first_recurring: bool,
+    /// Name of the invoice; may be empty if unknown
+    invoice_name: String,
 }
 
 impl RObject for MessagePaymentSuccessful {
@@ -2404,6 +2687,10 @@ impl MessagePaymentSuccessful {
         RTDMessagePaymentSuccessfulBuilder { inner }
     }
 
+    pub fn invoice_chat_id(&self) -> i64 {
+        self.invoice_chat_id
+    }
+
     pub fn invoice_message_id(&self) -> i64 {
         self.invoice_message_id
     }
@@ -2415,6 +2702,18 @@ impl MessagePaymentSuccessful {
     pub fn total_amount(&self) -> i64 {
         self.total_amount
     }
+
+    pub fn is_recurring(&self) -> bool {
+        self.is_recurring
+    }
+
+    pub fn is_first_recurring(&self) -> bool {
+        self.is_first_recurring
+    }
+
+    pub fn invoice_name(&self) -> &String {
+        &self.invoice_name
+    }
 }
 
 #[doc(hidden)]
@@ -2425,6 +2724,11 @@ pub struct RTDMessagePaymentSuccessfulBuilder {
 impl RTDMessagePaymentSuccessfulBuilder {
     pub fn build(&self) -> MessagePaymentSuccessful {
         self.inner.clone()
+    }
+
+    pub fn invoice_chat_id(&mut self, invoice_chat_id: i64) -> &mut Self {
+        self.inner.invoice_chat_id = invoice_chat_id;
+        self
     }
 
     pub fn invoice_message_id(&mut self, invoice_message_id: i64) -> &mut Self {
@@ -2439,6 +2743,21 @@ impl RTDMessagePaymentSuccessfulBuilder {
 
     pub fn total_amount(&mut self, total_amount: i64) -> &mut Self {
         self.inner.total_amount = total_amount;
+        self
+    }
+
+    pub fn is_recurring(&mut self, is_recurring: bool) -> &mut Self {
+        self.inner.is_recurring = is_recurring;
+        self
+    }
+
+    pub fn is_first_recurring(&mut self, is_first_recurring: bool) -> &mut Self {
+        self.inner.is_first_recurring = is_first_recurring;
+        self
+    }
+
+    pub fn invoice_name<T: AsRef<str>>(&mut self, invoice_name: T) -> &mut Self {
+        self.inner.invoice_name = invoice_name.as_ref().to_string();
         self
     }
 }
@@ -2463,12 +2782,14 @@ pub struct MessagePaymentSuccessfulBot {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the message with the corresponding invoice; can be an identifier of a deleted message
-    invoice_message_id: i64,
     /// Currency for price of the product
     currency: String,
-    /// Total price for the product, in the minimal quantity of the currency
+    /// Total price for the product, in the smallest units of the currency
     total_amount: i64,
+    /// True, if this is a recurring payment
+    is_recurring: bool,
+    /// True, if this is the first recurring payment
+    is_first_recurring: bool,
     /// Invoice payload
     invoice_payload: String,
     /// Identifier of the shipping option chosen by the user; may be empty if not applicable
@@ -2505,16 +2826,20 @@ impl MessagePaymentSuccessfulBot {
         RTDMessagePaymentSuccessfulBotBuilder { inner }
     }
 
-    pub fn invoice_message_id(&self) -> i64 {
-        self.invoice_message_id
-    }
-
     pub fn currency(&self) -> &String {
         &self.currency
     }
 
     pub fn total_amount(&self) -> i64 {
         self.total_amount
+    }
+
+    pub fn is_recurring(&self) -> bool {
+        self.is_recurring
+    }
+
+    pub fn is_first_recurring(&self) -> bool {
+        self.is_first_recurring
     }
 
     pub fn invoice_payload(&self) -> &String {
@@ -2548,11 +2873,6 @@ impl RTDMessagePaymentSuccessfulBotBuilder {
         self.inner.clone()
     }
 
-    pub fn invoice_message_id(&mut self, invoice_message_id: i64) -> &mut Self {
-        self.inner.invoice_message_id = invoice_message_id;
-        self
-    }
-
     pub fn currency<T: AsRef<str>>(&mut self, currency: T) -> &mut Self {
         self.inner.currency = currency.as_ref().to_string();
         self
@@ -2560,6 +2880,16 @@ impl RTDMessagePaymentSuccessfulBotBuilder {
 
     pub fn total_amount(&mut self, total_amount: i64) -> &mut Self {
         self.inner.total_amount = total_amount;
+        self
+    }
+
+    pub fn is_recurring(&mut self, is_recurring: bool) -> &mut Self {
+        self.inner.is_recurring = is_recurring;
+        self
+    }
+
+    pub fn is_first_recurring(&mut self, is_first_recurring: bool) -> &mut Self {
+        self.inner.is_first_recurring = is_first_recurring;
         self
     }
 
@@ -2844,14 +3174,14 @@ pub struct MessageProximityAlertTriggered {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The user or chat, which triggered the proximity alert
+    /// The identifier of a user or chat that triggered the proximity alert
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    traveler: MessageSender,
-    /// The user or chat, which subscribed for the proximity alert
+    traveler_id: MessageSender,
+    /// The identifier of a user or chat that subscribed for the proximity alert
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    watcher: MessageSender,
+    watcher_id: MessageSender,
     /// The distance between the users
     distance: i32,
 }
@@ -2880,12 +3210,12 @@ impl MessageProximityAlertTriggered {
         RTDMessageProximityAlertTriggeredBuilder { inner }
     }
 
-    pub fn traveler(&self) -> &MessageSender {
-        &self.traveler
+    pub fn traveler_id(&self) -> &MessageSender {
+        &self.traveler_id
     }
 
-    pub fn watcher(&self) -> &MessageSender {
-        &self.watcher
+    pub fn watcher_id(&self) -> &MessageSender {
+        &self.watcher_id
     }
 
     pub fn distance(&self) -> i32 {
@@ -2903,13 +3233,13 @@ impl RTDMessageProximityAlertTriggeredBuilder {
         self.inner.clone()
     }
 
-    pub fn traveler<T: AsRef<MessageSender>>(&mut self, traveler: T) -> &mut Self {
-        self.inner.traveler = traveler.as_ref().clone();
+    pub fn traveler_id<T: AsRef<MessageSender>>(&mut self, traveler_id: T) -> &mut Self {
+        self.inner.traveler_id = traveler_id.as_ref().clone();
         self
     }
 
-    pub fn watcher<T: AsRef<MessageSender>>(&mut self, watcher: T) -> &mut Self {
-        self.inner.watcher = watcher.as_ref().clone();
+    pub fn watcher_id<T: AsRef<MessageSender>>(&mut self, watcher_id: T) -> &mut Self {
+        self.inner.watcher_id = watcher_id.as_ref().clone();
         self
     }
 
@@ -2999,6 +3329,8 @@ pub struct MessageSticker {
     client_id: Option<i32>,
     /// The sticker description
     sticker: Sticker,
+    /// True, if premium animation of the sticker must be played
+    is_premium: bool,
 }
 
 impl RObject for MessageSticker {
@@ -3028,6 +3360,10 @@ impl MessageSticker {
     pub fn sticker(&self) -> &Sticker {
         &self.sticker
     }
+
+    pub fn is_premium(&self) -> bool {
+        self.is_premium
+    }
 }
 
 #[doc(hidden)]
@@ -3042,6 +3378,11 @@ impl RTDMessageStickerBuilder {
 
     pub fn sticker<T: AsRef<Sticker>>(&mut self, sticker: T) -> &mut Self {
         self.inner.sticker = sticker.as_ref().clone();
+        self
+    }
+
+    pub fn is_premium(&mut self, is_premium: bool) -> &mut Self {
+        self.inner.is_premium = is_premium;
         self
     }
 }
@@ -3425,6 +3766,224 @@ impl AsRef<MessageVideo> for RTDMessageVideoBuilder {
     }
 }
 
+/// A message with information about an ended video chat
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageVideoChatEnded {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Call duration, in seconds
+    duration: i32,
+}
+
+impl RObject for MessageVideoChatEnded {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageVideoChatEnded {}
+
+impl MessageVideoChatEnded {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageVideoChatEndedBuilder {
+        let mut inner = MessageVideoChatEnded::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageVideoChatEndedBuilder { inner }
+    }
+
+    pub fn duration(&self) -> i32 {
+        self.duration
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageVideoChatEndedBuilder {
+    inner: MessageVideoChatEnded,
+}
+
+impl RTDMessageVideoChatEndedBuilder {
+    pub fn build(&self) -> MessageVideoChatEnded {
+        self.inner.clone()
+    }
+
+    pub fn duration(&mut self, duration: i32) -> &mut Self {
+        self.inner.duration = duration;
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatEnded> for MessageVideoChatEnded {
+    fn as_ref(&self) -> &MessageVideoChatEnded {
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatEnded> for RTDMessageVideoChatEndedBuilder {
+    fn as_ref(&self) -> &MessageVideoChatEnded {
+        &self.inner
+    }
+}
+
+/// A new video chat was scheduled
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageVideoChatScheduled {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+    group_call_id: i32,
+    /// Point in time (Unix timestamp) when the group call is supposed to be started by an administrator
+    start_date: i32,
+}
+
+impl RObject for MessageVideoChatScheduled {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageVideoChatScheduled {}
+
+impl MessageVideoChatScheduled {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageVideoChatScheduledBuilder {
+        let mut inner = MessageVideoChatScheduled::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageVideoChatScheduledBuilder { inner }
+    }
+
+    pub fn group_call_id(&self) -> i32 {
+        self.group_call_id
+    }
+
+    pub fn start_date(&self) -> i32 {
+        self.start_date
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageVideoChatScheduledBuilder {
+    inner: MessageVideoChatScheduled,
+}
+
+impl RTDMessageVideoChatScheduledBuilder {
+    pub fn build(&self) -> MessageVideoChatScheduled {
+        self.inner.clone()
+    }
+
+    pub fn group_call_id(&mut self, group_call_id: i32) -> &mut Self {
+        self.inner.group_call_id = group_call_id;
+        self
+    }
+
+    pub fn start_date(&mut self, start_date: i32) -> &mut Self {
+        self.inner.start_date = start_date;
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatScheduled> for MessageVideoChatScheduled {
+    fn as_ref(&self) -> &MessageVideoChatScheduled {
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatScheduled> for RTDMessageVideoChatScheduledBuilder {
+    fn as_ref(&self) -> &MessageVideoChatScheduled {
+        &self.inner
+    }
+}
+
+/// A newly created video chat
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageVideoChatStarted {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+    group_call_id: i32,
+}
+
+impl RObject for MessageVideoChatStarted {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageVideoChatStarted {}
+
+impl MessageVideoChatStarted {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageVideoChatStartedBuilder {
+        let mut inner = MessageVideoChatStarted::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageVideoChatStartedBuilder { inner }
+    }
+
+    pub fn group_call_id(&self) -> i32 {
+        self.group_call_id
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageVideoChatStartedBuilder {
+    inner: MessageVideoChatStarted,
+}
+
+impl RTDMessageVideoChatStartedBuilder {
+    pub fn build(&self) -> MessageVideoChatStarted {
+        self.inner.clone()
+    }
+
+    pub fn group_call_id(&mut self, group_call_id: i32) -> &mut Self {
+        self.inner.group_call_id = group_call_id;
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatStarted> for MessageVideoChatStarted {
+    fn as_ref(&self) -> &MessageVideoChatStarted {
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatStarted> for RTDMessageVideoChatStartedBuilder {
+    fn as_ref(&self) -> &MessageVideoChatStarted {
+        &self.inner
+    }
+}
+
 /// A video note message
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageVideoNote {
@@ -3603,6 +4162,155 @@ impl AsRef<MessageVoiceNote> for MessageVoiceNote {
 
 impl AsRef<MessageVoiceNote> for RTDMessageVoiceNoteBuilder {
     fn as_ref(&self) -> &MessageVoiceNote {
+        &self.inner
+    }
+}
+
+/// Data from a Web App has been received; for bots only
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageWebAppDataReceived {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Text of the keyboardButtonTypeWebApp button, which opened the Web App
+    button_text: String,
+    /// Received data
+    data: String,
+}
+
+impl RObject for MessageWebAppDataReceived {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageWebAppDataReceived {}
+
+impl MessageWebAppDataReceived {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageWebAppDataReceivedBuilder {
+        let mut inner = MessageWebAppDataReceived::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageWebAppDataReceivedBuilder { inner }
+    }
+
+    pub fn button_text(&self) -> &String {
+        &self.button_text
+    }
+
+    pub fn data(&self) -> &String {
+        &self.data
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageWebAppDataReceivedBuilder {
+    inner: MessageWebAppDataReceived,
+}
+
+impl RTDMessageWebAppDataReceivedBuilder {
+    pub fn build(&self) -> MessageWebAppDataReceived {
+        self.inner.clone()
+    }
+
+    pub fn button_text<T: AsRef<str>>(&mut self, button_text: T) -> &mut Self {
+        self.inner.button_text = button_text.as_ref().to_string();
+        self
+    }
+
+    pub fn data<T: AsRef<str>>(&mut self, data: T) -> &mut Self {
+        self.inner.data = data.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<MessageWebAppDataReceived> for MessageWebAppDataReceived {
+    fn as_ref(&self) -> &MessageWebAppDataReceived {
+        self
+    }
+}
+
+impl AsRef<MessageWebAppDataReceived> for RTDMessageWebAppDataReceivedBuilder {
+    fn as_ref(&self) -> &MessageWebAppDataReceived {
+        &self.inner
+    }
+}
+
+/// Data from a Web App has been sent to a bot
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageWebAppDataSent {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Text of the keyboardButtonTypeWebApp button, which opened the Web App
+    button_text: String,
+}
+
+impl RObject for MessageWebAppDataSent {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageWebAppDataSent {}
+
+impl MessageWebAppDataSent {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDMessageWebAppDataSentBuilder {
+        let mut inner = MessageWebAppDataSent::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDMessageWebAppDataSentBuilder { inner }
+    }
+
+    pub fn button_text(&self) -> &String {
+        &self.button_text
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDMessageWebAppDataSentBuilder {
+    inner: MessageWebAppDataSent,
+}
+
+impl RTDMessageWebAppDataSentBuilder {
+    pub fn build(&self) -> MessageWebAppDataSent {
+        self.inner.clone()
+    }
+
+    pub fn button_text<T: AsRef<str>>(&mut self, button_text: T) -> &mut Self {
+        self.inner.button_text = button_text.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<MessageWebAppDataSent> for MessageWebAppDataSent {
+    fn as_ref(&self) -> &MessageWebAppDataSent {
+        self
+    }
+}
+
+impl AsRef<MessageWebAppDataSent> for RTDMessageWebAppDataSentBuilder {
+    fn as_ref(&self) -> &MessageWebAppDataSent {
         &self.inner
     }
 }

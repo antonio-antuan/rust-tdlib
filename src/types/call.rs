@@ -13,7 +13,7 @@ pub struct Call {
     /// Call identifier, not persistent
     id: i32,
     /// Peer user identifier
-    user_id: i32,
+    user_id: i64,
     /// True, if the call is outgoing
     is_outgoing: bool,
     /// True, if the call is a video call
@@ -50,7 +50,7 @@ impl Call {
         self.id
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -82,7 +82,7 @@ impl RTDCallBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

@@ -12,7 +12,7 @@ pub struct CreateTemporaryPassword {
     client_id: Option<i32>,
     /// Persistent user password
     password: String,
-    /// Time during which the temporary password will be valid, in seconds; should be between 60 and 86400
+    /// Time during which the temporary password will be valid, in seconds; must be between 60 and 86400
     valid_for: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -16,7 +16,7 @@ pub struct CountryInfo {
     name: String,
     /// English name of the country
     english_name: String,
-    /// True, if the country should be hidden from the list of all countries
+    /// True, if the country must be hidden from the list of all countries
     is_hidden: bool,
     /// List of country calling codes
     calling_codes: Vec<String>,

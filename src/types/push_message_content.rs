@@ -14,160 +14,91 @@ pub enum PushMessageContent {
     #[doc(hidden)]
     _Default,
     /// An animation message (GIF-style).
-    #[serde(rename(
-        serialize = "pushMessageContentAnimation",
-        deserialize = "pushMessageContentAnimation"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentAnimation"))]
     Animation(PushMessageContentAnimation),
     /// An audio message
-    #[serde(rename(
-        serialize = "pushMessageContentAudio",
-        deserialize = "pushMessageContentAudio"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentAudio"))]
     Audio(PushMessageContentAudio),
     /// A newly created basic group
-    #[serde(rename(
-        serialize = "pushMessageContentBasicGroupChatCreate",
-        deserialize = "pushMessageContentBasicGroupChatCreate"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentBasicGroupChatCreate"))]
     BasicGroupChatCreate(PushMessageContentBasicGroupChatCreate),
     /// New chat members were invited to a group
-    #[serde(rename(
-        serialize = "pushMessageContentChatAddMembers",
-        deserialize = "pushMessageContentChatAddMembers"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentChatAddMembers"))]
     ChatAddMembers(PushMessageContentChatAddMembers),
     /// A chat photo was edited
-    #[serde(rename(
-        serialize = "pushMessageContentChatChangePhoto",
-        deserialize = "pushMessageContentChatChangePhoto"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentChatChangePhoto"))]
     ChatChangePhoto(PushMessageContentChatChangePhoto),
     /// A chat title was edited
-    #[serde(rename(
-        serialize = "pushMessageContentChatChangeTitle",
-        deserialize = "pushMessageContentChatChangeTitle"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentChatChangeTitle"))]
     ChatChangeTitle(PushMessageContentChatChangeTitle),
     /// A chat member was deleted
-    #[serde(rename(
-        serialize = "pushMessageContentChatDeleteMember",
-        deserialize = "pushMessageContentChatDeleteMember"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentChatDeleteMember"))]
     ChatDeleteMember(PushMessageContentChatDeleteMember),
-    /// A new member joined the chat by invite link
-    #[serde(rename(
-        serialize = "pushMessageContentChatJoinByLink",
-        deserialize = "pushMessageContentChatJoinByLink"
-    ))]
+    /// A new member joined the chat via an invite link
+    #[serde(rename(deserialize = "pushMessageContentChatJoinByLink"))]
     ChatJoinByLink(PushMessageContentChatJoinByLink),
+    /// A new member was accepted to the chat by an administrator
+    #[serde(rename(deserialize = "pushMessageContentChatJoinByRequest"))]
+    ChatJoinByRequest(PushMessageContentChatJoinByRequest),
+    /// A chat theme was edited
+    #[serde(rename(deserialize = "pushMessageContentChatSetTheme"))]
+    ChatSetTheme(PushMessageContentChatSetTheme),
     /// A message with a user contact
-    #[serde(rename(
-        serialize = "pushMessageContentContact",
-        deserialize = "pushMessageContentContact"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentContact"))]
     Contact(PushMessageContentContact),
     /// A contact has registered with Telegram
-    #[serde(rename(
-        serialize = "pushMessageContentContactRegistered",
-        deserialize = "pushMessageContentContactRegistered"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentContactRegistered"))]
     ContactRegistered(PushMessageContentContactRegistered),
     /// A document message (a general file)
-    #[serde(rename(
-        serialize = "pushMessageContentDocument",
-        deserialize = "pushMessageContentDocument"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentDocument"))]
     Document(PushMessageContentDocument),
     /// A message with a game
-    #[serde(rename(
-        serialize = "pushMessageContentGame",
-        deserialize = "pushMessageContentGame"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentGame"))]
     Game(PushMessageContentGame),
     /// A new high score was achieved in a game
-    #[serde(rename(
-        serialize = "pushMessageContentGameScore",
-        deserialize = "pushMessageContentGameScore"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentGameScore"))]
     GameScore(PushMessageContentGameScore),
     /// A general message with hidden content
-    #[serde(rename(
-        serialize = "pushMessageContentHidden",
-        deserialize = "pushMessageContentHidden"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentHidden"))]
     Hidden(PushMessageContentHidden),
     /// A message with an invoice from a bot
-    #[serde(rename(
-        serialize = "pushMessageContentInvoice",
-        deserialize = "pushMessageContentInvoice"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentInvoice"))]
     Invoice(PushMessageContentInvoice),
     /// A message with a location
-    #[serde(rename(
-        serialize = "pushMessageContentLocation",
-        deserialize = "pushMessageContentLocation"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentLocation"))]
     Location(PushMessageContentLocation),
     /// A media album
-    #[serde(rename(
-        serialize = "pushMessageContentMediaAlbum",
-        deserialize = "pushMessageContentMediaAlbum"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentMediaAlbum"))]
     MediaAlbum(PushMessageContentMediaAlbum),
     /// A forwarded messages
-    #[serde(rename(
-        serialize = "pushMessageContentMessageForwards",
-        deserialize = "pushMessageContentMessageForwards"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentMessageForwards"))]
     MessageForwards(PushMessageContentMessageForwards),
     /// A photo message
-    #[serde(rename(
-        serialize = "pushMessageContentPhoto",
-        deserialize = "pushMessageContentPhoto"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentPhoto"))]
     Photo(PushMessageContentPhoto),
     /// A message with a poll
-    #[serde(rename(
-        serialize = "pushMessageContentPoll",
-        deserialize = "pushMessageContentPoll"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentPoll"))]
     Poll(PushMessageContentPoll),
+    /// A new recurrent payment was made by the current user
+    #[serde(rename(deserialize = "pushMessageContentRecurringPayment"))]
+    RecurringPayment(PushMessageContentRecurringPayment),
     /// A screenshot of a message in the chat has been taken
-    #[serde(rename(
-        serialize = "pushMessageContentScreenshotTaken",
-        deserialize = "pushMessageContentScreenshotTaken"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentScreenshotTaken"))]
     ScreenshotTaken(PushMessageContentScreenshotTaken),
     /// A message with a sticker
-    #[serde(rename(
-        serialize = "pushMessageContentSticker",
-        deserialize = "pushMessageContentSticker"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentSticker"))]
     Sticker(PushMessageContentSticker),
     /// A text message
-    #[serde(rename(
-        serialize = "pushMessageContentText",
-        deserialize = "pushMessageContentText"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentText"))]
     Text(PushMessageContentText),
     /// A video message
-    #[serde(rename(
-        serialize = "pushMessageContentVideo",
-        deserialize = "pushMessageContentVideo"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentVideo"))]
     Video(PushMessageContentVideo),
     /// A video note message
-    #[serde(rename(
-        serialize = "pushMessageContentVideoNote",
-        deserialize = "pushMessageContentVideoNote"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentVideoNote"))]
     VideoNote(PushMessageContentVideoNote),
     /// A voice note message
-    #[serde(rename(
-        serialize = "pushMessageContentVoiceNote",
-        deserialize = "pushMessageContentVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "pushMessageContentVoiceNote"))]
     VoiceNote(PushMessageContentVoiceNote),
 }
 
@@ -189,6 +120,8 @@ impl RObject for PushMessageContent {
             PushMessageContent::ChatChangeTitle(t) => t.extra(),
             PushMessageContent::ChatDeleteMember(t) => t.extra(),
             PushMessageContent::ChatJoinByLink(t) => t.extra(),
+            PushMessageContent::ChatJoinByRequest(t) => t.extra(),
+            PushMessageContent::ChatSetTheme(t) => t.extra(),
             PushMessageContent::Contact(t) => t.extra(),
             PushMessageContent::ContactRegistered(t) => t.extra(),
             PushMessageContent::Document(t) => t.extra(),
@@ -201,6 +134,7 @@ impl RObject for PushMessageContent {
             PushMessageContent::MessageForwards(t) => t.extra(),
             PushMessageContent::Photo(t) => t.extra(),
             PushMessageContent::Poll(t) => t.extra(),
+            PushMessageContent::RecurringPayment(t) => t.extra(),
             PushMessageContent::ScreenshotTaken(t) => t.extra(),
             PushMessageContent::Sticker(t) => t.extra(),
             PushMessageContent::Text(t) => t.extra(),
@@ -222,6 +156,8 @@ impl RObject for PushMessageContent {
             PushMessageContent::ChatChangeTitle(t) => t.client_id(),
             PushMessageContent::ChatDeleteMember(t) => t.client_id(),
             PushMessageContent::ChatJoinByLink(t) => t.client_id(),
+            PushMessageContent::ChatJoinByRequest(t) => t.client_id(),
+            PushMessageContent::ChatSetTheme(t) => t.client_id(),
             PushMessageContent::Contact(t) => t.client_id(),
             PushMessageContent::ContactRegistered(t) => t.client_id(),
             PushMessageContent::Document(t) => t.client_id(),
@@ -234,6 +170,7 @@ impl RObject for PushMessageContent {
             PushMessageContent::MessageForwards(t) => t.client_id(),
             PushMessageContent::Photo(t) => t.client_id(),
             PushMessageContent::Poll(t) => t.client_id(),
+            PushMessageContent::RecurringPayment(t) => t.client_id(),
             PushMessageContent::ScreenshotTaken(t) => t.client_id(),
             PushMessageContent::Sticker(t) => t.client_id(),
             PushMessageContent::Text(t) => t.client_id(),
@@ -505,7 +442,7 @@ pub struct PushMessageContentChatAddMembers {
     member_name: String,
     /// True, if the current user was added to the group
     is_current_user: bool,
-    /// True, if the user has returned to the group themself
+    /// True, if the user has returned to the group themselves
     is_returned: bool,
 }
 
@@ -723,7 +660,7 @@ pub struct PushMessageContentChatDeleteMember {
     member_name: String,
     /// True, if the current user was deleted from the group
     is_current_user: bool,
-    /// True, if the user has left the group themself
+    /// True, if the user has left the group themselves
     is_left: bool,
 }
 
@@ -802,7 +739,7 @@ impl AsRef<PushMessageContentChatDeleteMember> for RTDPushMessageContentChatDele
     }
 }
 
-/// A new member joined the chat by invite link
+/// A new member joined the chat via an invite link
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PushMessageContentChatJoinByLink {
     #[doc(hidden)]
@@ -856,6 +793,133 @@ impl AsRef<PushMessageContentChatJoinByLink> for PushMessageContentChatJoinByLin
 
 impl AsRef<PushMessageContentChatJoinByLink> for RTDPushMessageContentChatJoinByLinkBuilder {
     fn as_ref(&self) -> &PushMessageContentChatJoinByLink {
+        &self.inner
+    }
+}
+
+/// A new member was accepted to the chat by an administrator
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct PushMessageContentChatJoinByRequest {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for PushMessageContentChatJoinByRequest {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDPushMessageContent for PushMessageContentChatJoinByRequest {}
+
+impl PushMessageContentChatJoinByRequest {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDPushMessageContentChatJoinByRequestBuilder {
+        let mut inner = PushMessageContentChatJoinByRequest::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDPushMessageContentChatJoinByRequestBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDPushMessageContentChatJoinByRequestBuilder {
+    inner: PushMessageContentChatJoinByRequest,
+}
+
+impl RTDPushMessageContentChatJoinByRequestBuilder {
+    pub fn build(&self) -> PushMessageContentChatJoinByRequest {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<PushMessageContentChatJoinByRequest> for PushMessageContentChatJoinByRequest {
+    fn as_ref(&self) -> &PushMessageContentChatJoinByRequest {
+        self
+    }
+}
+
+impl AsRef<PushMessageContentChatJoinByRequest> for RTDPushMessageContentChatJoinByRequestBuilder {
+    fn as_ref(&self) -> &PushMessageContentChatJoinByRequest {
+        &self.inner
+    }
+}
+
+/// A chat theme was edited
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct PushMessageContentChatSetTheme {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// If non-empty, name of a new theme, set for the chat. Otherwise chat theme was reset to the default one
+    theme_name: String,
+}
+
+impl RObject for PushMessageContentChatSetTheme {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDPushMessageContent for PushMessageContentChatSetTheme {}
+
+impl PushMessageContentChatSetTheme {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDPushMessageContentChatSetThemeBuilder {
+        let mut inner = PushMessageContentChatSetTheme::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDPushMessageContentChatSetThemeBuilder { inner }
+    }
+
+    pub fn theme_name(&self) -> &String {
+        &self.theme_name
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDPushMessageContentChatSetThemeBuilder {
+    inner: PushMessageContentChatSetTheme,
+}
+
+impl RTDPushMessageContentChatSetThemeBuilder {
+    pub fn build(&self) -> PushMessageContentChatSetTheme {
+        self.inner.clone()
+    }
+
+    pub fn theme_name<T: AsRef<str>>(&mut self, theme_name: T) -> &mut Self {
+        self.inner.theme_name = theme_name.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<PushMessageContentChatSetTheme> for PushMessageContentChatSetTheme {
+    fn as_ref(&self) -> &PushMessageContentChatSetTheme {
+        self
+    }
+}
+
+impl AsRef<PushMessageContentChatSetTheme> for RTDPushMessageContentChatSetThemeBuilder {
+    fn as_ref(&self) -> &PushMessageContentChatSetTheme {
         &self.inner
     }
 }
@@ -1849,6 +1913,75 @@ impl AsRef<PushMessageContentPoll> for PushMessageContentPoll {
 
 impl AsRef<PushMessageContentPoll> for RTDPushMessageContentPollBuilder {
     fn as_ref(&self) -> &PushMessageContentPoll {
+        &self.inner
+    }
+}
+
+/// A new recurrent payment was made by the current user
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct PushMessageContentRecurringPayment {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// The paid amount
+    amount: String,
+}
+
+impl RObject for PushMessageContentRecurringPayment {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDPushMessageContent for PushMessageContentRecurringPayment {}
+
+impl PushMessageContentRecurringPayment {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDPushMessageContentRecurringPaymentBuilder {
+        let mut inner = PushMessageContentRecurringPayment::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDPushMessageContentRecurringPaymentBuilder { inner }
+    }
+
+    pub fn amount(&self) -> &String {
+        &self.amount
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDPushMessageContentRecurringPaymentBuilder {
+    inner: PushMessageContentRecurringPayment,
+}
+
+impl RTDPushMessageContentRecurringPaymentBuilder {
+    pub fn build(&self) -> PushMessageContentRecurringPayment {
+        self.inner.clone()
+    }
+
+    pub fn amount<T: AsRef<str>>(&mut self, amount: T) -> &mut Self {
+        self.inner.amount = amount.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<PushMessageContentRecurringPayment> for PushMessageContentRecurringPayment {
+    fn as_ref(&self) -> &PushMessageContentRecurringPayment {
+        self
+    }
+}
+
+impl AsRef<PushMessageContentRecurringPayment> for RTDPushMessageContentRecurringPaymentBuilder {
+    fn as_ref(&self) -> &PushMessageContentRecurringPayment {
         &self.inner
     }
 }

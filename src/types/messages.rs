@@ -10,7 +10,7 @@ pub struct Messages {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Approximate total count of messages found
+    /// Approximate total number of messages found
     total_count: i32,
     /// List of messages; messages may be null
     messages: Vec<Option<Message>>,

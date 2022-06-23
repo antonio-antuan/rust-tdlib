@@ -14,25 +14,22 @@ pub enum CallState {
     #[doc(hidden)]
     _Default,
     /// The call has ended successfully
-    #[serde(rename(serialize = "callStateDiscarded", deserialize = "callStateDiscarded"))]
+    #[serde(rename(deserialize = "callStateDiscarded"))]
     Discarded(CallStateDiscarded),
     /// The call has ended with an error
-    #[serde(rename(serialize = "callStateError", deserialize = "callStateError"))]
+    #[serde(rename(deserialize = "callStateError"))]
     Error(CallStateError),
     /// The call has been answered and encryption keys are being exchanged
-    #[serde(rename(
-        serialize = "callStateExchangingKeys",
-        deserialize = "callStateExchangingKeys"
-    ))]
+    #[serde(rename(deserialize = "callStateExchangingKeys"))]
     ExchangingKeys(CallStateExchangingKeys),
     /// The call is hanging up after discardCall has been called
-    #[serde(rename(serialize = "callStateHangingUp", deserialize = "callStateHangingUp"))]
+    #[serde(rename(deserialize = "callStateHangingUp"))]
     HangingUp(CallStateHangingUp),
     /// The call is pending, waiting to be accepted by a user
-    #[serde(rename(serialize = "callStatePending", deserialize = "callStatePending"))]
+    #[serde(rename(deserialize = "callStatePending"))]
     Pending(CallStatePending),
     /// The call is ready to use
-    #[serde(rename(serialize = "callStateReady", deserialize = "callStateReady"))]
+    #[serde(rename(deserialize = "callStateReady"))]
     Ready(CallStateReady),
 }
 
@@ -99,10 +96,12 @@ pub struct CallStateDiscarded {
 
     #[serde(skip_serializing_if = "CallDiscardReason::_is_default")]
     reason: CallDiscardReason,
-    /// True, if the call rating should be sent to the server
+    /// True, if the call rating must be sent to the server
     need_rating: bool,
-    /// True, if the call debug information should be sent to the server
+    /// True, if the call debug information must be sent to the server
     need_debug_information: bool,
+    /// True, if the call log must be sent to the server
+    need_log: bool,
 }
 
 impl RObject for CallStateDiscarded {
@@ -140,6 +139,10 @@ impl CallStateDiscarded {
     pub fn need_debug_information(&self) -> bool {
         self.need_debug_information
     }
+
+    pub fn need_log(&self) -> bool {
+        self.need_log
+    }
 }
 
 #[doc(hidden)]
@@ -164,6 +167,11 @@ impl RTDCallStateDiscardedBuilder {
 
     pub fn need_debug_information(&mut self, need_debug_information: bool) -> &mut Self {
         self.inner.need_debug_information = need_debug_information;
+        self
+    }
+
+    pub fn need_log(&mut self, need_log: bool) -> &mut Self {
+        self.inner.need_log = need_log;
         self
     }
 }

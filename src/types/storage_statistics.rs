@@ -10,7 +10,7 @@ pub struct StorageStatistics {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Total size of files
+    /// Total size of files, in bytes
     size: i64,
     /// Total number of files
     count: i32,

@@ -4,23 +4,20 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Describes the way the text should be parsed for TextEntities
+/// Describes the way the text needs to be parsed for TextEntities
 pub trait TDTextParseMode: Debug + RObject {}
 
-/// Describes the way the text should be parsed for TextEntities
+/// Describes the way the text needs to be parsed for TextEntities
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(tag = "@type")]
 pub enum TextParseMode {
     #[doc(hidden)]
     _Default,
     /// The text uses HTML-style formatting. The same as Telegram Bot API "HTML" parse mode
-    #[serde(rename(serialize = "textParseModeHTML", deserialize = "textParseModeHTML"))]
+    #[serde(rename(deserialize = "textParseModeHTML"))]
     HTML(TextParseModeHTML),
     /// The text uses Markdown-style formatting
-    #[serde(rename(
-        serialize = "textParseModeMarkdown",
-        deserialize = "textParseModeMarkdown"
-    ))]
+    #[serde(rename(deserialize = "textParseModeMarkdown"))]
     Markdown(TextParseModeMarkdown),
 }
 

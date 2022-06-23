@@ -14,22 +14,13 @@ pub enum SecretChatState {
     #[doc(hidden)]
     _Default,
     /// The secret chat is closed
-    #[serde(rename(
-        serialize = "secretChatStateClosed",
-        deserialize = "secretChatStateClosed"
-    ))]
+    #[serde(rename(deserialize = "secretChatStateClosed"))]
     Closed(SecretChatStateClosed),
     /// The secret chat is not yet created; waiting for the other user to get online
-    #[serde(rename(
-        serialize = "secretChatStatePending",
-        deserialize = "secretChatStatePending"
-    ))]
+    #[serde(rename(deserialize = "secretChatStatePending"))]
     Pending(SecretChatStatePending),
     /// The secret chat is ready to use
-    #[serde(rename(
-        serialize = "secretChatStateReady",
-        deserialize = "secretChatStateReady"
-    ))]
+    #[serde(rename(deserialize = "secretChatStateReady"))]
     Ready(SecretChatStateReady),
 }
 

@@ -10,7 +10,7 @@ pub struct AddSavedAnimation {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The animation file to be added. Only animations known to the server (i.e. successfully sent via a message) can be added to the list
+    /// The animation file to be added. Only animations known to the server (i.e., successfully sent via a message) can be added to the list
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     animation: InputFile,

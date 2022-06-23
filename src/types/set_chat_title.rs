@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
+/// Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetChatTitle {
     #[doc(hidden)]

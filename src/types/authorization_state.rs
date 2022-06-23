@@ -13,77 +13,41 @@ pub trait TDAuthorizationState: Debug + RObject {}
 pub enum AuthorizationState {
     #[doc(hidden)]
     _Default,
-    /// TDLib client is in its final state. All databases are closed and all resources are released. No other updates will be received after this. All queries will be responded to with error code 500. To continue working, one should create a new instance of the TDLib client
-    #[serde(rename(
-        serialize = "authorizationStateClosed",
-        deserialize = "authorizationStateClosed"
-    ))]
+    /// TDLib client is in its final state. All databases are closed and all resources are released. No other updates will be received after this. All queries will be responded to with error code 500. To continue working, one must create a new instance of the TDLib client
+    #[serde(rename(deserialize = "authorizationStateClosed"))]
     Closed(AuthorizationStateClosed),
     /// TDLib is closing, all subsequent queries will be answered with the error 500. Note that closing TDLib can take a while. All resources will be freed only after authorizationStateClosed has been received
-    #[serde(rename(
-        serialize = "authorizationStateClosing",
-        deserialize = "authorizationStateClosing"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateClosing"))]
     Closing(AuthorizationStateClosing),
     /// The user is currently logging out
-    #[serde(rename(
-        serialize = "authorizationStateLoggingOut",
-        deserialize = "authorizationStateLoggingOut"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateLoggingOut"))]
     LoggingOut(AuthorizationStateLoggingOut),
     /// The user has been successfully authorized. TDLib is now ready to answer queries
-    #[serde(rename(
-        serialize = "authorizationStateReady",
-        deserialize = "authorizationStateReady"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateReady"))]
     Ready(AuthorizationStateReady),
     /// TDLib needs the user's authentication code to authorize
-    #[serde(rename(
-        serialize = "authorizationStateWaitCode",
-        deserialize = "authorizationStateWaitCode"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateWaitCode"))]
     WaitCode(AuthorizationStateWaitCode),
     /// TDLib needs an encryption key to decrypt the local database
-    #[serde(rename(
-        serialize = "authorizationStateWaitEncryptionKey",
-        deserialize = "authorizationStateWaitEncryptionKey"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateWaitEncryptionKey"))]
     WaitEncryptionKey(AuthorizationStateWaitEncryptionKey),
     /// The user needs to confirm authorization on another logged in device by scanning a QR code with the provided link
-    #[serde(rename(
-        serialize = "authorizationStateWaitOtherDeviceConfirmation",
-        deserialize = "authorizationStateWaitOtherDeviceConfirmation"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateWaitOtherDeviceConfirmation"))]
     WaitOtherDeviceConfirmation(AuthorizationStateWaitOtherDeviceConfirmation),
     /// The user has been authorized, but needs to enter a password to start using the application
-    #[serde(rename(
-        serialize = "authorizationStateWaitPassword",
-        deserialize = "authorizationStateWaitPassword"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateWaitPassword"))]
     WaitPassword(AuthorizationStateWaitPassword),
     /// TDLib needs the user's phone number to authorize. Call `setAuthenticationPhoneNumber` to provide the phone number, or use `requestQrCodeAuthentication`, or `checkAuthenticationBotToken` for other authentication options
-    #[serde(rename(
-        serialize = "authorizationStateWaitPhoneNumber",
-        deserialize = "authorizationStateWaitPhoneNumber"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateWaitPhoneNumber"))]
     WaitPhoneNumber(AuthorizationStateWaitPhoneNumber),
     /// The user is unregistered and need to accept terms of service and enter their first name and last name to finish registration
-    #[serde(rename(
-        serialize = "authorizationStateWaitRegistration",
-        deserialize = "authorizationStateWaitRegistration"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateWaitRegistration"))]
     WaitRegistration(AuthorizationStateWaitRegistration),
     /// TDLib needs TdlibParameters for initialization
-    #[serde(rename(
-        serialize = "authorizationStateWaitTdlibParameters",
-        deserialize = "authorizationStateWaitTdlibParameters"
-    ))]
+    #[serde(rename(deserialize = "authorizationStateWaitTdlibParameters"))]
     WaitTdlibParameters(AuthorizationStateWaitTdlibParameters),
     /// Returns the current authorization state; this is an offline request. For informational purposes only. Use updateAuthorizationState instead to maintain the current authorization state. Can be called before initialization
-    #[serde(rename(
-        serialize = "getAuthorizationState",
-        deserialize = "getAuthorizationState"
-    ))]
+    #[serde(rename(deserialize = "getAuthorizationState"))]
     GetAuthorizationState(GetAuthorizationState),
 }
 
@@ -150,7 +114,7 @@ impl AsRef<AuthorizationState> for AuthorizationState {
     }
 }
 
-/// TDLib client is in its final state. All databases are closed and all resources are released. No other updates will be received after this. All queries will be responded to with error code 500. To continue working, one should create a new instance of the TDLib client
+/// TDLib client is in its final state. All databases are closed and all resources are released. No other updates will be received after this. All queries will be responded to with error code 500. To continue working, one must create a new instance of the TDLib client
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AuthorizationStateClosed {
     #[doc(hidden)]

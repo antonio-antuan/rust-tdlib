@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Adds a new member to a chat. Members can't be added to private or secret chats. Members will not be added until the chat state has been synchronized with the server
+/// Adds a new member to a chat. Members can't be added to private or secret chats
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AddChatMember {
     #[doc(hidden)]
@@ -13,8 +13,8 @@ pub struct AddChatMember {
     /// Chat identifier
     chat_id: i64,
     /// Identifier of the user
-    user_id: i32,
-    /// The number of earlier messages from the chat to be forwarded to the new member; up to 100. Ignored for supergroups and channels
+    user_id: i64,
+    /// The number of earlier messages from the chat to be forwarded to the new member; up to 100. Ignored for supergroups and channels, or if the added user is a bot
     forward_limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -51,7 +51,7 @@ impl AddChatMember {
         self.chat_id
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -75,7 +75,7 @@ impl RTDAddChatMemberBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

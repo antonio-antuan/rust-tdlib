@@ -18,7 +18,7 @@ pub struct InlineQueryResults {
     next_offset: String,
     /// Results of the query
     results: Vec<InlineQueryResult>,
-    /// If non-empty, this text should be shown on the button, which opens a private chat with the bot and sends the bot a start message with the switch_pm_parameter
+    /// If non-empty, this text must be shown on the button, which opens a private chat with the bot and sends the bot a start message with the switch_pm_parameter
     switch_pm_text: String,
     /// Parameter for the bot start message
     switch_pm_parameter: String,

@@ -14,22 +14,22 @@ pub enum UserStatus {
     #[doc(hidden)]
     _Default,
     /// The user status was never changed
-    #[serde(rename(serialize = "userStatusEmpty", deserialize = "userStatusEmpty"))]
+    #[serde(rename(deserialize = "userStatusEmpty"))]
     Empty(UserStatusEmpty),
     /// The user is offline, but was online last month
-    #[serde(rename(serialize = "userStatusLastMonth", deserialize = "userStatusLastMonth"))]
+    #[serde(rename(deserialize = "userStatusLastMonth"))]
     LastMonth(UserStatusLastMonth),
     /// The user is offline, but was online last week
-    #[serde(rename(serialize = "userStatusLastWeek", deserialize = "userStatusLastWeek"))]
+    #[serde(rename(deserialize = "userStatusLastWeek"))]
     LastWeek(UserStatusLastWeek),
     /// The user is offline
-    #[serde(rename(serialize = "userStatusOffline", deserialize = "userStatusOffline"))]
+    #[serde(rename(deserialize = "userStatusOffline"))]
     Offline(UserStatusOffline),
     /// The user is online
-    #[serde(rename(serialize = "userStatusOnline", deserialize = "userStatusOnline"))]
+    #[serde(rename(deserialize = "userStatusOnline"))]
     Online(UserStatusOnline),
     /// The user was online recently
-    #[serde(rename(serialize = "userStatusRecently", deserialize = "userStatusRecently"))]
+    #[serde(rename(deserialize = "userStatusRecently"))]
     Recently(UserStatusRecently),
 }
 

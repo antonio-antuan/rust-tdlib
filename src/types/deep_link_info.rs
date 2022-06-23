@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains information about a tg:// deep link
+/// Contains information about a tg: deep link
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeepLinkInfo {
     #[doc(hidden)]
@@ -12,7 +12,7 @@ pub struct DeepLinkInfo {
     client_id: Option<i32>,
     /// Text to be shown to the user
     text: FormattedText,
-    /// True, if user should be asked to update the application
+    /// True, if the user must be asked to update the application
     need_update_application: bool,
 }
 

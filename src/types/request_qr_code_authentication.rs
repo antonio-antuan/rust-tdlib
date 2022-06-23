@@ -11,7 +11,7 @@ pub struct RequestQrCodeAuthentication {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of user identifiers of other users currently using the application
-    other_user_ids: Vec<i32>,
+    other_user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -43,7 +43,7 @@ impl RequestQrCodeAuthentication {
         RTDRequestQrCodeAuthenticationBuilder { inner }
     }
 
-    pub fn other_user_ids(&self) -> &Vec<i32> {
+    pub fn other_user_ids(&self) -> &Vec<i64> {
         &self.other_user_ids
     }
 }
@@ -58,7 +58,7 @@ impl RTDRequestQrCodeAuthenticationBuilder {
         self.inner.clone()
     }
 
-    pub fn other_user_ids(&mut self, other_user_ids: Vec<i32>) -> &mut Self {
+    pub fn other_user_ids(&mut self, other_user_ids: Vec<i64>) -> &mut Self {
         self.inner.other_user_ids = other_user_ids;
         self
     }

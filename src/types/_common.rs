@@ -71,6 +71,9 @@ impl<'a, BACKGROUNDFILL: TDBackgroundFill> TDBackgroundFill for &'a mut BACKGROU
 impl<'a, BACKGROUNDTYPE: TDBackgroundType> TDBackgroundType for &'a BACKGROUNDTYPE {}
 impl<'a, BACKGROUNDTYPE: TDBackgroundType> TDBackgroundType for &'a mut BACKGROUNDTYPE {}
 
+impl<'a, BOTCOMMANDSCOPE: TDBotCommandScope> TDBotCommandScope for &'a BOTCOMMANDSCOPE {}
+impl<'a, BOTCOMMANDSCOPE: TDBotCommandScope> TDBotCommandScope for &'a mut BOTCOMMANDSCOPE {}
+
 impl<'a, CALLDISCARDREASON: TDCallDiscardReason> TDCallDiscardReason for &'a CALLDISCARDREASON {}
 impl<'a, CALLDISCARDREASON: TDCallDiscardReason> TDCallDiscardReason for &'a mut CALLDISCARDREASON {}
 
@@ -140,6 +143,15 @@ impl<'a, CHECKCHATUSERNAMERESULT: TDCheckChatUsernameResult> TDCheckChatUsername
 {
 }
 
+impl<'a, CHECKSTICKERSETNAMERESULT: TDCheckStickerSetNameResult> TDCheckStickerSetNameResult
+    for &'a CHECKSTICKERSETNAMERESULT
+{
+}
+impl<'a, CHECKSTICKERSETNAMERESULT: TDCheckStickerSetNameResult> TDCheckStickerSetNameResult
+    for &'a mut CHECKSTICKERSETNAMERESULT
+{
+}
+
 impl<'a, CONNECTIONSTATE: TDConnectionState> TDConnectionState for &'a CONNECTIONSTATE {}
 impl<'a, CONNECTIONSTATE: TDConnectionState> TDConnectionState for &'a mut CONNECTIONSTATE {}
 
@@ -151,6 +163,15 @@ impl<'a, DICESTICKERS: TDDiceStickers> TDDiceStickers for &'a mut DICESTICKERS {
 
 impl<'a, FILETYPE: TDFileType> TDFileType for &'a FILETYPE {}
 impl<'a, FILETYPE: TDFileType> TDFileType for &'a mut FILETYPE {}
+
+impl<'a, GROUPCALLVIDEOQUALITY: TDGroupCallVideoQuality> TDGroupCallVideoQuality
+    for &'a GROUPCALLVIDEOQUALITY
+{
+}
+impl<'a, GROUPCALLVIDEOQUALITY: TDGroupCallVideoQuality> TDGroupCallVideoQuality
+    for &'a mut GROUPCALLVIDEOQUALITY
+{
+}
 
 impl<'a, INLINEKEYBOARDBUTTONTYPE: TDInlineKeyboardButtonType> TDInlineKeyboardButtonType
     for &'a INLINEKEYBOARDBUTTONTYPE
@@ -185,6 +206,9 @@ impl<'a, INPUTINLINEQUERYRESULT: TDInputInlineQueryResult> TDInputInlineQueryRes
 {
 }
 
+impl<'a, INPUTINVOICE: TDInputInvoice> TDInputInvoice for &'a INPUTINVOICE {}
+impl<'a, INPUTINVOICE: TDInputInvoice> TDInputInvoice for &'a mut INPUTINVOICE {}
+
 impl<'a, INPUTMESSAGECONTENT: TDInputMessageContent> TDInputMessageContent
     for &'a INPUTMESSAGECONTENT
 {
@@ -212,8 +236,8 @@ impl<'a, INPUTPASSPORTELEMENTERRORSOURCE: TDInputPassportElementErrorSource>
 {
 }
 
-impl<'a, INPUTSTICKER: TDInputSticker> TDInputSticker for &'a INPUTSTICKER {}
-impl<'a, INPUTSTICKER: TDInputSticker> TDInputSticker for &'a mut INPUTSTICKER {}
+impl<'a, INTERNALLINKTYPE: TDInternalLinkType> TDInternalLinkType for &'a INTERNALLINKTYPE {}
+impl<'a, INTERNALLINKTYPE: TDInternalLinkType> TDInternalLinkType for &'a mut INTERNALLINKTYPE {}
 
 impl<'a, JSONVALUE: TDJsonValue> TDJsonValue for &'a JSONVALUE {}
 impl<'a, JSONVALUE: TDJsonValue> TDJsonValue for &'a mut JSONVALUE {}
@@ -244,6 +268,9 @@ impl<'a, MASKPOINT: TDMaskPoint> TDMaskPoint for &'a mut MASKPOINT {}
 
 impl<'a, MESSAGECONTENT: TDMessageContent> TDMessageContent for &'a MESSAGECONTENT {}
 impl<'a, MESSAGECONTENT: TDMessageContent> TDMessageContent for &'a mut MESSAGECONTENT {}
+
+impl<'a, MESSAGEFILETYPE: TDMessageFileType> TDMessageFileType for &'a MESSAGEFILETYPE {}
+impl<'a, MESSAGEFILETYPE: TDMessageFileType> TDMessageFileType for &'a mut MESSAGEFILETYPE {}
 
 impl<'a, MESSAGEFORWARDORIGIN: TDMessageForwardOrigin> TDMessageForwardOrigin
     for &'a MESSAGEFORWARDORIGIN
@@ -353,8 +380,20 @@ impl<'a, PASSPORTELEMENTTYPE: TDPassportElementType> TDPassportElementType
 {
 }
 
+impl<'a, PAYMENTPROVIDER: TDPaymentProvider> TDPaymentProvider for &'a PAYMENTPROVIDER {}
+impl<'a, PAYMENTPROVIDER: TDPaymentProvider> TDPaymentProvider for &'a mut PAYMENTPROVIDER {}
+
 impl<'a, POLLTYPE: TDPollType> TDPollType for &'a POLLTYPE {}
 impl<'a, POLLTYPE: TDPollType> TDPollType for &'a mut POLLTYPE {}
+
+impl<'a, PREMIUMFEATURE: TDPremiumFeature> TDPremiumFeature for &'a PREMIUMFEATURE {}
+impl<'a, PREMIUMFEATURE: TDPremiumFeature> TDPremiumFeature for &'a mut PREMIUMFEATURE {}
+
+impl<'a, PREMIUMLIMITTYPE: TDPremiumLimitType> TDPremiumLimitType for &'a PREMIUMLIMITTYPE {}
+impl<'a, PREMIUMLIMITTYPE: TDPremiumLimitType> TDPremiumLimitType for &'a mut PREMIUMLIMITTYPE {}
+
+impl<'a, PREMIUMSOURCE: TDPremiumSource> TDPremiumSource for &'a PREMIUMSOURCE {}
+impl<'a, PREMIUMSOURCE: TDPremiumSource> TDPremiumSource for &'a mut PREMIUMSOURCE {}
 
 impl<'a, PROXYTYPE: TDProxyType> TDProxyType for &'a PROXYTYPE {}
 impl<'a, PROXYTYPE: TDProxyType> TDProxyType for &'a mut PROXYTYPE {}
@@ -371,6 +410,15 @@ impl<'a, PUSHMESSAGECONTENT: TDPushMessageContent> TDPushMessageContent
 impl<'a, REPLYMARKUP: TDReplyMarkup> TDReplyMarkup for &'a REPLYMARKUP {}
 impl<'a, REPLYMARKUP: TDReplyMarkup> TDReplyMarkup for &'a mut REPLYMARKUP {}
 
+impl<'a, RESETPASSWORDRESULT: TDResetPasswordResult> TDResetPasswordResult
+    for &'a RESETPASSWORDRESULT
+{
+}
+impl<'a, RESETPASSWORDRESULT: TDResetPasswordResult> TDResetPasswordResult
+    for &'a mut RESETPASSWORDRESULT
+{
+}
+
 impl<'a, RICHTEXT: TDRichText> TDRichText for &'a RICHTEXT {}
 impl<'a, RICHTEXT: TDRichText> TDRichText for &'a mut RICHTEXT {}
 
@@ -386,8 +434,14 @@ impl<'a, SEARCHMESSAGESFILTER: TDSearchMessagesFilter> TDSearchMessagesFilter
 impl<'a, SECRETCHATSTATE: TDSecretChatState> TDSecretChatState for &'a SECRETCHATSTATE {}
 impl<'a, SECRETCHATSTATE: TDSecretChatState> TDSecretChatState for &'a mut SECRETCHATSTATE {}
 
+impl<'a, SESSIONTYPE: TDSessionType> TDSessionType for &'a SESSIONTYPE {}
+impl<'a, SESSIONTYPE: TDSessionType> TDSessionType for &'a mut SESSIONTYPE {}
+
 impl<'a, STATISTICALGRAPH: TDStatisticalGraph> TDStatisticalGraph for &'a STATISTICALGRAPH {}
 impl<'a, STATISTICALGRAPH: TDStatisticalGraph> TDStatisticalGraph for &'a mut STATISTICALGRAPH {}
+
+impl<'a, STICKERTYPE: TDStickerType> TDStickerType for &'a STICKERTYPE {}
+impl<'a, STICKERTYPE: TDStickerType> TDStickerType for &'a mut STICKERTYPE {}
 
 impl<'a, SUGGESTEDACTION: TDSuggestedAction> TDSuggestedAction for &'a SUGGESTEDACTION {}
 impl<'a, SUGGESTEDACTION: TDSuggestedAction> TDSuggestedAction for &'a mut SUGGESTEDACTION {}
@@ -403,6 +457,9 @@ impl<'a, SUPERGROUPMEMBERSFILTER: TDSupergroupMembersFilter> TDSupergroupMembers
 
 impl<'a, TMEURLTYPE: TDTMeUrlType> TDTMeUrlType for &'a TMEURLTYPE {}
 impl<'a, TMEURLTYPE: TDTMeUrlType> TDTMeUrlType for &'a mut TMEURLTYPE {}
+
+impl<'a, TARGETCHAT: TDTargetChat> TDTargetChat for &'a TARGETCHAT {}
+impl<'a, TARGETCHAT: TDTargetChat> TDTargetChat for &'a mut TARGETCHAT {}
 
 impl<'a, TEXTENTITYTYPE: TDTextEntityType> TDTextEntityType for &'a TEXTENTITYTYPE {}
 impl<'a, TEXTENTITYTYPE: TDTextEntityType> TDTextEntityType for &'a mut TEXTENTITYTYPE {}
@@ -440,29 +497,42 @@ impl<'a, USERSTATUS: TDUserStatus> TDUserStatus for &'a mut USERSTATUS {}
 impl<'a, USERTYPE: TDUserType> TDUserType for &'a USERTYPE {}
 impl<'a, USERTYPE: TDUserType> TDUserType for &'a mut USERTYPE {}
 
+impl<'a, VECTORPATHCOMMAND: TDVectorPathCommand> TDVectorPathCommand for &'a VECTORPATHCOMMAND {}
+impl<'a, VECTORPATHCOMMAND: TDVectorPathCommand> TDVectorPathCommand for &'a mut VECTORPATHCOMMAND {}
+
 #[derive(Debug, Clone)]
 pub(crate) enum TdType {
     AuthorizationState(AuthorizationState),
     CanTransferOwnershipResult(CanTransferOwnershipResult),
     ChatStatistics(ChatStatistics),
     CheckChatUsernameResult(CheckChatUsernameResult),
+    CheckStickerSetNameResult(CheckStickerSetNameResult),
+    InternalLinkType(InternalLinkType),
     JsonValue(JsonValue),
     LanguagePackStringValue(LanguagePackStringValue),
     LogStream(LogStream),
     LoginUrlInfo(LoginUrlInfo),
+    MessageFileType(MessageFileType),
     OptionValue(OptionValue),
     PassportElement(PassportElement),
+    ResetPasswordResult(ResetPasswordResult),
     StatisticalGraph(StatisticalGraph),
     Update(Update),
     AccountTtl(AccountTtl),
+    AddedReactions(AddedReactions),
+    AnimatedEmoji(AnimatedEmoji),
     Animations(Animations),
+    AttachmentMenuBot(AttachmentMenuBot),
     AuthenticationCodeInfo(AuthenticationCodeInfo),
     AutoDownloadSettingsPresets(AutoDownloadSettingsPresets),
+    AvailableReactions(AvailableReactions),
     Background(Background),
     Backgrounds(Backgrounds),
     BankCardInfo(BankCardInfo),
     BasicGroup(BasicGroup),
     BasicGroupFullInfo(BasicGroupFullInfo),
+    BotCommands(BotCommands),
+    BotMenuButton(BotMenuButton),
     CallId(CallId),
     CallbackQueryAnswer(CallbackQueryAnswer),
     Chat(Chat),
@@ -471,7 +541,11 @@ pub(crate) enum TdType {
     ChatFilter(ChatFilter),
     ChatFilterInfo(ChatFilterInfo),
     ChatInviteLink(ChatInviteLink),
+    ChatInviteLinkCounts(ChatInviteLinkCounts),
     ChatInviteLinkInfo(ChatInviteLinkInfo),
+    ChatInviteLinkMembers(ChatInviteLinkMembers),
+    ChatInviteLinks(ChatInviteLinks),
+    ChatJoinRequests(ChatJoinRequests),
     ChatLists(ChatLists),
     ChatMember(ChatMember),
     ChatMembers(ChatMembers),
@@ -488,10 +562,15 @@ pub(crate) enum TdType {
     Emojis(Emojis),
     Error(Error),
     File(File),
+    FileDownloadedPrefixSize(FileDownloadedPrefixSize),
     FilePart(FilePart),
     FormattedText(FormattedText),
+    FoundFileDownloads(FoundFileDownloads),
     FoundMessages(FoundMessages),
     GameHighScores(GameHighScores),
+    GroupCall(GroupCall),
+    GroupCallId(GroupCallId),
+    GroupCallStreams(GroupCallStreams),
     Hashtags(Hashtags),
     HttpUrl(HttpUrl),
     ImportedContacts(ImportedContacts),
@@ -502,13 +581,17 @@ pub(crate) enum TdType {
     LogTags(LogTags),
     LogVerbosityLevel(LogVerbosityLevel),
     Message(Message),
+    MessageCalendar(MessageCalendar),
     MessageLink(MessageLink),
     MessageLinkInfo(MessageLinkInfo),
+    MessagePositions(MessagePositions),
     MessageSenders(MessageSenders),
     MessageStatistics(MessageStatistics),
     MessageThreadInfo(MessageThreadInfo),
     Messages(Messages),
     NetworkStatistics(NetworkStatistics),
+    NotificationSound(NotificationSound),
+    NotificationSounds(NotificationSounds),
     Ok(Ok),
     OrderInfo(OrderInfo),
     PassportAuthorizationForm(PassportAuthorizationForm),
@@ -519,16 +602,23 @@ pub(crate) enum TdType {
     PaymentReceipt(PaymentReceipt),
     PaymentResult(PaymentResult),
     PhoneNumberInfo(PhoneNumberInfo),
+    PremiumFeatures(PremiumFeatures),
+    PremiumLimit(PremiumLimit),
+    PremiumState(PremiumState),
     Proxies(Proxies),
     Proxy(Proxy),
     PushReceiverId(PushReceiverId),
     RecommendedChatFilters(RecommendedChatFilters),
     RecoveryEmailAddress(RecoveryEmailAddress),
+    RtmpUrl(RtmpUrl),
     ScopeNotificationSettings(ScopeNotificationSettings),
     Seconds(Seconds),
     SecretChat(SecretChat),
+    SentWebAppMessage(SentWebAppMessage),
     Session(Session),
     Sessions(Sessions),
+    SponsoredMessage(SponsoredMessage),
+    Sticker(Sticker),
     StickerSet(StickerSet),
     StickerSets(StickerSets),
     Stickers(Stickers),
@@ -547,12 +637,14 @@ pub(crate) enum TdType {
     TestVectorStringObject(TestVectorStringObject),
     Text(Text),
     TextEntities(TextEntities),
+    TrendingStickerSets(TrendingStickerSets),
     Updates(Updates),
     User(User),
     UserFullInfo(UserFullInfo),
     UserPrivacySettingRules(UserPrivacySettingRules),
     Users(Users),
     ValidatedOrderInfo(ValidatedOrderInfo),
+    WebAppInfo(WebAppInfo),
     WebPage(WebPage),
     WebPageInstantView(WebPageInstantView),
 }
@@ -621,15 +713,16 @@ fn deserialize_traits(
         return Ok(Some(td_type));
     };
 
+    if let Some(td_type) = deserialize_authorization_state(rtd_trait_type, rtd_trait_value.clone())?
+    {
+        return Ok(Some(td_type));
+    };
+
     if let Some(td_type) = deserialize_json_value(rtd_trait_type, rtd_trait_value.clone())? {
         return Ok(Some(td_type));
     };
 
     if let Some(td_type) = deserialize_option_value(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-    if let Some(td_type) = deserialize_authorization_state(rtd_trait_type, rtd_trait_value.clone())?
-    {
         return Ok(Some(td_type));
     };
 
@@ -650,6 +743,17 @@ fn deserialize_traits(
     };
 
     if let Some(td_type) =
+        deserialize_check_sticker_set_name_result(rtd_trait_type, rtd_trait_value.clone())?
+    {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_internal_link_type(rtd_trait_type, rtd_trait_value.clone())?
+    {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) =
         deserialize_language_pack_string_value(rtd_trait_type, rtd_trait_value.clone())?
     {
         return Ok(Some(td_type));
@@ -663,11 +767,21 @@ fn deserialize_traits(
         return Ok(Some(td_type));
     };
 
+    if let Some(td_type) = deserialize_message_file_type(rtd_trait_type, rtd_trait_value.clone())? {
+        return Ok(Some(td_type));
+    };
+
     if let Some(td_type) = deserialize_passport_element(rtd_trait_type, rtd_trait_value.clone())? {
         return Ok(Some(td_type));
     };
 
-    if let Some(td_type) = deserialize_statistical_graph(rtd_trait_type, rtd_trait_value)? {
+    if let Some(td_type) =
+        deserialize_reset_password_result(rtd_trait_type, rtd_trait_value.clone())?
+    {
+        return Ok(Some(td_type));
+    };
+
+    if let Some(td_type) = deserialize_statistical_graph(rtd_trait_type, rtd_trait_value.clone())? {
         return Ok(Some(td_type));
     };
 
@@ -680,13 +794,25 @@ fn deserialize_direct_types(
 ) -> Result<Option<TdType>, serde_json::Error> {
     Ok(match rtd_trait_type {
         "accountTtl" => Some(TdType::AccountTtl(serde_json::from_value(rtd_trait_value)?)),
+        "addedReactions" => Some(TdType::AddedReactions(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "animatedEmoji" => Some(TdType::AnimatedEmoji(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
         "animations" => Some(TdType::Animations(serde_json::from_value(rtd_trait_value)?)),
+        "attachmentMenuBot" => Some(TdType::AttachmentMenuBot(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
         "authenticationCodeInfo" => Some(TdType::AuthenticationCodeInfo(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "autoDownloadSettingsPresets" => Some(TdType::AutoDownloadSettingsPresets(
             serde_json::from_value(rtd_trait_value)?,
         )),
+        "availableReactions" => Some(TdType::AvailableReactions(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
         "background" => Some(TdType::Background(serde_json::from_value(rtd_trait_value)?)),
         "backgrounds" => Some(TdType::Backgrounds(serde_json::from_value(
             rtd_trait_value,
@@ -696,6 +822,12 @@ fn deserialize_direct_types(
         )?)),
         "basicGroup" => Some(TdType::BasicGroup(serde_json::from_value(rtd_trait_value)?)),
         "basicGroupFullInfo" => Some(TdType::BasicGroupFullInfo(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "botCommands" => Some(TdType::BotCommands(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "botMenuButton" => Some(TdType::BotMenuButton(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "callId" => Some(TdType::CallId(serde_json::from_value(rtd_trait_value)?)),
@@ -714,7 +846,19 @@ fn deserialize_direct_types(
         "chatInviteLink" => Some(TdType::ChatInviteLink(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        "chatInviteLinkCounts" => Some(TdType::ChatInviteLinkCounts(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
         "chatInviteLinkInfo" => Some(TdType::ChatInviteLinkInfo(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "chatInviteLinkMembers" => Some(TdType::ChatInviteLinkMembers(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "chatInviteLinks" => Some(TdType::ChatInviteLinks(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "chatJoinRequests" => Some(TdType::ChatJoinRequests(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "chatLists" => Some(TdType::ChatLists(serde_json::from_value(rtd_trait_value)?)),
@@ -747,14 +891,27 @@ fn deserialize_direct_types(
         "emojis" => Some(TdType::Emojis(serde_json::from_value(rtd_trait_value)?)),
         "error" => Some(TdType::Error(serde_json::from_value(rtd_trait_value)?)),
         "file" => Some(TdType::File(serde_json::from_value(rtd_trait_value)?)),
+        "fileDownloadedPrefixSize" => Some(TdType::FileDownloadedPrefixSize(
+            serde_json::from_value(rtd_trait_value)?,
+        )),
         "filePart" => Some(TdType::FilePart(serde_json::from_value(rtd_trait_value)?)),
         "formattedText" => Some(TdType::FormattedText(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "foundFileDownloads" => Some(TdType::FoundFileDownloads(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "foundMessages" => Some(TdType::FoundMessages(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "gameHighScores" => Some(TdType::GameHighScores(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "groupCall" => Some(TdType::GroupCall(serde_json::from_value(rtd_trait_value)?)),
+        "groupCallId" => Some(TdType::GroupCallId(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "groupCallStreams" => Some(TdType::GroupCallStreams(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "hashtags" => Some(TdType::Hashtags(serde_json::from_value(rtd_trait_value)?)),
@@ -779,10 +936,16 @@ fn deserialize_direct_types(
             rtd_trait_value,
         )?)),
         "message" => Some(TdType::Message(serde_json::from_value(rtd_trait_value)?)),
+        "messageCalendar" => Some(TdType::MessageCalendar(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
         "messageLink" => Some(TdType::MessageLink(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "messageLinkInfo" => Some(TdType::MessageLinkInfo(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "messagePositions" => Some(TdType::MessagePositions(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "messageSenders" => Some(TdType::MessageSenders(serde_json::from_value(
@@ -796,6 +959,12 @@ fn deserialize_direct_types(
         )?)),
         "messages" => Some(TdType::Messages(serde_json::from_value(rtd_trait_value)?)),
         "networkStatistics" => Some(TdType::NetworkStatistics(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "notificationSound" => Some(TdType::NotificationSound(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "notificationSounds" => Some(TdType::NotificationSounds(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "ok" => Some(TdType::Ok(serde_json::from_value(rtd_trait_value)?)),
@@ -824,6 +993,15 @@ fn deserialize_direct_types(
         "phoneNumberInfo" => Some(TdType::PhoneNumberInfo(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        "premiumFeatures" => Some(TdType::PremiumFeatures(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "premiumLimit" => Some(TdType::PremiumLimit(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "premiumState" => Some(TdType::PremiumState(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
         "proxies" => Some(TdType::Proxies(serde_json::from_value(rtd_trait_value)?)),
         "proxy" => Some(TdType::Proxy(serde_json::from_value(rtd_trait_value)?)),
         "pushReceiverId" => Some(TdType::PushReceiverId(serde_json::from_value(
@@ -835,13 +1013,21 @@ fn deserialize_direct_types(
         "recoveryEmailAddress" => Some(TdType::RecoveryEmailAddress(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        "rtmpUrl" => Some(TdType::RtmpUrl(serde_json::from_value(rtd_trait_value)?)),
         "scopeNotificationSettings" => Some(TdType::ScopeNotificationSettings(
             serde_json::from_value(rtd_trait_value)?,
         )),
         "seconds" => Some(TdType::Seconds(serde_json::from_value(rtd_trait_value)?)),
         "secretChat" => Some(TdType::SecretChat(serde_json::from_value(rtd_trait_value)?)),
+        "sentWebAppMessage" => Some(TdType::SentWebAppMessage(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
         "session" => Some(TdType::Session(serde_json::from_value(rtd_trait_value)?)),
         "sessions" => Some(TdType::Sessions(serde_json::from_value(rtd_trait_value)?)),
+        "sponsoredMessage" => Some(TdType::SponsoredMessage(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        "sticker" => Some(TdType::Sticker(serde_json::from_value(rtd_trait_value)?)),
         "stickerSet" => Some(TdType::StickerSet(serde_json::from_value(rtd_trait_value)?)),
         "stickerSets" => Some(TdType::StickerSets(serde_json::from_value(
             rtd_trait_value,
@@ -880,6 +1066,9 @@ fn deserialize_direct_types(
         "textEntities" => Some(TdType::TextEntities(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        "trendingStickerSets" => Some(TdType::TrendingStickerSets(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
         "updates" => Some(TdType::Updates(serde_json::from_value(rtd_trait_value)?)),
         "user" => Some(TdType::User(serde_json::from_value(rtd_trait_value)?)),
         "userFullInfo" => Some(TdType::UserFullInfo(serde_json::from_value(
@@ -892,6 +1081,7 @@ fn deserialize_direct_types(
         "validatedOrderInfo" => Some(TdType::ValidatedOrderInfo(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        "webAppInfo" => Some(TdType::WebAppInfo(serde_json::from_value(rtd_trait_value)?)),
         "webPage" => Some(TdType::WebPage(serde_json::from_value(rtd_trait_value)?)),
         "webPageInstantView" => Some(TdType::WebPageInstantView(serde_json::from_value(
             rtd_trait_value,
@@ -990,6 +1180,74 @@ fn deserialize_check_chat_username_result(
     )
 }
 
+const CHECKSTICKERSETNAMERESULT_MEMBERS: &[&str] = &[
+    "checkStickerSetName",
+    "checkStickerSetNameResultNameInvalid",
+    "checkStickerSetNameResultNameOccupied",
+    "checkStickerSetNameResultOk",
+];
+
+fn deserialize_check_sticker_set_name_result(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(
+        match CHECKSTICKERSETNAMERESULT_MEMBERS.contains(&rtd_trait_type) {
+            true => Some(TdType::CheckStickerSetNameResult(serde_json::from_value(
+                rtd_trait_value,
+            )?)),
+            false => None,
+        },
+    )
+}
+
+const INTERNALLINKTYPE_MEMBERS: &[&str] = &[
+    "getInternalLinkType",
+    "internalLinkTypeActiveSessions",
+    "internalLinkTypeAttachmentMenuBot",
+    "internalLinkTypeAuthenticationCode",
+    "internalLinkTypeBackground",
+    "internalLinkTypeBotAddToChannel",
+    "internalLinkTypeBotStart",
+    "internalLinkTypeBotStartInGroup",
+    "internalLinkTypeChangePhoneNumber",
+    "internalLinkTypeChatInvite",
+    "internalLinkTypeFilterSettings",
+    "internalLinkTypeGame",
+    "internalLinkTypeInvoice",
+    "internalLinkTypeLanguagePack",
+    "internalLinkTypeLanguageSettings",
+    "internalLinkTypeMessage",
+    "internalLinkTypeMessageDraft",
+    "internalLinkTypePassportDataRequest",
+    "internalLinkTypePhoneNumberConfirmation",
+    "internalLinkTypePremiumFeatures",
+    "internalLinkTypePrivacyAndSecuritySettings",
+    "internalLinkTypeProxy",
+    "internalLinkTypePublicChat",
+    "internalLinkTypeQrCodeAuthentication",
+    "internalLinkTypeSettings",
+    "internalLinkTypeStickerSet",
+    "internalLinkTypeTheme",
+    "internalLinkTypeThemeSettings",
+    "internalLinkTypeUnknownDeepLink",
+    "internalLinkTypeUnsupportedProxy",
+    "internalLinkTypeUserPhoneNumber",
+    "internalLinkTypeVideoChat",
+];
+
+fn deserialize_internal_link_type(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match INTERNALLINKTYPE_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::InternalLinkType(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        false => None,
+    })
+}
+
 const JSONVALUE_MEMBERS: &[&str] = &[
     "getApplicationConfig",
     "getJsonValue",
@@ -1050,6 +1308,7 @@ fn deserialize_log_stream(
 }
 
 const LOGINURLINFO_MEMBERS: &[&str] = &[
+    "getExternalLinkInfo",
     "getLoginUrlInfo",
     "loginUrlInfoOpen",
     "loginUrlInfoRequestConfirmation",
@@ -1061,6 +1320,25 @@ fn deserialize_login_url_info(
 ) -> Result<Option<TdType>, serde_json::Error> {
     Ok(match LOGINURLINFO_MEMBERS.contains(&rtd_trait_type) {
         true => Some(TdType::LoginUrlInfo(serde_json::from_value(
+            rtd_trait_value,
+        )?)),
+        false => None,
+    })
+}
+
+const MESSAGEFILETYPE_MEMBERS: &[&str] = &[
+    "getMessageFileType",
+    "messageFileTypeGroup",
+    "messageFileTypePrivate",
+    "messageFileTypeUnknown",
+];
+
+fn deserialize_message_file_type(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match MESSAGEFILETYPE_MEMBERS.contains(&rtd_trait_type) {
+        true => Some(TdType::MessageFileType(serde_json::from_value(
             rtd_trait_value,
         )?)),
         false => None,
@@ -1117,6 +1395,27 @@ fn deserialize_passport_element(
     })
 }
 
+const RESETPASSWORDRESULT_MEMBERS: &[&str] = &[
+    "resetPassword",
+    "resetPasswordResultDeclined",
+    "resetPasswordResultOk",
+    "resetPasswordResultPending",
+];
+
+fn deserialize_reset_password_result(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(
+        match RESETPASSWORDRESULT_MEMBERS.contains(&rtd_trait_type) {
+            true => Some(TdType::ResetPasswordResult(serde_json::from_value(
+                rtd_trait_value,
+            )?)),
+            false => None,
+        },
+    )
+}
+
 const STATISTICALGRAPH_MEMBERS: &[&str] = &[
     "getStatisticalGraph",
     "statisticalGraphAsync",
@@ -1139,36 +1438,55 @@ fn deserialize_statistical_graph(
 const UPDATE_MEMBERS: &[&str] = &[
     "testUseUpdate",
     "updateActiveNotifications",
+    "updateAnimatedEmojiMessageClicked",
     "updateAnimationSearchParameters",
+    "updateAttachmentMenuBots",
     "updateAuthorizationState",
     "updateBasicGroup",
     "updateBasicGroupFullInfo",
     "updateCall",
+    "updateChatAction",
     "updateChatActionBar",
+    "updateChatAvailableReactions",
     "updateChatDefaultDisableNotification",
     "updateChatDraftMessage",
     "updateChatFilters",
+    "updateChatHasProtectedContent",
     "updateChatHasScheduledMessages",
     "updateChatIsBlocked",
     "updateChatIsMarkedAsUnread",
     "updateChatLastMessage",
+    "updateChatMember",
+    "updateChatMessageSender",
+    "updateChatMessageTtl",
     "updateChatNotificationSettings",
     "updateChatOnlineMemberCount",
+    "updateChatPendingJoinRequests",
     "updateChatPermissions",
     "updateChatPhoto",
     "updateChatPosition",
     "updateChatReadInbox",
     "updateChatReadOutbox",
     "updateChatReplyMarkup",
+    "updateChatTheme",
+    "updateChatThemes",
     "updateChatTitle",
     "updateChatUnreadMentionCount",
+    "updateChatUnreadReactionCount",
+    "updateChatVideoChat",
     "updateConnectionState",
     "updateDeleteMessages",
     "updateDiceEmojis",
     "updateFavoriteStickers",
     "updateFile",
+    "updateFileAddedToDownloads",
+    "updateFileDownload",
+    "updateFileDownloads",
     "updateFileGenerationStart",
     "updateFileGenerationStop",
+    "updateFileRemovedFromDownloads",
+    "updateGroupCall",
+    "updateGroupCallParticipant",
     "updateHavePendingNotifications",
     "updateInstalledStickerSets",
     "updateLanguagePackStrings",
@@ -1182,9 +1500,11 @@ const UPDATE_MEMBERS: &[&str] = &[
     "updateMessageSendAcknowledged",
     "updateMessageSendFailed",
     "updateMessageSendSucceeded",
+    "updateMessageUnreadReactions",
     "updateNewCallSignalingData",
     "updateNewCallbackQuery",
     "updateNewChat",
+    "updateNewChatJoinRequest",
     "updateNewChosenInlineResult",
     "updateNewCustomEvent",
     "updateNewCustomQuery",
@@ -1198,8 +1518,10 @@ const UPDATE_MEMBERS: &[&str] = &[
     "updateOption",
     "updatePoll",
     "updatePollAnswer",
+    "updateReactions",
     "updateRecentStickers",
     "updateSavedAnimations",
+    "updateSavedNotificationSounds",
     "updateScopeNotificationSettings",
     "updateSecretChat",
     "updateSelectedBackground",
@@ -1213,11 +1535,11 @@ const UPDATE_MEMBERS: &[&str] = &[
     "updateUnreadChatCount",
     "updateUnreadMessageCount",
     "updateUser",
-    "updateUserChatAction",
     "updateUserFullInfo",
     "updateUserPrivacySettingRules",
     "updateUserStatus",
     "updateUsersNearby",
+    "updateWebAppMessageSent",
 ];
 
 fn deserialize_update(
@@ -1241,6 +1563,10 @@ impl TdType {
 
             TdType::CheckChatUsernameResult(value) => value.extra(),
 
+            TdType::CheckStickerSetNameResult(value) => value.extra(),
+
+            TdType::InternalLinkType(value) => value.extra(),
+
             TdType::JsonValue(value) => value.extra(),
 
             TdType::LanguagePackStringValue(value) => value.extra(),
@@ -1249,9 +1575,13 @@ impl TdType {
 
             TdType::LoginUrlInfo(value) => value.extra(),
 
+            TdType::MessageFileType(value) => value.extra(),
+
             TdType::OptionValue(value) => value.extra(),
 
             TdType::PassportElement(value) => value.extra(),
+
+            TdType::ResetPasswordResult(value) => value.extra(),
 
             TdType::StatisticalGraph(value) => value.extra(),
 
@@ -1259,11 +1589,19 @@ impl TdType {
 
             TdType::AccountTtl(value) => value.extra(),
 
+            TdType::AddedReactions(value) => value.extra(),
+
+            TdType::AnimatedEmoji(value) => value.extra(),
+
             TdType::Animations(value) => value.extra(),
+
+            TdType::AttachmentMenuBot(value) => value.extra(),
 
             TdType::AuthenticationCodeInfo(value) => value.extra(),
 
             TdType::AutoDownloadSettingsPresets(value) => value.extra(),
+
+            TdType::AvailableReactions(value) => value.extra(),
 
             TdType::Background(value) => value.extra(),
 
@@ -1274,6 +1612,10 @@ impl TdType {
             TdType::BasicGroup(value) => value.extra(),
 
             TdType::BasicGroupFullInfo(value) => value.extra(),
+
+            TdType::BotCommands(value) => value.extra(),
+
+            TdType::BotMenuButton(value) => value.extra(),
 
             TdType::CallId(value) => value.extra(),
 
@@ -1291,7 +1633,15 @@ impl TdType {
 
             TdType::ChatInviteLink(value) => value.extra(),
 
+            TdType::ChatInviteLinkCounts(value) => value.extra(),
+
             TdType::ChatInviteLinkInfo(value) => value.extra(),
+
+            TdType::ChatInviteLinkMembers(value) => value.extra(),
+
+            TdType::ChatInviteLinks(value) => value.extra(),
+
+            TdType::ChatJoinRequests(value) => value.extra(),
 
             TdType::ChatLists(value) => value.extra(),
 
@@ -1325,13 +1675,23 @@ impl TdType {
 
             TdType::File(value) => value.extra(),
 
+            TdType::FileDownloadedPrefixSize(value) => value.extra(),
+
             TdType::FilePart(value) => value.extra(),
 
             TdType::FormattedText(value) => value.extra(),
 
+            TdType::FoundFileDownloads(value) => value.extra(),
+
             TdType::FoundMessages(value) => value.extra(),
 
             TdType::GameHighScores(value) => value.extra(),
+
+            TdType::GroupCall(value) => value.extra(),
+
+            TdType::GroupCallId(value) => value.extra(),
+
+            TdType::GroupCallStreams(value) => value.extra(),
 
             TdType::Hashtags(value) => value.extra(),
 
@@ -1353,9 +1713,13 @@ impl TdType {
 
             TdType::Message(value) => value.extra(),
 
+            TdType::MessageCalendar(value) => value.extra(),
+
             TdType::MessageLink(value) => value.extra(),
 
             TdType::MessageLinkInfo(value) => value.extra(),
+
+            TdType::MessagePositions(value) => value.extra(),
 
             TdType::MessageSenders(value) => value.extra(),
 
@@ -1366,6 +1730,10 @@ impl TdType {
             TdType::Messages(value) => value.extra(),
 
             TdType::NetworkStatistics(value) => value.extra(),
+
+            TdType::NotificationSound(value) => value.extra(),
+
+            TdType::NotificationSounds(value) => value.extra(),
 
             TdType::Ok(value) => value.extra(),
 
@@ -1387,6 +1755,12 @@ impl TdType {
 
             TdType::PhoneNumberInfo(value) => value.extra(),
 
+            TdType::PremiumFeatures(value) => value.extra(),
+
+            TdType::PremiumLimit(value) => value.extra(),
+
+            TdType::PremiumState(value) => value.extra(),
+
             TdType::Proxies(value) => value.extra(),
 
             TdType::Proxy(value) => value.extra(),
@@ -1397,15 +1771,23 @@ impl TdType {
 
             TdType::RecoveryEmailAddress(value) => value.extra(),
 
+            TdType::RtmpUrl(value) => value.extra(),
+
             TdType::ScopeNotificationSettings(value) => value.extra(),
 
             TdType::Seconds(value) => value.extra(),
 
             TdType::SecretChat(value) => value.extra(),
 
+            TdType::SentWebAppMessage(value) => value.extra(),
+
             TdType::Session(value) => value.extra(),
 
             TdType::Sessions(value) => value.extra(),
+
+            TdType::SponsoredMessage(value) => value.extra(),
+
+            TdType::Sticker(value) => value.extra(),
 
             TdType::StickerSet(value) => value.extra(),
 
@@ -1443,6 +1825,8 @@ impl TdType {
 
             TdType::TextEntities(value) => value.extra(),
 
+            TdType::TrendingStickerSets(value) => value.extra(),
+
             TdType::Updates(value) => value.extra(),
 
             TdType::User(value) => value.extra(),
@@ -1454,6 +1838,8 @@ impl TdType {
             TdType::Users(value) => value.extra(),
 
             TdType::ValidatedOrderInfo(value) => value.extra(),
+
+            TdType::WebAppInfo(value) => value.extra(),
 
             TdType::WebPage(value) => value.extra(),
 

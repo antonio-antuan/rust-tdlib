@@ -12,17 +12,17 @@ pub struct InputIdentityDocument {
     client_id: Option<i32>,
     /// Document number; 1-24 characters
     number: String,
-    /// Document expiry date, if available
+    /// Document expiry date; pass null if not applicable
     expiry_date: Date,
     /// Front side of the document
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     front_side: InputFile,
-    /// Reverse side of the document; only for driver license and identity card
+    /// Reverse side of the document; only for driver license and identity card; pass null otherwise
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     reverse_side: InputFile,
-    /// Selfie with the document, if available
+    /// Selfie with the document; pass null if unavailable
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     selfie: InputFile,

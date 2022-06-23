@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Uploads a PNG image with a sticker; for bots only; returns the uploaded file
+/// Uploads a file with a sticker; returns the uploaded file
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UploadStickerFile {
     #[doc(hidden)]
@@ -10,12 +10,10 @@ pub struct UploadStickerFile {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Sticker file owner
-    user_id: i32,
-    /// PNG image with the sticker; must be up to 512 KB in size and fit in 512x512 square
-
-    #[serde(skip_serializing_if = "InputFile::_is_default")]
-    png_sticker: InputFile,
+    /// Sticker file owner; ignored for regular users
+    user_id: i64,
+    /// Sticker file to upload
+    sticker: InputSticker,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -47,12 +45,12 @@ impl UploadStickerFile {
         RTDUploadStickerFileBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
-    pub fn png_sticker(&self) -> &InputFile {
-        &self.png_sticker
+    pub fn sticker(&self) -> &InputSticker {
+        &self.sticker
     }
 }
 
@@ -66,13 +64,13 @@ impl RTDUploadStickerFileBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
 
-    pub fn png_sticker<T: AsRef<InputFile>>(&mut self, png_sticker: T) -> &mut Self {
-        self.inner.png_sticker = png_sticker.as_ref().clone();
+    pub fn sticker<T: AsRef<InputSticker>>(&mut self, sticker: T) -> &mut Self {
+        self.inner.sticker = sticker.as_ref().clone();
         self
     }
 }

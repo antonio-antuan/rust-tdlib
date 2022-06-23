@@ -12,7 +12,7 @@ pub struct SetChatSlowModeDelay {
     client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
-    /// New slow mode delay for the chat; must be one of 0, 10, 30, 60, 300, 900, 3600
+    /// New slow mode delay for the chat, in seconds; must be one of 0, 10, 30, 60, 300, 900, 3600
     slow_mode_delay: i32,
 
     #[serde(rename(serialize = "@type"))]

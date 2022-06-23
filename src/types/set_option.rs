@@ -12,7 +12,7 @@ pub struct SetOption {
     client_id: Option<i32>,
     /// The name of the option
     name: String,
-    /// The new value of the option
+    /// The new value of the option; pass null to reset option value to a default value
 
     #[serde(skip_serializing_if = "OptionValue::_is_default")]
     value: OptionValue,

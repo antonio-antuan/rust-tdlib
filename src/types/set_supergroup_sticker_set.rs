@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the sticker set of a supergroup; requires can_change_info rights
+/// Changes the sticker set of a supergroup; requires can_change_info administrator right
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetSupergroupStickerSet {
     #[doc(hidden)]
@@ -11,7 +11,7 @@ pub struct SetSupergroupStickerSet {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup
-    supergroup_id: i32,
+    supergroup_id: i64,
     /// New value of the supergroup sticker set identifier. Use 0 to remove the supergroup sticker set
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
@@ -47,7 +47,7 @@ impl SetSupergroupStickerSet {
         RTDSetSupergroupStickerSetBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 
@@ -66,7 +66,7 @@ impl RTDSetSupergroupStickerSetBuilder {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }

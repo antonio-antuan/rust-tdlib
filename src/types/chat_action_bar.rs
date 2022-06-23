@@ -4,44 +4,35 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Describes actions which should be possible to do through a chat action bar
+/// Describes actions which must be possible to do through a chat action bar
 pub trait TDChatActionBar: Debug + RObject {}
 
-/// Describes actions which should be possible to do through a chat action bar
+/// Describes actions which must be possible to do through a chat action bar
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(tag = "@type")]
 pub enum ChatActionBar {
     #[doc(hidden)]
     _Default,
     /// The chat is a private or secret chat and the other user can be added to the contact list using the method addContact
-    #[serde(rename(
-        serialize = "chatActionBarAddContact",
-        deserialize = "chatActionBarAddContact"
-    ))]
+    #[serde(rename(deserialize = "chatActionBarAddContact"))]
     AddContact(ChatActionBarAddContact),
-    /// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method blockUser, or the other user can be added to the contact list using the method addContact
-    #[serde(rename(
-        serialize = "chatActionBarReportAddBlock",
-        deserialize = "chatActionBarReportAddBlock"
-    ))]
+    /// The chat is a recently created group chat to which new members can be invited
+    #[serde(rename(deserialize = "chatActionBarInviteMembers"))]
+    InviteMembers(ChatActionBarInviteMembers),
+    /// The chat is a private chat with an administrator of a chat to which the user sent join request
+    #[serde(rename(deserialize = "chatActionBarJoinRequest"))]
+    JoinRequest(ChatActionBarJoinRequest),
+    /// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method toggleMessageSenderIsBlocked, or the other user can be added to the contact list using the method addContact
+    #[serde(rename(deserialize = "chatActionBarReportAddBlock"))]
     ReportAddBlock(ChatActionBarReportAddBlock),
     /// The chat can be reported as spam using the method reportChat with the reason chatReportReasonSpam
-    #[serde(rename(
-        serialize = "chatActionBarReportSpam",
-        deserialize = "chatActionBarReportSpam"
-    ))]
+    #[serde(rename(deserialize = "chatActionBarReportSpam"))]
     ReportSpam(ChatActionBarReportSpam),
     /// The chat is a location-based supergroup, which can be reported as having unrelated location using the method reportChat with the reason chatReportReasonUnrelatedLocation
-    #[serde(rename(
-        serialize = "chatActionBarReportUnrelatedLocation",
-        deserialize = "chatActionBarReportUnrelatedLocation"
-    ))]
+    #[serde(rename(deserialize = "chatActionBarReportUnrelatedLocation"))]
     ReportUnrelatedLocation(ChatActionBarReportUnrelatedLocation),
     /// The chat is a private or secret chat with a mutual contact and the user's phone number can be shared with the other user using the method sharePhoneNumber
-    #[serde(rename(
-        serialize = "chatActionBarSharePhoneNumber",
-        deserialize = "chatActionBarSharePhoneNumber"
-    ))]
+    #[serde(rename(deserialize = "chatActionBarSharePhoneNumber"))]
     SharePhoneNumber(ChatActionBarSharePhoneNumber),
 }
 
@@ -56,6 +47,8 @@ impl RObject for ChatActionBar {
     fn extra(&self) -> Option<&str> {
         match self {
             ChatActionBar::AddContact(t) => t.extra(),
+            ChatActionBar::InviteMembers(t) => t.extra(),
+            ChatActionBar::JoinRequest(t) => t.extra(),
             ChatActionBar::ReportAddBlock(t) => t.extra(),
             ChatActionBar::ReportSpam(t) => t.extra(),
             ChatActionBar::ReportUnrelatedLocation(t) => t.extra(),
@@ -68,6 +61,8 @@ impl RObject for ChatActionBar {
     fn client_id(&self) -> Option<i32> {
         match self {
             ChatActionBar::AddContact(t) => t.client_id(),
+            ChatActionBar::InviteMembers(t) => t.client_id(),
+            ChatActionBar::JoinRequest(t) => t.client_id(),
             ChatActionBar::ReportAddBlock(t) => t.client_id(),
             ChatActionBar::ReportSpam(t) => t.client_id(),
             ChatActionBar::ReportUnrelatedLocation(t) => t.client_id(),
@@ -152,7 +147,156 @@ impl AsRef<ChatActionBarAddContact> for RTDChatActionBarAddContactBuilder {
     }
 }
 
-/// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method blockUser, or the other user can be added to the contact list using the method addContact
+/// The chat is a recently created group chat to which new members can be invited
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatActionBarInviteMembers {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for ChatActionBarInviteMembers {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatActionBar for ChatActionBarInviteMembers {}
+
+impl ChatActionBarInviteMembers {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatActionBarInviteMembersBuilder {
+        let mut inner = ChatActionBarInviteMembers::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatActionBarInviteMembersBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatActionBarInviteMembersBuilder {
+    inner: ChatActionBarInviteMembers,
+}
+
+impl RTDChatActionBarInviteMembersBuilder {
+    pub fn build(&self) -> ChatActionBarInviteMembers {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<ChatActionBarInviteMembers> for ChatActionBarInviteMembers {
+    fn as_ref(&self) -> &ChatActionBarInviteMembers {
+        self
+    }
+}
+
+impl AsRef<ChatActionBarInviteMembers> for RTDChatActionBarInviteMembersBuilder {
+    fn as_ref(&self) -> &ChatActionBarInviteMembers {
+        &self.inner
+    }
+}
+
+/// The chat is a private chat with an administrator of a chat to which the user sent join request
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatActionBarJoinRequest {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Title of the chat to which the join request was sent
+    title: String,
+    /// True, if the join request was sent to a channel chat
+    is_channel: bool,
+    /// Point in time (Unix timestamp) when the join request was sent
+    request_date: i32,
+}
+
+impl RObject for ChatActionBarJoinRequest {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatActionBar for ChatActionBarJoinRequest {}
+
+impl ChatActionBarJoinRequest {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatActionBarJoinRequestBuilder {
+        let mut inner = ChatActionBarJoinRequest::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatActionBarJoinRequestBuilder { inner }
+    }
+
+    pub fn title(&self) -> &String {
+        &self.title
+    }
+
+    pub fn is_channel(&self) -> bool {
+        self.is_channel
+    }
+
+    pub fn request_date(&self) -> i32 {
+        self.request_date
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatActionBarJoinRequestBuilder {
+    inner: ChatActionBarJoinRequest,
+}
+
+impl RTDChatActionBarJoinRequestBuilder {
+    pub fn build(&self) -> ChatActionBarJoinRequest {
+        self.inner.clone()
+    }
+
+    pub fn title<T: AsRef<str>>(&mut self, title: T) -> &mut Self {
+        self.inner.title = title.as_ref().to_string();
+        self
+    }
+
+    pub fn is_channel(&mut self, is_channel: bool) -> &mut Self {
+        self.inner.is_channel = is_channel;
+        self
+    }
+
+    pub fn request_date(&mut self, request_date: i32) -> &mut Self {
+        self.inner.request_date = request_date;
+        self
+    }
+}
+
+impl AsRef<ChatActionBarJoinRequest> for ChatActionBarJoinRequest {
+    fn as_ref(&self) -> &ChatActionBarJoinRequest {
+        self
+    }
+}
+
+impl AsRef<ChatActionBarJoinRequest> for RTDChatActionBarJoinRequestBuilder {
+    fn as_ref(&self) -> &ChatActionBarJoinRequest {
+        &self.inner
+    }
+}
+
+/// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method toggleMessageSenderIsBlocked, or the other user can be added to the contact list using the method addContact
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarReportAddBlock {
     #[doc(hidden)]

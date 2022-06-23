@@ -14,16 +14,10 @@ pub enum CallServerType {
     #[doc(hidden)]
     _Default,
     /// A Telegram call reflector
-    #[serde(rename(
-        serialize = "callServerTypeTelegramReflector",
-        deserialize = "callServerTypeTelegramReflector"
-    ))]
+    #[serde(rename(deserialize = "callServerTypeTelegramReflector"))]
     TelegramReflector(CallServerTypeTelegramReflector),
     /// A WebRTC server
-    #[serde(rename(
-        serialize = "callServerTypeWebrtc",
-        deserialize = "callServerTypeWebrtc"
-    ))]
+    #[serde(rename(deserialize = "callServerTypeWebrtc"))]
     Webrtc(CallServerTypeWebrtc),
 }
 
@@ -80,6 +74,8 @@ pub struct CallServerTypeTelegramReflector {
     client_id: Option<i32>,
     /// A peer tag to be used with the reflector
     peer_tag: String,
+    /// True, if the server uses TCP instead of UDP
+    is_tcp: bool,
 }
 
 impl RObject for CallServerTypeTelegramReflector {
@@ -109,6 +105,10 @@ impl CallServerTypeTelegramReflector {
     pub fn peer_tag(&self) -> &String {
         &self.peer_tag
     }
+
+    pub fn is_tcp(&self) -> bool {
+        self.is_tcp
+    }
 }
 
 #[doc(hidden)]
@@ -123,6 +123,11 @@ impl RTDCallServerTypeTelegramReflectorBuilder {
 
     pub fn peer_tag<T: AsRef<str>>(&mut self, peer_tag: T) -> &mut Self {
         self.inner.peer_tag = peer_tag.as_ref().to_string();
+        self
+    }
+
+    pub fn is_tcp(&mut self, is_tcp: bool) -> &mut Self {
+        self.inner.is_tcp = is_tcp;
         self
     }
 }

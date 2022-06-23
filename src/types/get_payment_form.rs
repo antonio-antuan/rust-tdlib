@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns an invoice payment form. This method should be called when the user presses inlineKeyboardButtonBuy
+/// Returns an invoice payment form. This method must be called when the user presses inlineKeyboardButtonBuy
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetPaymentForm {
     #[doc(hidden)]
@@ -10,10 +10,12 @@ pub struct GetPaymentForm {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat identifier of the Invoice message
-    chat_id: i64,
-    /// Message identifier
-    message_id: i64,
+    /// The invoice
+
+    #[serde(skip_serializing_if = "InputInvoice::_is_default")]
+    input_invoice: InputInvoice,
+    /// Preferred payment form theme; pass null to use the default theme
+    theme: ThemeParameters,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -45,12 +47,12 @@ impl GetPaymentForm {
         RTDGetPaymentFormBuilder { inner }
     }
 
-    pub fn chat_id(&self) -> i64 {
-        self.chat_id
+    pub fn input_invoice(&self) -> &InputInvoice {
+        &self.input_invoice
     }
 
-    pub fn message_id(&self) -> i64 {
-        self.message_id
+    pub fn theme(&self) -> &ThemeParameters {
+        &self.theme
     }
 }
 
@@ -64,13 +66,13 @@ impl RTDGetPaymentFormBuilder {
         self.inner.clone()
     }
 
-    pub fn chat_id(&mut self, chat_id: i64) -> &mut Self {
-        self.inner.chat_id = chat_id;
+    pub fn input_invoice<T: AsRef<InputInvoice>>(&mut self, input_invoice: T) -> &mut Self {
+        self.inner.input_invoice = input_invoice.as_ref().clone();
         self
     }
 
-    pub fn message_id(&mut self, message_id: i64) -> &mut Self {
-        self.inner.message_id = message_id;
+    pub fn theme<T: AsRef<ThemeParameters>>(&mut self, theme: T) -> &mut Self {
+        self.inner.theme = theme.as_ref().clone();
         self
     }
 }

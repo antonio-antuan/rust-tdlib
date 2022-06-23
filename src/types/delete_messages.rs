@@ -14,7 +14,7 @@ pub struct DeleteMessages {
     chat_id: i64,
     /// Identifiers of the messages to be deleted
     message_ids: Vec<i64>,
-    /// Pass true to try to delete messages for all chat members. Always true for supergroups, channels and secret chats
+    /// Pass true to delete messages for all chat members. Always true for supergroups, channels and secret chats
     revoke: bool,
 
     #[serde(rename(serialize = "@type"))]

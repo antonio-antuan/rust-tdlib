@@ -4,23 +4,20 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Contains animated stickers which should be used for dice animation rendering
+/// Contains animated stickers which must be used for dice animation rendering
 pub trait TDDiceStickers: Debug + RObject {}
 
-/// Contains animated stickers which should be used for dice animation rendering
+/// Contains animated stickers which must be used for dice animation rendering
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(tag = "@type")]
 pub enum DiceStickers {
     #[doc(hidden)]
     _Default,
     /// A regular animated sticker
-    #[serde(rename(serialize = "diceStickersRegular", deserialize = "diceStickersRegular"))]
+    #[serde(rename(deserialize = "diceStickersRegular"))]
     Regular(DiceStickersRegular),
     /// Animated stickers to be combined into a slot machine
-    #[serde(rename(
-        serialize = "diceStickersSlotMachine",
-        deserialize = "diceStickersSlotMachine"
-    ))]
+    #[serde(rename(deserialize = "diceStickersSlotMachine"))]
     SlotMachine(DiceStickersSlotMachine),
 }
 

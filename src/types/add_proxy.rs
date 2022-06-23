@@ -14,7 +14,7 @@ pub struct AddProxy {
     server: String,
     /// Proxy server port
     port: i32,
-    /// True, if the proxy should be enabled
+    /// Pass true to immediately enable the proxy
     enable: bool,
     /// Proxy type
 

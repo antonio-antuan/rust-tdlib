@@ -14,19 +14,13 @@ pub enum BackgroundType {
     #[doc(hidden)]
     _Default,
     /// A filled background
-    #[serde(rename(serialize = "backgroundTypeFill", deserialize = "backgroundTypeFill"))]
+    #[serde(rename(deserialize = "backgroundTypeFill"))]
     Fill(BackgroundTypeFill),
     /// A PNG or TGV (gzipped subset of SVG with MIME type "application/x-tgwallpattern") pattern to be combined with the background fill chosen by the user
-    #[serde(rename(
-        serialize = "backgroundTypePattern",
-        deserialize = "backgroundTypePattern"
-    ))]
+    #[serde(rename(deserialize = "backgroundTypePattern"))]
     Pattern(BackgroundTypePattern),
     /// A wallpaper in JPEG format
-    #[serde(rename(
-        serialize = "backgroundTypeWallpaper",
-        deserialize = "backgroundTypeWallpaper"
-    ))]
+    #[serde(rename(deserialize = "backgroundTypeWallpaper"))]
     Wallpaper(BackgroundTypeWallpaper),
 }
 
@@ -83,7 +77,7 @@ pub struct BackgroundTypeFill {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Description of the background fill
+    /// The background fill
 
     #[serde(skip_serializing_if = "BackgroundFill::_is_default")]
     fill: BackgroundFill,
@@ -154,12 +148,14 @@ pub struct BackgroundTypePattern {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Description of the background fill
+    /// Fill of the background
 
     #[serde(skip_serializing_if = "BackgroundFill::_is_default")]
     fill: BackgroundFill,
-    /// Intensity of the pattern when it is shown above the filled background, 0-100
+    /// Intensity of the pattern when it is shown above the filled background; 0-100.
     intensity: i32,
+    /// True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only
+    is_inverted: bool,
     /// True, if the background needs to be slightly moved when device is tilted
     is_moving: bool,
 }
@@ -196,6 +192,10 @@ impl BackgroundTypePattern {
         self.intensity
     }
 
+    pub fn is_inverted(&self) -> bool {
+        self.is_inverted
+    }
+
     pub fn is_moving(&self) -> bool {
         self.is_moving
     }
@@ -218,6 +218,11 @@ impl RTDBackgroundTypePatternBuilder {
 
     pub fn intensity(&mut self, intensity: i32) -> &mut Self {
         self.inner.intensity = intensity;
+        self
+    }
+
+    pub fn is_inverted(&mut self, is_inverted: bool) -> &mut Self {
+        self.inner.is_inverted = is_inverted;
         self
     }
 

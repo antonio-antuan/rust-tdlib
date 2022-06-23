@@ -12,7 +12,7 @@ pub struct ChangePhoneNumber {
     client_id: Option<i32>,
     /// The new phone number of the user in international format
     phone_number: String,
-    /// Settings for the authentication of the user's phone number
+    /// Settings for the authentication of the user's phone number; pass null to use default settings
     settings: PhoneNumberAuthenticationSettings,
 
     #[serde(rename(serialize = "@type"))]

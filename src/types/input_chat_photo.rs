@@ -14,22 +14,13 @@ pub enum InputChatPhoto {
     #[doc(hidden)]
     _Default,
     /// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 800 and be at most 2MB in size
-    #[serde(rename(
-        serialize = "inputChatPhotoAnimation",
-        deserialize = "inputChatPhotoAnimation"
-    ))]
+    #[serde(rename(deserialize = "inputChatPhotoAnimation"))]
     Animation(InputChatPhotoAnimation),
     /// A previously used profile photo of the current user
-    #[serde(rename(
-        serialize = "inputChatPhotoPrevious",
-        deserialize = "inputChatPhotoPrevious"
-    ))]
+    #[serde(rename(deserialize = "inputChatPhotoPrevious"))]
     Previous(InputChatPhotoPrevious),
     /// A static photo in JPEG format
-    #[serde(rename(
-        serialize = "inputChatPhotoStatic",
-        deserialize = "inputChatPhotoStatic"
-    ))]
+    #[serde(rename(deserialize = "inputChatPhotoStatic"))]
     Static(InputChatPhotoStatic),
 }
 
@@ -168,7 +159,7 @@ pub struct InputChatPhotoPrevious {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the profile photo to reuse
+    /// Identifier of the current user's profile photo to reuse
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
     chat_photo_id: i64,

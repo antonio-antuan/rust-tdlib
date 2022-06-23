@@ -11,10 +11,10 @@ pub struct SetStickerSetThumbnail {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Sticker set owner
-    user_id: i32,
+    user_id: i64,
     /// Sticker set name
     name: String,
-    /// Thumbnail to set in PNG or TGS format. Animated thumbnail must be set for animated sticker sets and only for them. Pass a zero InputFileId to delete the thumbnail
+    /// Thumbnail to set in PNG, TGS, or WEBM format; pass null to remove the sticker set thumbnail. Thumbnail format must match the format of stickers in the set
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     thumbnail: InputFile,
@@ -49,7 +49,7 @@ impl SetStickerSetThumbnail {
         RTDSetStickerSetThumbnailBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -72,7 +72,7 @@ impl RTDSetStickerSetThumbnailBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

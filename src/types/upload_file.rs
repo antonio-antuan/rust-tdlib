@@ -14,7 +14,7 @@ pub struct UploadFile {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     file: InputFile,
-    /// File type
+    /// File type; pass null if unknown
 
     #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,

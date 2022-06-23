@@ -14,7 +14,7 @@ pub struct EditMessageSchedulingState {
     chat_id: i64,
     /// Identifier of the message
     message_id: i64,
-    /// The new message scheduling state. Pass null to send the message immediately
+    /// The new message scheduling state; pass null to send the message immediately
 
     #[serde(skip_serializing_if = "MessageSchedulingState::_is_default")]
     scheduling_state: MessageSchedulingState,

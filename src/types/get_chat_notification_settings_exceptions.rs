@@ -10,11 +10,11 @@ pub struct GetChatNotificationSettingsExceptions {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// If specified, only chats from the specified scope will be returned
+    /// If specified, only chats from the scope will be returned; pass null to return chats from all scopes
 
     #[serde(skip_serializing_if = "NotificationSettingsScope::_is_default")]
     scope: NotificationSettingsScope,
-    /// If true, also chats with non-default sound will be returned
+    /// Pass true to include in the response chats with only non-default sound
     compare_sound: bool,
 
     #[serde(rename(serialize = "@type"))]

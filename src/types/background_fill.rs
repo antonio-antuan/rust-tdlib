@@ -13,14 +13,14 @@ pub trait TDBackgroundFill: Debug + RObject {}
 pub enum BackgroundFill {
     #[doc(hidden)]
     _Default,
+    /// Describes a freeform gradient fill of a background
+    #[serde(rename(deserialize = "backgroundFillFreeformGradient"))]
+    FreeformGradient(BackgroundFillFreeformGradient),
     /// Describes a gradient fill of a background
-    #[serde(rename(
-        serialize = "backgroundFillGradient",
-        deserialize = "backgroundFillGradient"
-    ))]
+    #[serde(rename(deserialize = "backgroundFillGradient"))]
     Gradient(BackgroundFillGradient),
     /// Describes a solid fill of a background
-    #[serde(rename(serialize = "backgroundFillSolid", deserialize = "backgroundFillSolid"))]
+    #[serde(rename(deserialize = "backgroundFillSolid"))]
     Solid(BackgroundFillSolid),
 }
 
@@ -34,6 +34,7 @@ impl RObject for BackgroundFill {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         match self {
+            BackgroundFill::FreeformGradient(t) => t.extra(),
             BackgroundFill::Gradient(t) => t.extra(),
             BackgroundFill::Solid(t) => t.extra(),
 
@@ -43,6 +44,7 @@ impl RObject for BackgroundFill {
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         match self {
+            BackgroundFill::FreeformGradient(t) => t.client_id(),
             BackgroundFill::Gradient(t) => t.client_id(),
             BackgroundFill::Solid(t) => t.client_id(),
 
@@ -67,6 +69,75 @@ impl AsRef<BackgroundFill> for BackgroundFill {
     }
 }
 
+/// Describes a freeform gradient fill of a background
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct BackgroundFillFreeformGradient {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// A list of 3 or 4 colors of the freeform gradients in the RGB24 format
+    colors: Vec<i32>,
+}
+
+impl RObject for BackgroundFillFreeformGradient {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDBackgroundFill for BackgroundFillFreeformGradient {}
+
+impl BackgroundFillFreeformGradient {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDBackgroundFillFreeformGradientBuilder {
+        let mut inner = BackgroundFillFreeformGradient::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDBackgroundFillFreeformGradientBuilder { inner }
+    }
+
+    pub fn colors(&self) -> &Vec<i32> {
+        &self.colors
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDBackgroundFillFreeformGradientBuilder {
+    inner: BackgroundFillFreeformGradient,
+}
+
+impl RTDBackgroundFillFreeformGradientBuilder {
+    pub fn build(&self) -> BackgroundFillFreeformGradient {
+        self.inner.clone()
+    }
+
+    pub fn colors(&mut self, colors: Vec<i32>) -> &mut Self {
+        self.inner.colors = colors;
+        self
+    }
+}
+
+impl AsRef<BackgroundFillFreeformGradient> for BackgroundFillFreeformGradient {
+    fn as_ref(&self) -> &BackgroundFillFreeformGradient {
+        self
+    }
+}
+
+impl AsRef<BackgroundFillFreeformGradient> for RTDBackgroundFillFreeformGradientBuilder {
+    fn as_ref(&self) -> &BackgroundFillFreeformGradient {
+        &self.inner
+    }
+}
+
 /// Describes a gradient fill of a background
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct BackgroundFillGradient {
@@ -79,7 +150,7 @@ pub struct BackgroundFillGradient {
     top_color: i32,
     /// A bottom color of the background in the RGB24 format
     bottom_color: i32,
-    /// Clockwise rotation angle of the gradient, in degrees; 0-359. Should be always divisible by 45
+    /// Clockwise rotation angle of the gradient, in degrees; 0-359. Must be always divisible by 45
     rotation_angle: i32,
 }
 

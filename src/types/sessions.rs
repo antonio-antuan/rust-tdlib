@@ -12,6 +12,8 @@ pub struct Sessions {
     client_id: Option<i32>,
     /// List of sessions
     sessions: Vec<Session>,
+    /// Number of days of inactivity before sessions will automatically be terminated; 1-366 days
+    inactive_session_ttl_days: i32,
 }
 
 impl RObject for Sessions {
@@ -39,6 +41,10 @@ impl Sessions {
     pub fn sessions(&self) -> &Vec<Session> {
         &self.sessions
     }
+
+    pub fn inactive_session_ttl_days(&self) -> i32 {
+        self.inactive_session_ttl_days
+    }
 }
 
 #[doc(hidden)]
@@ -53,6 +59,11 @@ impl RTDSessionsBuilder {
 
     pub fn sessions(&mut self, sessions: Vec<Session>) -> &mut Self {
         self.inner.sessions = sessions;
+        self
+    }
+
+    pub fn inactive_session_ttl_days(&mut self, inactive_session_ttl_days: i32) -> &mut Self {
+        self.inner.inactive_session_ttl_days = inactive_session_ttl_days;
         self
     }
 }

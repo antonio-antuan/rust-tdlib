@@ -11,10 +11,10 @@ pub struct GetInlineQueryResults {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The identifier of the target bot
-    bot_user_id: i32,
+    bot_user_id: i64,
     /// Identifier of the chat where the query was sent
     chat_id: i64,
-    /// Location of the user, only if needed
+    /// Location of the user; pass null if unknown or the bot doesn't need user's location
     user_location: Location,
     /// Text of the query
     query: String,
@@ -51,7 +51,7 @@ impl GetInlineQueryResults {
         RTDGetInlineQueryResultsBuilder { inner }
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -82,7 +82,7 @@ impl RTDGetInlineQueryResultsBuilder {
         self.inner.clone()
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }

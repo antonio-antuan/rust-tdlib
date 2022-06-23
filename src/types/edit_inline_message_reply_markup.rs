@@ -12,7 +12,7 @@ pub struct EditInlineMessageReplyMarkup {
     client_id: Option<i32>,
     /// Inline message identifier
     inline_message_id: String,
-    /// The new message reply markup
+    /// The new message reply markup; pass null if none
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,

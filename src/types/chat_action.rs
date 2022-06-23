@@ -13,78 +13,51 @@ pub trait TDChatAction: Debug + RObject {}
 pub enum ChatAction {
     #[doc(hidden)]
     _Default,
-    /// The user has cancelled the previous action
-    #[serde(rename(serialize = "chatActionCancel", deserialize = "chatActionCancel"))]
+    /// The user has canceled the previous action
+    #[serde(rename(deserialize = "chatActionCancel"))]
     Cancel(ChatActionCancel),
     /// The user is picking a contact to send
-    #[serde(rename(
-        serialize = "chatActionChoosingContact",
-        deserialize = "chatActionChoosingContact"
-    ))]
+    #[serde(rename(deserialize = "chatActionChoosingContact"))]
     ChoosingContact(ChatActionChoosingContact),
     /// The user is picking a location or venue to send
-    #[serde(rename(
-        serialize = "chatActionChoosingLocation",
-        deserialize = "chatActionChoosingLocation"
-    ))]
+    #[serde(rename(deserialize = "chatActionChoosingLocation"))]
     ChoosingLocation(ChatActionChoosingLocation),
+    /// The user is picking a sticker to send
+    #[serde(rename(deserialize = "chatActionChoosingSticker"))]
+    ChoosingSticker(ChatActionChoosingSticker),
     /// The user is recording a video
-    #[serde(rename(
-        serialize = "chatActionRecordingVideo",
-        deserialize = "chatActionRecordingVideo"
-    ))]
+    #[serde(rename(deserialize = "chatActionRecordingVideo"))]
     RecordingVideo(ChatActionRecordingVideo),
     /// The user is recording a video note
-    #[serde(rename(
-        serialize = "chatActionRecordingVideoNote",
-        deserialize = "chatActionRecordingVideoNote"
-    ))]
+    #[serde(rename(deserialize = "chatActionRecordingVideoNote"))]
     RecordingVideoNote(ChatActionRecordingVideoNote),
     /// The user is recording a voice note
-    #[serde(rename(
-        serialize = "chatActionRecordingVoiceNote",
-        deserialize = "chatActionRecordingVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "chatActionRecordingVoiceNote"))]
     RecordingVoiceNote(ChatActionRecordingVoiceNote),
     /// The user has started to play a game
-    #[serde(rename(
-        serialize = "chatActionStartPlayingGame",
-        deserialize = "chatActionStartPlayingGame"
-    ))]
+    #[serde(rename(deserialize = "chatActionStartPlayingGame"))]
     StartPlayingGame(ChatActionStartPlayingGame),
     /// The user is typing a message
-    #[serde(rename(serialize = "chatActionTyping", deserialize = "chatActionTyping"))]
+    #[serde(rename(deserialize = "chatActionTyping"))]
     Typing(ChatActionTyping),
     /// The user is uploading a document
-    #[serde(rename(
-        serialize = "chatActionUploadingDocument",
-        deserialize = "chatActionUploadingDocument"
-    ))]
+    #[serde(rename(deserialize = "chatActionUploadingDocument"))]
     UploadingDocument(ChatActionUploadingDocument),
     /// The user is uploading a photo
-    #[serde(rename(
-        serialize = "chatActionUploadingPhoto",
-        deserialize = "chatActionUploadingPhoto"
-    ))]
+    #[serde(rename(deserialize = "chatActionUploadingPhoto"))]
     UploadingPhoto(ChatActionUploadingPhoto),
     /// The user is uploading a video
-    #[serde(rename(
-        serialize = "chatActionUploadingVideo",
-        deserialize = "chatActionUploadingVideo"
-    ))]
+    #[serde(rename(deserialize = "chatActionUploadingVideo"))]
     UploadingVideo(ChatActionUploadingVideo),
     /// The user is uploading a video note
-    #[serde(rename(
-        serialize = "chatActionUploadingVideoNote",
-        deserialize = "chatActionUploadingVideoNote"
-    ))]
+    #[serde(rename(deserialize = "chatActionUploadingVideoNote"))]
     UploadingVideoNote(ChatActionUploadingVideoNote),
     /// The user is uploading a voice note
-    #[serde(rename(
-        serialize = "chatActionUploadingVoiceNote",
-        deserialize = "chatActionUploadingVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "chatActionUploadingVoiceNote"))]
     UploadingVoiceNote(ChatActionUploadingVoiceNote),
+    /// The user is watching animations sent by the other party by clicking on an animated emoji
+    #[serde(rename(deserialize = "chatActionWatchingAnimations"))]
+    WatchingAnimations(ChatActionWatchingAnimations),
 }
 
 impl Default for ChatAction {
@@ -100,6 +73,7 @@ impl RObject for ChatAction {
             ChatAction::Cancel(t) => t.extra(),
             ChatAction::ChoosingContact(t) => t.extra(),
             ChatAction::ChoosingLocation(t) => t.extra(),
+            ChatAction::ChoosingSticker(t) => t.extra(),
             ChatAction::RecordingVideo(t) => t.extra(),
             ChatAction::RecordingVideoNote(t) => t.extra(),
             ChatAction::RecordingVoiceNote(t) => t.extra(),
@@ -110,6 +84,7 @@ impl RObject for ChatAction {
             ChatAction::UploadingVideo(t) => t.extra(),
             ChatAction::UploadingVideoNote(t) => t.extra(),
             ChatAction::UploadingVoiceNote(t) => t.extra(),
+            ChatAction::WatchingAnimations(t) => t.extra(),
 
             _ => None,
         }
@@ -120,6 +95,7 @@ impl RObject for ChatAction {
             ChatAction::Cancel(t) => t.client_id(),
             ChatAction::ChoosingContact(t) => t.client_id(),
             ChatAction::ChoosingLocation(t) => t.client_id(),
+            ChatAction::ChoosingSticker(t) => t.client_id(),
             ChatAction::RecordingVideo(t) => t.client_id(),
             ChatAction::RecordingVideoNote(t) => t.client_id(),
             ChatAction::RecordingVoiceNote(t) => t.client_id(),
@@ -130,6 +106,7 @@ impl RObject for ChatAction {
             ChatAction::UploadingVideo(t) => t.client_id(),
             ChatAction::UploadingVideoNote(t) => t.client_id(),
             ChatAction::UploadingVoiceNote(t) => t.client_id(),
+            ChatAction::WatchingAnimations(t) => t.client_id(),
 
             _ => None,
         }
@@ -152,7 +129,7 @@ impl AsRef<ChatAction> for ChatAction {
     }
 }
 
-/// The user has cancelled the previous action
+/// The user has canceled the previous action
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionCancel {
     #[doc(hidden)]
@@ -322,6 +299,64 @@ impl AsRef<ChatActionChoosingLocation> for ChatActionChoosingLocation {
 
 impl AsRef<ChatActionChoosingLocation> for RTDChatActionChoosingLocationBuilder {
     fn as_ref(&self) -> &ChatActionChoosingLocation {
+        &self.inner
+    }
+}
+
+/// The user is picking a sticker to send
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatActionChoosingSticker {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for ChatActionChoosingSticker {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatAction for ChatActionChoosingSticker {}
+
+impl ChatActionChoosingSticker {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatActionChoosingStickerBuilder {
+        let mut inner = ChatActionChoosingSticker::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatActionChoosingStickerBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatActionChoosingStickerBuilder {
+    inner: ChatActionChoosingSticker,
+}
+
+impl RTDChatActionChoosingStickerBuilder {
+    pub fn build(&self) -> ChatActionChoosingSticker {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<ChatActionChoosingSticker> for ChatActionChoosingSticker {
+    fn as_ref(&self) -> &ChatActionChoosingSticker {
+        self
+    }
+}
+
+impl AsRef<ChatActionChoosingSticker> for RTDChatActionChoosingStickerBuilder {
+    fn as_ref(&self) -> &ChatActionChoosingSticker {
         &self.inner
     }
 }
@@ -957,6 +992,75 @@ impl AsRef<ChatActionUploadingVoiceNote> for ChatActionUploadingVoiceNote {
 
 impl AsRef<ChatActionUploadingVoiceNote> for RTDChatActionUploadingVoiceNoteBuilder {
     fn as_ref(&self) -> &ChatActionUploadingVoiceNote {
+        &self.inner
+    }
+}
+
+/// The user is watching animations sent by the other party by clicking on an animated emoji
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatActionWatchingAnimations {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// The animated emoji
+    emoji: String,
+}
+
+impl RObject for ChatActionWatchingAnimations {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatAction for ChatActionWatchingAnimations {}
+
+impl ChatActionWatchingAnimations {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatActionWatchingAnimationsBuilder {
+        let mut inner = ChatActionWatchingAnimations::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatActionWatchingAnimationsBuilder { inner }
+    }
+
+    pub fn emoji(&self) -> &String {
+        &self.emoji
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatActionWatchingAnimationsBuilder {
+    inner: ChatActionWatchingAnimations,
+}
+
+impl RTDChatActionWatchingAnimationsBuilder {
+    pub fn build(&self) -> ChatActionWatchingAnimations {
+        self.inner.clone()
+    }
+
+    pub fn emoji<T: AsRef<str>>(&mut self, emoji: T) -> &mut Self {
+        self.inner.emoji = emoji.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<ChatActionWatchingAnimations> for ChatActionWatchingAnimations {
+    fn as_ref(&self) -> &ChatActionWatchingAnimations {
+        self
+    }
+}
+
+impl AsRef<ChatActionWatchingAnimations> for RTDChatActionWatchingAnimationsBuilder {
+    fn as_ref(&self) -> &ChatActionWatchingAnimations {
         &self.inner
     }
 }

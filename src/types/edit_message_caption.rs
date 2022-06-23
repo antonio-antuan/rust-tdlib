@@ -14,11 +14,11 @@ pub struct EditMessageCaption {
     chat_id: i64,
     /// Identifier of the message
     message_id: i64,
-    /// The new message reply markup; for bots only
+    /// The new message reply markup; pass null if none; for bots only
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New message content caption; 0-GetOption("message_caption_length_max") characters
+    /// New message content caption; 0-GetOption("message_caption_length_max") characters; pass null to remove caption
     caption: FormattedText,
 
     #[serde(rename(serialize = "@type"))]

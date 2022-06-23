@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns information about members or banned users in a supergroup or channel. Can be used only if SupergroupFullInfo.can_get_members == true; additionally, administrator privileges may be required for some filters
+/// Returns information about members or banned users in a supergroup or channel. Can be used only if supergroupFullInfo.can_get_members == true; additionally, administrator privileges may be required for some filters
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetSupergroupMembers {
     #[doc(hidden)]
@@ -11,8 +11,8 @@ pub struct GetSupergroupMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup or channel
-    supergroup_id: i32,
-    /// The type of users to return. By default, supergroupMembersFilterRecent
+    supergroup_id: i64,
+    /// The type of users to return; pass null to use supergroupMembersFilterRecent
 
     #[serde(skip_serializing_if = "SupergroupMembersFilter::_is_default")]
     filter: SupergroupMembersFilter,
@@ -51,7 +51,7 @@ impl GetSupergroupMembers {
         RTDGetSupergroupMembersBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 
@@ -78,7 +78,7 @@ impl RTDGetSupergroupMembersBuilder {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }

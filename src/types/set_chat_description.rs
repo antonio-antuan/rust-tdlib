@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info rights
+/// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetChatDescription {
     #[doc(hidden)]
@@ -12,7 +12,7 @@ pub struct SetChatDescription {
     client_id: Option<i32>,
     /// Identifier of the chat
     chat_id: i64,
-    /// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info rights
+    /// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
     description: String,
 
     #[serde(rename(serialize = "@type"))]

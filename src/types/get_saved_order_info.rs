@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns saved order info, if any
+/// Returns saved order information. Returns a 404 error if there is no saved order information
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetSavedOrderInfo {
     #[doc(hidden)]

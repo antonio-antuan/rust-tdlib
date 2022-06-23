@@ -14,7 +14,7 @@ pub struct PhoneNumberInfo {
     country: Option<CountryInfo>,
     /// The part of the phone number denoting country calling code or its part
     country_calling_code: String,
-    /// The phone number without country calling code formatted accordingly to local rules
+    /// The phone number without country calling code formatted accordingly to local rules. Expected digits are returned as '-', but even more digits might be entered by the user
     formatted_phone_number: String,
 }
 

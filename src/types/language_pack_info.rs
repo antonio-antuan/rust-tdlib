@@ -12,13 +12,13 @@ pub struct LanguagePackInfo {
     client_id: Option<i32>,
     /// Unique language pack identifier
     id: String,
-    /// Identifier of a base language pack; may be empty. If a string is missed in the language pack, then it should be fetched from base language pack. Unsupported in custom language packs
+    /// Identifier of a base language pack; may be empty. If a string is missed in the language pack, then it must be fetched from base language pack. Unsupported in custom language packs
     base_language_pack_id: String,
     /// Language name
     name: String,
     /// Name of the language in that language
     native_name: String,
-    /// A language code to be used to apply plural forms. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
+    /// A language code to be used to apply plural forms. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more information
     plural_code: String,
     /// True, if the language pack is official
     is_official: bool,

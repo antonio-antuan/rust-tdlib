@@ -14,8 +14,8 @@ pub struct SetChatDraftMessage {
     chat_id: i64,
     /// If not 0, a message thread identifier in which the draft was changed
     message_thread_id: i64,
-    /// New draft message; may be null
-    draft_message: Option<DraftMessage>,
+    /// New draft message; pass null to remove the draft
+    draft_message: DraftMessage,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -55,7 +55,7 @@ impl SetChatDraftMessage {
         self.message_thread_id
     }
 
-    pub fn draft_message(&self) -> &Option<DraftMessage> {
+    pub fn draft_message(&self) -> &DraftMessage {
         &self.draft_message
     }
 }
@@ -81,7 +81,7 @@ impl RTDSetChatDraftMessageBuilder {
     }
 
     pub fn draft_message<T: AsRef<DraftMessage>>(&mut self, draft_message: T) -> &mut Self {
-        self.inner.draft_message = Some(draft_message.as_ref().clone());
+        self.inner.draft_message = draft_message.as_ref().clone();
         self
     }
 }

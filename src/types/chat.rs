@@ -27,6 +27,10 @@ pub struct Chat {
     last_message: Option<Message>,
     /// Positions of the chat in chat lists
     positions: Option<Vec<ChatPosition>>,
+    /// Identifier of a user or chat that is selected to send messages in the chat; may be null if the user can't change message sender
+    message_sender_id: Option<MessageSender>,
+    /// True, if chat content can't be saved locally, forwarded, or copied
+    has_protected_content: bool,
     /// True, if the chat is marked as unread
     is_marked_as_unread: bool,
     /// True, if the chat is blocked by the current user and private messages from the chat can't be received
@@ -37,7 +41,7 @@ pub struct Chat {
     can_be_deleted_only_for_self: bool,
     /// True, if the chat messages can be deleted for all users
     can_be_deleted_for_all_users: bool,
-    /// True, if the chat can be reported to Telegram moderators through reportChat
+    /// True, if the chat can be reported to Telegram moderators through reportChat or reportChatPhoto
     can_be_reported: bool,
     /// Default value of the disable_notification parameter, used when a message is sent to the chat
     default_disable_notification: bool,
@@ -49,15 +53,27 @@ pub struct Chat {
     last_read_outbox_message_id: i64,
     /// Number of unread messages with a mention/reply in the chat
     unread_mention_count: i32,
-    /// Notification settings for this chat
+    /// Number of messages with unread reactions in the chat
+    unread_reaction_count: i32,
+    /// Notification settings for the chat
     notification_settings: ChatNotificationSettings,
-    /// Describes actions which should be possible to do through a chat action bar; may be null
+    /// List of reactions, available in the chat
+    available_reactions: Vec<String>,
+    /// Current message Time To Live setting (self-destruct timer) for the chat; 0 if not defined. TTL is counted from the time message or its content is viewed in secret chats and from the send date in other chats
+    message_ttl: i32,
+    /// If non-empty, name of a theme, set for the chat
+    theme_name: String,
+    /// Information about actions which must be possible to do through the chat action bar; may be null
     action_bar: Option<ChatActionBar>,
+    /// Information about video chat of the chat
+    video_chat: VideoChat,
+    /// Information about pending join requests; may be null
+    pending_join_requests: Option<ChatJoinRequestsInfo>,
     /// Identifier of the message from which reply markup needs to be used; 0 if there is no default custom reply markup in the chat
     reply_markup_message_id: i64,
     /// A draft of a message in the chat; may be null
     draft_message: Option<DraftMessage>,
-    /// Contains application-specific data associated with the chat. (For example, the chat scroll position or local chat notification settings can be stored here.) Persistent if the message database is used
+    /// Application-specific data associated with the chat. (For example, the chat scroll position or local chat notification settings can be stored here.) Persistent if the message database is used
     client_data: String,
 }
 
@@ -111,6 +127,14 @@ impl Chat {
         &self.positions
     }
 
+    pub fn message_sender_id(&self) -> &Option<MessageSender> {
+        &self.message_sender_id
+    }
+
+    pub fn has_protected_content(&self) -> bool {
+        self.has_protected_content
+    }
+
     pub fn is_marked_as_unread(&self) -> bool {
         self.is_marked_as_unread
     }
@@ -155,12 +179,36 @@ impl Chat {
         self.unread_mention_count
     }
 
+    pub fn unread_reaction_count(&self) -> i32 {
+        self.unread_reaction_count
+    }
+
     pub fn notification_settings(&self) -> &ChatNotificationSettings {
         &self.notification_settings
     }
 
+    pub fn available_reactions(&self) -> &Vec<String> {
+        &self.available_reactions
+    }
+
+    pub fn message_ttl(&self) -> i32 {
+        self.message_ttl
+    }
+
+    pub fn theme_name(&self) -> &String {
+        &self.theme_name
+    }
+
     pub fn action_bar(&self) -> &Option<ChatActionBar> {
         &self.action_bar
+    }
+
+    pub fn video_chat(&self) -> &VideoChat {
+        &self.video_chat
+    }
+
+    pub fn pending_join_requests(&self) -> &Option<ChatJoinRequestsInfo> {
+        &self.pending_join_requests
     }
 
     pub fn reply_markup_message_id(&self) -> i64 {
@@ -218,6 +266,19 @@ impl RTDChatBuilder {
 
     pub fn positions(&mut self, positions: Vec<ChatPosition>) -> &mut Self {
         self.inner.positions = Some(positions);
+        self
+    }
+
+    pub fn message_sender_id<T: AsRef<MessageSender>>(
+        &mut self,
+        message_sender_id: T,
+    ) -> &mut Self {
+        self.inner.message_sender_id = Some(message_sender_id.as_ref().clone());
+        self
+    }
+
+    pub fn has_protected_content(&mut self, has_protected_content: bool) -> &mut Self {
+        self.inner.has_protected_content = has_protected_content;
         self
     }
 
@@ -285,6 +346,11 @@ impl RTDChatBuilder {
         self
     }
 
+    pub fn unread_reaction_count(&mut self, unread_reaction_count: i32) -> &mut Self {
+        self.inner.unread_reaction_count = unread_reaction_count;
+        self
+    }
+
     pub fn notification_settings<T: AsRef<ChatNotificationSettings>>(
         &mut self,
         notification_settings: T,
@@ -293,8 +359,36 @@ impl RTDChatBuilder {
         self
     }
 
+    pub fn available_reactions(&mut self, available_reactions: Vec<String>) -> &mut Self {
+        self.inner.available_reactions = available_reactions;
+        self
+    }
+
+    pub fn message_ttl(&mut self, message_ttl: i32) -> &mut Self {
+        self.inner.message_ttl = message_ttl;
+        self
+    }
+
+    pub fn theme_name<T: AsRef<str>>(&mut self, theme_name: T) -> &mut Self {
+        self.inner.theme_name = theme_name.as_ref().to_string();
+        self
+    }
+
     pub fn action_bar<T: AsRef<ChatActionBar>>(&mut self, action_bar: T) -> &mut Self {
         self.inner.action_bar = Some(action_bar.as_ref().clone());
+        self
+    }
+
+    pub fn video_chat<T: AsRef<VideoChat>>(&mut self, video_chat: T) -> &mut Self {
+        self.inner.video_chat = video_chat.as_ref().clone();
+        self
+    }
+
+    pub fn pending_join_requests<T: AsRef<ChatJoinRequestsInfo>>(
+        &mut self,
+        pending_join_requests: T,
+    ) -> &mut Self {
+        self.inner.pending_join_requests = Some(pending_join_requests.as_ref().clone());
         self
     }
 

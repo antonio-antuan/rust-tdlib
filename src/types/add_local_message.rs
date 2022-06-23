@@ -12,11 +12,11 @@ pub struct AddLocalMessage {
     client_id: Option<i32>,
     /// Target chat
     chat_id: i64,
-    /// The sender sender of the message
+    /// Identifier of the sender of the message
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    sender: MessageSender,
-    /// Identifier of the message to reply to or 0
+    sender_id: MessageSender,
+    /// Identifier of the replied message; 0 if none
     reply_to_message_id: i64,
     /// Pass true to disable notification for the message
     disable_notification: bool,
@@ -59,8 +59,8 @@ impl AddLocalMessage {
         self.chat_id
     }
 
-    pub fn sender(&self) -> &MessageSender {
-        &self.sender
+    pub fn sender_id(&self) -> &MessageSender {
+        &self.sender_id
     }
 
     pub fn reply_to_message_id(&self) -> i64 {
@@ -91,8 +91,8 @@ impl RTDAddLocalMessageBuilder {
         self
     }
 
-    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
-        self.inner.sender = sender.as_ref().clone();
+    pub fn sender_id<T: AsRef<MessageSender>>(&mut self, sender_id: T) -> &mut Self {
+        self.inner.sender_id = sender_id.as_ref().clone();
         self
     }
 

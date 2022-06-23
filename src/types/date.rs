@@ -10,11 +10,11 @@ pub struct Date {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Day of the month, 1-31
+    /// Day of the month; 1-31
     day: i32,
-    /// Month, 1-12
+    /// Month; 1-12
     month: i32,
-    /// Year, 1-9999
+    /// Year; 1-9999
     year: i32,
 }
 

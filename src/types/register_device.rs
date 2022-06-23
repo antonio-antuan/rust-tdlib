@@ -15,7 +15,7 @@ pub struct RegisterDevice {
     #[serde(skip_serializing_if = "DeviceToken::_is_default")]
     device_token: DeviceToken,
     /// List of user identifiers of other users currently using the application
-    other_user_ids: Vec<i32>,
+    other_user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -51,7 +51,7 @@ impl RegisterDevice {
         &self.device_token
     }
 
-    pub fn other_user_ids(&self) -> &Vec<i32> {
+    pub fn other_user_ids(&self) -> &Vec<i64> {
         &self.other_user_ids
     }
 }
@@ -71,7 +71,7 @@ impl RTDRegisterDeviceBuilder {
         self
     }
 
-    pub fn other_user_ids(&mut self, other_user_ids: Vec<i32>) -> &mut Self {
+    pub fn other_user_ids(&mut self, other_user_ids: Vec<i64>) -> &mut Self {
         self.inner.other_user_ids = other_user_ids;
         self
     }

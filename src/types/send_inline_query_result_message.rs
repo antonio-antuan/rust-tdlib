@@ -14,9 +14,9 @@ pub struct SendInlineQueryResultMessage {
     chat_id: i64,
     /// If not 0, a message thread identifier in which the message will be sent
     message_thread_id: i64,
-    /// Identifier of a message to reply to or 0
+    /// Identifier of a replied message; 0 if none
     reply_to_message_id: i64,
-    /// Options to be used to send the message
+    /// Options to be used to send the message; pass null to use default options
     options: MessageSendOptions,
     /// Identifier of the inline query
 
@@ -24,7 +24,7 @@ pub struct SendInlineQueryResultMessage {
     query_id: i64,
     /// Identifier of the inline result
     result_id: String,
-    /// If true, there will be no mention of a bot, via which the message is sent. Can be used only for bots GetOption("animation_search_bot_username"), GetOption("photo_search_bot_username") and GetOption("venue_search_bot_username")
+    /// Pass true to hide the bot, via which the message is sent. Can be used only for bots GetOption("animation_search_bot_username"), GetOption("photo_search_bot_username"), and GetOption("venue_search_bot_username")
     hide_via_bot: bool,
 
     #[serde(rename(serialize = "@type"))]

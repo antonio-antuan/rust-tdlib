@@ -15,7 +15,7 @@ pub struct WriteGeneratedFilePart {
     #[serde(deserialize_with = "super::_common::number_from_string")]
     generation_id: i64,
     /// The offset from which to write the data to the file
-    offset: i32,
+    offset: i64,
     /// The data to write
     data: String,
 
@@ -53,7 +53,7 @@ impl WriteGeneratedFilePart {
         self.generation_id
     }
 
-    pub fn offset(&self) -> i32 {
+    pub fn offset(&self) -> i64 {
         self.offset
     }
 
@@ -77,7 +77,7 @@ impl RTDWriteGeneratedFilePartBuilder {
         self
     }
 
-    pub fn offset(&mut self, offset: i32) -> &mut Self {
+    pub fn offset(&mut self, offset: i64) -> &mut Self {
         self.inner.offset = offset;
         self
     }

@@ -251,7 +251,7 @@ where
         }
     }
 
-    // Adds a new member to a chat. Members can't be added to private or secret chats. Members will not be added until the chat state has been synchronized with the server
+    // Adds a new member to a chat. Members can't be added to private or secret chats
     pub async fn add_chat_member<C: AsRef<AddChatMember>>(
         &self,
         add_chat_member: C,
@@ -275,7 +275,7 @@ where
         }
     }
 
-    // Adds multiple new members to a chat. Currently this option is only available for supergroups and channels. This option can't be used to join a chat. Members can't be added to a channel if it has more than 200 members. Members will not be added until the chat state has been synchronized with the server
+    // Adds multiple new members to a chat. Currently, this method is only available for supergroups and channels. This method can't be used to join a chat. Members can't be added to a channel if it has more than 200 members
     pub async fn add_chat_members<C: AsRef<AddChatMembers>>(
         &self,
         add_chat_members: C,
@@ -388,6 +388,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Adds a file from a message to the list of file downloads. Download progress and completion of the download will be notified through updateFile updates. If message database is used, the list of file downloads is persistent across application restarts. The downloading is independent from download using downloadFile, i.e. it continues if downloadFile is canceled or is used to download a part of the file
+    pub async fn add_file_to_downloads<C: AsRef<AddFileToDownloads>>(
+        &self,
+        add_file_to_downloads: C,
+    ) -> RTDResult<File> {
+        let extra = add_file_to_downloads.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, add_file_to_downloads.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::File(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -562,6 +586,33 @@ where
         }
     }
 
+    // Adds a new notification sound to the list of saved notification sounds. The new notification sound is added to the top of the list. If it is already in the list, its position isn't changed
+    pub async fn add_saved_notification_sound<C: AsRef<AddSavedNotificationSound>>(
+        &self,
+        add_saved_notification_sound: C,
+    ) -> RTDResult<NotificationSound> {
+        let extra = add_saved_notification_sound
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, add_saved_notification_sound.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::NotificationSound(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Adds a new sticker to a set; for bots only. Returns the sticker set
     pub async fn add_sticker_to_set<C: AsRef<AddStickerToSet>>(
         &self,
@@ -706,6 +757,54 @@ where
         }
     }
 
+    // Sets the result of interaction with a Web App and sends corresponding message on behalf of the user to the chat from which the query originated; for bots only
+    pub async fn answer_web_app_query<C: AsRef<AnswerWebAppQuery>>(
+        &self,
+        answer_web_app_query: C,
+    ) -> RTDResult<SentWebAppMessage> {
+        let extra = answer_web_app_query.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, answer_web_app_query.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::SentWebAppMessage(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Bans a member in a chat. Members can't be banned in private or secret chats. In supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless unbanned first
+    pub async fn ban_chat_member<C: AsRef<BanChatMember>>(
+        &self,
+        ban_chat_member: C,
+    ) -> RTDResult<Ok> {
+        let extra = ban_chat_member.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, ban_chat_member.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Blocks an original sender of a message in the Replies chat
     pub async fn block_message_sender_from_replies<C: AsRef<BlockMessageSenderFromReplies>>(
         &self,
@@ -783,6 +882,30 @@ where
         }
     }
 
+    // Cancels reset of 2-step verification password. The method can be called if passwordState.pending_reset_date > 0
+    pub async fn cancel_password_reset<C: AsRef<CancelPasswordReset>>(
+        &self,
+        cancel_password_reset: C,
+    ) -> RTDResult<Ok> {
+        let extra = cancel_password_reset.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, cancel_password_reset.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Stops the uploading of a file. Supported only for files uploaded by using uploadFile. For other files the behavior is undefined
     pub async fn cancel_upload_file<C: AsRef<CancelUploadFile>>(
         &self,
@@ -807,7 +930,7 @@ where
         }
     }
 
-    // Changes imported contacts using the list of current user contacts saved on the device. Imports newly added contacts and, if at least the file database is enabled, deletes recently deleted contacts. Query result depends on the result of the previous query, so only one query is possible at the same time
+    // Changes imported contacts using the list of contacts saved on the device. Imports newly added contacts and, if at least the file database is enabled, deletes recently deleted contacts. Query result depends on the result of the previous query, so only one query is possible at the same time
     pub async fn change_imported_contacts<C: AsRef<ChangeImportedContacts>>(
         &self,
         change_imported_contacts: C,
@@ -961,6 +1084,37 @@ where
         }
     }
 
+    // Checks whether a password recovery code sent to an email address is valid. Works only when the current authorization state is authorizationStateWaitPassword
+    pub async fn check_authentication_password_recovery_code<
+        C: AsRef<CheckAuthenticationPasswordRecoveryCode>,
+    >(
+        &self,
+        check_authentication_password_recovery_code: C,
+    ) -> RTDResult<Ok> {
+        let extra = check_authentication_password_recovery_code
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            check_authentication_password_recovery_code.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Checks the authentication code sent to confirm a new phone number of the user
     pub async fn check_change_phone_number_code<C: AsRef<CheckChangePhoneNumberCode>>(
         &self,
@@ -1038,7 +1192,7 @@ where
         }
     }
 
-    // Checks whether the maximum number of owned public chats has been reached. Returns corresponding error if the limit was reached
+    // Checks whether the maximum number of owned public chats has been reached. Returns corresponding error if the limit was reached. The limit can be increased with Telegram Premium
     pub async fn check_created_public_chats_limit<C: AsRef<CheckCreatedPublicChatsLimit>>(
         &self,
         check_created_public_chats_limit: C,
@@ -1112,6 +1266,33 @@ where
             self.get_client_id()?,
             check_email_address_verification_code.as_ref(),
         )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Checks whether a 2-step verification password recovery code sent to an email address is valid
+    pub async fn check_password_recovery_code<C: AsRef<CheckPasswordRecoveryCode>>(
+        &self,
+        check_password_recovery_code: C,
+    ) -> RTDResult<Ok> {
+        let extra = check_password_recovery_code
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, check_password_recovery_code.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -1218,6 +1399,30 @@ where
         }
     }
 
+    // Checks whether a name can be used for a new sticker set
+    pub async fn check_sticker_set_name<C: AsRef<CheckStickerSetName>>(
+        &self,
+        check_sticker_set_name: C,
+    ) -> RTDResult<CheckStickerSetNameResult> {
+        let extra = check_sticker_set_name.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, check_sticker_set_name.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::CheckStickerSetNameResult(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Removes potentially dangerous characters from the name of a file. The encoding of the file name is supposed to be UTF-8. Returns an empty string on failure. Can be called synchronously
     pub async fn clean_file_name<C: AsRef<CleanFileName>>(
         &self,
@@ -1242,7 +1447,7 @@ where
         }
     }
 
-    // Clears draft messages in all chats
+    // Clears message drafts in all chats
     pub async fn clear_all_draft_messages<C: AsRef<ClearAllDraftMessages>>(
         &self,
         clear_all_draft_messages: C,
@@ -1341,6 +1546,62 @@ where
         }
     }
 
+    // Informs TDLib that a message with an animated emoji was clicked by the user. Returns a big animated sticker to be played or a 404 error if usual animation needs to be played
+    pub async fn click_animated_emoji_message<C: AsRef<ClickAnimatedEmojiMessage>>(
+        &self,
+        click_animated_emoji_message: C,
+    ) -> RTDResult<Sticker> {
+        let extra = click_animated_emoji_message
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, click_animated_emoji_message.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Sticker(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Informs TDLib that the user clicked Premium subscription button on the Premium features screen
+    pub async fn click_premium_subscription_button<C: AsRef<ClickPremiumSubscriptionButton>>(
+        &self,
+        click_premium_subscription_button: C,
+    ) -> RTDResult<Ok> {
+        let extra = click_premium_subscription_button
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            click_premium_subscription_button.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Closes the TDLib instance. All databases will be flushed to disk and properly closed. After the close completes, updateAuthorizationState with authorizationStateClosed will be sent. Can be called before initialization
     pub async fn close<C: AsRef<Close>>(&self, close: C) -> RTDResult<Ok> {
         let extra = close.as_ref().extra().ok_or(NO_EXTRA)?;
@@ -1392,6 +1653,27 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, close_secret_chat.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Informs TDLib that a previously opened Web App was closed
+    pub async fn close_web_app<C: AsRef<CloseWebApp>>(&self, close_web_app: C) -> RTDResult<Ok> {
+        let extra = close_web_app.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, close_web_app.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -1481,7 +1763,7 @@ where
         }
     }
 
-    // Creates new chat filter. Returns information about the created chat filter
+    // Creates new chat filter. Returns information about the created chat filter. There can be up to GetOption("chat_filter_count_max") chat filters, but the limit can be increased with Telegram Premium
     pub async fn create_chat_filter<C: AsRef<CreateChatFilter>>(
         &self,
         create_chat_filter: C,
@@ -1496,6 +1778,54 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatFilterInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Creates a new invite link for a chat. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right in the chat
+    pub async fn create_chat_invite_link<C: AsRef<CreateChatInviteLink>>(
+        &self,
+        create_chat_invite_link: C,
+    ) -> RTDResult<ChatInviteLink> {
+        let extra = create_chat_invite_link.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, create_chat_invite_link.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatInviteLink(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Creates a link for the given invoice; for bots only
+    pub async fn create_invoice_link<C: AsRef<CreateInvoiceLink>>(
+        &self,
+        create_invoice_link: C,
+    ) -> RTDResult<HttpUrl> {
+        let extra = create_invoice_link.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, create_invoice_link.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::HttpUrl(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -1556,7 +1886,7 @@ where
         }
     }
 
-    // Creates a new sticker set; for bots only. Returns the newly created sticker set
+    // Creates a new sticker set. Returns the newly created sticker set
     pub async fn create_new_sticker_set<C: AsRef<CreateNewStickerSet>>(
         &self,
         create_new_sticker_set: C,
@@ -1703,6 +2033,30 @@ where
         }
     }
 
+    // Creates a video chat (a group call bound to a chat). Available only for basic groups, supergroups and channels; requires can_manage_video_chats rights
+    pub async fn create_video_chat<C: AsRef<CreateVideoChat>>(
+        &self,
+        create_video_chat: C,
+    ) -> RTDResult<GroupCallId> {
+        let extra = create_video_chat.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, create_video_chat.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::GroupCallId(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Deletes the account of the current user, deleting all information associated with the user from the server. The phone number of the account can be used to create a new account. Can be called before authorization when the current authorization state is authorizationStateWaitPassword
     pub async fn delete_account<C: AsRef<DeleteAccount>>(
         &self,
@@ -1712,6 +2066,80 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_account.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Deletes all call messages
+    pub async fn delete_all_call_messages<C: AsRef<DeleteAllCallMessages>>(
+        &self,
+        delete_all_call_messages: C,
+    ) -> RTDResult<Ok> {
+        let extra = delete_all_call_messages.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, delete_all_call_messages.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Deletes all revoked chat invite links created by a given chat administrator. Requires administrator privileges and can_invite_users right in the chat for own links and owner privileges for other links
+    pub async fn delete_all_revoked_chat_invite_links<C: AsRef<DeleteAllRevokedChatInviteLinks>>(
+        &self,
+        delete_all_revoked_chat_invite_links: C,
+    ) -> RTDResult<Ok> {
+        let extra = delete_all_revoked_chat_invite_links
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            delete_all_revoked_chat_invite_links.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Deletes a chat along with all messages in the corresponding chat for all chat members. For group chats this will release the username and remove all members. Use the field chat.can_be_deleted_for_all_users to find whether the method can be applied to the chat
+    pub async fn delete_chat<C: AsRef<DeleteChat>>(&self, delete_chat: C) -> RTDResult<Ok> {
+        let extra = delete_chat.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, delete_chat.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -1751,7 +2179,7 @@ where
         }
     }
 
-    // Deletes all messages in the chat. Use Chat.can_be_deleted_only_for_self and Chat.can_be_deleted_for_all_users fields to find whether and how the method can be applied to the chat
+    // Deletes all messages in the chat. Use chat.can_be_deleted_only_for_self and chat.can_be_deleted_for_all_users fields to find whether and how the method can be applied to the chat
     pub async fn delete_chat_history<C: AsRef<DeleteChatHistory>>(
         &self,
         delete_chat_history: C,
@@ -1775,19 +2203,46 @@ where
         }
     }
 
-    // Deletes all messages sent by the specified user to a chat. Supported only for supergroups; requires can_delete_messages administrator privileges
-    pub async fn delete_chat_messages_from_user<C: AsRef<DeleteChatMessagesFromUser>>(
+    // Deletes all messages between the specified dates in a chat. Supported only for private chats and basic groups. Messages sent in the last 30 seconds will not be deleted
+    pub async fn delete_chat_messages_by_date<C: AsRef<DeleteChatMessagesByDate>>(
         &self,
-        delete_chat_messages_from_user: C,
+        delete_chat_messages_by_date: C,
     ) -> RTDResult<Ok> {
-        let extra = delete_chat_messages_from_user
+        let extra = delete_chat_messages_by_date
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, delete_chat_messages_by_date.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Deletes all messages sent by the specified message sender in a chat. Supported only for supergroups; requires can_delete_messages administrator privileges
+    pub async fn delete_chat_messages_by_sender<C: AsRef<DeleteChatMessagesBySender>>(
+        &self,
+        delete_chat_messages_by_sender: C,
+    ) -> RTDResult<Ok> {
+        let extra = delete_chat_messages_by_sender
             .as_ref()
             .extra()
             .ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client.send(
             self.get_client_id()?,
-            delete_chat_messages_from_user.as_ref(),
+            delete_chat_messages_by_sender.as_ref(),
         )?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
@@ -1804,7 +2259,7 @@ where
         }
     }
 
-    // Deletes the default reply markup from a chat. Must be called after a one-time keyboard or a ForceReply reply markup has been used. UpdateChatReplyMarkup will be sent if the reply markup will be changed
+    // Deletes the default reply markup from a chat. Must be called after a one-time keyboard or a ForceReply reply markup has been used. UpdateChatReplyMarkup will be sent if the reply markup is changed
     pub async fn delete_chat_reply_markup<C: AsRef<DeleteChatReplyMarkup>>(
         &self,
         delete_chat_reply_markup: C,
@@ -1813,6 +2268,30 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_chat_reply_markup.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Deletes commands supported by the bot for the given user scope and language; for bots only
+    pub async fn delete_commands<C: AsRef<DeleteCommands>>(
+        &self,
+        delete_commands: C,
+    ) -> RTDResult<Ok> {
+        let extra = delete_commands.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, delete_commands.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -1945,6 +2424,35 @@ where
         }
     }
 
+    // Deletes revoked chat invite links. Requires administrator privileges and can_invite_users right in the chat for own links and owner privileges for other links
+    pub async fn delete_revoked_chat_invite_link<C: AsRef<DeleteRevokedChatInviteLink>>(
+        &self,
+        delete_revoked_chat_invite_link: C,
+    ) -> RTDResult<Ok> {
+        let extra = delete_revoked_chat_invite_link
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            delete_revoked_chat_invite_link.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Deletes saved credentials for all payment provider bots
     pub async fn delete_saved_credentials<C: AsRef<DeleteSavedCredentials>>(
         &self,
@@ -1969,7 +2477,7 @@ where
         }
     }
 
-    // Deletes saved order info
+    // Deletes saved order information
     pub async fn delete_saved_order_info<C: AsRef<DeleteSavedOrderInfo>>(
         &self,
         delete_saved_order_info: C,
@@ -1978,30 +2486,6 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, delete_saved_order_info.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Deletes a supergroup or channel along with all messages in the corresponding chat. This will release the supergroup or channel username and remove all members; requires owner privileges in the supergroup or channel. Chats with more than 1000 members can't be deleted using this method
-    pub async fn delete_supergroup<C: AsRef<DeleteSupergroup>>(
-        &self,
-        delete_supergroup: C,
-    ) -> RTDResult<Ok> {
-        let extra = delete_supergroup.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, delete_supergroup.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -2164,6 +2648,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::ChatFilterInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Edits a non-primary invite link for a chat. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right in the chat for own links and owner privileges for other links
+    pub async fn edit_chat_invite_link<C: AsRef<EditChatInviteLink>>(
+        &self,
+        edit_chat_invite_link: C,
+    ) -> RTDResult<ChatInviteLink> {
+        let extra = edit_chat_invite_link.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, edit_chat_invite_link.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatInviteLink(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -2386,7 +2894,7 @@ where
         }
     }
 
-    // Edits the content of a message with an animation, an audio, a document, a photo or a video. The media in the message can't be replaced if the message was set to self-destruct. Media can't be replaced by self-destructing media. Media in an album can be edited only to contain a photo or a video. Returns the edited message after the edit is completed on the server side
+    // Edits the content of a message with an animation, an audio, a document, a photo or a video, including message caption. If only the caption needs to be edited, use editMessageCaption instead. The media can't be edited if the message was set to self-destruct or to a self-destructing media. The type of message content in an album can't be changed with exception of replacing a photo with a video or vice versa. Returns the edited message after the edit is completed on the server side
     pub async fn edit_message_media<C: AsRef<EditMessageMedia>>(
         &self,
         edit_message_media: C,
@@ -2529,6 +3037,80 @@ where
         }
     }
 
+    // Ends a group call. Requires groupCall.can_be_managed
+    pub async fn end_group_call<C: AsRef<EndGroupCall>>(&self, end_group_call: C) -> RTDResult<Ok> {
+        let extra = end_group_call.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, end_group_call.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Ends recording of an active group call. Requires groupCall.can_be_managed group call flag
+    pub async fn end_group_call_recording<C: AsRef<EndGroupCallRecording>>(
+        &self,
+        end_group_call_recording: C,
+    ) -> RTDResult<Ok> {
+        let extra = end_group_call_recording.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, end_group_call_recording.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Ends screen sharing in a joined group call
+    pub async fn end_group_call_screen_sharing<C: AsRef<EndGroupCallScreenSharing>>(
+        &self,
+        end_group_call_screen_sharing: C,
+    ) -> RTDResult<Ok> {
+        let extra = end_group_call_screen_sharing
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            end_group_call_screen_sharing.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Finishes the file generation
     pub async fn finish_file_generation<C: AsRef<FinishFileGeneration>>(
         &self,
@@ -2577,30 +3159,6 @@ where
         }
     }
 
-    // Generates a new invite link for a chat; the previously generated link is revoked. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right
-    pub async fn generate_chat_invite_link<C: AsRef<GenerateChatInviteLink>>(
-        &self,
-        generate_chat_invite_link: C,
-    ) -> RTDResult<ChatInviteLink> {
-        let extra = generate_chat_invite_link.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, generate_chat_invite_link.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLink(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
     // Returns the period of inactivity after which the account of the current user will automatically be deleted
     pub async fn get_account_ttl<C: AsRef<GetAccountTtl>>(
         &self,
@@ -2625,7 +3183,7 @@ where
         }
     }
 
-    // Returns all active live locations that should be updated by the application. The list is persistent across application restarts only if the message database is used
+    // Returns all active live locations that need to be updated by the application. The list is persistent across application restarts only if the message database is used
     pub async fn get_active_live_location_messages<C: AsRef<GetActiveLiveLocationMessages>>(
         &self,
         get_active_live_location_messages: C,
@@ -2678,6 +3236,30 @@ where
         }
     }
 
+    // Returns all emojis, which has a corresponding animated emoji
+    pub async fn get_all_animated_emojis<C: AsRef<GetAllAnimatedEmojis>>(
+        &self,
+        get_all_animated_emojis: C,
+    ) -> RTDResult<Emojis> {
+        let extra = get_all_animated_emojis.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_all_animated_emojis.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Emojis(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Returns all available Telegram Passport elements
     pub async fn get_all_passport_elements<C: AsRef<GetAllPassportElements>>(
         &self,
@@ -2693,6 +3275,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::PassportElements(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns an animated emoji corresponding to a given emoji. Returns a 404 error if the emoji has no animated emoji
+    pub async fn get_animated_emoji<C: AsRef<GetAnimatedEmoji>>(
+        &self,
+        get_animated_emoji: C,
+    ) -> RTDResult<AnimatedEmoji> {
+        let extra = get_animated_emoji.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_animated_emoji.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::AnimatedEmoji(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -2726,6 +3332,35 @@ where
         }
     }
 
+    // Returns the link for downloading official Telegram application to be used when the current user invites friends to Telegram
+    pub async fn get_application_download_link<C: AsRef<GetApplicationDownloadLink>>(
+        &self,
+        get_application_download_link: C,
+    ) -> RTDResult<HttpUrl> {
+        let extra = get_application_download_link
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_application_download_link.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::HttpUrl(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Returns a list of archived sticker sets
     pub async fn get_archived_sticker_sets<C: AsRef<GetArchivedStickerSets>>(
         &self,
@@ -2750,7 +3385,7 @@ where
         }
     }
 
-    // Returns a list of sticker sets attached to a file. Currently only photos and videos can have attached sticker sets
+    // Returns a list of sticker sets attached to a file. Currently, only photos and videos can have attached sticker sets
     pub async fn get_attached_sticker_sets<C: AsRef<GetAttachedStickerSets>>(
         &self,
         get_attached_sticker_sets: C,
@@ -2765,6 +3400,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StickerSets(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns information about a bot that can be added to attachment menu
+    pub async fn get_attachment_menu_bot<C: AsRef<GetAttachmentMenuBot>>(
+        &self,
+        get_attachment_menu_bot: C,
+    ) -> RTDResult<AttachmentMenuBot> {
+        let extra = get_attachment_menu_bot.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_attachment_menu_bot.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::AttachmentMenuBot(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -3070,6 +3729,35 @@ where
         }
     }
 
+    // Returns list of message sender identifiers, which can be used to send messages in a chat
+    pub async fn get_chat_available_message_senders<C: AsRef<GetChatAvailableMessageSenders>>(
+        &self,
+        get_chat_available_message_senders: C,
+    ) -> RTDResult<MessageSenders> {
+        let extra = get_chat_available_message_senders
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_chat_available_message_senders.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::MessageSenders(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Returns a list of service actions taken by chat members and administrators in the last 48 hours. Available only for supergroups and channels. Requires administrator rights. Returns results in reverse chronological order (i. e., in order of decreasing event_id)
     pub async fn get_chat_event_log<C: AsRef<GetChatEventLog>>(
         &self,
@@ -3147,7 +3835,7 @@ where
         }
     }
 
-    // Returns messages in a chat. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance the number of returned messages is chosen by the library. This is an offline request if only_local is true
+    // Returns messages in a chat. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib. This is an offline request if only_local is true
     pub async fn get_chat_history<C: AsRef<GetChatHistory>>(
         &self,
         get_chat_history: C,
@@ -3162,6 +3850,132 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns information about an invite link. Requires administrator privileges and can_invite_users right in the chat to get own links and owner privileges to get other links
+    pub async fn get_chat_invite_link<C: AsRef<GetChatInviteLink>>(
+        &self,
+        get_chat_invite_link: C,
+    ) -> RTDResult<ChatInviteLink> {
+        let extra = get_chat_invite_link.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_chat_invite_link.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatInviteLink(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns list of chat administrators with number of their invite links. Requires owner privileges in the chat
+    pub async fn get_chat_invite_link_counts<C: AsRef<GetChatInviteLinkCounts>>(
+        &self,
+        get_chat_invite_link_counts: C,
+    ) -> RTDResult<ChatInviteLinkCounts> {
+        let extra = get_chat_invite_link_counts
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_chat_invite_link_counts.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatInviteLinkCounts(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns chat members joined a chat via an invite link. Requires administrator privileges and can_invite_users right in the chat for own links and owner privileges for other links
+    pub async fn get_chat_invite_link_members<C: AsRef<GetChatInviteLinkMembers>>(
+        &self,
+        get_chat_invite_link_members: C,
+    ) -> RTDResult<ChatInviteLinkMembers> {
+        let extra = get_chat_invite_link_members
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_chat_invite_link_members.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatInviteLinkMembers(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns invite links for a chat created by specified administrator. Requires administrator privileges and can_invite_users right in the chat to get own links and owner privileges to get other links
+    pub async fn get_chat_invite_links<C: AsRef<GetChatInviteLinks>>(
+        &self,
+        get_chat_invite_links: C,
+    ) -> RTDResult<ChatInviteLinks> {
+        let extra = get_chat_invite_links.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_chat_invite_links.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatInviteLinks(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns pending join requests in a chat
+    pub async fn get_chat_join_requests<C: AsRef<GetChatJoinRequests>>(
+        &self,
+        get_chat_join_requests: C,
+    ) -> RTDResult<ChatJoinRequests> {
+        let extra = get_chat_join_requests.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_chat_join_requests.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatJoinRequests(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -3237,6 +4051,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns information about the next messages of the specified type in the chat split by days. Returns the results in reverse chronological order. Can return partial result for the last returned day. Behavior of this method depends on the value of the option "utc_time_offset"
+    pub async fn get_chat_message_calendar<C: AsRef<GetChatMessageCalendar>>(
+        &self,
+        get_chat_message_calendar: C,
+    ) -> RTDResult<MessageCalendar> {
+        let extra = get_chat_message_calendar.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_chat_message_calendar.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::MessageCalendar(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -3352,7 +4190,63 @@ where
         }
     }
 
-    // Returns detailed statistics about a chat. Currently this method can be used only for supergroups and channels. Can be used only if SupergroupFullInfo.can_get_statistics == true
+    // Returns sparse positions of messages of the specified type in the chat to be used for shared media scroll implementation. Returns the results in reverse chronological order (i.e., in order of decreasing message_id). Cannot be used in secret chats or with searchMessagesFilterFailedToSend filter without an enabled message database
+    pub async fn get_chat_sparse_message_positions<C: AsRef<GetChatSparseMessagePositions>>(
+        &self,
+        get_chat_sparse_message_positions: C,
+    ) -> RTDResult<MessagePositions> {
+        let extra = get_chat_sparse_message_positions
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_chat_sparse_message_positions.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::MessagePositions(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns sponsored message to be shown in a chat; for channel chats only. Returns a 404 error if there is no sponsored message in the chat
+    pub async fn get_chat_sponsored_message<C: AsRef<GetChatSponsoredMessage>>(
+        &self,
+        get_chat_sponsored_message: C,
+    ) -> RTDResult<SponsoredMessage> {
+        let extra = get_chat_sponsored_message
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_chat_sponsored_message.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::SponsoredMessage(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns detailed statistics about a chat. Currently, this method can be used only for supergroups and channels. Can be used only if supergroupFullInfo.can_get_statistics == true
     pub async fn get_chat_statistics<C: AsRef<GetChatStatistics>>(
         &self,
         get_chat_statistics: C,
@@ -3376,31 +4270,7 @@ where
         }
     }
 
-    // Returns an HTTP URL with the chat statistics. Currently this method of getting the statistics are disabled and can be deleted in the future
-    pub async fn get_chat_statistics_url<C: AsRef<GetChatStatisticsUrl>>(
-        &self,
-        get_chat_statistics_url: C,
-    ) -> RTDResult<HttpUrl> {
-        let extra = get_chat_statistics_url.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_chat_statistics_url.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns an ordered list of chats in a chat list. Chats are sorted by the pair (chat.position.order, chat.id) in descending order. (For example, to get a list of chats from the beginning, the offset_order should be equal to a biggest signed 64-bit number 9223372036854775807 == 2^63  1). For optimal performance the number of returned chats is chosen by the library
+    // Returns an ordered list of chats from the beginning of a chat list. For informational purposes only. Use loadChats and updates processing instead to maintain chat lists in a consistent state
     pub async fn get_chats<C: AsRef<GetChats>>(&self, get_chats: C) -> RTDResult<Chats> {
         let extra = get_chats.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
@@ -3412,6 +4282,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Chats(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns the list of commands supported by the bot for the given user scope and language; for bots only
+    pub async fn get_commands<C: AsRef<GetCommands>>(
+        &self,
+        get_commands: C,
+    ) -> RTDResult<BotCommands> {
+        let extra = get_commands.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_commands.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::BotCommands(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -3490,7 +4384,7 @@ where
         }
     }
 
-    // Uses current user IP address to find their country. Returns two-letter ISO 3166-1 alpha-2 country code. Can be called before authorization
+    // Uses the current IP address to find the current country. Returns two-letter ISO 3166-1 alpha-2 country code. Can be called before authorization
     pub async fn get_country_code<C: AsRef<GetCountryCode>>(
         &self,
         get_country_code: C,
@@ -3634,6 +4528,54 @@ where
         }
     }
 
+    // Returns an HTTP URL which can be used to automatically authorize the current user on a website after clicking an HTTP link. Use the method getExternalLinkInfo to find whether a prior user confirmation is needed
+    pub async fn get_external_link<C: AsRef<GetExternalLink>>(
+        &self,
+        get_external_link: C,
+    ) -> RTDResult<HttpUrl> {
+        let extra = get_external_link.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_external_link.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::HttpUrl(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns information about an action to be done when the current user clicks an external link. Don't use this method for links from secret chats if web page preview is disabled in secret chats
+    pub async fn get_external_link_info<C: AsRef<GetExternalLinkInfo>>(
+        &self,
+        get_external_link_info: C,
+    ) -> RTDResult<LoginUrlInfo> {
+        let extra = get_external_link_info.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_external_link_info.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::LoginUrlInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Returns favorite stickers
     pub async fn get_favorite_stickers<C: AsRef<GetFavoriteStickers>>(
         &self,
@@ -3679,11 +4621,11 @@ where
         }
     }
 
-    // Returns file downloaded prefix size from a given offset
+    // Returns file downloaded prefix size from a given offset, in bytes
     pub async fn get_file_downloaded_prefix_size<C: AsRef<GetFileDownloadedPrefixSize>>(
         &self,
         get_file_downloaded_prefix_size: C,
-    ) -> RTDResult<Count> {
+    ) -> RTDResult<FileDownloadedPrefixSize> {
         let extra = get_file_downloaded_prefix_size
             .as_ref()
             .extra()
@@ -3698,7 +4640,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Count(v) => Ok(v),
+                TdType::FileDownloadedPrefixSize(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -3780,6 +4722,110 @@ where
         }
     }
 
+    // Returns information about a group call
+    pub async fn get_group_call<C: AsRef<GetGroupCall>>(
+        &self,
+        get_group_call: C,
+    ) -> RTDResult<GroupCall> {
+        let extra = get_group_call.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_group_call.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::GroupCall(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns invite link to a video chat in a public chat
+    pub async fn get_group_call_invite_link<C: AsRef<GetGroupCallInviteLink>>(
+        &self,
+        get_group_call_invite_link: C,
+    ) -> RTDResult<HttpUrl> {
+        let extra = get_group_call_invite_link
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_group_call_invite_link.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::HttpUrl(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns a file with a segment of a group call stream in a modified OGG format for audio or MPEG-4 format for video
+    pub async fn get_group_call_stream_segment<C: AsRef<GetGroupCallStreamSegment>>(
+        &self,
+        get_group_call_stream_segment: C,
+    ) -> RTDResult<FilePart> {
+        let extra = get_group_call_stream_segment
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_group_call_stream_segment.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::FilePart(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns information about available group call streams
+    pub async fn get_group_call_streams<C: AsRef<GetGroupCallStreams>>(
+        &self,
+        get_group_call_streams: C,
+    ) -> RTDResult<GroupCallStreams> {
+        let extra = get_group_call_streams.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_group_call_streams.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::GroupCallStreams(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Returns a list of common group chats with a given user. Chats are sorted by their type and creation date
     pub async fn get_groups_in_common<C: AsRef<GetGroupsInCommon>>(
         &self,
@@ -3831,7 +4877,7 @@ where
         }
     }
 
-    // Returns a list of recently inactive supergroups and channels. Can be used when user reaches limit on the number of joined supergroups and channels and receives CHANNELS_TOO_MUCH error
+    // Returns a list of recently inactive supergroups and channels. Can be used when user reaches limit on the number of joined supergroups and channels and receives CHANNELS_TOO_MUCH error. Also, the limit can be increased with Telegram Premium
     pub async fn get_inactive_supergroup_chats<C: AsRef<GetInactiveSupergroupChats>>(
         &self,
         get_inactive_supergroup_chats: C,
@@ -3938,21 +4984,21 @@ where
         }
     }
 
-    // Returns the default text for invitation messages to be used as a placeholder when the current user invites friends to Telegram
-    pub async fn get_invite_text<C: AsRef<GetInviteText>>(
+    // Returns information about the type of an internal link. Returns a 404 error if the link is not internal. Can be called before authorization
+    pub async fn get_internal_link_type<C: AsRef<GetInternalLinkType>>(
         &self,
-        get_invite_text: C,
-    ) -> RTDResult<Text> {
-        let extra = get_invite_text.as_ref().extra().ok_or(NO_EXTRA)?;
+        get_internal_link_type: C,
+    ) -> RTDResult<InternalLinkType> {
+        let extra = get_internal_link_type.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
-            .send(self.get_client_id()?, get_invite_text.as_ref())?;
+            .send(self.get_client_id()?, get_internal_link_type.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
+                TdType::InternalLinkType(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -4322,6 +5368,30 @@ where
         }
     }
 
+    // Returns menu button set by the bot for the given user; for bots only
+    pub async fn get_menu_button<C: AsRef<GetMenuButton>>(
+        &self,
+        get_menu_button: C,
+    ) -> RTDResult<BotMenuButton> {
+        let extra = get_menu_button.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_menu_button.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::BotMenuButton(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Returns information about a message
     pub async fn get_message<C: AsRef<GetMessage>>(&self, get_message: C) -> RTDResult<Message> {
         let extra = get_message.as_ref().extra().ok_or(NO_EXTRA)?;
@@ -4334,6 +5404,62 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns reactions added for a message, along with their sender
+    pub async fn get_message_added_reactions<C: AsRef<GetMessageAddedReactions>>(
+        &self,
+        get_message_added_reactions: C,
+    ) -> RTDResult<AddedReactions> {
+        let extra = get_message_added_reactions
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_message_added_reactions.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::AddedReactions(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns reactions, which can be added to a message. The list can change after updateReactions, updateChatAvailableReactions for the chat, or updateMessageInteractionInfo for the message. The method will return Premium reactions, even the current user has no Premium subscription
+    pub async fn get_message_available_reactions<C: AsRef<GetMessageAvailableReactions>>(
+        &self,
+        get_message_available_reactions: C,
+    ) -> RTDResult<AvailableReactions> {
+        let extra = get_message_available_reactions
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_message_available_reactions.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::AvailableReactions(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -4370,7 +5496,62 @@ where
         }
     }
 
-    // Returns an HTTPS link to a message in a chat. Available only for already sent messages in supergroups and channels. This is an offline request
+    // Returns information about a file with messages exported from another application
+    pub async fn get_message_file_type<C: AsRef<GetMessageFileType>>(
+        &self,
+        get_message_file_type: C,
+    ) -> RTDResult<MessageFileType> {
+        let extra = get_message_file_type.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_message_file_type.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::MessageFileType(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns a confirmation text to be shown to the user before starting message import
+    pub async fn get_message_import_confirmation_text<
+        C: AsRef<GetMessageImportConfirmationText>,
+    >(
+        &self,
+        get_message_import_confirmation_text: C,
+    ) -> RTDResult<Text> {
+        let extra = get_message_import_confirmation_text
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_message_import_confirmation_text.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns an HTTPS link to a message in a chat. Available only for already sent messages in supergroups and channels, or if message.can_get_media_timestamp_links and a media timestamp link is generated. This is an offline request
     pub async fn get_message_link<C: AsRef<GetMessageLink>>(
         &self,
         get_message_link: C,
@@ -4394,7 +5575,7 @@ where
         }
     }
 
-    // Returns information about a public or private message link
+    // Returns information about a public or private message link. Can be called for any internal link of the type internalLinkTypeMessage
     pub async fn get_message_link_info<C: AsRef<GetMessageLinkInfo>>(
         &self,
         get_message_link_info: C,
@@ -4418,7 +5599,7 @@ where
         }
     }
 
-    // Returns information about a message, if it is available locally without sending network request. This is an offline request
+    // Returns information about a message, if it is available without sending network request. This is an offline request
     pub async fn get_message_locally<C: AsRef<GetMessageLocally>>(
         &self,
         get_message_locally: C,
@@ -4442,7 +5623,7 @@ where
         }
     }
 
-    // Returns forwarded copies of a channel message to different public channels. For optimal performance the number of returned messages is chosen by the library
+    // Returns forwarded copies of a channel message to different public channels. For optimal performance, the number of returned messages is chosen by TDLib
     pub async fn get_message_public_forwards<C: AsRef<GetMessagePublicForwards>>(
         &self,
         get_message_public_forwards: C,
@@ -4469,7 +5650,7 @@ where
         }
     }
 
-    // Returns detailed statistics about a message. Can be used only if Message.can_get_statistics == true
+    // Returns detailed statistics about a message. Can be used only if message.can_get_statistics == true
     pub async fn get_message_statistics<C: AsRef<GetMessageStatistics>>(
         &self,
         get_message_statistics: C,
@@ -4517,7 +5698,7 @@ where
         }
     }
 
-    // Returns messages in a message thread of a message. Can be used only if message.can_get_message_thread == true. Message thread of a channel message is in the channel's linked supergroup. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance the number of returned messages is chosen by the library
+    // Returns messages in a message thread of a message. Can be used only if message.can_get_message_thread == true. Message thread of a channel message is in the channel's linked supergroup. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib
     pub async fn get_message_thread_history<C: AsRef<GetMessageThreadHistory>>(
         &self,
         get_message_thread_history: C,
@@ -4535,6 +5716,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Messages(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns viewers of a recent outgoing message in a basic group or a supergroup chat. For video notes and voice notes only users, opened content of the message, are returned. The method can be called if message.can_get_viewers == true
+    pub async fn get_message_viewers<C: AsRef<GetMessageViewers>>(
+        &self,
+        get_message_viewers: C,
+    ) -> RTDResult<Users> {
+        let extra = get_message_viewers.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_message_viewers.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Users(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -4721,7 +5926,7 @@ where
         }
     }
 
-    // Returns an invoice payment form. This method should be called when the user presses inlineKeyboardButtonBuy
+    // Returns an invoice payment form. This method must be called when the user presses inlineKeyboardButtonBuy
     pub async fn get_payment_form<C: AsRef<GetPaymentForm>>(
         &self,
         get_payment_form: C,
@@ -4793,7 +5998,34 @@ where
         }
     }
 
-    // Returns users voted for the specified option in a non-anonymous polls. For the optimal performance the number of returned users is chosen by the library
+    // Returns information about a phone number by its prefix synchronously. getCountries must be called at least once after changing localization to the specified language if properly localized country information is expected. Can be called synchronously
+    pub async fn get_phone_number_info_sync<C: AsRef<GetPhoneNumberInfoSync>>(
+        &self,
+        get_phone_number_info_sync: C,
+    ) -> RTDResult<PhoneNumberInfo> {
+        let extra = get_phone_number_info_sync
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_phone_number_info_sync.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::PhoneNumberInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns users voted for the specified option in a non-anonymous polls. For optimal performance, the number of returned users is chosen by TDLib
     pub async fn get_poll_voters<C: AsRef<GetPollVoters>>(
         &self,
         get_poll_voters: C,
@@ -4817,7 +6049,7 @@ where
         }
     }
 
-    // Returns an IETF language tag of the language preferred in the country, which should be used to fill native fields in Telegram Passport personal details. Returns a 404 error if unknown
+    // Returns an IETF language tag of the language preferred in the country, which must be used to fill native fields in Telegram Passport personal details. Returns a 404 error if unknown
     pub async fn get_preferred_country_language<C: AsRef<GetPreferredCountryLanguage>>(
         &self,
         get_preferred_country_language: C,
@@ -4837,6 +6069,102 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Text(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns information about features, available to Premium users
+    pub async fn get_premium_features<C: AsRef<GetPremiumFeatures>>(
+        &self,
+        get_premium_features: C,
+    ) -> RTDResult<PremiumFeatures> {
+        let extra = get_premium_features.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_premium_features.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::PremiumFeatures(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns information about a limit, increased for Premium users. Returns a 404 error if the limit is unknown
+    pub async fn get_premium_limit<C: AsRef<GetPremiumLimit>>(
+        &self,
+        get_premium_limit: C,
+    ) -> RTDResult<PremiumLimit> {
+        let extra = get_premium_limit.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_premium_limit.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::PremiumLimit(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns state of Telegram Premium subscription and promotion videos for Premium features
+    pub async fn get_premium_state<C: AsRef<GetPremiumState>>(
+        &self,
+        get_premium_state: C,
+    ) -> RTDResult<PremiumState> {
+        let extra = get_premium_state.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_premium_state.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::PremiumState(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns examples of premium stickers for demonstration purposes
+    pub async fn get_premium_stickers<C: AsRef<GetPremiumStickers>>(
+        &self,
+        get_premium_stickers: C,
+    ) -> RTDResult<Stickers> {
+        let extra = get_premium_stickers.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_premium_stickers.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Stickers(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -4871,7 +6199,7 @@ where
     pub async fn get_proxy_link<C: AsRef<GetProxyLink>>(
         &self,
         get_proxy_link: C,
-    ) -> RTDResult<Text> {
+    ) -> RTDResult<HttpUrl> {
         let extra = get_proxy_link.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
@@ -4881,7 +6209,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
+                TdType::HttpUrl(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -4954,6 +6282,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Stickers(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns recently opened chats, this is an offline request. Returns chats in the order of last opening
+    pub async fn get_recently_opened_chats<C: AsRef<GetRecentlyOpenedChats>>(
+        &self,
+        get_recently_opened_chats: C,
+    ) -> RTDResult<Chats> {
+        let extra = get_recently_opened_chats.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_recently_opened_chats.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Chats(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -5118,7 +6470,63 @@ where
         }
     }
 
-    // Returns saved order info, if any
+    // Returns saved notification sound by its identifier. Returns a 404 error if there is no saved notification sound with the specified identifier
+    pub async fn get_saved_notification_sound<C: AsRef<GetSavedNotificationSound>>(
+        &self,
+        get_saved_notification_sound: C,
+    ) -> RTDResult<NotificationSounds> {
+        let extra = get_saved_notification_sound
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_saved_notification_sound.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::NotificationSounds(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns list of saved notification sounds. If a sound isn't in the list, then default sound needs to be used
+    pub async fn get_saved_notification_sounds<C: AsRef<GetSavedNotificationSounds>>(
+        &self,
+        get_saved_notification_sounds: C,
+    ) -> RTDResult<NotificationSounds> {
+        let extra = get_saved_notification_sounds
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_saved_notification_sounds.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::NotificationSounds(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns saved order information. Returns a 404 error if there is no saved order information
     pub async fn get_saved_order_info<C: AsRef<GetSavedOrderInfo>>(
         &self,
         get_saved_order_info: C,
@@ -5267,7 +6675,7 @@ where
         }
     }
 
-    // Returns stickers from the installed sticker sets that correspond to a given emoji. If the emoji is not empty, favorite and recently used stickers may also be returned
+    // Returns stickers from the installed sticker sets that correspond to a given emoji. If the emoji is non-empty, favorite and recently used stickers may also be returned
     pub async fn get_stickers<C: AsRef<GetStickers>>(
         &self,
         get_stickers: C,
@@ -5333,6 +6741,59 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::StorageStatisticsFast(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns suggested name for saving a file in a given directory
+    pub async fn get_suggested_file_name<C: AsRef<GetSuggestedFileName>>(
+        &self,
+        get_suggested_file_name: C,
+    ) -> RTDResult<Text> {
+        let extra = get_suggested_file_name.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_suggested_file_name.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns a suggested name for a new sticker set with a given title
+    pub async fn get_suggested_sticker_set_name<C: AsRef<GetSuggestedStickerSetName>>(
+        &self,
+        get_suggested_sticker_set_name: C,
+    ) -> RTDResult<Text> {
+        let extra = get_suggested_sticker_set_name
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_suggested_sticker_set_name.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -5419,7 +6880,7 @@ where
         }
     }
 
-    // Returns information about members or banned users in a supergroup or channel. Can be used only if SupergroupFullInfo.can_get_members == true; additionally, administrator privileges may be required for some filters
+    // Returns information about members or banned users in a supergroup or channel. Can be used only if supergroupFullInfo.can_get_members == true; additionally, administrator privileges may be required for some filters
     pub async fn get_supergroup_members<C: AsRef<GetSupergroupMembers>>(
         &self,
         get_supergroup_members: C,
@@ -5518,6 +6979,35 @@ where
         }
     }
 
+    // Converts a themeParameters object to corresponding JSON-serialized string. Can be called synchronously
+    pub async fn get_theme_parameters_json_string<C: AsRef<GetThemeParametersJsonString>>(
+        &self,
+        get_theme_parameters_json_string: C,
+    ) -> RTDResult<Text> {
+        let extra = get_theme_parameters_json_string
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_theme_parameters_json_string.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Returns a list of frequently used chats. Supported only if the chat info database is enabled
     pub async fn get_top_chats<C: AsRef<GetTopChats>>(&self, get_top_chats: C) -> RTDResult<Chats> {
         let extra = get_top_chats.as_ref().extra().ok_or(NO_EXTRA)?;
@@ -5539,11 +7029,11 @@ where
         }
     }
 
-    // Returns a list of trending sticker sets. For the optimal performance the number of returned sticker sets is chosen by the library
+    // Returns a list of trending sticker sets. For optimal performance, the number of returned sticker sets is chosen by TDLib
     pub async fn get_trending_sticker_sets<C: AsRef<GetTrendingStickerSets>>(
         &self,
         get_trending_sticker_sets: C,
-    ) -> RTDResult<StickerSets> {
+    ) -> RTDResult<TrendingStickerSets> {
         let extra = get_trending_sticker_sets.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
@@ -5553,7 +7043,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::StickerSets(v) => Ok(v),
+                TdType::TrendingStickerSets(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -5661,6 +7151,85 @@ where
         }
     }
 
+    // Returns list of participant identifiers, on whose behalf a video chat in the chat can be joined
+    pub async fn get_video_chat_available_participants<
+        C: AsRef<GetVideoChatAvailableParticipants>,
+    >(
+        &self,
+        get_video_chat_available_participants: C,
+    ) -> RTDResult<MessageSenders> {
+        let extra = get_video_chat_available_participants
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            get_video_chat_available_participants.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::MessageSenders(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns RTMP URL for streaming to the chat; requires creator privileges
+    pub async fn get_video_chat_rtmp_url<C: AsRef<GetVideoChatRtmpUrl>>(
+        &self,
+        get_video_chat_rtmp_url: C,
+    ) -> RTDResult<RtmpUrl> {
+        let extra = get_video_chat_rtmp_url.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_video_chat_rtmp_url.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::RtmpUrl(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Returns an HTTPS URL of a Web App to open after keyboardButtonTypeWebApp button is pressed
+    pub async fn get_web_app_url<C: AsRef<GetWebAppUrl>>(
+        &self,
+        get_web_app_url: C,
+    ) -> RTDResult<HttpUrl> {
+        let extra = get_web_app_url.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, get_web_app_url.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::HttpUrl(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Returns an instant view version of a web page if available. Returns a 404 error if the web page has no instant view page
     pub async fn get_web_page_instant_view<C: AsRef<GetWebPageInstantView>>(
         &self,
@@ -5757,7 +7326,60 @@ where
         }
     }
 
-    // Adds current user as a new member to a chat. Private and secret chats can't be joined using this method
+    // Imports messages exported from another app
+    pub async fn import_messages<C: AsRef<ImportMessages>>(
+        &self,
+        import_messages: C,
+    ) -> RTDResult<Ok> {
+        let extra = import_messages.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, import_messages.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Invites users to an active group call. Sends a service message of type messageInviteToGroupCall for video chats
+    pub async fn invite_group_call_participants<C: AsRef<InviteGroupCallParticipants>>(
+        &self,
+        invite_group_call_participants: C,
+    ) -> RTDResult<Ok> {
+        let extra = invite_group_call_participants
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            invite_group_call_participants.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Adds the current user as a new member to a chat. Private and secret chats can't be joined using this method. May return an error with a message "INVITE_REQUEST_SENT" if only a join request was created
     pub async fn join_chat<C: AsRef<JoinChat>>(&self, join_chat: C) -> RTDResult<Ok> {
         let extra = join_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
@@ -5778,7 +7400,7 @@ where
         }
     }
 
-    // Uses an invite link to add the current user to the chat if possible. The new member will not be added until the chat state has been synchronized with the server
+    // Uses an invite link to add the current user to the chat if possible. May return an error with a message "INVITE_REQUEST_SENT" if only a join request was created
     pub async fn join_chat_by_invite_link<C: AsRef<JoinChatByInviteLink>>(
         &self,
         join_chat_by_invite_link: C,
@@ -5802,12 +7424,108 @@ where
         }
     }
 
-    // Removes current user from chat members. Private and secret chats can't be left using this method
+    // Joins an active group call. Returns join response payload for tgcalls
+    pub async fn join_group_call<C: AsRef<JoinGroupCall>>(
+        &self,
+        join_group_call: C,
+    ) -> RTDResult<Text> {
+        let extra = join_group_call.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, join_group_call.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Removes the current user from chat members. Private and secret chats can't be left using this method
     pub async fn leave_chat<C: AsRef<LeaveChat>>(&self, leave_chat: C) -> RTDResult<Ok> {
         let extra = leave_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, leave_chat.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Leaves a group call
+    pub async fn leave_group_call<C: AsRef<LeaveGroupCall>>(
+        &self,
+        leave_group_call: C,
+    ) -> RTDResult<Ok> {
+        let extra = leave_group_call.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, leave_group_call.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Loads more chats from a chat list. The loaded chats and their positions in the chat list will be sent through updates. Chats are sorted by the pair (chat.position.order, chat.id) in descending order. Returns a 404 error if all chats have been loaded
+    pub async fn load_chats<C: AsRef<LoadChats>>(&self, load_chats: C) -> RTDResult<Ok> {
+        let extra = load_chats.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, load_chats.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Loads more participants of a group call. The loaded participants will be received through updates. Use the field groupCall.loaded_all_participants to check whether all participants have already been loaded
+    pub async fn load_group_call_participants<C: AsRef<LoadGroupCallParticipants>>(
+        &self,
+        load_group_call_participants: C,
+    ) -> RTDResult<Ok> {
+        let extra = load_group_call_participants
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, load_group_call_participants.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -5889,6 +7607,30 @@ where
         }
     }
 
+    // Informs TDLib that a Web App is being opened from attachment menu, a botMenuButton button, an internalLinkTypeAttachmentMenuBot link, or an inlineKeyboardButtonTypeWebApp button. For each bot, a confirmation alert about data sent to the bot must be shown once
+    pub async fn open_web_app<C: AsRef<OpenWebApp>>(
+        &self,
+        open_web_app: C,
+    ) -> RTDResult<WebAppInfo> {
+        let extra = open_web_app.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, open_web_app.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::WebAppInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Optimizes storage usage, i.e. deletes some files and returns new storage usage statistics. Secret thumbnails can't be deleted
     pub async fn optimize_storage<C: AsRef<OptimizeStorage>>(
         &self,
@@ -5937,7 +7679,7 @@ where
         }
     }
 
-    // Parses Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities contained in the text. Can be called synchronously
+    // Parses Bold, Italic, Underline, Strikethrough, Spoiler, Code, Pre, PreCode, TextUrl and MentionName entities contained in the text. Can be called synchronously
     pub async fn parse_text_entities<C: AsRef<ParseTextEntities>>(
         &self,
         parse_text_entities: C,
@@ -6006,6 +7748,57 @@ where
         }
     }
 
+    // Handles a pending join request in a chat
+    pub async fn process_chat_join_request<C: AsRef<ProcessChatJoinRequest>>(
+        &self,
+        process_chat_join_request: C,
+    ) -> RTDResult<Ok> {
+        let extra = process_chat_join_request.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, process_chat_join_request.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Handles all pending join requests for a given link in a chat
+    pub async fn process_chat_join_requests<C: AsRef<ProcessChatJoinRequests>>(
+        &self,
+        process_chat_join_requests: C,
+    ) -> RTDResult<Ok> {
+        let extra = process_chat_join_requests
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, process_chat_join_requests.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Handles a push notification. Returns error with code 406 if the push notification is not supported and connection to the server is required to fetch new data. Can be called before authorization
     pub async fn process_push_notification<C: AsRef<ProcessPushNotification>>(
         &self,
@@ -6015,6 +7808,30 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, process_push_notification.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Rates recognized speech in a voice note message
+    pub async fn rate_speech_recognition<C: AsRef<RateSpeechRecognition>>(
+        &self,
+        rate_speech_recognition: C,
+    ) -> RTDResult<Ok> {
+        let extra = rate_speech_recognition.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, rate_speech_recognition.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -6054,6 +7871,30 @@ where
         }
     }
 
+    // Marks all reactions in a chat as read
+    pub async fn read_all_chat_reactions<C: AsRef<ReadAllChatReactions>>(
+        &self,
+        read_all_chat_reactions: C,
+    ) -> RTDResult<Ok> {
+        let extra = read_all_chat_reactions.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, read_all_chat_reactions.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Reads a part of a file from the TDLib file cache and returns read bytes. This method is intended to be used only if the application has no direct access to TDLib's file system, because it is usually slower than a direct read from the file
     pub async fn read_file_part<C: AsRef<ReadFilePart>>(
         &self,
@@ -6069,6 +7910,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::FilePart(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Recognizes speech in a voice note message. The message must be successfully sent and must not be scheduled. May return an error with a message "MSG_VOICE_TOO_LONG" if the voice note is too long to be recognized
+    pub async fn recognize_speech<C: AsRef<RecognizeSpeech>>(
+        &self,
+        recognize_speech: C,
+    ) -> RTDResult<Ok> {
+        let extra = recognize_speech.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, recognize_speech.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -6107,7 +7972,7 @@ where
         }
     }
 
-    // Recovers the password using a recovery code sent to an email address that was previously set up
+    // Recovers the 2-step verification password using a recovery code sent to an email address that was previously set up
     pub async fn recover_password<C: AsRef<RecoverPassword>>(
         &self,
         recover_password: C,
@@ -6161,6 +8026,35 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, register_user.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Removes all files from the file download list
+    pub async fn remove_all_files_from_downloads<C: AsRef<RemoveAllFilesFromDownloads>>(
+        &self,
+        remove_all_files_from_downloads: C,
+    ) -> RTDResult<Ok> {
+        let extra = remove_all_files_from_downloads
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            remove_all_files_from_downloads.as_ref(),
+        )?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -6257,6 +8151,33 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, remove_favorite_sticker.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Removes a file from the file download list
+    pub async fn remove_file_from_downloads<C: AsRef<RemoveFileFromDownloads>>(
+        &self,
+        remove_file_from_downloads: C,
+    ) -> RTDResult<Ok> {
+        let extra = remove_file_from_downloads
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, remove_file_from_downloads.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -6440,6 +8361,35 @@ where
         }
     }
 
+    // Removes a notification sound from the list of saved notification sounds
+    pub async fn remove_saved_notification_sound<C: AsRef<RemoveSavedNotificationSound>>(
+        &self,
+        remove_saved_notification_sound: C,
+    ) -> RTDResult<Ok> {
+        let extra = remove_saved_notification_sound
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            remove_saved_notification_sound.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Removes a sticker from the set to which it belongs; for bots only. The sticker set must have been created by the bot
     pub async fn remove_sticker_from_set<C: AsRef<RemoveStickerFromSet>>(
         &self,
@@ -6541,7 +8491,63 @@ where
         }
     }
 
-    // Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if this is a private chats with a bot, a private chat with a user sharing their location, a supergroup, or a channel, since other chats can't be checked by moderators
+    // Replaces current primary invite link for a chat with a new primary invite link. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right
+    pub async fn replace_primary_chat_invite_link<C: AsRef<ReplacePrimaryChatInviteLink>>(
+        &self,
+        replace_primary_chat_invite_link: C,
+    ) -> RTDResult<ChatInviteLink> {
+        let extra = replace_primary_chat_invite_link
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            replace_primary_chat_invite_link.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatInviteLink(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Replaces the current RTMP URL for streaming to the chat; requires creator privileges
+    pub async fn replace_video_chat_rtmp_url<C: AsRef<ReplaceVideoChatRtmpUrl>>(
+        &self,
+        replace_video_chat_rtmp_url: C,
+    ) -> RTDResult<RtmpUrl> {
+        let extra = replace_video_chat_rtmp_url
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, replace_video_chat_rtmp_url.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::RtmpUrl(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if chat.can_be_reported
     pub async fn report_chat<C: AsRef<ReportChat>>(&self, report_chat: C) -> RTDResult<Ok> {
         let extra = report_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
@@ -6562,7 +8568,31 @@ where
         }
     }
 
-    // Reports some messages from a user in a supergroup as spam; requires administrator rights in the supergroup
+    // Reports a chat photo to the Telegram moderators. A chat photo can be reported only if chat.can_be_reported
+    pub async fn report_chat_photo<C: AsRef<ReportChatPhoto>>(
+        &self,
+        report_chat_photo: C,
+    ) -> RTDResult<Ok> {
+        let extra = report_chat_photo.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, report_chat_photo.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Reports messages in a supergroup as spam; requires administrator rights in the supergroup
     pub async fn report_supergroup_spam<C: AsRef<ReportSupergroupSpam>>(
         &self,
         report_supergroup_spam: C,
@@ -6617,7 +8647,7 @@ where
         }
     }
 
-    // Requests to send a password recovery code to an email address that was previously set up
+    // Requests to send a 2-step verification password recovery code to an email address that was previously set up
     pub async fn request_password_recovery<C: AsRef<RequestPasswordRecovery>>(
         &self,
         request_password_recovery: C,
@@ -6670,7 +8700,7 @@ where
         }
     }
 
-    // Re-sends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode and the next_code_type of the result is not null
+    // Re-sends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode, the next_code_type of the result is not null and the server-specified timeout has passed
     pub async fn resend_authentication_code<C: AsRef<ResendAuthenticationCode>>(
         &self,
         resend_authentication_code: C,
@@ -6697,7 +8727,7 @@ where
         }
     }
 
-    // Re-sends the authentication code sent to confirm a new phone number for the user. Works only if the previously received authenticationCodeInfo next_code_type was not null
+    // Re-sends the authentication code sent to confirm a new phone number for the current user. Works only if the previously received authenticationCodeInfo next_code_type was not null and the server-specified timeout has passed
     pub async fn resend_change_phone_number_code<C: AsRef<ResendChangePhoneNumberCode>>(
         &self,
         resend_change_phone_number_code: C,
@@ -6872,7 +8902,7 @@ where
         }
     }
 
-    // Resets all notification settings to their default values. By default, all chats are unmuted, the sound is set to "default" and message previews are shown
+    // Resets all notification settings to their default values. By default, all chats are unmuted and message previews are shown
     pub async fn reset_all_notification_settings<C: AsRef<ResetAllNotificationSettings>>(
         &self,
         reset_all_notification_settings: C,
@@ -6949,6 +8979,83 @@ where
         }
     }
 
+    // Removes 2-step verification password without previous password and access to recovery email address. The password can't be reset immediately and the request needs to be repeated after the specified time
+    pub async fn reset_password<C: AsRef<ResetPassword>>(
+        &self,
+        reset_password: C,
+    ) -> RTDResult<ResetPasswordResult> {
+        let extra = reset_password.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, reset_password.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ResetPasswordResult(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Revokes invite link for a chat. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right in the chat for own links and owner privileges for other links. If a primary link is revoked, then additionally to the revoked link returns new primary link
+    pub async fn revoke_chat_invite_link<C: AsRef<RevokeChatInviteLink>>(
+        &self,
+        revoke_chat_invite_link: C,
+    ) -> RTDResult<ChatInviteLinks> {
+        let extra = revoke_chat_invite_link.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, revoke_chat_invite_link.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::ChatInviteLinks(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Revokes invite link for a group call. Requires groupCall.can_be_managed group call flag
+    pub async fn revoke_group_call_invite_link<C: AsRef<RevokeGroupCallInviteLink>>(
+        &self,
+        revoke_group_call_invite_link: C,
+    ) -> RTDResult<Ok> {
+        let extra = revoke_group_call_invite_link
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            revoke_group_call_invite_link.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Saves application log event on the server. Can be called before authorization
     pub async fn save_application_log_event<C: AsRef<SaveApplicationLogEvent>>(
         &self,
@@ -7000,7 +9107,7 @@ where
         }
     }
 
-    // Searches for call messages. Returns the results in reverse chronological order (i. e., in order of decreasing message_id). For optimal performance the number of returned messages is chosen by the library
+    // Searches for call messages. Returns the results in reverse chronological order (i. e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib
     pub async fn search_call_messages<C: AsRef<SearchCallMessages>>(
         &self,
         search_call_messages: C,
@@ -7048,7 +9155,7 @@ where
         }
     }
 
-    // Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages should be used instead), or without an enabled message database. For optimal performance the number of returned messages is chosen by the library
+    // Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     pub async fn search_chat_messages<C: AsRef<SearchChatMessages>>(
         &self,
         search_chat_messages: C,
@@ -7124,7 +9231,7 @@ where
         }
     }
 
-    // Returns a list of users and location-based supergroups nearby. The list of users nearby will be updated for 60 seconds after the request by the updates updateUsersNearby. The request should be sent again every 25 seconds with adjusted location to not miss new chats
+    // Returns a list of users and location-based supergroups nearby. The list of users nearby will be updated for 60 seconds after the request by the updates updateUsersNearby. The request must be sent again every 25 seconds with adjusted location to not miss new chats
     pub async fn search_chats_nearby<C: AsRef<SearchChatsNearby>>(
         &self,
         search_chats_nearby: C,
@@ -7220,6 +9327,30 @@ where
         }
     }
 
+    // Searches for files in the file download list or recently downloaded files from the list
+    pub async fn search_file_downloads<C: AsRef<SearchFileDownloads>>(
+        &self,
+        search_file_downloads: C,
+    ) -> RTDResult<FoundFileDownloads> {
+        let extra = search_file_downloads.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, search_file_downloads.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::FoundFileDownloads(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Searches for recently used hashtags by their prefix
     pub async fn search_hashtags<C: AsRef<SearchHashtags>>(
         &self,
@@ -7273,7 +9404,7 @@ where
         }
     }
 
-    // Searches for messages in all chats except secret chats. Returns the results in reverse chronological order (i.e., in order of decreasing (date, chat_id, message_id)). For optimal performance the number of returned messages is chosen by the library
+    // Searches for messages in all chats except secret chats. Returns the results in reverse chronological order (i.e., in order of decreasing (date, chat_id, message_id)). For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     pub async fn search_messages<C: AsRef<SearchMessages>>(
         &self,
         search_messages: C,
@@ -7297,7 +9428,36 @@ where
         }
     }
 
-    // Searches a public chat by its username. Currently only private chats, supergroups and channels can be public. Returns the chat if found; otherwise an error is returned
+    // Searches for outgoing messages with content of the type messageDocument in all chats except secret chats. Returns the results in reverse chronological order
+    pub async fn search_outgoing_document_messages<C: AsRef<SearchOutgoingDocumentMessages>>(
+        &self,
+        search_outgoing_document_messages: C,
+    ) -> RTDResult<FoundMessages> {
+        let extra = search_outgoing_document_messages
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            search_outgoing_document_messages.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::FoundMessages(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Searches a public chat by its username. Currently, only private chats, supergroups and channels can be public. Returns the chat if found; otherwise an error is returned
     pub async fn search_public_chat<C: AsRef<SearchPublicChat>>(
         &self,
         search_public_chat: C,
@@ -7321,7 +9481,7 @@ where
         }
     }
 
-    // Searches public chats by looking for specified query in their username and title. Currently only private chats, supergroups and channels can be public. Returns a meaningful number of results. Returns nothing if the length of the searched username prefix is less than 5. Excludes private chats with contacts and chats from the chat list from the results
+    // Searches public chats by looking for specified query in their username and title. Currently, only private chats, supergroups and channels can be public. Returns a meaningful number of results. Excludes private chats with contacts and chats from the chat list from the results
     pub async fn search_public_chats<C: AsRef<SearchPublicChats>>(
         &self,
         search_public_chats: C,
@@ -7345,7 +9505,7 @@ where
         }
     }
 
-    // Searches for messages in secret chats. Returns the results in reverse chronological order. For optimal performance the number of returned messages is chosen by the library
+    // Searches for messages in secret chats. Returns the results in reverse chronological order. For optimal performance, the number of returned messages is chosen by TDLib
     pub async fn search_secret_messages<C: AsRef<SearchSecretMessages>>(
         &self,
         search_secret_messages: C,
@@ -7441,6 +9601,33 @@ where
         }
     }
 
+    // Searches a user by their phone number. Returns a 404 error if the user can't be found
+    pub async fn search_user_by_phone_number<C: AsRef<SearchUserByPhoneNumber>>(
+        &self,
+        search_user_by_phone_number: C,
+    ) -> RTDResult<User> {
+        let extra = search_user_by_phone_number
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, search_user_by_phone_number.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::User(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Invites a bot to a chat (if it is not yet a member) and sends it the /start command. Bots can't be invited to a private chat other than the chat with the bot. Bots can't be invited to channels (although they can be added as admins) and secret chats. Returns the sent message
     pub async fn send_bot_start_message<C: AsRef<SendBotStartMessage>>(
         &self,
@@ -7465,7 +9652,7 @@ where
         }
     }
 
-    // Sends debug information for a call
+    // Sends debug information for a call to Telegram servers
     pub async fn send_call_debug_information<C: AsRef<SendCallDebugInformation>>(
         &self,
         send_call_debug_information: C,
@@ -7477,6 +9664,27 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, send_call_debug_information.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Sends log file for a call to Telegram servers
+    pub async fn send_call_log<C: AsRef<SendCallLog>>(&self, send_call_log: C) -> RTDResult<Ok> {
+        let extra = send_call_log.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, send_call_log.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -7595,30 +9803,6 @@ where
         }
     }
 
-    // Changes the current TTL setting (sets a new self-destruct timer) in a secret chat and sends the corresponding message
-    pub async fn send_chat_set_ttl_message<C: AsRef<SendChatSetTtlMessage>>(
-        &self,
-        send_chat_set_ttl_message: C,
-    ) -> RTDResult<Message> {
-        let extra = send_chat_set_ttl_message.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, send_chat_set_ttl_message.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
     // Sends a custom request; for bots only
     pub async fn send_custom_request<C: AsRef<SendCustomRequest>>(
         &self,
@@ -7724,7 +9908,7 @@ where
         }
     }
 
-    // Sends messages grouped together into an album. Currently only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
+    // Sends 2-10 messages grouped together into an album. Currently, only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
     pub async fn send_message_album<C: AsRef<SendMessageAlbum>>(
         &self,
         send_message_album: C,
@@ -7801,7 +9985,7 @@ where
         }
     }
 
-    // Sends phone number confirmation code. Should be called when user presses "https://t.me/confirmphone?phone=*******&hash=**********" or "tg://confirmphone?phone=*******&hash=**********" link
+    // Sends phone number confirmation code to handle links of the type internalLinkTypePhoneNumberConfirmation
     pub async fn send_phone_number_confirmation_code<C: AsRef<SendPhoneNumberConfirmationCode>>(
         &self,
         send_phone_number_confirmation_code: C,
@@ -7850,6 +10034,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::AuthenticationCodeInfo(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Sends data received from a keyboardButtonTypeWebApp Web App to a bot
+    pub async fn send_web_app_data<C: AsRef<SendWebAppData>>(
+        &self,
+        send_web_app_data: C,
+    ) -> RTDResult<Ok> {
+        let extra = send_web_app_data.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, send_web_app_data.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -8029,6 +10237,33 @@ where
         }
     }
 
+    // Changes reactions, available in a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
+    pub async fn set_chat_available_reactions<C: AsRef<SetChatAvailableReactions>>(
+        &self,
+        set_chat_available_reactions: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_chat_available_reactions
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, set_chat_available_reactions.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Changes application-specific data associated with a chat
     pub async fn set_chat_client_data<C: AsRef<SetChatClientData>>(
         &self,
@@ -8053,7 +10288,7 @@ where
         }
     }
 
-    // Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info rights
+    // Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
     pub async fn set_chat_description<C: AsRef<SetChatDescription>>(
         &self,
         set_chat_description: C,
@@ -8077,7 +10312,7 @@ where
         }
     }
 
-    // Changes the discussion group of a channel chat; requires can_change_info rights in the channel if it is specified
+    // Changes the discussion group of a channel chat; requires can_change_info administrator right in the channel if it is specified
     pub async fn set_chat_discussion_group<C: AsRef<SetChatDiscussionGroup>>(
         &self,
         set_chat_discussion_group: C,
@@ -8149,7 +10384,7 @@ where
         }
     }
 
-    // Changes the status of a chat member, needs appropriate privileges. This function is currently not suitable for adding new members to the chat and transferring chat ownership; instead, use addChatMember or transferChatOwnership. The chat member status will not be changed until it has been synchronized with the server
+    // Changes the status of a chat member, needs appropriate privileges. This function is currently not suitable for transferring chat ownership; use transferChatOwnership instead. Use addChatMember or banChatMember if some additional parameters needs to be passed
     pub async fn set_chat_member_status<C: AsRef<SetChatMemberStatus>>(
         &self,
         set_chat_member_status: C,
@@ -8158,6 +10393,54 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, set_chat_member_status.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Selects a message sender to send messages in a chat
+    pub async fn set_chat_message_sender<C: AsRef<SetChatMessageSender>>(
+        &self,
+        set_chat_message_sender: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_chat_message_sender.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, set_chat_message_sender.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Changes the message TTL in a chat. Requires can_delete_messages administrator right in basic groups, supergroups and channels Message TTL can't be changed in a chat with the current user (Saved Messages) and the chat 777000 (Telegram).
+    pub async fn set_chat_message_ttl<C: AsRef<SetChatMessageTtl>>(
+        &self,
+        set_chat_message_ttl: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_chat_message_ttl.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, set_chat_message_ttl.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -8226,7 +10509,7 @@ where
         }
     }
 
-    // Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
+    // Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
     pub async fn set_chat_photo<C: AsRef<SetChatPhoto>>(&self, set_chat_photo: C) -> RTDResult<Ok> {
         let extra = set_chat_photo.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
@@ -8271,7 +10554,28 @@ where
         }
     }
 
-    // Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
+    // Changes the chat theme. Supported only in private and secret chats
+    pub async fn set_chat_theme<C: AsRef<SetChatTheme>>(&self, set_chat_theme: C) -> RTDResult<Ok> {
+        let extra = set_chat_theme.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, set_chat_theme.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
     pub async fn set_chat_title<C: AsRef<SetChatTitle>>(&self, set_chat_title: C) -> RTDResult<Ok> {
         let extra = set_chat_title.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
@@ -8292,7 +10596,7 @@ where
         }
     }
 
-    // Sets the list of commands supported by the bot; for bots only
+    // Sets the list of commands supported by the bot for the given user scope and language; for bots only
     pub async fn set_commands<C: AsRef<SetCommands>>(&self, set_commands: C) -> RTDResult<Ok> {
         let extra = set_commands.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
@@ -8393,6 +10697,68 @@ where
         }
     }
 
+    // Sets default administrator rights for adding the bot to channel chats; for bots only
+    pub async fn set_default_channel_administrator_rights<
+        C: AsRef<SetDefaultChannelAdministratorRights>,
+    >(
+        &self,
+        set_default_channel_administrator_rights: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_default_channel_administrator_rights
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            set_default_channel_administrator_rights.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Sets default administrator rights for adding the bot to basic group and supergroup chats; for bots only
+    pub async fn set_default_group_administrator_rights<
+        C: AsRef<SetDefaultGroupAdministratorRights>,
+    >(
+        &self,
+        set_default_group_administrator_rights: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_default_group_administrator_rights
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            set_default_group_administrator_rights.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Informs TDLib on a file generation progress
     pub async fn set_file_generation_progress<C: AsRef<SetFileGenerationProgress>>(
         &self,
@@ -8435,6 +10801,116 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Message(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Informs TDLib that speaking state of a participant of an active group has changed
+    pub async fn set_group_call_participant_is_speaking<
+        C: AsRef<SetGroupCallParticipantIsSpeaking>,
+    >(
+        &self,
+        set_group_call_participant_is_speaking: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_group_call_participant_is_speaking
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            set_group_call_participant_is_speaking.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Changes volume level of a participant of an active group call. If the current user can manage the group call, then the participant's volume level will be changed for all users with the default volume level
+    pub async fn set_group_call_participant_volume_level<
+        C: AsRef<SetGroupCallParticipantVolumeLevel>,
+    >(
+        &self,
+        set_group_call_participant_volume_level: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_group_call_participant_volume_level
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            set_group_call_participant_volume_level.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Sets group call title. Requires groupCall.can_be_managed group call flag
+    pub async fn set_group_call_title<C: AsRef<SetGroupCallTitle>>(
+        &self,
+        set_group_call_title: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_group_call_title.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, set_group_call_title.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Changes the period of inactivity after which sessions will automatically be terminated
+    pub async fn set_inactive_session_ttl<C: AsRef<SetInactiveSessionTtl>>(
+        &self,
+        set_inactive_session_ttl: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_inactive_session_ttl.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, set_inactive_session_ttl.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -8561,6 +11037,54 @@ where
         }
     }
 
+    // Sets menu button for the given user or for all users; for bots only
+    pub async fn set_menu_button<C: AsRef<SetMenuButton>>(
+        &self,
+        set_menu_button: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_menu_button.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, set_menu_button.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Changes chosen reaction for a message
+    pub async fn set_message_reaction<C: AsRef<SetMessageReaction>>(
+        &self,
+        set_message_reaction: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_message_reaction.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, set_message_reaction.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Changes the first and last name of the current user
     pub async fn set_name<C: AsRef<SetName>>(&self, set_name: C) -> RTDResult<Ok> {
         let extra = set_name.as_ref().extra().ok_or(NO_EXTRA)?;
@@ -8582,7 +11106,7 @@ where
         }
     }
 
-    // Sets the current network type. Can be called before authorization. Calling this method forces all network connections to reopen, mitigating the delay in switching between different networks, so it should be called whenever the network is changed, even if the network type remains the same. Network type is used to check whether the library can use the network at all and also for collecting detailed network data usage statistics
+    // Sets the current network type. Can be called before authorization. Calling this method forces all network connections to reopen, mitigating the delay in switching between different networks, so it must be called whenever the network is changed, even if the network type remains the same. Network type is used to check whether the library can use the network at all and also for collecting detailed network data usage statistics
     pub async fn set_network_type<C: AsRef<SetNetworkType>>(
         &self,
         set_network_type: C,
@@ -8678,7 +11202,7 @@ where
         }
     }
 
-    // Changes the password for the user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
+    // Changes the password for the current user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
     pub async fn set_password<C: AsRef<SetPassword>>(
         &self,
         set_password: C,
@@ -8881,7 +11405,7 @@ where
         }
     }
 
-    // Changes the sticker set of a supergroup; requires can_change_info rights
+    // Changes the sticker set of a supergroup; requires can_change_info administrator right
     pub async fn set_supergroup_sticker_set<C: AsRef<SetSupergroupStickerSet>>(
         &self,
         set_supergroup_sticker_set: C,
@@ -9006,6 +11530,35 @@ where
         }
     }
 
+    // Changes default participant identifier, on whose behalf a video chat in the chat will be joined
+    pub async fn set_video_chat_default_participant<C: AsRef<SetVideoChatDefaultParticipant>>(
+        &self,
+        set_video_chat_default_participant: C,
+    ) -> RTDResult<Ok> {
+        let extra = set_video_chat_default_participant
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            set_video_chat_default_participant.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Shares the phone number of the current user with a mutual contact. Supposed to be called when the user clicks on chatActionBarSharePhoneNumber
     pub async fn share_phone_number<C: AsRef<SharePhoneNumber>>(
         &self,
@@ -9015,6 +11568,89 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, share_phone_number.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Starts recording of an active group call. Requires groupCall.can_be_managed group call flag
+    pub async fn start_group_call_recording<C: AsRef<StartGroupCallRecording>>(
+        &self,
+        start_group_call_recording: C,
+    ) -> RTDResult<Ok> {
+        let extra = start_group_call_recording
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, start_group_call_recording.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Starts screen sharing in a joined group call. Returns join response payload for tgcalls
+    pub async fn start_group_call_screen_sharing<C: AsRef<StartGroupCallScreenSharing>>(
+        &self,
+        start_group_call_screen_sharing: C,
+    ) -> RTDResult<Text> {
+        let extra = start_group_call_screen_sharing
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            start_group_call_screen_sharing.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Starts a scheduled group call
+    pub async fn start_scheduled_group_call<C: AsRef<StartScheduledGroupCall>>(
+        &self,
+        start_scheduled_group_call: C,
+    ) -> RTDResult<Ok> {
+        let extra = start_scheduled_group_call
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, start_scheduled_group_call.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -9051,7 +11687,7 @@ where
         }
     }
 
-    // Fetches the latest versions of all strings from a language pack in the current localization target from the server. This method shouldn't be called explicitly for the current used/base language packs. Can be called before authorization
+    // Fetches the latest versions of all strings from a language pack in the current localization target from the server. This method doesn't need to be called explicitly for the current used/base language packs. Can be called before authorization
     pub async fn synchronize_language_pack<C: AsRef<SynchronizeLanguagePack>>(
         &self,
         synchronize_language_pack: C,
@@ -9440,6 +12076,66 @@ where
         }
     }
 
+    // Changes pause state of all files in the file download list
+    pub async fn toggle_all_downloads_are_paused<C: AsRef<ToggleAllDownloadsArePaused>>(
+        &self,
+        toggle_all_downloads_are_paused: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_all_downloads_are_paused
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_all_downloads_are_paused.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Adds or removes a bot to attachment menu. Bot can be added to attachment menu, only if userTypeBot.can_be_added_to_attachment_menu == true
+    pub async fn toggle_bot_is_added_to_attachment_menu<
+        C: AsRef<ToggleBotIsAddedToAttachmentMenu>,
+    >(
+        &self,
+        toggle_bot_is_added_to_attachment_menu: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_bot_is_added_to_attachment_menu
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_bot_is_added_to_attachment_menu.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
     // Changes the value of the default disable_notification parameter, used when a message is sent to a chat
     pub async fn toggle_chat_default_disable_notification<
         C: AsRef<ToggleChatDefaultDisableNotification>,
@@ -9455,6 +12151,35 @@ where
         self.tdlib_client.send(
             self.get_client_id()?,
             toggle_chat_default_disable_notification.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Changes the ability of users to save, forward, or copy chat content. Supported only for basic groups, supergroups and channels. Requires owner privileges
+    pub async fn toggle_chat_has_protected_content<C: AsRef<ToggleChatHasProtectedContent>>(
+        &self,
+        toggle_chat_has_protected_content: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_chat_has_protected_content
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_chat_has_protected_content.as_ref(),
         )?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
@@ -9500,7 +12225,7 @@ where
         }
     }
 
-    // Changes the pinned state of a chat. There can be up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") pinned non-secret chats and the same number of secret chats in the main/arhive chat list
+    // Changes the pinned state of a chat. There can be up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") pinned non-secret chats and the same number of secret chats in the main/archive chat list. The limit can be increased with Telegram Premium
     pub async fn toggle_chat_is_pinned<C: AsRef<ToggleChatIsPinned>>(
         &self,
         toggle_chat_is_pinned: C,
@@ -9509,6 +12234,245 @@ where
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, toggle_chat_is_pinned.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Changes pause state of a file in the file download list
+    pub async fn toggle_download_is_paused<C: AsRef<ToggleDownloadIsPaused>>(
+        &self,
+        toggle_download_is_paused: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_download_is_paused.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, toggle_download_is_paused.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether the current user will receive a notification when the group call will start; scheduled group calls only
+    pub async fn toggle_group_call_enabled_start_notification<
+        C: AsRef<ToggleGroupCallEnabledStartNotification>,
+    >(
+        &self,
+        toggle_group_call_enabled_start_notification: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_group_call_enabled_start_notification
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_group_call_enabled_start_notification.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether current user's video is enabled
+    pub async fn toggle_group_call_is_my_video_enabled<
+        C: AsRef<ToggleGroupCallIsMyVideoEnabled>,
+    >(
+        &self,
+        toggle_group_call_is_my_video_enabled: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_group_call_is_my_video_enabled
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_group_call_is_my_video_enabled.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether current user's video is paused
+    pub async fn toggle_group_call_is_my_video_paused<C: AsRef<ToggleGroupCallIsMyVideoPaused>>(
+        &self,
+        toggle_group_call_is_my_video_paused: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_group_call_is_my_video_paused
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_group_call_is_my_video_paused.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether new participants of a group call can be unmuted only by administrators of the group call. Requires groupCall.can_toggle_mute_new_participants group call flag
+    pub async fn toggle_group_call_mute_new_participants<
+        C: AsRef<ToggleGroupCallMuteNewParticipants>,
+    >(
+        &self,
+        toggle_group_call_mute_new_participants: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_group_call_mute_new_participants
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_group_call_mute_new_participants.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether a group call participant hand is rased
+    pub async fn toggle_group_call_participant_is_hand_raised<
+        C: AsRef<ToggleGroupCallParticipantIsHandRaised>,
+    >(
+        &self,
+        toggle_group_call_participant_is_hand_raised: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_group_call_participant_is_hand_raised
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_group_call_participant_is_hand_raised.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether a participant of an active group call is muted, unmuted, or allowed to unmute themselves
+    pub async fn toggle_group_call_participant_is_muted<
+        C: AsRef<ToggleGroupCallParticipantIsMuted>,
+    >(
+        &self,
+        toggle_group_call_participant_is_muted: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_group_call_participant_is_muted
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_group_call_participant_is_muted.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Pauses or unpauses screen sharing in a joined group call
+    pub async fn toggle_group_call_screen_sharing_is_paused<
+        C: AsRef<ToggleGroupCallScreenSharingIsPaused>,
+    >(
+        &self,
+        toggle_group_call_screen_sharing_is_paused: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_group_call_screen_sharing_is_paused
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_group_call_screen_sharing_is_paused.as_ref(),
+        )?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {
@@ -9553,7 +12517,67 @@ where
         }
     }
 
-    // Toggles whether the message history of a supergroup is available to new members; requires can_change_info rights
+    // Toggles whether a session can accept incoming calls
+    pub async fn toggle_session_can_accept_calls<C: AsRef<ToggleSessionCanAcceptCalls>>(
+        &self,
+        toggle_session_can_accept_calls: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_session_can_accept_calls
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_session_can_accept_calls.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether a session can accept incoming secret chats
+    pub async fn toggle_session_can_accept_secret_chats<
+        C: AsRef<ToggleSessionCanAcceptSecretChats>,
+    >(
+        &self,
+        toggle_session_can_accept_secret_chats: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_session_can_accept_secret_chats
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_session_can_accept_secret_chats.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether the message history of a supergroup is available to new members; requires can_change_info administrator right
     pub async fn toggle_supergroup_is_all_history_available<
         C: AsRef<ToggleSupergroupIsAllHistoryAvailable>,
     >(
@@ -9584,7 +12608,98 @@ where
         }
     }
 
-    // Toggles sender signatures messages sent in a channel; requires can_change_info rights
+    // Upgrades supergroup to a broadcast group; requires owner privileges in the supergroup
+    pub async fn toggle_supergroup_is_broadcast_group<
+        C: AsRef<ToggleSupergroupIsBroadcastGroup>,
+    >(
+        &self,
+        toggle_supergroup_is_broadcast_group: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_supergroup_is_broadcast_group
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_supergroup_is_broadcast_group.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether all users directly joining the supergroup need to be approved by supergroup administrators; requires can_restrict_members administrator right
+    pub async fn toggle_supergroup_join_by_request<C: AsRef<ToggleSupergroupJoinByRequest>>(
+        &self,
+        toggle_supergroup_join_by_request: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_supergroup_join_by_request
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_supergroup_join_by_request.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether joining is mandatory to send messages to a discussion supergroup; requires can_restrict_members administrator right
+    pub async fn toggle_supergroup_join_to_send_messages<
+        C: AsRef<ToggleSupergroupJoinToSendMessages>,
+    >(
+        &self,
+        toggle_supergroup_join_to_send_messages: C,
+    ) -> RTDResult<Ok> {
+        let extra = toggle_supergroup_join_to_send_messages
+            .as_ref()
+            .extra()
+            .ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client.send(
+            self.get_client_id()?,
+            toggle_supergroup_join_to_send_messages.as_ref(),
+        )?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Toggles whether sender signature is added to sent messages in a channel; requires can_change_info administrator right
     pub async fn toggle_supergroup_sign_messages<C: AsRef<ToggleSupergroupSignMessages>>(
         &self,
         toggle_supergroup_sign_messages: C,
@@ -9628,6 +12743,30 @@ where
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
                 TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Translates a text to the given language. Returns a 404 error if the translation can't be performed
+    pub async fn translate_text<C: AsRef<TranslateText>>(
+        &self,
+        translate_text: C,
+    ) -> RTDResult<Text> {
+        let extra = translate_text.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, translate_text.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Text(v) => Ok(v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -9737,7 +12876,7 @@ where
         }
     }
 
-    // Uploads a PNG image with a sticker; for bots only; returns the uploaded file
+    // Uploads a file with a sticker; returns the uploaded file
     pub async fn upload_sticker_file<C: AsRef<UploadStickerFile>>(
         &self,
         upload_sticker_file: C,
@@ -9785,12 +12924,36 @@ where
         }
     }
 
-    // Informs TDLib that messages are being viewed by the user. Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels)
+    // Informs TDLib that messages are being viewed by the user. Sponsored messages must be marked as viewed only when the entire text of the message is shown on the screen (excluding the button). Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels)
     pub async fn view_messages<C: AsRef<ViewMessages>>(&self, view_messages: C) -> RTDResult<Ok> {
         let extra = view_messages.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
             .send(self.get_client_id()?, view_messages.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(&extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match v {
+                TdType::Ok(v) => Ok(v),
+                TdType::Error(v) => Err(RTDError::TDLibError(v)),
+                _ => {
+                    log::error!("invalid response received: {:?}", v);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
+    }
+
+    // Informs TDLib that the user viewed detailed information about a Premium feature on the Premium features screen
+    pub async fn view_premium_feature<C: AsRef<ViewPremiumFeature>>(
+        &self,
+        view_premium_feature: C,
+    ) -> RTDResult<Ok> {
+        let extra = view_premium_feature.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(&extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, view_premium_feature.as_ref())?;
         let received = signal.await;
         OBSERVER.unsubscribe(&extra);
         match received {

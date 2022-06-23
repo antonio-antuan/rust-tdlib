@@ -12,7 +12,7 @@ pub struct SetAutoDownloadSettings {
     client_id: Option<i32>,
     /// New user auto-download settings
     settings: AutoDownloadSettings,
-    /// Type of the network for which the new settings are applied
+    /// Type of the network for which the new settings are relevant
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "NetworkType::_is_default")]

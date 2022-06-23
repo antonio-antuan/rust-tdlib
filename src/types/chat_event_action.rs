@@ -13,135 +13,113 @@ pub trait TDChatEventAction: Debug + RObject {}
 pub enum ChatEventAction {
     #[doc(hidden)]
     _Default,
+    /// The chat available reactions were changed
+    #[serde(rename(deserialize = "chatEventAvailableReactionsChanged"))]
+    ChatEventAvailableReactionsChanged(ChatEventAvailableReactionsChanged),
     /// The chat description was changed
-    #[serde(rename(
-        serialize = "chatEventDescriptionChanged",
-        deserialize = "chatEventDescriptionChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventDescriptionChanged"))]
     ChatEventDescriptionChanged(ChatEventDescriptionChanged),
+    /// The has_protected_content setting of a channel was toggled
+    #[serde(rename(deserialize = "chatEventHasProtectedContentToggled"))]
+    ChatEventHasProtectedContentToggled(ChatEventHasProtectedContentToggled),
+    /// A revoked chat invite link was deleted
+    #[serde(rename(deserialize = "chatEventInviteLinkDeleted"))]
+    ChatEventInviteLinkDeleted(ChatEventInviteLinkDeleted),
+    /// A chat invite link was edited
+    #[serde(rename(deserialize = "chatEventInviteLinkEdited"))]
+    ChatEventInviteLinkEdited(ChatEventInviteLinkEdited),
+    /// A chat invite link was revoked
+    #[serde(rename(deserialize = "chatEventInviteLinkRevoked"))]
+    ChatEventInviteLinkRevoked(ChatEventInviteLinkRevoked),
     /// The can_invite_users permission of a supergroup chat was toggled
-    #[serde(rename(
-        serialize = "chatEventInvitesToggled",
-        deserialize = "chatEventInvitesToggled"
-    ))]
+    #[serde(rename(deserialize = "chatEventInvitesToggled"))]
     ChatEventInvitesToggled(ChatEventInvitesToggled),
     /// The is_all_history_available setting of a supergroup was toggled
-    #[serde(rename(
-        serialize = "chatEventIsAllHistoryAvailableToggled",
-        deserialize = "chatEventIsAllHistoryAvailableToggled"
-    ))]
+    #[serde(rename(deserialize = "chatEventIsAllHistoryAvailableToggled"))]
     ChatEventIsAllHistoryAvailableToggled(ChatEventIsAllHistoryAvailableToggled),
     /// The linked chat of a supergroup was changed
-    #[serde(rename(
-        serialize = "chatEventLinkedChatChanged",
-        deserialize = "chatEventLinkedChatChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventLinkedChatChanged"))]
     ChatEventLinkedChatChanged(ChatEventLinkedChatChanged),
     /// The supergroup location was changed
-    #[serde(rename(
-        serialize = "chatEventLocationChanged",
-        deserialize = "chatEventLocationChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventLocationChanged"))]
     ChatEventLocationChanged(ChatEventLocationChanged),
     /// A new chat member was invited
-    #[serde(rename(
-        serialize = "chatEventMemberInvited",
-        deserialize = "chatEventMemberInvited"
-    ))]
+    #[serde(rename(deserialize = "chatEventMemberInvited"))]
     ChatEventMemberInvited(ChatEventMemberInvited),
     /// A new member joined the chat
-    #[serde(rename(
-        serialize = "chatEventMemberJoined",
-        deserialize = "chatEventMemberJoined"
-    ))]
+    #[serde(rename(deserialize = "chatEventMemberJoined"))]
     ChatEventMemberJoined(ChatEventMemberJoined),
+    /// A new member joined the chat via an invite link
+    #[serde(rename(deserialize = "chatEventMemberJoinedByInviteLink"))]
+    ChatEventMemberJoinedByInviteLink(ChatEventMemberJoinedByInviteLink),
+    /// A new member was accepted to the chat by an administrator
+    #[serde(rename(deserialize = "chatEventMemberJoinedByRequest"))]
+    ChatEventMemberJoinedByRequest(ChatEventMemberJoinedByRequest),
     /// A member left the chat
-    #[serde(rename(serialize = "chatEventMemberLeft", deserialize = "chatEventMemberLeft"))]
+    #[serde(rename(deserialize = "chatEventMemberLeft"))]
     ChatEventMemberLeft(ChatEventMemberLeft),
     /// A chat member has gained/lost administrator status, or the list of their administrator privileges has changed
-    #[serde(rename(
-        serialize = "chatEventMemberPromoted",
-        deserialize = "chatEventMemberPromoted"
-    ))]
+    #[serde(rename(deserialize = "chatEventMemberPromoted"))]
     ChatEventMemberPromoted(ChatEventMemberPromoted),
     /// A chat member was restricted/unrestricted or banned/unbanned, or the list of their restrictions has changed
-    #[serde(rename(
-        serialize = "chatEventMemberRestricted",
-        deserialize = "chatEventMemberRestricted"
-    ))]
+    #[serde(rename(deserialize = "chatEventMemberRestricted"))]
     ChatEventMemberRestricted(ChatEventMemberRestricted),
     /// A message was deleted
-    #[serde(rename(
-        serialize = "chatEventMessageDeleted",
-        deserialize = "chatEventMessageDeleted"
-    ))]
+    #[serde(rename(deserialize = "chatEventMessageDeleted"))]
     ChatEventMessageDeleted(ChatEventMessageDeleted),
     /// A message was edited
-    #[serde(rename(
-        serialize = "chatEventMessageEdited",
-        deserialize = "chatEventMessageEdited"
-    ))]
+    #[serde(rename(deserialize = "chatEventMessageEdited"))]
     ChatEventMessageEdited(ChatEventMessageEdited),
     /// A message was pinned
-    #[serde(rename(
-        serialize = "chatEventMessagePinned",
-        deserialize = "chatEventMessagePinned"
-    ))]
+    #[serde(rename(deserialize = "chatEventMessagePinned"))]
     ChatEventMessagePinned(ChatEventMessagePinned),
+    /// The message TTL was changed
+    #[serde(rename(deserialize = "chatEventMessageTtlChanged"))]
+    ChatEventMessageTtlChanged(ChatEventMessageTtlChanged),
     /// A message was unpinned
-    #[serde(rename(
-        serialize = "chatEventMessageUnpinned",
-        deserialize = "chatEventMessageUnpinned"
-    ))]
+    #[serde(rename(deserialize = "chatEventMessageUnpinned"))]
     ChatEventMessageUnpinned(ChatEventMessageUnpinned),
     /// The chat permissions was changed
-    #[serde(rename(
-        serialize = "chatEventPermissionsChanged",
-        deserialize = "chatEventPermissionsChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventPermissionsChanged"))]
     ChatEventPermissionsChanged(ChatEventPermissionsChanged),
     /// The chat photo was changed
-    #[serde(rename(
-        serialize = "chatEventPhotoChanged",
-        deserialize = "chatEventPhotoChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventPhotoChanged"))]
     ChatEventPhotoChanged(ChatEventPhotoChanged),
     /// A poll in a message was stopped
-    #[serde(rename(
-        serialize = "chatEventPollStopped",
-        deserialize = "chatEventPollStopped"
-    ))]
+    #[serde(rename(deserialize = "chatEventPollStopped"))]
     ChatEventPollStopped(ChatEventPollStopped),
     /// The sign_messages setting of a channel was toggled
-    #[serde(rename(
-        serialize = "chatEventSignMessagesToggled",
-        deserialize = "chatEventSignMessagesToggled"
-    ))]
+    #[serde(rename(deserialize = "chatEventSignMessagesToggled"))]
     ChatEventSignMessagesToggled(ChatEventSignMessagesToggled),
     /// The slow_mode_delay setting of a supergroup was changed
-    #[serde(rename(
-        serialize = "chatEventSlowModeDelayChanged",
-        deserialize = "chatEventSlowModeDelayChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventSlowModeDelayChanged"))]
     ChatEventSlowModeDelayChanged(ChatEventSlowModeDelayChanged),
     /// The supergroup sticker set was changed
-    #[serde(rename(
-        serialize = "chatEventStickerSetChanged",
-        deserialize = "chatEventStickerSetChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventStickerSetChanged"))]
     ChatEventStickerSetChanged(ChatEventStickerSetChanged),
     /// The chat title was changed
-    #[serde(rename(
-        serialize = "chatEventTitleChanged",
-        deserialize = "chatEventTitleChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventTitleChanged"))]
     ChatEventTitleChanged(ChatEventTitleChanged),
     /// The chat username was changed
-    #[serde(rename(
-        serialize = "chatEventUsernameChanged",
-        deserialize = "chatEventUsernameChanged"
-    ))]
+    #[serde(rename(deserialize = "chatEventUsernameChanged"))]
     ChatEventUsernameChanged(ChatEventUsernameChanged),
+    /// A video chat was created
+    #[serde(rename(deserialize = "chatEventVideoChatCreated"))]
+    ChatEventVideoChatCreated(ChatEventVideoChatCreated),
+    /// A video chat was ended
+    #[serde(rename(deserialize = "chatEventVideoChatEnded"))]
+    ChatEventVideoChatEnded(ChatEventVideoChatEnded),
+    /// The mute_new_participants setting of a video chat was toggled
+    #[serde(rename(deserialize = "chatEventVideoChatMuteNewParticipantsToggled"))]
+    ChatEventVideoChatMuteNewParticipantsToggled(ChatEventVideoChatMuteNewParticipantsToggled),
+    /// A video chat participant was muted or unmuted
+    #[serde(rename(deserialize = "chatEventVideoChatParticipantIsMutedToggled"))]
+    ChatEventVideoChatParticipantIsMutedToggled(ChatEventVideoChatParticipantIsMutedToggled),
+    /// A video chat participant volume level was changed
+    #[serde(rename(deserialize = "chatEventVideoChatParticipantVolumeLevelChanged"))]
+    ChatEventVideoChatParticipantVolumeLevelChanged(
+        ChatEventVideoChatParticipantVolumeLevelChanged,
+    ),
 }
 
 impl Default for ChatEventAction {
@@ -154,19 +132,27 @@ impl RObject for ChatEventAction {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         match self {
+            ChatEventAction::ChatEventAvailableReactionsChanged(t) => t.extra(),
             ChatEventAction::ChatEventDescriptionChanged(t) => t.extra(),
+            ChatEventAction::ChatEventHasProtectedContentToggled(t) => t.extra(),
+            ChatEventAction::ChatEventInviteLinkDeleted(t) => t.extra(),
+            ChatEventAction::ChatEventInviteLinkEdited(t) => t.extra(),
+            ChatEventAction::ChatEventInviteLinkRevoked(t) => t.extra(),
             ChatEventAction::ChatEventInvitesToggled(t) => t.extra(),
             ChatEventAction::ChatEventIsAllHistoryAvailableToggled(t) => t.extra(),
             ChatEventAction::ChatEventLinkedChatChanged(t) => t.extra(),
             ChatEventAction::ChatEventLocationChanged(t) => t.extra(),
             ChatEventAction::ChatEventMemberInvited(t) => t.extra(),
             ChatEventAction::ChatEventMemberJoined(t) => t.extra(),
+            ChatEventAction::ChatEventMemberJoinedByInviteLink(t) => t.extra(),
+            ChatEventAction::ChatEventMemberJoinedByRequest(t) => t.extra(),
             ChatEventAction::ChatEventMemberLeft(t) => t.extra(),
             ChatEventAction::ChatEventMemberPromoted(t) => t.extra(),
             ChatEventAction::ChatEventMemberRestricted(t) => t.extra(),
             ChatEventAction::ChatEventMessageDeleted(t) => t.extra(),
             ChatEventAction::ChatEventMessageEdited(t) => t.extra(),
             ChatEventAction::ChatEventMessagePinned(t) => t.extra(),
+            ChatEventAction::ChatEventMessageTtlChanged(t) => t.extra(),
             ChatEventAction::ChatEventMessageUnpinned(t) => t.extra(),
             ChatEventAction::ChatEventPermissionsChanged(t) => t.extra(),
             ChatEventAction::ChatEventPhotoChanged(t) => t.extra(),
@@ -176,6 +162,11 @@ impl RObject for ChatEventAction {
             ChatEventAction::ChatEventStickerSetChanged(t) => t.extra(),
             ChatEventAction::ChatEventTitleChanged(t) => t.extra(),
             ChatEventAction::ChatEventUsernameChanged(t) => t.extra(),
+            ChatEventAction::ChatEventVideoChatCreated(t) => t.extra(),
+            ChatEventAction::ChatEventVideoChatEnded(t) => t.extra(),
+            ChatEventAction::ChatEventVideoChatMuteNewParticipantsToggled(t) => t.extra(),
+            ChatEventAction::ChatEventVideoChatParticipantIsMutedToggled(t) => t.extra(),
+            ChatEventAction::ChatEventVideoChatParticipantVolumeLevelChanged(t) => t.extra(),
 
             _ => None,
         }
@@ -183,19 +174,27 @@ impl RObject for ChatEventAction {
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         match self {
+            ChatEventAction::ChatEventAvailableReactionsChanged(t) => t.client_id(),
             ChatEventAction::ChatEventDescriptionChanged(t) => t.client_id(),
+            ChatEventAction::ChatEventHasProtectedContentToggled(t) => t.client_id(),
+            ChatEventAction::ChatEventInviteLinkDeleted(t) => t.client_id(),
+            ChatEventAction::ChatEventInviteLinkEdited(t) => t.client_id(),
+            ChatEventAction::ChatEventInviteLinkRevoked(t) => t.client_id(),
             ChatEventAction::ChatEventInvitesToggled(t) => t.client_id(),
             ChatEventAction::ChatEventIsAllHistoryAvailableToggled(t) => t.client_id(),
             ChatEventAction::ChatEventLinkedChatChanged(t) => t.client_id(),
             ChatEventAction::ChatEventLocationChanged(t) => t.client_id(),
             ChatEventAction::ChatEventMemberInvited(t) => t.client_id(),
             ChatEventAction::ChatEventMemberJoined(t) => t.client_id(),
+            ChatEventAction::ChatEventMemberJoinedByInviteLink(t) => t.client_id(),
+            ChatEventAction::ChatEventMemberJoinedByRequest(t) => t.client_id(),
             ChatEventAction::ChatEventMemberLeft(t) => t.client_id(),
             ChatEventAction::ChatEventMemberPromoted(t) => t.client_id(),
             ChatEventAction::ChatEventMemberRestricted(t) => t.client_id(),
             ChatEventAction::ChatEventMessageDeleted(t) => t.client_id(),
             ChatEventAction::ChatEventMessageEdited(t) => t.client_id(),
             ChatEventAction::ChatEventMessagePinned(t) => t.client_id(),
+            ChatEventAction::ChatEventMessageTtlChanged(t) => t.client_id(),
             ChatEventAction::ChatEventMessageUnpinned(t) => t.client_id(),
             ChatEventAction::ChatEventPermissionsChanged(t) => t.client_id(),
             ChatEventAction::ChatEventPhotoChanged(t) => t.client_id(),
@@ -205,6 +204,11 @@ impl RObject for ChatEventAction {
             ChatEventAction::ChatEventStickerSetChanged(t) => t.client_id(),
             ChatEventAction::ChatEventTitleChanged(t) => t.client_id(),
             ChatEventAction::ChatEventUsernameChanged(t) => t.client_id(),
+            ChatEventAction::ChatEventVideoChatCreated(t) => t.client_id(),
+            ChatEventAction::ChatEventVideoChatEnded(t) => t.client_id(),
+            ChatEventAction::ChatEventVideoChatMuteNewParticipantsToggled(t) => t.client_id(),
+            ChatEventAction::ChatEventVideoChatParticipantIsMutedToggled(t) => t.client_id(),
+            ChatEventAction::ChatEventVideoChatParticipantVolumeLevelChanged(t) => t.client_id(),
 
             _ => None,
         }
@@ -224,6 +228,86 @@ impl ChatEventAction {
 impl AsRef<ChatEventAction> for ChatEventAction {
     fn as_ref(&self) -> &ChatEventAction {
         self
+    }
+}
+
+/// The chat available reactions were changed
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventAvailableReactionsChanged {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Previous chat available reactions
+    old_available_reactions: Vec<String>,
+    /// New chat available reactions
+    new_available_reactions: Vec<String>,
+}
+
+impl RObject for ChatEventAvailableReactionsChanged {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventAvailableReactionsChanged {}
+
+impl ChatEventAvailableReactionsChanged {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventAvailableReactionsChangedBuilder {
+        let mut inner = ChatEventAvailableReactionsChanged::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventAvailableReactionsChangedBuilder { inner }
+    }
+
+    pub fn old_available_reactions(&self) -> &Vec<String> {
+        &self.old_available_reactions
+    }
+
+    pub fn new_available_reactions(&self) -> &Vec<String> {
+        &self.new_available_reactions
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventAvailableReactionsChangedBuilder {
+    inner: ChatEventAvailableReactionsChanged,
+}
+
+impl RTDChatEventAvailableReactionsChangedBuilder {
+    pub fn build(&self) -> ChatEventAvailableReactionsChanged {
+        self.inner.clone()
+    }
+
+    pub fn old_available_reactions(&mut self, old_available_reactions: Vec<String>) -> &mut Self {
+        self.inner.old_available_reactions = old_available_reactions;
+        self
+    }
+
+    pub fn new_available_reactions(&mut self, new_available_reactions: Vec<String>) -> &mut Self {
+        self.inner.new_available_reactions = new_available_reactions;
+        self
+    }
+}
+
+impl AsRef<ChatEventAvailableReactionsChanged> for ChatEventAvailableReactionsChanged {
+    fn as_ref(&self) -> &ChatEventAvailableReactionsChanged {
+        self
+    }
+}
+
+impl AsRef<ChatEventAvailableReactionsChanged> for RTDChatEventAvailableReactionsChangedBuilder {
+    fn as_ref(&self) -> &ChatEventAvailableReactionsChanged {
+        &self.inner
     }
 }
 
@@ -303,6 +387,293 @@ impl AsRef<ChatEventDescriptionChanged> for ChatEventDescriptionChanged {
 
 impl AsRef<ChatEventDescriptionChanged> for RTDChatEventDescriptionChangedBuilder {
     fn as_ref(&self) -> &ChatEventDescriptionChanged {
+        &self.inner
+    }
+}
+
+/// The has_protected_content setting of a channel was toggled
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventHasProtectedContentToggled {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// New value of has_protected_content
+    has_protected_content: bool,
+}
+
+impl RObject for ChatEventHasProtectedContentToggled {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventHasProtectedContentToggled {}
+
+impl ChatEventHasProtectedContentToggled {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventHasProtectedContentToggledBuilder {
+        let mut inner = ChatEventHasProtectedContentToggled::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventHasProtectedContentToggledBuilder { inner }
+    }
+
+    pub fn has_protected_content(&self) -> bool {
+        self.has_protected_content
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventHasProtectedContentToggledBuilder {
+    inner: ChatEventHasProtectedContentToggled,
+}
+
+impl RTDChatEventHasProtectedContentToggledBuilder {
+    pub fn build(&self) -> ChatEventHasProtectedContentToggled {
+        self.inner.clone()
+    }
+
+    pub fn has_protected_content(&mut self, has_protected_content: bool) -> &mut Self {
+        self.inner.has_protected_content = has_protected_content;
+        self
+    }
+}
+
+impl AsRef<ChatEventHasProtectedContentToggled> for ChatEventHasProtectedContentToggled {
+    fn as_ref(&self) -> &ChatEventHasProtectedContentToggled {
+        self
+    }
+}
+
+impl AsRef<ChatEventHasProtectedContentToggled> for RTDChatEventHasProtectedContentToggledBuilder {
+    fn as_ref(&self) -> &ChatEventHasProtectedContentToggled {
+        &self.inner
+    }
+}
+
+/// A revoked chat invite link was deleted
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventInviteLinkDeleted {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// The invite link
+    invite_link: ChatInviteLink,
+}
+
+impl RObject for ChatEventInviteLinkDeleted {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventInviteLinkDeleted {}
+
+impl ChatEventInviteLinkDeleted {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventInviteLinkDeletedBuilder {
+        let mut inner = ChatEventInviteLinkDeleted::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventInviteLinkDeletedBuilder { inner }
+    }
+
+    pub fn invite_link(&self) -> &ChatInviteLink {
+        &self.invite_link
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventInviteLinkDeletedBuilder {
+    inner: ChatEventInviteLinkDeleted,
+}
+
+impl RTDChatEventInviteLinkDeletedBuilder {
+    pub fn build(&self) -> ChatEventInviteLinkDeleted {
+        self.inner.clone()
+    }
+
+    pub fn invite_link<T: AsRef<ChatInviteLink>>(&mut self, invite_link: T) -> &mut Self {
+        self.inner.invite_link = invite_link.as_ref().clone();
+        self
+    }
+}
+
+impl AsRef<ChatEventInviteLinkDeleted> for ChatEventInviteLinkDeleted {
+    fn as_ref(&self) -> &ChatEventInviteLinkDeleted {
+        self
+    }
+}
+
+impl AsRef<ChatEventInviteLinkDeleted> for RTDChatEventInviteLinkDeletedBuilder {
+    fn as_ref(&self) -> &ChatEventInviteLinkDeleted {
+        &self.inner
+    }
+}
+
+/// A chat invite link was edited
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventInviteLinkEdited {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Previous information about the invite link
+    old_invite_link: ChatInviteLink,
+    /// New information about the invite link
+    new_invite_link: ChatInviteLink,
+}
+
+impl RObject for ChatEventInviteLinkEdited {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventInviteLinkEdited {}
+
+impl ChatEventInviteLinkEdited {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventInviteLinkEditedBuilder {
+        let mut inner = ChatEventInviteLinkEdited::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventInviteLinkEditedBuilder { inner }
+    }
+
+    pub fn old_invite_link(&self) -> &ChatInviteLink {
+        &self.old_invite_link
+    }
+
+    pub fn new_invite_link(&self) -> &ChatInviteLink {
+        &self.new_invite_link
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventInviteLinkEditedBuilder {
+    inner: ChatEventInviteLinkEdited,
+}
+
+impl RTDChatEventInviteLinkEditedBuilder {
+    pub fn build(&self) -> ChatEventInviteLinkEdited {
+        self.inner.clone()
+    }
+
+    pub fn old_invite_link<T: AsRef<ChatInviteLink>>(&mut self, old_invite_link: T) -> &mut Self {
+        self.inner.old_invite_link = old_invite_link.as_ref().clone();
+        self
+    }
+
+    pub fn new_invite_link<T: AsRef<ChatInviteLink>>(&mut self, new_invite_link: T) -> &mut Self {
+        self.inner.new_invite_link = new_invite_link.as_ref().clone();
+        self
+    }
+}
+
+impl AsRef<ChatEventInviteLinkEdited> for ChatEventInviteLinkEdited {
+    fn as_ref(&self) -> &ChatEventInviteLinkEdited {
+        self
+    }
+}
+
+impl AsRef<ChatEventInviteLinkEdited> for RTDChatEventInviteLinkEditedBuilder {
+    fn as_ref(&self) -> &ChatEventInviteLinkEdited {
+        &self.inner
+    }
+}
+
+/// A chat invite link was revoked
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventInviteLinkRevoked {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// The invite link
+    invite_link: ChatInviteLink,
+}
+
+impl RObject for ChatEventInviteLinkRevoked {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventInviteLinkRevoked {}
+
+impl ChatEventInviteLinkRevoked {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventInviteLinkRevokedBuilder {
+        let mut inner = ChatEventInviteLinkRevoked::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventInviteLinkRevokedBuilder { inner }
+    }
+
+    pub fn invite_link(&self) -> &ChatInviteLink {
+        &self.invite_link
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventInviteLinkRevokedBuilder {
+    inner: ChatEventInviteLinkRevoked,
+}
+
+impl RTDChatEventInviteLinkRevokedBuilder {
+    pub fn build(&self) -> ChatEventInviteLinkRevoked {
+        self.inner.clone()
+    }
+
+    pub fn invite_link<T: AsRef<ChatInviteLink>>(&mut self, invite_link: T) -> &mut Self {
+        self.inner.invite_link = invite_link.as_ref().clone();
+        self
+    }
+}
+
+impl AsRef<ChatEventInviteLinkRevoked> for ChatEventInviteLinkRevoked {
+    fn as_ref(&self) -> &ChatEventInviteLinkRevoked {
+        self
+    }
+}
+
+impl AsRef<ChatEventInviteLinkRevoked> for RTDChatEventInviteLinkRevokedBuilder {
+    fn as_ref(&self) -> &ChatEventInviteLinkRevoked {
         &self.inner
     }
 }
@@ -616,7 +987,7 @@ pub struct ChatEventMemberInvited {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New member user identifier
-    user_id: i32,
+    user_id: i64,
     /// New member status
 
     #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
@@ -647,7 +1018,7 @@ impl ChatEventMemberInvited {
         RTDChatEventMemberInvitedBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -666,7 +1037,7 @@ impl RTDChatEventMemberInvitedBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -747,6 +1118,155 @@ impl AsRef<ChatEventMemberJoined> for RTDChatEventMemberJoinedBuilder {
     }
 }
 
+/// A new member joined the chat via an invite link
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventMemberJoinedByInviteLink {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Invite link used to join the chat
+    invite_link: ChatInviteLink,
+}
+
+impl RObject for ChatEventMemberJoinedByInviteLink {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventMemberJoinedByInviteLink {}
+
+impl ChatEventMemberJoinedByInviteLink {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventMemberJoinedByInviteLinkBuilder {
+        let mut inner = ChatEventMemberJoinedByInviteLink::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventMemberJoinedByInviteLinkBuilder { inner }
+    }
+
+    pub fn invite_link(&self) -> &ChatInviteLink {
+        &self.invite_link
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventMemberJoinedByInviteLinkBuilder {
+    inner: ChatEventMemberJoinedByInviteLink,
+}
+
+impl RTDChatEventMemberJoinedByInviteLinkBuilder {
+    pub fn build(&self) -> ChatEventMemberJoinedByInviteLink {
+        self.inner.clone()
+    }
+
+    pub fn invite_link<T: AsRef<ChatInviteLink>>(&mut self, invite_link: T) -> &mut Self {
+        self.inner.invite_link = invite_link.as_ref().clone();
+        self
+    }
+}
+
+impl AsRef<ChatEventMemberJoinedByInviteLink> for ChatEventMemberJoinedByInviteLink {
+    fn as_ref(&self) -> &ChatEventMemberJoinedByInviteLink {
+        self
+    }
+}
+
+impl AsRef<ChatEventMemberJoinedByInviteLink> for RTDChatEventMemberJoinedByInviteLinkBuilder {
+    fn as_ref(&self) -> &ChatEventMemberJoinedByInviteLink {
+        &self.inner
+    }
+}
+
+/// A new member was accepted to the chat by an administrator
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventMemberJoinedByRequest {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// User identifier of the chat administrator, approved user join request
+    approver_user_id: i64,
+    /// Invite link used to join the chat; may be null
+    invite_link: Option<ChatInviteLink>,
+}
+
+impl RObject for ChatEventMemberJoinedByRequest {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventMemberJoinedByRequest {}
+
+impl ChatEventMemberJoinedByRequest {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventMemberJoinedByRequestBuilder {
+        let mut inner = ChatEventMemberJoinedByRequest::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventMemberJoinedByRequestBuilder { inner }
+    }
+
+    pub fn approver_user_id(&self) -> i64 {
+        self.approver_user_id
+    }
+
+    pub fn invite_link(&self) -> &Option<ChatInviteLink> {
+        &self.invite_link
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventMemberJoinedByRequestBuilder {
+    inner: ChatEventMemberJoinedByRequest,
+}
+
+impl RTDChatEventMemberJoinedByRequestBuilder {
+    pub fn build(&self) -> ChatEventMemberJoinedByRequest {
+        self.inner.clone()
+    }
+
+    pub fn approver_user_id(&mut self, approver_user_id: i64) -> &mut Self {
+        self.inner.approver_user_id = approver_user_id;
+        self
+    }
+
+    pub fn invite_link<T: AsRef<ChatInviteLink>>(&mut self, invite_link: T) -> &mut Self {
+        self.inner.invite_link = Some(invite_link.as_ref().clone());
+        self
+    }
+}
+
+impl AsRef<ChatEventMemberJoinedByRequest> for ChatEventMemberJoinedByRequest {
+    fn as_ref(&self) -> &ChatEventMemberJoinedByRequest {
+        self
+    }
+}
+
+impl AsRef<ChatEventMemberJoinedByRequest> for RTDChatEventMemberJoinedByRequestBuilder {
+    fn as_ref(&self) -> &ChatEventMemberJoinedByRequest {
+        &self.inner
+    }
+}
+
 /// A member left the chat
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatEventMemberLeft {
@@ -813,8 +1333,8 @@ pub struct ChatEventMemberPromoted {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat member user identifier
-    user_id: i32,
+    /// Affected chat member user identifier
+    user_id: i64,
     /// Previous status of the chat member
 
     #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
@@ -849,7 +1369,7 @@ impl ChatEventMemberPromoted {
         RTDChatEventMemberPromotedBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -872,7 +1392,7 @@ impl RTDChatEventMemberPromotedBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -908,8 +1428,10 @@ pub struct ChatEventMemberRestricted {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat member user identifier
-    user_id: i32,
+    /// Affected chat member identifier
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    member_id: MessageSender,
     /// Previous status of the chat member
 
     #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
@@ -944,8 +1466,8 @@ impl ChatEventMemberRestricted {
         RTDChatEventMemberRestrictedBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
-        self.user_id
+    pub fn member_id(&self) -> &MessageSender {
+        &self.member_id
     }
 
     pub fn old_status(&self) -> &ChatMemberStatus {
@@ -967,8 +1489,8 @@ impl RTDChatEventMemberRestrictedBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
-        self.inner.user_id = user_id;
+    pub fn member_id<T: AsRef<MessageSender>>(&mut self, member_id: T) -> &mut Self {
+        self.inner.member_id = member_id.as_ref().clone();
         self
     }
 
@@ -1209,6 +1731,86 @@ impl AsRef<ChatEventMessagePinned> for ChatEventMessagePinned {
 
 impl AsRef<ChatEventMessagePinned> for RTDChatEventMessagePinnedBuilder {
     fn as_ref(&self) -> &ChatEventMessagePinned {
+        &self.inner
+    }
+}
+
+/// The message TTL was changed
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventMessageTtlChanged {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Previous value of message_ttl
+    old_message_ttl: i32,
+    /// New value of message_ttl
+    new_message_ttl: i32,
+}
+
+impl RObject for ChatEventMessageTtlChanged {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventMessageTtlChanged {}
+
+impl ChatEventMessageTtlChanged {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventMessageTtlChangedBuilder {
+        let mut inner = ChatEventMessageTtlChanged::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventMessageTtlChangedBuilder { inner }
+    }
+
+    pub fn old_message_ttl(&self) -> i32 {
+        self.old_message_ttl
+    }
+
+    pub fn new_message_ttl(&self) -> i32 {
+        self.new_message_ttl
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventMessageTtlChangedBuilder {
+    inner: ChatEventMessageTtlChanged,
+}
+
+impl RTDChatEventMessageTtlChangedBuilder {
+    pub fn build(&self) -> ChatEventMessageTtlChanged {
+        self.inner.clone()
+    }
+
+    pub fn old_message_ttl(&mut self, old_message_ttl: i32) -> &mut Self {
+        self.inner.old_message_ttl = old_message_ttl;
+        self
+    }
+
+    pub fn new_message_ttl(&mut self, new_message_ttl: i32) -> &mut Self {
+        self.inner.new_message_ttl = new_message_ttl;
+        self
+    }
+}
+
+impl AsRef<ChatEventMessageTtlChanged> for ChatEventMessageTtlChanged {
+    fn as_ref(&self) -> &ChatEventMessageTtlChanged {
+        self
+    }
+}
+
+impl AsRef<ChatEventMessageTtlChanged> for RTDChatEventMessageTtlChangedBuilder {
+    fn as_ref(&self) -> &ChatEventMessageTtlChanged {
         &self.inner
     }
 }
@@ -1588,9 +2190,9 @@ pub struct ChatEventSlowModeDelayChanged {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Previous value of slow_mode_delay
+    /// Previous value of slow_mode_delay, in seconds
     old_slow_mode_delay: i32,
-    /// New value of slow_mode_delay
+    /// New value of slow_mode_delay, in seconds
     new_slow_mode_delay: i32,
 }
 
@@ -1900,6 +2502,389 @@ impl AsRef<ChatEventUsernameChanged> for ChatEventUsernameChanged {
 
 impl AsRef<ChatEventUsernameChanged> for RTDChatEventUsernameChangedBuilder {
     fn as_ref(&self) -> &ChatEventUsernameChanged {
+        &self.inner
+    }
+}
+
+/// A video chat was created
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventVideoChatCreated {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+    group_call_id: i32,
+}
+
+impl RObject for ChatEventVideoChatCreated {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventVideoChatCreated {}
+
+impl ChatEventVideoChatCreated {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventVideoChatCreatedBuilder {
+        let mut inner = ChatEventVideoChatCreated::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventVideoChatCreatedBuilder { inner }
+    }
+
+    pub fn group_call_id(&self) -> i32 {
+        self.group_call_id
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventVideoChatCreatedBuilder {
+    inner: ChatEventVideoChatCreated,
+}
+
+impl RTDChatEventVideoChatCreatedBuilder {
+    pub fn build(&self) -> ChatEventVideoChatCreated {
+        self.inner.clone()
+    }
+
+    pub fn group_call_id(&mut self, group_call_id: i32) -> &mut Self {
+        self.inner.group_call_id = group_call_id;
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatCreated> for ChatEventVideoChatCreated {
+    fn as_ref(&self) -> &ChatEventVideoChatCreated {
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatCreated> for RTDChatEventVideoChatCreatedBuilder {
+    fn as_ref(&self) -> &ChatEventVideoChatCreated {
+        &self.inner
+    }
+}
+
+/// A video chat was ended
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventVideoChatEnded {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+    group_call_id: i32,
+}
+
+impl RObject for ChatEventVideoChatEnded {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventVideoChatEnded {}
+
+impl ChatEventVideoChatEnded {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventVideoChatEndedBuilder {
+        let mut inner = ChatEventVideoChatEnded::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventVideoChatEndedBuilder { inner }
+    }
+
+    pub fn group_call_id(&self) -> i32 {
+        self.group_call_id
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventVideoChatEndedBuilder {
+    inner: ChatEventVideoChatEnded,
+}
+
+impl RTDChatEventVideoChatEndedBuilder {
+    pub fn build(&self) -> ChatEventVideoChatEnded {
+        self.inner.clone()
+    }
+
+    pub fn group_call_id(&mut self, group_call_id: i32) -> &mut Self {
+        self.inner.group_call_id = group_call_id;
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatEnded> for ChatEventVideoChatEnded {
+    fn as_ref(&self) -> &ChatEventVideoChatEnded {
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatEnded> for RTDChatEventVideoChatEndedBuilder {
+    fn as_ref(&self) -> &ChatEventVideoChatEnded {
+        &self.inner
+    }
+}
+
+/// The mute_new_participants setting of a video chat was toggled
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventVideoChatMuteNewParticipantsToggled {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// New value of the mute_new_participants setting
+    mute_new_participants: bool,
+}
+
+impl RObject for ChatEventVideoChatMuteNewParticipantsToggled {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventVideoChatMuteNewParticipantsToggled {}
+
+impl ChatEventVideoChatMuteNewParticipantsToggled {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventVideoChatMuteNewParticipantsToggledBuilder {
+        let mut inner = ChatEventVideoChatMuteNewParticipantsToggled::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventVideoChatMuteNewParticipantsToggledBuilder { inner }
+    }
+
+    pub fn mute_new_participants(&self) -> bool {
+        self.mute_new_participants
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventVideoChatMuteNewParticipantsToggledBuilder {
+    inner: ChatEventVideoChatMuteNewParticipantsToggled,
+}
+
+impl RTDChatEventVideoChatMuteNewParticipantsToggledBuilder {
+    pub fn build(&self) -> ChatEventVideoChatMuteNewParticipantsToggled {
+        self.inner.clone()
+    }
+
+    pub fn mute_new_participants(&mut self, mute_new_participants: bool) -> &mut Self {
+        self.inner.mute_new_participants = mute_new_participants;
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatMuteNewParticipantsToggled>
+    for ChatEventVideoChatMuteNewParticipantsToggled
+{
+    fn as_ref(&self) -> &ChatEventVideoChatMuteNewParticipantsToggled {
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatMuteNewParticipantsToggled>
+    for RTDChatEventVideoChatMuteNewParticipantsToggledBuilder
+{
+    fn as_ref(&self) -> &ChatEventVideoChatMuteNewParticipantsToggled {
+        &self.inner
+    }
+}
+
+/// A video chat participant was muted or unmuted
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventVideoChatParticipantIsMutedToggled {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the affected group call participant
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    participant_id: MessageSender,
+    /// New value of is_muted
+    is_muted: bool,
+}
+
+impl RObject for ChatEventVideoChatParticipantIsMutedToggled {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventVideoChatParticipantIsMutedToggled {}
+
+impl ChatEventVideoChatParticipantIsMutedToggled {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventVideoChatParticipantIsMutedToggledBuilder {
+        let mut inner = ChatEventVideoChatParticipantIsMutedToggled::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventVideoChatParticipantIsMutedToggledBuilder { inner }
+    }
+
+    pub fn participant_id(&self) -> &MessageSender {
+        &self.participant_id
+    }
+
+    pub fn is_muted(&self) -> bool {
+        self.is_muted
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventVideoChatParticipantIsMutedToggledBuilder {
+    inner: ChatEventVideoChatParticipantIsMutedToggled,
+}
+
+impl RTDChatEventVideoChatParticipantIsMutedToggledBuilder {
+    pub fn build(&self) -> ChatEventVideoChatParticipantIsMutedToggled {
+        self.inner.clone()
+    }
+
+    pub fn participant_id<T: AsRef<MessageSender>>(&mut self, participant_id: T) -> &mut Self {
+        self.inner.participant_id = participant_id.as_ref().clone();
+        self
+    }
+
+    pub fn is_muted(&mut self, is_muted: bool) -> &mut Self {
+        self.inner.is_muted = is_muted;
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatParticipantIsMutedToggled>
+    for ChatEventVideoChatParticipantIsMutedToggled
+{
+    fn as_ref(&self) -> &ChatEventVideoChatParticipantIsMutedToggled {
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatParticipantIsMutedToggled>
+    for RTDChatEventVideoChatParticipantIsMutedToggledBuilder
+{
+    fn as_ref(&self) -> &ChatEventVideoChatParticipantIsMutedToggled {
+        &self.inner
+    }
+}
+
+/// A video chat participant volume level was changed
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatEventVideoChatParticipantVolumeLevelChanged {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the affected group call participant
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    participant_id: MessageSender,
+    /// New value of volume_level; 1-20000 in hundreds of percents
+    volume_level: i32,
+}
+
+impl RObject for ChatEventVideoChatParticipantVolumeLevelChanged {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatEventAction for ChatEventVideoChatParticipantVolumeLevelChanged {}
+
+impl ChatEventVideoChatParticipantVolumeLevelChanged {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDChatEventVideoChatParticipantVolumeLevelChangedBuilder {
+        let mut inner = ChatEventVideoChatParticipantVolumeLevelChanged::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDChatEventVideoChatParticipantVolumeLevelChangedBuilder { inner }
+    }
+
+    pub fn participant_id(&self) -> &MessageSender {
+        &self.participant_id
+    }
+
+    pub fn volume_level(&self) -> i32 {
+        self.volume_level
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDChatEventVideoChatParticipantVolumeLevelChangedBuilder {
+    inner: ChatEventVideoChatParticipantVolumeLevelChanged,
+}
+
+impl RTDChatEventVideoChatParticipantVolumeLevelChangedBuilder {
+    pub fn build(&self) -> ChatEventVideoChatParticipantVolumeLevelChanged {
+        self.inner.clone()
+    }
+
+    pub fn participant_id<T: AsRef<MessageSender>>(&mut self, participant_id: T) -> &mut Self {
+        self.inner.participant_id = participant_id.as_ref().clone();
+        self
+    }
+
+    pub fn volume_level(&mut self, volume_level: i32) -> &mut Self {
+        self.inner.volume_level = volume_level;
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatParticipantVolumeLevelChanged>
+    for ChatEventVideoChatParticipantVolumeLevelChanged
+{
+    fn as_ref(&self) -> &ChatEventVideoChatParticipantVolumeLevelChanged {
+        self
+    }
+}
+
+impl AsRef<ChatEventVideoChatParticipantVolumeLevelChanged>
+    for RTDChatEventVideoChatParticipantVolumeLevelChangedBuilder
+{
+    fn as_ref(&self) -> &ChatEventVideoChatParticipantVolumeLevelChanged {
         &self.inner
     }
 }

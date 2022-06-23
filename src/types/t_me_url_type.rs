@@ -14,25 +14,16 @@ pub enum TMeUrlType {
     #[doc(hidden)]
     _Default,
     /// A chat invite link
-    #[serde(rename(
-        serialize = "tMeUrlTypeChatInvite",
-        deserialize = "tMeUrlTypeChatInvite"
-    ))]
+    #[serde(rename(deserialize = "tMeUrlTypeChatInvite"))]
     ChatInvite(TMeUrlTypeChatInvite),
     /// A URL linking to a sticker set
-    #[serde(rename(
-        serialize = "tMeUrlTypeStickerSet",
-        deserialize = "tMeUrlTypeStickerSet"
-    ))]
+    #[serde(rename(deserialize = "tMeUrlTypeStickerSet"))]
     StickerSet(TMeUrlTypeStickerSet),
     /// A URL linking to a public supergroup or channel
-    #[serde(rename(
-        serialize = "tMeUrlTypeSupergroup",
-        deserialize = "tMeUrlTypeSupergroup"
-    ))]
+    #[serde(rename(deserialize = "tMeUrlTypeSupergroup"))]
     Supergroup(TMeUrlTypeSupergroup),
     /// A URL linking to a user
-    #[serde(rename(serialize = "tMeUrlTypeUser", deserialize = "tMeUrlTypeUser"))]
+    #[serde(rename(deserialize = "tMeUrlTypeUser"))]
     User(TMeUrlTypeUser),
 }
 
@@ -91,7 +82,7 @@ pub struct TMeUrlTypeChatInvite {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat invite link info
+    /// Information about the chat invite link
     info: ChatInviteLinkInfo,
 }
 
@@ -301,7 +292,7 @@ pub struct TMeUrlTypeUser {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user
-    user_id: i32,
+    user_id: i64,
 }
 
 impl RObject for TMeUrlTypeUser {
@@ -328,7 +319,7 @@ impl TMeUrlTypeUser {
         RTDTMeUrlTypeUserBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
@@ -343,7 +334,7 @@ impl RTDTMeUrlTypeUserBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

@@ -13,17 +13,17 @@ pub trait TDLoginUrlInfo: Debug + RObject {}
 pub enum LoginUrlInfo {
     #[doc(hidden)]
     _Default,
+    /// Returns information about an action to be done when the current user clicks an external link. Don't use this method for links from secret chats if web page preview is disabled in secret chats
+    #[serde(rename(deserialize = "getExternalLinkInfo"))]
+    GetExternalLinkInfo(GetExternalLinkInfo),
     /// Returns information about a button of type inlineKeyboardButtonTypeLoginUrl. The method needs to be called when the user presses the button
-    #[serde(rename(serialize = "getLoginUrlInfo", deserialize = "getLoginUrlInfo"))]
+    #[serde(rename(deserialize = "getLoginUrlInfo"))]
     GetLoginUrlInfo(GetLoginUrlInfo),
     /// An HTTP url needs to be open
-    #[serde(rename(serialize = "loginUrlInfoOpen", deserialize = "loginUrlInfoOpen"))]
+    #[serde(rename(deserialize = "loginUrlInfoOpen"))]
     Open(LoginUrlInfoOpen),
     /// An authorization confirmation dialog needs to be shown to the user
-    #[serde(rename(
-        serialize = "loginUrlInfoRequestConfirmation",
-        deserialize = "loginUrlInfoRequestConfirmation"
-    ))]
+    #[serde(rename(deserialize = "loginUrlInfoRequestConfirmation"))]
     RequestConfirmation(LoginUrlInfoRequestConfirmation),
 }
 
@@ -37,6 +37,7 @@ impl RObject for LoginUrlInfo {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         match self {
+            LoginUrlInfo::GetExternalLinkInfo(t) => t.extra(),
             LoginUrlInfo::GetLoginUrlInfo(t) => t.extra(),
             LoginUrlInfo::Open(t) => t.extra(),
             LoginUrlInfo::RequestConfirmation(t) => t.extra(),
@@ -47,6 +48,7 @@ impl RObject for LoginUrlInfo {
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         match self {
+            LoginUrlInfo::GetExternalLinkInfo(t) => t.client_id(),
             LoginUrlInfo::GetLoginUrlInfo(t) => t.client_id(),
             LoginUrlInfo::Open(t) => t.client_id(),
             LoginUrlInfo::RequestConfirmation(t) => t.client_id(),
@@ -165,7 +167,7 @@ pub struct LoginUrlInfoRequestConfirmation {
     /// A domain of the URL
     domain: String,
     /// User identifier of a bot linked with the website
-    bot_user_id: i32,
+    bot_user_id: i64,
     /// True, if the user needs to be requested to give the permission to the bot to send them messages
     request_write_access: bool,
 }
@@ -202,7 +204,7 @@ impl LoginUrlInfoRequestConfirmation {
         &self.domain
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -231,7 +233,7 @@ impl RTDLoginUrlInfoRequestConfirmationBuilder {
         self
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }

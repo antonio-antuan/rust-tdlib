@@ -12,12 +12,12 @@ pub struct EditInlineMessageLiveLocation {
     client_id: Option<i32>,
     /// Inline message identifier
     inline_message_id: String,
-    /// The new message reply markup
+    /// The new message reply markup; pass null if none
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New location content of the message; may be null. Pass null to stop sharing the live location
-    location: Option<Location>,
+    /// New location content of the message; pass null to stop sharing the live location
+    location: Location,
     /// The new direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
     heading: i32,
     /// The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled
@@ -61,7 +61,7 @@ impl EditInlineMessageLiveLocation {
         &self.reply_markup
     }
 
-    pub fn location(&self) -> &Option<Location> {
+    pub fn location(&self) -> &Location {
         &self.location
     }
 
@@ -95,7 +95,7 @@ impl RTDEditInlineMessageLiveLocationBuilder {
     }
 
     pub fn location<T: AsRef<Location>>(&mut self, location: T) -> &mut Self {
-        self.inner.location = Some(location.as_ref().clone());
+        self.inner.location = location.as_ref().clone();
         self
     }
 

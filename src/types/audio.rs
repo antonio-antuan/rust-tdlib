@@ -22,7 +22,7 @@ pub struct Audio {
     mime_type: String,
     /// The minithumbnail of the album cover; may be null
     album_cover_minithumbnail: Option<Minithumbnail>,
-    /// The thumbnail of the album cover in JPEG format; as defined by the sender. The full size thumbnail should be extracted from the downloaded file; may be null
+    /// The thumbnail of the album cover in JPEG format; as defined by the sender. The full size thumbnail is supposed to be extracted from the downloaded file; may be null
     album_cover_thumbnail: Option<Thumbnail>,
     /// File containing the audio
     audio: File,

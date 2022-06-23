@@ -12,8 +12,10 @@ pub struct GetChatMember {
     client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
-    /// User identifier
-    user_id: i32,
+    /// Member identifier
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    member_id: MessageSender,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -49,8 +51,8 @@ impl GetChatMember {
         self.chat_id
     }
 
-    pub fn user_id(&self) -> i32 {
-        self.user_id
+    pub fn member_id(&self) -> &MessageSender {
+        &self.member_id
     }
 }
 
@@ -69,8 +71,8 @@ impl RTDGetChatMemberBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
-        self.inner.user_id = user_id;
+    pub fn member_id<T: AsRef<MessageSender>>(&mut self, member_id: T) -> &mut Self {
+        self.inner.member_id = member_id.as_ref().clone();
         self
     }
 }

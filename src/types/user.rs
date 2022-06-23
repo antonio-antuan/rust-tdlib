@@ -11,7 +11,7 @@ pub struct User {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
-    id: i32,
+    id: i64,
     /// First name of the user
     first_name: String,
     /// Last name of the user
@@ -32,13 +32,17 @@ pub struct User {
     is_mutual_contact: bool,
     /// True, if the user is verified
     is_verified: bool,
+    /// True, if the user is a Telegram Premium user
+    is_premium: bool,
     /// True, if the user is Telegram support account
     is_support: bool,
     /// If non-empty, it contains a human-readable description of the reason why access to this user must be restricted
     restriction_reason: String,
     /// True, if many users reported this user as a scam
     is_scam: bool,
-    /// If false, the user is inaccessible, and the only information known about the user is inside this class. It can't be passed to any method except GetUser
+    /// True, if many users reported this user as a fake account
+    is_fake: bool,
+    /// If false, the user is inaccessible, and the only information known about the user is inside this class. Identifier of the user can't be passed to any method except GetUser
     have_access: bool,
     /// Type of the user
 
@@ -47,6 +51,8 @@ pub struct User {
     type_: UserType,
     /// IETF language tag of the user's language; only available to bots
     language_code: String,
+    /// True, if the user added the current bot to attachment menu; only available to bots
+    added_to_attachment_menu: bool,
 }
 
 impl RObject for User {
@@ -71,7 +77,7 @@ impl User {
         RTDUserBuilder { inner }
     }
 
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -111,6 +117,10 @@ impl User {
         self.is_verified
     }
 
+    pub fn is_premium(&self) -> bool {
+        self.is_premium
+    }
+
     pub fn is_support(&self) -> bool {
         self.is_support
     }
@@ -121,6 +131,10 @@ impl User {
 
     pub fn is_scam(&self) -> bool {
         self.is_scam
+    }
+
+    pub fn is_fake(&self) -> bool {
+        self.is_fake
     }
 
     pub fn have_access(&self) -> bool {
@@ -134,6 +148,10 @@ impl User {
     pub fn language_code(&self) -> &String {
         &self.language_code
     }
+
+    pub fn added_to_attachment_menu(&self) -> bool {
+        self.added_to_attachment_menu
+    }
 }
 
 #[doc(hidden)]
@@ -146,7 +164,7 @@ impl RTDUserBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i32) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -196,6 +214,11 @@ impl RTDUserBuilder {
         self
     }
 
+    pub fn is_premium(&mut self, is_premium: bool) -> &mut Self {
+        self.inner.is_premium = is_premium;
+        self
+    }
+
     pub fn is_support(&mut self, is_support: bool) -> &mut Self {
         self.inner.is_support = is_support;
         self
@@ -211,6 +234,11 @@ impl RTDUserBuilder {
         self
     }
 
+    pub fn is_fake(&mut self, is_fake: bool) -> &mut Self {
+        self.inner.is_fake = is_fake;
+        self
+    }
+
     pub fn have_access(&mut self, have_access: bool) -> &mut Self {
         self.inner.have_access = have_access;
         self
@@ -223,6 +251,11 @@ impl RTDUserBuilder {
 
     pub fn language_code<T: AsRef<str>>(&mut self, language_code: T) -> &mut Self {
         self.inner.language_code = language_code.as_ref().to_string();
+        self
+    }
+
+    pub fn added_to_attachment_menu(&mut self, added_to_attachment_menu: bool) -> &mut Self {
+        self.inner.added_to_attachment_menu = added_to_attachment_menu;
         self
     }
 }

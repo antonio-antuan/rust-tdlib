@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns forwarded copies of a channel message to different public channels. For optimal performance the number of returned messages is chosen by the library
+/// Returns forwarded copies of a channel message to different public channels. For optimal performance, the number of returned messages is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetMessagePublicForwards {
     #[doc(hidden)]
@@ -14,9 +14,9 @@ pub struct GetMessagePublicForwards {
     chat_id: i64,
     /// Message identifier
     message_id: i64,
-    /// Offset of the first entry to return as received from the previous request; use empty string to get first chunk of results
+    /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
     offset: String,
-    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. Fewer messages may be returned than specified by the limit, even if the end of the list has not been reached
+    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

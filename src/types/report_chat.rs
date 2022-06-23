@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if this is a private chats with a bot, a private chat with a user sharing their location, a supergroup, or a channel, since other chats can't be checked by moderators
+/// Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if chat.can_be_reported
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ReportChat {
     #[doc(hidden)]
@@ -12,12 +12,14 @@ pub struct ReportChat {
     client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
+    /// Identifiers of reported messages; may be empty to report the whole chat
+    message_ids: Vec<i64>,
     /// The reason for reporting the chat
 
     #[serde(skip_serializing_if = "ChatReportReason::_is_default")]
     reason: ChatReportReason,
-    /// Identifiers of reported messages, if any
-    message_ids: Vec<i64>,
+    /// Additional report details; 0-1024 characters
+    text: String,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -53,12 +55,16 @@ impl ReportChat {
         self.chat_id
     }
 
+    pub fn message_ids(&self) -> &Vec<i64> {
+        &self.message_ids
+    }
+
     pub fn reason(&self) -> &ChatReportReason {
         &self.reason
     }
 
-    pub fn message_ids(&self) -> &Vec<i64> {
-        &self.message_ids
+    pub fn text(&self) -> &String {
+        &self.text
     }
 }
 
@@ -77,13 +83,18 @@ impl RTDReportChatBuilder {
         self
     }
 
+    pub fn message_ids(&mut self, message_ids: Vec<i64>) -> &mut Self {
+        self.inner.message_ids = message_ids;
+        self
+    }
+
     pub fn reason<T: AsRef<ChatReportReason>>(&mut self, reason: T) -> &mut Self {
         self.inner.reason = reason.as_ref().clone();
         self
     }
 
-    pub fn message_ids(&mut self, message_ids: Vec<i64>) -> &mut Self {
-        self.inner.message_ids = message_ids;
+    pub fn text<T: AsRef<str>>(&mut self, text: T) -> &mut Self {
+        self.inner.text = text.as_ref().to_string();
         self
     }
 }

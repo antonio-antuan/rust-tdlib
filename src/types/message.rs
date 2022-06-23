@@ -12,15 +12,15 @@ pub struct Message {
     client_id: Option<i32>,
     /// Message identifier; unique for the chat to which the message belongs
     id: i64,
-    /// The sender of the message
+    /// Identifier of the sender of the message
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    sender: MessageSender,
+    sender_id: MessageSender,
     /// Chat identifier
     chat_id: i64,
-    /// Information about the sending state of the message; may be null
+    /// The sending state of the message; may be null
     sending_state: Option<MessageSendingState>,
-    /// Information about the scheduling state of the message; may be null
+    /// The scheduling state of the message; may be null
     scheduling_state: Option<MessageSchedulingState>,
     /// True, if the message is outgoing
     is_outgoing: bool,
@@ -30,14 +30,24 @@ pub struct Message {
     can_be_edited: bool,
     /// True, if the message can be forwarded
     can_be_forwarded: bool,
+    /// True, if content of the message can be saved locally or copied
+    can_be_saved: bool,
     /// True, if the message can be deleted only for the current user while other users will continue to see it
     can_be_deleted_only_for_self: bool,
     /// True, if the message can be deleted for all users
     can_be_deleted_for_all_users: bool,
-    /// True, if the message statistics are available
+    /// True, if the list of added reactions is available through getMessageAddedReactions
+    can_get_added_reactions: bool,
+    /// True, if the message statistics are available through getMessageStatistics
     can_get_statistics: bool,
-    /// True, if the message thread info is available
+    /// True, if information about the message thread is available through getMessageThread
     can_get_message_thread: bool,
+    /// True, if chat members already viewed the message can be received through getMessageViewers
+    can_get_viewers: bool,
+    /// True, if media timestamp links can be generated for media timestamp entities in the message text, caption or web page description through getMessageLink
+    can_get_media_timestamp_links: bool,
+    /// True, if media timestamp entities refers to a media in this message as opposed to a media in the replied message
+    has_timestamped_media: bool,
     /// True, if the message is a channel post. All messages to channels are channel posts, all other messages are not channel posts
     is_channel_post: bool,
     /// True, if the message contains an unread mention for the current user
@@ -50,6 +60,8 @@ pub struct Message {
     forward_info: Option<MessageForwardInfo>,
     /// Information about interactions with the message; may be null
     interaction_info: Option<MessageInteractionInfo>,
+    /// Information about unread reactions added to the message
+    unread_reactions: Vec<UnreadReaction>,
     /// If non-zero, the identifier of the chat to which the replied message belongs; Currently, only messages in the Replies chat can have different reply_in_chat_id and chat_id
     reply_in_chat_id: i64,
     /// If non-zero, the identifier of the message this message is replying to; can be the identifier of a deleted message
@@ -58,13 +70,13 @@ pub struct Message {
     message_thread_id: i64,
     /// For self-destructing messages, the message's TTL (Time To Live), in seconds; 0 if none. TDLib will send updateDeleteMessages or updateMessageContent once the TTL expires
     ttl: i32,
-    /// Time left before the message expires, in seconds
+    /// Time left before the message expires, in seconds. If the TTL timer isn't started yet, equals to the value of the ttl field
     ttl_expires_in: f32,
     /// If non-zero, the user identifier of the bot through which this message was sent
-    via_bot_user_id: i32,
+    via_bot_user_id: i64,
     /// For channel posts and anonymous group messages, optional author signature
     author_signature: String,
-    /// Unique identifier of an album this message belongs to. Only photos and videos can be grouped together in albums
+    /// Unique identifier of an album this message belongs to. Only audios, documents, photos and videos can be grouped together in albums
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
     media_album_id: i64,
@@ -104,8 +116,8 @@ impl Message {
         self.id
     }
 
-    pub fn sender(&self) -> &MessageSender {
-        &self.sender
+    pub fn sender_id(&self) -> &MessageSender {
+        &self.sender_id
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -136,6 +148,10 @@ impl Message {
         self.can_be_forwarded
     }
 
+    pub fn can_be_saved(&self) -> bool {
+        self.can_be_saved
+    }
+
     pub fn can_be_deleted_only_for_self(&self) -> bool {
         self.can_be_deleted_only_for_self
     }
@@ -144,12 +160,28 @@ impl Message {
         self.can_be_deleted_for_all_users
     }
 
+    pub fn can_get_added_reactions(&self) -> bool {
+        self.can_get_added_reactions
+    }
+
     pub fn can_get_statistics(&self) -> bool {
         self.can_get_statistics
     }
 
     pub fn can_get_message_thread(&self) -> bool {
         self.can_get_message_thread
+    }
+
+    pub fn can_get_viewers(&self) -> bool {
+        self.can_get_viewers
+    }
+
+    pub fn can_get_media_timestamp_links(&self) -> bool {
+        self.can_get_media_timestamp_links
+    }
+
+    pub fn has_timestamped_media(&self) -> bool {
+        self.has_timestamped_media
     }
 
     pub fn is_channel_post(&self) -> bool {
@@ -176,6 +208,10 @@ impl Message {
         &self.interaction_info
     }
 
+    pub fn unread_reactions(&self) -> &Vec<UnreadReaction> {
+        &self.unread_reactions
+    }
+
     pub fn reply_in_chat_id(&self) -> i64 {
         self.reply_in_chat_id
     }
@@ -196,7 +232,7 @@ impl Message {
         self.ttl_expires_in
     }
 
-    pub fn via_bot_user_id(&self) -> i32 {
+    pub fn via_bot_user_id(&self) -> i64 {
         self.via_bot_user_id
     }
 
@@ -236,8 +272,8 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
-        self.inner.sender = sender.as_ref().clone();
+    pub fn sender_id<T: AsRef<MessageSender>>(&mut self, sender_id: T) -> &mut Self {
+        self.inner.sender_id = sender_id.as_ref().clone();
         self
     }
 
@@ -279,6 +315,11 @@ impl RTDMessageBuilder {
         self
     }
 
+    pub fn can_be_saved(&mut self, can_be_saved: bool) -> &mut Self {
+        self.inner.can_be_saved = can_be_saved;
+        self
+    }
+
     pub fn can_be_deleted_only_for_self(
         &mut self,
         can_be_deleted_only_for_self: bool,
@@ -295,6 +336,11 @@ impl RTDMessageBuilder {
         self
     }
 
+    pub fn can_get_added_reactions(&mut self, can_get_added_reactions: bool) -> &mut Self {
+        self.inner.can_get_added_reactions = can_get_added_reactions;
+        self
+    }
+
     pub fn can_get_statistics(&mut self, can_get_statistics: bool) -> &mut Self {
         self.inner.can_get_statistics = can_get_statistics;
         self
@@ -302,6 +348,24 @@ impl RTDMessageBuilder {
 
     pub fn can_get_message_thread(&mut self, can_get_message_thread: bool) -> &mut Self {
         self.inner.can_get_message_thread = can_get_message_thread;
+        self
+    }
+
+    pub fn can_get_viewers(&mut self, can_get_viewers: bool) -> &mut Self {
+        self.inner.can_get_viewers = can_get_viewers;
+        self
+    }
+
+    pub fn can_get_media_timestamp_links(
+        &mut self,
+        can_get_media_timestamp_links: bool,
+    ) -> &mut Self {
+        self.inner.can_get_media_timestamp_links = can_get_media_timestamp_links;
+        self
+    }
+
+    pub fn has_timestamped_media(&mut self, has_timestamped_media: bool) -> &mut Self {
+        self.inner.has_timestamped_media = has_timestamped_media;
         self
     }
 
@@ -338,6 +402,11 @@ impl RTDMessageBuilder {
         self
     }
 
+    pub fn unread_reactions(&mut self, unread_reactions: Vec<UnreadReaction>) -> &mut Self {
+        self.inner.unread_reactions = unread_reactions;
+        self
+    }
+
     pub fn reply_in_chat_id(&mut self, reply_in_chat_id: i64) -> &mut Self {
         self.inner.reply_in_chat_id = reply_in_chat_id;
         self
@@ -363,7 +432,7 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn via_bot_user_id(&mut self, via_bot_user_id: i32) -> &mut Self {
+    pub fn via_bot_user_id(&mut self, via_bot_user_id: i64) -> &mut Self {
         self.inner.via_bot_user_id = via_bot_user_id;
         self
     }

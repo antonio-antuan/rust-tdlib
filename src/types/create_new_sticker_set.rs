@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Creates a new sticker set; for bots only. Returns the newly created sticker set
+/// Creates a new sticker set. Returns the newly created sticker set
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CreateNewStickerSet {
     #[doc(hidden)]
@@ -10,16 +10,16 @@ pub struct CreateNewStickerSet {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Sticker set owner
-    user_id: i32,
+    /// Sticker set owner; ignored for regular users
+    user_id: i64,
     /// Sticker set title; 1-64 characters
     title: String,
-    /// Sticker set name. Can contain only English letters, digits and underscores. Must end with *"_by_<bot username>"* (*<bot_username>* is case insensitive); 1-64 characters
+    /// Sticker set name. Can contain only English letters, digits and underscores. Must end with *"_by_<bot username>"* (*<bot_username>* is case insensitive) for bots; 1-64 characters
     name: String,
-    /// True, if stickers are masks. Animated stickers can't be masks
-    is_masks: bool,
-    /// List of stickers to be added to the set; must be non-empty. All stickers must be of the same type
+    /// List of stickers to be added to the set; must be non-empty. All stickers must have the same format. For TGS stickers, uploadStickerFile must be used before the sticker is shown
     stickers: Vec<InputSticker>,
+    /// Source of the sticker set; may be empty if unknown
+    source: String,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -51,7 +51,7 @@ impl CreateNewStickerSet {
         RTDCreateNewStickerSetBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -63,12 +63,12 @@ impl CreateNewStickerSet {
         &self.name
     }
 
-    pub fn is_masks(&self) -> bool {
-        self.is_masks
-    }
-
     pub fn stickers(&self) -> &Vec<InputSticker> {
         &self.stickers
+    }
+
+    pub fn source(&self) -> &String {
+        &self.source
     }
 }
 
@@ -82,7 +82,7 @@ impl RTDCreateNewStickerSetBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -97,13 +97,13 @@ impl RTDCreateNewStickerSetBuilder {
         self
     }
 
-    pub fn is_masks(&mut self, is_masks: bool) -> &mut Self {
-        self.inner.is_masks = is_masks;
+    pub fn stickers(&mut self, stickers: Vec<InputSticker>) -> &mut Self {
+        self.inner.stickers = stickers;
         self
     }
 
-    pub fn stickers(&mut self, stickers: Vec<InputSticker>) -> &mut Self {
-        self.inner.stickers = stickers;
+    pub fn source<T: AsRef<str>>(&mut self, source: T) -> &mut Self {
+        self.inner.source = source.as_ref().to_string();
         self
     }
 }

@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages should be used instead), or without an enabled message database. For optimal performance the number of returned messages is chosen by the library
+/// Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchChatMessages {
     #[doc(hidden)]
@@ -14,17 +14,17 @@ pub struct SearchChatMessages {
     chat_id: i64,
     /// Query to search for
     query: String,
-    /// If not null, only messages sent by the specified sender will be returned. Not supported in secret chats
+    /// Identifier of the sender of messages to search for; pass null to search for messages from any sender. Not supported in secret chats
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    sender: MessageSender,
+    sender_id: MessageSender,
     /// Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
     from_message_id: i64,
     /// Specify 0 to get results from exactly the from_message_id or a negative offset to get the specified message and some newer messages
     offset: i32,
-    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than offset. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
+    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     limit: i32,
-    /// Filter for message content in the search results
+    /// Additional filter for messages to search; pass null to search for all messages
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
@@ -69,8 +69,8 @@ impl SearchChatMessages {
         &self.query
     }
 
-    pub fn sender(&self) -> &MessageSender {
-        &self.sender
+    pub fn sender_id(&self) -> &MessageSender {
+        &self.sender_id
     }
 
     pub fn from_message_id(&self) -> i64 {
@@ -114,8 +114,8 @@ impl RTDSearchChatMessagesBuilder {
         self
     }
 
-    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
-        self.inner.sender = sender.as_ref().clone();
+    pub fn sender_id<T: AsRef<MessageSender>>(&mut self, sender_id: T) -> &mut Self {
+        self.inner.sender_id = sender_id.as_ref().clone();
         self
     }
 

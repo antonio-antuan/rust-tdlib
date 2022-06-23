@@ -12,9 +12,11 @@ pub struct ScopeNotificationSettings {
     client_id: Option<i32>,
     /// Time left before notifications will be unmuted, in seconds
     mute_for: i32,
-    /// The name of an audio file to be used for notification sounds; only applies to iOS applications
-    sound: String,
-    /// True, if message content should be displayed in notifications
+    /// Identifier of the notification sound to be played; 0 if sound is disabled
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    sound_id: i64,
+    /// True, if message content must be displayed in notifications
     show_preview: bool,
     /// True, if notifications for incoming pinned messages will be created as for an ordinary unread message
     disable_pinned_message_notifications: bool,
@@ -48,8 +50,8 @@ impl ScopeNotificationSettings {
         self.mute_for
     }
 
-    pub fn sound(&self) -> &String {
-        &self.sound
+    pub fn sound_id(&self) -> i64 {
+        self.sound_id
     }
 
     pub fn show_preview(&self) -> bool {
@@ -80,8 +82,8 @@ impl RTDScopeNotificationSettingsBuilder {
         self
     }
 
-    pub fn sound<T: AsRef<str>>(&mut self, sound: T) -> &mut Self {
-        self.inner.sound = sound.as_ref().to_string();
+    pub fn sound_id(&mut self, sound_id: i64) -> &mut Self {
+        self.inner.sound_id = sound_id;
         self
     }
 

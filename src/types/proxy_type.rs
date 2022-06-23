@@ -14,13 +14,13 @@ pub enum ProxyType {
     #[doc(hidden)]
     _Default,
     /// A HTTP transparent proxy server
-    #[serde(rename(serialize = "proxyTypeHttp", deserialize = "proxyTypeHttp"))]
+    #[serde(rename(deserialize = "proxyTypeHttp"))]
     Http(ProxyTypeHttp),
     /// An MTProto proxy server
-    #[serde(rename(serialize = "proxyTypeMtproto", deserialize = "proxyTypeMtproto"))]
+    #[serde(rename(deserialize = "proxyTypeMtproto"))]
     Mtproto(ProxyTypeMtproto),
     /// A SOCKS5 proxy server
-    #[serde(rename(serialize = "proxyTypeSocks5", deserialize = "proxyTypeSocks5"))]
+    #[serde(rename(deserialize = "proxyTypeSocks5"))]
     Socks5(ProxyTypeSocks5),
 }
 

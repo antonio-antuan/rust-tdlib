@@ -12,7 +12,7 @@ pub struct GetWebPageInstantView {
     client_id: Option<i32>,
     /// The web page URL
     url: String,
-    /// If true, the full instant view for the web page will be returned
+    /// Pass true to get full instant view for the web page
     force_full: bool,
 
     #[serde(rename(serialize = "@type"))]

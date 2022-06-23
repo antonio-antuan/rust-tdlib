@@ -12,11 +12,11 @@ pub struct EditInlineMessageText {
     client_id: Option<i32>,
     /// Inline message identifier
     inline_message_id: String,
-    /// The new message reply markup
+    /// The new message reply markup; pass null if none
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New text content of the message. Should be of type InputMessageText
+    /// New text content of the message. Must be of type inputMessageText
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,

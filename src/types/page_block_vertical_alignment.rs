@@ -13,23 +13,14 @@ pub trait TDPageBlockVerticalAlignment: Debug + RObject {}
 pub enum PageBlockVerticalAlignment {
     #[doc(hidden)]
     _Default,
-    /// The content should be bottom-aligned
-    #[serde(rename(
-        serialize = "pageBlockVerticalAlignmentBottom",
-        deserialize = "pageBlockVerticalAlignmentBottom"
-    ))]
+    /// The content must be bottom-aligned
+    #[serde(rename(deserialize = "pageBlockVerticalAlignmentBottom"))]
     Bottom(PageBlockVerticalAlignmentBottom),
-    /// The content should be middle-aligned
-    #[serde(rename(
-        serialize = "pageBlockVerticalAlignmentMiddle",
-        deserialize = "pageBlockVerticalAlignmentMiddle"
-    ))]
+    /// The content must be middle-aligned
+    #[serde(rename(deserialize = "pageBlockVerticalAlignmentMiddle"))]
     Middle(PageBlockVerticalAlignmentMiddle),
-    /// The content should be top-aligned
-    #[serde(rename(
-        serialize = "pageBlockVerticalAlignmentTop",
-        deserialize = "pageBlockVerticalAlignmentTop"
-    ))]
+    /// The content must be top-aligned
+    #[serde(rename(deserialize = "pageBlockVerticalAlignmentTop"))]
     Top(PageBlockVerticalAlignmentTop),
 }
 
@@ -78,7 +69,7 @@ impl AsRef<PageBlockVerticalAlignment> for PageBlockVerticalAlignment {
     }
 }
 
-/// The content should be bottom-aligned
+/// The content must be bottom-aligned
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PageBlockVerticalAlignmentBottom {
     #[doc(hidden)]
@@ -136,7 +127,7 @@ impl AsRef<PageBlockVerticalAlignmentBottom> for RTDPageBlockVerticalAlignmentBo
     }
 }
 
-/// The content should be middle-aligned
+/// The content must be middle-aligned
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PageBlockVerticalAlignmentMiddle {
     #[doc(hidden)]
@@ -194,7 +185,7 @@ impl AsRef<PageBlockVerticalAlignmentMiddle> for RTDPageBlockVerticalAlignmentMi
     }
 }
 
-/// The content should be top-aligned
+/// The content must be top-aligned
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PageBlockVerticalAlignmentTop {
     #[doc(hidden)]

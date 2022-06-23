@@ -14,12 +14,16 @@ pub struct WebPageInstantView {
     page_blocks: Vec<PageBlock>,
     /// Number of the instant view views; 0 if unknown
     view_count: i32,
-    /// Version of the instant view, currently can be 1 or 2
+    /// Version of the instant view; currently, can be 1 or 2
     version: i32,
     /// True, if the instant view must be shown from right to left
     is_rtl: bool,
     /// True, if the instant view contains the full page. A network request might be needed to get the full web page instant view
     is_full: bool,
+    /// An internal link to be opened to leave feedback about the instant view
+
+    #[serde(skip_serializing_if = "InternalLinkType::_is_default")]
+    feedback_link: InternalLinkType,
 }
 
 impl RObject for WebPageInstantView {
@@ -63,6 +67,10 @@ impl WebPageInstantView {
     pub fn is_full(&self) -> bool {
         self.is_full
     }
+
+    pub fn feedback_link(&self) -> &InternalLinkType {
+        &self.feedback_link
+    }
 }
 
 #[doc(hidden)]
@@ -97,6 +105,11 @@ impl RTDWebPageInstantViewBuilder {
 
     pub fn is_full(&mut self, is_full: bool) -> &mut Self {
         self.inner.is_full = is_full;
+        self
+    }
+
+    pub fn feedback_link<T: AsRef<InternalLinkType>>(&mut self, feedback_link: T) -> &mut Self {
+        self.inner.feedback_link = feedback_link.as_ref().clone();
         self
     }
 }

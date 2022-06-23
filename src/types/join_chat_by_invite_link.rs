@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Uses an invite link to add the current user to the chat if possible. The new member will not be added until the chat state has been synchronized with the server
+/// Uses an invite link to add the current user to the chat if possible. May return an error with a message "INVITE_REQUEST_SENT" if only a join request was created
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct JoinChatByInviteLink {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct JoinChatByInviteLink {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Invite link to import; should begin with "https://t.me/joinchat/", "https://telegram.me/joinchat/", or "https://telegram.dog/joinchat/"
+    /// Invite link to use
     invite_link: String,
 
     #[serde(rename(serialize = "@type"))]

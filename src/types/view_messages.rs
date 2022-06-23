@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Informs TDLib that messages are being viewed by the user. Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels)
+/// Informs TDLib that messages are being viewed by the user. Sponsored messages must be marked as viewed only when the entire text of the message is shown on the screen (excluding the button). Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels)
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ViewMessages {
     #[doc(hidden)]
@@ -16,7 +16,7 @@ pub struct ViewMessages {
     message_thread_id: i64,
     /// The identifiers of the messages being viewed
     message_ids: Vec<i64>,
-    /// True, if messages in closed chats should be marked as read by the request
+    /// Pass true to mark as read the specified messages even the chat is closed
     force_read: bool,
 
     #[serde(rename(serialize = "@type"))]

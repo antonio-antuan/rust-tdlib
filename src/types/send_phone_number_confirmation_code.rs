@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Sends phone number confirmation code. Should be called when user presses "https://t.me/confirmphone?phone=*******&hash=**********" or "tg://confirmphone?phone=*******&hash=**********" link
+/// Sends phone number confirmation code to handle links of the type internalLinkTypePhoneNumberConfirmation
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SendPhoneNumberConfirmationCode {
     #[doc(hidden)]
@@ -10,11 +10,11 @@ pub struct SendPhoneNumberConfirmationCode {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Value of the "hash" parameter from the link
+    /// Hash value from the link
     hash: String,
-    /// Value of the "phone" parameter from the link
+    /// Phone number value from the link
     phone_number: String,
-    /// Settings for the authentication of the user's phone number
+    /// Settings for the authentication of the user's phone number; pass null to use default settings
     settings: PhoneNumberAuthenticationSettings,
 
     #[serde(rename(serialize = "@type"))]

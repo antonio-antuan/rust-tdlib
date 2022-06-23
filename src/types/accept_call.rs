@@ -12,7 +12,7 @@ pub struct AcceptCall {
     client_id: Option<i32>,
     /// Call identifier
     call_id: i32,
-    /// Description of the call protocols supported by the application
+    /// The call protocols supported by the application
     protocol: CallProtocol,
 
     #[serde(rename(serialize = "@type"))]

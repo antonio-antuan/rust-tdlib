@@ -16,7 +16,7 @@ pub struct AnswerCallbackQuery {
     callback_query_id: i64,
     /// Text of the answer
     text: String,
-    /// If true, an alert should be shown to the user instead of a toast notification
+    /// Pass true to show an alert to the user instead of a toast notification
     show_alert: bool,
     /// URL to be opened
     url: String,

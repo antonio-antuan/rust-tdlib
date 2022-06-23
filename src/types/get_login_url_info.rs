@@ -15,7 +15,7 @@ pub struct GetLoginUrlInfo {
     /// Message identifier of the message with the button
     message_id: i64,
     /// Button identifier
-    button_id: i32,
+    button_id: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -57,7 +57,7 @@ impl GetLoginUrlInfo {
         self.message_id
     }
 
-    pub fn button_id(&self) -> i32 {
+    pub fn button_id(&self) -> i64 {
         self.button_id
     }
 }
@@ -82,7 +82,7 @@ impl RTDGetLoginUrlInfoBuilder {
         self
     }
 
-    pub fn button_id(&mut self, button_id: i32) -> &mut Self {
+    pub fn button_id(&mut self, button_id: i64) -> &mut Self {
         self.inner.button_id = button_id;
         self
     }

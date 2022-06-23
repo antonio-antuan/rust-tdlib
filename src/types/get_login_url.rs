@@ -15,8 +15,8 @@ pub struct GetLoginUrl {
     /// Message identifier of the message with the button
     message_id: i64,
     /// Button identifier
-    button_id: i32,
-    /// True, if the user allowed the bot to send them messages
+    button_id: i64,
+    /// Pass true to allow the bot to send messages to the current user
     allow_write_access: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -57,7 +57,7 @@ impl GetLoginUrl {
         self.message_id
     }
 
-    pub fn button_id(&self) -> i32 {
+    pub fn button_id(&self) -> i64 {
         self.button_id
     }
 
@@ -86,7 +86,7 @@ impl RTDGetLoginUrlBuilder {
         self
     }
 
-    pub fn button_id(&mut self, button_id: i32) -> &mut Self {
+    pub fn button_id(&mut self, button_id: i64) -> &mut Self {
         self.inner.button_id = button_id;
         self
     }

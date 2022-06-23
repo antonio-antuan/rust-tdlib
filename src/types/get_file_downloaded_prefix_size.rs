@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns file downloaded prefix size from a given offset
+/// Returns file downloaded prefix size from a given offset, in bytes
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetFileDownloadedPrefixSize {
     #[doc(hidden)]
@@ -12,8 +12,8 @@ pub struct GetFileDownloadedPrefixSize {
     client_id: Option<i32>,
     /// Identifier of the file
     file_id: i32,
-    /// Offset from which downloaded prefix size should be calculated
-    offset: i32,
+    /// Offset from which downloaded prefix size needs to be calculated
+    offset: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -49,7 +49,7 @@ impl GetFileDownloadedPrefixSize {
         self.file_id
     }
 
-    pub fn offset(&self) -> i32 {
+    pub fn offset(&self) -> i64 {
         self.offset
     }
 }
@@ -69,7 +69,7 @@ impl RTDGetFileDownloadedPrefixSizeBuilder {
         self
     }
 
-    pub fn offset(&mut self, offset: i32) -> &mut Self {
+    pub fn offset(&mut self, offset: i64) -> &mut Self {
         self.inner.offset = offset;
         self
     }

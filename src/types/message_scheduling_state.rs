@@ -14,16 +14,10 @@ pub enum MessageSchedulingState {
     #[doc(hidden)]
     _Default,
     /// The message will be sent at the specified date
-    #[serde(rename(
-        serialize = "messageSchedulingStateSendAtDate",
-        deserialize = "messageSchedulingStateSendAtDate"
-    ))]
+    #[serde(rename(deserialize = "messageSchedulingStateSendAtDate"))]
     SendAtDate(MessageSchedulingStateSendAtDate),
     /// The message will be sent when the peer will be online. Applicable to private chats only and when the exact online status of the peer is known
-    #[serde(rename(
-        serialize = "messageSchedulingStateSendWhenOnline",
-        deserialize = "messageSchedulingStateSendWhenOnline"
-    ))]
+    #[serde(rename(deserialize = "messageSchedulingStateSendWhenOnline"))]
     SendWhenOnline(MessageSchedulingStateSendWhenOnline),
 }
 

@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns information about a message, if it is available locally without sending network request. This is an offline request
+/// Returns information about a message, if it is available without sending network request. This is an offline request
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetMessageLocally {
     #[doc(hidden)]

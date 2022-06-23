@@ -14,28 +14,16 @@ pub enum NotificationType {
     #[doc(hidden)]
     _Default,
     /// New call was received
-    #[serde(rename(
-        serialize = "notificationTypeNewCall",
-        deserialize = "notificationTypeNewCall"
-    ))]
+    #[serde(rename(deserialize = "notificationTypeNewCall"))]
     NewCall(NotificationTypeNewCall),
     /// New message was received
-    #[serde(rename(
-        serialize = "notificationTypeNewMessage",
-        deserialize = "notificationTypeNewMessage"
-    ))]
+    #[serde(rename(deserialize = "notificationTypeNewMessage"))]
     NewMessage(NotificationTypeNewMessage),
     /// New message was received through a push notification
-    #[serde(rename(
-        serialize = "notificationTypeNewPushMessage",
-        deserialize = "notificationTypeNewPushMessage"
-    ))]
+    #[serde(rename(deserialize = "notificationTypeNewPushMessage"))]
     NewPushMessage(NotificationTypeNewPushMessage),
     /// New secret chat was created
-    #[serde(rename(
-        serialize = "notificationTypeNewSecretChat",
-        deserialize = "notificationTypeNewSecretChat"
-    ))]
+    #[serde(rename(deserialize = "notificationTypeNewSecretChat"))]
     NewSecretChat(NotificationTypeNewSecretChat),
 }
 
@@ -165,6 +153,8 @@ pub struct NotificationTypeNewMessage {
     client_id: Option<i32>,
     /// The message
     message: Message,
+    /// True, if message content must be displayed in notifications
+    show_preview: bool,
 }
 
 impl RObject for NotificationTypeNewMessage {
@@ -194,6 +184,10 @@ impl NotificationTypeNewMessage {
     pub fn message(&self) -> &Message {
         &self.message
     }
+
+    pub fn show_preview(&self) -> bool {
+        self.show_preview
+    }
 }
 
 #[doc(hidden)]
@@ -208,6 +202,11 @@ impl RTDNotificationTypeNewMessageBuilder {
 
     pub fn message<T: AsRef<Message>>(&mut self, message: T) -> &mut Self {
         self.inner.message = message.as_ref().clone();
+        self
+    }
+
+    pub fn show_preview(&mut self, show_preview: bool) -> &mut Self {
+        self.inner.show_preview = show_preview;
         self
     }
 }
@@ -234,10 +233,10 @@ pub struct NotificationTypeNewPushMessage {
     client_id: Option<i32>,
     /// The message identifier. The message will not be available in the chat history, but the ID can be used in viewMessages, or as reply_to_message_id
     message_id: i64,
-    /// The sender of the message. Corresponding user or chat may be inaccessible
+    /// Identifier of the sender of the message. Corresponding user or chat may be inaccessible
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    sender: MessageSender,
+    sender_id: MessageSender,
     /// Name of the sender
     sender_name: String,
     /// True, if the message is outgoing
@@ -276,8 +275,8 @@ impl NotificationTypeNewPushMessage {
         self.message_id
     }
 
-    pub fn sender(&self) -> &MessageSender {
-        &self.sender
+    pub fn sender_id(&self) -> &MessageSender {
+        &self.sender_id
     }
 
     pub fn sender_name(&self) -> &String {
@@ -308,8 +307,8 @@ impl RTDNotificationTypeNewPushMessageBuilder {
         self
     }
 
-    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
-        self.inner.sender = sender.as_ref().clone();
+    pub fn sender_id<T: AsRef<MessageSender>>(&mut self, sender_id: T) -> &mut Self {
+        self.inner.sender_id = sender_id.as_ref().clone();
         self
     }
 

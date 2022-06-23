@@ -12,11 +12,11 @@ pub struct DiscardCall {
     client_id: Option<i32>,
     /// Call identifier
     call_id: i32,
-    /// True, if the user was disconnected
+    /// Pass true if the user was disconnected
     is_disconnected: bool,
     /// The call duration, in seconds
     duration: i32,
-    /// True, if the call was a video call
+    /// Pass true if the call was a video call
     is_video: bool,
     /// Identifier of the connection used during the call
 

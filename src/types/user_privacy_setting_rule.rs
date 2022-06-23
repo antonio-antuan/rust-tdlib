@@ -14,52 +14,28 @@ pub enum UserPrivacySettingRule {
     #[doc(hidden)]
     _Default,
     /// A rule to allow all users to do something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleAllowAll",
-        deserialize = "userPrivacySettingRuleAllowAll"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowAll"))]
     AllowAll(UserPrivacySettingRuleAllowAll),
     /// A rule to allow all members of certain specified basic groups and supergroups to doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleAllowChatMembers",
-        deserialize = "userPrivacySettingRuleAllowChatMembers"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowChatMembers"))]
     AllowChatMembers(UserPrivacySettingRuleAllowChatMembers),
     /// A rule to allow all of a user's contacts to do something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleAllowContacts",
-        deserialize = "userPrivacySettingRuleAllowContacts"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowContacts"))]
     AllowContacts(UserPrivacySettingRuleAllowContacts),
     /// A rule to allow certain specified users to do something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleAllowUsers",
-        deserialize = "userPrivacySettingRuleAllowUsers"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowUsers"))]
     AllowUsers(UserPrivacySettingRuleAllowUsers),
     /// A rule to restrict all users from doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleRestrictAll",
-        deserialize = "userPrivacySettingRuleRestrictAll"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictAll"))]
     RestrictAll(UserPrivacySettingRuleRestrictAll),
     /// A rule to restrict all members of specified basic groups and supergroups from doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleRestrictChatMembers",
-        deserialize = "userPrivacySettingRuleRestrictChatMembers"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictChatMembers"))]
     RestrictChatMembers(UserPrivacySettingRuleRestrictChatMembers),
     /// A rule to restrict all contacts of a user from doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleRestrictContacts",
-        deserialize = "userPrivacySettingRuleRestrictContacts"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictContacts"))]
     RestrictContacts(UserPrivacySettingRuleRestrictContacts),
     /// A rule to restrict all specified users from doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleRestrictUsers",
-        deserialize = "userPrivacySettingRuleRestrictUsers"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictUsers"))]
     RestrictUsers(UserPrivacySettingRuleRestrictUsers),
 }
 
@@ -314,7 +290,7 @@ pub struct UserPrivacySettingRuleAllowUsers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The user identifiers, total number of users in all rules must not exceed 1000
-    user_ids: Vec<i32>,
+    user_ids: Vec<i64>,
 }
 
 impl RObject for UserPrivacySettingRuleAllowUsers {
@@ -341,7 +317,7 @@ impl UserPrivacySettingRuleAllowUsers {
         RTDUserPrivacySettingRuleAllowUsersBuilder { inner }
     }
 
-    pub fn user_ids(&self) -> &Vec<i32> {
+    pub fn user_ids(&self) -> &Vec<i64> {
         &self.user_ids
     }
 }
@@ -356,7 +332,7 @@ impl RTDUserPrivacySettingRuleAllowUsersBuilder {
         self.inner.clone()
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }
@@ -574,7 +550,7 @@ pub struct UserPrivacySettingRuleRestrictUsers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The user identifiers, total number of users in all rules must not exceed 1000
-    user_ids: Vec<i32>,
+    user_ids: Vec<i64>,
 }
 
 impl RObject for UserPrivacySettingRuleRestrictUsers {
@@ -601,7 +577,7 @@ impl UserPrivacySettingRuleRestrictUsers {
         RTDUserPrivacySettingRuleRestrictUsersBuilder { inner }
     }
 
-    pub fn user_ids(&self) -> &Vec<i32> {
+    pub fn user_ids(&self) -> &Vec<i64> {
         &self.user_ids
     }
 }
@@ -616,7 +592,7 @@ impl RTDUserPrivacySettingRuleRestrictUsersBuilder {
         self.inner.clone()
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }

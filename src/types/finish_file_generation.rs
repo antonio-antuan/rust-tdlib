@@ -14,7 +14,7 @@ pub struct FinishFileGeneration {
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
     generation_id: i64,
-    /// If set, means that file generation has failed and should be terminated
+    /// If passed, the file generation has failed and must be terminated; pass null if the file generation succeeded
     error: Error,
 
     #[serde(rename(serialize = "@type"))]

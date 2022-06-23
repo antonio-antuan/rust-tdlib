@@ -11,8 +11,8 @@ pub struct CreateSupergroupChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup or channel identifier
-    supergroup_id: i32,
-    /// If true, the chat will be created without network request. In this case all information about the chat except its type, title and photo can be incorrect
+    supergroup_id: i64,
+    /// Pass true to create the chat without a network request. In this case all information about the chat except its type, title and photo can be incorrect
     force: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -45,7 +45,7 @@ impl CreateSupergroupChat {
         RTDCreateSupergroupChatBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 
@@ -64,7 +64,7 @@ impl RTDCreateSupergroupChatBuilder {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }

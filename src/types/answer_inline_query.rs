@@ -14,7 +14,7 @@ pub struct AnswerInlineQuery {
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
     inline_query_id: i64,
-    /// True, if the result of the query can be cached for the specified user
+    /// Pass true if results may be cached and returned only for the user that sent the query. By default, results may be returned to any user who sends the same query
     is_personal: bool,
     /// The results of the query
     results: Vec<InputInlineQueryResult>,
@@ -22,7 +22,7 @@ pub struct AnswerInlineQuery {
     cache_time: i32,
     /// Offset for the next inline query; pass an empty string if there are no more results
     next_offset: String,
-    /// If non-empty, this text should be shown on the button that opens a private chat with the bot and sends a start message to the bot with the parameter switch_pm_parameter
+    /// If non-empty, this text must be shown on the button that opens a private chat with the bot and sends a start message to the bot with the parameter switch_pm_parameter
     switch_pm_text: String,
     /// The parameter for the bot start message
     switch_pm_parameter: String,

@@ -14,10 +14,10 @@ pub enum PollType {
     #[doc(hidden)]
     _Default,
     /// A poll in quiz mode, which has exactly one correct answer option and can be answered only once
-    #[serde(rename(serialize = "pollTypeQuiz", deserialize = "pollTypeQuiz"))]
+    #[serde(rename(deserialize = "pollTypeQuiz"))]
     Quiz(PollTypeQuiz),
     /// A regular poll
-    #[serde(rename(serialize = "pollTypeRegular", deserialize = "pollTypeRegular"))]
+    #[serde(rename(deserialize = "pollTypeRegular"))]
     Regular(PollTypeRegular),
 }
 
@@ -74,7 +74,7 @@ pub struct PollTypeQuiz {
     client_id: Option<i32>,
     /// 0-based identifier of the correct answer option; 1 for a yet unanswered poll
     correct_option_id: i32,
-    /// Text that is shown when the user chooses an incorrect answer or taps on the lamp icon, 0-200 characters with at most 2 line feeds; empty for a yet unanswered poll
+    /// Text that is shown when the user chooses an incorrect answer or taps on the lamp icon; 0-200 characters with at most 2 line feeds; empty for a yet unanswered poll
     explanation: FormattedText,
 }
 

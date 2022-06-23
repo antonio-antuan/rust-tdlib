@@ -12,7 +12,7 @@ pub struct StorageStatisticsByChat {
     client_id: Option<i32>,
     /// Chat identifier; 0 if none
     chat_id: i64,
-    /// Total size of the files in the chat
+    /// Total size of the files in the chat, in bytes
     size: i64,
     /// Total number of files in the chat
     count: i32,

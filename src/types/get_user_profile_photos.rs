@@ -11,7 +11,7 @@ pub struct GetUserProfilePhotos {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
-    user_id: i32,
+    user_id: i64,
     /// The number of photos to skip; must be non-negative
     offset: i32,
     /// The maximum number of photos to be returned; up to 100
@@ -47,7 +47,7 @@ impl GetUserProfilePhotos {
         RTDGetUserProfilePhotosBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -70,7 +70,7 @@ impl RTDGetUserProfilePhotosBuilder {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

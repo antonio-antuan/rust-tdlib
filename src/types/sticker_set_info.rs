@@ -18,23 +18,25 @@ pub struct StickerSetInfo {
     title: String,
     /// Name of the sticker set
     name: String,
-    /// Sticker set thumbnail in WEBP or TGS format with width and height 100; may be null
+    /// Sticker set thumbnail in WEBP, TGS, or WEBM format with width and height 100; may be null
     thumbnail: Option<Thumbnail>,
-    /// True, if the sticker set has been installed by current user
+    /// Sticker set thumbnail's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
+    thumbnail_outline: Vec<ClosedVectorPath>,
+    /// True, if the sticker set has been installed by the current user
     is_installed: bool,
     /// True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
     is_archived: bool,
     /// True, if the sticker set is official
     is_official: bool,
-    /// True, is the stickers in the set are animated
-    is_animated: bool,
-    /// True, if the stickers in the set are masks
-    is_masks: bool,
+    /// Type of the stickers in the set
+
+    #[serde(skip_serializing_if = "StickerType::_is_default")]
+    sticker_type: StickerType,
     /// True for already viewed trending sticker sets
     is_viewed: bool,
     /// Total number of stickers in the set
     size: i32,
-    /// Contains up to the first 5 stickers from the set, depending on the context. If the application needs more stickers the full set should be requested
+    /// Up to the first 5 stickers from the set, depending on the context. If the application needs more stickers the full sticker set needs to be requested
     covers: Vec<Sticker>,
 }
 
@@ -76,6 +78,10 @@ impl StickerSetInfo {
         &self.thumbnail
     }
 
+    pub fn thumbnail_outline(&self) -> &Vec<ClosedVectorPath> {
+        &self.thumbnail_outline
+    }
+
     pub fn is_installed(&self) -> bool {
         self.is_installed
     }
@@ -88,12 +94,8 @@ impl StickerSetInfo {
         self.is_official
     }
 
-    pub fn is_animated(&self) -> bool {
-        self.is_animated
-    }
-
-    pub fn is_masks(&self) -> bool {
-        self.is_masks
+    pub fn sticker_type(&self) -> &StickerType {
+        &self.sticker_type
     }
 
     pub fn is_viewed(&self) -> bool {
@@ -139,6 +141,11 @@ impl RTDStickerSetInfoBuilder {
         self
     }
 
+    pub fn thumbnail_outline(&mut self, thumbnail_outline: Vec<ClosedVectorPath>) -> &mut Self {
+        self.inner.thumbnail_outline = thumbnail_outline;
+        self
+    }
+
     pub fn is_installed(&mut self, is_installed: bool) -> &mut Self {
         self.inner.is_installed = is_installed;
         self
@@ -154,13 +161,8 @@ impl RTDStickerSetInfoBuilder {
         self
     }
 
-    pub fn is_animated(&mut self, is_animated: bool) -> &mut Self {
-        self.inner.is_animated = is_animated;
-        self
-    }
-
-    pub fn is_masks(&mut self, is_masks: bool) -> &mut Self {
-        self.inner.is_masks = is_masks;
+    pub fn sticker_type<T: AsRef<StickerType>>(&mut self, sticker_type: T) -> &mut Self {
+        self.inner.sticker_type = sticker_type.as_ref().clone();
         self
     }
 

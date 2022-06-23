@@ -14,16 +14,10 @@ pub enum NetworkStatisticsEntry {
     #[doc(hidden)]
     _Default,
     /// Contains information about the total amount of data that was used for calls
-    #[serde(rename(
-        serialize = "networkStatisticsEntryCall",
-        deserialize = "networkStatisticsEntryCall"
-    ))]
+    #[serde(rename(deserialize = "networkStatisticsEntryCall"))]
     Call(NetworkStatisticsEntryCall),
     /// Contains information about the total amount of data that was used to send and receive files
-    #[serde(rename(
-        serialize = "networkStatisticsEntryFile",
-        deserialize = "networkStatisticsEntryFile"
-    ))]
+    #[serde(rename(deserialize = "networkStatisticsEntryFile"))]
     File(NetworkStatisticsEntryFile),
 }
 
@@ -182,7 +176,7 @@ pub struct NetworkStatisticsEntryFile {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Type of the file the data is part of
+    /// Type of the file the data is part of; pass null if the data isn't related to files
 
     #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,

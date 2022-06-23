@@ -11,7 +11,7 @@ pub struct RemoveContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifiers of users to be deleted
-    user_ids: Vec<i32>,
+    user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -43,7 +43,7 @@ impl RemoveContacts {
         RTDRemoveContactsBuilder { inner }
     }
 
-    pub fn user_ids(&self) -> &Vec<i32> {
+    pub fn user_ids(&self) -> &Vec<i64> {
         &self.user_ids
     }
 }
@@ -58,7 +58,7 @@ impl RTDRemoveContactsBuilder {
         self.inner.clone()
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }

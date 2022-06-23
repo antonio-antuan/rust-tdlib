@@ -11,7 +11,7 @@ pub struct Supergroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup or channel identifier
-    id: i32,
+    id: i64,
     /// Username of the supergroup or channel; empty for private supergroups or channels
     username: String,
     /// Point in time (Unix timestamp) when the current user joined, or the point in time when the supergroup or channel was created, in case the user is not a member
@@ -20,24 +20,32 @@ pub struct Supergroup {
 
     #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
-    /// Number of members in the supergroup or channel; 0 if unknown. Currently it is guaranteed to be known only if the supergroup or channel was received through searchPublicChats, searchChatsNearby, getInactiveSupergroupChats, getSuitableDiscussionChats, getGroupsInCommon, or getUserPrivacySettingRules
+    /// Number of members in the supergroup or channel; 0 if unknown. Currently, it is guaranteed to be known only if the supergroup or channel was received through searchPublicChats, searchChatsNearby, getInactiveSupergroupChats, getSuitableDiscussionChats, getGroupsInCommon, or getUserPrivacySettingRules
     member_count: i32,
     /// True, if the channel has a discussion group, or the supergroup is the designated discussion group for a channel
     has_linked_chat: bool,
     /// True, if the supergroup is connected to a location, i.e. the supergroup is a location-based supergroup
     has_location: bool,
-    /// True, if messages sent to the channel should contain information about the sender. This field is only applicable to channels
+    /// True, if messages sent to the channel need to contain information about the sender. This field is only applicable to channels
     sign_messages: bool,
+    /// True, if users need to join the supergroup before they can send messages. Always true for channels and non-discussion supergroups
+    join_to_send_messages: bool,
+    /// True, if all users directly joining the supergroup need to be approved by supergroup administrators. Always false for channels and supergroups without username, location, or a linked chat
+    join_by_request: bool,
     /// True, if the slow mode is enabled in the supergroup
     is_slow_mode_enabled: bool,
     /// True, if the supergroup is a channel
     is_channel: bool,
+    /// True, if the supergroup is a broadcast group, i.e. only administrators can send messages and there is no limit on the number of members
+    is_broadcast_group: bool,
     /// True, if the supergroup or channel is verified
     is_verified: bool,
     /// If non-empty, contains a human-readable description of the reason why access to this supergroup or channel must be restricted
     restriction_reason: String,
-    /// True, if many users reported this supergroup as a scam
+    /// True, if many users reported this supergroup or channel as a scam
     is_scam: bool,
+    /// True, if many users reported this supergroup or channel as a fake account
+    is_fake: bool,
 }
 
 impl RObject for Supergroup {
@@ -62,7 +70,7 @@ impl Supergroup {
         RTDSupergroupBuilder { inner }
     }
 
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -94,12 +102,24 @@ impl Supergroup {
         self.sign_messages
     }
 
+    pub fn join_to_send_messages(&self) -> bool {
+        self.join_to_send_messages
+    }
+
+    pub fn join_by_request(&self) -> bool {
+        self.join_by_request
+    }
+
     pub fn is_slow_mode_enabled(&self) -> bool {
         self.is_slow_mode_enabled
     }
 
     pub fn is_channel(&self) -> bool {
         self.is_channel
+    }
+
+    pub fn is_broadcast_group(&self) -> bool {
+        self.is_broadcast_group
     }
 
     pub fn is_verified(&self) -> bool {
@@ -113,6 +133,10 @@ impl Supergroup {
     pub fn is_scam(&self) -> bool {
         self.is_scam
     }
+
+    pub fn is_fake(&self) -> bool {
+        self.is_fake
+    }
 }
 
 #[doc(hidden)]
@@ -125,7 +149,7 @@ impl RTDSupergroupBuilder {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i32) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -165,6 +189,16 @@ impl RTDSupergroupBuilder {
         self
     }
 
+    pub fn join_to_send_messages(&mut self, join_to_send_messages: bool) -> &mut Self {
+        self.inner.join_to_send_messages = join_to_send_messages;
+        self
+    }
+
+    pub fn join_by_request(&mut self, join_by_request: bool) -> &mut Self {
+        self.inner.join_by_request = join_by_request;
+        self
+    }
+
     pub fn is_slow_mode_enabled(&mut self, is_slow_mode_enabled: bool) -> &mut Self {
         self.inner.is_slow_mode_enabled = is_slow_mode_enabled;
         self
@@ -172,6 +206,11 @@ impl RTDSupergroupBuilder {
 
     pub fn is_channel(&mut self, is_channel: bool) -> &mut Self {
         self.inner.is_channel = is_channel;
+        self
+    }
+
+    pub fn is_broadcast_group(&mut self, is_broadcast_group: bool) -> &mut Self {
+        self.inner.is_broadcast_group = is_broadcast_group;
         self
     }
 
@@ -187,6 +226,11 @@ impl RTDSupergroupBuilder {
 
     pub fn is_scam(&mut self, is_scam: bool) -> &mut Self {
         self.inner.is_scam = is_scam;
+        self
+    }
+
+    pub fn is_fake(&mut self, is_fake: bool) -> &mut Self {
+        self.inner.is_fake = is_fake;
         self
     }
 }

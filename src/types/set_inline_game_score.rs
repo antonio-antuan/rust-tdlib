@@ -12,10 +12,10 @@ pub struct SetInlineGameScore {
     client_id: Option<i32>,
     /// Inline message identifier
     inline_message_id: String,
-    /// True, if the message should be edited
+    /// Pass true to edit the game message to include the current scoreboard
     edit_message: bool,
     /// User identifier
-    user_id: i32,
+    user_id: i64,
     /// The new score
     score: i32,
     /// Pass true to update the score even if it decreases. If the score is 0, the user will be deleted from the high score table
@@ -59,7 +59,7 @@ impl SetInlineGameScore {
         self.edit_message
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -92,7 +92,7 @@ impl RTDSetInlineGameScoreBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

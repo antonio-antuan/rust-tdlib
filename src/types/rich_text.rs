@@ -14,61 +14,55 @@ pub enum RichText {
     #[doc(hidden)]
     _Default,
     /// An anchor
-    #[serde(rename(serialize = "richTextAnchor", deserialize = "richTextAnchor"))]
+    #[serde(rename(deserialize = "richTextAnchor"))]
     Anchor(RichTextAnchor),
     /// A link to an anchor on the same web page
-    #[serde(rename(serialize = "richTextAnchorLink", deserialize = "richTextAnchorLink"))]
+    #[serde(rename(deserialize = "richTextAnchorLink"))]
     AnchorLink(RichTextAnchorLink),
     /// A bold rich text
-    #[serde(rename(serialize = "richTextBold", deserialize = "richTextBold"))]
+    #[serde(rename(deserialize = "richTextBold"))]
     Bold(RichTextBold),
     /// A rich text email link
-    #[serde(rename(
-        serialize = "richTextEmailAddress",
-        deserialize = "richTextEmailAddress"
-    ))]
+    #[serde(rename(deserialize = "richTextEmailAddress"))]
     EmailAddress(RichTextEmailAddress),
     /// A fixed-width rich text
-    #[serde(rename(serialize = "richTextFixed", deserialize = "richTextFixed"))]
+    #[serde(rename(deserialize = "richTextFixed"))]
     Fixed(RichTextFixed),
     /// A small image inside the text
-    #[serde(rename(serialize = "richTextIcon", deserialize = "richTextIcon"))]
+    #[serde(rename(deserialize = "richTextIcon"))]
     Icon(RichTextIcon),
     /// An italicized rich text
-    #[serde(rename(serialize = "richTextItalic", deserialize = "richTextItalic"))]
+    #[serde(rename(deserialize = "richTextItalic"))]
     Italic(RichTextItalic),
     /// A marked rich text
-    #[serde(rename(serialize = "richTextMarked", deserialize = "richTextMarked"))]
+    #[serde(rename(deserialize = "richTextMarked"))]
     Marked(RichTextMarked),
     /// A rich text phone number
-    #[serde(rename(serialize = "richTextPhoneNumber", deserialize = "richTextPhoneNumber"))]
+    #[serde(rename(deserialize = "richTextPhoneNumber"))]
     PhoneNumber(RichTextPhoneNumber),
     /// A plain text
-    #[serde(rename(serialize = "richTextPlain", deserialize = "richTextPlain"))]
+    #[serde(rename(deserialize = "richTextPlain"))]
     Plain(RichTextPlain),
     /// A reference to a richTexts object on the same web page
-    #[serde(rename(serialize = "richTextReference", deserialize = "richTextReference"))]
+    #[serde(rename(deserialize = "richTextReference"))]
     Reference(RichTextReference),
     /// A strikethrough rich text
-    #[serde(rename(
-        serialize = "richTextStrikethrough",
-        deserialize = "richTextStrikethrough"
-    ))]
+    #[serde(rename(deserialize = "richTextStrikethrough"))]
     Strikethrough(RichTextStrikethrough),
     /// A subscript rich text
-    #[serde(rename(serialize = "richTextSubscript", deserialize = "richTextSubscript"))]
+    #[serde(rename(deserialize = "richTextSubscript"))]
     Subscript(RichTextSubscript),
     /// A superscript rich text
-    #[serde(rename(serialize = "richTextSuperscript", deserialize = "richTextSuperscript"))]
+    #[serde(rename(deserialize = "richTextSuperscript"))]
     Superscript(RichTextSuperscript),
     /// An underlined rich text
-    #[serde(rename(serialize = "richTextUnderline", deserialize = "richTextUnderline"))]
+    #[serde(rename(deserialize = "richTextUnderline"))]
     Underline(RichTextUnderline),
     /// A rich text URL link
-    #[serde(rename(serialize = "richTextUrl", deserialize = "richTextUrl"))]
+    #[serde(rename(deserialize = "richTextUrl"))]
     Url(RichTextUrl),
     /// A concatenation of rich texts
-    #[serde(rename(serialize = "richTexts", deserialize = "richTexts"))]
+    #[serde(rename(deserialize = "richTexts"))]
     RichTexts(RichTexts),
 }
 
@@ -226,7 +220,7 @@ pub struct RichTextAnchorLink {
 
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: Box<RichText>,
-    /// The anchor name. If the name is empty, the link should bring back to top
+    /// The anchor name. If the name is empty, the link must bring back to top
     anchor_name: String,
     /// An HTTP URL, opening the anchor
     url: String,
@@ -541,9 +535,9 @@ pub struct RichTextIcon {
     client_id: Option<i32>,
     /// The image represented as a document. The image can be in GIF, JPEG or PNG format
     document: Document,
-    /// Width of a bounding box in which the image should be shown; 0 if unknown
+    /// Width of a bounding box in which the image must be shown; 0 if unknown
     width: i32,
-    /// Height of a bounding box in which the image should be shown; 0 if unknown
+    /// Height of a bounding box in which the image must be shown; 0 if unknown
     height: i32,
 }
 

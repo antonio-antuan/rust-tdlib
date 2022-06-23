@@ -4,32 +4,23 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Describes the types of chats to which notification settings are applied
+/// Describes the types of chats to which notification settings are relevant
 pub trait TDNotificationSettingsScope: Debug + RObject {}
 
-/// Describes the types of chats to which notification settings are applied
+/// Describes the types of chats to which notification settings are relevant
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(tag = "@type")]
 pub enum NotificationSettingsScope {
     #[doc(hidden)]
     _Default,
-    /// Notification settings applied to all channels when the corresponding chat setting has a default value
-    #[serde(rename(
-        serialize = "notificationSettingsScopeChannelChats",
-        deserialize = "notificationSettingsScopeChannelChats"
-    ))]
+    /// Notification settings applied to all channel chats when the corresponding chat setting has a default value
+    #[serde(rename(deserialize = "notificationSettingsScopeChannelChats"))]
     ChannelChats(NotificationSettingsScopeChannelChats),
-    /// Notification settings applied to all basic groups and supergroups when the corresponding chat setting has a default value
-    #[serde(rename(
-        serialize = "notificationSettingsScopeGroupChats",
-        deserialize = "notificationSettingsScopeGroupChats"
-    ))]
+    /// Notification settings applied to all basic group and supergroup chats when the corresponding chat setting has a default value
+    #[serde(rename(deserialize = "notificationSettingsScopeGroupChats"))]
     GroupChats(NotificationSettingsScopeGroupChats),
     /// Notification settings applied to all private and secret chats when the corresponding chat setting has a default value
-    #[serde(rename(
-        serialize = "notificationSettingsScopePrivateChats",
-        deserialize = "notificationSettingsScopePrivateChats"
-    ))]
+    #[serde(rename(deserialize = "notificationSettingsScopePrivateChats"))]
     PrivateChats(NotificationSettingsScopePrivateChats),
 }
 
@@ -78,7 +69,7 @@ impl AsRef<NotificationSettingsScope> for NotificationSettingsScope {
     }
 }
 
-/// Notification settings applied to all channels when the corresponding chat setting has a default value
+/// Notification settings applied to all channel chats when the corresponding chat setting has a default value
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationSettingsScopeChannelChats {
     #[doc(hidden)]
@@ -138,7 +129,7 @@ impl AsRef<NotificationSettingsScopeChannelChats>
     }
 }
 
-/// Notification settings applied to all basic groups and supergroups when the corresponding chat setting has a default value
+/// Notification settings applied to all basic group and supergroup chats when the corresponding chat setting has a default value
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NotificationSettingsScopeGroupChats {
     #[doc(hidden)]

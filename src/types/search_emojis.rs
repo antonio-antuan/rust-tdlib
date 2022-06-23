@@ -12,7 +12,7 @@ pub struct SearchEmojis {
     client_id: Option<i32>,
     /// Text to search for
     text: String,
-    /// True, if only emojis, which exactly match text needs to be returned
+    /// Pass true if only emojis, which exactly match the text, needs to be returned
     exact_match: bool,
     /// List of possible IETF language tags of the user's input language; may be empty if unknown
     input_language_codes: Vec<String>,

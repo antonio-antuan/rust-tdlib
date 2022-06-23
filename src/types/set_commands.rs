@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Sets the list of commands supported by the bot; for bots only
+/// Sets the list of commands supported by the bot for the given user scope and language; for bots only
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetCommands {
     #[doc(hidden)]
@@ -10,6 +10,12 @@ pub struct SetCommands {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
+    /// The scope to which the commands are relevant; pass null to change commands in the default bot command scope
+
+    #[serde(skip_serializing_if = "BotCommandScope::_is_default")]
+    scope: BotCommandScope,
+    /// A two-letter ISO 639-1 language code. If empty, the commands will be applied to all users from the given scope, for which language there are no dedicated commands
+    language_code: String,
     /// List of the bot's commands
     commands: Vec<BotCommand>,
 
@@ -43,6 +49,14 @@ impl SetCommands {
         RTDSetCommandsBuilder { inner }
     }
 
+    pub fn scope(&self) -> &BotCommandScope {
+        &self.scope
+    }
+
+    pub fn language_code(&self) -> &String {
+        &self.language_code
+    }
+
     pub fn commands(&self) -> &Vec<BotCommand> {
         &self.commands
     }
@@ -56,6 +70,16 @@ pub struct RTDSetCommandsBuilder {
 impl RTDSetCommandsBuilder {
     pub fn build(&self) -> SetCommands {
         self.inner.clone()
+    }
+
+    pub fn scope<T: AsRef<BotCommandScope>>(&mut self, scope: T) -> &mut Self {
+        self.inner.scope = scope.as_ref().clone();
+        self
+    }
+
+    pub fn language_code<T: AsRef<str>>(&mut self, language_code: T) -> &mut Self {
+        self.inner.language_code = language_code.as_ref().to_string();
+        self
     }
 
     pub fn commands(&mut self, commands: Vec<BotCommand>) -> &mut Self {

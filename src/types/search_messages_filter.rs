@@ -14,112 +14,55 @@ pub enum SearchMessagesFilter {
     #[doc(hidden)]
     _Default,
     /// Returns only animation messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterAnimation",
-        deserialize = "searchMessagesFilterAnimation"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterAnimation"))]
     Animation(SearchMessagesFilterAnimation),
     /// Returns only audio messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterAudio",
-        deserialize = "searchMessagesFilterAudio"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterAudio"))]
     Audio(SearchMessagesFilterAudio),
-    /// Returns only call messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterCall",
-        deserialize = "searchMessagesFilterCall"
-    ))]
-    Call(SearchMessagesFilterCall),
     /// Returns only messages containing chat photos
-    #[serde(rename(
-        serialize = "searchMessagesFilterChatPhoto",
-        deserialize = "searchMessagesFilterChatPhoto"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterChatPhoto"))]
     ChatPhoto(SearchMessagesFilterChatPhoto),
     /// Returns only document messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterDocument",
-        deserialize = "searchMessagesFilterDocument"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterDocument"))]
     Document(SearchMessagesFilterDocument),
     /// Returns all found messages, no filter is applied
-    #[serde(rename(
-        serialize = "searchMessagesFilterEmpty",
-        deserialize = "searchMessagesFilterEmpty"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterEmpty"))]
     Empty(SearchMessagesFilterEmpty),
     /// Returns only failed to send messages. This filter can be used only if the message database is used
-    #[serde(rename(
-        serialize = "searchMessagesFilterFailedToSend",
-        deserialize = "searchMessagesFilterFailedToSend"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterFailedToSend"))]
     FailedToSend(SearchMessagesFilterFailedToSend),
     /// Returns only messages with mentions of the current user, or messages that are replies to their messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterMention",
-        deserialize = "searchMessagesFilterMention"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterMention"))]
     Mention(SearchMessagesFilterMention),
-    /// Returns only incoming call messages with missed/declined discard reasons
-    #[serde(rename(
-        serialize = "searchMessagesFilterMissedCall",
-        deserialize = "searchMessagesFilterMissedCall"
-    ))]
-    MissedCall(SearchMessagesFilterMissedCall),
     /// Returns only photo messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterPhoto",
-        deserialize = "searchMessagesFilterPhoto"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterPhoto"))]
     Photo(SearchMessagesFilterPhoto),
     /// Returns only photo and video messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterPhotoAndVideo",
-        deserialize = "searchMessagesFilterPhotoAndVideo"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterPhotoAndVideo"))]
     PhotoAndVideo(SearchMessagesFilterPhotoAndVideo),
     /// Returns only pinned messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterPinned",
-        deserialize = "searchMessagesFilterPinned"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterPinned"))]
     Pinned(SearchMessagesFilterPinned),
     /// Returns only messages with unread mentions of the current user, or messages that are replies to their messages. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
-    #[serde(rename(
-        serialize = "searchMessagesFilterUnreadMention",
-        deserialize = "searchMessagesFilterUnreadMention"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterUnreadMention"))]
     UnreadMention(SearchMessagesFilterUnreadMention),
+    /// Returns only messages with unread reactions for the current user. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
+    #[serde(rename(deserialize = "searchMessagesFilterUnreadReaction"))]
+    UnreadReaction(SearchMessagesFilterUnreadReaction),
     /// Returns only messages containing URLs
-    #[serde(rename(
-        serialize = "searchMessagesFilterUrl",
-        deserialize = "searchMessagesFilterUrl"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterUrl"))]
     Url(SearchMessagesFilterUrl),
     /// Returns only video messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterVideo",
-        deserialize = "searchMessagesFilterVideo"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterVideo"))]
     Video(SearchMessagesFilterVideo),
     /// Returns only video note messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterVideoNote",
-        deserialize = "searchMessagesFilterVideoNote"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterVideoNote"))]
     VideoNote(SearchMessagesFilterVideoNote),
     /// Returns only voice and video note messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterVoiceAndVideoNote",
-        deserialize = "searchMessagesFilterVoiceAndVideoNote"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterVoiceAndVideoNote"))]
     VoiceAndVideoNote(SearchMessagesFilterVoiceAndVideoNote),
     /// Returns only voice note messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterVoiceNote",
-        deserialize = "searchMessagesFilterVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterVoiceNote"))]
     VoiceNote(SearchMessagesFilterVoiceNote),
 }
 
@@ -135,17 +78,16 @@ impl RObject for SearchMessagesFilter {
         match self {
             SearchMessagesFilter::Animation(t) => t.extra(),
             SearchMessagesFilter::Audio(t) => t.extra(),
-            SearchMessagesFilter::Call(t) => t.extra(),
             SearchMessagesFilter::ChatPhoto(t) => t.extra(),
             SearchMessagesFilter::Document(t) => t.extra(),
             SearchMessagesFilter::Empty(t) => t.extra(),
             SearchMessagesFilter::FailedToSend(t) => t.extra(),
             SearchMessagesFilter::Mention(t) => t.extra(),
-            SearchMessagesFilter::MissedCall(t) => t.extra(),
             SearchMessagesFilter::Photo(t) => t.extra(),
             SearchMessagesFilter::PhotoAndVideo(t) => t.extra(),
             SearchMessagesFilter::Pinned(t) => t.extra(),
             SearchMessagesFilter::UnreadMention(t) => t.extra(),
+            SearchMessagesFilter::UnreadReaction(t) => t.extra(),
             SearchMessagesFilter::Url(t) => t.extra(),
             SearchMessagesFilter::Video(t) => t.extra(),
             SearchMessagesFilter::VideoNote(t) => t.extra(),
@@ -160,17 +102,16 @@ impl RObject for SearchMessagesFilter {
         match self {
             SearchMessagesFilter::Animation(t) => t.client_id(),
             SearchMessagesFilter::Audio(t) => t.client_id(),
-            SearchMessagesFilter::Call(t) => t.client_id(),
             SearchMessagesFilter::ChatPhoto(t) => t.client_id(),
             SearchMessagesFilter::Document(t) => t.client_id(),
             SearchMessagesFilter::Empty(t) => t.client_id(),
             SearchMessagesFilter::FailedToSend(t) => t.client_id(),
             SearchMessagesFilter::Mention(t) => t.client_id(),
-            SearchMessagesFilter::MissedCall(t) => t.client_id(),
             SearchMessagesFilter::Photo(t) => t.client_id(),
             SearchMessagesFilter::PhotoAndVideo(t) => t.client_id(),
             SearchMessagesFilter::Pinned(t) => t.client_id(),
             SearchMessagesFilter::UnreadMention(t) => t.client_id(),
+            SearchMessagesFilter::UnreadReaction(t) => t.client_id(),
             SearchMessagesFilter::Url(t) => t.client_id(),
             SearchMessagesFilter::Video(t) => t.client_id(),
             SearchMessagesFilter::VideoNote(t) => t.client_id(),
@@ -310,64 +251,6 @@ impl AsRef<SearchMessagesFilterAudio> for SearchMessagesFilterAudio {
 
 impl AsRef<SearchMessagesFilterAudio> for RTDSearchMessagesFilterAudioBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterAudio {
-        &self.inner
-    }
-}
-
-/// Returns only call messages
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SearchMessagesFilterCall {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for SearchMessagesFilterCall {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDSearchMessagesFilter for SearchMessagesFilterCall {}
-
-impl SearchMessagesFilterCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDSearchMessagesFilterCallBuilder {
-        let mut inner = SearchMessagesFilterCall::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDSearchMessagesFilterCallBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDSearchMessagesFilterCallBuilder {
-    inner: SearchMessagesFilterCall,
-}
-
-impl RTDSearchMessagesFilterCallBuilder {
-    pub fn build(&self) -> SearchMessagesFilterCall {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<SearchMessagesFilterCall> for SearchMessagesFilterCall {
-    fn as_ref(&self) -> &SearchMessagesFilterCall {
-        self
-    }
-}
-
-impl AsRef<SearchMessagesFilterCall> for RTDSearchMessagesFilterCallBuilder {
-    fn as_ref(&self) -> &SearchMessagesFilterCall {
         &self.inner
     }
 }
@@ -662,64 +545,6 @@ impl AsRef<SearchMessagesFilterMention> for RTDSearchMessagesFilterMentionBuilde
     }
 }
 
-/// Returns only incoming call messages with missed/declined discard reasons
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SearchMessagesFilterMissedCall {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for SearchMessagesFilterMissedCall {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDSearchMessagesFilter for SearchMessagesFilterMissedCall {}
-
-impl SearchMessagesFilterMissedCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDSearchMessagesFilterMissedCallBuilder {
-        let mut inner = SearchMessagesFilterMissedCall::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDSearchMessagesFilterMissedCallBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDSearchMessagesFilterMissedCallBuilder {
-    inner: SearchMessagesFilterMissedCall,
-}
-
-impl RTDSearchMessagesFilterMissedCallBuilder {
-    pub fn build(&self) -> SearchMessagesFilterMissedCall {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<SearchMessagesFilterMissedCall> for SearchMessagesFilterMissedCall {
-    fn as_ref(&self) -> &SearchMessagesFilterMissedCall {
-        self
-    }
-}
-
-impl AsRef<SearchMessagesFilterMissedCall> for RTDSearchMessagesFilterMissedCallBuilder {
-    fn as_ref(&self) -> &SearchMessagesFilterMissedCall {
-        &self.inner
-    }
-}
-
 /// Returns only photo messages
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchMessagesFilterPhoto {
@@ -948,6 +773,64 @@ impl AsRef<SearchMessagesFilterUnreadMention> for SearchMessagesFilterUnreadMent
 
 impl AsRef<SearchMessagesFilterUnreadMention> for RTDSearchMessagesFilterUnreadMentionBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterUnreadMention {
+        &self.inner
+    }
+}
+
+/// Returns only messages with unread reactions for the current user. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct SearchMessagesFilterUnreadReaction {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for SearchMessagesFilterUnreadReaction {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDSearchMessagesFilter for SearchMessagesFilterUnreadReaction {}
+
+impl SearchMessagesFilterUnreadReaction {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDSearchMessagesFilterUnreadReactionBuilder {
+        let mut inner = SearchMessagesFilterUnreadReaction::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDSearchMessagesFilterUnreadReactionBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDSearchMessagesFilterUnreadReactionBuilder {
+    inner: SearchMessagesFilterUnreadReaction,
+}
+
+impl RTDSearchMessagesFilterUnreadReactionBuilder {
+    pub fn build(&self) -> SearchMessagesFilterUnreadReaction {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<SearchMessagesFilterUnreadReaction> for SearchMessagesFilterUnreadReaction {
+    fn as_ref(&self) -> &SearchMessagesFilterUnreadReaction {
+        self
+    }
+}
+
+impl AsRef<SearchMessagesFilterUnreadReaction> for RTDSearchMessagesFilterUnreadReactionBuilder {
+    fn as_ref(&self) -> &SearchMessagesFilterUnreadReaction {
         &self.inner
     }
 }

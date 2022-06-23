@@ -12,7 +12,7 @@ pub struct GetRepliedMessage {
     client_id: Option<i32>,
     /// Identifier of the chat the message belongs to
     chat_id: i64,
-    /// Identifier of the message reply to which to get
+    /// Identifier of the reply message
     message_id: i64,
 
     #[serde(rename(serialize = "@type"))]

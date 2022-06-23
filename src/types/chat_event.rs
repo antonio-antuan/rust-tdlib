@@ -16,9 +16,11 @@ pub struct ChatEvent {
     id: i64,
     /// Point in time (Unix timestamp) when the event happened
     date: i32,
-    /// Identifier of the user who performed the action that triggered the event
-    user_id: i32,
-    /// Action performed by the user
+    /// Identifier of the user or chat who performed the action
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    member_id: MessageSender,
+    /// The action
 
     #[serde(skip_serializing_if = "ChatEventAction::_is_default")]
     action: ChatEventAction,
@@ -54,8 +56,8 @@ impl ChatEvent {
         self.date
     }
 
-    pub fn user_id(&self) -> i32 {
-        self.user_id
+    pub fn member_id(&self) -> &MessageSender {
+        &self.member_id
     }
 
     pub fn action(&self) -> &ChatEventAction {
@@ -83,8 +85,8 @@ impl RTDChatEventBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
-        self.inner.user_id = user_id;
+    pub fn member_id<T: AsRef<MessageSender>>(&mut self, member_id: T) -> &mut Self {
+        self.inner.member_id = member_id.as_ref().clone();
         self
     }
 

@@ -11,8 +11,8 @@ pub struct CreateBasicGroupChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Basic group identifier
-    basic_group_id: i32,
-    /// If true, the chat will be created without network request. In this case all information about the chat except its type, title and photo can be incorrect
+    basic_group_id: i64,
+    /// Pass true to create the chat without a network request. In this case all information about the chat except its type, title and photo can be incorrect
     force: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -45,7 +45,7 @@ impl CreateBasicGroupChat {
         RTDCreateBasicGroupChatBuilder { inner }
     }
 
-    pub fn basic_group_id(&self) -> i32 {
+    pub fn basic_group_id(&self) -> i64 {
         self.basic_group_id
     }
 
@@ -64,7 +64,7 @@ impl RTDCreateBasicGroupChatBuilder {
         self.inner.clone()
     }
 
-    pub fn basic_group_id(&mut self, basic_group_id: i32) -> &mut Self {
+    pub fn basic_group_id(&mut self, basic_group_id: i64) -> &mut Self {
         self.inner.basic_group_id = basic_group_id;
         self
     }

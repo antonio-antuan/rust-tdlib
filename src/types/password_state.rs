@@ -20,6 +20,8 @@ pub struct PasswordState {
     has_passport_data: bool,
     /// Information about the recovery email address to which the confirmation email was sent; may be null
     recovery_email_address_code_info: Option<EmailAddressAuthenticationCodeInfo>,
+    /// If not 0, point in time (Unix timestamp) after which the password can be reset immediately using resetPassword
+    pending_reset_date: i32,
 }
 
 impl RObject for PasswordState {
@@ -63,6 +65,10 @@ impl PasswordState {
     pub fn recovery_email_address_code_info(&self) -> &Option<EmailAddressAuthenticationCodeInfo> {
         &self.recovery_email_address_code_info
     }
+
+    pub fn pending_reset_date(&self) -> i32 {
+        self.pending_reset_date
+    }
 }
 
 #[doc(hidden)]
@@ -101,6 +107,11 @@ impl RTDPasswordStateBuilder {
     ) -> &mut Self {
         self.inner.recovery_email_address_code_info =
             Some(recovery_email_address_code_info.as_ref().clone());
+        self
+    }
+
+    pub fn pending_reset_date(&mut self, pending_reset_date: i32) -> &mut Self {
+        self.inner.pending_reset_date = pending_reset_date;
         self
     }
 }

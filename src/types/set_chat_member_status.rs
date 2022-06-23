@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the status of a chat member, needs appropriate privileges. This function is currently not suitable for adding new members to the chat and transferring chat ownership; instead, use addChatMember or transferChatOwnership. The chat member status will not be changed until it has been synchronized with the server
+/// Changes the status of a chat member, needs appropriate privileges. This function is currently not suitable for transferring chat ownership; use transferChatOwnership instead. Use addChatMember or banChatMember if some additional parameters needs to be passed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetChatMemberStatus {
     #[doc(hidden)]
@@ -12,8 +12,10 @@ pub struct SetChatMemberStatus {
     client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
-    /// User identifier
-    user_id: i32,
+    /// Member identifier. Chats can be only banned and unbanned in supergroups and channels
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    member_id: MessageSender,
     /// The new status of the member in the chat
 
     #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
@@ -53,8 +55,8 @@ impl SetChatMemberStatus {
         self.chat_id
     }
 
-    pub fn user_id(&self) -> i32 {
-        self.user_id
+    pub fn member_id(&self) -> &MessageSender {
+        &self.member_id
     }
 
     pub fn status(&self) -> &ChatMemberStatus {
@@ -77,8 +79,8 @@ impl RTDSetChatMemberStatusBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
-        self.inner.user_id = user_id;
+    pub fn member_id<T: AsRef<MessageSender>>(&mut self, member_id: T) -> &mut Self {
+        self.inner.member_id = member_id.as_ref().clone();
         self
     }
 

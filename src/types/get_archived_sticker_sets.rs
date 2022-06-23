@@ -16,7 +16,7 @@ pub struct GetArchivedStickerSets {
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
     offset_sticker_set_id: i64,
-    /// The maximum number of sticker sets to return
+    /// The maximum number of sticker sets to return; up to 100
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

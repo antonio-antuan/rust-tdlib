@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains information about one session in a Telegram application used by the current user. Sessions should be shown to the user in the returned order
+/// Contains information about one session in a Telegram application used by the current user. Sessions must be shown to the user in the returned order
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Session {
     #[doc(hidden)]
@@ -18,6 +18,15 @@ pub struct Session {
     is_current: bool,
     /// True, if a password is needed to complete authorization of the session
     is_password_pending: bool,
+    /// True, if incoming secret chats can be accepted by the session
+    can_accept_secret_chats: bool,
+    /// True, if incoming calls can be accepted by the session
+    can_accept_calls: bool,
+    /// Session type based on the system and application version, which can be used to display a corresponding icon
+
+    #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(skip_serializing_if = "SessionType::_is_default")]
+    type_: SessionType,
     /// Telegram API identifier, as provided by the application
     api_id: i32,
     /// Name of the application, as provided by the application
@@ -76,6 +85,18 @@ impl Session {
 
     pub fn is_password_pending(&self) -> bool {
         self.is_password_pending
+    }
+
+    pub fn can_accept_secret_chats(&self) -> bool {
+        self.can_accept_secret_chats
+    }
+
+    pub fn can_accept_calls(&self) -> bool {
+        self.can_accept_calls
+    }
+
+    pub fn type_(&self) -> &SessionType {
+        &self.type_
     }
 
     pub fn api_id(&self) -> i32 {
@@ -149,6 +170,21 @@ impl RTDSessionBuilder {
 
     pub fn is_password_pending(&mut self, is_password_pending: bool) -> &mut Self {
         self.inner.is_password_pending = is_password_pending;
+        self
+    }
+
+    pub fn can_accept_secret_chats(&mut self, can_accept_secret_chats: bool) -> &mut Self {
+        self.inner.can_accept_secret_chats = can_accept_secret_chats;
+        self
+    }
+
+    pub fn can_accept_calls(&mut self, can_accept_calls: bool) -> &mut Self {
+        self.inner.can_accept_calls = can_accept_calls;
+        self
+    }
+
+    pub fn type_<T: AsRef<SessionType>>(&mut self, type_: T) -> &mut Self {
+        self.inner.type_ = type_.as_ref().clone();
         self
     }
 

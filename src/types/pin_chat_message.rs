@@ -14,9 +14,9 @@ pub struct PinChatMessage {
     chat_id: i64,
     /// Identifier of the new pinned message
     message_id: i64,
-    /// True, if there should be no notification about the pinned message. Notifications are always disabled in channels and private chats
+    /// Pass true to disable notification about the pinned message. Notifications are always disabled in channels and private chats
     disable_notification: bool,
-    /// True, if the message needs to be pinned for one side only; private chats only
+    /// Pass true to pin the message only for self; private chats only
     only_for_self: bool,
 
     #[serde(rename(serialize = "@type"))]

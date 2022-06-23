@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Reports some messages from a user in a supergroup as spam; requires administrator rights in the supergroup
+/// Reports messages in a supergroup as spam; requires administrator rights in the supergroup
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ReportSupergroupSpam {
     #[doc(hidden)]
@@ -11,10 +11,8 @@ pub struct ReportSupergroupSpam {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup identifier
-    supergroup_id: i32,
-    /// User identifier
-    user_id: i32,
-    /// Identifiers of messages sent in the supergroup by the user. This list must be non-empty
+    supergroup_id: i64,
+    /// Identifiers of messages to report
     message_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]
@@ -47,12 +45,8 @@ impl ReportSupergroupSpam {
         RTDReportSupergroupSpamBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
-    }
-
-    pub fn user_id(&self) -> i32 {
-        self.user_id
     }
 
     pub fn message_ids(&self) -> &Vec<i64> {
@@ -70,13 +64,8 @@ impl RTDReportSupergroupSpamBuilder {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
-        self
-    }
-
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
-        self.inner.user_id = user_id;
         self
     }
 

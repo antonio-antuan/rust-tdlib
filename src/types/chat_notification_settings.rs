@@ -14,13 +14,15 @@ pub struct ChatNotificationSettings {
     use_default_mute_for: bool,
     /// Time left before notifications will be unmuted, in seconds
     mute_for: i32,
-    /// If true, sound is ignored and the value for the relevant type of chat is used instead
+    /// If true, the value for the relevant type of chat is used instead of sound_id
     use_default_sound: bool,
-    /// The name of an audio file to be used for notification sounds; only applies to iOS applications
-    sound: String,
+    /// Identifier of the notification sound to be played; 0 if sound is disabled
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    sound_id: i64,
     /// If true, show_preview is ignored and the value for the relevant type of chat is used instead
     use_default_show_preview: bool,
-    /// True, if message content should be displayed in notifications
+    /// True, if message content must be displayed in notifications
     show_preview: bool,
     /// If true, disable_pinned_message_notifications is ignored and the value for the relevant type of chat is used instead
     use_default_disable_pinned_message_notifications: bool,
@@ -66,8 +68,8 @@ impl ChatNotificationSettings {
         self.use_default_sound
     }
 
-    pub fn sound(&self) -> &String {
-        &self.sound
+    pub fn sound_id(&self) -> i64 {
+        self.sound_id
     }
 
     pub fn use_default_show_preview(&self) -> bool {
@@ -120,8 +122,8 @@ impl RTDChatNotificationSettingsBuilder {
         self
     }
 
-    pub fn sound<T: AsRef<str>>(&mut self, sound: T) -> &mut Self {
-        self.inner.sound = sound.as_ref().to_string();
+    pub fn sound_id(&mut self, sound_id: i64) -> &mut Self {
+        self.inner.sound_id = sound_id;
         self
     }
 

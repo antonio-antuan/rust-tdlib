@@ -42,7 +42,7 @@ pub struct WebPage {
     animation: Option<Animation>,
     /// Preview of the content as an audio file, if available; may be null
     audio: Option<Audio>,
-    /// Preview of the content as a document, if available (currently only available for small PDF files and ZIP archives); may be null
+    /// Preview of the content as a document, if available; may be null
     document: Option<Document>,
     /// Preview of the content as a sticker for small WEBP files, if available; may be null
     sticker: Option<Sticker>,
@@ -52,7 +52,7 @@ pub struct WebPage {
     video_note: Option<VideoNote>,
     /// Preview of the content as a voice note, if available; may be null
     voice_note: Option<VoiceNote>,
-    /// Version of instant view, available for the web page (currently can be 1 or 2), 0 if none
+    /// Version of instant view, available for the web page (currently, can be 1 or 2), 0 if none
     instant_view_version: i32,
 }
 

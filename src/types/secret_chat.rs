@@ -13,18 +13,16 @@ pub struct SecretChat {
     /// Secret chat identifier
     id: i32,
     /// Identifier of the chat partner
-    user_id: i32,
+    user_id: i64,
     /// State of the secret chat
 
     #[serde(skip_serializing_if = "SecretChatState::_is_default")]
     state: SecretChatState,
     /// True, if the chat was created by the current user; otherwise false
     is_outbound: bool,
-    /// Current message Time To Live setting (self-destruct timer) for the chat, in seconds
-    ttl: i32,
     /// Hash of the currently used key for comparison with the hash of the chat partner's key. This is a string of 36 little-endian bytes, which must be split into groups of 2 bits, each denoting a pixel of one of 4 colors FFFFFF, D5E6F3, 2D5775, and 2F99C9. The pixels must be used to make a 12x12 square image filled from left to right, top to bottom. Alternatively, the first 32 bytes of the hash can be converted to the hexadecimal format and printed as 32 2-digit hex numbers
     key_hash: String,
-    /// Secret chat layer; determines features supported by the chat partner's application. Video notes are supported if the layer >= 66; nested text entities and underline and strikethrough entities are supported if the layer >= 101
+    /// Secret chat layer; determines features supported by the chat partner's application. Nested text entities and underline and strikethrough entities are supported if the layer >= 101, files bigger than 2000MB are supported if the layer >= 143
     layer: i32,
 }
 
@@ -54,7 +52,7 @@ impl SecretChat {
         self.id
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -64,10 +62,6 @@ impl SecretChat {
 
     pub fn is_outbound(&self) -> bool {
         self.is_outbound
-    }
-
-    pub fn ttl(&self) -> i32 {
-        self.ttl
     }
 
     pub fn key_hash(&self) -> &String {
@@ -94,7 +88,7 @@ impl RTDSecretChatBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -106,11 +100,6 @@ impl RTDSecretChatBuilder {
 
     pub fn is_outbound(&mut self, is_outbound: bool) -> &mut Self {
         self.inner.is_outbound = is_outbound;
-        self
-    }
-
-    pub fn ttl(&mut self, ttl: i32) -> &mut Self {
-        self.inner.ttl = ttl;
         self
     }
 

@@ -12,12 +12,12 @@ pub struct IdentityDocument {
     client_id: Option<i32>,
     /// Document number; 1-24 characters
     number: String,
-    /// Document expiry date; may be null
+    /// Document expiry date; may be null if not applicable
     expiry_date: Option<Date>,
     /// Front side of the document
     front_side: DatedFile,
-    /// Reverse side of the document; only for driver license and identity card
-    reverse_side: DatedFile,
+    /// Reverse side of the document; only for driver license and identity card; may be null
+    reverse_side: Option<DatedFile>,
     /// Selfie with the document; may be null
     selfie: Option<DatedFile>,
     /// List of files containing a certified English translation of the document
@@ -58,7 +58,7 @@ impl IdentityDocument {
         &self.front_side
     }
 
-    pub fn reverse_side(&self) -> &DatedFile {
+    pub fn reverse_side(&self) -> &Option<DatedFile> {
         &self.reverse_side
     }
 
@@ -97,7 +97,7 @@ impl RTDIdentityDocumentBuilder {
     }
 
     pub fn reverse_side<T: AsRef<DatedFile>>(&mut self, reverse_side: T) -> &mut Self {
-        self.inner.reverse_side = reverse_side.as_ref().clone();
+        self.inner.reverse_side = Some(reverse_side.as_ref().clone());
         self
     }
 

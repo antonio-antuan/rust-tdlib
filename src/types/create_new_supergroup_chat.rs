@@ -12,12 +12,14 @@ pub struct CreateNewSupergroupChat {
     client_id: Option<i32>,
     /// Title of the new chat; 1-128 characters
     title: String,
-    /// True, if a channel chat should be created
+    /// Pass true to create a channel chat
     is_channel: bool,
     /// Creates a new supergroup or channel and sends a corresponding messageSupergroupChatCreate. Returns the newly created chat
     description: String,
-    /// Chat location if a location-based supergroup is being created
+    /// Chat location if a location-based supergroup is being created; pass null to create an ordinary supergroup chat
     location: ChatLocation,
+    /// Pass true to create a supergroup for importing messages using importMessage
+    for_import: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -64,6 +66,10 @@ impl CreateNewSupergroupChat {
     pub fn location(&self) -> &ChatLocation {
         &self.location
     }
+
+    pub fn for_import(&self) -> bool {
+        self.for_import
+    }
 }
 
 #[doc(hidden)]
@@ -93,6 +99,11 @@ impl RTDCreateNewSupergroupChatBuilder {
 
     pub fn location<T: AsRef<ChatLocation>>(&mut self, location: T) -> &mut Self {
         self.inner.location = location.as_ref().clone();
+        self
+    }
+
+    pub fn for_import(&mut self, for_import: bool) -> &mut Self {
+        self.inner.for_import = for_import;
         self
     }
 }

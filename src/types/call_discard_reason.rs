@@ -14,34 +14,19 @@ pub enum CallDiscardReason {
     #[doc(hidden)]
     _Default,
     /// The call was ended before the conversation started. It was declined by the other party
-    #[serde(rename(
-        serialize = "callDiscardReasonDeclined",
-        deserialize = "callDiscardReasonDeclined"
-    ))]
+    #[serde(rename(deserialize = "callDiscardReasonDeclined"))]
     Declined(CallDiscardReasonDeclined),
     /// The call was ended during the conversation because the users were disconnected
-    #[serde(rename(
-        serialize = "callDiscardReasonDisconnected",
-        deserialize = "callDiscardReasonDisconnected"
-    ))]
+    #[serde(rename(deserialize = "callDiscardReasonDisconnected"))]
     Disconnected(CallDiscardReasonDisconnected),
     /// The call wasn't discarded, or the reason is unknown
-    #[serde(rename(
-        serialize = "callDiscardReasonEmpty",
-        deserialize = "callDiscardReasonEmpty"
-    ))]
+    #[serde(rename(deserialize = "callDiscardReasonEmpty"))]
     Empty(CallDiscardReasonEmpty),
     /// The call was ended because one of the parties hung up
-    #[serde(rename(
-        serialize = "callDiscardReasonHungUp",
-        deserialize = "callDiscardReasonHungUp"
-    ))]
+    #[serde(rename(deserialize = "callDiscardReasonHungUp"))]
     HungUp(CallDiscardReasonHungUp),
-    /// The call was ended before the conversation started. It was cancelled by the caller or missed by the other party
-    #[serde(rename(
-        serialize = "callDiscardReasonMissed",
-        deserialize = "callDiscardReasonMissed"
-    ))]
+    /// The call was ended before the conversation started. It was canceled by the caller or missed by the other party
+    #[serde(rename(deserialize = "callDiscardReasonMissed"))]
     Missed(CallDiscardReasonMissed),
 }
 
@@ -326,7 +311,7 @@ impl AsRef<CallDiscardReasonHungUp> for RTDCallDiscardReasonHungUpBuilder {
     }
 }
 
-/// The call was ended before the conversation started. It was cancelled by the caller or missed by the other party
+/// The call was ended before the conversation started. It was canceled by the caller or missed by the other party
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CallDiscardReasonMissed {
     #[doc(hidden)]

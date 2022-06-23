@@ -14,11 +14,11 @@ pub struct SendMessage {
     chat_id: i64,
     /// If not 0, a message thread identifier in which the message will be sent
     message_thread_id: i64,
-    /// Identifier of the message to reply to or 0
+    /// Identifier of the replied message; 0 if none
     reply_to_message_id: i64,
-    /// Options to be used to send the message
+    /// Options to be used to send the message; pass null to use default options
     options: MessageSendOptions,
-    /// Markup for replying to the message; for bots only
+    /// Markup for replying to the message; pass null if none; for bots only
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,

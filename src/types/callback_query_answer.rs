@@ -12,7 +12,7 @@ pub struct CallbackQueryAnswer {
     client_id: Option<i32>,
     /// Text of the answer
     text: String,
-    /// True, if an alert should be shown to the user instead of a toast notification
+    /// True, if an alert must be shown to the user instead of a toast notification
     show_alert: bool,
     /// URL to be opened
     url: String,

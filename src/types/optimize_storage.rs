@@ -10,19 +10,19 @@ pub struct OptimizeStorage {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Limit on the total size of files after deletion. Pass 1 to use the default limit
+    /// Limit on the total size of files after deletion, in bytes. Pass 1 to use the default limit
     size: i64,
     /// Limit on the time that has passed since the last time a file was accessed (or creation time for some filesystems). Pass 1 to use the default limit
     ttl: i32,
-    /// Limit on the total count of files after deletion. Pass 1 to use the default limit
+    /// Limit on the total number of files after deletion. Pass 1 to use the default limit
     count: i32,
     /// The amount of time after the creation of a file during which it can't be deleted, in seconds. Pass 1 to use the default value
     immunity_delay: i32,
-    /// If not empty, only files with the given type(s) are considered. By default, all types except thumbnails, profile photos, stickers and wallpapers are deleted
+    /// If non-empty, only files with the given types are considered. By default, all types except thumbnails, profile photos, stickers and wallpapers are deleted
     file_types: Vec<FileType>,
-    /// If not empty, only files from the given chats are considered. Use 0 as chat identifier to delete files not belonging to any chat (e.g., profile photos)
+    /// If non-empty, only files from the given chats are considered. Use 0 as chat identifier to delete files not belonging to any chat (e.g., profile photos)
     chat_ids: Vec<i64>,
-    /// If not empty, files from the given chats are excluded. Use 0 as chat identifier to exclude all files not belonging to any chat (e.g., profile photos)
+    /// If non-empty, files from the given chats are excluded. Use 0 as chat identifier to exclude all files not belonging to any chat (e.g., profile photos)
     exclude_chat_ids: Vec<i64>,
     /// Pass true if statistics about the files that were deleted must be returned instead of the whole storage usage statistics. Affects only returned statistics
     return_deleted_file_statistics: bool,

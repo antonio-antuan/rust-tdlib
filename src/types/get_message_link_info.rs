@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns information about a public or private message link
+/// Returns information about a public or private message link. Can be called for any internal link of the type internalLinkTypeMessage
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetMessageLinkInfo {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct GetMessageLinkInfo {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The message link in the format "https://t.me/c/...", or "tg://privatepost?...", or "https://t.me/username/...", or "tg://resolve?..."
+    /// The message link
     url: String,
 
     #[serde(rename(serialize = "@type"))]

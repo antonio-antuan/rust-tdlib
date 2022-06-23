@@ -12,13 +12,13 @@ pub struct AutoDownloadSettings {
     client_id: Option<i32>,
     /// True, if the auto-download is enabled
     is_auto_download_enabled: bool,
-    /// The maximum size of a photo file to be auto-downloaded
+    /// The maximum size of a photo file to be auto-downloaded, in bytes
     max_photo_file_size: i32,
-    /// The maximum size of a video file to be auto-downloaded
-    max_video_file_size: i32,
-    /// The maximum size of other file types to be auto-downloaded
-    max_other_file_size: i32,
-    /// The maximum suggested bitrate for uploaded videos
+    /// The maximum size of a video file to be auto-downloaded, in bytes
+    max_video_file_size: i64,
+    /// The maximum size of other file types to be auto-downloaded, in bytes
+    max_other_file_size: i64,
+    /// The maximum suggested bitrate for uploaded videos, in kbit/s
     video_upload_bitrate: i32,
     /// True, if the beginning of video files needs to be preloaded for instant playback
     preload_large_videos: bool,
@@ -58,11 +58,11 @@ impl AutoDownloadSettings {
         self.max_photo_file_size
     }
 
-    pub fn max_video_file_size(&self) -> i32 {
+    pub fn max_video_file_size(&self) -> i64 {
         self.max_video_file_size
     }
 
-    pub fn max_other_file_size(&self) -> i32 {
+    pub fn max_other_file_size(&self) -> i64 {
         self.max_other_file_size
     }
 
@@ -103,12 +103,12 @@ impl RTDAutoDownloadSettingsBuilder {
         self
     }
 
-    pub fn max_video_file_size(&mut self, max_video_file_size: i32) -> &mut Self {
+    pub fn max_video_file_size(&mut self, max_video_file_size: i64) -> &mut Self {
         self.inner.max_video_file_size = max_video_file_size;
         self
     }
 
-    pub fn max_other_file_size(&mut self, max_other_file_size: i32) -> &mut Self {
+    pub fn max_other_file_size(&mut self, max_other_file_size: i64) -> &mut Self {
         self.inner.max_other_file_size = max_other_file_size;
         self
     }

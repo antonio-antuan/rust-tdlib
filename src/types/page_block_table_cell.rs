@@ -10,13 +10,13 @@ pub struct PageBlockTableCell {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Cell text; may be null. If the text is null, then the cell should be invisible
+    /// Cell text; may be null. If the text is null, then the cell must be invisible
     text: Option<RichText>,
     /// True, if it is a header cell
     is_header: bool,
-    /// The number of columns the cell should span
+    /// The number of columns the cell spans
     colspan: i32,
-    /// The number of rows the cell should span
+    /// The number of rows the cell spans
     rowspan: i32,
     /// Horizontal cell content alignment
 

@@ -10,7 +10,7 @@ pub struct CheckChatInviteLink {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Invite link to be checked; should begin with "https://t.me/joinchat/", "https://telegram.me/joinchat/", or "https://telegram.dog/joinchat/"
+    /// Invite link to be checked
     invite_link: String,
 
     #[serde(rename(serialize = "@type"))]

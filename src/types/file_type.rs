@@ -14,58 +14,55 @@ pub enum FileType {
     #[doc(hidden)]
     _Default,
     /// The file is an animation
-    #[serde(rename(serialize = "fileTypeAnimation", deserialize = "fileTypeAnimation"))]
+    #[serde(rename(deserialize = "fileTypeAnimation"))]
     Animation(FileTypeAnimation),
     /// The file is an audio file
-    #[serde(rename(serialize = "fileTypeAudio", deserialize = "fileTypeAudio"))]
+    #[serde(rename(deserialize = "fileTypeAudio"))]
     Audio(FileTypeAudio),
     /// The file is a document
-    #[serde(rename(serialize = "fileTypeDocument", deserialize = "fileTypeDocument"))]
+    #[serde(rename(deserialize = "fileTypeDocument"))]
     Document(FileTypeDocument),
     /// The data is not a file
-    #[serde(rename(serialize = "fileTypeNone", deserialize = "fileTypeNone"))]
+    #[serde(rename(deserialize = "fileTypeNone"))]
     None(FileTypeNone),
+    /// The file is a notification sound
+    #[serde(rename(deserialize = "fileTypeNotificationSound"))]
+    NotificationSound(FileTypeNotificationSound),
     /// The file is a photo
-    #[serde(rename(serialize = "fileTypePhoto", deserialize = "fileTypePhoto"))]
+    #[serde(rename(deserialize = "fileTypePhoto"))]
     Photo(FileTypePhoto),
     /// The file is a profile photo
-    #[serde(rename(
-        serialize = "fileTypeProfilePhoto",
-        deserialize = "fileTypeProfilePhoto"
-    ))]
+    #[serde(rename(deserialize = "fileTypeProfilePhoto"))]
     ProfilePhoto(FileTypeProfilePhoto),
     /// The file was sent to a secret chat (the file type is not known to the server)
-    #[serde(rename(serialize = "fileTypeSecret", deserialize = "fileTypeSecret"))]
+    #[serde(rename(deserialize = "fileTypeSecret"))]
     Secret(FileTypeSecret),
     /// The file is a thumbnail of a file from a secret chat
-    #[serde(rename(
-        serialize = "fileTypeSecretThumbnail",
-        deserialize = "fileTypeSecretThumbnail"
-    ))]
+    #[serde(rename(deserialize = "fileTypeSecretThumbnail"))]
     SecretThumbnail(FileTypeSecretThumbnail),
     /// The file is a file from Secure storage used for storing Telegram Passport files
-    #[serde(rename(serialize = "fileTypeSecure", deserialize = "fileTypeSecure"))]
+    #[serde(rename(deserialize = "fileTypeSecure"))]
     Secure(FileTypeSecure),
     /// The file is a sticker
-    #[serde(rename(serialize = "fileTypeSticker", deserialize = "fileTypeSticker"))]
+    #[serde(rename(deserialize = "fileTypeSticker"))]
     Sticker(FileTypeSticker),
     /// The file is a thumbnail of another file
-    #[serde(rename(serialize = "fileTypeThumbnail", deserialize = "fileTypeThumbnail"))]
+    #[serde(rename(deserialize = "fileTypeThumbnail"))]
     Thumbnail(FileTypeThumbnail),
     /// The file type is not yet known
-    #[serde(rename(serialize = "fileTypeUnknown", deserialize = "fileTypeUnknown"))]
+    #[serde(rename(deserialize = "fileTypeUnknown"))]
     Unknown(FileTypeUnknown),
     /// The file is a video
-    #[serde(rename(serialize = "fileTypeVideo", deserialize = "fileTypeVideo"))]
+    #[serde(rename(deserialize = "fileTypeVideo"))]
     Video(FileTypeVideo),
     /// The file is a video note
-    #[serde(rename(serialize = "fileTypeVideoNote", deserialize = "fileTypeVideoNote"))]
+    #[serde(rename(deserialize = "fileTypeVideoNote"))]
     VideoNote(FileTypeVideoNote),
     /// The file is a voice note
-    #[serde(rename(serialize = "fileTypeVoiceNote", deserialize = "fileTypeVoiceNote"))]
+    #[serde(rename(deserialize = "fileTypeVoiceNote"))]
     VoiceNote(FileTypeVoiceNote),
     /// The file is a wallpaper or a background pattern
-    #[serde(rename(serialize = "fileTypeWallpaper", deserialize = "fileTypeWallpaper"))]
+    #[serde(rename(deserialize = "fileTypeWallpaper"))]
     Wallpaper(FileTypeWallpaper),
 }
 
@@ -83,6 +80,7 @@ impl RObject for FileType {
             FileType::Audio(t) => t.extra(),
             FileType::Document(t) => t.extra(),
             FileType::None(t) => t.extra(),
+            FileType::NotificationSound(t) => t.extra(),
             FileType::Photo(t) => t.extra(),
             FileType::ProfilePhoto(t) => t.extra(),
             FileType::Secret(t) => t.extra(),
@@ -106,6 +104,7 @@ impl RObject for FileType {
             FileType::Audio(t) => t.client_id(),
             FileType::Document(t) => t.client_id(),
             FileType::None(t) => t.client_id(),
+            FileType::NotificationSound(t) => t.client_id(),
             FileType::Photo(t) => t.client_id(),
             FileType::ProfilePhoto(t) => t.client_id(),
             FileType::Secret(t) => t.client_id(),
@@ -368,6 +367,64 @@ impl AsRef<FileTypeNone> for FileTypeNone {
 
 impl AsRef<FileTypeNone> for RTDFileTypeNoneBuilder {
     fn as_ref(&self) -> &FileTypeNone {
+        &self.inner
+    }
+}
+
+/// The file is a notification sound
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct FileTypeNotificationSound {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for FileTypeNotificationSound {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDFileType for FileTypeNotificationSound {}
+
+impl FileTypeNotificationSound {
+    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> RTDFileTypeNotificationSoundBuilder {
+        let mut inner = FileTypeNotificationSound::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        RTDFileTypeNotificationSoundBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct RTDFileTypeNotificationSoundBuilder {
+    inner: FileTypeNotificationSound,
+}
+
+impl RTDFileTypeNotificationSoundBuilder {
+    pub fn build(&self) -> FileTypeNotificationSound {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<FileTypeNotificationSound> for FileTypeNotificationSound {
+    fn as_ref(&self) -> &FileTypeNotificationSound {
+        self
+    }
+}
+
+impl AsRef<FileTypeNotificationSound> for RTDFileTypeNotificationSoundBuilder {
+    fn as_ref(&self) -> &FileTypeNotificationSound {
         &self.inner
     }
 }

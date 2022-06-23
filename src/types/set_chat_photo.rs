@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
+/// Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetChatPhoto {
     #[doc(hidden)]
@@ -12,7 +12,7 @@ pub struct SetChatPhoto {
     client_id: Option<i32>,
     /// Chat identifier
     chat_id: i64,
-    /// New chat photo. Pass null to delete the chat photo
+    /// New chat photo; pass null to delete the chat photo
 
     #[serde(skip_serializing_if = "InputChatPhoto::_is_default")]
     photo: InputChatPhoto,

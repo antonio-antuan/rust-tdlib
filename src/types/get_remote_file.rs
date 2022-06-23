@@ -12,7 +12,7 @@ pub struct GetRemoteFile {
     client_id: Option<i32>,
     /// Remote identifier of the file to get
     remote_file_id: String,
-    /// File type, if known
+    /// File type; pass null if unknown
 
     #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,

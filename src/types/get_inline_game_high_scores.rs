@@ -13,7 +13,7 @@ pub struct GetInlineGameHighScores {
     /// Inline message identifier
     inline_message_id: String,
     /// User identifier
-    user_id: i32,
+    user_id: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -49,7 +49,7 @@ impl GetInlineGameHighScores {
         &self.inline_message_id
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
@@ -69,7 +69,7 @@ impl RTDGetInlineGameHighScoresBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }

@@ -4,26 +4,26 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Part of the face, relative to which a mask should be placed
+/// Part of the face, relative to which a mask is placed
 pub trait TDMaskPoint: Debug + RObject {}
 
-/// Part of the face, relative to which a mask should be placed
+/// Part of the face, relative to which a mask is placed
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(tag = "@type")]
 pub enum MaskPoint {
     #[doc(hidden)]
     _Default,
-    /// A mask should be placed relatively to the chin
-    #[serde(rename(serialize = "maskPointChin", deserialize = "maskPointChin"))]
+    /// The mask is placed relatively to the chin
+    #[serde(rename(deserialize = "maskPointChin"))]
     Chin(MaskPointChin),
-    /// A mask should be placed relatively to the eyes
-    #[serde(rename(serialize = "maskPointEyes", deserialize = "maskPointEyes"))]
+    /// The mask is placed relatively to the eyes
+    #[serde(rename(deserialize = "maskPointEyes"))]
     Eyes(MaskPointEyes),
-    /// A mask should be placed relatively to the forehead
-    #[serde(rename(serialize = "maskPointForehead", deserialize = "maskPointForehead"))]
+    /// The mask is placed relatively to the forehead
+    #[serde(rename(deserialize = "maskPointForehead"))]
     Forehead(MaskPointForehead),
-    /// A mask should be placed relatively to the mouth
-    #[serde(rename(serialize = "maskPointMouth", deserialize = "maskPointMouth"))]
+    /// The mask is placed relatively to the mouth
+    #[serde(rename(deserialize = "maskPointMouth"))]
     Mouth(MaskPointMouth),
 }
 
@@ -74,7 +74,7 @@ impl AsRef<MaskPoint> for MaskPoint {
     }
 }
 
-/// A mask should be placed relatively to the chin
+/// The mask is placed relatively to the chin
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPointChin {
     #[doc(hidden)]
@@ -132,7 +132,7 @@ impl AsRef<MaskPointChin> for RTDMaskPointChinBuilder {
     }
 }
 
-/// A mask should be placed relatively to the eyes
+/// The mask is placed relatively to the eyes
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPointEyes {
     #[doc(hidden)]
@@ -190,7 +190,7 @@ impl AsRef<MaskPointEyes> for RTDMaskPointEyesBuilder {
     }
 }
 
-/// A mask should be placed relatively to the forehead
+/// The mask is placed relatively to the forehead
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPointForehead {
     #[doc(hidden)]
@@ -248,7 +248,7 @@ impl AsRef<MaskPointForehead> for RTDMaskPointForeheadBuilder {
     }
 }
 
-/// A mask should be placed relatively to the mouth
+/// The mask is placed relatively to the mouth
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPointMouth {
     #[doc(hidden)]

@@ -10,7 +10,7 @@ pub struct CheckRecoveryEmailAddressCode {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Verification code
+    /// Verification code to check
     code: String,
 
     #[serde(rename(serialize = "@type"))]

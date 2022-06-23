@@ -10,10 +10,10 @@ pub struct ToggleMessageSenderIsBlocked {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Message Sender
+    /// Identifier of a message sender to block/unblock
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    sender: MessageSender,
+    sender_id: MessageSender,
     /// New value of is_blocked
     is_blocked: bool,
 
@@ -47,8 +47,8 @@ impl ToggleMessageSenderIsBlocked {
         RTDToggleMessageSenderIsBlockedBuilder { inner }
     }
 
-    pub fn sender(&self) -> &MessageSender {
-        &self.sender
+    pub fn sender_id(&self) -> &MessageSender {
+        &self.sender_id
     }
 
     pub fn is_blocked(&self) -> bool {
@@ -66,8 +66,8 @@ impl RTDToggleMessageSenderIsBlockedBuilder {
         self.inner.clone()
     }
 
-    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
-        self.inner.sender = sender.as_ref().clone();
+    pub fn sender_id<T: AsRef<MessageSender>>(&mut self, sender_id: T) -> &mut Self {
+        self.inner.sender_id = sender_id.as_ref().clone();
         self
     }
 

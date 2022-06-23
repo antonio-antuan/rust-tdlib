@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the discussion group of a channel chat; requires can_change_info rights in the channel if it is specified
+/// Changes the discussion group of a channel chat; requires can_change_info administrator right in the channel if it is specified
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetChatDiscussionGroup {
     #[doc(hidden)]

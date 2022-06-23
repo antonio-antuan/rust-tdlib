@@ -18,6 +18,8 @@ pub struct ProfilePhoto {
     small: File,
     /// A big (640x640) user profile photo. The file can be downloaded only before the photo is changed
     big: File,
+    /// User profile photo minithumbnail; may be null
+    minithumbnail: Option<Minithumbnail>,
     /// True, if the photo has animated variant
     has_animation: Option<bool>,
 }
@@ -56,6 +58,10 @@ impl ProfilePhoto {
         &self.big
     }
 
+    pub fn minithumbnail(&self) -> &Option<Minithumbnail> {
+        &self.minithumbnail
+    }
+
     pub fn has_animation(&self) -> &Option<bool> {
         &self.has_animation
     }
@@ -83,6 +89,11 @@ impl RTDProfilePhotoBuilder {
 
     pub fn big<T: AsRef<File>>(&mut self, big: T) -> &mut Self {
         self.inner.big = big.as_ref().clone();
+        self
+    }
+
+    pub fn minithumbnail<T: AsRef<Minithumbnail>>(&mut self, minithumbnail: T) -> &mut Self {
+        self.inner.minithumbnail = Some(minithumbnail.as_ref().clone());
         self
     }
 
