@@ -788,7 +788,7 @@ fn deserialize_traits(
     Ok(None)
 }
 
-fn deserialize_direct_types(
+fn deserialize_direct_a(
     rtd_trait_type: &str,
     rtd_trait_value: serde_json::Value,
 ) -> Result<Option<TdType>, serde_json::Error> {
@@ -813,6 +813,15 @@ fn deserialize_direct_types(
         "availableReactions" => Some(TdType::AvailableReactions(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_b(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "background" => Some(TdType::Background(serde_json::from_value(rtd_trait_value)?)),
         "backgrounds" => Some(TdType::Backgrounds(serde_json::from_value(
             rtd_trait_value,
@@ -830,6 +839,15 @@ fn deserialize_direct_types(
         "botMenuButton" => Some(TdType::BotMenuButton(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_c(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "callId" => Some(TdType::CallId(serde_json::from_value(rtd_trait_value)?)),
         "callbackQueryAnswer" => Some(TdType::CallbackQueryAnswer(serde_json::from_value(
             rtd_trait_value,
@@ -879,17 +897,44 @@ fn deserialize_direct_types(
         "customRequestResult" => Some(TdType::CustomRequestResult(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_d(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "databaseStatistics" => Some(TdType::DatabaseStatistics(serde_json::from_value(
             rtd_trait_value,
         )?)),
         "deepLinkInfo" => Some(TdType::DeepLinkInfo(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_e(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "emailAddressAuthenticationCodeInfo" => Some(TdType::EmailAddressAuthenticationCodeInfo(
             serde_json::from_value(rtd_trait_value)?,
         )),
         "emojis" => Some(TdType::Emojis(serde_json::from_value(rtd_trait_value)?)),
         "error" => Some(TdType::Error(serde_json::from_value(rtd_trait_value)?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_f(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "file" => Some(TdType::File(serde_json::from_value(rtd_trait_value)?)),
         "fileDownloadedPrefixSize" => Some(TdType::FileDownloadedPrefixSize(
             serde_json::from_value(rtd_trait_value)?,
@@ -904,6 +949,15 @@ fn deserialize_direct_types(
         "foundMessages" => Some(TdType::FoundMessages(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_ghi(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "gameHighScores" => Some(TdType::GameHighScores(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -922,6 +976,15 @@ fn deserialize_direct_types(
         "inlineQueryResults" => Some(TdType::InlineQueryResults(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_lmno(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "languagePackInfo" => Some(TdType::LanguagePackInfo(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -969,6 +1032,15 @@ fn deserialize_direct_types(
         )?)),
         "ok" => Some(TdType::Ok(serde_json::from_value(rtd_trait_value)?)),
         "orderInfo" => Some(TdType::OrderInfo(serde_json::from_value(rtd_trait_value)?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_prs(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "passportAuthorizationForm" => Some(TdType::PassportAuthorizationForm(
             serde_json::from_value(rtd_trait_value)?,
         )),
@@ -1007,6 +1079,7 @@ fn deserialize_direct_types(
         "pushReceiverId" => Some(TdType::PushReceiverId(serde_json::from_value(
             rtd_trait_value,
         )?)),
+
         "recommendedChatFilters" => Some(TdType::RecommendedChatFilters(serde_json::from_value(
             rtd_trait_value,
         )?)),
@@ -1043,6 +1116,15 @@ fn deserialize_direct_types(
         "supergroupFullInfo" => Some(TdType::SupergroupFullInfo(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_t(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "tMeUrls" => Some(TdType::TMeUrls(serde_json::from_value(rtd_trait_value)?)),
         "temporaryPasswordState" => Some(TdType::TemporaryPasswordState(serde_json::from_value(
             rtd_trait_value,
@@ -1069,6 +1151,15 @@ fn deserialize_direct_types(
         "trendingStickerSets" => Some(TdType::TrendingStickerSets(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+
+fn deserialize_direct_uvw(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    Ok(match rtd_trait_type {
         "updates" => Some(TdType::Updates(serde_json::from_value(rtd_trait_value)?)),
         "user" => Some(TdType::User(serde_json::from_value(rtd_trait_value)?)),
         "userFullInfo" => Some(TdType::UserFullInfo(serde_json::from_value(
@@ -1086,6 +1177,38 @@ fn deserialize_direct_types(
         "webPageInstantView" => Some(TdType::WebPageInstantView(serde_json::from_value(
             rtd_trait_value,
         )?)),
+        _ => None,
+    })
+}
+fn deserialize_direct_types(
+    rtd_trait_type: &str,
+    rtd_trait_value: serde_json::Value,
+) -> Result<Option<TdType>, serde_json::Error> {
+    if rtd_trait_type.len() == 0 {
+        return Ok(None);
+    }
+    Ok(match rtd_trait_type.chars().next().unwrap() {
+        'a' => deserialize_direct_a(rtd_trait_type, rtd_trait_value)?,
+        'b' => deserialize_direct_b(rtd_trait_type, rtd_trait_value)?,
+        'c' => deserialize_direct_c(rtd_trait_type, rtd_trait_value)?,
+        'd' => deserialize_direct_d(rtd_trait_type, rtd_trait_value)?,
+        'e' => deserialize_direct_e(rtd_trait_type, rtd_trait_value)?,
+        'f' => deserialize_direct_f(rtd_trait_type, rtd_trait_value)?,
+        'g' => deserialize_direct_ghi(rtd_trait_type, rtd_trait_value)?,
+        'h' => deserialize_direct_ghi(rtd_trait_type, rtd_trait_value)?,
+        'i' => deserialize_direct_ghi(rtd_trait_type, rtd_trait_value)?,
+        'l' => deserialize_direct_lmno(rtd_trait_type, rtd_trait_value)?,
+        'm' => deserialize_direct_lmno(rtd_trait_type, rtd_trait_value)?,
+        'n' => deserialize_direct_lmno(rtd_trait_type, rtd_trait_value)?,
+        'o' => deserialize_direct_lmno(rtd_trait_type, rtd_trait_value)?,
+        'p' => deserialize_direct_prs(rtd_trait_type, rtd_trait_value)?,
+        'r' => deserialize_direct_prs(rtd_trait_type, rtd_trait_value)?,
+        's' => deserialize_direct_prs(rtd_trait_type, rtd_trait_value)?,
+        't' => deserialize_direct_t(rtd_trait_type, rtd_trait_value)?,
+        'u' => deserialize_direct_uvw(rtd_trait_type, rtd_trait_value)?,
+        'v' => deserialize_direct_uvw(rtd_trait_type, rtd_trait_value)?,
+        'w' => deserialize_direct_uvw(rtd_trait_type, rtd_trait_value)?,
+
         _ => None,
     })
 }
@@ -1875,8 +1998,33 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::types::_common::deserialize_update;
+    use crate::types::_common::{deserialize_direct_types, deserialize_update};
     use crate::types::{from_json, AuthorizationState, TdType, Update};
+
+    #[test]
+    fn test_simple() {
+        match deserialize_direct_types(
+            "ok",
+            serde_json::from_str::<serde_json::Value>(
+                r#"{"@type":"ok","@extra":"8a3a8501-cc90-4c57-9627-4a4fa2d4e308","@client_id":1}"#,
+            )
+            .unwrap(),
+        ) {
+            Ok(v) => match v {
+                Some(v) => match v {
+                    TdType::Ok(_) => {}
+
+                    _ => {
+                        panic!("serialization failed")
+                    }
+                },
+                None => panic!("serialization failed"),
+            },
+            Err(e) => {
+                panic!("{}", e)
+            }
+        }
+    }
 
     #[test]
     fn test_deserialize_enums() {
