@@ -1,6 +1,11 @@
 use crate::errors::*;
 use crate::types::*;
+use serde::de::{Deserialize, Deserializer, Error as SerdeError};
+use std::fmt::{Debug, Display};
+use std::str::FromStr;
 use uuid::Uuid;
+
+use serde::{de, Serialize};
 
 /// Contains full information about a user
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -25,11 +30,23 @@ pub struct UserFullInfo {
     /// True, if the current user needs to explicitly allow to share their phone number with the user when the method addContact is used
     need_phone_number_privacy_exception: bool,
     /// A short user bio; may be null for bots
+    #[serde(deserialize_with = "deserialize_bio")]
     bio: Option<FormattedText>,
     /// Number of group chats where both the other user and the current user are a member; 0 for the current user
     group_in_common_count: i32,
     /// For bots, information about the bot; may be null
     bot_info: Option<BotInfo>,
+}
+
+fn deserialize_bio<'de, D>(deserializer: D) -> Result<Option<FormattedText>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    if s.is_empty() {
+        return Ok(None);
+    }
+    Ok(Some(serde_json::from_str(&s).map_err(de::Error::custom)?))
 }
 
 impl RObject for UserFullInfo {

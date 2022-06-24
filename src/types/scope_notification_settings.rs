@@ -15,6 +15,7 @@ pub struct ScopeNotificationSettings {
     /// Identifier of the notification sound to be played; 0 if sound is disabled
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     sound_id: i64,
     /// True, if message content must be displayed in notifications
     show_preview: bool,

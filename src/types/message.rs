@@ -37,6 +37,7 @@ pub struct Message {
     /// True, if the message can be deleted for all users
     can_be_deleted_for_all_users: bool,
     /// True, if the list of added reactions is available through getMessageAddedReactions
+    #[serde(default)]
     can_get_added_reactions: bool,
     /// True, if the message statistics are available through getMessageStatistics
     can_get_statistics: bool,
@@ -61,6 +62,7 @@ pub struct Message {
     /// Information about interactions with the message; may be null
     interaction_info: Option<MessageInteractionInfo>,
     /// Information about unread reactions added to the message
+    #[serde(default)]
     unread_reactions: Vec<UnreadReaction>,
     /// If non-zero, the identifier of the chat to which the replied message belongs; Currently, only messages in the Replies chat can have different reply_in_chat_id and chat_id
     reply_in_chat_id: i64,

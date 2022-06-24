@@ -1732,7 +1732,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -1852,7 +1852,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -1876,7 +1876,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -1927,7 +1927,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -1951,7 +1951,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -1975,7 +1975,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -1999,7 +1999,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -3695,7 +3695,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -4236,7 +4236,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::SponsoredMessage(v) => Ok(v),
+                TdType::SponsoredMessage(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -7268,7 +7268,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::WebPage(v) => Ok(v),
+                TdType::WebPage(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -7414,7 +7414,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -9471,7 +9471,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -12066,7 +12066,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Update(v) => Ok(v),
+                TdType::Update(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);
@@ -12845,7 +12845,7 @@ where
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
             Ok(v) => match v {
-                TdType::Chat(v) => Ok(v),
+                TdType::Chat(v) => Ok(*v),
                 TdType::Error(v) => Err(RTDError::TDLibError(v)),
                 _ => {
                     log::error!("invalid response received: {:?}", v);

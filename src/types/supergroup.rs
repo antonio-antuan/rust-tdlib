@@ -29,8 +29,10 @@ pub struct Supergroup {
     /// True, if messages sent to the channel need to contain information about the sender. This field is only applicable to channels
     sign_messages: bool,
     /// True, if users need to join the supergroup before they can send messages. Always true for channels and non-discussion supergroups
+    #[serde(default)]
     join_to_send_messages: bool,
     /// True, if all users directly joining the supergroup need to be approved by supergroup administrators. Always false for channels and supergroups without username, location, or a linked chat
+    #[serde(default)]
     join_by_request: bool,
     /// True, if the slow mode is enabled in the supergroup
     is_slow_mode_enabled: bool,

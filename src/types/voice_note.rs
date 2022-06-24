@@ -17,8 +17,10 @@ pub struct VoiceNote {
     /// MIME type of the file; as defined by the sender
     mime_type: String,
     /// True, if speech recognition is completed; Premium users only
+    #[serde(default)]
     is_recognized: bool,
     /// Recognized text of the voice note; Premium users only. Call recognizeSpeech to get recognized text of the voice note
+    #[serde(default)]
     recognized_text: String,
     /// File containing the voice note
     voice: File,

@@ -15,10 +15,10 @@ pub enum DiceStickers {
     _Default,
     /// A regular animated sticker
     #[serde(rename(deserialize = "diceStickersRegular"))]
-    Regular(DiceStickersRegular),
+    Regular(Box<DiceStickersRegular>),
     /// Animated stickers to be combined into a slot machine
     #[serde(rename(deserialize = "diceStickersSlotMachine"))]
-    SlotMachine(DiceStickersSlotMachine),
+    SlotMachine(Box<DiceStickersSlotMachine>),
 }
 
 impl Default for DiceStickers {

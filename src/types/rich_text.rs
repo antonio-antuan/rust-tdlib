@@ -30,7 +30,7 @@ pub enum RichText {
     Fixed(RichTextFixed),
     /// A small image inside the text
     #[serde(rename(deserialize = "richTextIcon"))]
-    Icon(RichTextIcon),
+    Icon(Box<RichTextIcon>),
     /// An italicized rich text
     #[serde(rename(deserialize = "richTextItalic"))]
     Italic(RichTextItalic),

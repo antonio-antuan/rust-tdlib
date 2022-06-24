@@ -374,7 +374,7 @@ where
                         Err(e) => log::error!("can't deserialize tdlib data: {}", e),
                         Ok(t) => {
                             if let Some(TdType::Update(update)) = OBSERVER.notify(t) {
-                                if let Update::AuthorizationState(auth_state) = update {
+                                if let Update::AuthorizationState(auth_state) = *update {
                                     log::trace!("auth state send: {:?}", auth_state);
                                     match auth_sx.send_timeout(auth_state, send_timeout).await {
                                         Ok(_) => {
@@ -396,7 +396,7 @@ where
                                             if let Some(sender) = ctx.client().updates_sender() {
                                                 log::trace!("sending update to client");
                                                 match sender
-                                                    .send_timeout(Box::new(update), send_timeout)
+                                                    .send_timeout(update, send_timeout)
                                                     .await
                                                 {
                                                     Ok(_) => {

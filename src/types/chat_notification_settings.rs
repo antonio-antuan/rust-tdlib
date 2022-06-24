@@ -18,7 +18,10 @@ pub struct ChatNotificationSettings {
     use_default_sound: bool,
     /// Identifier of the notification sound to be played; 0 if sound is disabled
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        default = "default_zero"
+    )]
     sound_id: i64,
     /// If true, show_preview is ignored and the value for the relevant type of chat is used instead
     use_default_show_preview: bool,
@@ -32,6 +35,10 @@ pub struct ChatNotificationSettings {
     use_default_disable_mention_notifications: bool,
     /// If true, notifications for messages with mentions will be created as for an ordinary unread message
     disable_mention_notifications: bool,
+}
+
+fn default_zero() -> i64 {
+    0
 }
 
 impl RObject for ChatNotificationSettings {

@@ -114,7 +114,7 @@ pub enum Update {
     ChatTheme(UpdateChatTheme),
     /// The list of available chat themes has changed
     #[serde(rename(deserialize = "updateChatThemes"))]
-    ChatThemes(UpdateChatThemes),
+    ChatThemes(Box<UpdateChatThemes>),
     /// The title of a chat was changed
     #[serde(rename(deserialize = "updateChatTitle"))]
     ChatTitle(UpdateChatTitle),
@@ -216,7 +216,7 @@ pub enum Update {
     NewCallbackQuery(UpdateNewCallbackQuery),
     /// A new chat has been loaded/created. This update is guaranteed to come before the chat identifier is returned to the application. The chat field changes will be reported through separate updates
     #[serde(rename(deserialize = "updateNewChat"))]
-    NewChat(UpdateNewChat),
+    NewChat(Box<UpdateNewChat>),
     /// A user sent a join request to a chat; for bots only
     #[serde(rename(deserialize = "updateNewChatJoinRequest"))]
     NewChatJoinRequest(UpdateNewChatJoinRequest),
@@ -1631,6 +1631,7 @@ pub struct UpdateChatFilters {
     /// The new list of chat filters
     chat_filters: Vec<ChatFilterInfo>,
     /// Position of the main chat list among chat filters, 0-based
+    #[serde(default)]
     main_chat_list_position: i32,
 }
 

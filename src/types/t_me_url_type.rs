@@ -15,7 +15,7 @@ pub enum TMeUrlType {
     _Default,
     /// A chat invite link
     #[serde(rename(deserialize = "tMeUrlTypeChatInvite"))]
-    ChatInvite(TMeUrlTypeChatInvite),
+    ChatInvite(Box<TMeUrlTypeChatInvite>),
     /// A URL linking to a sticker set
     #[serde(rename(deserialize = "tMeUrlTypeStickerSet"))]
     StickerSet(TMeUrlTypeStickerSet),

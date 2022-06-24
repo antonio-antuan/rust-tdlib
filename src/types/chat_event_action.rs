@@ -66,10 +66,10 @@ pub enum ChatEventAction {
     ChatEventMemberRestricted(ChatEventMemberRestricted),
     /// A message was deleted
     #[serde(rename(deserialize = "chatEventMessageDeleted"))]
-    ChatEventMessageDeleted(ChatEventMessageDeleted),
+    ChatEventMessageDeleted(Box<ChatEventMessageDeleted>),
     /// A message was edited
     #[serde(rename(deserialize = "chatEventMessageEdited"))]
-    ChatEventMessageEdited(ChatEventMessageEdited),
+    ChatEventMessageEdited(Box<ChatEventMessageEdited>),
     /// A message was pinned
     #[serde(rename(deserialize = "chatEventMessagePinned"))]
     ChatEventMessagePinned(ChatEventMessagePinned),

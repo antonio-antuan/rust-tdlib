@@ -33,6 +33,7 @@ pub struct User {
     /// True, if the user is verified
     is_verified: bool,
     /// True, if the user is a Telegram Premium user
+    #[serde(default)]
     is_premium: bool,
     /// True, if the user is Telegram support account
     is_support: bool,
@@ -52,6 +53,7 @@ pub struct User {
     /// IETF language tag of the user's language; only available to bots
     language_code: String,
     /// True, if the user added the current bot to attachment menu; only available to bots
+    #[serde(default)]
     added_to_attachment_menu: bool,
 }
 

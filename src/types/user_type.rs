@@ -93,6 +93,7 @@ pub struct UserTypeBot {
     /// True, if the location of the user is expected to be sent with every inline query to this bot
     need_location: bool,
     /// True, if the bot can be added to attachment menu
+    #[serde(default)]
     can_be_added_to_attachment_menu: bool,
 }
 

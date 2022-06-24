@@ -54,10 +54,12 @@ pub struct Chat {
     /// Number of unread messages with a mention/reply in the chat
     unread_mention_count: i32,
     /// Number of messages with unread reactions in the chat
+    #[serde(default)]
     unread_reaction_count: i32,
     /// Notification settings for the chat
     notification_settings: ChatNotificationSettings,
     /// List of reactions, available in the chat
+    #[serde(default)]
     available_reactions: Vec<String>,
     /// Current message Time To Live setting (self-destruct timer) for the chat; 0 if not defined. TTL is counted from the time message or its content is viewed in secret chats and from the send date in other chats
     message_ttl: i32,

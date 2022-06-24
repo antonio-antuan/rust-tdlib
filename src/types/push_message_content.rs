@@ -87,7 +87,7 @@ pub enum PushMessageContent {
     ScreenshotTaken(PushMessageContentScreenshotTaken),
     /// A message with a sticker
     #[serde(rename(deserialize = "pushMessageContentSticker"))]
-    Sticker(PushMessageContentSticker),
+    Sticker(Box<PushMessageContentSticker>),
     /// A text message
     #[serde(rename(deserialize = "pushMessageContentText"))]
     Text(PushMessageContentText),
