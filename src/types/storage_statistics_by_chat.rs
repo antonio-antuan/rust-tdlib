@@ -11,12 +11,20 @@ pub struct StorageStatisticsByChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier; 0 if none
+
+    #[serde(default)]
     chat_id: i64,
     /// Total size of the files in the chat, in bytes
+
+    #[serde(default)]
     size: i64,
     /// Total number of files in the chat
+
+    #[serde(default)]
     count: i32,
     /// Statistics split by file types
+
+    #[serde(default)]
     by_file_type: Vec<StorageStatisticsByFileType>,
 }
 

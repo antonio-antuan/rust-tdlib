@@ -11,8 +11,12 @@ pub struct StickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of sticker sets found
+
+    #[serde(default)]
     total_count: i32,
     /// List of sticker sets
+
+    #[serde(default)]
     sets: Vec<StickerSetInfo>,
 }
 

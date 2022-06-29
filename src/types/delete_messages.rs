@@ -11,10 +11,16 @@ pub struct DeleteMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifiers of the messages to be deleted
+
+    #[serde(default)]
     message_ids: Vec<i64>,
     /// Pass true to delete messages for all chat members. Always true for supergroups, channels and secret chats
+
+    #[serde(default)]
     revoke: bool,
 
     #[serde(rename(serialize = "@type"))]

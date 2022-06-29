@@ -11,6 +11,8 @@ pub struct TestVectorInt {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Vector of numbers
+
+    #[serde(default)]
     value: Vec<i32>,
 }
 

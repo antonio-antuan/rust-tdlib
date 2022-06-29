@@ -11,6 +11,8 @@ pub struct GetFileMimeType {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The name of the file or path to the file
+
+    #[serde(default)]
     file_name: String,
 
     #[serde(rename(serialize = "@type"))]

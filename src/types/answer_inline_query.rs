@@ -13,18 +13,31 @@ pub struct AnswerInlineQuery {
     /// Identifier of the inline query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     inline_query_id: i64,
     /// Pass true if results may be cached and returned only for the user that sent the query. By default, results may be returned to any user who sends the same query
+
+    #[serde(default)]
     is_personal: bool,
     /// The results of the query
+
+    #[serde(default)]
     results: Vec<InputInlineQueryResult>,
     /// Allowed time to cache the results of the query, in seconds
+
+    #[serde(default)]
     cache_time: i32,
     /// Offset for the next inline query; pass an empty string if there are no more results
+
+    #[serde(default)]
     next_offset: String,
     /// If non-empty, this text must be shown on the button that opens a private chat with the bot and sends a start message to the bot with the parameter switch_pm_parameter
+
+    #[serde(default)]
     switch_pm_text: String,
     /// The parameter for the bot start message
+
+    #[serde(default)]
     switch_pm_parameter: String,
 
     #[serde(rename(serialize = "@type"))]

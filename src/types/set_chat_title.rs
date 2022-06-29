@@ -11,8 +11,12 @@ pub struct SetChatTitle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New title of the chat; 1-128 characters
+
+    #[serde(default)]
     title: String,
 
     #[serde(rename(serialize = "@type"))]

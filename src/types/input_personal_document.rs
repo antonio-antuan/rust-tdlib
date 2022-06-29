@@ -11,8 +11,12 @@ pub struct InputPersonalDocument {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of files containing the pages of the document
+
+    #[serde(default)]
     files: Vec<InputFile>,
     /// List of files containing a certified English translation of the document
+
+    #[serde(default)]
     translation: Vec<InputFile>,
 }
 

@@ -11,16 +11,26 @@ pub struct PasswordState {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if a 2-step verification password is set
+
+    #[serde(default)]
     has_password: bool,
     /// Hint for the password; may be empty
+
+    #[serde(default)]
     password_hint: String,
     /// True, if a recovery email is set
+
+    #[serde(default)]
     has_recovery_email_address: bool,
     /// True, if some Telegram Passport elements were saved
+
+    #[serde(default)]
     has_passport_data: bool,
     /// Information about the recovery email address to which the confirmation email was sent; may be null
     recovery_email_address_code_info: Option<EmailAddressAuthenticationCodeInfo>,
     /// If not 0, point in time (Unix timestamp) after which the password can be reset immediately using resetPassword
+
+    #[serde(default)]
     pending_reset_date: i32,
 }
 

@@ -11,6 +11,8 @@ pub struct HttpUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The URL
+
+    #[serde(default)]
     url: String,
 }
 

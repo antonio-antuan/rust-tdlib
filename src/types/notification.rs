@@ -11,10 +11,16 @@ pub struct Notification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique persistent identifier of this notification
+
+    #[serde(default)]
     id: i32,
     /// Notification date
+
+    #[serde(default)]
     date: i32,
     /// True, if the notification was explicitly sent without sound
+
+    #[serde(default)]
     is_silent: bool,
     /// Notification type
 

@@ -11,6 +11,8 @@ pub struct LogVerbosityLevel {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Log verbosity level
+
+    #[serde(default)]
     verbosity_level: i32,
 }
 

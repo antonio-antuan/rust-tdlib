@@ -13,8 +13,12 @@ pub struct FoundFileDownloads {
     /// Total number of suitable files, ignoring offset
     total_counts: DownloadedFileCounts,
     /// The list of files
+
+    #[serde(default)]
     files: Vec<FileDownload>,
     /// The offset for the next request. If empty, there are no more results
+
+    #[serde(default)]
     next_offset: String,
 }
 

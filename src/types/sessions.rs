@@ -11,8 +11,12 @@ pub struct Sessions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of sessions
+
+    #[serde(default)]
     sessions: Vec<Session>,
     /// Number of days of inactivity before sessions will automatically be terminated; 1-366 days
+
+    #[serde(default)]
     inactive_session_ttl_days: i32,
 }
 

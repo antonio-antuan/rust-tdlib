@@ -11,18 +11,28 @@ pub struct SecretChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Secret chat identifier
+
+    #[serde(default)]
     id: i32,
     /// Identifier of the chat partner
+
+    #[serde(default)]
     user_id: i64,
     /// State of the secret chat
 
     #[serde(skip_serializing_if = "SecretChatState::_is_default")]
     state: SecretChatState,
     /// True, if the chat was created by the current user; otherwise false
+
+    #[serde(default)]
     is_outbound: bool,
     /// Hash of the currently used key for comparison with the hash of the chat partner's key. This is a string of 36 little-endian bytes, which must be split into groups of 2 bits, each denoting a pixel of one of 4 colors FFFFFF, D5E6F3, 2D5775, and 2F99C9. The pixels must be used to make a 12x12 square image filled from left to right, top to bottom. Alternatively, the first 32 bytes of the hash can be converted to the hexadecimal format and printed as 32 2-digit hex numbers
+
+    #[serde(default)]
     key_hash: String,
     /// Secret chat layer; determines features supported by the chat partner's application. Nested text entities and underline and strikethrough entities are supported if the layer >= 101, files bigger than 2000MB are supported if the layer >= 143
+
+    #[serde(default)]
     layer: i32,
 }
 

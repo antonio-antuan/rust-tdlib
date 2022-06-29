@@ -88,6 +88,8 @@ pub struct AuthenticationCodeTypeCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Length of the code
+
+    #[serde(default)]
     length: i32,
 }
 
@@ -157,6 +159,8 @@ pub struct AuthenticationCodeTypeFlashCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pattern of the phone number from which the call will be made
+
+    #[serde(default)]
     pattern: String,
 }
 
@@ -226,8 +230,12 @@ pub struct AuthenticationCodeTypeMissedCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Prefix of the phone number from which the call will be made
+
+    #[serde(default)]
     phone_number_prefix: String,
     /// Number of digits in the code, excluding the prefix
+
+    #[serde(default)]
     length: i32,
 }
 
@@ -306,6 +314,8 @@ pub struct AuthenticationCodeTypeSms {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Length of the code
+
+    #[serde(default)]
     length: i32,
 }
 
@@ -375,6 +385,8 @@ pub struct AuthenticationCodeTypeTelegramMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Length of the code
+
+    #[serde(default)]
     length: i32,
 }
 

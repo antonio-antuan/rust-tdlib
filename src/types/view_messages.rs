@@ -11,12 +11,20 @@ pub struct ViewMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// If not 0, a message thread identifier in which the messages are being viewed
+
+    #[serde(default)]
     message_thread_id: i64,
     /// The identifiers of the messages being viewed
+
+    #[serde(default)]
     message_ids: Vec<i64>,
     /// Pass true to mark as read the specified messages even the chat is closed
+
+    #[serde(default)]
     force_read: bool,
 
     #[serde(rename(serialize = "@type"))]

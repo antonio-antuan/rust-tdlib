@@ -11,6 +11,8 @@ pub struct SearchStickerSet {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the sticker set
+
+    #[serde(default)]
     name: String,
 
     #[serde(rename(serialize = "@type"))]

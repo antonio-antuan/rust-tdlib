@@ -11,26 +11,48 @@ pub struct ChatAdministratorRights {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the administrator can get chat event log, get chat statistics, get message statistics in channels, get channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other privilege; applicable to supergroups and channels only
+
+    #[serde(default)]
     can_manage_chat: bool,
     /// True, if the administrator can change the chat title, photo, and other settings
+
+    #[serde(default)]
     can_change_info: bool,
     /// True, if the administrator can create channel posts; applicable to channels only
+
+    #[serde(default)]
     can_post_messages: bool,
     /// True, if the administrator can edit messages of other users and pin messages; applicable to channels only
+
+    #[serde(default)]
     can_edit_messages: bool,
     /// True, if the administrator can delete messages of other users
+
+    #[serde(default)]
     can_delete_messages: bool,
     /// True, if the administrator can invite new users to the chat
+
+    #[serde(default)]
     can_invite_users: bool,
     /// True, if the administrator can restrict, ban, or unban chat members; always true for channels
+
+    #[serde(default)]
     can_restrict_members: bool,
     /// True, if the administrator can pin messages; applicable to basic groups and supergroups only
+
+    #[serde(default)]
     can_pin_messages: bool,
     /// True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that were directly or indirectly promoted by them
+
+    #[serde(default)]
     can_promote_members: bool,
     /// True, if the administrator can manage video chats
+
+    #[serde(default)]
     can_manage_video_chats: bool,
     /// True, if the administrator isn't shown in the chat member list and sends messages anonymously; applicable to supergroups only
+
+    #[serde(default)]
     is_anonymous: bool,
 }
 

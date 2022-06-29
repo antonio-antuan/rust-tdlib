@@ -131,6 +131,8 @@ pub struct TextParseModeMarkdown {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Version of the parser: 0 or 1  Telegram Bot API "Markdown" parse mode, 2  Telegram Bot API "MarkdownV2" parse mode
+
+    #[serde(default)]
     version: i32,
 }
 

@@ -11,6 +11,8 @@ pub struct UploadStickerFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Sticker file owner; ignored for regular users
+
+    #[serde(default)]
     user_id: i64,
     /// Sticker file to upload
     sticker: InputSticker,

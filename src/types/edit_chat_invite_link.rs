@@ -11,16 +11,28 @@ pub struct EditChatInviteLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Invite link to be edited
+
+    #[serde(default)]
     invite_link: String,
     /// Invite link name; 0-32 characters
+
+    #[serde(default)]
     name: String,
     /// Point in time (Unix timestamp) when the link will expire; pass 0 if never
+
+    #[serde(default)]
     expiration_date: i32,
     /// The maximum number of chat members that can join the chat via the link simultaneously; 0-99999; pass 0 if not limited
+
+    #[serde(default)]
     member_limit: i32,
     /// Pass true if users joining the chat via the link need to be approved by chat administrators. In this case, member_limit must be 0
+
+    #[serde(default)]
     creates_join_request: bool,
 
     #[serde(rename(serialize = "@type"))]

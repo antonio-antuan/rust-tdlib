@@ -11,8 +11,12 @@ pub struct AddStickerToSet {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Sticker set owner
+
+    #[serde(default)]
     user_id: i64,
     /// Sticker set name
+
+    #[serde(default)]
     name: String,
     /// Sticker to add to the set
     sticker: InputSticker,

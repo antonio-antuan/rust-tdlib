@@ -11,20 +11,31 @@ pub struct SendInlineQueryResultMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Target chat
+
+    #[serde(default)]
     chat_id: i64,
     /// If not 0, a message thread identifier in which the message will be sent
+
+    #[serde(default)]
     message_thread_id: i64,
     /// Identifier of a replied message; 0 if none
+
+    #[serde(default)]
     reply_to_message_id: i64,
     /// Options to be used to send the message; pass null to use default options
     options: MessageSendOptions,
     /// Identifier of the inline query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     query_id: i64,
     /// Identifier of the inline result
+
+    #[serde(default)]
     result_id: String,
     /// Pass true to hide the bot, via which the message is sent. Can be used only for bots GetOption("animation_search_bot_username"), GetOption("photo_search_bot_username"), and GetOption("venue_search_bot_username")
+
+    #[serde(default)]
     hide_via_bot: bool,
 
     #[serde(rename(serialize = "@type"))]

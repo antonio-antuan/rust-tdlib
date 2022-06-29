@@ -11,6 +11,8 @@ pub struct GetRecentlyOpenedChats {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The maximum number of chats to be returned
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,8 +11,12 @@ pub struct Error {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Error code; subject to future changes. If the error code is 406, the error message must not be processed in any way and must not be displayed to the user
+
+    #[serde(default)]
     code: i32,
     /// Error message; subject to future changes
+
+    #[serde(default)]
     message: String,
 }
 

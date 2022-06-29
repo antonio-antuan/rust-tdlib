@@ -83,6 +83,8 @@ pub struct StatisticalGraphAsync {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The token to use for data loading
+
+    #[serde(default)]
     token: String,
 }
 
@@ -152,8 +154,12 @@ pub struct StatisticalGraphData {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Graph data in JSON format
+
+    #[serde(default)]
     json_data: String,
     /// If non-empty, a token which can be used to receive a zoomed in graph
+
+    #[serde(default)]
     zoom_token: String,
 }
 
@@ -232,6 +238,8 @@ pub struct StatisticalGraphError {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The error message
+
+    #[serde(default)]
     error_message: String,
 }
 

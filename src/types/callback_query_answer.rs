@@ -11,10 +11,16 @@ pub struct CallbackQueryAnswer {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text of the answer
+
+    #[serde(default)]
     text: String,
     /// True, if an alert must be shown to the user instead of a toast notification
+
+    #[serde(default)]
     show_alert: bool,
     /// URL to be opened
+
+    #[serde(default)]
     url: String,
 }
 

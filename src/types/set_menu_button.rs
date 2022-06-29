@@ -11,6 +11,8 @@ pub struct SetMenuButton {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user or 0 to set menu button for all users
+
+    #[serde(default)]
     user_id: i64,
     /// New menu button
     menu_button: BotMenuButton,

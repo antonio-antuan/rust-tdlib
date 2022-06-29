@@ -11,8 +11,12 @@ pub struct GetLanguagePackStrings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Language pack identifier of the strings to be returned
+
+    #[serde(default)]
     language_pack_id: String,
     /// Language pack keys of the strings to be returned; leave empty to request all available strings
+
+    #[serde(default)]
     keys: Vec<String>,
 
     #[serde(rename(serialize = "@type"))]

@@ -13,8 +13,11 @@ pub struct WebAppInfo {
     /// Unique identifier for the Web App launch
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     launch_id: i64,
     /// A Web App URL to open in a web view
+
+    #[serde(default)]
     url: String,
 }
 

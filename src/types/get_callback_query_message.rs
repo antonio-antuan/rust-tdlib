@@ -11,12 +11,17 @@ pub struct GetCallbackQueryMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat the message belongs to
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
     /// Identifier of the callback query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     callback_query_id: i64,
 
     #[serde(rename(serialize = "@type"))]

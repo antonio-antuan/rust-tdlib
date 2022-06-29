@@ -11,6 +11,8 @@ pub struct TestInt {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number
+
+    #[serde(default)]
     value: i32,
 }
 

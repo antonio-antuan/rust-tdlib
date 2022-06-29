@@ -11,6 +11,8 @@ pub struct ConfirmQrCodeAuthentication {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A link from a QR code. The link must be scanned by the in-app camera
+
+    #[serde(default)]
     link: String,
 
     #[serde(rename(serialize = "@type"))]

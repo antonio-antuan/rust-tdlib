@@ -11,10 +11,16 @@ pub struct AddChatMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the user
+
+    #[serde(default)]
     user_id: i64,
     /// The number of earlier messages from the chat to be forwarded to the new member; up to 100. Ignored for supergroups and channels, or if the added user is a bot
+
+    #[serde(default)]
     forward_limit: i32,
 
     #[serde(rename(serialize = "@type"))]

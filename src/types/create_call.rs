@@ -11,10 +11,14 @@ pub struct CreateCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user to be called
+
+    #[serde(default)]
     user_id: i64,
     /// The call protocols supported by the application
     protocol: CallProtocol,
     /// Pass true to create a video call
+
+    #[serde(default)]
     is_video: bool,
 
     #[serde(rename(serialize = "@type"))]

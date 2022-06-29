@@ -86,6 +86,8 @@ pub struct ChatStatisticsChannel {
     /// Mean number of times the recently sent messages was shared
     mean_share_count: StatisticalValue,
     /// A percentage of users with enabled notifications for the chat
+
+    #[serde(default)]
     enabled_notifications_percentage: f32,
     /// A graph containing number of members in the chat
 
@@ -124,6 +126,8 @@ pub struct ChatStatisticsChannel {
     #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     instant_view_interaction_graph: StatisticalGraph,
     /// Detailed statistics about number of views and shares of recently sent messages
+
+    #[serde(default)]
     recent_message_interactions: Vec<ChatStatisticsMessageInteractionInfo>,
 }
 
@@ -388,10 +392,16 @@ pub struct ChatStatisticsSupergroup {
     #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     week_graph: StatisticalGraph,
     /// List of users sent most messages in the last week
+
+    #[serde(default)]
     top_senders: Vec<ChatStatisticsMessageSenderInfo>,
     /// List of most active administrators in the last week
+
+    #[serde(default)]
     top_administrators: Vec<ChatStatisticsAdministratorActionsInfo>,
     /// List of most active inviters of new members in the last week
+
+    #[serde(default)]
     top_inviters: Vec<ChatStatisticsInviterInfo>,
 }
 

@@ -13,14 +13,23 @@ pub struct InlineQueryResults {
     /// Unique identifier of the inline query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     inline_query_id: i64,
     /// The offset for the next request. If empty, there are no more results
+
+    #[serde(default)]
     next_offset: String,
     /// Results of the query
+
+    #[serde(default)]
     results: Vec<InlineQueryResult>,
     /// If non-empty, this text must be shown on the button, which opens a private chat with the bot and sends the bot a start message with the switch_pm_parameter
+
+    #[serde(default)]
     switch_pm_text: String,
     /// Parameter for the bot start message
+
+    #[serde(default)]
     switch_pm_parameter: String,
 }
 

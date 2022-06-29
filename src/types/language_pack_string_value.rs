@@ -141,6 +141,8 @@ pub struct LanguagePackStringValueOrdinary {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// String value
+
+    #[serde(default)]
     value: String,
 }
 
@@ -210,16 +212,28 @@ pub struct LanguagePackStringValuePluralized {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Value for zero objects
+
+    #[serde(default)]
     zero_value: String,
     /// Value for one object
+
+    #[serde(default)]
     one_value: String,
     /// Value for two objects
+
+    #[serde(default)]
     two_value: String,
     /// Value for few objects
+
+    #[serde(default)]
     few_value: String,
     /// Value for many objects
+
+    #[serde(default)]
     many_value: String,
     /// Default value
+
+    #[serde(default)]
     other_value: String,
 }
 

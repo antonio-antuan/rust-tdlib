@@ -11,6 +11,8 @@ pub struct GetPhoneNumberInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The phone number prefix
+
+    #[serde(default)]
     phone_number_prefix: String,
 
     #[serde(rename(serialize = "@type"))]

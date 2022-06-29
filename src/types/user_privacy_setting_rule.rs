@@ -161,6 +161,8 @@ pub struct UserPrivacySettingRuleAllowChatMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat identifiers, total number of chats in all rules must not exceed 20
+
+    #[serde(default)]
     chat_ids: Vec<i64>,
 }
 
@@ -290,6 +292,8 @@ pub struct UserPrivacySettingRuleAllowUsers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The user identifiers, total number of users in all rules must not exceed 1000
+
+    #[serde(default)]
     user_ids: Vec<i64>,
 }
 
@@ -417,6 +421,8 @@ pub struct UserPrivacySettingRuleRestrictChatMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat identifiers, total number of chats in all rules must not exceed 20
+
+    #[serde(default)]
     chat_ids: Vec<i64>,
 }
 
@@ -550,6 +556,8 @@ pub struct UserPrivacySettingRuleRestrictUsers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The user identifiers, total number of users in all rules must not exceed 1000
+
+    #[serde(default)]
     user_ids: Vec<i64>,
 }
 

@@ -13,6 +13,8 @@ pub struct SetCustomLanguagePack {
     /// Information about the language pack. Language pack ID must start with 'X', consist only of English letters, digits and hyphens, and must not exceed 64 characters. Can be called before authorization
     info: LanguagePackInfo,
     /// Strings of the new language pack
+
+    #[serde(default)]
     strings: Vec<LanguagePackString>,
 
     #[serde(rename(serialize = "@type"))]

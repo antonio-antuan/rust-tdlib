@@ -15,7 +15,7 @@ pub enum TMeUrlType {
     _Default,
     /// A chat invite link
     #[serde(rename(deserialize = "tMeUrlTypeChatInvite"))]
-    ChatInvite(Box<TMeUrlTypeChatInvite>),
+    ChatInvite(TMeUrlTypeChatInvite),
     /// A URL linking to a sticker set
     #[serde(rename(deserialize = "tMeUrlTypeStickerSet"))]
     StickerSet(TMeUrlTypeStickerSet),
@@ -154,6 +154,7 @@ pub struct TMeUrlTypeStickerSet {
     /// Identifier of the sticker set
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     sticker_set_id: i64,
 }
 
@@ -223,6 +224,8 @@ pub struct TMeUrlTypeSupergroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup or channel
+
+    #[serde(default)]
     supergroup_id: i64,
 }
 
@@ -292,6 +295,8 @@ pub struct TMeUrlTypeUser {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user
+
+    #[serde(default)]
     user_id: i64,
 }
 

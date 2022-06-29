@@ -11,6 +11,8 @@ pub struct PassportRequiredElement {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of Telegram Passport elements any of which is enough to provide
+
+    #[serde(default)]
     suitable_elements: Vec<PassportSuitableElement>,
 }
 

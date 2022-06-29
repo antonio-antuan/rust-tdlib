@@ -11,6 +11,8 @@ pub struct Chat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat unique identifier
+
+    #[serde(default)]
     id: i64,
     /// Type of the chat
 
@@ -18,6 +20,8 @@ pub struct Chat {
     #[serde(skip_serializing_if = "ChatType::_is_default")]
     type_: ChatType,
     /// Chat title
+
+    #[serde(default)]
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
@@ -26,44 +30,76 @@ pub struct Chat {
     /// Last message in the chat; may be null
     last_message: Option<Message>,
     /// Positions of the chat in chat lists
+
+    #[serde(default)]
     positions: Option<Vec<ChatPosition>>,
     /// Identifier of a user or chat that is selected to send messages in the chat; may be null if the user can't change message sender
     message_sender_id: Option<MessageSender>,
     /// True, if chat content can't be saved locally, forwarded, or copied
+
+    #[serde(default)]
     has_protected_content: bool,
     /// True, if the chat is marked as unread
+
+    #[serde(default)]
     is_marked_as_unread: bool,
     /// True, if the chat is blocked by the current user and private messages from the chat can't be received
+
+    #[serde(default)]
     is_blocked: bool,
     /// True, if the chat has scheduled messages
+
+    #[serde(default)]
     has_scheduled_messages: bool,
     /// True, if the chat messages can be deleted only for the current user while other users will continue to see the messages
+
+    #[serde(default)]
     can_be_deleted_only_for_self: bool,
     /// True, if the chat messages can be deleted for all users
+
+    #[serde(default)]
     can_be_deleted_for_all_users: bool,
     /// True, if the chat can be reported to Telegram moderators through reportChat or reportChatPhoto
+
+    #[serde(default)]
     can_be_reported: bool,
     /// Default value of the disable_notification parameter, used when a message is sent to the chat
+
+    #[serde(default)]
     default_disable_notification: bool,
     /// Number of unread messages in the chat
+
+    #[serde(default)]
     unread_count: i32,
     /// Identifier of the last read incoming message
+
+    #[serde(default)]
     last_read_inbox_message_id: i64,
     /// Identifier of the last read outgoing message
+
+    #[serde(default)]
     last_read_outbox_message_id: i64,
     /// Number of unread messages with a mention/reply in the chat
+
+    #[serde(default)]
     unread_mention_count: i32,
     /// Number of messages with unread reactions in the chat
+
     #[serde(default)]
     unread_reaction_count: i32,
     /// Notification settings for the chat
     notification_settings: ChatNotificationSettings,
     /// List of reactions, available in the chat
+
     #[serde(default)]
     available_reactions: Vec<String>,
     /// Current message Time To Live setting (self-destruct timer) for the chat; 0 if not defined. TTL is counted from the time message or its content is viewed in secret chats and from the send date in other chats
+
+    #[serde(default)]
     message_ttl: i32,
     /// If non-empty, name of a theme, set for the chat
+
+    #[serde(default)]
     theme_name: String,
     /// Information about actions which must be possible to do through the chat action bar; may be null
     action_bar: Option<ChatActionBar>,
@@ -72,10 +108,14 @@ pub struct Chat {
     /// Information about pending join requests; may be null
     pending_join_requests: Option<ChatJoinRequestsInfo>,
     /// Identifier of the message from which reply markup needs to be used; 0 if there is no default custom reply markup in the chat
+
+    #[serde(default)]
     reply_markup_message_id: i64,
     /// A draft of a message in the chat; may be null
     draft_message: Option<DraftMessage>,
     /// Application-specific data associated with the chat. (For example, the chat scroll position or local chat notification settings can be stored here.) Persistent if the message database is used
+
+    #[serde(default)]
     client_data: String,
 }
 

@@ -11,12 +11,20 @@ pub struct MessageReaction {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text representation of the reaction
+
+    #[serde(default)]
     reaction: String,
     /// Number of times the reaction was added
+
+    #[serde(default)]
     total_count: i32,
     /// True, if the reaction is chosen by the current user
+
+    #[serde(default)]
     is_chosen: bool,
     /// Identifiers of at most 3 recent message senders, added the reaction; available in private, basic group and supergroup chats
+
+    #[serde(default)]
     recent_sender_ids: Vec<MessageSender>,
 }
 

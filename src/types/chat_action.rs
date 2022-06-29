@@ -660,6 +660,8 @@ pub struct ChatActionUploadingDocument {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Upload progress, as a percentage
+
+    #[serde(default)]
     progress: i32,
 }
 
@@ -729,6 +731,8 @@ pub struct ChatActionUploadingPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Upload progress, as a percentage
+
+    #[serde(default)]
     progress: i32,
 }
 
@@ -798,6 +802,8 @@ pub struct ChatActionUploadingVideo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Upload progress, as a percentage
+
+    #[serde(default)]
     progress: i32,
 }
 
@@ -867,6 +873,8 @@ pub struct ChatActionUploadingVideoNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Upload progress, as a percentage
+
+    #[serde(default)]
     progress: i32,
 }
 
@@ -936,6 +944,8 @@ pub struct ChatActionUploadingVoiceNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Upload progress, as a percentage
+
+    #[serde(default)]
     progress: i32,
 }
 
@@ -1005,6 +1015,8 @@ pub struct ChatActionWatchingAnimations {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The animated emoji
+
+    #[serde(default)]
     emoji: String,
 }
 

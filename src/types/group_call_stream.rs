@@ -11,10 +11,16 @@ pub struct GroupCallStream {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of an audio/video channel
+
+    #[serde(default)]
     channel_id: i32,
     /// Scale of segment durations in the stream. The duration is 1000/(2**scale) milliseconds
+
+    #[serde(default)]
     scale: i32,
     /// Point in time when the stream currently ends; Unix timestamp in milliseconds
+
+    #[serde(default)]
     time_offset: i64,
 }
 

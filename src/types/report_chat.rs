@@ -11,14 +11,20 @@ pub struct ReportChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifiers of reported messages; may be empty to report the whole chat
+
+    #[serde(default)]
     message_ids: Vec<i64>,
     /// The reason for reporting the chat
 
     #[serde(skip_serializing_if = "ChatReportReason::_is_default")]
     reason: ChatReportReason,
     /// Additional report details; 0-1024 characters
+
+    #[serde(default)]
     text: String,
 
     #[serde(rename(serialize = "@type"))]

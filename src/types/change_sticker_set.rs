@@ -13,10 +13,15 @@ pub struct ChangeStickerSet {
     /// Identifier of the sticker set
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     set_id: i64,
     /// The new value of is_installed
+
+    #[serde(default)]
     is_installed: bool,
     /// The new value of is_archived. A sticker set can't be installed and archived simultaneously
+
+    #[serde(default)]
     is_archived: bool,
 
     #[serde(rename(serialize = "@type"))]

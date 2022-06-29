@@ -11,8 +11,12 @@ pub struct Document {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Original name of the file; as defined by the sender
+
+    #[serde(default)]
     file_name: String,
     /// MIME type of the file; as defined by the sender
+
+    #[serde(default)]
     mime_type: String,
     /// Document minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,

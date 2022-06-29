@@ -11,8 +11,12 @@ pub struct SetSupergroupUsername {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup or channel
+
+    #[serde(default)]
     supergroup_id: i64,
     /// New value of the username. Use an empty string to remove the username
+
+    #[serde(default)]
     username: String,
 
     #[serde(rename(serialize = "@type"))]

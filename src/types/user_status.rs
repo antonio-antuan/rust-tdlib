@@ -267,6 +267,8 @@ pub struct UserStatusOffline {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the user was last online
+
+    #[serde(default)]
     was_online: i32,
 }
 
@@ -336,6 +338,8 @@ pub struct UserStatusOnline {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the user's online status will expire
+
+    #[serde(default)]
     expires: i32,
 }
 

@@ -78,10 +78,16 @@ pub struct ProxyTypeHttp {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username for logging in; may be empty
+
+    #[serde(default)]
     username: String,
     /// Password for logging in; may be empty
+
+    #[serde(default)]
     password: String,
     /// Pass true if the proxy supports only HTTP requests and doesn't support transparent TCP connections via HTTP CONNECT method
+
+    #[serde(default)]
     http_only: bool,
 }
 
@@ -169,6 +175,8 @@ pub struct ProxyTypeMtproto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The proxy's secret in hexadecimal encoding
+
+    #[serde(default)]
     secret: String,
 }
 
@@ -238,8 +246,12 @@ pub struct ProxyTypeSocks5 {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username for logging in; may be empty
+
+    #[serde(default)]
     username: String,
     /// Password for logging in; may be empty
+
+    #[serde(default)]
     password: String,
 }
 

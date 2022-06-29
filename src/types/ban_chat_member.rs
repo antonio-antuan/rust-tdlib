@@ -11,14 +11,20 @@ pub struct BanChatMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Member identifier
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     member_id: MessageSender,
     /// Point in time (Unix timestamp) when the user will be unbanned; 0 if never. If the user is banned for more than 366 days or for less than 30 seconds from the current time, the user is considered to be banned forever. Ignored in basic groups and if a chat is banned
+
+    #[serde(default)]
     banned_until_date: i32,
     /// Pass true to delete all messages in the chat for the user that is being removed. Always true for supergroups and channels
+
+    #[serde(default)]
     revoke_messages: bool,
 
     #[serde(rename(serialize = "@type"))]

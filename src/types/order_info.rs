@@ -11,10 +11,16 @@ pub struct OrderInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the user
+
+    #[serde(default)]
     name: String,
     /// Phone number of the user
+
+    #[serde(default)]
     phone_number: String,
     /// Email address of the user
+
+    #[serde(default)]
     email_address: String,
     /// Shipping address for this order; may be null
     shipping_address: Option<Address>,

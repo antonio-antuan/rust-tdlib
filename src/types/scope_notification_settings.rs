@@ -11,6 +11,8 @@ pub struct ScopeNotificationSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Time left before notifications will be unmuted, in seconds
+
+    #[serde(default)]
     mute_for: i32,
     /// Identifier of the notification sound to be played; 0 if sound is disabled
 
@@ -18,10 +20,16 @@ pub struct ScopeNotificationSettings {
     #[serde(default)]
     sound_id: i64,
     /// True, if message content must be displayed in notifications
+
+    #[serde(default)]
     show_preview: bool,
     /// True, if notifications for incoming pinned messages will be created as for an ordinary unread message
+
+    #[serde(default)]
     disable_pinned_message_notifications: bool,
     /// True, if notifications for messages with mentions will be created as for an ordinary unread message
+
+    #[serde(default)]
     disable_mention_notifications: bool,
 }
 

@@ -11,6 +11,8 @@ pub struct GetBankCardInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The bank card number
+
+    #[serde(default)]
     bank_card_number: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,10 +11,16 @@ pub struct File {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique file identifier
+
+    #[serde(default)]
     id: i32,
     /// File size, in bytes; 0 if unknown
+
+    #[serde(default)]
     size: i64,
     /// Approximate file size in bytes in case the exact file size is unknown. Can be used to show download/upload progress
+
+    #[serde(default)]
     expected_size: i64,
     /// Information about the local copy of the file
     local: LocalFile,

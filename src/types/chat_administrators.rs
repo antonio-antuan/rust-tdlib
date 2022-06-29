@@ -11,6 +11,8 @@ pub struct ChatAdministrators {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of chat administrators
+
+    #[serde(default)]
     administrators: Vec<ChatAdministrator>,
 }
 

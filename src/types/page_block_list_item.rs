@@ -11,8 +11,12 @@ pub struct PageBlockListItem {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Item label
+
+    #[serde(default)]
     label: String,
     /// Item blocks
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
 }
 

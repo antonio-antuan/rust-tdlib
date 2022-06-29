@@ -11,8 +11,12 @@ pub struct ChatStatisticsInviterInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// Number of new members invited by the user
+
+    #[serde(default)]
     added_member_count: i32,
 }
 

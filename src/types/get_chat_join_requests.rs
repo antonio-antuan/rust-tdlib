@@ -11,14 +11,22 @@ pub struct GetChatJoinRequests {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Invite link for which to return join requests. If empty, all join requests will be returned. Requires administrator privileges and can_invite_users right in the chat for own links and owner privileges for other links
+
+    #[serde(default)]
     invite_link: String,
     /// A query to search for in the first names, last names and usernames of the users to return
+
+    #[serde(default)]
     query: String,
     /// A chat join request from which to return next requests; pass null to get results from the beginning
     offset_request: ChatJoinRequest,
     /// The maximum number of requests to join the chat to return
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

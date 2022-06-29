@@ -11,8 +11,12 @@ pub struct ToggleBotIsAddedToAttachmentMenu {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Bot's user identifier
+
+    #[serde(default)]
     bot_user_id: i64,
     /// Pass true to add the bot to attachment menu; pass false to remove the bot from attachment menu
+
+    #[serde(default)]
     is_added: bool,
 
     #[serde(rename(serialize = "@type"))]

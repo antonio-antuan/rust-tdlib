@@ -83,6 +83,8 @@ pub struct ResetPasswordResultDeclined {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the password reset can be retried
+
+    #[serde(default)]
     retry_date: i32,
 }
 
@@ -210,6 +212,8 @@ pub struct ResetPasswordResultPending {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) after which the password can be reset immediately using resetPassword
+
+    #[serde(default)]
     pending_reset_date: i32,
 }
 

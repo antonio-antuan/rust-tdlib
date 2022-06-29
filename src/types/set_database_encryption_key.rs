@@ -11,6 +11,8 @@ pub struct SetDatabaseEncryptionKey {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New encryption key
+
+    #[serde(default)]
     new_encryption_key: String,
 
     #[serde(rename(serialize = "@type"))]

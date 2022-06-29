@@ -11,14 +11,22 @@ pub struct OpenWebApp {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which the Web App is opened
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the bot, providing the Web App
+
+    #[serde(default)]
     bot_user_id: i64,
     /// The URL from an inlineKeyboardButtonTypeWebApp button, a botMenuButton button, or an internalLinkTypeAttachmentMenuBot link, or an empty string otherwise
+
+    #[serde(default)]
     url: String,
     /// Preferred Web App theme; pass null to use the default theme
     theme: ThemeParameters,
     /// Identifier of the replied message for the message sent by the Web App; 0 if none
+
+    #[serde(default)]
     reply_to_message_id: i64,
 
     #[serde(rename(serialize = "@type"))]

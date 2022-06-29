@@ -11,14 +11,24 @@ pub struct GetPollVoters {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the poll belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message containing the poll
+
+    #[serde(default)]
     message_id: i64,
     /// 0-based identifier of the answer option
+
+    #[serde(default)]
     option_id: i32,
     /// Number of users to skip in the result; must be non-negative
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of users to be returned; must be positive and can't be greater than 50. For optimal performance, the number of returned users is chosen by TDLib and can be smaller than the specified limit, even if the end of the voter list has not been reached
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

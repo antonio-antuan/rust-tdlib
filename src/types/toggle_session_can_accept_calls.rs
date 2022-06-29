@@ -13,8 +13,11 @@ pub struct ToggleSessionCanAcceptCalls {
     /// Session identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     session_id: i64,
     /// Pass true to allow accepting incoming calls by the session; pass false otherwise
+
+    #[serde(default)]
     can_accept_calls: bool,
 
     #[serde(rename(serialize = "@type"))]

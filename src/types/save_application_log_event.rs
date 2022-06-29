@@ -13,8 +13,11 @@ pub struct SaveApplicationLogEvent {
     /// Event type
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(default)]
     type_: String,
     /// Optional chat identifier, associated with the event
+
+    #[serde(default)]
     chat_id: i64,
     /// The log event data
 

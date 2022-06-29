@@ -11,8 +11,12 @@ pub struct MessagePositions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Total number of messages found
+
+    #[serde(default)]
     total_count: i32,
     /// List of message positions
+
+    #[serde(default)]
     positions: Vec<MessagePosition>,
 }
 

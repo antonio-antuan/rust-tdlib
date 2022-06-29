@@ -11,10 +11,16 @@ pub struct AddedReactions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The total number of found reactions
+
+    #[serde(default)]
     total_count: i32,
     /// The list of added reactions
+
+    #[serde(default)]
     reactions: Vec<AddedReaction>,
     /// The offset for the next request. If empty, there are no more results
+
+    #[serde(default)]
     next_offset: String,
 }
 

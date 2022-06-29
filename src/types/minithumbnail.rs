@@ -11,10 +11,16 @@ pub struct Minithumbnail {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Thumbnail width, usually doesn't exceed 40
+
+    #[serde(default)]
     width: i32,
     /// Thumbnail height, usually doesn't exceed 40
+
+    #[serde(default)]
     height: i32,
     /// The thumbnail in JPEG format
+
+    #[serde(default)]
     data: String,
 }
 

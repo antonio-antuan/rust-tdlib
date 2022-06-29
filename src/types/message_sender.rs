@@ -73,6 +73,8 @@ pub struct MessageSenderChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat that sent the message
+
+    #[serde(default)]
     chat_id: i64,
 }
 
@@ -142,6 +144,8 @@ pub struct MessageSenderUser {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user that sent the message
+
+    #[serde(default)]
     user_id: i64,
 }
 

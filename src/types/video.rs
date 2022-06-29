@@ -11,18 +11,32 @@ pub struct Video {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Duration of the video, in seconds; as defined by the sender
+
+    #[serde(default)]
     duration: i32,
     /// Video width; as defined by the sender
+
+    #[serde(default)]
     width: i32,
     /// Video height; as defined by the sender
+
+    #[serde(default)]
     height: i32,
     /// Original name of the file; as defined by the sender
+
+    #[serde(default)]
     file_name: String,
     /// MIME type of the file; as defined by the sender
+
+    #[serde(default)]
     mime_type: String,
     /// True, if stickers were added to the video. The list of corresponding sticker sets can be received using getAttachedStickerSets
+
+    #[serde(default)]
     has_stickers: bool,
     /// True, if the video is supposed to be streamed
+
+    #[serde(default)]
     supports_streaming: bool,
     /// Video minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,

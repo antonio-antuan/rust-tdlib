@@ -13,12 +13,19 @@ pub struct Sticker {
     /// The identifier of the sticker set to which the sticker belongs; 0 if none
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     set_id: i64,
     /// Sticker width; as defined by the sender
+
+    #[serde(default)]
     width: i32,
     /// Sticker height; as defined by the sender
+
+    #[serde(default)]
     height: i32,
     /// Emoji corresponding to the sticker
+
+    #[serde(default)]
     emoji: String,
     /// Sticker type
 
@@ -26,6 +33,8 @@ pub struct Sticker {
     #[serde(skip_serializing_if = "StickerType::_is_default")]
     type_: StickerType,
     /// Sticker's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
+
+    #[serde(default)]
     outline: Vec<ClosedVectorPath>,
     /// Sticker thumbnail in WEBP or JPEG format; may be null
     thumbnail: Option<Thumbnail>,

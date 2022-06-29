@@ -11,6 +11,8 @@ pub struct JsonObjectMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Member's key
+
+    #[serde(default)]
     key: String,
     /// Member's value
 

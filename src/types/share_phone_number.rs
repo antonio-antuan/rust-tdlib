@@ -11,6 +11,8 @@ pub struct SharePhoneNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user with whom to share the phone number. The user must be a mutual contact
+
+    #[serde(default)]
     user_id: i64,
 
     #[serde(rename(serialize = "@type"))]

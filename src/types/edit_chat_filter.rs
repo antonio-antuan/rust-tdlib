@@ -11,6 +11,8 @@ pub struct EditChatFilter {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat filter identifier
+
+    #[serde(default)]
     chat_filter_id: i32,
     /// The edited chat filter
     filter: ChatFilter,

@@ -11,30 +11,56 @@ pub struct Invoice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// ISO 4217 currency code
+
+    #[serde(default)]
     currency: String,
     /// A list of objects used to calculate the total price of the product
+
+    #[serde(default)]
     price_parts: Vec<LabeledPricePart>,
     /// The maximum allowed amount of tip in the smallest units of the currency
+
+    #[serde(default)]
     max_tip_amount: i64,
     /// Suggested amounts of tip in the smallest units of the currency
+
+    #[serde(default)]
     suggested_tip_amounts: Vec<i64>,
     /// An HTTP URL with terms of service for recurring payments. If non-empty, the invoice payment will result in recurring payments and the user must accept the terms of service before allowed to pay
+
+    #[serde(default)]
     recurring_payment_terms_of_service_url: String,
     /// True, if the payment is a test payment
+
+    #[serde(default)]
     is_test: bool,
     /// True, if the user's name is needed for payment
+
+    #[serde(default)]
     need_name: bool,
     /// True, if the user's phone number is needed for payment
+
+    #[serde(default)]
     need_phone_number: bool,
     /// True, if the user's email address is needed for payment
+
+    #[serde(default)]
     need_email_address: bool,
     /// True, if the user's shipping address is needed for payment
+
+    #[serde(default)]
     need_shipping_address: bool,
     /// True, if the user's phone number will be sent to the provider
+
+    #[serde(default)]
     send_phone_number_to_provider: bool,
     /// True, if the user's email address will be sent to the provider
+
+    #[serde(default)]
     send_email_address_to_provider: bool,
     /// True, if the total price depends on the shipping method
+
+    #[serde(default)]
     is_flexible: bool,
 }
 

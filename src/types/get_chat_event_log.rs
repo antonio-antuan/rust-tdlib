@@ -11,18 +11,27 @@ pub struct GetChatEventLog {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Search query by which to filter events
+
+    #[serde(default)]
     query: String,
     /// Identifier of an event from which to return results. Use 0 to get results from the latest events
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     from_event_id: i64,
     /// The maximum number of events to return; up to 100
+
+    #[serde(default)]
     limit: i32,
     /// The types of events to return; pass null to get chat events of all types
     filters: ChatEventLogFilters,
     /// User identifiers by which to filter events. By default, events relating to all users will be returned
+
+    #[serde(default)]
     user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

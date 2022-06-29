@@ -11,6 +11,8 @@ pub struct CheckAuthenticationPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The password to check
+
+    #[serde(default)]
     password: String,
 
     #[serde(rename(serialize = "@type"))]

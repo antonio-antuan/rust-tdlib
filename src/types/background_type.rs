@@ -153,10 +153,16 @@ pub struct BackgroundTypePattern {
     #[serde(skip_serializing_if = "BackgroundFill::_is_default")]
     fill: BackgroundFill,
     /// Intensity of the pattern when it is shown above the filled background; 0-100.
+
+    #[serde(default)]
     intensity: i32,
     /// True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only
+
+    #[serde(default)]
     is_inverted: bool,
     /// True, if the background needs to be slightly moved when device is tilted
+
+    #[serde(default)]
     is_moving: bool,
 }
 
@@ -253,8 +259,12 @@ pub struct BackgroundTypeWallpaper {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the wallpaper must be downscaled to fit in 450x450 square and then box-blurred with radius 12
+
+    #[serde(default)]
     is_blurred: bool,
     /// True, if the background needs to be slightly moved when device is tilted
+
+    #[serde(default)]
     is_moving: bool,
 }
 

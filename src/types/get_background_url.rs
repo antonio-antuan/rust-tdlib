@@ -11,6 +11,8 @@ pub struct GetBackgroundUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Background name
+
+    #[serde(default)]
     name: String,
     /// Background type
 

@@ -13,6 +13,7 @@ pub struct CloseWebApp {
     /// Identifier of Web App launch, received from openWebApp
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     web_app_launch_id: i64,
 
     #[serde(rename(serialize = "@type"))]

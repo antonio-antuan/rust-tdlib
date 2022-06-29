@@ -11,14 +11,24 @@ pub struct StorageStatisticsFast {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total size of files, in bytes
+
+    #[serde(default)]
     files_size: i64,
     /// Approximate number of files
+
+    #[serde(default)]
     file_count: i32,
     /// Size of the database
+
+    #[serde(default)]
     database_size: i64,
     /// Size of the language pack database
+
+    #[serde(default)]
     language_pack_database_size: i64,
     /// Size of the TDLib internal log
+
+    #[serde(default)]
     log_size: i64,
 }
 

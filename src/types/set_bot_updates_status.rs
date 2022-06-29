@@ -11,8 +11,12 @@ pub struct SetBotUpdatesStatus {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The number of pending updates
+
+    #[serde(default)]
     pending_update_count: i32,
     /// The last error message
+
+    #[serde(default)]
     error_message: String,
 
     #[serde(rename(serialize = "@type"))]

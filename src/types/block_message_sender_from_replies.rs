@@ -11,12 +11,20 @@ pub struct BlockMessageSenderFromReplies {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The identifier of an incoming message in the Replies chat
+
+    #[serde(default)]
     message_id: i64,
     /// Pass true to delete the message
+
+    #[serde(default)]
     delete_message: bool,
     /// Pass true to delete all messages from the same sender
+
+    #[serde(default)]
     delete_all_messages: bool,
     /// Pass true to report the sender to the Telegram moderators
+
+    #[serde(default)]
     report_spam: bool,
 
     #[serde(rename(serialize = "@type"))]

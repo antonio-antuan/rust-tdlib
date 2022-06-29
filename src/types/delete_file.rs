@@ -11,6 +11,8 @@ pub struct DeleteFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file to delete
+
+    #[serde(default)]
     file_id: i32,
 
     #[serde(rename(serialize = "@type"))]

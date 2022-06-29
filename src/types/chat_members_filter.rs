@@ -388,6 +388,8 @@ pub struct ChatMembersFilterMention {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If non-zero, the identifier of the current message thread
+
+    #[serde(default)]
     message_thread_id: i64,
 }
 

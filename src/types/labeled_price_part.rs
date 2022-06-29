@@ -11,8 +11,12 @@ pub struct LabeledPricePart {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Label for this portion of the product price
+
+    #[serde(default)]
     label: String,
     /// Currency amount in the smallest units of the currency
+
+    #[serde(default)]
     amount: i64,
 }
 

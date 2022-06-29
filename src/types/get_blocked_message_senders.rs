@@ -11,8 +11,12 @@ pub struct GetBlockedMessageSenders {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of users and chats to skip in the result; must be non-negative
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of users and chats to return; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

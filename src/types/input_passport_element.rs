@@ -341,6 +341,8 @@ pub struct InputPassportElementEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The email address to be saved
+
+    #[serde(default)]
     email_address: String,
 }
 
@@ -771,6 +773,8 @@ pub struct InputPassportElementPhoneNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The phone number to be saved
+
+    #[serde(default)]
     phone_number: String,
 }
 

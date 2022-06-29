@@ -11,8 +11,12 @@ pub struct ReportSupergroupSpam {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup identifier
+
+    #[serde(default)]
     supergroup_id: i64,
     /// Identifiers of messages to report
+
+    #[serde(default)]
     message_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

@@ -16,6 +16,8 @@ pub struct EncryptedPassportElement {
     #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
     /// Encrypted JSON-encoded data about the user
+
+    #[serde(default)]
     data: String,
     /// The front side of an identity document
     front_side: DatedFile,
@@ -24,12 +26,20 @@ pub struct EncryptedPassportElement {
     /// Selfie with the document; may be null
     selfie: Option<DatedFile>,
     /// List of files containing a certified English translation of the document
+
+    #[serde(default)]
     translation: Vec<DatedFile>,
     /// List of attached files
+
+    #[serde(default)]
     files: Vec<DatedFile>,
     /// Unencrypted data, phone number or email address
+
+    #[serde(default)]
     value: String,
     /// Hash of the entire element
+
+    #[serde(default)]
     hash: String,
 }
 

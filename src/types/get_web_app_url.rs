@@ -11,8 +11,12 @@ pub struct GetWebAppUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the target bot
+
+    #[serde(default)]
     bot_user_id: i64,
     /// The URL from the keyboardButtonTypeWebApp button
+
+    #[serde(default)]
     url: String,
     /// Preferred Web App theme; pass null to use the default theme
     theme: ThemeParameters,

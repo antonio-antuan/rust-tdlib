@@ -11,6 +11,8 @@ pub struct ChatInviteLinkCounts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of invite link counts
+
+    #[serde(default)]
     invite_link_counts: Vec<ChatInviteLinkCount>,
 }
 

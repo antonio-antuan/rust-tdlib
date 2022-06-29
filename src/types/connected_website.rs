@@ -13,22 +13,39 @@ pub struct ConnectedWebsite {
     /// Website identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// The domain name of the website
+
+    #[serde(default)]
     domain_name: String,
     /// User identifier of a bot linked with the website
+
+    #[serde(default)]
     bot_user_id: i64,
     /// The version of a browser used to log in
+
+    #[serde(default)]
     browser: String,
     /// Operating system the browser is running on
+
+    #[serde(default)]
     platform: String,
     /// Point in time (Unix timestamp) when the user was logged in
+
+    #[serde(default)]
     log_in_date: i32,
     /// Point in time (Unix timestamp) when obtained authorization was last used
+
+    #[serde(default)]
     last_active_date: i32,
     /// IP address from which the user was logged in, in human-readable format
+
+    #[serde(default)]
     ip: String,
     /// Human-readable description of a country and a region from which the user was logged in, based on the IP address
+
+    #[serde(default)]
     location: String,
 }
 

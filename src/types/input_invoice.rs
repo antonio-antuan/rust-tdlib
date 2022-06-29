@@ -73,8 +73,12 @@ pub struct InputInvoiceMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the message
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
 }
 
@@ -153,6 +157,8 @@ pub struct InputInvoiceName {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the invoice
+
+    #[serde(default)]
     name: String,
 }
 

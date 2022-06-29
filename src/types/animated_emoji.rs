@@ -13,6 +13,8 @@ pub struct AnimatedEmoji {
     /// Animated sticker for the emoji
     sticker: Sticker,
     /// Emoji modifier fitzpatrick type; 0-6; 0 if none
+
+    #[serde(default)]
     fitzpatrick_type: i32,
     /// File containing the sound to be played when the animated emoji is clicked; may be null. The sound is encoded with the Opus codec, and stored inside an OGG container
     sound: Option<File>,

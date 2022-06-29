@@ -11,6 +11,8 @@ pub struct RecoveryEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Recovery email address
+
+    #[serde(default)]
     recovery_email_address: String,
 }
 

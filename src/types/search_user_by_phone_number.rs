@@ -11,6 +11,8 @@ pub struct SearchUserByPhoneNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Phone number to search for
+
+    #[serde(default)]
     phone_number: String,
 
     #[serde(rename(serialize = "@type"))]

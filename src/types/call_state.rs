@@ -97,10 +97,16 @@ pub struct CallStateDiscarded {
     #[serde(skip_serializing_if = "CallDiscardReason::_is_default")]
     reason: CallDiscardReason,
     /// True, if the call rating must be sent to the server
+
+    #[serde(default)]
     need_rating: bool,
     /// True, if the call debug information must be sent to the server
+
+    #[serde(default)]
     need_debug_information: bool,
     /// True, if the call log must be sent to the server
+
+    #[serde(default)]
     need_log: bool,
 }
 
@@ -382,8 +388,12 @@ pub struct CallStatePending {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the call has already been created by the server
+
+    #[serde(default)]
     is_created: bool,
     /// True, if the call has already been received by the other party
+
+    #[serde(default)]
     is_received: bool,
 }
 
@@ -464,14 +474,24 @@ pub struct CallStateReady {
     /// Call protocols supported by the peer
     protocol: CallProtocol,
     /// List of available call servers
+
+    #[serde(default)]
     servers: Vec<CallServer>,
     /// A JSON-encoded call config
+
+    #[serde(default)]
     config: String,
     /// Call encryption key
+
+    #[serde(default)]
     encryption_key: String,
     /// Encryption key emojis fingerprint
+
+    #[serde(default)]
     emojis: Vec<String>,
     /// True, if peer-to-peer connection is allowed by users privacy settings
+
+    #[serde(default)]
     allow_p2p: bool,
 }
 

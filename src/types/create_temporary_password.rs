@@ -11,8 +11,12 @@ pub struct CreateTemporaryPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Persistent user password
+
+    #[serde(default)]
     password: String,
     /// Time during which the temporary password will be valid, in seconds; must be between 60 and 86400
+
+    #[serde(default)]
     valid_for: i32,
 
     #[serde(rename(serialize = "@type"))]

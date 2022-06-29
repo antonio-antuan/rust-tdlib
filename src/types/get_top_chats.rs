@@ -15,6 +15,8 @@ pub struct GetTopChats {
     #[serde(skip_serializing_if = "TopChatCategory::_is_default")]
     category: TopChatCategory,
     /// The maximum number of chats to be returned; up to 30
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

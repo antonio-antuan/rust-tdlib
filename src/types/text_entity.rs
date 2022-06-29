@@ -11,8 +11,12 @@ pub struct TextEntity {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Offset of the entity, in UTF-16 code units
+
+    #[serde(default)]
     offset: i32,
     /// Length of the entity, in UTF-16 code units
+
+    #[serde(default)]
     length: i32,
     /// Type of the entity
 

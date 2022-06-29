@@ -13,14 +13,24 @@ pub struct GetMapThumbnailFile {
     /// Location of the map center
     location: Location,
     /// Map zoom level; 13-20
+
+    #[serde(default)]
     zoom: i32,
     /// Map width in pixels before applying scale; 16-1024
+
+    #[serde(default)]
     width: i32,
     /// Map height in pixels before applying scale; 16-1024
+
+    #[serde(default)]
     height: i32,
     /// Map scale; 1-3
+
+    #[serde(default)]
     scale: i32,
     /// Identifier of a chat in which the thumbnail will be shown. Use 0 if unknown
+
+    #[serde(default)]
     chat_id: i64,
 
     #[serde(rename(serialize = "@type"))]

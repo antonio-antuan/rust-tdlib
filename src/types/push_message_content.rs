@@ -87,7 +87,7 @@ pub enum PushMessageContent {
     ScreenshotTaken(PushMessageContentScreenshotTaken),
     /// A message with a sticker
     #[serde(rename(deserialize = "pushMessageContentSticker"))]
-    Sticker(Box<PushMessageContentSticker>),
+    Sticker(PushMessageContentSticker),
     /// A text message
     #[serde(rename(deserialize = "pushMessageContentText"))]
     Text(PushMessageContentText),
@@ -210,8 +210,12 @@ pub struct PushMessageContentAnimation {
     /// Message content; may be null
     animation: Option<Animation>,
     /// Animation caption
+
+    #[serde(default)]
     caption: String,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -301,6 +305,8 @@ pub struct PushMessageContentAudio {
     /// Message content; may be null
     audio: Option<Audio>,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -439,10 +445,16 @@ pub struct PushMessageContentChatAddMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the added member
+
+    #[serde(default)]
     member_name: String,
     /// True, if the current user was added to the group
+
+    #[serde(default)]
     is_current_user: bool,
     /// True, if the user has returned to the group themselves
+
+    #[serde(default)]
     is_returned: bool,
 }
 
@@ -588,6 +600,8 @@ pub struct PushMessageContentChatChangeTitle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New chat title
+
+    #[serde(default)]
     title: String,
 }
 
@@ -657,10 +671,16 @@ pub struct PushMessageContentChatDeleteMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the deleted member
+
+    #[serde(default)]
     member_name: String,
     /// True, if the current user was deleted from the group
+
+    #[serde(default)]
     is_current_user: bool,
     /// True, if the user has left the group themselves
+
+    #[serde(default)]
     is_left: bool,
 }
 
@@ -864,6 +884,8 @@ pub struct PushMessageContentChatSetTheme {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If non-empty, name of a new theme, set for the chat. Otherwise chat theme was reset to the default one
+
+    #[serde(default)]
     theme_name: String,
 }
 
@@ -933,8 +955,12 @@ pub struct PushMessageContentContact {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Contact's name
+
+    #[serde(default)]
     name: String,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1073,6 +1099,8 @@ pub struct PushMessageContentDocument {
     /// Message content; may be null
     document: Option<Document>,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1151,8 +1179,12 @@ pub struct PushMessageContentGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Game title, empty for pinned game message
+
+    #[serde(default)]
     title: String,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1231,10 +1263,16 @@ pub struct PushMessageContentGameScore {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Game title, empty for pinned message
+
+    #[serde(default)]
     title: String,
     /// New score, 0 for pinned message
+
+    #[serde(default)]
     score: i32,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1322,6 +1360,8 @@ pub struct PushMessageContentHidden {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1391,8 +1431,12 @@ pub struct PushMessageContentInvoice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Product price
+
+    #[serde(default)]
     price: String,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1471,8 +1515,12 @@ pub struct PushMessageContentLocation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the location is live
+
+    #[serde(default)]
     is_live: bool,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1551,14 +1599,24 @@ pub struct PushMessageContentMediaAlbum {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of messages in the album
+
+    #[serde(default)]
     total_count: i32,
     /// True, if the album has at least one photo
+
+    #[serde(default)]
     has_photos: bool,
     /// True, if the album has at least one video
+
+    #[serde(default)]
     has_videos: bool,
     /// True, if the album has at least one audio file
+
+    #[serde(default)]
     has_audios: bool,
     /// True, if the album has at least one document
+
+    #[serde(default)]
     has_documents: bool,
 }
 
@@ -1664,6 +1722,8 @@ pub struct PushMessageContentMessageForwards {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of forwarded messages
+
+    #[serde(default)]
     total_count: i32,
 }
 
@@ -1735,10 +1795,16 @@ pub struct PushMessageContentPhoto {
     /// Message content; may be null
     photo: Option<Photo>,
     /// Photo caption
+
+    #[serde(default)]
     caption: String,
     /// True, if the photo is secret
+
+    #[serde(default)]
     is_secret: bool,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1835,10 +1901,16 @@ pub struct PushMessageContentPoll {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Poll question
+
+    #[serde(default)]
     question: String,
     /// True, if the poll is regular and not in quiz mode
+
+    #[serde(default)]
     is_regular: bool,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -1926,6 +1998,8 @@ pub struct PushMessageContentRecurringPayment {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The paid amount
+
+    #[serde(default)]
     amount: String,
 }
 
@@ -2055,8 +2129,12 @@ pub struct PushMessageContentSticker {
     /// Message content; may be null
     sticker: Option<Sticker>,
     /// Emoji corresponding to the sticker; may be empty
+
+    #[serde(default)]
     emoji: String,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -2144,8 +2222,12 @@ pub struct PushMessageContentText {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message text
+
+    #[serde(default)]
     text: String,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -2226,10 +2308,16 @@ pub struct PushMessageContentVideo {
     /// Message content; may be null
     video: Option<Video>,
     /// Video caption
+
+    #[serde(default)]
     caption: String,
     /// True, if the video is secret
+
+    #[serde(default)]
     is_secret: bool,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -2328,6 +2416,8 @@ pub struct PushMessageContentVideoNote {
     /// Message content; may be null
     video_note: Option<VideoNote>,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 
@@ -2408,6 +2498,8 @@ pub struct PushMessageContentVoiceNote {
     /// Message content; may be null
     voice_note: Option<VoiceNote>,
     /// True, if the message is a pinned message with the specified content
+
+    #[serde(default)]
     is_pinned: bool,
 }
 

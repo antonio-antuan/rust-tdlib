@@ -11,12 +11,20 @@ pub struct PinChatMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the new pinned message
+
+    #[serde(default)]
     message_id: i64,
     /// Pass true to disable notification about the pinned message. Notifications are always disabled in channels and private chats
+
+    #[serde(default)]
     disable_notification: bool,
     /// Pass true to pin the message only for self; private chats only
+
+    #[serde(default)]
     only_for_self: bool,
 
     #[serde(rename(serialize = "@type"))]

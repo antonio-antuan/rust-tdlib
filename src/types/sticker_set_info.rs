@@ -13,30 +13,49 @@ pub struct StickerSetInfo {
     /// Identifier of the sticker set
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Title of the sticker set
+
+    #[serde(default)]
     title: String,
     /// Name of the sticker set
+
+    #[serde(default)]
     name: String,
     /// Sticker set thumbnail in WEBP, TGS, or WEBM format with width and height 100; may be null
     thumbnail: Option<Thumbnail>,
     /// Sticker set thumbnail's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
+
+    #[serde(default)]
     thumbnail_outline: Vec<ClosedVectorPath>,
     /// True, if the sticker set has been installed by the current user
+
+    #[serde(default)]
     is_installed: bool,
     /// True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
+
+    #[serde(default)]
     is_archived: bool,
     /// True, if the sticker set is official
+
+    #[serde(default)]
     is_official: bool,
     /// Type of the stickers in the set
 
     #[serde(skip_serializing_if = "StickerType::_is_default")]
     sticker_type: StickerType,
     /// True for already viewed trending sticker sets
+
+    #[serde(default)]
     is_viewed: bool,
     /// Total number of stickers in the set
+
+    #[serde(default)]
     size: i32,
     /// Up to the first 5 stickers from the set, depending on the context. If the application needs more stickers the full sticker set needs to be requested
+
+    #[serde(default)]
     covers: Vec<Sticker>,
 }
 

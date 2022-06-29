@@ -11,8 +11,12 @@ pub struct CancelDownloadFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of a file to stop downloading
+
+    #[serde(default)]
     file_id: i32,
     /// Pass true to stop downloading only if it hasn't been started, i.e. request hasn't been sent to server
+
+    #[serde(default)]
     only_if_pending: bool,
 
     #[serde(rename(serialize = "@type"))]

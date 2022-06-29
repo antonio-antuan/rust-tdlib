@@ -11,12 +11,20 @@ pub struct SearchSecretMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which to search. Specify 0 to search in all secret chats
+
+    #[serde(default)]
     chat_id: i64,
     /// Query to search for. If empty, searchChatMessages must be used instead
+
+    #[serde(default)]
     query: String,
     /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+
+    #[serde(default)]
     offset: String,
     /// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
     /// Additional filter for messages to search; pass null to search for all messages
 

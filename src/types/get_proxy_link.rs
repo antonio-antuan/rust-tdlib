@@ -11,6 +11,8 @@ pub struct GetProxyLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Proxy identifier
+
+    #[serde(default)]
     proxy_id: i32,
 
     #[serde(rename(serialize = "@type"))]

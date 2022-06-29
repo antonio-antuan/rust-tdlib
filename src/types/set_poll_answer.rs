@@ -11,10 +11,16 @@ pub struct SetPollAnswer {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the poll belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message containing the poll
+
+    #[serde(default)]
     message_id: i64,
     /// 0-based identifiers of answer options, chosen by the user. User can choose more than 1 answer option only is the poll allows multiple answers
+
+    #[serde(default)]
     option_ids: Vec<i32>,
 
     #[serde(rename(serialize = "@type"))]

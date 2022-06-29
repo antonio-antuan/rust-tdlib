@@ -11,8 +11,12 @@ pub struct EmailAddressAuthenticationCodeInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pattern of the email address to which an authentication code was sent
+
+    #[serde(default)]
     email_address_pattern: String,
     /// Length of the code; 0 if unknown
+
+    #[serde(default)]
     length: i32,
 }
 

@@ -11,12 +11,16 @@ pub struct SetGroupCallParticipantVolumeLevel {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Participant identifier
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
     /// New participant's volume level; 1-20000 in hundreds of percents
+
+    #[serde(default)]
     volume_level: i32,
 
     #[serde(rename(serialize = "@type"))]

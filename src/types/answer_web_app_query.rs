@@ -11,6 +11,8 @@ pub struct AnswerWebAppQuery {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the Web App query
+
+    #[serde(default)]
     web_app_query_id: String,
     /// The result of the query
 

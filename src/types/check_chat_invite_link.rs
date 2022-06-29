@@ -11,6 +11,8 @@ pub struct CheckChatInviteLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Invite link to be checked
+
+    #[serde(default)]
     invite_link: String,
 
     #[serde(rename(serialize = "@type"))]

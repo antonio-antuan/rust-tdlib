@@ -11,8 +11,12 @@ pub struct ChatPhotos {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Total number of photos
+
+    #[serde(default)]
     total_count: i32,
     /// List of photos
+
+    #[serde(default)]
     photos: Vec<ChatPhoto>,
 }
 

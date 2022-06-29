@@ -11,10 +11,16 @@ pub struct SearchEmojis {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text to search for
+
+    #[serde(default)]
     text: String,
     /// Pass true if only emojis, which exactly match the text, needs to be returned
+
+    #[serde(default)]
     exact_match: bool,
     /// List of possible IETF language tags of the user's input language; may be empty if unknown
+
+    #[serde(default)]
     input_language_codes: Vec<String>,
 
     #[serde(rename(serialize = "@type"))]

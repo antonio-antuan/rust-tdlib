@@ -11,8 +11,12 @@ pub struct ChatInviteLinks {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of chat invite links found
+
+    #[serde(default)]
     total_count: i32,
     /// List of invite links
+
+    #[serde(default)]
     invite_links: Vec<ChatInviteLink>,
 }
 

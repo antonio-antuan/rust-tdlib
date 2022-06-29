@@ -11,34 +11,46 @@ pub struct ChatNotificationSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If true, mute_for is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_mute_for: bool,
     /// Time left before notifications will be unmuted, in seconds
+
+    #[serde(default)]
     mute_for: i32,
     /// If true, the value for the relevant type of chat is used instead of sound_id
+
+    #[serde(default)]
     use_default_sound: bool,
     /// Identifier of the notification sound to be played; 0 if sound is disabled
 
-    #[serde(
-        deserialize_with = "super::_common::number_from_string",
-        default = "default_zero"
-    )]
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     sound_id: i64,
     /// If true, show_preview is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_show_preview: bool,
     /// True, if message content must be displayed in notifications
+
+    #[serde(default)]
     show_preview: bool,
     /// If true, disable_pinned_message_notifications is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_disable_pinned_message_notifications: bool,
     /// If true, notifications for incoming pinned messages will be created as for an ordinary unread message
+
+    #[serde(default)]
     disable_pinned_message_notifications: bool,
     /// If true, disable_mention_notifications is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_disable_mention_notifications: bool,
     /// If true, notifications for messages with mentions will be created as for an ordinary unread message
-    disable_mention_notifications: bool,
-}
 
-fn default_zero() -> i64 {
-    0
+    #[serde(default)]
+    disable_mention_notifications: bool,
 }
 
 impl RObject for ChatNotificationSettings {

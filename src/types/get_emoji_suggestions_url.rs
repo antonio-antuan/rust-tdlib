@@ -11,6 +11,8 @@ pub struct GetEmojiSuggestionsUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Language code for which the emoji replacements will be suggested
+
+    #[serde(default)]
     language_code: String,
 
     #[serde(rename(serialize = "@type"))]

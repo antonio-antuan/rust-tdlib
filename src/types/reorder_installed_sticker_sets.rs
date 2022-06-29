@@ -11,10 +11,13 @@ pub struct ReorderInstalledStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to change the order of mask sticker sets; pass false to change the order of ordinary sticker sets
+
+    #[serde(default)]
     is_masks: bool,
     /// Identifiers of installed sticker sets in the new correct order
 
     #[serde(deserialize_with = "super::_common::vec_of_i64_from_str")]
+    #[serde(default)]
     sticker_set_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

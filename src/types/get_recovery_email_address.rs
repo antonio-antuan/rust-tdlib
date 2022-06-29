@@ -11,6 +11,8 @@ pub struct GetRecoveryEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The password for the current user
+
+    #[serde(default)]
     password: String,
 
     #[serde(rename(serialize = "@type"))]

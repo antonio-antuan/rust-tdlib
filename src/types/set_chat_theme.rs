@@ -11,8 +11,12 @@ pub struct SetChatTheme {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Name of the new chat theme; pass an empty string to return the default theme
+
+    #[serde(default)]
     theme_name: String,
 
     #[serde(rename(serialize = "@type"))]

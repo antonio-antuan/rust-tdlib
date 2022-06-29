@@ -11,6 +11,8 @@ pub struct Backgrounds {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of backgrounds
+
+    #[serde(default)]
     backgrounds: Vec<Background>,
 }
 

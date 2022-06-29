@@ -11,16 +11,28 @@ pub struct GetChatInviteLinks {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// User identifier of a chat administrator. Must be an identifier of the current user for non-owner
+
+    #[serde(default)]
     creator_user_id: i64,
     /// Pass true if revoked links needs to be returned instead of active or expired
+
+    #[serde(default)]
     is_revoked: bool,
     /// Creation date of an invite link starting after which to return invite links; use 0 to get results from the beginning
+
+    #[serde(default)]
     offset_date: i32,
     /// Invite link starting after which to return invite links; use empty string to get results from the beginning
+
+    #[serde(default)]
     offset_invite_link: String,
     /// The maximum number of invite links to return; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

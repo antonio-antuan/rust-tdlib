@@ -11,16 +11,25 @@ pub struct DiscardCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
     /// Pass true if the user was disconnected
+
+    #[serde(default)]
     is_disconnected: bool,
     /// The call duration, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Pass true if the call was a video call
+
+    #[serde(default)]
     is_video: bool,
     /// Identifier of the connection used during the call
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     connection_id: i64,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct CheckPasswordRecoveryCode {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Recovery code to check
+
+    #[serde(default)]
     recovery_code: String,
 
     #[serde(rename(serialize = "@type"))]

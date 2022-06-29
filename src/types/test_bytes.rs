@@ -11,6 +11,8 @@ pub struct TestBytes {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Bytes
+
+    #[serde(default)]
     value: String,
 }
 

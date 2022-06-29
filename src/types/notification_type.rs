@@ -18,10 +18,10 @@ pub enum NotificationType {
     NewCall(NotificationTypeNewCall),
     /// New message was received
     #[serde(rename(deserialize = "notificationTypeNewMessage"))]
-    NewMessage(Box<NotificationTypeNewMessage>),
+    NewMessage(NotificationTypeNewMessage),
     /// New message was received through a push notification
     #[serde(rename(deserialize = "notificationTypeNewPushMessage"))]
-    NewPushMessage(Box<NotificationTypeNewPushMessage>),
+    NewPushMessage(NotificationTypeNewPushMessage),
     /// New secret chat was created
     #[serde(rename(deserialize = "notificationTypeNewSecretChat"))]
     NewSecretChat(NotificationTypeNewSecretChat),
@@ -83,6 +83,8 @@ pub struct NotificationTypeNewCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
 }
 
@@ -154,6 +156,8 @@ pub struct NotificationTypeNewMessage {
     /// The message
     message: Message,
     /// True, if message content must be displayed in notifications
+
+    #[serde(default)]
     show_preview: bool,
 }
 
@@ -232,14 +236,20 @@ pub struct NotificationTypeNewPushMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The message identifier. The message will not be available in the chat history, but the ID can be used in viewMessages, or as reply_to_message_id
+
+    #[serde(default)]
     message_id: i64,
     /// Identifier of the sender of the message. Corresponding user or chat may be inaccessible
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender_id: MessageSender,
     /// Name of the sender
+
+    #[serde(default)]
     sender_name: String,
     /// True, if the message is outgoing
+
+    #[serde(default)]
     is_outgoing: bool,
     /// Push message content
 

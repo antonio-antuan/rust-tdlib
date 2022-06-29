@@ -11,12 +11,18 @@ pub struct GetChatInviteLinkMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Invite link for which to return chat members
+
+    #[serde(default)]
     invite_link: String,
     /// A chat member from which to return next chat members; pass null to get results from the beginning
     offset_member: ChatInviteLinkMember,
     /// The maximum number of chat members to return; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

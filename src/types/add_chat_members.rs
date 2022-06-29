@@ -11,8 +11,12 @@ pub struct AddChatMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifiers of the users to be added to the chat. The maximum number of added users is 20 for supergroups and 100 for channels
+
+    #[serde(default)]
     user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

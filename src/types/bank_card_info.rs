@@ -11,8 +11,12 @@ pub struct BankCardInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title of the bank card description
+
+    #[serde(default)]
     title: String,
     /// Actions that can be done with the bank card number
+
+    #[serde(default)]
     actions: Vec<BankCardActionOpenUrl>,
 }
 

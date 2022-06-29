@@ -11,8 +11,12 @@ pub struct GetGroupCallInviteLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Pass true if the invite link needs to contain an invite hash, passing which to joinGroupCall would allow the invited user to unmute themselves. Requires groupCall.can_be_managed group call flag
+
+    #[serde(default)]
     can_self_unmute: bool,
 
     #[serde(rename(serialize = "@type"))]

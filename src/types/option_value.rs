@@ -88,6 +88,8 @@ pub struct OptionValueBoolean {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The value of the option
+
+    #[serde(default)]
     value: bool,
 }
 
@@ -217,6 +219,7 @@ pub struct OptionValueInteger {
     /// The value of the option
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     value: i64,
 }
 
@@ -286,6 +289,8 @@ pub struct OptionValueString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The value of the option
+
+    #[serde(default)]
     value: String,
 }
 

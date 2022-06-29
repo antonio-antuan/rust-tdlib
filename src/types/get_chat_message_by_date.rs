@@ -11,8 +11,12 @@ pub struct GetChatMessageByDate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Point in time (Unix timestamp) relative to which to search for messages
+
+    #[serde(default)]
     date: i32,
 
     #[serde(rename(serialize = "@type"))]

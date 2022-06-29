@@ -11,8 +11,12 @@ pub struct DateRange {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) at which the date range begins
+
+    #[serde(default)]
     start_date: i32,
     /// Point in time (Unix timestamp) at which the date range ends
+
+    #[serde(default)]
     end_date: i32,
 }
 

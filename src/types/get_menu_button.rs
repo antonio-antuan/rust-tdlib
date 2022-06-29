@@ -11,6 +11,8 @@ pub struct GetMenuButton {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user or 0 to get the default menu button
+
+    #[serde(default)]
     user_id: i64,
 
     #[serde(rename(serialize = "@type"))]

@@ -17,6 +17,8 @@ pub struct ChatPhotoInfo {
     /// Chat photo minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
     /// True, if the photo has animated variant
+
+    #[serde(default)]
     has_animation: Option<bool>,
 }
 

@@ -15,8 +15,12 @@ pub struct SetCommands {
     #[serde(skip_serializing_if = "BotCommandScope::_is_default")]
     scope: BotCommandScope,
     /// A two-letter ISO 639-1 language code. If empty, the commands will be applied to all users from the given scope, for which language there are no dedicated commands
+
+    #[serde(default)]
     language_code: String,
     /// List of the bot's commands
+
+    #[serde(default)]
     commands: Vec<BotCommand>,
 
     #[serde(rename(serialize = "@type"))]

@@ -13,6 +13,8 @@ pub struct AddContact {
     /// The contact to add or edit; phone number may be empty and needs to be specified only if known, vCard is ignored
     contact: Contact,
     /// Pass true to share the current user's phone number with the new contact. A corresponding rule to userPrivacySettingShowPhoneNumber will be added if needed. Use the field userFullInfo.need_phone_number_privacy_exception to check whether the current user needs to be asked to share their phone number
+
+    #[serde(default)]
     share_phone_number: bool,
 
     #[serde(rename(serialize = "@type"))]

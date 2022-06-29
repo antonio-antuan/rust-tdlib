@@ -11,12 +11,20 @@ pub struct GetLanguagePackString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Path to the language pack database in which strings are stored
+
+    #[serde(default)]
     language_pack_database_path: String,
     /// Localization target to which the language pack belongs
+
+    #[serde(default)]
     localization_target: String,
     /// Language pack identifier
+
+    #[serde(default)]
     language_pack_id: String,
     /// Language pack key of the string to be returned
+
+    #[serde(default)]
     key: String,
 
     #[serde(rename(serialize = "@type"))]

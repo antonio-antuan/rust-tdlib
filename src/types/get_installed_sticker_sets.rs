@@ -11,6 +11,8 @@ pub struct GetInstalledStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to return mask sticker sets; pass false to return ordinary sticker sets
+
+    #[serde(default)]
     is_masks: bool,
 
     #[serde(rename(serialize = "@type"))]

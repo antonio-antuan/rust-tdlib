@@ -11,15 +11,23 @@ pub struct VoiceNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Duration of the voice note, in seconds; as defined by the sender
+
+    #[serde(default)]
     duration: i32,
     /// A waveform representation of the voice note in 5-bit format
+
+    #[serde(default)]
     waveform: String,
     /// MIME type of the file; as defined by the sender
+
+    #[serde(default)]
     mime_type: String,
     /// True, if speech recognition is completed; Premium users only
+
     #[serde(default)]
     is_recognized: bool,
     /// Recognized text of the voice note; Premium users only. Call recognizeSpeech to get recognized text of the voice note
+
     #[serde(default)]
     recognized_text: String,
     /// File containing the voice note

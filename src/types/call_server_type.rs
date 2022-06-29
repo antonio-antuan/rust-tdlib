@@ -73,8 +73,12 @@ pub struct CallServerTypeTelegramReflector {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A peer tag to be used with the reflector
+
+    #[serde(default)]
     peer_tag: String,
     /// True, if the server uses TCP instead of UDP
+
+    #[serde(default)]
     is_tcp: bool,
 }
 
@@ -153,12 +157,20 @@ pub struct CallServerTypeWebrtc {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username to be used for authentication
+
+    #[serde(default)]
     username: String,
     /// Authentication password
+
+    #[serde(default)]
     password: String,
     /// True, if the server supports TURN
+
+    #[serde(default)]
     supports_turn: bool,
     /// True, if the server supports STUN
+
+    #[serde(default)]
     supports_stun: bool,
 }
 

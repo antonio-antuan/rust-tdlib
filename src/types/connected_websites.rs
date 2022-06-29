@@ -11,6 +11,8 @@ pub struct ConnectedWebsites {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of connected websites
+
+    #[serde(default)]
     websites: Vec<ConnectedWebsite>,
 }
 

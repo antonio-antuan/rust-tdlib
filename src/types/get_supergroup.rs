@@ -11,6 +11,8 @@ pub struct GetSupergroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup or channel identifier
+
+    #[serde(default)]
     supergroup_id: i64,
 
     #[serde(rename(serialize = "@type"))]

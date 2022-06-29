@@ -11,8 +11,12 @@ pub struct LoadGroupCallParticipants {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier. The group call must be previously received through getGroupCall and must be joined or being joined
+
+    #[serde(default)]
     group_call_id: i32,
     /// The maximum number of participants to load; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

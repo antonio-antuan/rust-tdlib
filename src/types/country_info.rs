@@ -11,14 +11,24 @@ pub struct CountryInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A two-letter ISO 3166-1 alpha-2 country code
+
+    #[serde(default)]
     country_code: String,
     /// Native name of the country
+
+    #[serde(default)]
     name: String,
     /// English name of the country
+
+    #[serde(default)]
     english_name: String,
     /// True, if the country must be hidden from the list of all countries
+
+    #[serde(default)]
     is_hidden: bool,
     /// List of country calling codes
+
+    #[serde(default)]
     calling_codes: Vec<String>,
 }
 

@@ -11,10 +11,16 @@ pub struct DownloadedFileCounts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of active file downloads found, including paused
+
+    #[serde(default)]
     active_count: i32,
     /// Number of paused file downloads found
+
+    #[serde(default)]
     paused_count: i32,
     /// Number of completed file downloads found
+
+    #[serde(default)]
     completed_count: i32,
 }
 

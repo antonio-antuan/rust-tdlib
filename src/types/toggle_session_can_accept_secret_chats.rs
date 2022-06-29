@@ -13,8 +13,11 @@ pub struct ToggleSessionCanAcceptSecretChats {
     /// Session identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     session_id: i64,
     /// Pass true to allow accepring secret chats by the session; pass false otherwise
+
+    #[serde(default)]
     can_accept_secret_chats: bool,
 
     #[serde(rename(serialize = "@type"))]

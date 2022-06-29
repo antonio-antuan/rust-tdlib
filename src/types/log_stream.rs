@@ -199,10 +199,16 @@ pub struct LogStreamFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Path to the file to where the internal TDLib log will be written
+
+    #[serde(default)]
     path: String,
     /// The maximum size of the file to where the internal TDLib log is written before the file will automatically be rotated, in bytes
+
+    #[serde(default)]
     max_file_size: i64,
     /// Pass true to additionally redirect stderr to the log file. Ignored on Windows
+
+    #[serde(default)]
     redirect_stderr: bool,
 }
 

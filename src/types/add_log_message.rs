@@ -11,8 +11,12 @@ pub struct AddLogMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The minimum verbosity level needed for the message to be logged; 0-1023
+
+    #[serde(default)]
     verbosity_level: i32,
     /// Text of a message to log
+
+    #[serde(default)]
     text: String,
 
     #[serde(rename(serialize = "@type"))]

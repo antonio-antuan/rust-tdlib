@@ -11,6 +11,8 @@ pub struct GetFileExtension {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The MIME type of the file
+
+    #[serde(default)]
     mime_type: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -13,6 +13,7 @@ pub struct GetSavedNotificationSound {
     /// Identifier of the notification sound
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     notification_sound_id: i64,
 
     #[serde(rename(serialize = "@type"))]

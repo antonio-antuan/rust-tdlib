@@ -11,10 +11,16 @@ pub struct GetStatisticalGraph {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// The token for graph loading
+
+    #[serde(default)]
     token: String,
     /// X-value for zoomed in graph or 0 otherwise
+
+    #[serde(default)]
     x: i64,
 
     #[serde(rename(serialize = "@type"))]

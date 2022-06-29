@@ -11,6 +11,8 @@ pub struct ToggleAllDownloadsArePaused {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to pause all downloads; pass false to unpause them
+
+    #[serde(default)]
     are_paused: bool,
 
     #[serde(rename(serialize = "@type"))]

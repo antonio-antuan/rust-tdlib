@@ -11,12 +11,16 @@ pub struct ToggleGroupCallParticipantIsMuted {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Participant identifier
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
     /// Pass true to mute the user; pass false to unmute the them
+
+    #[serde(default)]
     is_muted: bool,
 
     #[serde(rename(serialize = "@type"))]

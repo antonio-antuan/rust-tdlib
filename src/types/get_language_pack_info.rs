@@ -11,6 +11,8 @@ pub struct GetLanguagePackInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Language pack identifier
+
+    #[serde(default)]
     language_pack_id: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -15,6 +15,8 @@ pub struct SetPassportElement {
     #[serde(skip_serializing_if = "InputPassportElement::_is_default")]
     element: InputPassportElement,
     /// Password of the current user
+
+    #[serde(default)]
     password: String,
 
     #[serde(rename(serialize = "@type"))]

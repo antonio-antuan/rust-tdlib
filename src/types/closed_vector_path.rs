@@ -11,6 +11,8 @@ pub struct ClosedVectorPath {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of vector path commands
+
+    #[serde(default)]
     commands: Vec<VectorPathCommand>,
 }
 

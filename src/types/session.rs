@@ -13,14 +13,23 @@ pub struct Session {
     /// Session identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// True, if this session is the current session
+
+    #[serde(default)]
     is_current: bool,
     /// True, if a password is needed to complete authorization of the session
+
+    #[serde(default)]
     is_password_pending: bool,
     /// True, if incoming secret chats can be accepted by the session
+
+    #[serde(default)]
     can_accept_secret_chats: bool,
     /// True, if incoming calls can be accepted by the session
+
+    #[serde(default)]
     can_accept_calls: bool,
     /// Session type based on the system and application version, which can be used to display a corresponding icon
 
@@ -28,28 +37,52 @@ pub struct Session {
     #[serde(skip_serializing_if = "SessionType::_is_default")]
     type_: SessionType,
     /// Telegram API identifier, as provided by the application
+
+    #[serde(default)]
     api_id: i32,
     /// Name of the application, as provided by the application
+
+    #[serde(default)]
     application_name: String,
     /// The version of the application, as provided by the application
+
+    #[serde(default)]
     application_version: String,
     /// True, if the application is an official application or uses the api_id of an official application
+
+    #[serde(default)]
     is_official_application: bool,
     /// Model of the device the application has been run or is running on, as provided by the application
+
+    #[serde(default)]
     device_model: String,
     /// Operating system the application has been run or is running on, as provided by the application
+
+    #[serde(default)]
     platform: String,
     /// Version of the operating system the application has been run or is running on, as provided by the application
+
+    #[serde(default)]
     system_version: String,
     /// Point in time (Unix timestamp) when the user has logged in
+
+    #[serde(default)]
     log_in_date: i32,
     /// Point in time (Unix timestamp) when the session was last used
+
+    #[serde(default)]
     last_active_date: i32,
     /// IP address from which the session was created, in human-readable format
+
+    #[serde(default)]
     ip: String,
     /// A two-letter country code for the country from which the session was created, based on the IP address
+
+    #[serde(default)]
     country: String,
     /// Region code from which the session was created, based on the IP address
+
+    #[serde(default)]
     region: String,
 }
 

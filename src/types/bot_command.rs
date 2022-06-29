@@ -11,8 +11,12 @@ pub struct BotCommand {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text of the bot command
+
+    #[serde(default)]
     command: String,
     /// Represents a command supported by a bot
+
+    #[serde(default)]
     description: String,
 }
 

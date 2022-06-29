@@ -13,12 +13,19 @@ pub struct CallServer {
     /// Server identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Server IPv4 address
+
+    #[serde(default)]
     ip_address: String,
     /// Server IPv6 address
+
+    #[serde(default)]
     ipv6_address: String,
     /// Server port number
+
+    #[serde(default)]
     port: i32,
     /// Server type
 

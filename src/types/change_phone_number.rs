@@ -11,6 +11,8 @@ pub struct ChangePhoneNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The new phone number of the user in international format
+
+    #[serde(default)]
     phone_number: String,
     /// Settings for the authentication of the user's phone number; pass null to use default settings
     settings: PhoneNumberAuthenticationSettings,

@@ -15,8 +15,12 @@ pub struct ToggleChatIsPinned {
     #[serde(skip_serializing_if = "ChatList::_is_default")]
     chat_list: ChatList,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Pass true to pin the chat; pass false to unpin it
+
+    #[serde(default)]
     is_pinned: bool,
 
     #[serde(rename(serialize = "@type"))]

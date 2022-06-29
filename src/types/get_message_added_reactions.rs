@@ -11,14 +11,24 @@ pub struct GetMessageAddedReactions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the message belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
     /// If non-empty, only added reactions with the specified text representation will be returned
+
+    #[serde(default)]
     reaction: String,
     /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+
+    #[serde(default)]
     offset: String,
     /// The maximum number of reactions to be returned; must be positive and can't be greater than 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

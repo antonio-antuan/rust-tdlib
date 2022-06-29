@@ -13,8 +13,11 @@ pub struct AnswerCustomQuery {
     /// Identifier of a custom query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     custom_query_id: i64,
     /// JSON-serialized answer to the query
+
+    #[serde(default)]
     data: String,
 
     #[serde(rename(serialize = "@type"))]

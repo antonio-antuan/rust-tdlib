@@ -11,10 +11,16 @@ pub struct SearchCallMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the message from which to search; use 0 to get results from the last message
+
+    #[serde(default)]
     from_message_id: i64,
     /// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
     /// Pass true to search only for messages with missed/declined calls
+
+    #[serde(default)]
     only_missed: bool,
 
     #[serde(rename(serialize = "@type"))]

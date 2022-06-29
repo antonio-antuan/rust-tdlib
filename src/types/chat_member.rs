@@ -15,8 +15,12 @@ pub struct ChatMember {
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     member_id: MessageSender,
     /// Identifier of a user that invited/promoted/banned this member in the chat; 0 if unknown
+
+    #[serde(default)]
     inviter_user_id: i64,
     /// Point in time (Unix timestamp) when the user joined the chat
+
+    #[serde(default)]
     joined_chat_date: i32,
     /// Status of the member in the chat
 

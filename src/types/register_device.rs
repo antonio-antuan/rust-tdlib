@@ -15,6 +15,8 @@ pub struct RegisterDevice {
     #[serde(skip_serializing_if = "DeviceToken::_is_default")]
     device_token: DeviceToken,
     /// List of user identifiers of other users currently using the application
+
+    #[serde(default)]
     other_user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

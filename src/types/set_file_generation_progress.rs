@@ -13,10 +13,15 @@ pub struct SetFileGenerationProgress {
     /// The identifier of the generation process
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     generation_id: i64,
     /// Expected size of the generated file, in bytes; 0 if unknown
+
+    #[serde(default)]
     expected_size: i64,
     /// The number of bytes already generated
+
+    #[serde(default)]
     local_prefix_size: i64,
 
     #[serde(rename(serialize = "@type"))]

@@ -78,6 +78,8 @@ pub struct CallbackQueryPayloadData {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Data that was attached to the callback button
+
+    #[serde(default)]
     data: String,
 }
 
@@ -147,8 +149,12 @@ pub struct CallbackQueryPayloadDataWithPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The password for the current user
+
+    #[serde(default)]
     password: String,
     /// Data that was attached to the callback button
+
+    #[serde(default)]
     data: String,
 }
 
@@ -229,6 +235,8 @@ pub struct CallbackQueryPayloadGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A short name of the game that was attached to the callback button
+
+    #[serde(default)]
     game_short_name: String,
 }
 

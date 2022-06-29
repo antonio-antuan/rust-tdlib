@@ -11,6 +11,8 @@ pub struct GetAttachmentMenuBot {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Bot's user identifier
+
+    #[serde(default)]
     bot_user_id: i64,
 
     #[serde(rename(serialize = "@type"))]

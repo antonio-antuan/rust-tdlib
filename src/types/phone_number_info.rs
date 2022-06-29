@@ -13,8 +13,12 @@ pub struct PhoneNumberInfo {
     /// Information about the country to which the phone number belongs; may be null
     country: Option<CountryInfo>,
     /// The part of the phone number denoting country calling code or its part
+
+    #[serde(default)]
     country_calling_code: String,
     /// The phone number without country calling code formatted accordingly to local rules. Expected digits are returned as '-', but even more digits might be entered by the user
+
+    #[serde(default)]
     formatted_phone_number: String,
 }
 

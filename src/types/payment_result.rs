@@ -11,8 +11,12 @@ pub struct PaymentResult {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the payment request was successful; otherwise the verification_url will be non-empty
+
+    #[serde(default)]
     success: bool,
     /// URL for additional payment credentials verification
+
+    #[serde(default)]
     verification_url: String,
 }
 

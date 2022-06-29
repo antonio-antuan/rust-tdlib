@@ -11,8 +11,12 @@ pub struct SetChatAvailableReactions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat
+
+    #[serde(default)]
     chat_id: i64,
     /// New list of reactions, available in the chat. All reactions must be active
+
+    #[serde(default)]
     available_reactions: Vec<String>,
 
     #[serde(rename(serialize = "@type"))]

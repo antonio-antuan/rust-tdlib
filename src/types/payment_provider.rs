@@ -78,6 +78,8 @@ pub struct PaymentProviderOther {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Payment form URL
+
+    #[serde(default)]
     url: String,
 }
 
@@ -147,6 +149,8 @@ pub struct PaymentProviderSmartGlocal {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Public payment token
+
+    #[serde(default)]
     public_token: String,
 }
 
@@ -216,12 +220,20 @@ pub struct PaymentProviderStripe {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Stripe API publishable key
+
+    #[serde(default)]
     publishable_key: String,
     /// True, if the user country must be provided
+
+    #[serde(default)]
     need_country: bool,
     /// True, if the user ZIP/postal code must be provided
+
+    #[serde(default)]
     need_postal_code: bool,
     /// True, if the cardholder name must be provided
+
+    #[serde(default)]
     need_cardholder_name: bool,
 }
 

@@ -11,14 +11,24 @@ pub struct CreateNewStickerSet {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Sticker set owner; ignored for regular users
+
+    #[serde(default)]
     user_id: i64,
     /// Sticker set title; 1-64 characters
+
+    #[serde(default)]
     title: String,
     /// Sticker set name. Can contain only English letters, digits and underscores. Must end with *"_by_<bot username>"* (*<bot_username>* is case insensitive) for bots; 1-64 characters
+
+    #[serde(default)]
     name: String,
     /// List of stickers to be added to the set; must be non-empty. All stickers must have the same format. For TGS stickers, uploadStickerFile must be used before the sticker is shown
+
+    #[serde(default)]
     stickers: Vec<InputSticker>,
     /// Source of the sticker set; may be empty if unknown
+
+    #[serde(default)]
     source: String,
 
     #[serde(rename(serialize = "@type"))]

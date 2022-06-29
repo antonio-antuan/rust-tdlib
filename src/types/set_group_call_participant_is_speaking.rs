@@ -11,10 +11,16 @@ pub struct SetGroupCallParticipantIsSpeaking {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Group call participant's synchronization audio source identifier, or 0 for the current user
+
+    #[serde(default)]
     audio_source: i32,
     /// Pass true if the user is speaking
+
+    #[serde(default)]
     is_speaking: bool,
 
     #[serde(rename(serialize = "@type"))]

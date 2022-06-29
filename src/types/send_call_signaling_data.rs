@@ -11,8 +11,12 @@ pub struct SendCallSignalingData {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
     /// The data
+
+    #[serde(default)]
     data: String,
 
     #[serde(rename(serialize = "@type"))]

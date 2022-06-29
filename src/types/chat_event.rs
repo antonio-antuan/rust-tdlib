@@ -13,8 +13,11 @@ pub struct ChatEvent {
     /// Chat event identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Point in time (Unix timestamp) when the event happened
+
+    #[serde(default)]
     date: i32,
     /// Identifier of the user or chat who performed the action
 

@@ -11,10 +11,16 @@ pub struct StatisticalValue {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The current value
+
+    #[serde(default)]
     value: f32,
     /// The value for the previous day
+
+    #[serde(default)]
     previous_value: f32,
     /// The growth rate of the value, as a percentage
+
+    #[serde(default)]
     growth_rate_percentage: f32,
 }
 

@@ -11,10 +11,16 @@ pub struct ChatAdministrator {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the administrator
+
+    #[serde(default)]
     user_id: i64,
     /// Custom title of the administrator
+
+    #[serde(default)]
     custom_title: String,
     /// True, if the user is the owner of the chat
+
+    #[serde(default)]
     is_owner: bool,
 }
 

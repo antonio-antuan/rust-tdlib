@@ -11,10 +11,16 @@ pub struct GetLoginUrlInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the message with the button
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier of the message with the button
+
+    #[serde(default)]
     message_id: i64,
     /// Button identifier
+
+    #[serde(default)]
     button_id: i64,
 
     #[serde(rename(serialize = "@type"))]

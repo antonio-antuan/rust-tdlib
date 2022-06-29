@@ -11,6 +11,8 @@ pub struct Stickers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of stickers
+
+    #[serde(default)]
     stickers: Vec<Sticker>,
 }
 

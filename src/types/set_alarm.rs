@@ -11,6 +11,8 @@ pub struct SetAlarm {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of seconds before the function returns
+
+    #[serde(default)]
     seconds: f32,
 
     #[serde(rename(serialize = "@type"))]

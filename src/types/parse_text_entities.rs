@@ -11,6 +11,8 @@ pub struct ParseTextEntities {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The text to parse
+
+    #[serde(default)]
     text: String,
     /// Text parse mode
 

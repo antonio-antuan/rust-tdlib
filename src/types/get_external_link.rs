@@ -11,8 +11,12 @@ pub struct GetExternalLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The HTTP link
+
+    #[serde(default)]
     link: String,
     /// Pass true if the current user allowed the bot, returned in getExternalLinkInfo, to send them messages
+
+    #[serde(default)]
     allow_write_access: bool,
 
     #[serde(rename(serialize = "@type"))]

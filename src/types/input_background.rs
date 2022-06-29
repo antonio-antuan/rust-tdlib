@@ -146,6 +146,7 @@ pub struct InputBackgroundRemote {
     /// The background identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     background_id: i64,
 }
 

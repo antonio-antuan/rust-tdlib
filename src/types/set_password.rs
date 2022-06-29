@@ -11,14 +11,24 @@ pub struct SetPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous password of the user
+
+    #[serde(default)]
     old_password: String,
     /// New password of the user; may be empty to remove the password
+
+    #[serde(default)]
     new_password: String,
     /// New password hint; may be empty
+
+    #[serde(default)]
     new_hint: String,
     /// Pass true to change also the recovery email address
+
+    #[serde(default)]
     set_recovery_email_address: bool,
     /// New recovery email address; may be empty
+
+    #[serde(default)]
     new_recovery_email_address: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,10 +11,16 @@ pub struct GameHighScore {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Position in the high score table
+
+    #[serde(default)]
     position: i32,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// User score
+
+    #[serde(default)]
     score: i32,
 }
 

@@ -11,8 +11,12 @@ pub struct SetRecoveryEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Password of the current user
+
+    #[serde(default)]
     password: String,
     /// New recovery email address
+
+    #[serde(default)]
     new_recovery_email_address: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -78,12 +78,20 @@ pub struct TargetChatChosen {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if private chats with ordinary users are allowed
+
+    #[serde(default)]
     allow_user_chats: bool,
     /// True, if private chats with other bots are allowed
+
+    #[serde(default)]
     allow_bot_chats: bool,
     /// True, if basic group and supergroup chats are allowed
+
+    #[serde(default)]
     allow_group_chats: bool,
     /// True, if channel chats are allowed
+
+    #[serde(default)]
     allow_channel_chats: bool,
 }
 

@@ -11,8 +11,12 @@ pub struct SearchContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for; may be empty to return all contacts
+
+    #[serde(default)]
     query: String,
     /// The maximum number of users to be returned
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

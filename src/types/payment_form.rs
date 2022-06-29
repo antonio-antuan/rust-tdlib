@@ -13,12 +13,17 @@ pub struct PaymentForm {
     /// The payment form identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Full information about the invoice
     invoice: Invoice,
     /// User identifier of the seller bot
+
+    #[serde(default)]
     seller_bot_user_id: i64,
     /// User identifier of the payment provider bot
+
+    #[serde(default)]
     payment_provider_user_id: i64,
     /// Information about the payment provider
 
@@ -29,10 +34,16 @@ pub struct PaymentForm {
     /// Information about saved card credentials; may be null
     saved_credentials: Option<SavedCredentials>,
     /// True, if the user can choose to save credentials
+
+    #[serde(default)]
     can_save_credentials: bool,
     /// True, if the user will be able to save credentials protected by a password they set up
+
+    #[serde(default)]
     need_password: bool,
     /// Product title
+
+    #[serde(default)]
     product_title: String,
     /// Product description
     product_description: FormattedText,

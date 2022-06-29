@@ -11,6 +11,8 @@ pub struct TextEntities {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of text entities
+
+    #[serde(default)]
     entities: Vec<TextEntity>,
 }
 

@@ -11,10 +11,16 @@ pub struct SearchChatMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
     /// The maximum number of users to be returned; up to 200
+
+    #[serde(default)]
     limit: i32,
     /// The type of users to search for; pass null to search among all chat members
 

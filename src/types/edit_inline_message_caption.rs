@@ -11,6 +11,8 @@ pub struct EditInlineMessageCaption {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Inline message identifier
+
+    #[serde(default)]
     inline_message_id: String,
     /// The new message reply markup; pass null if none
 

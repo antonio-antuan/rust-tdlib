@@ -13,14 +13,23 @@ pub struct NotificationSound {
     /// Unique identifier of the notification sound
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Duration of the sound, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Point in time (Unix timestamp) when the sound was created
+
+    #[serde(default)]
     date: i32,
     /// Title of the notification sound
+
+    #[serde(default)]
     title: String,
     /// Arbitrary data, defined while the sound was uploaded
+
+    #[serde(default)]
     data: String,
     /// File containing the sound
     sound: File,

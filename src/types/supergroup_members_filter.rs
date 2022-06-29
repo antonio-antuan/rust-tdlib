@@ -163,6 +163,8 @@ pub struct SupergroupMembersFilterBanned {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 }
 
@@ -290,6 +292,8 @@ pub struct SupergroupMembersFilterContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 }
 
@@ -359,8 +363,12 @@ pub struct SupergroupMembersFilterMention {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
     /// If non-zero, the identifier of the current message thread
+
+    #[serde(default)]
     message_thread_id: i64,
 }
 
@@ -497,6 +505,8 @@ pub struct SupergroupMembersFilterRestricted {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 }
 
@@ -566,6 +576,8 @@ pub struct SupergroupMembersFilterSearch {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 }
 

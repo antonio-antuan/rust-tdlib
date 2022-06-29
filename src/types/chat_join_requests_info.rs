@@ -11,8 +11,12 @@ pub struct ChatJoinRequestsInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Total number of pending join requests
+
+    #[serde(default)]
     total_count: i32,
     /// Identifiers of at most 3 users sent the newest pending join requests
+
+    #[serde(default)]
     user_ids: Vec<i64>,
 }
 

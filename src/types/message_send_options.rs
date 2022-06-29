@@ -11,10 +11,16 @@ pub struct MessageSendOptions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to disable notification for the message
+
+    #[serde(default)]
     disable_notification: bool,
     /// Pass true if the message is sent from the background
+
+    #[serde(default)]
     from_background: bool,
     /// Pass true if the content of the message must be protected from forwarding and saving; for bots only
+
+    #[serde(default)]
     protect_content: bool,
     /// Message scheduling state; pass null to send message immediately. Messages sent to a secret chat, live location messages and self-destructing messages can't be scheduled
 

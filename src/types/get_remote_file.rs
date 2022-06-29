@@ -11,6 +11,8 @@ pub struct GetRemoteFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Remote identifier of the file to get
+
+    #[serde(default)]
     remote_file_id: String,
     /// File type; pass null if unknown
 

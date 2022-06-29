@@ -11,8 +11,12 @@ pub struct GetCallbackQueryAnswer {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat with the message
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message from which the query originated
+
+    #[serde(default)]
     message_id: i64,
     /// Query payload
 

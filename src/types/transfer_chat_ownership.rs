@@ -11,10 +11,16 @@ pub struct TransferChatOwnership {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the user to which transfer the ownership. The ownership can't be transferred to a bot or to a deleted user
+
+    #[serde(default)]
     user_id: i64,
     /// The password of the current user
+
+    #[serde(default)]
     password: String,
 
     #[serde(rename(serialize = "@type"))]

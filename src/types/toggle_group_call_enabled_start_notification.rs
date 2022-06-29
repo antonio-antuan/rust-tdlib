@@ -11,8 +11,12 @@ pub struct ToggleGroupCallEnabledStartNotification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// New value of the enabled_start_notification setting
+
+    #[serde(default)]
     enabled_start_notification: bool,
 
     #[serde(rename(serialize = "@type"))]

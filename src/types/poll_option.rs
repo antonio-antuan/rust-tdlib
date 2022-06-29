@@ -11,14 +11,24 @@ pub struct PollOption {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Option text; 1-100 characters
+
+    #[serde(default)]
     text: String,
     /// Number of voters for this option, available only for closed or voted polls
+
+    #[serde(default)]
     voter_count: i32,
     /// The percentage of votes for this option; 0-100
+
+    #[serde(default)]
     vote_percentage: i32,
     /// True, if the option was chosen by the user
+
+    #[serde(default)]
     is_chosen: bool,
     /// True, if the option is being chosen by a pending setPollAnswer request
+
+    #[serde(default)]
     is_being_chosen: bool,
 }
 

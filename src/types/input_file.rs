@@ -83,10 +83,16 @@ pub struct InputFileGenerated {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Local path to a file from which the file is generated; may be empty if there is no such file
+
+    #[serde(default)]
     original_path: String,
     /// String specifying the conversion applied to the original file; must be persistent across application restarts. Conversions beginning with '#' are reserved for internal TDLib usage
+
+    #[serde(default)]
     conversion: String,
     /// Expected size of the generated file, in bytes; 0 if unknown
+
+    #[serde(default)]
     expected_size: i64,
 }
 
@@ -174,6 +180,8 @@ pub struct InputFileId {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique file identifier
+
+    #[serde(default)]
     id: i32,
 }
 
@@ -243,6 +251,8 @@ pub struct InputFileLocal {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Local path to the file
+
+    #[serde(default)]
     path: String,
 }
 
@@ -312,6 +322,8 @@ pub struct InputFileRemote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Remote file identifier
+
+    #[serde(default)]
     id: String,
 }
 

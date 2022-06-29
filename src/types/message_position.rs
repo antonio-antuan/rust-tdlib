@@ -11,10 +11,16 @@ pub struct MessagePosition {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// 0-based message position in the full list of suitable messages
+
+    #[serde(default)]
     position: i32,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
     /// Point in time (Unix timestamp) when the message was sent
+
+    #[serde(default)]
     date: i32,
 }
 

@@ -11,12 +11,20 @@ pub struct GetPassportAuthorizationForm {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the service's bot
+
+    #[serde(default)]
     bot_user_id: i64,
     /// Telegram Passport element types requested by the service
+
+    #[serde(default)]
     scope: String,
     /// Service's public key
+
+    #[serde(default)]
     public_key: String,
     /// Unique request identifier provided by the service
+
+    #[serde(default)]
     nonce: String,
 
     #[serde(rename(serialize = "@type"))]

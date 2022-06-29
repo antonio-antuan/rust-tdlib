@@ -11,8 +11,12 @@ pub struct BotMenuButton {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text of the button
+
+    #[serde(default)]
     text: String,
     /// URL to be passed to openWebApp
+
+    #[serde(default)]
     url: String,
 }
 

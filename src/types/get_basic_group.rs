@@ -11,6 +11,8 @@ pub struct GetBasicGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Basic group identifier
+
+    #[serde(default)]
     basic_group_id: i64,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct CheckStickerSetName {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name to be checked
+
+    #[serde(default)]
     name: String,
 
     #[serde(rename(serialize = "@type"))]

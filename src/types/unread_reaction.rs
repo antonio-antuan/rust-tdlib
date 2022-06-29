@@ -11,12 +11,16 @@ pub struct UnreadReaction {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text representation of the reaction
+
+    #[serde(default)]
     reaction: String,
     /// Identifier of the sender, added the reaction
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender_id: MessageSender,
     /// True, if the reaction was added with a big animation
+
+    #[serde(default)]
     is_big: bool,
 }
 

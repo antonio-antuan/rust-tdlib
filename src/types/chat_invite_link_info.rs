@@ -11,8 +11,12 @@ pub struct ChatInviteLinkInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the invite link; 0 if the user has no access to the chat before joining
+
+    #[serde(default)]
     chat_id: i64,
     /// If non-zero, the amount of time for which read access to the chat will remain available, in seconds
+
+    #[serde(default)]
     accessible_for: i32,
     /// Type of the chat
 
@@ -20,18 +24,30 @@ pub struct ChatInviteLinkInfo {
     #[serde(skip_serializing_if = "ChatType::_is_default")]
     type_: ChatType,
     /// Title of the chat
+
+    #[serde(default)]
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
     /// Contains information about a chat invite link
+
+    #[serde(default)]
     description: String,
     /// Number of members in the chat
+
+    #[serde(default)]
     member_count: i32,
     /// User identifiers of some chat members that may be known to the current user
+
+    #[serde(default)]
     member_user_ids: Vec<i64>,
     /// True, if the link only creates join request
+
+    #[serde(default)]
     creates_join_request: bool,
     /// True, if the chat is a public supergroup or channel, i.e. it has a username or it is a location-based supergroup
+
+    #[serde(default)]
     is_public: bool,
 }
 

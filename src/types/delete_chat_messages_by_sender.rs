@@ -11,6 +11,8 @@ pub struct DeleteChatMessagesBySender {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the sender of messages to delete
 

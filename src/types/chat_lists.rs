@@ -11,6 +11,8 @@ pub struct ChatLists {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of chat lists
+
+    #[serde(default)]
     chat_lists: Vec<ChatList>,
 }
 

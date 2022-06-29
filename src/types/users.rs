@@ -11,8 +11,12 @@ pub struct Users {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of users found
+
+    #[serde(default)]
     total_count: i32,
     /// A list of user identifiers
+
+    #[serde(default)]
     user_ids: Vec<i64>,
 }
 

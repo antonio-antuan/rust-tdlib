@@ -11,12 +11,20 @@ pub struct GetLoginUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the message with the button
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier of the message with the button
+
+    #[serde(default)]
     message_id: i64,
     /// Button identifier
+
+    #[serde(default)]
     button_id: i64,
     /// Pass true to allow the bot to send messages to the current user
+
+    #[serde(default)]
     allow_write_access: bool,
 
     #[serde(rename(serialize = "@type"))]

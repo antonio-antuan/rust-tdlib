@@ -11,16 +11,26 @@ pub struct MessageLinkInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the link is a public link for a message in a chat
+
+    #[serde(default)]
     is_public: bool,
     /// If found, identifier of the chat to which the message belongs, 0 otherwise
+
+    #[serde(default)]
     chat_id: i64,
     /// If found, the linked message; may be null
     message: Option<Message>,
     /// Timestamp from which the video/audio/video note/voice note playing must start, in seconds; 0 if not specified. The media can be in the message content or in its web page preview
+
+    #[serde(default)]
     media_timestamp: i32,
     /// True, if the whole media album to which the message belongs is linked
+
+    #[serde(default)]
     for_album: bool,
     /// True, if the message is linked as a channel post comment or from a message thread
+
+    #[serde(default)]
     for_comment: bool,
 }
 

@@ -16,6 +16,8 @@ pub struct PassportElementError {
     #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
     /// Error message
+
+    #[serde(default)]
     message: String,
     /// Error source
 

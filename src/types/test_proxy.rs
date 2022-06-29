@@ -11,8 +11,12 @@ pub struct TestProxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Proxy server IP address
+
+    #[serde(default)]
     server: String,
     /// Proxy server port
+
+    #[serde(default)]
     port: i32,
     /// Proxy type
 
@@ -20,8 +24,12 @@ pub struct TestProxy {
     #[serde(skip_serializing_if = "ProxyType::_is_default")]
     type_: ProxyType,
     /// Identifier of a datacenter with which to test connection
+
+    #[serde(default)]
     dc_id: i32,
     /// The maximum overall timeout for the request
+
+    #[serde(default)]
     timeout: f32,
 
     #[serde(rename(serialize = "@type"))]

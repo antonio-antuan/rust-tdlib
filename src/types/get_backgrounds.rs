@@ -11,6 +11,8 @@ pub struct GetBackgrounds {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to order returned backgrounds for a dark theme
+
+    #[serde(default)]
     for_dark_theme: bool,
 
     #[serde(rename(serialize = "@type"))]

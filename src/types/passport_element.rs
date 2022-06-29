@@ -345,6 +345,8 @@ pub struct PassportElementEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Email address
+
+    #[serde(default)]
     email_address: String,
 }
 
@@ -768,6 +770,8 @@ pub struct PassportElementPhoneNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Phone number
+
+    #[serde(default)]
     phone_number: String,
 }
 

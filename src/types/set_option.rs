@@ -11,6 +11,8 @@ pub struct SetOption {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The name of the option
+
+    #[serde(default)]
     name: String,
     /// The new value of the option; pass null to reset option value to a default value
 

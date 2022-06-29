@@ -11,8 +11,12 @@ pub struct SetChatDraftMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// If not 0, a message thread identifier in which the draft was changed
+
+    #[serde(default)]
     message_thread_id: i64,
     /// New draft message; pass null to remove the draft
     draft_message: DraftMessage,

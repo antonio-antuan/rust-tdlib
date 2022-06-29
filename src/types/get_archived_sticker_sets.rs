@@ -11,12 +11,17 @@ pub struct GetArchivedStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to return mask stickers sets; pass false to return ordinary sticker sets
+
+    #[serde(default)]
     is_masks: bool,
     /// Identifier of the sticker set from which to return the result
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     offset_sticker_set_id: i64,
     /// The maximum number of sticker sets to return; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

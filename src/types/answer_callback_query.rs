@@ -13,14 +13,23 @@ pub struct AnswerCallbackQuery {
     /// Identifier of the callback query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     callback_query_id: i64,
     /// Text of the answer
+
+    #[serde(default)]
     text: String,
     /// Pass true to show an alert to the user instead of a toast notification
+
+    #[serde(default)]
     show_alert: bool,
     /// URL to be opened
+
+    #[serde(default)]
     url: String,
     /// Time during which the result of the query can be cached, in seconds
+
+    #[serde(default)]
     cache_time: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -93,8 +93,12 @@ pub struct ChatMemberStatusAdministrator {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A custom title of the administrator; 0-16 characters without emojis; applicable to supergroups only
+
+    #[serde(default)]
     custom_title: String,
     /// True, if the current user can edit the administrator privileges for the called user
+
+    #[serde(default)]
     can_be_edited: bool,
     /// Rights of the administrator
     rights: ChatAdministratorRights,
@@ -184,6 +188,8 @@ pub struct ChatMemberStatusBanned {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the user will be unbanned; 0 if never. If the user is banned for more than 366 days or for less than 30 seconds from the current time, the user is considered to be banned forever. Always 0 in basic groups
+
+    #[serde(default)]
     banned_until_date: i32,
 }
 
@@ -253,10 +259,16 @@ pub struct ChatMemberStatusCreator {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A custom title of the owner; 0-16 characters without emojis; applicable to supergroups only
+
+    #[serde(default)]
     custom_title: String,
     /// True, if the creator isn't shown in the chat member list and sends messages anonymously; applicable to supergroups only
+
+    #[serde(default)]
     is_anonymous: bool,
     /// True, if the user is a member of the chat
+
+    #[serde(default)]
     is_member: bool,
 }
 
@@ -460,8 +472,12 @@ pub struct ChatMemberStatusRestricted {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the user is a member of the chat
+
+    #[serde(default)]
     is_member: bool,
     /// Point in time (Unix timestamp) when restrictions will be lifted from the user; 0 if never. If the user is restricted for more than 366 days or for less than 30 seconds from the current time, the user is considered to be restricted forever
+
+    #[serde(default)]
     restricted_until_date: i32,
     /// User permissions in the chat
     permissions: ChatPermissions,

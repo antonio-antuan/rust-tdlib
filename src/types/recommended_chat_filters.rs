@@ -11,6 +11,8 @@ pub struct RecommendedChatFilters {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of recommended chat filters
+
+    #[serde(default)]
     chat_filters: Vec<RecommendedChatFilter>,
 }
 

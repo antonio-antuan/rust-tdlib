@@ -11,6 +11,8 @@ pub struct ClearAllDraftMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to keep local message drafts in secret chats
+
+    #[serde(default)]
     exclude_secret_chats: bool,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,8 +11,12 @@ pub struct BankCardActionOpenUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Action text
+
+    #[serde(default)]
     text: String,
     /// The URL to be opened
+
+    #[serde(default)]
     url: String,
 }
 

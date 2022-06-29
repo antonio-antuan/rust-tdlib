@@ -11,8 +11,12 @@ pub struct ResendMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to send messages
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifiers of the messages to resend. Message identifiers must be in a strictly increasing order
+
+    #[serde(default)]
     message_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

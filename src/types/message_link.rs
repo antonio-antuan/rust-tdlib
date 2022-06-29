@@ -11,8 +11,12 @@ pub struct MessageLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message link
+
+    #[serde(default)]
     link: String,
     /// True, if the link will work for non-members of the chat
+
+    #[serde(default)]
     is_public: bool,
 }
 

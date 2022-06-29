@@ -11,6 +11,8 @@ pub struct GetRecentlyVisitedTMeUrls {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Google Play referrer to identify the user
+
+    #[serde(default)]
     referrer: String,
 
     #[serde(rename(serialize = "@type"))]

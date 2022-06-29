@@ -11,6 +11,8 @@ pub struct Proxies {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of proxy servers
+
+    #[serde(default)]
     proxies: Vec<Proxy>,
 }
 

@@ -11,10 +11,16 @@ pub struct TrendingStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of trending sticker sets
+
+    #[serde(default)]
     total_count: i32,
     /// List of trending sticker sets
+
+    #[serde(default)]
     sets: Vec<StickerSetInfo>,
     /// True, if the list contains sticker sets with premium stickers
+
+    #[serde(default)]
     is_premium: bool,
 }
 

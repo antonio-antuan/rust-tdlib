@@ -11,14 +11,24 @@ pub struct Contact {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Phone number of the user
+
+    #[serde(default)]
     phone_number: String,
     /// First name of the user; 1-255 characters in length
+
+    #[serde(default)]
     first_name: String,
     /// Last name of the user
+
+    #[serde(default)]
     last_name: String,
     /// Additional data about the user in a form of vCard; 0-2048 bytes in length
+
+    #[serde(default)]
     vcard: String,
     /// Identifier of the user, if known; otherwise 0
+
+    #[serde(default)]
     user_id: i64,
 }
 

@@ -11,6 +11,8 @@ pub struct ToggleSupergroupIsBroadcastGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup
+
+    #[serde(default)]
     supergroup_id: i64,
 
     #[serde(rename(serialize = "@type"))]

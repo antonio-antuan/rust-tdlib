@@ -11,14 +11,24 @@ pub struct CallProtocol {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if UDP peer-to-peer connections are supported
+
+    #[serde(default)]
     udp_p2p: bool,
     /// True, if connection through UDP reflectors is supported
+
+    #[serde(default)]
     udp_reflector: bool,
     /// The minimum supported API layer; use 65
+
+    #[serde(default)]
     min_layer: i32,
     /// The maximum supported API layer; use 65
+
+    #[serde(default)]
     max_layer: i32,
     /// List of supported tgcalls versions
+
+    #[serde(default)]
     library_versions: Vec<String>,
 }
 

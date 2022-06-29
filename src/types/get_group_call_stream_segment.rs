@@ -11,12 +11,20 @@ pub struct GetGroupCallStreamSegment {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Point in time when the stream segment begins; Unix timestamp in milliseconds
+
+    #[serde(default)]
     time_offset: i64,
     /// Segment duration scale; 0-1. Segment's duration is 1000/(2**scale) milliseconds
+
+    #[serde(default)]
     scale: i32,
     /// Identifier of an audio/video channel to get as received from tgcalls
+
+    #[serde(default)]
     channel_id: i32,
     /// Video quality as received from tgcalls; pass null to get the worst available quality
 

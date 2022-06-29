@@ -11,6 +11,8 @@ pub struct RequestQrCodeAuthentication {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of user identifiers of other users currently using the application
+
+    #[serde(default)]
     other_user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

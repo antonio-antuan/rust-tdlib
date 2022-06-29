@@ -11,12 +11,16 @@ pub struct GetChatMessageCount {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which to count messages
+
+    #[serde(default)]
     chat_id: i64,
     /// Filter for message content; searchMessagesFilterEmpty is unsupported in this function
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
     /// Pass true to get the number of messages without sending network requests, or 1 if the number of messages is unknown locally
+
+    #[serde(default)]
     return_local: bool,
 
     #[serde(rename(serialize = "@type"))]

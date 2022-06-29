@@ -83,8 +83,12 @@ pub struct ReplyMarkupForceReply {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if a forced reply must automatically be shown to the current user. For outgoing messages, specify true to show the forced reply only for the mentioned users and for the target user of a reply
+
+    #[serde(default)]
     is_personal: bool,
     /// If non-empty, the placeholder to be shown in the input field when the reply is active; 0-64 characters
+
+    #[serde(default)]
     input_field_placeholder: String,
 }
 
@@ -166,6 +170,8 @@ pub struct ReplyMarkupInlineKeyboard {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of rows of inline keyboard buttons
+
+    #[serde(default)]
     rows: Vec<Vec<InlineKeyboardButton>>,
 }
 
@@ -235,6 +241,8 @@ pub struct ReplyMarkupRemoveKeyboard {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the keyboard is removed only for the mentioned users or the target user of a reply
+
+    #[serde(default)]
     is_personal: bool,
 }
 
@@ -304,14 +312,24 @@ pub struct ReplyMarkupShowKeyboard {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of rows of bot keyboard buttons
+
+    #[serde(default)]
     rows: Vec<Vec<KeyboardButton>>,
     /// True, if the application needs to resize the keyboard vertically
+
+    #[serde(default)]
     resize_keyboard: bool,
     /// True, if the application needs to hide the keyboard after use
+
+    #[serde(default)]
     one_time: bool,
     /// True, if the keyboard must automatically be shown to the current user. For outgoing messages, specify true to show the keyboard only for the mentioned users and for the target user of a reply
+
+    #[serde(default)]
     is_personal: bool,
     /// If non-empty, the placeholder to be shown in the input field when the keyboard is active; 0-64 characters
+
+    #[serde(default)]
     input_field_placeholder: String,
 }
 

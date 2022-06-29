@@ -11,14 +11,20 @@ pub struct GetChatSparseMessagePositions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which to return information about message positions
+
+    #[serde(default)]
     chat_id: i64,
     /// Filter for message content. Filters searchMessagesFilterEmpty, searchMessagesFilterMention, searchMessagesFilterUnreadMention, and searchMessagesFilterUnreadReaction are unsupported in this function
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
     /// The message identifier from which to return information about message positions
+
+    #[serde(default)]
     from_message_id: i64,
     /// The expected number of message positions to be returned; 50-2000. A smaller number of positions can be returned, if there are not enough appropriate messages
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

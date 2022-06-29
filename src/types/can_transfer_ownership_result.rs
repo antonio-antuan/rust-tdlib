@@ -206,6 +206,8 @@ pub struct CanTransferOwnershipResultPasswordTooFresh {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Time left before the session can be used to transfer ownership of a chat, in seconds
+
+    #[serde(default)]
     retry_after: i32,
 }
 
@@ -279,6 +281,8 @@ pub struct CanTransferOwnershipResultSessionTooFresh {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Time left before the session can be used to transfer ownership of a chat, in seconds
+
+    #[serde(default)]
     retry_after: i32,
 }
 

@@ -11,6 +11,8 @@ pub struct JoinChatByInviteLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Invite link to use
+
+    #[serde(default)]
     invite_link: String,
 
     #[serde(rename(serialize = "@type"))]

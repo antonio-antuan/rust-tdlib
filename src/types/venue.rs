@@ -13,16 +13,25 @@ pub struct Venue {
     /// Venue location; as defined by the sender
     location: Location,
     /// Venue name; as defined by the sender
+
+    #[serde(default)]
     title: String,
     /// Venue address; as defined by the sender
+
+    #[serde(default)]
     address: String,
     /// Provider of the venue database; as defined by the sender. Currently, only "foursquare" and "gplaces" (Google Places) need to be supported
+
+    #[serde(default)]
     provider: String,
     /// Identifier of the venue in the provider database; as defined by the sender
+
+    #[serde(default)]
     id: String,
     /// Type of the venue in the provider database; as defined by the sender
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(default)]
     type_: String,
 }
 

@@ -11,8 +11,12 @@ pub struct BotInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The text that is shown on the bot's profile page and is sent together with the link when users share the bot
+
+    #[serde(default)]
     share_text: String,
     /// Contains information about a bot
+
+    #[serde(default)]
     description: String,
     /// Photo shown in the chat with the bot if the chat is empty; may be null
     photo: Option<Photo>,
@@ -21,6 +25,8 @@ pub struct BotInfo {
     /// Information about a button to show instead of the bot commands menu button; may be null if ordinary bot commands menu must be shown
     menu_button: Option<BotMenuButton>,
     /// List of the bot commands
+
+    #[serde(default)]
     commands: Vec<BotCommand>,
     /// Default administrator rights for adding the bot to basic group and supergroup chats; may be null
     default_group_administrator_rights: Option<ChatAdministratorRights>,

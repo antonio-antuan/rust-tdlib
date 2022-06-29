@@ -11,8 +11,12 @@ pub struct SendCustomRequest {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The method name
+
+    #[serde(default)]
     method: String,
     /// JSON-serialized method parameters
+
+    #[serde(default)]
     parameters: String,
 
     #[serde(rename(serialize = "@type"))]

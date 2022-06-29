@@ -11,10 +11,16 @@ pub struct ChatFilterInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique chat filter identifier
+
+    #[serde(default)]
     id: i32,
     /// The title of the filter; 1-12 characters without line feeds
+
+    #[serde(default)]
     title: String,
     /// The chosen or default icon name for short filter representation. One of "All", "Unread", "Unmuted", "Bots", "Channels", "Groups", "Private", "Custom", "Setup", "Cat", "Crown", "Favorite", "Flower", "Game", "Home", "Love", "Mask", "Party", "Sport", "Study", "Trade", "Travel", "Work"
+
+    #[serde(default)]
     icon_name: String,
 }
 

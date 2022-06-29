@@ -11,10 +11,16 @@ pub struct GetGameHighScores {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat that contains the message with the game
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
 
     #[serde(rename(serialize = "@type"))]

@@ -77,10 +77,16 @@ pub struct NetworkStatisticsEntryCall {
     #[serde(skip_serializing_if = "NetworkType::_is_default")]
     network_type: NetworkType,
     /// Total number of bytes sent
+
+    #[serde(default)]
     sent_bytes: i64,
     /// Total number of bytes received
+
+    #[serde(default)]
     received_bytes: i64,
     /// Total call duration, in seconds
+
+    #[serde(default)]
     duration: f32,
 }
 
@@ -185,8 +191,12 @@ pub struct NetworkStatisticsEntryFile {
     #[serde(skip_serializing_if = "NetworkType::_is_default")]
     network_type: NetworkType,
     /// Total number of bytes sent
+
+    #[serde(default)]
     sent_bytes: i64,
     /// Total number of bytes received
+
+    #[serde(default)]
     received_bytes: i64,
 }
 

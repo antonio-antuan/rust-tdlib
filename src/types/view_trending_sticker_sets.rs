@@ -13,6 +13,7 @@ pub struct ViewTrendingStickerSets {
     /// Identifiers of viewed trending sticker sets
 
     #[serde(deserialize_with = "super::_common::vec_of_i64_from_str")]
+    #[serde(default)]
     sticker_set_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

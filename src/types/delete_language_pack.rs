@@ -11,6 +11,8 @@ pub struct DeleteLanguagePack {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the language pack to delete
+
+    #[serde(default)]
     language_pack_id: String,
 
     #[serde(rename(serialize = "@type"))]

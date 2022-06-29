@@ -11,8 +11,12 @@ pub struct ToggleDownloadIsPaused {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the downloaded file
+
+    #[serde(default)]
     file_id: i32,
     /// Pass true if the download is paused
+
+    #[serde(default)]
     is_paused: bool,
 
     #[serde(rename(serialize = "@type"))]

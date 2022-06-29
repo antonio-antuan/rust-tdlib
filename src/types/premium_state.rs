@@ -13,10 +13,16 @@ pub struct PremiumState {
     /// Text description of the state of the current Premium subscription; may be empty if the current user has no Telegram Premium subscription
     state: FormattedText,
     /// ISO 4217 currency code for Telegram Premium subscription payment
+
+    #[serde(default)]
     currency: String,
     /// Monthly subscription payment for Telegram Premium subscription, in the smallest units of the currency
+
+    #[serde(default)]
     monthly_amount: i64,
     /// The list of available promotion animations for Premium features
+
+    #[serde(default)]
     animations: Vec<PremiumFeaturePromotionAnimation>,
 }
 

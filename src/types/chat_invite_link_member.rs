@@ -11,10 +11,16 @@ pub struct ChatInviteLinkMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// Point in time (Unix timestamp) when the user joined the chat
+
+    #[serde(default)]
     joined_chat_date: i32,
     /// User identifier of the chat administrator, approved user join request
+
+    #[serde(default)]
     approver_user_id: i64,
 }
 

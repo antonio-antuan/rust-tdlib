@@ -11,6 +11,8 @@ pub struct Hashtags {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of hashtags
+
+    #[serde(default)]
     hashtags: Vec<String>,
 }
 

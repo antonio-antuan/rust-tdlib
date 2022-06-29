@@ -73,6 +73,8 @@ pub struct PollTypeQuiz {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// 0-based identifier of the correct answer option; 1 for a yet unanswered poll
+
+    #[serde(default)]
     correct_option_id: i32,
     /// Text that is shown when the user chooses an incorrect answer or taps on the lamp icon; 0-200 characters with at most 2 line feeds; empty for a yet unanswered poll
     explanation: FormattedText,
@@ -153,6 +155,8 @@ pub struct PollTypeRegular {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if multiple answer options can be chosen simultaneously
+
+    #[serde(default)]
     allow_multiple_answers: bool,
 }
 

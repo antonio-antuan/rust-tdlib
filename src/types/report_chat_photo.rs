@@ -11,14 +11,20 @@ pub struct ReportChatPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the photo to report. Only full photos from chatPhoto can be reported
+
+    #[serde(default)]
     file_id: i32,
     /// The reason for reporting the chat photo
 
     #[serde(skip_serializing_if = "ChatReportReason::_is_default")]
     reason: ChatReportReason,
     /// Additional report details; 0-1024 characters
+
+    #[serde(default)]
     text: String,
 
     #[serde(rename(serialize = "@type"))]

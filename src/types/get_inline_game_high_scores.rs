@@ -11,8 +11,12 @@ pub struct GetInlineGameHighScores {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Inline message identifier
+
+    #[serde(default)]
     inline_message_id: String,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
 
     #[serde(rename(serialize = "@type"))]

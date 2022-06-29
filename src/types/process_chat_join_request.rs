@@ -11,10 +11,16 @@ pub struct ProcessChatJoinRequest {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the user that sent the request
+
+    #[serde(default)]
     user_id: i64,
     /// Pass true to approve the request; pass false to decline it
+
+    #[serde(default)]
     approve: bool,
 
     #[serde(rename(serialize = "@type"))]

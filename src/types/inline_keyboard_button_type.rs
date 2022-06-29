@@ -166,6 +166,8 @@ pub struct InlineKeyboardButtonTypeCallback {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Data to be sent to the bot via a callback query
+
+    #[serde(default)]
     data: String,
 }
 
@@ -295,6 +297,8 @@ pub struct InlineKeyboardButtonTypeCallbackWithPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Data to be sent to the bot via a callback query
+
+    #[serde(default)]
     data: String,
 }
 
@@ -368,10 +372,16 @@ pub struct InlineKeyboardButtonTypeLoginUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// An HTTP URL to pass to getLoginUrlInfo
+
+    #[serde(default)]
     url: String,
     /// Unique button identifier
+
+    #[serde(default)]
     id: i64,
     /// If non-empty, new text of the button in forwarded messages
+
+    #[serde(default)]
     forward_text: String,
 }
 
@@ -459,8 +469,12 @@ pub struct InlineKeyboardButtonTypeSwitchInline {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Inline query to be sent to the bot
+
+    #[serde(default)]
     query: String,
     /// True, if the inline query must be sent from the current chat
+
+    #[serde(default)]
     in_current_chat: bool,
 }
 
@@ -541,6 +555,8 @@ pub struct InlineKeyboardButtonTypeUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// HTTP or tg:// URL to open
+
+    #[serde(default)]
     url: String,
 }
 
@@ -610,6 +626,8 @@ pub struct InlineKeyboardButtonTypeUser {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
 }
 
@@ -679,6 +697,8 @@ pub struct InlineKeyboardButtonTypeWebApp {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// An HTTP URL to pass to openWebApp
+
+    #[serde(default)]
     url: String,
 }
 

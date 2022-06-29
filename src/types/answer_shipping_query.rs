@@ -13,10 +13,15 @@ pub struct AnswerShippingQuery {
     /// Identifier of the shipping query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     shipping_query_id: i64,
     /// Available shipping options
+
+    #[serde(default)]
     shipping_options: Vec<ShippingOption>,
     /// An error message, empty on success
+
+    #[serde(default)]
     error_message: String,
 
     #[serde(rename(serialize = "@type"))]

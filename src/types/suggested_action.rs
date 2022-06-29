@@ -209,6 +209,8 @@ pub struct SuggestedActionConvertToBroadcastGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup identifier
+
+    #[serde(default)]
     supergroup_id: i64,
 }
 
@@ -342,6 +344,8 @@ pub struct SuggestedActionSetPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The number of days to pass between consecutive authorizations if the user declines to set password
+
+    #[serde(default)]
     authorization_delay: i32,
 }
 

@@ -11,46 +11,88 @@ pub struct GroupCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     id: i32,
     /// Group call title
+
+    #[serde(default)]
     title: String,
     /// Point in time (Unix timestamp) when the group call is supposed to be started by an administrator; 0 if it is already active or was ended
+
+    #[serde(default)]
     scheduled_start_date: i32,
     /// True, if the group call is scheduled and the current user will receive a notification when the group call will start
+
+    #[serde(default)]
     enabled_start_notification: bool,
     /// True, if the call is active
+
+    #[serde(default)]
     is_active: bool,
     /// True, if the chat is an RTMP stream instead of an ordinary video chat
+
+    #[serde(default)]
     is_rtmp_stream: bool,
     /// True, if the call is joined
+
+    #[serde(default)]
     is_joined: bool,
     /// True, if user was kicked from the call because of network loss and the call needs to be rejoined
+
+    #[serde(default)]
     need_rejoin: bool,
     /// True, if the current user can manage the group call
+
+    #[serde(default)]
     can_be_managed: bool,
     /// Number of participants in the group call
+
+    #[serde(default)]
     participant_count: i32,
     /// True, if group call participants, which are muted, aren't returned in participant list
+
+    #[serde(default)]
     has_hidden_listeners: bool,
     /// True, if all group call participants are loaded
+
+    #[serde(default)]
     loaded_all_participants: bool,
     /// At most 3 recently speaking users in the group call
+
+    #[serde(default)]
     recent_speakers: Vec<GroupCallRecentSpeaker>,
     /// True, if the current user's video is enabled
+
+    #[serde(default)]
     is_my_video_enabled: bool,
     /// True, if the current user's video is paused
+
+    #[serde(default)]
     is_my_video_paused: bool,
     /// True, if the current user can broadcast video or share screen
+
+    #[serde(default)]
     can_enable_video: bool,
     /// True, if only group call administrators can unmute new participants
+
+    #[serde(default)]
     mute_new_participants: bool,
     /// True, if the current user can enable or disable mute_new_participants setting
+
+    #[serde(default)]
     can_toggle_mute_new_participants: bool,
     /// Duration of the ongoing group call recording, in seconds; 0 if none. An updateGroupCall update is not triggered when value of this field changes, but the same recording goes on
+
+    #[serde(default)]
     record_duration: i32,
     /// True, if a video file is being recorded for the call
+
+    #[serde(default)]
     is_video_recorded: bool,
     /// Call duration, in seconds; for ended calls only
+
+    #[serde(default)]
     duration: i32,
 }
 

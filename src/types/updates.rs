@@ -11,6 +11,8 @@ pub struct Updates {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of updates
+
+    #[serde(default)]
     updates: Vec<Update>,
 }
 

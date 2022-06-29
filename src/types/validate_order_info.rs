@@ -17,6 +17,8 @@ pub struct ValidateOrderInfo {
     /// The order information, provided by the user; pass null if empty
     order_info: OrderInfo,
     /// Pass true to save the order information
+
+    #[serde(default)]
     allow_save: bool,
 
     #[serde(rename(serialize = "@type"))]

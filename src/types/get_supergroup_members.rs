@@ -11,14 +11,20 @@ pub struct GetSupergroupMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup or channel
+
+    #[serde(default)]
     supergroup_id: i64,
     /// The type of users to return; pass null to use supergroupMembersFilterRecent
 
     #[serde(skip_serializing_if = "SupergroupMembersFilter::_is_default")]
     filter: SupergroupMembersFilter,
     /// Number of users to skip
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of users be returned; up to 200
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,8 +11,12 @@ pub struct GetChatStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Pass true if a dark theme is used by the application
+
+    #[serde(default)]
     is_dark: bool,
 
     #[serde(rename(serialize = "@type"))]

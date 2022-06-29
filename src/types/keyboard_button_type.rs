@@ -206,8 +206,12 @@ pub struct KeyboardButtonTypeRequestPoll {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If true, only regular polls must be allowed to create
+
+    #[serde(default)]
     force_regular: bool,
     /// If true, only polls in quiz mode must be allowed to create
+
+    #[serde(default)]
     force_quiz: bool,
 }
 
@@ -344,6 +348,8 @@ pub struct KeyboardButtonTypeWebApp {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// An HTTP URL to pass to getWebAppUrl
+
+    #[serde(default)]
     url: String,
 }
 

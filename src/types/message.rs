@@ -11,78 +11,133 @@ pub struct Message {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message identifier; unique for the chat to which the message belongs
+
+    #[serde(default)]
     id: i64,
     /// Identifier of the sender of the message
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender_id: MessageSender,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// The sending state of the message; may be null
     sending_state: Option<MessageSendingState>,
     /// The scheduling state of the message; may be null
     scheduling_state: Option<MessageSchedulingState>,
     /// True, if the message is outgoing
+
+    #[serde(default)]
     is_outgoing: bool,
     /// True, if the message is pinned
+
+    #[serde(default)]
     is_pinned: bool,
     /// True, if the message can be edited. For live location and poll messages this fields shows whether editMessageLiveLocation or stopPoll can be used with this message by the application
+
+    #[serde(default)]
     can_be_edited: bool,
     /// True, if the message can be forwarded
+
+    #[serde(default)]
     can_be_forwarded: bool,
     /// True, if content of the message can be saved locally or copied
+
+    #[serde(default)]
     can_be_saved: bool,
     /// True, if the message can be deleted only for the current user while other users will continue to see it
+
+    #[serde(default)]
     can_be_deleted_only_for_self: bool,
     /// True, if the message can be deleted for all users
+
+    #[serde(default)]
     can_be_deleted_for_all_users: bool,
     /// True, if the list of added reactions is available through getMessageAddedReactions
+
     #[serde(default)]
     can_get_added_reactions: bool,
     /// True, if the message statistics are available through getMessageStatistics
+
+    #[serde(default)]
     can_get_statistics: bool,
     /// True, if information about the message thread is available through getMessageThread
+
+    #[serde(default)]
     can_get_message_thread: bool,
     /// True, if chat members already viewed the message can be received through getMessageViewers
+
+    #[serde(default)]
     can_get_viewers: bool,
     /// True, if media timestamp links can be generated for media timestamp entities in the message text, caption or web page description through getMessageLink
+
+    #[serde(default)]
     can_get_media_timestamp_links: bool,
     /// True, if media timestamp entities refers to a media in this message as opposed to a media in the replied message
+
+    #[serde(default)]
     has_timestamped_media: bool,
     /// True, if the message is a channel post. All messages to channels are channel posts, all other messages are not channel posts
+
+    #[serde(default)]
     is_channel_post: bool,
     /// True, if the message contains an unread mention for the current user
+
+    #[serde(default)]
     contains_unread_mention: bool,
     /// Point in time (Unix timestamp) when the message was sent
+
+    #[serde(default)]
     date: i32,
     /// Point in time (Unix timestamp) when the message was last edited
+
+    #[serde(default)]
     edit_date: i32,
     /// Information about the initial message sender; may be null
     forward_info: Option<MessageForwardInfo>,
     /// Information about interactions with the message; may be null
     interaction_info: Option<MessageInteractionInfo>,
     /// Information about unread reactions added to the message
+
     #[serde(default)]
     unread_reactions: Vec<UnreadReaction>,
     /// If non-zero, the identifier of the chat to which the replied message belongs; Currently, only messages in the Replies chat can have different reply_in_chat_id and chat_id
+
+    #[serde(default)]
     reply_in_chat_id: i64,
     /// If non-zero, the identifier of the message this message is replying to; can be the identifier of a deleted message
+
+    #[serde(default)]
     reply_to_message_id: i64,
     /// If non-zero, the identifier of the message thread the message belongs to; unique within the chat to which the message belongs
+
+    #[serde(default)]
     message_thread_id: i64,
     /// For self-destructing messages, the message's TTL (Time To Live), in seconds; 0 if none. TDLib will send updateDeleteMessages or updateMessageContent once the TTL expires
+
+    #[serde(default)]
     ttl: i32,
     /// Time left before the message expires, in seconds. If the TTL timer isn't started yet, equals to the value of the ttl field
+
+    #[serde(default)]
     ttl_expires_in: f32,
     /// If non-zero, the user identifier of the bot through which this message was sent
+
+    #[serde(default)]
     via_bot_user_id: i64,
     /// For channel posts and anonymous group messages, optional author signature
+
+    #[serde(default)]
     author_signature: String,
     /// Unique identifier of an album this message belongs to. Only audios, documents, photos and videos can be grouped together in albums
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     media_album_id: i64,
     /// If non-empty, contains a human-readable description of the reason why access to this message must be restricted
+
+    #[serde(default)]
     restriction_reason: String,
     /// Content of the message
 

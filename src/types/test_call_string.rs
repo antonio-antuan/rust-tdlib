@@ -11,6 +11,8 @@ pub struct TestCallString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// String to return
+
+    #[serde(default)]
     x: String,
 
     #[serde(rename(serialize = "@type"))]

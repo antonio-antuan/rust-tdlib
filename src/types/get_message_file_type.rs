@@ -11,6 +11,8 @@ pub struct GetMessageFileType {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Beginning of the message file; up to 100 first lines
+
+    #[serde(default)]
     message_file_head: String,
 
     #[serde(rename(serialize = "@type"))]

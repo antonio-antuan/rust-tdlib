@@ -11,10 +11,16 @@ pub struct SendWebAppData {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the target bot
+
+    #[serde(default)]
     bot_user_id: i64,
     /// Text of the keyboardButtonTypeWebApp button, which opened the Web App
+
+    #[serde(default)]
     button_text: String,
     /// Received data
+
+    #[serde(default)]
     data: String,
 
     #[serde(rename(serialize = "@type"))]

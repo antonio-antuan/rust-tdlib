@@ -622,6 +622,8 @@ pub struct TextEntityTypeMediaTimestamp {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Timestamp from which a video/audio/video note/voice note playing must start, in seconds. The media can be in the content or the web page preview of the current message, or in the same places in the replied message
+
+    #[serde(default)]
     media_timestamp: i32,
 }
 
@@ -749,6 +751,8 @@ pub struct TextEntityTypeMentionName {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the mentioned user
+
+    #[serde(default)]
     user_id: i64,
 }
 
@@ -934,6 +938,8 @@ pub struct TextEntityTypePreCode {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Programming language of the code; as defined by the sender
+
+    #[serde(default)]
     language: String,
 }
 
@@ -1119,6 +1125,8 @@ pub struct TextEntityTypeTextUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// HTTP or tg:// URL to be opened when the link is clicked
+
+    #[serde(default)]
     url: String,
 }
 

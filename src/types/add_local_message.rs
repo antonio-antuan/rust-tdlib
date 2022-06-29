@@ -11,14 +11,20 @@ pub struct AddLocalMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Target chat
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the sender of the message
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender_id: MessageSender,
     /// Identifier of the replied message; 0 if none
+
+    #[serde(default)]
     reply_to_message_id: i64,
     /// Pass true to disable notification for the message
+
+    #[serde(default)]
     disable_notification: bool,
     /// The content of the message to be added
 

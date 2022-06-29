@@ -73,6 +73,8 @@ pub struct MessageSchedulingStateSendAtDate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Date the message will be sent. The date must be within 367 days in the future
+
+    #[serde(default)]
     send_date: i32,
 }
 

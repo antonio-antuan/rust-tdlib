@@ -11,12 +11,20 @@ pub struct SendCallRating {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
     /// Call rating; 1-5
+
+    #[serde(default)]
     rating: i32,
     /// An optional user comment if the rating is less than 5
+
+    #[serde(default)]
     comment: String,
     /// List of the exact types of problems with the call, specified by the user
+
+    #[serde(default)]
     problems: Vec<CallProblem>,
 
     #[serde(rename(serialize = "@type"))]

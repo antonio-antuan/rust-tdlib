@@ -11,6 +11,8 @@ pub struct GetRecentStickers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to return stickers and masks that were recently attached to photos or video files; pass false to return recently sent stickers
+
+    #[serde(default)]
     is_attached: bool,
 
     #[serde(rename(serialize = "@type"))]

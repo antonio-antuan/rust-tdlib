@@ -11,6 +11,8 @@ pub struct LanguagePackStrings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of language pack strings
+
+    #[serde(default)]
     strings: Vec<LanguagePackString>,
 }
 

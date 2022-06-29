@@ -118,8 +118,12 @@ pub struct DeviceTokenApplePush {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Device token; may be empty to deregister a device
+
+    #[serde(default)]
     device_token: String,
     /// True, if App Sandbox is enabled
+
+    #[serde(default)]
     is_app_sandbox: bool,
 }
 
@@ -198,10 +202,16 @@ pub struct DeviceTokenApplePushVoIP {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Device token; may be empty to deregister a device
+
+    #[serde(default)]
     device_token: String,
     /// True, if App Sandbox is enabled
+
+    #[serde(default)]
     is_app_sandbox: bool,
     /// True, if push notifications must be additionally encrypted
+
+    #[serde(default)]
     encrypt: bool,
 }
 
@@ -289,6 +299,8 @@ pub struct DeviceTokenBlackBerryPush {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Token; may be empty to deregister a device
+
+    #[serde(default)]
     token: String,
 }
 
@@ -358,8 +370,12 @@ pub struct DeviceTokenFirebaseCloudMessaging {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Device registration token; may be empty to deregister a device
+
+    #[serde(default)]
     token: String,
     /// True, if push notifications must be additionally encrypted
+
+    #[serde(default)]
     encrypt: bool,
 }
 
@@ -438,6 +454,8 @@ pub struct DeviceTokenMicrosoftPush {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Push notification channel URI; may be empty to deregister a device
+
+    #[serde(default)]
     channel_uri: String,
 }
 
@@ -507,6 +525,8 @@ pub struct DeviceTokenMicrosoftPushVoIP {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Push notification channel URI; may be empty to deregister a device
+
+    #[serde(default)]
     channel_uri: String,
 }
 
@@ -576,6 +596,8 @@ pub struct DeviceTokenSimplePush {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Absolute URL exposed by the push service where the application server can send push messages; may be empty to deregister a device
+
+    #[serde(default)]
     endpoint: String,
 }
 
@@ -645,6 +667,8 @@ pub struct DeviceTokenTizenPush {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Push service registration identifier; may be empty to deregister a device
+
+    #[serde(default)]
     reg_id: String,
 }
 
@@ -714,6 +738,8 @@ pub struct DeviceTokenUbuntuPush {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Token; may be empty to deregister a device
+
+    #[serde(default)]
     token: String,
 }
 
@@ -783,10 +809,16 @@ pub struct DeviceTokenWebPush {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Absolute URL exposed by the push service where the application server can send push messages; may be empty to deregister a device
+
+    #[serde(default)]
     endpoint: String,
     /// Base64url-encoded P-256 elliptic curve Diffie-Hellman public key
+
+    #[serde(default)]
     p256dh_base64url: String,
     /// Base64url-encoded authentication secret
+
+    #[serde(default)]
     auth_base64url: String,
 }
 
@@ -874,6 +906,8 @@ pub struct DeviceTokenWindowsPush {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The access token that will be used to send notifications; may be empty to deregister a device
+
+    #[serde(default)]
     access_token: String,
 }
 

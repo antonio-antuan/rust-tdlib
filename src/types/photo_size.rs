@@ -13,14 +13,21 @@ pub struct PhotoSize {
     /// Image type (see https://core.telegram.org/constructor/photoSize)
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(default)]
     type_: String,
     /// Information about the image file
     photo: File,
     /// Image width
+
+    #[serde(default)]
     width: i32,
     /// Image height
+
+    #[serde(default)]
     height: i32,
     /// Sizes of progressive JPEG file prefixes, which can be used to preliminarily show the image; in bytes
+
+    #[serde(default)]
     progressive_sizes: Vec<i32>,
 }
 

@@ -11,6 +11,8 @@ pub struct AuthenticationCodeInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A phone number that is being authenticated
+
+    #[serde(default)]
     phone_number: String,
     /// The way the code was sent to the user
 
@@ -20,6 +22,8 @@ pub struct AuthenticationCodeInfo {
     /// The way the next code will be sent to the user; may be null
     next_type: Option<AuthenticationCodeType>,
     /// Timeout before the code can be re-sent, in seconds
+
+    #[serde(default)]
     timeout: i32,
 }
 

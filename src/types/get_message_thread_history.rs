@@ -11,14 +11,24 @@ pub struct GetMessageThreadHistory {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier, which thread history needs to be returned
+
+    #[serde(default)]
     message_id: i64,
     /// Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
+
+    #[serde(default)]
     from_message_id: i64,
     /// Specify 0 to get results from exactly the from_message_id or a negative offset up to 99 to get additionally some newer messages
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

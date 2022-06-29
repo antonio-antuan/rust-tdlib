@@ -11,12 +11,20 @@ pub struct Reaction {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text representation of the reaction
+
+    #[serde(default)]
     reaction: String,
     /// Reaction title
+
+    #[serde(default)]
     title: String,
     /// True, if the reaction can be added to new messages and enabled in chats
+
+    #[serde(default)]
     is_active: bool,
     /// True, if the reaction is available only for Premium users
+
+    #[serde(default)]
     is_premium: bool,
     /// Static icon for the reaction
     static_icon: Sticker,

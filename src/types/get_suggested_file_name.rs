@@ -11,8 +11,12 @@ pub struct GetSuggestedFileName {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file
+
+    #[serde(default)]
     file_id: i32,
     /// Directory in which the file is supposed to be saved
+
+    #[serde(default)]
     directory: String,
 
     #[serde(rename(serialize = "@type"))]

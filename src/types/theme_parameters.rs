@@ -11,18 +11,32 @@ pub struct ThemeParameters {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A color of the background in the RGB24 format
+
+    #[serde(default)]
     background_color: i32,
     /// A secondary color for the background in the RGB24 format
+
+    #[serde(default)]
     secondary_background_color: i32,
     /// A color of text in the RGB24 format
+
+    #[serde(default)]
     text_color: i32,
     /// A color of hints in the RGB24 format
+
+    #[serde(default)]
     hint_color: i32,
     /// A color of links in the RGB24 format
+
+    #[serde(default)]
     link_color: i32,
     /// A color of the buttons in the RGB24 format
+
+    #[serde(default)]
     button_color: i32,
     /// A color of text on the buttons in the RGB24 format
+
+    #[serde(default)]
     button_text_color: i32,
 }
 

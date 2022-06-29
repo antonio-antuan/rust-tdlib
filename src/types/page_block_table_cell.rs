@@ -13,10 +13,16 @@ pub struct PageBlockTableCell {
     /// Cell text; may be null. If the text is null, then the cell must be invisible
     text: Option<RichText>,
     /// True, if it is a header cell
+
+    #[serde(default)]
     is_header: bool,
     /// The number of columns the cell spans
+
+    #[serde(default)]
     colspan: i32,
     /// The number of rows the cell spans
+
+    #[serde(default)]
     rowspan: i32,
     /// Horizontal cell content alignment
 

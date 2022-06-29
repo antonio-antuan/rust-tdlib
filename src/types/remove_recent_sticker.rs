@@ -11,6 +11,8 @@ pub struct RemoveRecentSticker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to remove the sticker from the list of stickers recently attached to photo or video files; pass false to remove the sticker from the list of recently sent stickers
+
+    #[serde(default)]
     is_attached: bool,
     /// Sticker file to delete
 

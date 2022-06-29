@@ -11,10 +11,16 @@ pub struct ChatJoinRequest {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// Point in time (Unix timestamp) when the user sent the join request
+
+    #[serde(default)]
     date: i32,
     /// A short bio of the user
+
+    #[serde(default)]
     bio: String,
 }
 

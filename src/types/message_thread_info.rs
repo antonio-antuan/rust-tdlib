@@ -11,14 +11,22 @@ pub struct MessageThreadInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the message thread belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Message thread identifier, unique within the chat
+
+    #[serde(default)]
     message_thread_id: i64,
     /// Information about the message thread
     reply_info: MessageReplyInfo,
     /// Approximate number of unread messages in the message thread
+
+    #[serde(default)]
     unread_message_count: i32,
     /// The messages from which the thread starts. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id)
+
+    #[serde(default)]
     messages: Vec<Message>,
     /// A draft of a message in the message thread; may be null
     draft_message: Option<DraftMessage>,

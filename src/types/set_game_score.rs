@@ -11,16 +11,28 @@ pub struct SetGameScore {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat to which the message with the game belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
     /// Pass true to edit the game message to include the current scoreboard
+
+    #[serde(default)]
     edit_message: bool,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// The new score
+
+    #[serde(default)]
     score: i32,
     /// Pass true to update the score even if it decreases. If the score is 0, the user will be deleted from the high score table
+
+    #[serde(default)]
     force: bool,
 
     #[serde(rename(serialize = "@type"))]

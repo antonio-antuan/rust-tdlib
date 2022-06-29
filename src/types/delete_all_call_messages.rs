@@ -11,6 +11,8 @@ pub struct DeleteAllCallMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to delete the messages for all users
+
+    #[serde(default)]
     revoke: bool,
 
     #[serde(rename(serialize = "@type"))]

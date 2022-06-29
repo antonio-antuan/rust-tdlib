@@ -11,12 +11,20 @@ pub struct CreateVideoChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of a chat in which the video chat will be created
+
+    #[serde(default)]
     chat_id: i64,
     /// Group call title; if empty, chat title will be used
+
+    #[serde(default)]
     title: String,
     /// Point in time (Unix timestamp) when the group call is supposed to be started by an administrator; 0 to start the video chat immediately. The date must be at least 10 seconds and at most 8 days in the future
+
+    #[serde(default)]
     start_date: i32,
     /// Pass true to create an RTMP stream instead of an ordinary video chat; requires creator privileges
+
+    #[serde(default)]
     is_rtmp_stream: bool,
 
     #[serde(rename(serialize = "@type"))]

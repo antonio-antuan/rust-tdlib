@@ -11,6 +11,8 @@ pub struct GetDeepLinkInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The link
+
+    #[serde(default)]
     link: String,
 
     #[serde(rename(serialize = "@type"))]

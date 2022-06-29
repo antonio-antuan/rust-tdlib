@@ -11,12 +11,20 @@ pub struct Call {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier, not persistent
+
+    #[serde(default)]
     id: i32,
     /// Peer user identifier
+
+    #[serde(default)]
     user_id: i64,
     /// True, if the call is outgoing
+
+    #[serde(default)]
     is_outgoing: bool,
     /// True, if the call is a video call
+
+    #[serde(default)]
     is_video: bool,
     /// Call state
 

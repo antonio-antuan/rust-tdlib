@@ -11,8 +11,12 @@ pub struct ChatJoinRequests {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of requests found
+
+    #[serde(default)]
     total_count: i32,
     /// List of the requests
+
+    #[serde(default)]
     requests: Vec<ChatJoinRequest>,
 }
 

@@ -15,6 +15,8 @@ pub struct GroupCallRecentSpeaker {
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
     /// True, is the user has spoken recently
+
+    #[serde(default)]
     is_speaking: bool,
 }
 

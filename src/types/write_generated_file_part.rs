@@ -13,10 +13,15 @@ pub struct WriteGeneratedFilePart {
     /// The identifier of the generation process
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     generation_id: i64,
     /// The offset from which to write the data to the file
+
+    #[serde(default)]
     offset: i64,
     /// The data to write
+
+    #[serde(default)]
     data: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,14 +11,24 @@ pub struct SearchFileDownloads {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for; may be empty to return all downloaded files
+
+    #[serde(default)]
     query: String,
     /// Pass true to search only for active downloads, including paused
+
+    #[serde(default)]
     only_active: bool,
     /// Pass true to search only for completed downloads
+
+    #[serde(default)]
     only_completed: bool,
     /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+
+    #[serde(default)]
     offset: String,
     /// The maximum number of files to be returned
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

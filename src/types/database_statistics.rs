@@ -11,6 +11,8 @@ pub struct DatabaseStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Database statistics in an unspecified human-readable format
+
+    #[serde(default)]
     statistics: String,
 }
 

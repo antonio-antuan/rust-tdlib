@@ -225,6 +225,8 @@ pub struct PremiumSourceLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The referrer from the link
+
+    #[serde(default)]
     referrer: String,
 }
 

@@ -13,6 +13,8 @@ pub struct ChatLocation {
     /// The location
     location: Location,
     /// Location address; 1-64 characters, as defined by the chat owner
+
+    #[serde(default)]
     address: String,
 }
 

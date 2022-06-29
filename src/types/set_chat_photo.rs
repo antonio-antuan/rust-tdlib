@@ -11,6 +11,8 @@ pub struct SetChatPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New chat photo; pass null to delete the chat photo
 

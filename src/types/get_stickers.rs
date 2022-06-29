@@ -11,8 +11,12 @@ pub struct GetStickers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// String representation of emoji. If empty, returns all known installed stickers
+
+    #[serde(default)]
     emoji: String,
     /// The maximum number of stickers to be returned
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

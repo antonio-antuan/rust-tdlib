@@ -13,6 +13,8 @@ pub struct RecommendedChatFilter {
     /// The chat filter
     filter: ChatFilter,
     /// Describes a recommended chat filter
+
+    #[serde(default)]
     description: String,
 }
 

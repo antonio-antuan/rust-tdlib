@@ -11,8 +11,12 @@ pub struct SetChatMessageTtl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New TTL value, in seconds; unless the chat is secret, it must be from 0 up to 365 * 86400 and be divisible by 86400
+
+    #[serde(default)]
     ttl: i32,
 
     #[serde(rename(serialize = "@type"))]

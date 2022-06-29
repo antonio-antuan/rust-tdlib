@@ -11,12 +11,20 @@ pub struct AddFileToDownloads {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file to download
+
+    #[serde(default)]
     file_id: i32,
     /// Chat identifier of the message with the file
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
     /// Priority of the download (1-32). The higher the priority, the earlier the file will be downloaded. If the priorities of two files are equal, then the last one for which downloadFile/addFileToDownloads was called will be downloaded first
+
+    #[serde(default)]
     priority: i32,
 
     #[serde(rename(serialize = "@type"))]

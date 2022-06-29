@@ -285,8 +285,12 @@ pub struct InternalLinkTypeAttachmentMenuBot {
     #[serde(skip_serializing_if = "TargetChat::_is_default")]
     target_chat: TargetChat,
     /// Username of the bot
+
+    #[serde(default)]
     bot_username: String,
     /// URL to be passed to openWebApp
+
+    #[serde(default)]
     url: String,
 }
 
@@ -374,6 +378,8 @@ pub struct InternalLinkTypeAuthenticationCode {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The authentication code
+
+    #[serde(default)]
     code: String,
 }
 
@@ -443,6 +449,8 @@ pub struct InternalLinkTypeBackground {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the background
+
+    #[serde(default)]
     background_name: String,
 }
 
@@ -512,6 +520,8 @@ pub struct InternalLinkTypeBotAddToChannel {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username of the bot
+
+    #[serde(default)]
     bot_username: String,
     /// Expected administrator rights for the bot
     administrator_rights: ChatAdministratorRights,
@@ -595,8 +605,12 @@ pub struct InternalLinkTypeBotStart {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username of the bot
+
+    #[serde(default)]
     bot_username: String,
     /// The parameter to be passed to sendBotStartMessage
+
+    #[serde(default)]
     start_parameter: String,
 }
 
@@ -675,8 +689,12 @@ pub struct InternalLinkTypeBotStartInGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username of the bot
+
+    #[serde(default)]
     bot_username: String,
     /// The parameter to be passed to sendBotStartMessage
+
+    #[serde(default)]
     start_parameter: String,
     /// Expected administrator rights for the bot; may be null
     administrator_rights: Option<ChatAdministratorRights>,
@@ -827,6 +845,8 @@ pub struct InternalLinkTypeChatInvite {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Internal representation of the invite link
+
+    #[serde(default)]
     invite_link: String,
 }
 
@@ -954,8 +974,12 @@ pub struct InternalLinkTypeGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username of the bot that owns the game
+
+    #[serde(default)]
     bot_username: String,
     /// Short name of the game
+
+    #[serde(default)]
     game_short_name: String,
 }
 
@@ -1034,6 +1058,8 @@ pub struct InternalLinkTypeInvoice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the invoice
+
+    #[serde(default)]
     invoice_name: String,
 }
 
@@ -1103,6 +1129,8 @@ pub struct InternalLinkTypeLanguagePack {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Language pack identifier
+
+    #[serde(default)]
     language_pack_id: String,
 }
 
@@ -1230,6 +1258,8 @@ pub struct InternalLinkTypeMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// URL to be passed to getMessageLinkInfo
+
+    #[serde(default)]
     url: String,
 }
 
@@ -1301,6 +1331,8 @@ pub struct InternalLinkTypeMessageDraft {
     /// Message draft text
     text: FormattedText,
     /// True, if the first line of the text contains a link. If true, the input field needs to be focused and the text after the link must be selected
+
+    #[serde(default)]
     contains_link: bool,
 }
 
@@ -1379,14 +1411,24 @@ pub struct InternalLinkTypePassportDataRequest {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the service's bot
+
+    #[serde(default)]
     bot_user_id: i64,
     /// Telegram Passport element types requested by the service
+
+    #[serde(default)]
     scope: String,
     /// Service's public key
+
+    #[serde(default)]
     public_key: String,
     /// Unique request identifier provided by the service
+
+    #[serde(default)]
     nonce: String,
     /// An HTTP URL to open once the request is finished or canceled with the parameter tg_passport=success or tg_passport=cancel respectively. If empty, then the link tgbot{bot_user_id}://passport/success or tgbot{bot_user_id}://passport/cancel needs to be opened instead
+
+    #[serde(default)]
     callback_url: String,
 }
 
@@ -1492,8 +1534,12 @@ pub struct InternalLinkTypePhoneNumberConfirmation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Hash value from the link
+
+    #[serde(default)]
     hash: String,
     /// Phone number value from the link
+
+    #[serde(default)]
     phone_number: String,
 }
 
@@ -1574,6 +1620,8 @@ pub struct InternalLinkTypePremiumFeatures {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Referrer specified in the link
+
+    #[serde(default)]
     referrer: String,
 }
 
@@ -1705,8 +1753,12 @@ pub struct InternalLinkTypeProxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Proxy server IP address
+
+    #[serde(default)]
     server: String,
     /// Proxy server port
+
+    #[serde(default)]
     port: i32,
     /// Type of the proxy
 
@@ -1799,6 +1851,8 @@ pub struct InternalLinkTypePublicChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username of the chat
+
+    #[serde(default)]
     chat_username: String,
 }
 
@@ -1986,6 +2040,8 @@ pub struct InternalLinkTypeStickerSet {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the sticker set
+
+    #[serde(default)]
     sticker_set_name: String,
 }
 
@@ -2055,6 +2111,8 @@ pub struct InternalLinkTypeTheme {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the theme
+
+    #[serde(default)]
     theme_name: String,
 }
 
@@ -2182,6 +2240,8 @@ pub struct InternalLinkTypeUnknownDeepLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Link to be passed to getDeepLinkInfo
+
+    #[serde(default)]
     link: String,
 }
 
@@ -2309,6 +2369,8 @@ pub struct InternalLinkTypeUserPhoneNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Phone number of the user
+
+    #[serde(default)]
     phone_number: String,
 }
 
@@ -2378,10 +2440,16 @@ pub struct InternalLinkTypeVideoChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username of the chat with the video chat
+
+    #[serde(default)]
     chat_username: String,
     /// If non-empty, invite hash to be used to join the video chat without being muted by administrators
+
+    #[serde(default)]
     invite_hash: String,
     /// True, if the video chat is expected to be a live stream in a channel or a broadcast group
+
+    #[serde(default)]
     is_live_stream: bool,
 }
 

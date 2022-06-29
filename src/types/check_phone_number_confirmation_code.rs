@@ -11,6 +11,8 @@ pub struct CheckPhoneNumberConfirmationCode {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Confirmation code to check
+
+    #[serde(default)]
     code: String,
 
     #[serde(rename(serialize = "@type"))]

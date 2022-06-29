@@ -11,12 +11,20 @@ pub struct StartGroupCallRecording {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Group call recording title; 0-64 characters
+
+    #[serde(default)]
     title: String,
     /// Pass true to record a video file instead of an audio file
+
+    #[serde(default)]
     record_video: bool,
     /// Pass true to use portrait orientation for video instead of landscape one
+
+    #[serde(default)]
     use_portrait_orientation: bool,
 
     #[serde(rename(serialize = "@type"))]

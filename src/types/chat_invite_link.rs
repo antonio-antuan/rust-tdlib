@@ -11,28 +11,52 @@ pub struct ChatInviteLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat invite link
+
+    #[serde(default)]
     invite_link: String,
     /// Name of the link
+
+    #[serde(default)]
     name: String,
     /// User identifier of an administrator created the link
+
+    #[serde(default)]
     creator_user_id: i64,
     /// Point in time (Unix timestamp) when the link was created
+
+    #[serde(default)]
     date: i32,
     /// Point in time (Unix timestamp) when the link was last edited; 0 if never or unknown
+
+    #[serde(default)]
     edit_date: i32,
     /// Point in time (Unix timestamp) when the link will expire; 0 if never
+
+    #[serde(default)]
     expiration_date: i32,
     /// The maximum number of members, which can join the chat using the link simultaneously; 0 if not limited. Always 0 if the link requires approval
+
+    #[serde(default)]
     member_limit: i32,
     /// Number of chat members, which joined the chat using the link
+
+    #[serde(default)]
     member_count: i32,
     /// Number of pending join requests created using this link
+
+    #[serde(default)]
     pending_join_request_count: i32,
     /// True, if the link only creates join request. If true, total number of joining members will be unlimited
+
+    #[serde(default)]
     creates_join_request: bool,
     /// True, if the link is primary. Primary invite link can't have name, expiration date, or usage limit. There is exactly one primary invite link for each administrator with can_invite_users right at a given time
+
+    #[serde(default)]
     is_primary: bool,
     /// True, if the link was revoked
+
+    #[serde(default)]
     is_revoked: bool,
 }
 

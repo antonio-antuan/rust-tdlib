@@ -11,8 +11,12 @@ pub struct Point {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The point's first coordinate
+
+    #[serde(default)]
     x: f32,
     /// The point's second coordinate
+
+    #[serde(default)]
     y: f32,
 }
 

@@ -11,10 +11,16 @@ pub struct DeleteChatHistory {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Pass true to remove the chat from all chat lists
+
+    #[serde(default)]
     remove_from_chat_list: bool,
     /// Pass true to delete chat history for all users
+
+    #[serde(default)]
     revoke: bool,
 
     #[serde(rename(serialize = "@type"))]

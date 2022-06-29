@@ -11,6 +11,8 @@ pub struct ThemeSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Theme accent color in ARGB format
+
+    #[serde(default)]
     accent_color: i32,
     /// The background to be used in chats; may be null
     background: Option<Background>,
@@ -19,8 +21,12 @@ pub struct ThemeSettings {
     #[serde(skip_serializing_if = "BackgroundFill::_is_default")]
     outgoing_message_fill: BackgroundFill,
     /// If true, the freeform gradient fill needs to be animated on every sent message
+
+    #[serde(default)]
     animate_outgoing_message_fill: bool,
     /// Accent color of outgoing messages in ARGB format
+
+    #[serde(default)]
     outgoing_message_accent_color: i32,
 }
 

@@ -11,8 +11,12 @@ pub struct RemoveNotification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of notification group to which the notification belongs
+
+    #[serde(default)]
     notification_group_id: i32,
     /// Identifier of removed notification
+
+    #[serde(default)]
     notification_id: i32,
 
     #[serde(rename(serialize = "@type"))]

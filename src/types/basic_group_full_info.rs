@@ -13,14 +13,22 @@ pub struct BasicGroupFullInfo {
     /// Chat photo; may be null
     photo: Option<ChatPhoto>,
     /// Contains full information about a basic group
+
+    #[serde(default)]
     description: String,
     /// User identifier of the creator of the group; 0 if unknown
+
+    #[serde(default)]
     creator_user_id: i64,
     /// Group members
+
+    #[serde(default)]
     members: Vec<ChatMember>,
     /// Primary invite link for this group; may be null. For chat administrators with can_invite_users right only. Updated only after the basic group is opened
     invite_link: Option<ChatInviteLink>,
     /// List of commands of bots in the group
+
+    #[serde(default)]
     bot_commands: Vec<BotCommands>,
 }
 

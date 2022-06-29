@@ -78,6 +78,8 @@ pub struct BackgroundFillFreeformGradient {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of 3 or 4 colors of the freeform gradients in the RGB24 format
+
+    #[serde(default)]
     colors: Vec<i32>,
 }
 
@@ -147,10 +149,16 @@ pub struct BackgroundFillGradient {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A top color of the background in the RGB24 format
+
+    #[serde(default)]
     top_color: i32,
     /// A bottom color of the background in the RGB24 format
+
+    #[serde(default)]
     bottom_color: i32,
     /// Clockwise rotation angle of the gradient, in degrees; 0-359. Must be always divisible by 45
+
+    #[serde(default)]
     rotation_angle: i32,
 }
 
@@ -238,6 +246,8 @@ pub struct BackgroundFillSolid {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A color of the background in the RGB24 format
+
+    #[serde(default)]
     color: i32,
 }
 

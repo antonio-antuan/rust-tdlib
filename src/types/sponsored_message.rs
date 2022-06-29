@@ -11,10 +11,16 @@ pub struct SponsoredMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message identifier; unique for the chat to which the sponsored message belongs among both ordinary and sponsored messages
+
+    #[serde(default)]
     message_id: i64,
     /// True, if the message needs to be labeled as "recommended" instead of "sponsored"
+
+    #[serde(default)]
     is_recommended: bool,
     /// Sponsor chat identifier; 0 if the sponsor chat is accessible through an invite link
+
+    #[serde(default)]
     sponsor_chat_id: i64,
     /// Information about the sponsor chat; may be null unless sponsor_chat_id == 0
     sponsor_chat_info: Option<ChatInviteLinkInfo>,

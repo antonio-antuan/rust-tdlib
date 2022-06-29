@@ -13,6 +13,7 @@ pub struct TerminateSession {
     /// Session identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     session_id: i64,
 
     #[serde(rename(serialize = "@type"))]

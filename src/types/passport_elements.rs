@@ -11,6 +11,8 @@ pub struct PassportElements {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Telegram Passport elements
+
+    #[serde(default)]
     elements: Vec<PassportElement>,
 }
 

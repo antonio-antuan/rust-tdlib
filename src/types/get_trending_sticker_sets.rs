@@ -11,8 +11,12 @@ pub struct GetTrendingStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The offset from which to return the sticker sets; must be non-negative
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of sticker sets to be returned; up to 100. For optimal performance, the number of returned sticker sets is chosen by TDLib and can be smaller than the specified limit, even if the end of the list has not been reached
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

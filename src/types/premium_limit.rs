@@ -16,8 +16,12 @@ pub struct PremiumLimit {
     #[serde(skip_serializing_if = "PremiumLimitType::_is_default")]
     type_: PremiumLimitType,
     /// Default value of the limit
+
+    #[serde(default)]
     default_value: i32,
     /// Value of the limit for Premium users
+
+    #[serde(default)]
     premium_value: i32,
 }
 

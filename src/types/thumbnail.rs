@@ -15,8 +15,12 @@ pub struct Thumbnail {
     #[serde(skip_serializing_if = "ThumbnailFormat::_is_default")]
     format: ThumbnailFormat,
     /// Thumbnail width
+
+    #[serde(default)]
     width: i32,
     /// Thumbnail height
+
+    #[serde(default)]
     height: i32,
     /// The thumbnail
     file: File,

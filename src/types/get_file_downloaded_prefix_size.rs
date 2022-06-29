@@ -11,8 +11,12 @@ pub struct GetFileDownloadedPrefixSize {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file
+
+    #[serde(default)]
     file_id: i32,
     /// Offset from which downloaded prefix size needs to be calculated
+
+    #[serde(default)]
     offset: i64,
 
     #[serde(rename(serialize = "@type"))]

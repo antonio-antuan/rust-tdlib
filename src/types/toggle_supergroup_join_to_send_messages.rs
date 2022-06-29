@@ -11,8 +11,12 @@ pub struct ToggleSupergroupJoinToSendMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup
+
+    #[serde(default)]
     supergroup_id: i64,
     /// New value of join_to_send_messages
+
+    #[serde(default)]
     join_to_send_messages: bool,
 
     #[serde(rename(serialize = "@type"))]

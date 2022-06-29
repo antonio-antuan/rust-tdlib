@@ -103,6 +103,8 @@ pub struct JsonValueArray {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The list of array elements
+
+    #[serde(default)]
     values: Vec<JsonValue>,
 }
 
@@ -172,6 +174,8 @@ pub struct JsonValueBoolean {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The value
+
+    #[serde(default)]
     value: bool,
 }
 
@@ -299,6 +303,8 @@ pub struct JsonValueNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The value
+
+    #[serde(default)]
     value: f32,
 }
 
@@ -368,6 +374,8 @@ pub struct JsonValueObject {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The list of object members
+
+    #[serde(default)]
     members: Vec<JsonObjectMember>,
 }
 
@@ -437,6 +445,8 @@ pub struct JsonValueString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The value
+
+    #[serde(default)]
     value: String,
 }
 

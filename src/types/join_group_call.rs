@@ -11,20 +11,32 @@ pub struct JoinGroupCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Identifier of a group call participant, which will be used to join the call; pass null to join as self; video chats only
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
     /// Caller audio channel synchronization source identifier; received from tgcalls
+
+    #[serde(default)]
     audio_source_id: i32,
     /// Group call join payload; received from tgcalls
+
+    #[serde(default)]
     payload: String,
     /// Pass true to join the call with muted microphone
+
+    #[serde(default)]
     is_muted: bool,
     /// Pass true if the user's video is enabled
+
+    #[serde(default)]
     is_my_video_enabled: bool,
     /// If non-empty, invite hash to be used to join the group call without being muted by administrators
+
+    #[serde(default)]
     invite_hash: String,
 
     #[serde(rename(serialize = "@type"))]

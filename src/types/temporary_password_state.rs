@@ -11,8 +11,12 @@ pub struct TemporaryPasswordState {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if a temporary password is available
+
+    #[serde(default)]
     has_password: bool,
     /// Time left before the temporary password expires, in seconds
+
+    #[serde(default)]
     valid_for: i32,
 }
 

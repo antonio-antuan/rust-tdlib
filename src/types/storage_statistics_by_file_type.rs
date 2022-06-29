@@ -15,8 +15,12 @@ pub struct StorageStatisticsByFileType {
     #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,
     /// Total size of the files, in bytes
+
+    #[serde(default)]
     size: i64,
     /// Total number of files
+
+    #[serde(default)]
     count: i32,
 }
 

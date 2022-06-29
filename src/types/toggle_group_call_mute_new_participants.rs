@@ -11,8 +11,12 @@ pub struct ToggleGroupCallMuteNewParticipants {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// New value of the mute_new_participants setting
+
+    #[serde(default)]
     mute_new_participants: bool,
 
     #[serde(rename(serialize = "@type"))]

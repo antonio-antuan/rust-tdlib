@@ -11,6 +11,8 @@ pub struct TestCallBytes {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Bytes to return
+
+    #[serde(default)]
     x: String,
 
     #[serde(rename(serialize = "@type"))]

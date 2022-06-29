@@ -13,6 +13,8 @@ pub struct DeepLinkInfo {
     /// Text to be shown to the user
     text: FormattedText,
     /// True, if the user must be asked to update the application
+
+    #[serde(default)]
     need_update_application: bool,
 }
 

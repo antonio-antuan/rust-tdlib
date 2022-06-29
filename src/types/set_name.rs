@@ -11,8 +11,12 @@ pub struct SetName {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The new value of the first name for the current user; 1-64 characters
+
+    #[serde(default)]
     first_name: String,
     /// The new value of the optional last name for the current user; 0-64 characters
+
+    #[serde(default)]
     last_name: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct FileDownloadedPrefixSize {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The prefix size, in bytes
+
+    #[serde(default)]
     size: i64,
 }
 

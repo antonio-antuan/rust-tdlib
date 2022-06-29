@@ -11,16 +11,24 @@ pub struct PaymentReceipt {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Product title
+
+    #[serde(default)]
     title: String,
     /// Contains information about a successful payment
     description: FormattedText,
     /// Product photo; may be null
     photo: Option<Photo>,
     /// Point in time (Unix timestamp) when the payment was made
+
+    #[serde(default)]
     date: i32,
     /// User identifier of the seller bot
+
+    #[serde(default)]
     seller_bot_user_id: i64,
     /// User identifier of the payment provider bot
+
+    #[serde(default)]
     payment_provider_user_id: i64,
     /// Information about the invoice
     invoice: Invoice,
@@ -29,8 +37,12 @@ pub struct PaymentReceipt {
     /// Chosen shipping option; may be null
     shipping_option: Option<ShippingOption>,
     /// Title of the saved credentials chosen by the buyer
+
+    #[serde(default)]
     credentials_title: String,
     /// The amount of tip chosen by the buyer in the smallest units of the currency
+
+    #[serde(default)]
     tip_amount: i64,
 }
 

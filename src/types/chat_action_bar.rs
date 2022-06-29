@@ -214,10 +214,16 @@ pub struct ChatActionBarJoinRequest {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title of the chat to which the join request was sent
+
+    #[serde(default)]
     title: String,
     /// True, if the join request was sent to a channel chat
+
+    #[serde(default)]
     is_channel: bool,
     /// Point in time (Unix timestamp) when the join request was sent
+
+    #[serde(default)]
     request_date: i32,
 }
 
@@ -305,8 +311,12 @@ pub struct ChatActionBarReportAddBlock {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If true, the chat was automatically archived and can be moved back to the main chat list using addChatToList simultaneously with setting chat notification settings to default using setChatNotificationSettings
+
+    #[serde(default)]
     can_unarchive: bool,
     /// If non-negative, the current user was found by the peer through searchChatsNearby and this is the distance between the users
+
+    #[serde(default)]
     distance: i32,
 }
 
@@ -385,6 +395,8 @@ pub struct ChatActionBarReportSpam {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If true, the chat was automatically archived and can be moved back to the main chat list using addChatToList simultaneously with setting chat notification settings to default using setChatNotificationSettings
+
+    #[serde(default)]
     can_unarchive: bool,
 }
 

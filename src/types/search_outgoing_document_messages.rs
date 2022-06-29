@@ -11,8 +11,12 @@ pub struct SearchOutgoingDocumentMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for in document file name and message caption
+
+    #[serde(default)]
     query: String,
     /// The maximum number of messages to be returned; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

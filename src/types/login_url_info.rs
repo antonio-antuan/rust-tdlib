@@ -83,8 +83,12 @@ pub struct LoginUrlInfoOpen {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The URL to open
+
+    #[serde(default)]
     url: String,
     /// True, if there is no need to show an ordinary open URL confirm
+
+    #[serde(default)]
     skip_confirm: bool,
 }
 
@@ -163,12 +167,20 @@ pub struct LoginUrlInfoRequestConfirmation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// An HTTP URL to be opened
+
+    #[serde(default)]
     url: String,
     /// A domain of the URL
+
+    #[serde(default)]
     domain: String,
     /// User identifier of a bot linked with the website
+
+    #[serde(default)]
     bot_user_id: i64,
     /// True, if the user needs to be requested to give the permission to the bot to send them messages
+
+    #[serde(default)]
     request_write_access: bool,
 }
 

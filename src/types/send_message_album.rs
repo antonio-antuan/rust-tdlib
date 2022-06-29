@@ -11,16 +11,26 @@ pub struct SendMessageAlbum {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Target chat
+
+    #[serde(default)]
     chat_id: i64,
     /// If not 0, a message thread identifier in which the messages will be sent
+
+    #[serde(default)]
     message_thread_id: i64,
     /// Identifier of a replied message; 0 if none
+
+    #[serde(default)]
     reply_to_message_id: i64,
     /// Options to be used to send the messages; pass null to use default options
     options: MessageSendOptions,
     /// Contents of messages to be sent. At most 10 messages can be added to an album
+
+    #[serde(default)]
     input_message_contents: Vec<InputMessageContent>,
     /// Pass true to get fake messages instead of actually sending them
+
+    #[serde(default)]
     only_preview: bool,
 
     #[serde(rename(serialize = "@type"))]

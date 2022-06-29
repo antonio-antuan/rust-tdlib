@@ -15,6 +15,8 @@ pub struct SetPinnedChats {
     #[serde(skip_serializing_if = "ChatList::_is_default")]
     chat_list: ChatList,
     /// The new list of pinned chats
+
+    #[serde(default)]
     chat_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

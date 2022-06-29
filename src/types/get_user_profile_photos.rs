@@ -11,10 +11,16 @@ pub struct GetUserProfilePhotos {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// The number of photos to skip; must be non-negative
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of photos to be returned; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

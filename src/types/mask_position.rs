@@ -15,10 +15,16 @@ pub struct MaskPosition {
     #[serde(skip_serializing_if = "MaskPoint::_is_default")]
     point: MaskPoint,
     /// Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. (For example, 1.0 will place the mask just to the left of the default mask position)
+
+    #[serde(default)]
     x_shift: f32,
     /// Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. (For example, 1.0 will place the mask just below the default mask position)
+
+    #[serde(default)]
     y_shift: f32,
     /// Mask scaling coefficient. (For example, 2.0 means a doubled size)
+
+    #[serde(default)]
     scale: f32,
 }
 

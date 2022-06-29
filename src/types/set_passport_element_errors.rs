@@ -11,8 +11,12 @@ pub struct SetPassportElementErrors {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// The errors
+
+    #[serde(default)]
     errors: Vec<InputPassportElementError>,
 
     #[serde(rename(serialize = "@type"))]

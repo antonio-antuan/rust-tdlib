@@ -11,6 +11,8 @@ pub struct SetInactiveSessionTtl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New number of days of inactivity before sessions will be automatically terminated; 1-366 days
+
+    #[serde(default)]
     inactive_session_ttl_days: i32,
 
     #[serde(rename(serialize = "@type"))]

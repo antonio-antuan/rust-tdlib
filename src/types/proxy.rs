@@ -11,14 +11,24 @@ pub struct Proxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the proxy
+
+    #[serde(default)]
     id: i32,
     /// Proxy server IP address
+
+    #[serde(default)]
     server: String,
     /// Proxy server port
+
+    #[serde(default)]
     port: i32,
     /// Point in time (Unix timestamp) when the proxy was last used; 0 if never
+
+    #[serde(default)]
     last_used_date: i32,
     /// True, if the proxy is enabled now
+
+    #[serde(default)]
     is_enabled: bool,
     /// Type of the proxy
 

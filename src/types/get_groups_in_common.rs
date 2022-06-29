@@ -11,10 +11,16 @@ pub struct GetGroupsInCommon {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// Chat identifier starting from which to return chats; use 0 for the first request
+
+    #[serde(default)]
     offset_chat_id: i64,
     /// The maximum number of chats to be returned; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct EditInlineMessageLiveLocation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Inline message identifier
+
+    #[serde(default)]
     inline_message_id: String,
     /// The new message reply markup; pass null if none
 
@@ -19,8 +21,12 @@ pub struct EditInlineMessageLiveLocation {
     /// New location content of the message; pass null to stop sharing the live location
     location: Location,
     /// The new direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
+
+    #[serde(default)]
     heading: i32,
     /// The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled
+
+    #[serde(default)]
     proximity_alert_radius: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -133,8 +133,11 @@ pub struct ChatSourcePublicServiceAnnouncement {
     /// The type of the announcement
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(default)]
     type_: String,
     /// The text of the announcement
+
+    #[serde(default)]
     text: String,
 }
 

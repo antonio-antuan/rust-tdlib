@@ -11,6 +11,8 @@ pub struct LanguagePackString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// String key
+
+    #[serde(default)]
     key: String,
     /// String value; pass null if the string needs to be taken from the built-in English language pack
 

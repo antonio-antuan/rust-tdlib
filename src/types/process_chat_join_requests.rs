@@ -11,10 +11,16 @@ pub struct ProcessChatJoinRequests {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Invite link for which to process join requests. If empty, all join requests will be processed. Requires administrator privileges and can_invite_users right in the chat for own links and owner privileges for other links
+
+    #[serde(default)]
     invite_link: String,
     /// Pass true to approve all requests; pass false to decline them
+
+    #[serde(default)]
     approve: bool,
 
     #[serde(rename(serialize = "@type"))]

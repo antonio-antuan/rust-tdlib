@@ -11,13 +11,19 @@ pub struct MessageInteractionInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of times the message was viewed
+
+    #[serde(default)]
     view_count: i32,
     /// Number of times the message was forwarded
+
+    #[serde(default)]
     forward_count: i32,
     /// Information about direct or indirect replies to the message; may be null. Currently, available only in channels with a discussion supergroup and discussion supergroups for messages, which are not replies itself
     reply_info: Option<MessageReplyInfo>,
     /// The list of reactions added to the message
-    reactions: Option<Vec<MessageReaction>>,
+
+    #[serde(default)]
+    reactions: Vec<MessageReaction>,
 }
 
 impl RObject for MessageInteractionInfo {
@@ -54,7 +60,7 @@ impl MessageInteractionInfo {
         &self.reply_info
     }
 
-    pub fn reactions(&self) -> &Option<Vec<MessageReaction>> {
+    pub fn reactions(&self) -> &Vec<MessageReaction> {
         &self.reactions
     }
 }
@@ -84,7 +90,7 @@ impl RTDMessageInteractionInfoBuilder {
         self
     }
 
-    pub fn reactions(&mut self, reactions: Option<Vec<MessageReaction>>) -> &mut Self {
+    pub fn reactions(&mut self, reactions: Vec<MessageReaction>) -> &mut Self {
         self.inner.reactions = reactions;
         self
     }

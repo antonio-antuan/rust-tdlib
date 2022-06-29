@@ -15,6 +15,8 @@ pub struct InputSticker {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
     /// Emojis corresponding to the sticker
+
+    #[serde(default)]
     emojis: String,
     /// Sticker type
 

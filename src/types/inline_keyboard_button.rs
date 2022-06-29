@@ -11,6 +11,8 @@ pub struct InlineKeyboardButton {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text of the button
+
+    #[serde(default)]
     text: String,
     /// Type of the button
 

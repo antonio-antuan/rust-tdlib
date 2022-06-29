@@ -17,8 +17,11 @@ pub struct ChatPosition {
     /// A parameter used to determine order of the chat in the chat list. Chats must be sorted by the pair (order, chat.id) in descending order
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     order: i64,
     /// True, if the chat is pinned in the chat list
+
+    #[serde(default)]
     is_pinned: bool,
     /// Source of the chat in the chat list; may be null
     source: Option<ChatSource>,

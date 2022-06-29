@@ -11,10 +11,16 @@ pub struct FoundMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of messages found; 1 if unknown
+
+    #[serde(default)]
     total_count: i32,
     /// List of messages
+
+    #[serde(default)]
     messages: Vec<Message>,
     /// The offset for the next request. If empty, there are no more results
+
+    #[serde(default)]
     next_offset: String,
 }
 

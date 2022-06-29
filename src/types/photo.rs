@@ -11,10 +11,14 @@ pub struct Photo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if stickers were added to the photo. The list of corresponding sticker sets can be received using getAttachedStickerSets
+
+    #[serde(default)]
     has_stickers: bool,
     /// Photo minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
     /// Available variants of the photo, in different sizes
+
+    #[serde(default)]
     sizes: Vec<PhotoSize>,
 }
 

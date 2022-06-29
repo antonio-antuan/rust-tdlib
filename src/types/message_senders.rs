@@ -11,8 +11,12 @@ pub struct MessageSenders {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of messages senders found
+
+    #[serde(default)]
     total_count: i32,
     /// List of message senders
+
+    #[serde(default)]
     senders: Vec<MessageSender>,
 }
 

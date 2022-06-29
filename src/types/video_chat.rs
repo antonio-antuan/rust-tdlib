@@ -11,8 +11,12 @@ pub struct VideoChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier of an active video chat; 0 if none. Full information about the video chat can be received through the method getGroupCall
+
+    #[serde(default)]
     group_call_id: i32,
     /// True, if the video chat has participants
+
+    #[serde(default)]
     has_participants: bool,
     /// Default group call participant identifier to join the video chat; may be null
     default_participant_id: Option<MessageSender>,

@@ -11,14 +11,22 @@ pub struct FileDownload {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// File identifier
+
+    #[serde(default)]
     file_id: i32,
     /// The message with the file
     message: Message,
     /// Point in time (Unix timestamp) when the file was added to the download list
+
+    #[serde(default)]
     add_date: i32,
     /// Point in time (Unix timestamp) when the file downloading was completed; 0 if the file downloading isn't completed
+
+    #[serde(default)]
     complete_date: i32,
     /// True, if downloading of the file is paused
+
+    #[serde(default)]
     is_paused: bool,
 }
 

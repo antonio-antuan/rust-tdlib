@@ -66,10 +66,10 @@ pub enum ChatEventAction {
     ChatEventMemberRestricted(ChatEventMemberRestricted),
     /// A message was deleted
     #[serde(rename(deserialize = "chatEventMessageDeleted"))]
-    ChatEventMessageDeleted(Box<ChatEventMessageDeleted>),
+    ChatEventMessageDeleted(ChatEventMessageDeleted),
     /// A message was edited
     #[serde(rename(deserialize = "chatEventMessageEdited"))]
-    ChatEventMessageEdited(Box<ChatEventMessageEdited>),
+    ChatEventMessageEdited(ChatEventMessageEdited),
     /// A message was pinned
     #[serde(rename(deserialize = "chatEventMessagePinned"))]
     ChatEventMessagePinned(ChatEventMessagePinned),
@@ -240,8 +240,12 @@ pub struct ChatEventAvailableReactionsChanged {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous chat available reactions
+
+    #[serde(default)]
     old_available_reactions: Vec<String>,
     /// New chat available reactions
+
+    #[serde(default)]
     new_available_reactions: Vec<String>,
 }
 
@@ -320,8 +324,12 @@ pub struct ChatEventDescriptionChanged {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous chat description
+
+    #[serde(default)]
     old_description: String,
     /// New chat description
+
+    #[serde(default)]
     new_description: String,
 }
 
@@ -400,6 +408,8 @@ pub struct ChatEventHasProtectedContentToggled {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New value of has_protected_content
+
+    #[serde(default)]
     has_protected_content: bool,
 }
 
@@ -687,6 +697,8 @@ pub struct ChatEventInvitesToggled {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New value of can_invite_users permission
+
+    #[serde(default)]
     can_invite_users: bool,
 }
 
@@ -756,6 +768,8 @@ pub struct ChatEventIsAllHistoryAvailableToggled {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New value of is_all_history_available
+
+    #[serde(default)]
     is_all_history_available: bool,
 }
 
@@ -827,8 +841,12 @@ pub struct ChatEventLinkedChatChanged {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous supergroup linked chat identifier
+
+    #[serde(default)]
     old_linked_chat_id: i64,
     /// New supergroup linked chat identifier
+
+    #[serde(default)]
     new_linked_chat_id: i64,
 }
 
@@ -987,6 +1005,8 @@ pub struct ChatEventMemberInvited {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New member user identifier
+
+    #[serde(default)]
     user_id: i64,
     /// New member status
 
@@ -1196,6 +1216,8 @@ pub struct ChatEventMemberJoinedByRequest {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the chat administrator, approved user join request
+
+    #[serde(default)]
     approver_user_id: i64,
     /// Invite link used to join the chat; may be null
     invite_link: Option<ChatInviteLink>,
@@ -1334,6 +1356,8 @@ pub struct ChatEventMemberPromoted {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Affected chat member user identifier
+
+    #[serde(default)]
     user_id: i64,
     /// Previous status of the chat member
 
@@ -1744,8 +1768,12 @@ pub struct ChatEventMessageTtlChanged {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous value of message_ttl
+
+    #[serde(default)]
     old_message_ttl: i32,
     /// New value of message_ttl
+
+    #[serde(default)]
     new_message_ttl: i32,
 }
 
@@ -2122,6 +2150,8 @@ pub struct ChatEventSignMessagesToggled {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New value of sign_messages
+
+    #[serde(default)]
     sign_messages: bool,
 }
 
@@ -2191,8 +2221,12 @@ pub struct ChatEventSlowModeDelayChanged {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous value of slow_mode_delay, in seconds
+
+    #[serde(default)]
     old_slow_mode_delay: i32,
     /// New value of slow_mode_delay, in seconds
+
+    #[serde(default)]
     new_slow_mode_delay: i32,
 }
 
@@ -2273,10 +2307,12 @@ pub struct ChatEventStickerSetChanged {
     /// Previous identifier of the chat sticker set; 0 if none
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     old_sticker_set_id: i64,
     /// New identifier of the chat sticker set; 0 if none
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     new_sticker_set_id: i64,
 }
 
@@ -2355,8 +2391,12 @@ pub struct ChatEventTitleChanged {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous chat title
+
+    #[serde(default)]
     old_title: String,
     /// New chat title
+
+    #[serde(default)]
     new_title: String,
 }
 
@@ -2435,8 +2475,12 @@ pub struct ChatEventUsernameChanged {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous chat username
+
+    #[serde(default)]
     old_username: String,
     /// New chat username
+
+    #[serde(default)]
     new_username: String,
 }
 
@@ -2515,6 +2559,8 @@ pub struct ChatEventVideoChatCreated {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+
+    #[serde(default)]
     group_call_id: i32,
 }
 
@@ -2584,6 +2630,8 @@ pub struct ChatEventVideoChatEnded {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+
+    #[serde(default)]
     group_call_id: i32,
 }
 
@@ -2653,6 +2701,8 @@ pub struct ChatEventVideoChatMuteNewParticipantsToggled {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New value of the mute_new_participants setting
+
+    #[serde(default)]
     mute_new_participants: bool,
 }
 
@@ -2730,6 +2780,8 @@ pub struct ChatEventVideoChatParticipantIsMutedToggled {
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
     /// New value of is_muted
+
+    #[serde(default)]
     is_muted: bool,
 }
 
@@ -2816,6 +2868,8 @@ pub struct ChatEventVideoChatParticipantVolumeLevelChanged {
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
     /// New value of volume_level; 1-20000 in hundreds of percents
+
+    #[serde(default)]
     volume_level: i32,
 }
 

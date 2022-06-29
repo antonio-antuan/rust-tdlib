@@ -11,8 +11,12 @@ pub struct ReorderChatFilters {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifiers of chat filters in the new correct order
+
+    #[serde(default)]
     chat_filter_ids: Vec<i32>,
     /// Position of the main chat list among chat filters, 0-based. Can be non-zero only for Premium users
+
+    #[serde(default)]
     main_chat_list_position: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct AvailableReactions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of reactions
+
+    #[serde(default)]
     reactions: Vec<AvailableReaction>,
 }
 

@@ -11,8 +11,12 @@ pub struct ValidatedOrderInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Temporary identifier of the order information
+
+    #[serde(default)]
     order_info_id: String,
     /// Available shipping options
+
+    #[serde(default)]
     shipping_options: Vec<ShippingOption>,
 }
 

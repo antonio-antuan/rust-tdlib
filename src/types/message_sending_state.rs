@@ -73,14 +73,24 @@ pub struct MessageSendingStateFailed {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// An error code; 0 if unknown
+
+    #[serde(default)]
     error_code: i32,
     /// Error message
+
+    #[serde(default)]
     error_message: String,
     /// True, if the message can be re-sent
+
+    #[serde(default)]
     can_retry: bool,
     /// True, if the message can be re-sent only on behalf of a different sender
+
+    #[serde(default)]
     need_another_sender: bool,
     /// Time left before the message can be re-sent, in seconds. No update is sent when this field changes
+
+    #[serde(default)]
     retry_after: f32,
 }
 

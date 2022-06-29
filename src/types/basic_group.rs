@@ -11,16 +11,24 @@ pub struct BasicGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group identifier
+
+    #[serde(default)]
     id: i64,
     /// Number of members in the group
+
+    #[serde(default)]
     member_count: i32,
     /// Status of the current user in the group
 
     #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
     /// True, if the group is active
+
+    #[serde(default)]
     is_active: bool,
     /// Identifier of the supergroup to which this group was upgraded; 0 if none
+
+    #[serde(default)]
     upgraded_to_supergroup_id: i64,
 }
 

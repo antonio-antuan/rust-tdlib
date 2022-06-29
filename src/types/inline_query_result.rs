@@ -123,10 +123,14 @@ pub struct InlineQueryResultAnimation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Animation file
     animation: Animation,
     /// Animation title
+
+    #[serde(default)]
     title: String,
 }
 
@@ -214,14 +218,24 @@ pub struct InlineQueryResultArticle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// URL of the result, if it exists
+
+    #[serde(default)]
     url: String,
     /// True, if the URL must be not shown
+
+    #[serde(default)]
     hide_url: bool,
     /// Title of the result
+
+    #[serde(default)]
     title: String,
     /// Represents a link to an article or web page
+
+    #[serde(default)]
     description: String,
     /// Result thumbnail in JPEG format; may be null
     thumbnail: Option<Thumbnail>,
@@ -338,6 +352,8 @@ pub struct InlineQueryResultAudio {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Audio file
     audio: Audio,
@@ -418,6 +434,8 @@ pub struct InlineQueryResultContact {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// A user contact
     contact: Contact,
@@ -509,12 +527,18 @@ pub struct InlineQueryResultDocument {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Document
     document: Document,
     /// Document title
+
+    #[serde(default)]
     title: String,
     /// Represents a document
+
+    #[serde(default)]
     description: String,
 }
 
@@ -611,6 +635,8 @@ pub struct InlineQueryResultGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Game result
     game: Game,
@@ -691,10 +717,14 @@ pub struct InlineQueryResultLocation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Location result
     location: Location,
     /// Title of the result
+
+    #[serde(default)]
     title: String,
     /// Result thumbnail in JPEG format; may be null
     thumbnail: Option<Thumbnail>,
@@ -793,12 +823,18 @@ pub struct InlineQueryResultPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Photo
     photo: Photo,
     /// Title of the result, if known
+
+    #[serde(default)]
     title: String,
     /// Represents a photo
+
+    #[serde(default)]
     description: String,
 }
 
@@ -895,6 +931,8 @@ pub struct InlineQueryResultSticker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Sticker
     sticker: Sticker,
@@ -975,6 +1013,8 @@ pub struct InlineQueryResultVenue {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Venue result
     venue: Venue,
@@ -1066,12 +1106,18 @@ pub struct InlineQueryResultVideo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Video
     video: Video,
     /// Title of the video
+
+    #[serde(default)]
     title: String,
     /// Represents a video
+
+    #[serde(default)]
     description: String,
 }
 
@@ -1168,10 +1214,14 @@ pub struct InlineQueryResultVoiceNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Voice note
     voice_note: VoiceNote,
     /// Title of the voice note
+
+    #[serde(default)]
     title: String,
 }
 

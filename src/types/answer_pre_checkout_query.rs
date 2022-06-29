@@ -13,8 +13,11 @@ pub struct AnswerPreCheckoutQuery {
     /// Identifier of the pre-checkout query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     pre_checkout_query_id: i64,
     /// An error message, empty on success
+
+    #[serde(default)]
     error_message: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct GetAnimatedEmoji {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The emoji
+
+    #[serde(default)]
     emoji: String,
 
     #[serde(rename(serialize = "@type"))]

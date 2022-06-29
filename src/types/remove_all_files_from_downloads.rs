@@ -11,10 +11,16 @@ pub struct RemoveAllFilesFromDownloads {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to remove only active downloads, including paused
+
+    #[serde(default)]
     only_active: bool,
     /// Pass true to remove only completed downloads
+
+    #[serde(default)]
     only_completed: bool,
     /// Pass true to delete the file from the TDLib file cache
+
+    #[serde(default)]
     delete_from_cache: bool,
 
     #[serde(rename(serialize = "@type"))]

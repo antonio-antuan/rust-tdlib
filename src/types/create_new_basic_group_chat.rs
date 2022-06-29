@@ -11,8 +11,12 @@ pub struct CreateNewBasicGroupChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifiers of users to be added to the basic group
+
+    #[serde(default)]
     user_ids: Vec<i64>,
     /// Title of the new basic group; 1-128 characters
+
+    #[serde(default)]
     title: String,
 
     #[serde(rename(serialize = "@type"))]

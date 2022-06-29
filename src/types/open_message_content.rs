@@ -11,8 +11,12 @@ pub struct OpenMessageContent {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the message
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message with the opened content
+
+    #[serde(default)]
     message_id: i64,
 
     #[serde(rename(serialize = "@type"))]

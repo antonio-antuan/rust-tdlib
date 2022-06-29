@@ -11,10 +11,16 @@ pub struct SendBotStartMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the bot
+
+    #[serde(default)]
     bot_user_id: i64,
     /// Identifier of the target chat
+
+    #[serde(default)]
     chat_id: i64,
     /// A hidden parameter sent to the bot for deep linking purposes (https://core.telegram.org/bots#deep-linking)
+
+    #[serde(default)]
     parameter: String,
 
     #[serde(rename(serialize = "@type"))]

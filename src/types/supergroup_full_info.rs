@@ -13,46 +13,81 @@ pub struct SupergroupFullInfo {
     /// Chat photo; may be null
     photo: Option<ChatPhoto>,
     /// Contains full information about a supergroup or channel
+
+    #[serde(default)]
     description: String,
     /// Number of members in the supergroup or channel; 0 if unknown
+
+    #[serde(default)]
     member_count: i32,
     /// Number of privileged users in the supergroup or channel; 0 if unknown
+
+    #[serde(default)]
     administrator_count: i32,
     /// Number of restricted users in the supergroup; 0 if unknown
+
+    #[serde(default)]
     restricted_count: i32,
     /// Number of users banned from chat; 0 if unknown
+
+    #[serde(default)]
     banned_count: i32,
     /// Chat identifier of a discussion group for the channel, or a channel, for which the supergroup is the designated discussion group; 0 if none or unknown
+
+    #[serde(default)]
     linked_chat_id: i64,
     /// Delay between consecutive sent messages for non-administrator supergroup members, in seconds
+
+    #[serde(default)]
     slow_mode_delay: i32,
     /// Time left before next message can be sent in the supergroup, in seconds. An updateSupergroupFullInfo update is not triggered when value of this field changes, but both new and old values are non-zero
+
+    #[serde(default)]
     slow_mode_delay_expires_in: f32,
     /// True, if members of the chat can be retrieved
+
+    #[serde(default)]
     can_get_members: bool,
     /// True, if the chat username can be changed
+
+    #[serde(default)]
     can_set_username: bool,
     /// True, if the supergroup sticker set can be changed
+
+    #[serde(default)]
     can_set_sticker_set: bool,
     /// True, if the supergroup location can be changed
+
+    #[serde(default)]
     can_set_location: bool,
     /// True, if the supergroup or channel statistics are available
+
+    #[serde(default)]
     can_get_statistics: bool,
     /// True, if new chat members will have access to old messages. In public or discussion groups and both public and private channels, old messages are always available, so this option affects only private supergroups without a linked chat. The value of this field is only available for chat administrators
+
+    #[serde(default)]
     is_all_history_available: bool,
     /// Identifier of the supergroup sticker set; 0 if none
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     sticker_set_id: i64,
     /// Location to which the supergroup is connected; may be null
     location: Option<ChatLocation>,
     /// Primary invite link for the chat; may be null. For chat administrators with can_invite_users right only
     invite_link: Option<ChatInviteLink>,
     /// List of commands of bots in the group
+
+    #[serde(default)]
     bot_commands: Vec<BotCommands>,
     /// Identifier of the basic group from which supergroup was upgraded; 0 if none
+
+    #[serde(default)]
     upgraded_from_basic_group_id: i64,
     /// Identifier of the last message in the basic group from which supergroup was upgraded; 0 if none
+
+    #[serde(default)]
     upgraded_from_max_message_id: i64,
 }
 

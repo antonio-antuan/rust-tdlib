@@ -11,6 +11,8 @@ pub struct RemoveContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifiers of users to be deleted
+
+    #[serde(default)]
     user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct GetPreferredCountryLanguage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A two-letter ISO 3166-1 alpha-2 country code
+
+    #[serde(default)]
     country_code: String,
 
     #[serde(rename(serialize = "@type"))]

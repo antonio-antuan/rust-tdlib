@@ -11,6 +11,8 @@ pub struct SetUsername {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The new value of the username. Use an empty string to remove the username
+
+    #[serde(default)]
     username: String,
 
     #[serde(rename(serialize = "@type"))]

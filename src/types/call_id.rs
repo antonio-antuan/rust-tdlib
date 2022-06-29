@@ -11,6 +11,8 @@ pub struct CallId {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     id: i32,
 }
 

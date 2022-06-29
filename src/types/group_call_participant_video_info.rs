@@ -11,10 +11,16 @@ pub struct GroupCallParticipantVideoInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of synchronization source groups of the video
+
+    #[serde(default)]
     source_groups: Vec<GroupCallVideoSourceGroup>,
     /// Video channel endpoint identifier
+
+    #[serde(default)]
     endpoint_id: String,
     /// True if the video is paused. This flag needs to be ignored, if new video frames are received
+
+    #[serde(default)]
     is_paused: bool,
 }
 

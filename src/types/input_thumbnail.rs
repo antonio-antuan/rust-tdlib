@@ -15,8 +15,12 @@ pub struct InputThumbnail {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     thumbnail: InputFile,
     /// Thumbnail width, usually shouldn't exceed 320. Use 0 if unknown
+
+    #[serde(default)]
     width: i32,
     /// Thumbnail height, usually shouldn't exceed 320. Use 0 if unknown
+
+    #[serde(default)]
     height: i32,
 }
 

@@ -15,22 +15,36 @@ pub struct SearchMessages {
     #[serde(skip_serializing_if = "ChatList::_is_default")]
     chat_list: ChatList,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
     /// The date of the message starting from which the results need to be fetched. Use 0 or any date in the future to get results from the last message
+
+    #[serde(default)]
     offset_date: i32,
     /// The chat identifier of the last found message, or 0 for the first request
+
+    #[serde(default)]
     offset_chat_id: i64,
     /// The message identifier of the last found message, or 0 for the first request
+
+    #[serde(default)]
     offset_message_id: i64,
     /// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
     /// Additional filter for messages to search; pass null to search for all messages. Filters searchMessagesFilterMention, searchMessagesFilterUnreadMention, searchMessagesFilterUnreadReaction, searchMessagesFilterFailedToSend, and searchMessagesFilterPinned are unsupported in this function
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
     /// If not 0, the minimum date of the messages to return
+
+    #[serde(default)]
     min_date: i32,
     /// If not 0, the maximum date of the messages to return
+
+    #[serde(default)]
     max_date: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,8 +11,12 @@ pub struct SetStickerSetThumbnail {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Sticker set owner
+
+    #[serde(default)]
     user_id: i64,
     /// Sticker set name
+
+    #[serde(default)]
     name: String,
     /// Thumbnail to set in PNG, TGS, or WEBM format; pass null to remove the sticker set thumbnail. Thumbnail format must match the format of stickers in the set
 

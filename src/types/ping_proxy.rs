@@ -11,6 +11,8 @@ pub struct PingProxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Proxy identifier. Use 0 to ping a Telegram server without a proxy
+
+    #[serde(default)]
     proxy_id: i32,
 
     #[serde(rename(serialize = "@type"))]

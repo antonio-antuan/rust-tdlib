@@ -13,6 +13,7 @@ pub struct DisconnectWebsite {
     /// Website identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     website_id: i64,
 
     #[serde(rename(serialize = "@type"))]

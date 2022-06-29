@@ -20,6 +20,8 @@ pub struct SetBackground {
     #[serde(skip_serializing_if = "BackgroundType::_is_default")]
     type_: BackgroundType,
     /// Pass true if the background is changed for a dark theme
+
+    #[serde(default)]
     for_dark_theme: bool,
 
     #[serde(rename(serialize = "@type"))]

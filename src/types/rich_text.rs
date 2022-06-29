@@ -30,7 +30,7 @@ pub enum RichText {
     Fixed(RichTextFixed),
     /// A small image inside the text
     #[serde(rename(deserialize = "richTextIcon"))]
-    Icon(Box<RichTextIcon>),
+    Icon(RichTextIcon),
     /// An italicized rich text
     #[serde(rename(deserialize = "richTextItalic"))]
     Italic(RichTextItalic),
@@ -148,6 +148,8 @@ pub struct RichTextAnchor {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Anchor name
+
+    #[serde(default)]
     name: String,
 }
 
@@ -221,8 +223,12 @@ pub struct RichTextAnchorLink {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: Box<RichText>,
     /// The anchor name. If the name is empty, the link must bring back to top
+
+    #[serde(default)]
     anchor_name: String,
     /// An HTTP URL, opening the anchor
+
+    #[serde(default)]
     url: String,
 }
 
@@ -385,6 +391,8 @@ pub struct RichTextEmailAddress {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: Box<RichText>,
     /// Email address
+
+    #[serde(default)]
     email_address: String,
 }
 
@@ -536,8 +544,12 @@ pub struct RichTextIcon {
     /// The image represented as a document. The image can be in GIF, JPEG or PNG format
     document: Document,
     /// Width of a bounding box in which the image must be shown; 0 if unknown
+
+    #[serde(default)]
     width: i32,
     /// Height of a bounding box in which the image must be shown; 0 if unknown
+
+    #[serde(default)]
     height: i32,
 }
 
@@ -771,6 +783,8 @@ pub struct RichTextPhoneNumber {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: Box<RichText>,
     /// Phone number
+
+    #[serde(default)]
     phone_number: String,
 }
 
@@ -849,6 +863,8 @@ pub struct RichTextPlain {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(default)]
     text: Box<RichText>,
 }
 
@@ -922,8 +938,12 @@ pub struct RichTextReference {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: Box<RichText>,
     /// The name of a richTextAnchor object, which is the first element of the target richTexts object
+
+    #[serde(default)]
     anchor_name: String,
     /// An HTTP URL, opening the reference
+
+    #[serde(default)]
     url: String,
 }
 
@@ -1299,8 +1319,12 @@ pub struct RichTextUrl {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: Box<RichText>,
     /// URL
+
+    #[serde(default)]
     url: String,
     /// True, if the URL has cached instant view server-side
+
+    #[serde(default)]
     is_cached: bool,
 }
 
@@ -1388,6 +1412,8 @@ pub struct RichTexts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Texts
+
+    #[serde(default)]
     texts: Vec<RichText>,
 }
 

@@ -11,6 +11,8 @@ pub struct CleanFileName {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// File name or path to the file
+
+    #[serde(default)]
     file_name: String,
 
     #[serde(rename(serialize = "@type"))]

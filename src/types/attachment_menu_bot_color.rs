@@ -11,8 +11,12 @@ pub struct AttachmentMenuBotColor {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Color in the RGB24 format for light themes
+
+    #[serde(default)]
     light_color: i32,
     /// Color in the RGB24 format for dark themes
+
+    #[serde(default)]
     dark_color: i32,
 }
 

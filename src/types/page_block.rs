@@ -208,6 +208,8 @@ pub struct PageBlockAnchor {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the anchor
+
+    #[serde(default)]
     name: String,
 }
 
@@ -281,6 +283,8 @@ pub struct PageBlockAnimation {
     /// Animation caption
     caption: PageBlockCaption,
     /// True, if the animation must be played automatically
+
+    #[serde(default)]
     need_autoplay: bool,
 }
 
@@ -452,6 +456,8 @@ pub struct PageBlockAuthorDate {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     author: RichText,
     /// Point in time (Unix timestamp) when the article was published; 0 if unknown
+
+    #[serde(default)]
     publish_date: i32,
 }
 
@@ -614,10 +620,14 @@ pub struct PageBlockChatLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat title
+
+    #[serde(default)]
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
     /// Chat username by which all other information about the chat can be resolved
+
+    #[serde(default)]
     username: String,
 }
 
@@ -705,6 +715,8 @@ pub struct PageBlockCollage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Collage item contents
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// Block caption
     caption: PageBlockCaption,
@@ -860,8 +872,12 @@ pub struct PageBlockDetails {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     header: RichText,
     /// Block contents
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// True, if the block is open by default
+
+    #[serde(default)]
     is_open: bool,
 }
 
@@ -1007,20 +1023,32 @@ pub struct PageBlockEmbedded {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Web page URL, if available
+
+    #[serde(default)]
     url: String,
     /// HTML-markup of the embedded page
+
+    #[serde(default)]
     html: String,
     /// Poster photo, if available; may be null
     poster_photo: Option<Photo>,
     /// Block width; 0 if unknown
+
+    #[serde(default)]
     width: i32,
     /// Block height; 0 if unknown
+
+    #[serde(default)]
     height: i32,
     /// Block caption
     caption: PageBlockCaption,
     /// True, if the block must be full width
+
+    #[serde(default)]
     is_full_width: bool,
     /// True, if scrolling needs to be allowed
+
+    #[serde(default)]
     allow_scrolling: bool,
 }
 
@@ -1153,14 +1181,22 @@ pub struct PageBlockEmbeddedPost {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Web page URL
+
+    #[serde(default)]
     url: String,
     /// Post author
+
+    #[serde(default)]
     author: String,
     /// Post author photo; may be null
     author_photo: Option<Photo>,
     /// Point in time (Unix timestamp) when the post was created; 0 if unknown
+
+    #[serde(default)]
     date: i32,
     /// Post content
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// Post caption
     caption: PageBlockCaption,
@@ -1490,6 +1526,8 @@ pub struct PageBlockList {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The items of the list
+
+    #[serde(default)]
     items: Vec<PageBlockListItem>,
 }
 
@@ -1561,10 +1599,16 @@ pub struct PageBlockMap {
     /// Location of the map center
     location: Location,
     /// Map zoom level
+
+    #[serde(default)]
     zoom: i32,
     /// Map width
+
+    #[serde(default)]
     width: i32,
     /// Map height
+
+    #[serde(default)]
     height: i32,
     /// Block caption
     caption: PageBlockCaption,
@@ -1747,6 +1791,8 @@ pub struct PageBlockPhoto {
     /// Photo caption
     caption: PageBlockCaption,
     /// URL that needs to be opened when the photo is clicked
+
+    #[serde(default)]
     url: String,
 }
 
@@ -1838,6 +1884,8 @@ pub struct PageBlockPreformatted {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: RichText,
     /// Programming language for which the text needs to be formatted
+
+    #[serde(default)]
     language: String,
 }
 
@@ -2004,6 +2052,8 @@ pub struct PageBlockRelatedArticles {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     header: RichText,
     /// List of related articles
+
+    #[serde(default)]
     articles: Vec<PageBlockRelatedArticle>,
 }
 
@@ -2082,6 +2132,8 @@ pub struct PageBlockSlideshow {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Slideshow item contents
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// Block caption
     caption: PageBlockCaption,
@@ -2308,10 +2360,16 @@ pub struct PageBlockTable {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     caption: RichText,
     /// Table cells
+
+    #[serde(default)]
     cells: Vec<Vec<PageBlockTableCell>>,
     /// True, if the table is bordered
+
+    #[serde(default)]
     is_bordered: bool,
     /// True, if the table is striped
+
+    #[serde(default)]
     is_striped: bool,
 }
 
@@ -2483,8 +2541,12 @@ pub struct PageBlockVideo {
     /// Video caption
     caption: PageBlockCaption,
     /// True, if the video must be played automatically
+
+    #[serde(default)]
     need_autoplay: bool,
     /// True, if the video must be looped
+
+    #[serde(default)]
     is_looped: bool,
 }
 

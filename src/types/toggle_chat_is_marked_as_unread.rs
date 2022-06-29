@@ -11,8 +11,12 @@ pub struct ToggleChatIsMarkedAsUnread {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New value of is_marked_as_unread
+
+    #[serde(default)]
     is_marked_as_unread: bool,
 
     #[serde(rename(serialize = "@type"))]

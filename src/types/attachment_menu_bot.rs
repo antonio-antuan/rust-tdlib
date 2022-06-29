@@ -11,20 +11,36 @@ pub struct AttachmentMenuBot {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the bot added to attachment menu
+
+    #[serde(default)]
     bot_user_id: i64,
     /// True, if the bot supports opening from attachment menu in the chat with the bot
+
+    #[serde(default)]
     supports_self_chat: bool,
     /// True, if the bot supports opening from attachment menu in private chats with ordinary users
+
+    #[serde(default)]
     supports_user_chats: bool,
     /// True, if the bot supports opening from attachment menu in private chats with other bots
+
+    #[serde(default)]
     supports_bot_chats: bool,
     /// True, if the bot supports opening from attachment menu in basic group and supergroup chats
+
+    #[serde(default)]
     supports_group_chats: bool,
     /// True, if the bot supports opening from attachment menu in channel chats
+
+    #[serde(default)]
     supports_channel_chats: bool,
     /// True, if the bot supports "settings_button_pressed" event
+
+    #[serde(default)]
     supports_settings: bool,
     /// Name for the bot in attachment menu
+
+    #[serde(default)]
     name: String,
     /// Color to highlight selected name of the bot if appropriate; may be null
     name_color: Option<AttachmentMenuBotColor>,

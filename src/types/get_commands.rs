@@ -15,6 +15,8 @@ pub struct GetCommands {
     #[serde(skip_serializing_if = "BotCommandScope::_is_default")]
     scope: BotCommandScope,
     /// A two-letter ISO 639-1 language code or an empty string
+
+    #[serde(default)]
     language_code: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct AcceptTermsOfService {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Terms of service identifier
+
+    #[serde(default)]
     terms_of_service_id: String,
 
     #[serde(rename(serialize = "@type"))]

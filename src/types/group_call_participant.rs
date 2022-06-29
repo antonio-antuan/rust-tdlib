@@ -15,38 +15,68 @@ pub struct GroupCallParticipant {
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
     /// User's audio channel synchronization source identifier
+
+    #[serde(default)]
     audio_source_id: i32,
     /// User's screen sharing audio channel synchronization source identifier
+
+    #[serde(default)]
     screen_sharing_audio_source_id: i32,
     /// Information about user's video channel; may be null if there is no active video
     video_info: Option<GroupCallParticipantVideoInfo>,
     /// Information about user's screen sharing video channel; may be null if there is no active screen sharing video
     screen_sharing_video_info: Option<GroupCallParticipantVideoInfo>,
     /// The participant user's bio or the participant chat's description
+
+    #[serde(default)]
     bio: String,
     /// True, if the participant is the current user
+
+    #[serde(default)]
     is_current_user: bool,
     /// True, if the participant is speaking as set by setGroupCallParticipantIsSpeaking
+
+    #[serde(default)]
     is_speaking: bool,
     /// True, if the participant hand is raised
+
+    #[serde(default)]
     is_hand_raised: bool,
     /// True, if the current user can mute the participant for all other group call participants
+
+    #[serde(default)]
     can_be_muted_for_all_users: bool,
     /// True, if the current user can allow the participant to unmute themselves or unmute the participant (if the participant is the current user)
+
+    #[serde(default)]
     can_be_unmuted_for_all_users: bool,
     /// True, if the current user can mute the participant only for self
+
+    #[serde(default)]
     can_be_muted_for_current_user: bool,
     /// True, if the current user can unmute the participant for self
+
+    #[serde(default)]
     can_be_unmuted_for_current_user: bool,
     /// True, if the participant is muted for all users
+
+    #[serde(default)]
     is_muted_for_all_users: bool,
     /// True, if the participant is muted for the current user
+
+    #[serde(default)]
     is_muted_for_current_user: bool,
     /// True, if the participant is muted for all users, but can unmute themselves
+
+    #[serde(default)]
     can_unmute_self: bool,
     /// Participant's volume level; 1-20000 in hundreds of percents
+
+    #[serde(default)]
     volume_level: i32,
     /// User's order in the group call participant list. Orders must be compared lexicographically. The bigger is order, the higher is user in the list. If order is empty, the user must be removed from the participant list
+
+    #[serde(default)]
     order: String,
 }
 

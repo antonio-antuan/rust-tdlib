@@ -11,6 +11,8 @@ pub struct LogTags {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of log tags
+
+    #[serde(default)]
     tags: Vec<String>,
 }
 

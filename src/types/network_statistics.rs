@@ -11,8 +11,12 @@ pub struct NetworkStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) from which the statistics are collected
+
+    #[serde(default)]
     since_date: i32,
     /// Network statistics entries
+
+    #[serde(default)]
     entries: Vec<NetworkStatisticsEntry>,
 }
 

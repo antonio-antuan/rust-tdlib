@@ -11,10 +11,16 @@ pub struct StartGroupCallScreenSharing {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Screen sharing audio channel synchronization source identifier; received from tgcalls
+
+    #[serde(default)]
     audio_source_id: i32,
     /// Group call join payload; received from tgcalls
+
+    #[serde(default)]
     payload: String,
 
     #[serde(rename(serialize = "@type"))]

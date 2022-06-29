@@ -83,6 +83,8 @@ pub struct MessageFileTypeGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title of the group chat; may be empty if unrecognized
+
+    #[serde(default)]
     title: String,
 }
 
@@ -152,6 +154,8 @@ pub struct MessageFileTypePrivate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the other party; may be empty if unrecognized
+
+    #[serde(default)]
     name: String,
 }
 

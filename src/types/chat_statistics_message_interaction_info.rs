@@ -11,10 +11,16 @@ pub struct ChatStatisticsMessageInteractionInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
     /// Number of times the message was viewed
+
+    #[serde(default)]
     view_count: i32,
     /// Number of times the message was forwarded
+
+    #[serde(default)]
     forward_count: i32,
 }
 

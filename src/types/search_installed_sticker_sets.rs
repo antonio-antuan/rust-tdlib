@@ -11,10 +11,16 @@ pub struct SearchInstalledStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to return mask sticker sets; pass false to return ordinary sticker sets
+
+    #[serde(default)]
     is_masks: bool,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
     /// The maximum number of sticker sets to return
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

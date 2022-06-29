@@ -11,10 +11,16 @@ pub struct Date {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Day of the month; 1-31
+
+    #[serde(default)]
     day: i32,
     /// Month; 1-12
+
+    #[serde(default)]
     month: i32,
     /// Year; 1-9999
+
+    #[serde(default)]
     year: i32,
 }
 

@@ -11,6 +11,8 @@ pub struct StartScheduledGroupCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
 
     #[serde(rename(serialize = "@type"))]

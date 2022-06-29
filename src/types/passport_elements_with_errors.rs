@@ -11,8 +11,12 @@ pub struct PassportElementsWithErrors {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Telegram Passport elements
+
+    #[serde(default)]
     elements: Vec<PassportElement>,
     /// Errors in the elements that are already available
+
+    #[serde(default)]
     errors: Vec<PassportElementError>,
 }
 

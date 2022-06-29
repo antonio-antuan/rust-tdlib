@@ -11,12 +11,20 @@ pub struct SetMessageReaction {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the message belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
     /// Text representation of the new chosen reaction. Can be an empty string or the currently chosen non-big reaction to remove the reaction
+
+    #[serde(default)]
     reaction: String,
     /// Pass true if the reaction is added with a big animation
+
+    #[serde(default)]
     is_big: bool,
 
     #[serde(rename(serialize = "@type"))]

@@ -13,6 +13,8 @@ pub struct DatedFile {
     /// The file
     file: File,
     /// Point in time (Unix timestamp) when the file was uploaded
+
+    #[serde(default)]
     date: i32,
 }
 

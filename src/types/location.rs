@@ -11,10 +11,16 @@ pub struct Location {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Latitude of the location in degrees; as defined by the sender
+
+    #[serde(default)]
     latitude: f32,
     /// Longitude of the location, in degrees; as defined by the sender
+
+    #[serde(default)]
     longitude: f32,
     /// The estimated horizontal accuracy of the location, in meters; as defined by the sender. 0 if unknown
+
+    #[serde(default)]
     horizontal_accuracy: f32,
 }
 

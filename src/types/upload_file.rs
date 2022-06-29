@@ -19,6 +19,8 @@ pub struct UploadFile {
     #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,
     /// Priority of the upload (1-32). The higher the priority, the earlier the file will be uploaded. If the priorities of two files are equal, then the first one for which uploadFile was called will be uploaded first
+
+    #[serde(default)]
     priority: i32,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,10 +11,16 @@ pub struct ShippingOption {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Shipping option identifier
+
+    #[serde(default)]
     id: String,
     /// Option title
+
+    #[serde(default)]
     title: String,
     /// A list of objects used to calculate the total shipping costs
+
+    #[serde(default)]
     price_parts: Vec<LabeledPricePart>,
 }
 

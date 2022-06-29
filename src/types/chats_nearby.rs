@@ -11,8 +11,12 @@ pub struct ChatsNearby {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of users nearby
+
+    #[serde(default)]
     users_nearby: Vec<ChatNearby>,
     /// List of location-based supergroups nearby
+
+    #[serde(default)]
     supergroups_nearby: Vec<ChatNearby>,
 }
 

@@ -11,8 +11,12 @@ pub struct MessageCalendar {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Total number of found messages
+
+    #[serde(default)]
     total_count: i32,
     /// Information about messages sent
+
+    #[serde(default)]
     days: Vec<MessageCalendarDay>,
 }
 

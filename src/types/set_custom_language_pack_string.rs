@@ -11,6 +11,8 @@ pub struct SetCustomLanguagePackString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of a previously added custom local language pack in the current localization target
+
+    #[serde(default)]
     language_pack_id: String,
     /// New language pack string
     new_string: LanguagePackString,

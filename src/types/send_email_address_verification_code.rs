@@ -11,6 +11,8 @@ pub struct SendEmailAddressVerificationCode {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Email address
+
+    #[serde(default)]
     email_address: String,
 
     #[serde(rename(serialize = "@type"))]

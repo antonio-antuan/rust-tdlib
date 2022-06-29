@@ -274,6 +274,8 @@ pub struct BotCommandScopeChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
 }
 
@@ -343,6 +345,8 @@ pub struct BotCommandScopeChatAdministrators {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
 }
 
@@ -412,8 +416,12 @@ pub struct BotCommandScopeChatMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
 }
 

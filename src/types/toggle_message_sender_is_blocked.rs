@@ -15,6 +15,8 @@ pub struct ToggleMessageSenderIsBlocked {
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender_id: MessageSender,
     /// New value of is_blocked
+
+    #[serde(default)]
     is_blocked: bool,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct GetMessageLinkInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The message link
+
+    #[serde(default)]
     url: String,
 
     #[serde(rename(serialize = "@type"))]

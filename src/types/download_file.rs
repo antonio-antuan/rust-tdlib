@@ -11,14 +11,24 @@ pub struct DownloadFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file to download
+
+    #[serde(default)]
     file_id: i32,
     /// Priority of the download (1-32). The higher the priority, the earlier the file will be downloaded. If the priorities of two files are equal, then the last one for which downloadFile/addFileToDownloads was called will be downloaded first
+
+    #[serde(default)]
     priority: i32,
     /// The starting position from which the file needs to be downloaded
+
+    #[serde(default)]
     offset: i64,
     /// Number of bytes which need to be downloaded starting from the "offset" position before the download will automatically be canceled; use 0 to download without a limit
+
+    #[serde(default)]
     limit: i64,
     /// Pass true to return response only after the file download has succeeded, has failed, has been canceled, or a new downloadFile request with different offset/limit parameters was sent; pass false to return file state immediately, just after the download has been started
+
+    #[serde(default)]
     synchronous: bool,
 
     #[serde(rename(serialize = "@type"))]

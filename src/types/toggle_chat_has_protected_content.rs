@@ -11,8 +11,12 @@ pub struct ToggleChatHasProtectedContent {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New value of has_protected_content
+
+    #[serde(default)]
     has_protected_content: bool,
 
     #[serde(rename(serialize = "@type"))]

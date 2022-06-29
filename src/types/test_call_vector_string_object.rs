@@ -11,6 +11,8 @@ pub struct TestCallVectorStringObject {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Vector of objects to return
+
+    #[serde(default)]
     x: Vec<TestString>,
 
     #[serde(rename(serialize = "@type"))]

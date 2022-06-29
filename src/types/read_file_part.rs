@@ -11,10 +11,16 @@ pub struct ReadFilePart {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file. The file must be located in the TDLib file cache
+
+    #[serde(default)]
     file_id: i32,
     /// The offset from which to read the file
+
+    #[serde(default)]
     offset: i64,
     /// Number of bytes to read. An error will be returned if there are not enough bytes available in the file from the specified position. Pass 0 to read all available data from the specified position
+
+    #[serde(default)]
     count: i64,
 
     #[serde(rename(serialize = "@type"))]

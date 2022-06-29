@@ -11,8 +11,12 @@ pub struct SetChatClientData {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New value of client_data
+
+    #[serde(default)]
     client_data: String,
 
     #[serde(rename(serialize = "@type"))]

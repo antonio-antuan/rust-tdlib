@@ -11,24 +11,36 @@ pub struct SearchChatMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which to search messages
+
+    #[serde(default)]
     chat_id: i64,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
     /// Identifier of the sender of messages to search for; pass null to search for messages from any sender. Not supported in secret chats
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender_id: MessageSender,
     /// Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
+
+    #[serde(default)]
     from_message_id: i64,
     /// Specify 0 to get results from exactly the from_message_id or a negative offset to get the specified message and some newer messages
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
     /// Additional filter for messages to search; pass null to search for all messages
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
     /// If not 0, only messages in the specified thread will be returned; supergroups only
+
+    #[serde(default)]
     message_thread_id: i64,
 
     #[serde(rename(serialize = "@type"))]

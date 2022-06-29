@@ -11,14 +11,22 @@ pub struct GetInlineQueryResults {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The identifier of the target bot
+
+    #[serde(default)]
     bot_user_id: i64,
     /// Identifier of the chat where the query was sent
+
+    #[serde(default)]
     chat_id: i64,
     /// Location of the user; pass null if unknown or the bot doesn't need user's location
     user_location: Location,
     /// Text of the query
+
+    #[serde(default)]
     query: String,
     /// Offset of the first entry to return
+
+    #[serde(default)]
     offset: String,
 
     #[serde(rename(serialize = "@type"))]

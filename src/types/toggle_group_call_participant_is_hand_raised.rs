@@ -11,12 +11,16 @@ pub struct ToggleGroupCallParticipantIsHandRaised {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Participant identifier
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
     /// Pass true if the user's hand needs to be raised. Only self hand can be raised. Requires groupCall.can_be_managed group call flag to lower other's hand
+
+    #[serde(default)]
     is_hand_raised: bool,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,6 +11,8 @@ pub struct GroupCallStreams {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of group call streams
+
+    #[serde(default)]
     streams: Vec<GroupCallStream>,
 }
 

@@ -123,22 +123,40 @@ pub struct InputInlineQueryResultAnimation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the query result
+
+    #[serde(default)]
     title: String,
     /// URL of the result thumbnail (JPEG, GIF, or MPEG4), if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// MIME type of the video thumbnail. If non-empty, must be one of "image/jpeg", "image/gif" and "video/mp4"
+
+    #[serde(default)]
     thumbnail_mime_type: String,
     /// The URL of the video file (file size must not exceed 1MB)
+
+    #[serde(default)]
     video_url: String,
     /// MIME type of the video file. Must be one of "image/gif" and "video/mp4"
+
+    #[serde(default)]
     video_mime_type: String,
     /// Duration of the video, in seconds
+
+    #[serde(default)]
     video_duration: i32,
     /// Width of the video
+
+    #[serde(default)]
     video_width: i32,
     /// Height of the video
+
+    #[serde(default)]
     video_height: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -309,20 +327,36 @@ pub struct InputInlineQueryResultArticle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// URL of the result, if it exists
+
+    #[serde(default)]
     url: String,
     /// True, if the URL must be not shown
+
+    #[serde(default)]
     hide_url: bool,
     /// Title of the result
+
+    #[serde(default)]
     title: String,
     /// Represents a link to an article or web page
+
+    #[serde(default)]
     description: String,
     /// URL of the result thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Thumbnail width, if known
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Thumbnail height, if known
+
+    #[serde(default)]
     thumbnail_height: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -484,14 +518,24 @@ pub struct InputInlineQueryResultAudio {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the audio file
+
+    #[serde(default)]
     title: String,
     /// Performer of the audio file
+
+    #[serde(default)]
     performer: String,
     /// The URL of the audio file
+
+    #[serde(default)]
     audio_url: String,
     /// Audio file duration, in seconds
+
+    #[serde(default)]
     audio_duration: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -626,14 +670,22 @@ pub struct InputInlineQueryResultContact {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// User contact
     contact: Contact,
     /// URL of the result thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Thumbnail width, if known
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Thumbnail height, if known
+
+    #[serde(default)]
     thumbnail_height: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -768,20 +820,36 @@ pub struct InputInlineQueryResultDocument {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the resulting file
+
+    #[serde(default)]
     title: String,
     /// Represents a link to a file
+
+    #[serde(default)]
     description: String,
     /// URL of the file
+
+    #[serde(default)]
     document_url: String,
     /// MIME type of the file content; only "application/pdf" and "application/zip" are currently allowed
+
+    #[serde(default)]
     mime_type: String,
     /// The URL of the file thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Width of the thumbnail
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Height of the thumbnail
+
+    #[serde(default)]
     thumbnail_height: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -943,8 +1011,12 @@ pub struct InputInlineQueryResultGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Short name of the game
+
+    #[serde(default)]
     game_short_name: String,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -1036,18 +1108,30 @@ pub struct InputInlineQueryResultLocation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Location result
     location: Location,
     /// Amount of time relative to the message sent time until the location can be updated, in seconds
+
+    #[serde(default)]
     live_period: i32,
     /// Title of the result
+
+    #[serde(default)]
     title: String,
     /// URL of the result thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Thumbnail width, if known
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Thumbnail height, if known
+
+    #[serde(default)]
     thumbnail_height: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -1200,18 +1284,32 @@ pub struct InputInlineQueryResultPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the result, if known
+
+    #[serde(default)]
     title: String,
     /// Represents link to a JPEG image
+
+    #[serde(default)]
     description: String,
     /// URL of the photo thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// The URL of the JPEG photo (photo size must not exceed 5MB)
+
+    #[serde(default)]
     photo_url: String,
     /// Width of the photo
+
+    #[serde(default)]
     photo_width: i32,
     /// Height of the photo
+
+    #[serde(default)]
     photo_height: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -1364,14 +1462,24 @@ pub struct InputInlineQueryResultSticker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// URL of the sticker thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// The URL of the WEBP, TGS, or WEBM sticker (sticker file size must not exceed 5MB)
+
+    #[serde(default)]
     sticker_url: String,
     /// Width of the sticker
+
+    #[serde(default)]
     sticker_width: i32,
     /// Height of the sticker
+
+    #[serde(default)]
     sticker_height: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -1506,14 +1614,22 @@ pub struct InputInlineQueryResultVenue {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Venue result
     venue: Venue,
     /// URL of the result thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Thumbnail width, if known
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Thumbnail height, if known
+
+    #[serde(default)]
     thumbnail_height: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -1648,22 +1764,40 @@ pub struct InputInlineQueryResultVideo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the result
+
+    #[serde(default)]
     title: String,
     /// Represents a link to a page containing an embedded video player or a video file
+
+    #[serde(default)]
     description: String,
     /// The URL of the video thumbnail (JPEG), if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// URL of the embedded video player or video file
+
+    #[serde(default)]
     video_url: String,
     /// MIME type of the content of the video URL, only "text/html" or "video/mp4" are currently supported
+
+    #[serde(default)]
     mime_type: String,
     /// Width of the video
+
+    #[serde(default)]
     video_width: i32,
     /// Height of the video
+
+    #[serde(default)]
     video_height: i32,
     /// Video duration, in seconds
+
+    #[serde(default)]
     video_duration: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
@@ -1834,12 +1968,20 @@ pub struct InputInlineQueryResultVoiceNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the voice note
+
+    #[serde(default)]
     title: String,
     /// The URL of the voice note file
+
+    #[serde(default)]
     voice_note_url: String,
     /// Duration of the voice note, in seconds
+
+    #[serde(default)]
     voice_note_duration: i32,
     /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 

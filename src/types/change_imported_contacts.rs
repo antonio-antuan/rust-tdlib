@@ -11,6 +11,8 @@ pub struct ChangeImportedContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The new list of contacts, contact's vCard are ignored and are not imported
+
+    #[serde(default)]
     contacts: Vec<Contact>,
 
     #[serde(rename(serialize = "@type"))]

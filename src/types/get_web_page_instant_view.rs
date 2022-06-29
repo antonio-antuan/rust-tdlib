@@ -11,8 +11,12 @@ pub struct GetWebPageInstantView {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The web page URL
+
+    #[serde(default)]
     url: String,
     /// Pass true to get full instant view for the web page
+
+    #[serde(default)]
     force_full: bool,
 
     #[serde(rename(serialize = "@type"))]

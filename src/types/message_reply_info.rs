@@ -11,14 +11,24 @@ pub struct MessageReplyInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of times the message was directly or indirectly replied
+
+    #[serde(default)]
     reply_count: i32,
     /// Identifiers of at most 3 recent repliers to the message; available in channels with a discussion supergroup. The users and chats are expected to be inaccessible: only their photo and name will be available
+
+    #[serde(default)]
     recent_replier_ids: Vec<MessageSender>,
     /// Identifier of the last read incoming reply to the message
+
+    #[serde(default)]
     last_read_inbox_message_id: i64,
     /// Identifier of the last read outgoing reply to the message
+
+    #[serde(default)]
     last_read_outbox_message_id: i64,
     /// Identifier of the last reply to the message
+
+    #[serde(default)]
     last_message_id: i64,
 }
 

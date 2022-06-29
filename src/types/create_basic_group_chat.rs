@@ -11,8 +11,12 @@ pub struct CreateBasicGroupChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Basic group identifier
+
+    #[serde(default)]
     basic_group_id: i64,
     /// Pass true to create the chat without a network request. In this case all information about the chat except its type, title and photo can be incorrect
+
+    #[serde(default)]
     force: bool,
 
     #[serde(rename(serialize = "@type"))]

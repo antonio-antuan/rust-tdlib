@@ -17,16 +17,23 @@ pub struct SendPaymentForm {
     /// Payment form identifier returned by getPaymentForm
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     payment_form_id: i64,
     /// Identifier returned by validateOrderInfo, or an empty string
+
+    #[serde(default)]
     order_info_id: String,
     /// Identifier of a chosen shipping option, if applicable
+
+    #[serde(default)]
     shipping_option_id: String,
     /// The credentials chosen by user for payment
 
     #[serde(skip_serializing_if = "InputCredentials::_is_default")]
     credentials: InputCredentials,
     /// Chosen by the user amount of tip in the smallest units of the currency
+
+    #[serde(default)]
     tip_amount: i64,
 
     #[serde(rename(serialize = "@type"))]

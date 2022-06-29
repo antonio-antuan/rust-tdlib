@@ -11,8 +11,12 @@ pub struct ToggleChatDefaultDisableNotification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New value of default_disable_notification
+
+    #[serde(default)]
     default_disable_notification: bool,
 
     #[serde(rename(serialize = "@type"))]

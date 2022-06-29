@@ -11,8 +11,12 @@ pub struct ChatMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of chat members found
+
+    #[serde(default)]
     total_count: i32,
     /// A list of chat members
+
+    #[serde(default)]
     members: Vec<ChatMember>,
 }
 

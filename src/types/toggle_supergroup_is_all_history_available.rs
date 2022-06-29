@@ -11,8 +11,12 @@ pub struct ToggleSupergroupIsAllHistoryAvailable {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The identifier of the supergroup
+
+    #[serde(default)]
     supergroup_id: i64,
     /// The new value of is_all_history_available
+
+    #[serde(default)]
     is_all_history_available: bool,
 
     #[serde(rename(serialize = "@type"))]

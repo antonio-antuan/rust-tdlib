@@ -11,6 +11,8 @@ pub struct SentWebAppMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the sent inline message, if known
+
+    #[serde(default)]
     inline_message_id: String,
 }
 

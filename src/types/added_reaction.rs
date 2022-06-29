@@ -11,6 +11,8 @@ pub struct AddedReaction {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text representation of the reaction
+
+    #[serde(default)]
     reaction: String,
     /// Identifier of the chat member, applied the reaction
 

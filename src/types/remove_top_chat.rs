@@ -15,6 +15,8 @@ pub struct RemoveTopChat {
     #[serde(skip_serializing_if = "TopChatCategory::_is_default")]
     category: TopChatCategory,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
 
     #[serde(rename(serialize = "@type"))]

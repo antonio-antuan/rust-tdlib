@@ -11,6 +11,8 @@ pub struct CloseSecretChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Secret chat identifier
+
+    #[serde(default)]
     secret_chat_id: i32,
 
     #[serde(rename(serialize = "@type"))]

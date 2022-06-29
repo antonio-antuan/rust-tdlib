@@ -11,6 +11,8 @@ pub struct GetJsonValue {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The JSON-serialized string
+
+    #[serde(default)]
     json: String,
 
     #[serde(rename(serialize = "@type"))]

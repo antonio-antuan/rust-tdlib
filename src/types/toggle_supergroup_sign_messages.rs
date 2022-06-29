@@ -11,8 +11,12 @@ pub struct ToggleSupergroupSignMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the channel
+
+    #[serde(default)]
     supergroup_id: i64,
     /// New value of sign_messages
+
+    #[serde(default)]
     sign_messages: bool,
 
     #[serde(rename(serialize = "@type"))]

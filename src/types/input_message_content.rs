@@ -154,12 +154,20 @@ pub struct InputMessageAnimation {
     /// Animation thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the animation, if applicable
+
+    #[serde(default)]
     added_sticker_file_ids: Vec<i32>,
     /// Duration of the animation, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Width of the animation; may be replaced by the server
+
+    #[serde(default)]
     width: i32,
     /// Height of the animation; may be replaced by the server
+
+    #[serde(default)]
     height: i32,
     /// Animation caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
@@ -291,10 +299,16 @@ pub struct InputMessageAudio {
     /// Thumbnail of the cover for the album; pass null to skip thumbnail uploading
     album_cover_thumbnail: InputThumbnail,
     /// Duration of the audio, in seconds; may be replaced by the server
+
+    #[serde(default)]
     duration: i32,
     /// Title of the audio; 0-64 characters; may be replaced by the server
+
+    #[serde(default)]
     title: String,
     /// Performer of the audio; 0-64 characters, may be replaced by the server
+
+    #[serde(default)]
     performer: String,
     /// Audio caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
@@ -483,8 +497,12 @@ pub struct InputMessageDice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Emoji on which the dice throw animation is based
+
+    #[serde(default)]
     emoji: String,
     /// True, if the chat message draft must be deleted
+
+    #[serde(default)]
     clear_draft: bool,
 }
 
@@ -569,6 +587,8 @@ pub struct InputMessageDocument {
     /// Document thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// If true, automatic file type detection will be disabled and the document will be always sent as file. Always true for files sent to secret chats
+
+    #[serde(default)]
     disable_content_type_detection: bool,
     /// Document caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
@@ -670,10 +690,16 @@ pub struct InputMessageForwarded {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier for the chat this forwarded message came from
+
+    #[serde(default)]
     from_chat_id: i64,
     /// Identifier of the message to forward
+
+    #[serde(default)]
     message_id: i64,
     /// True, if a game message is being shared from a launched game; applies only to game messages
+
+    #[serde(default)]
     in_game_share: bool,
     /// Options to be used to copy content of the message without reference to the original sender; pass null to forward the message as usual
     copy_options: MessageCopyOptions,
@@ -772,8 +798,12 @@ pub struct InputMessageGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the bot that owns the game
+
+    #[serde(default)]
     bot_user_id: i64,
     /// Short name of the game
+
+    #[serde(default)]
     game_short_name: String,
 }
 
@@ -854,24 +884,44 @@ pub struct InputMessageInvoice {
     /// Invoice
     invoice: Invoice,
     /// Product title; 1-32 characters
+
+    #[serde(default)]
     title: String,
     /// A message with an invoice; can be used only by bots
+
+    #[serde(default)]
     description: String,
     /// Product photo URL; optional
+
+    #[serde(default)]
     photo_url: String,
     /// Product photo size
+
+    #[serde(default)]
     photo_size: i32,
     /// Product photo width
+
+    #[serde(default)]
     photo_width: i32,
     /// Product photo height
+
+    #[serde(default)]
     photo_height: i32,
     /// The invoice payload
+
+    #[serde(default)]
     payload: String,
     /// Payment provider token
+
+    #[serde(default)]
     provider_token: String,
     /// JSON-encoded data about the invoice, which will be shared with the payment provider
+
+    #[serde(default)]
     provider_data: String,
     /// Unique invoice bot deep link parameter for the generation of this invoice. If empty, it would be possible to pay directly from forwards of the invoice message
+
+    #[serde(default)]
     start_parameter: String,
 }
 
@@ -1033,10 +1083,16 @@ pub struct InputMessageLocation {
     /// Location to be sent
     location: Location,
     /// Period for which the location can be updated, in seconds; must be between 60 and 86400 for a live location and 0 otherwise
+
+    #[serde(default)]
     live_period: i32,
     /// For live locations, a direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
+
+    #[serde(default)]
     heading: i32,
     /// For live locations, a maximum distance to another chat member for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled. Can't be enabled in channels and Saved Messages
+
+    #[serde(default)]
     proximity_alert_radius: i32,
 }
 
@@ -1139,14 +1195,22 @@ pub struct InputMessagePhoto {
     /// Photo thumbnail to be sent; pass null to skip thumbnail uploading. The thumbnail is sent to the other party only in secret chats
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the photo, if applicable
+
+    #[serde(default)]
     added_sticker_file_ids: Vec<i32>,
     /// Photo width
+
+    #[serde(default)]
     width: i32,
     /// Photo height
+
+    #[serde(default)]
     height: i32,
     /// Photo caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
     /// Photo TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
+
+    #[serde(default)]
     ttl: i32,
 }
 
@@ -1270,10 +1334,16 @@ pub struct InputMessagePoll {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Poll question; 1-255 characters (up to 300 characters for bots)
+
+    #[serde(default)]
     question: String,
     /// List of poll answer options, 2-10 strings 1-100 characters each
+
+    #[serde(default)]
     options: Vec<String>,
     /// True, if the poll voters are anonymous. Non-anonymous polls can't be sent or forwarded to channels
+
+    #[serde(default)]
     is_anonymous: bool,
     /// Type of the poll
 
@@ -1281,10 +1351,16 @@ pub struct InputMessagePoll {
     #[serde(skip_serializing_if = "PollType::_is_default")]
     type_: PollType,
     /// Amount of time the poll will be active after creation, in seconds; for bots only
+
+    #[serde(default)]
     open_period: i32,
     /// Point in time (Unix timestamp) when the poll will automatically be closed; for bots only
+
+    #[serde(default)]
     close_date: i32,
     /// True, if the poll needs to be sent already closed; for bots only
+
+    #[serde(default)]
     is_closed: bool,
 }
 
@@ -1414,10 +1490,16 @@ pub struct InputMessageSticker {
     /// Sticker thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// Sticker width
+
+    #[serde(default)]
     width: i32,
     /// Sticker height
+
+    #[serde(default)]
     height: i32,
     /// Emoji used to choose the sticker
+
+    #[serde(default)]
     emoji: String,
 }
 
@@ -1525,8 +1607,12 @@ pub struct InputMessageText {
     /// Formatted text to be sent; 1-GetOption("message_text_length_max") characters. Only Bold, Italic, Underline, Strikethrough, Spoiler, Code, Pre, PreCode, TextUrl and MentionName entities are allowed to be specified manually
     text: FormattedText,
     /// True, if rich web page previews for URLs in the message text must be disabled
+
+    #[serde(default)]
     disable_web_page_preview: bool,
     /// True, if a chat message draft must be deleted
+
+    #[serde(default)]
     clear_draft: bool,
 }
 
@@ -1689,18 +1775,30 @@ pub struct InputMessageVideo {
     /// Video thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the video, if applicable
+
+    #[serde(default)]
     added_sticker_file_ids: Vec<i32>,
     /// Duration of the video, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Video width
+
+    #[serde(default)]
     width: i32,
     /// Video height
+
+    #[serde(default)]
     height: i32,
     /// True, if the video is supposed to be streamed
+
+    #[serde(default)]
     supports_streaming: bool,
     /// Video caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
     /// Video TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
+
+    #[serde(default)]
     ttl: i32,
 }
 
@@ -1848,8 +1946,12 @@ pub struct InputMessageVideoNote {
     /// Video thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// Duration of the video, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Video width and height; must be positive and not greater than 640
+
+    #[serde(default)]
     length: i32,
 }
 
@@ -1950,8 +2052,12 @@ pub struct InputMessageVoiceNote {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     voice_note: InputFile,
     /// Duration of the voice note, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Waveform representation of the voice note, in 5-bit format
+
+    #[serde(default)]
     waveform: String,
     /// Voice note caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,

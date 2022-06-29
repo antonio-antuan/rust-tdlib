@@ -11,6 +11,8 @@ pub struct DeleteAccount {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The reason why the account was deleted; optional
+
+    #[serde(default)]
     reason: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,8 +11,12 @@ pub struct DeleteAllRevokedChatInviteLinks {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// User identifier of a chat administrator, which links will be deleted. Must be an identifier of the current user for non-owner
+
+    #[serde(default)]
     creator_user_id: i64,
 
     #[serde(rename(serialize = "@type"))]

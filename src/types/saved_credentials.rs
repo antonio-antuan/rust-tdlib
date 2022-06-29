@@ -11,8 +11,12 @@ pub struct SavedCredentials {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the saved credentials
+
+    #[serde(default)]
     id: String,
     /// Title of the saved credentials
+
+    #[serde(default)]
     title: String,
 }
 

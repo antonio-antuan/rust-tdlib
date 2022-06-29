@@ -11,8 +11,12 @@ pub struct RemoveFileFromDownloads {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the downloaded file
+
+    #[serde(default)]
     file_id: i32,
     /// Pass true to delete the file from the TDLib file cache
+
+    #[serde(default)]
     delete_from_cache: bool,
 
     #[serde(rename(serialize = "@type"))]

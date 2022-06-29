@@ -11,8 +11,12 @@ pub struct ToggleGroupCallIsMyVideoEnabled {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// Pass true if the current user's video is enabled
+
+    #[serde(default)]
     is_my_video_enabled: bool,
 
     #[serde(rename(serialize = "@type"))]

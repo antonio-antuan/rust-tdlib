@@ -11,11 +11,13 @@ pub struct ChatTheme {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Theme name
+
+    #[serde(default)]
     name: String,
     /// Theme settings for a light chat theme
-    light_settings: Box<ThemeSettings>,
+    light_settings: ThemeSettings,
     /// Theme settings for a dark chat theme
-    dark_settings: Box<ThemeSettings>,
+    dark_settings: ThemeSettings,
 }
 
 impl RObject for ChatTheme {
@@ -44,11 +46,11 @@ impl ChatTheme {
         &self.name
     }
 
-    pub fn light_settings(&self) -> &Box<ThemeSettings> {
+    pub fn light_settings(&self) -> &ThemeSettings {
         &self.light_settings
     }
 
-    pub fn dark_settings(&self) -> &Box<ThemeSettings> {
+    pub fn dark_settings(&self) -> &ThemeSettings {
         &self.dark_settings
     }
 }
@@ -68,12 +70,12 @@ impl RTDChatThemeBuilder {
         self
     }
 
-    pub fn light_settings<T: AsRef<Box<ThemeSettings>>>(&mut self, light_settings: T) -> &mut Self {
+    pub fn light_settings<T: AsRef<ThemeSettings>>(&mut self, light_settings: T) -> &mut Self {
         self.inner.light_settings = light_settings.as_ref().clone();
         self
     }
 
-    pub fn dark_settings<T: AsRef<Box<ThemeSettings>>>(&mut self, dark_settings: T) -> &mut Self {
+    pub fn dark_settings<T: AsRef<ThemeSettings>>(&mut self, dark_settings: T) -> &mut Self {
         self.inner.dark_settings = dark_settings.as_ref().clone();
         self
     }

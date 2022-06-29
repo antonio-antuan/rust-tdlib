@@ -11,10 +11,16 @@ pub struct ChatStatisticsMessageSenderInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
     /// Number of sent messages
+
+    #[serde(default)]
     sent_message_count: i32,
     /// Average number of characters in sent messages; 0 if unknown
+
+    #[serde(default)]
     average_character_count: i32,
 }
 

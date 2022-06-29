@@ -11,6 +11,8 @@ pub struct Count {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Count
+
+    #[serde(default)]
     count: i32,
 }
 

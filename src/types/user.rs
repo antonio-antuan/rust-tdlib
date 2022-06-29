@@ -11,14 +11,24 @@ pub struct User {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     id: i64,
     /// First name of the user
+
+    #[serde(default)]
     first_name: String,
     /// Last name of the user
+
+    #[serde(default)]
     last_name: String,
     /// Username of the user
+
+    #[serde(default)]
     username: String,
     /// Phone number of the user
+
+    #[serde(default)]
     phone_number: String,
     /// Current online status of the user
 
@@ -27,23 +37,40 @@ pub struct User {
     /// Profile photo of the user; may be null
     profile_photo: Option<ProfilePhoto>,
     /// The user is a contact of the current user
+
+    #[serde(default)]
     is_contact: bool,
     /// The user is a contact of the current user and the current user is a contact of the user
+
+    #[serde(default)]
     is_mutual_contact: bool,
     /// True, if the user is verified
+
+    #[serde(default)]
     is_verified: bool,
     /// True, if the user is a Telegram Premium user
+
     #[serde(default)]
     is_premium: bool,
     /// True, if the user is Telegram support account
+
+    #[serde(default)]
     is_support: bool,
     /// If non-empty, it contains a human-readable description of the reason why access to this user must be restricted
+
+    #[serde(default)]
     restriction_reason: String,
     /// True, if many users reported this user as a scam
+
+    #[serde(default)]
     is_scam: bool,
     /// True, if many users reported this user as a fake account
+
+    #[serde(default)]
     is_fake: bool,
     /// If false, the user is inaccessible, and the only information known about the user is inside this class. Identifier of the user can't be passed to any method except GetUser
+
+    #[serde(default)]
     have_access: bool,
     /// Type of the user
 
@@ -51,8 +78,11 @@ pub struct User {
     #[serde(skip_serializing_if = "UserType::_is_default")]
     type_: UserType,
     /// IETF language tag of the user's language; only available to bots
+
+    #[serde(default)]
     language_code: String,
     /// True, if the user added the current bot to attachment menu; only available to bots
+
     #[serde(default)]
     added_to_attachment_menu: bool,
 }

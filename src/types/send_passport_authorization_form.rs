@@ -11,8 +11,12 @@ pub struct SendPassportAuthorizationForm {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Authorization form identifier
+
+    #[serde(default)]
     autorization_form_id: i32,
     /// Types of Telegram Passport elements chosen by user to complete the authorization form
+
+    #[serde(default)]
     types: Vec<PassportElementType>,
 
     #[serde(rename(serialize = "@type"))]

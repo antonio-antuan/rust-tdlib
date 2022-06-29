@@ -11,8 +11,12 @@ pub struct SetLogTagVerbosityLevel {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Logging tag to change verbosity level
+
+    #[serde(default)]
     tag: String,
     /// New verbosity level; 1-1024
+
+    #[serde(default)]
     new_verbosity_level: i32,
 
     #[serde(rename(serialize = "@type"))]

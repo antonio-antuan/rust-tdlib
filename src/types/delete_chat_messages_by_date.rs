@@ -11,12 +11,20 @@ pub struct DeleteChatMessagesByDate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// The minimum date of the messages to delete
+
+    #[serde(default)]
     min_date: i32,
     /// The maximum date of the messages to delete
+
+    #[serde(default)]
     max_date: i32,
     /// Pass true to delete chat messages for all users; private chats only
+
+    #[serde(default)]
     revoke: bool,
 
     #[serde(rename(serialize = "@type"))]

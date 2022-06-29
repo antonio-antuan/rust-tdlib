@@ -13,12 +13,17 @@ pub struct ChatPhoto {
     /// Unique photo identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Point in time (Unix timestamp) when the photo has been added
+
+    #[serde(default)]
     added_date: i32,
     /// Photo minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
     /// Available variants of the photo in JPEG format, in different size
+
+    #[serde(default)]
     sizes: Vec<PhotoSize>,
     /// A big (640x640) animated variant of the photo in MPEG4 format; may be null
     animation: Option<AnimatedChatPhoto>,

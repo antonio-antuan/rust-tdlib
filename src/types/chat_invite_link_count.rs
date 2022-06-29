@@ -11,10 +11,16 @@ pub struct ChatInviteLinkCount {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Administrator's user identifier
+
+    #[serde(default)]
     user_id: i64,
     /// Number of active invite links
+
+    #[serde(default)]
     invite_link_count: i32,
     /// Number of revoked invite links
+
+    #[serde(default)]
     revoked_invite_link_count: i32,
 }
 

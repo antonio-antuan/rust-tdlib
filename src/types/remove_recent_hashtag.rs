@@ -11,6 +11,8 @@ pub struct RemoveRecentHashtag {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Hashtag to delete
+
+    #[serde(default)]
     hashtag: String,
 
     #[serde(rename(serialize = "@type"))]

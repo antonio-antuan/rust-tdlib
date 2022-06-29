@@ -11,10 +11,16 @@ pub struct AddProxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Proxy server IP address
+
+    #[serde(default)]
     server: String,
     /// Proxy server port
+
+    #[serde(default)]
     port: i32,
     /// Pass true to immediately enable the proxy
+
+    #[serde(default)]
     enable: bool,
     /// Proxy type
 

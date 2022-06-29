@@ -11,6 +11,8 @@ pub struct TestSquareInt {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number to square
+
+    #[serde(default)]
     x: i32,
 
     #[serde(rename(serialize = "@type"))]

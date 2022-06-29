@@ -11,6 +11,8 @@ pub struct AccountTtl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of days of inactivity before the account will be flagged for deletion; 30-366 days
+
+    #[serde(default)]
     days: i32,
 }
 

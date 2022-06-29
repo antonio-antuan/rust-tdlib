@@ -83,16 +83,27 @@ pub struct UserTypeBot {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the bot can be invited to basic group and supergroup chats
+
+    #[serde(default)]
     can_join_groups: bool,
     /// True, if the bot can read all messages in basic group or supergroup chats and not just those addressed to the bot. In private and channel chats a bot can always read all messages
+
+    #[serde(default)]
     can_read_all_group_messages: bool,
     /// True, if the bot supports inline queries
+
+    #[serde(default)]
     is_inline: bool,
     /// Placeholder for inline queries (displayed on the application input field)
+
+    #[serde(default)]
     inline_query_placeholder: String,
     /// True, if the location of the user is expected to be sent with every inline query to this bot
+
+    #[serde(default)]
     need_location: bool,
     /// True, if the bot can be added to attachment menu
+
     #[serde(default)]
     can_be_added_to_attachment_menu: bool,
 }

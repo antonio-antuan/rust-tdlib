@@ -11,6 +11,8 @@ pub struct ProcessPushNotification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// JSON-encoded push notification payload with all fields sent by the server, and "google.sent_time" and "google.notification.sound" fields added
+
+    #[serde(default)]
     payload: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -11,8 +11,12 @@ pub struct GroupCallVideoSourceGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The semantics of sources, one of "SIM" or "FID"
+
+    #[serde(default)]
     semantics: String,
     /// The list of synchronization source identifiers
+
+    #[serde(default)]
     source_ids: Vec<i32>,
 }
 

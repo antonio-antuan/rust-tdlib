@@ -13,6 +13,7 @@ pub struct DeleteProfilePhoto {
     /// Identifier of the profile photo to delete
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     profile_photo_id: i64,
 
     #[serde(rename(serialize = "@type"))]

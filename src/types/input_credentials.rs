@@ -83,6 +83,8 @@ pub struct InputCredentialsApplePay {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// JSON-encoded data with the credential identifier
+
+    #[serde(default)]
     data: String,
 }
 
@@ -152,6 +154,8 @@ pub struct InputCredentialsGooglePay {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// JSON-encoded data with the credential identifier
+
+    #[serde(default)]
     data: String,
 }
 
@@ -221,8 +225,12 @@ pub struct InputCredentialsNew {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// JSON-encoded data with the credential identifier from the payment provider
+
+    #[serde(default)]
     data: String,
     /// True, if the credential identifier can be saved on the server side
+
+    #[serde(default)]
     allow_save: bool,
 }
 
@@ -301,6 +309,8 @@ pub struct InputCredentialsSaved {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the saved credentials
+
+    #[serde(default)]
     saved_credentials_id: String,
 }
 

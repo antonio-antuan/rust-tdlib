@@ -11,6 +11,8 @@ pub struct SearchBackground {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The name of the background
+
+    #[serde(default)]
     name: String,
 
     #[serde(rename(serialize = "@type"))]

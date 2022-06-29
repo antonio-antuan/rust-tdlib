@@ -11,6 +11,8 @@ pub struct SetChatMemberStatus {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Member identifier. Chats can be only banned and unbanned in supergroups and channels
 

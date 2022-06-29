@@ -11,14 +11,24 @@ pub struct GetMessageLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the message belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
     /// If not 0, timestamp from which the video/audio/video note/voice note playing must start, in seconds. The media can be in the message content or in its web page preview
+
+    #[serde(default)]
     media_timestamp: i32,
     /// Pass true to create a link for the whole media album
+
+    #[serde(default)]
     for_album: bool,
     /// Pass true to create a link to the message as a channel post comment, or from a message thread
+
+    #[serde(default)]
     for_comment: bool,
 
     #[serde(rename(serialize = "@type"))]

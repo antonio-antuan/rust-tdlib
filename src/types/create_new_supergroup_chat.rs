@@ -11,14 +11,22 @@ pub struct CreateNewSupergroupChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title of the new chat; 1-128 characters
+
+    #[serde(default)]
     title: String,
     /// Pass true to create a channel chat
+
+    #[serde(default)]
     is_channel: bool,
     /// Creates a new supergroup or channel and sends a corresponding messageSupergroupChatCreate. Returns the newly created chat
+
+    #[serde(default)]
     description: String,
     /// Chat location if a location-based supergroup is being created; pass null to create an ordinary supergroup chat
     location: ChatLocation,
     /// Pass true to create a supergroup for importing messages using importMessage
+
+    #[serde(default)]
     for_import: bool,
 
     #[serde(rename(serialize = "@type"))]

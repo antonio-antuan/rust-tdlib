@@ -11,6 +11,8 @@ pub struct MessageCalendarDay {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Total number of found messages sent on the day
+
+    #[serde(default)]
     total_count: i32,
     /// First message sent on the day
     message: Message,

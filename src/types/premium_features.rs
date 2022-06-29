@@ -11,8 +11,12 @@ pub struct PremiumFeatures {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The list of available features
+
+    #[serde(default)]
     features: Vec<PremiumFeature>,
     /// The list of limits, increased for Premium users
+
+    #[serde(default)]
     limits: Vec<PremiumLimit>,
     /// An internal link to be opened to pay for Telegram Premium if store payment isn't possible; may be null if direct payment isn't available. If the link has type internalLinkTypeBotStart, then sendBotStartMessage must be called automatically
     payment_link: Option<InternalLinkType>,

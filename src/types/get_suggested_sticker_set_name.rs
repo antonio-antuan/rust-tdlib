@@ -11,6 +11,8 @@ pub struct GetSuggestedStickerSetName {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Sticker set title; 1-64 characters
+
+    #[serde(default)]
     title: String,
 
     #[serde(rename(serialize = "@type"))]

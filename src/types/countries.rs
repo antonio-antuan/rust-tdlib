@@ -11,6 +11,8 @@ pub struct Countries {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The list of countries
+
+    #[serde(default)]
     countries: Vec<CountryInfo>,
 }
 

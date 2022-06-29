@@ -88,10 +88,16 @@ pub struct MessageForwardOriginChannel {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat from which the message was originally forwarded
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier of the original message
+
+    #[serde(default)]
     message_id: i64,
     /// Original post author signature
+
+    #[serde(default)]
     author_signature: String,
 }
 
@@ -179,8 +185,12 @@ pub struct MessageForwardOriginChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat that originally sent the message
+
+    #[serde(default)]
     sender_chat_id: i64,
     /// For messages originally sent by an anonymous chat administrator, original message author signature
+
+    #[serde(default)]
     author_signature: String,
 }
 
@@ -259,6 +269,8 @@ pub struct MessageForwardOriginHiddenUser {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the sender
+
+    #[serde(default)]
     sender_name: String,
 }
 
@@ -328,6 +340,8 @@ pub struct MessageForwardOriginMessageImport {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the sender
+
+    #[serde(default)]
     sender_name: String,
 }
 
@@ -397,6 +411,8 @@ pub struct MessageForwardOriginUser {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user that originally sent the message
+
+    #[serde(default)]
     sender_user_id: i64,
 }
 

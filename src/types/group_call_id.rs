@@ -11,6 +11,8 @@ pub struct GroupCallId {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     id: i32,
 }
 

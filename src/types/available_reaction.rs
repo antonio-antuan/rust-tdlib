@@ -11,8 +11,12 @@ pub struct AvailableReaction {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text representation of the reaction
+
+    #[serde(default)]
     reaction: String,
     /// True, if Telegram Premium is needed to send the reaction
+
+    #[serde(default)]
     needs_premium: bool,
 }
 

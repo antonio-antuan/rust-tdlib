@@ -15,6 +15,8 @@ pub struct LoadChats {
     #[serde(skip_serializing_if = "ChatList::_is_default")]
     chat_list: ChatList,
     /// The maximum number of chats to be loaded. For optimal performance, the number of loaded chats is chosen by TDLib and can be smaller than the specified limit, even if the end of the list is not reached
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

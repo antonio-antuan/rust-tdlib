@@ -11,16 +11,26 @@ pub struct PageBlockRelatedArticle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Related article URL
+
+    #[serde(default)]
     url: String,
     /// Article title; may be empty
+
+    #[serde(default)]
     title: String,
     /// Contains information about a related article
+
+    #[serde(default)]
     description: String,
     /// Article photo; may be null
     photo: Option<Photo>,
     /// Article author; may be empty
+
+    #[serde(default)]
     author: String,
     /// Point in time (Unix timestamp) when the article was published; 0 if unknown
+
+    #[serde(default)]
     publish_date: i32,
 }
 

@@ -11,6 +11,8 @@ pub struct SearchStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 
     #[serde(rename(serialize = "@type"))]

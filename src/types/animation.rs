@@ -11,16 +11,28 @@ pub struct Animation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Duration of the animation, in seconds; as defined by the sender
+
+    #[serde(default)]
     duration: i32,
     /// Width of the animation
+
+    #[serde(default)]
     width: i32,
     /// Height of the animation
+
+    #[serde(default)]
     height: i32,
     /// Original name of the file; as defined by the sender
+
+    #[serde(default)]
     file_name: String,
     /// MIME type of the file, usually "image/gif" or "video/mp4"
+
+    #[serde(default)]
     mime_type: String,
     /// True, if stickers were added to the animation. The list of corresponding sticker set can be received using getAttachedStickerSets
+
+    #[serde(default)]
     has_stickers: bool,
     /// Animation minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,

@@ -11,12 +11,20 @@ pub struct ChatStatisticsAdministratorActionsInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Administrator user identifier
+
+    #[serde(default)]
     user_id: i64,
     /// Number of messages deleted by the administrator
+
+    #[serde(default)]
     deleted_message_count: i32,
     /// Number of users banned by the administrator
+
+    #[serde(default)]
     banned_user_count: i32,
     /// Number of users restricted by the administrator
+
+    #[serde(default)]
     restricted_user_count: i32,
 }
 

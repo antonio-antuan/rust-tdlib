@@ -11,14 +11,24 @@ pub struct Audio {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Duration of the audio, in seconds; as defined by the sender
+
+    #[serde(default)]
     duration: i32,
     /// Title of the audio; as defined by the sender
+
+    #[serde(default)]
     title: String,
     /// Performer of the audio; as defined by the sender
+
+    #[serde(default)]
     performer: String,
     /// Original name of the file; as defined by the sender
+
+    #[serde(default)]
     file_name: String,
     /// The MIME type of the file; as defined by the sender
+
+    #[serde(default)]
     mime_type: String,
     /// The minithumbnail of the album cover; may be null
     album_cover_minithumbnail: Option<Minithumbnail>,

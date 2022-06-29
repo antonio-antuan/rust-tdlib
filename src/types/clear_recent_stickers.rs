@@ -11,6 +11,8 @@ pub struct ClearRecentStickers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to clear the list of stickers recently attached to photo or video files; pass false to clear the list of recently sent stickers
+
+    #[serde(default)]
     is_attached: bool,
 
     #[serde(rename(serialize = "@type"))]

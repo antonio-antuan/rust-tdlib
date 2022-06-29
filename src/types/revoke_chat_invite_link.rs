@@ -11,8 +11,12 @@ pub struct RevokeChatInviteLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Invite link to be revoked
+
+    #[serde(default)]
     invite_link: String,
 
     #[serde(rename(serialize = "@type"))]

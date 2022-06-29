@@ -11,8 +11,12 @@ pub struct GetMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat the messages belong to
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifiers of the messages to get
+
+    #[serde(default)]
     message_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

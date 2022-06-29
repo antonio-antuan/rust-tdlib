@@ -11,6 +11,8 @@ pub struct SetAuthenticationPhoneNumber {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The phone number of the user, in international format
+
+    #[serde(default)]
     phone_number: String,
     /// Settings for the authentication of the user's phone number; pass null to use default settings
     settings: PhoneNumberAuthenticationSettings,

@@ -11,6 +11,8 @@ pub struct CustomRequestResult {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A JSON-serialized result
+
+    #[serde(default)]
     result: String,
 }
 

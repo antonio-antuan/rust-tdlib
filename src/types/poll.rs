@@ -13,16 +13,27 @@ pub struct Poll {
     /// Unique poll identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Poll question; 1-300 characters
+
+    #[serde(default)]
     question: String,
     /// List of poll answer options
+
+    #[serde(default)]
     options: Vec<PollOption>,
     /// Total number of voters, participating in the poll
+
+    #[serde(default)]
     total_voter_count: i32,
     /// User identifiers of recent voters, if the poll is non-anonymous
+
+    #[serde(default)]
     recent_voter_user_ids: Vec<i64>,
     /// True, if the poll is anonymous
+
+    #[serde(default)]
     is_anonymous: bool,
     /// Type of the poll
 
@@ -30,10 +41,16 @@ pub struct Poll {
     #[serde(skip_serializing_if = "PollType::_is_default")]
     type_: PollType,
     /// Amount of time the poll will be active after creation, in seconds
+
+    #[serde(default)]
     open_period: i32,
     /// Point in time (Unix timestamp) when the poll will automatically be closed
+
+    #[serde(default)]
     close_date: i32,
     /// True, if the poll is closed
+
+    #[serde(default)]
     is_closed: bool,
 }
 

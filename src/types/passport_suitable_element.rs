@@ -16,10 +16,16 @@ pub struct PassportSuitableElement {
     #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
     /// True, if a selfie is required with the identity document
+
+    #[serde(default)]
     is_selfie_required: bool,
     /// True, if a certified English translation is required with the document
+
+    #[serde(default)]
     is_translation_required: bool,
     /// True, if personal details must include the user's name in the language of their country of residence
+
+    #[serde(default)]
     is_native_name_required: bool,
 }
 

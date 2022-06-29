@@ -11,8 +11,12 @@ pub struct Chats {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total number of chats found
+
+    #[serde(default)]
     total_count: i32,
     /// List of chat identifiers
+
+    #[serde(default)]
     chat_ids: Vec<i64>,
 }
 

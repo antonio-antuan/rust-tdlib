@@ -11,12 +11,16 @@ pub struct GetChatMessageCalendar {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which to return information about messages
+
+    #[serde(default)]
     chat_id: i64,
     /// Filter for message content. Filters searchMessagesFilterEmpty, searchMessagesFilterMention, searchMessagesFilterUnreadMention, and searchMessagesFilterUnreadReaction are unsupported in this function
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
     /// The message identifier from which to return information about messages; use 0 to get results from the last message
+
+    #[serde(default)]
     from_message_id: i64,
 
     #[serde(rename(serialize = "@type"))]

@@ -108,6 +108,8 @@ pub struct PassportElementErrorSourceDataField {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Field name
+
+    #[serde(default)]
     field_name: String,
 }
 
@@ -177,6 +179,8 @@ pub struct PassportElementErrorSourceFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Index of a file with the error
+
+    #[serde(default)]
     file_index: i32,
 }
 
@@ -480,6 +484,8 @@ pub struct PassportElementErrorSourceTranslationFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Index of a file with the error
+
+    #[serde(default)]
     file_index: i32,
 }
 

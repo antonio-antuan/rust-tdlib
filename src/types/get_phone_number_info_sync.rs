@@ -11,8 +11,12 @@ pub struct GetPhoneNumberInfoSync {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A two-letter ISO 639-1 language code for country information localization
+
+    #[serde(default)]
     language_code: String,
     /// The phone number prefix
+
+    #[serde(default)]
     phone_number_prefix: String,
 
     #[serde(rename(serialize = "@type"))]

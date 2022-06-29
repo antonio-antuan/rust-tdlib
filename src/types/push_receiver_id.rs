@@ -13,6 +13,7 @@ pub struct PushReceiverId {
     /// The globally unique identifier of push notification subscription
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
 }
 

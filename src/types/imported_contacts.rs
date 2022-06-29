@@ -11,8 +11,12 @@ pub struct ImportedContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifiers of the imported contacts in the same order as they were specified in the request; 0 if the contact is not yet a registered user
+
+    #[serde(default)]
     user_ids: Vec<i64>,
     /// The number of users that imported the corresponding contact; 0 for already registered users or if unavailable
+
+    #[serde(default)]
     importer_count: Vec<i32>,
 }
 

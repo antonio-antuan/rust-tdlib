@@ -11,8 +11,12 @@ pub struct SearchHashtags {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Hashtag prefix to search for
+
+    #[serde(default)]
     prefix: String,
     /// The maximum number of hashtags to be returned
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]

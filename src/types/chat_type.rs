@@ -83,6 +83,8 @@ pub struct ChatTypeBasicGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Basic group identifier
+
+    #[serde(default)]
     basic_group_id: i64,
 }
 
@@ -152,6 +154,8 @@ pub struct ChatTypePrivate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
+
+    #[serde(default)]
     user_id: i64,
 }
 
@@ -221,8 +225,12 @@ pub struct ChatTypeSecret {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Secret chat identifier
+
+    #[serde(default)]
     secret_chat_id: i32,
     /// User identifier of the secret chat peer
+
+    #[serde(default)]
     user_id: i64,
 }
 
@@ -301,8 +309,12 @@ pub struct ChatTypeSupergroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup or channel identifier
+
+    #[serde(default)]
     supergroup_id: i64,
     /// True, if the supergroup is a channel
+
+    #[serde(default)]
     is_channel: bool,
 }
 

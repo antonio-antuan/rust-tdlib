@@ -11,6 +11,8 @@ pub struct FilePart {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// File bytes
+
+    #[serde(default)]
     data: String,
 }
 

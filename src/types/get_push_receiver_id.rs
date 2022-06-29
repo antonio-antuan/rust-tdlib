@@ -11,6 +11,8 @@ pub struct GetPushReceiverId {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// JSON-encoded push notification payload
+
+    #[serde(default)]
     payload: String,
 
     #[serde(rename(serialize = "@type"))]

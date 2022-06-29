@@ -11,14 +11,24 @@ pub struct PhoneNumberAuthenticationSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true if the authentication code may be sent via a flash call to the specified phone number
+
+    #[serde(default)]
     allow_flash_call: bool,
     /// Pass true if the authentication code may be sent via a missed call to the specified phone number
+
+    #[serde(default)]
     allow_missed_call: bool,
     /// Pass true if the authenticated phone number is used on the current device
+
+    #[serde(default)]
     is_current_phone_number: bool,
     /// For official applications only. True, if the application can use Android SMS Retriever API (requires Google Play Services >= 10.2) to automatically receive the authentication code from the SMS. See https://developers.google.com/identity/sms-retriever/ for more details
+
+    #[serde(default)]
     allow_sms_retriever_api: bool,
     /// List of up to 20 authentication tokens, recently received in updateOption("authentication_token") in previously logged out sessions
+
+    #[serde(default)]
     authentication_tokens: Vec<String>,
 }
 

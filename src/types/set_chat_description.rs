@@ -11,8 +11,12 @@ pub struct SetChatDescription {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat
+
+    #[serde(default)]
     chat_id: i64,
     /// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
+
+    #[serde(default)]
     description: String,
 
     #[serde(rename(serialize = "@type"))]

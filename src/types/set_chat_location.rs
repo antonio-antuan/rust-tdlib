@@ -11,6 +11,8 @@ pub struct SetChatLocation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New location for the chat; must be valid and not null
     location: ChatLocation,

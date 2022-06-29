@@ -11,6 +11,8 @@ pub struct InputIdentityDocument {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Document number; 1-24 characters
+
+    #[serde(default)]
     number: String,
     /// Document expiry date; pass null if not applicable
     expiry_date: Date,
@@ -27,6 +29,8 @@ pub struct InputIdentityDocument {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     selfie: InputFile,
     /// List of files containing a certified English translation of the document
+
+    #[serde(default)]
     translation: Vec<InputFile>,
 }
 

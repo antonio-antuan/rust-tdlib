@@ -11,10 +11,16 @@ pub struct TranslateText {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text to translate
+
+    #[serde(default)]
     text: String,
     /// A two-letter ISO 639-1 language code of the language from which the message is translated. If empty, the language will be detected automatically
+
+    #[serde(default)]
     from_language_code: String,
     /// A two-letter ISO 639-1 language code of the language to which the message is translated
+
+    #[serde(default)]
     to_language_code: String,
 
     #[serde(rename(serialize = "@type"))]

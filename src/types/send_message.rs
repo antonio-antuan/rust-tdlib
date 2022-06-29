@@ -11,10 +11,16 @@ pub struct SendMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Target chat
+
+    #[serde(default)]
     chat_id: i64,
     /// If not 0, a message thread identifier in which the message will be sent
+
+    #[serde(default)]
     message_thread_id: i64,
     /// Identifier of the replied message; 0 if none
+
+    #[serde(default)]
     reply_to_message_id: i64,
     /// Options to be used to send the message; pass null to use default options
     options: MessageSendOptions,

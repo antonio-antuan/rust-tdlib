@@ -11,6 +11,8 @@ pub struct Seconds {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of seconds
+
+    #[serde(default)]
     seconds: f32,
 }
 

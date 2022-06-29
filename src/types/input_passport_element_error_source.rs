@@ -108,8 +108,12 @@ pub struct InputPassportElementErrorSourceDataField {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Field name
+
+    #[serde(default)]
     field_name: String,
     /// Current data hash
+
+    #[serde(default)]
     data_hash: String,
 }
 
@@ -190,6 +194,8 @@ pub struct InputPassportElementErrorSourceFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Current hash of the file which has the error
+
+    #[serde(default)]
     file_hash: String,
 }
 
@@ -259,6 +265,8 @@ pub struct InputPassportElementErrorSourceFiles {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Current hashes of all attached files
+
+    #[serde(default)]
     file_hashes: Vec<String>,
 }
 
@@ -330,6 +338,8 @@ pub struct InputPassportElementErrorSourceFrontSide {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Current hash of the file containing the front side
+
+    #[serde(default)]
     file_hash: String,
 }
 
@@ -401,6 +411,8 @@ pub struct InputPassportElementErrorSourceReverseSide {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Current hash of the file containing the reverse side
+
+    #[serde(default)]
     file_hash: String,
 }
 
@@ -474,6 +486,8 @@ pub struct InputPassportElementErrorSourceSelfie {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Current hash of the file containing the selfie
+
+    #[serde(default)]
     file_hash: String,
 }
 
@@ -545,6 +559,8 @@ pub struct InputPassportElementErrorSourceTranslationFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Current hash of the file containing the translation
+
+    #[serde(default)]
     file_hash: String,
 }
 
@@ -618,6 +634,8 @@ pub struct InputPassportElementErrorSourceTranslationFiles {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Current hashes of all files with the translation
+
+    #[serde(default)]
     file_hashes: Vec<String>,
 }
 
@@ -691,6 +709,8 @@ pub struct InputPassportElementErrorSourceUnspecified {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Current hash of the entire element
+
+    #[serde(default)]
     element_hash: String,
 }
 

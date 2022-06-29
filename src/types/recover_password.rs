@@ -11,10 +11,16 @@ pub struct RecoverPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Recovery code to check
+
+    #[serde(default)]
     recovery_code: String,
     /// New password of the user; may be empty to remove the password
+
+    #[serde(default)]
     new_password: String,
     /// New password hint; may be empty
+
+    #[serde(default)]
     new_hint: String,
 
     #[serde(rename(serialize = "@type"))]

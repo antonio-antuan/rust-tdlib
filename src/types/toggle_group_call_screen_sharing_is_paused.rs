@@ -11,8 +11,12 @@ pub struct ToggleGroupCallScreenSharingIsPaused {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// True if screen sharing is paused
+
+    #[serde(default)]
     is_paused: bool,
 
     #[serde(rename(serialize = "@type"))]

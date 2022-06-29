@@ -11,6 +11,8 @@ pub struct GetTextEntities {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The text in which to look for entites
+
+    #[serde(default)]
     text: String,
 
     #[serde(rename(serialize = "@type"))]

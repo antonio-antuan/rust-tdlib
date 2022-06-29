@@ -11,6 +11,8 @@ pub struct NotificationGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique persistent auto-incremented from 1 identifier of the notification group
+
+    #[serde(default)]
     id: i32,
     /// Type of the group
 
@@ -18,10 +20,16 @@ pub struct NotificationGroup {
     #[serde(skip_serializing_if = "NotificationGroupType::_is_default")]
     type_: NotificationGroupType,
     /// Identifier of a chat to which all notifications in the group belong
+
+    #[serde(default)]
     chat_id: i64,
     /// Total number of active notifications in the group
+
+    #[serde(default)]
     total_count: i32,
     /// The list of active notifications
+
+    #[serde(default)]
     notifications: Vec<Notification>,
 }
 

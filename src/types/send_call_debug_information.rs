@@ -11,8 +11,12 @@ pub struct SendCallDebugInformation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
     /// Debug information in application-specific format
+
+    #[serde(default)]
     debug_information: String,
 
     #[serde(rename(serialize = "@type"))]

@@ -13,30 +13,49 @@ pub struct StickerSet {
     /// Identifier of the sticker set
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Title of the sticker set
+
+    #[serde(default)]
     title: String,
     /// Name of the sticker set
+
+    #[serde(default)]
     name: String,
     /// Sticker set thumbnail in WEBP, TGS, or WEBM format with width and height 100; may be null. The file can be downloaded only before the thumbnail is changed
     thumbnail: Option<Thumbnail>,
     /// Sticker set thumbnail's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
+
+    #[serde(default)]
     thumbnail_outline: Vec<ClosedVectorPath>,
     /// True, if the sticker set has been installed by the current user
+
+    #[serde(default)]
     is_installed: bool,
     /// True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
+
+    #[serde(default)]
     is_archived: bool,
     /// True, if the sticker set is official
+
+    #[serde(default)]
     is_official: bool,
     /// Type of the stickers in the set
 
     #[serde(skip_serializing_if = "StickerType::_is_default")]
     sticker_type: StickerType,
     /// True for already viewed trending sticker sets
+
+    #[serde(default)]
     is_viewed: bool,
     /// List of stickers in this set
+
+    #[serde(default)]
     stickers: Vec<Sticker>,
     /// A list of emoji corresponding to the stickers in the same order. The list is only for informational purposes, because a sticker is always sent with a fixed emoji from the corresponding Sticker object
+
+    #[serde(default)]
     emojis: Vec<Emojis>,
 }
 

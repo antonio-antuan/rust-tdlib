@@ -11,10 +11,16 @@ pub struct EncryptedCredentials {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The encrypted credentials
+
+    #[serde(default)]
     data: String,
     /// The decrypted data hash
+
+    #[serde(default)]
     hash: String,
     /// Secret for data decryption, encrypted with the service's public key
+
+    #[serde(default)]
     secret: String,
 }
 

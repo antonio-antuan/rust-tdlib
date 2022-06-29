@@ -11,20 +11,36 @@ pub struct AutoDownloadSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the auto-download is enabled
+
+    #[serde(default)]
     is_auto_download_enabled: bool,
     /// The maximum size of a photo file to be auto-downloaded, in bytes
+
+    #[serde(default)]
     max_photo_file_size: i32,
     /// The maximum size of a video file to be auto-downloaded, in bytes
+
+    #[serde(default)]
     max_video_file_size: i64,
     /// The maximum size of other file types to be auto-downloaded, in bytes
+
+    #[serde(default)]
     max_other_file_size: i64,
     /// The maximum suggested bitrate for uploaded videos, in kbit/s
+
+    #[serde(default)]
     video_upload_bitrate: i32,
     /// True, if the beginning of video files needs to be preloaded for instant playback
+
+    #[serde(default)]
     preload_large_videos: bool,
     /// True, if the next audio track needs to be preloaded while the user is listening to an audio file
+
+    #[serde(default)]
     preload_next_audio: bool,
     /// True, if "use less data for calls" option needs to be enabled
+
+    #[serde(default)]
     use_less_data_for_calls: bool,
 }
 

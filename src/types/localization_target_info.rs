@@ -11,6 +11,8 @@ pub struct LocalizationTargetInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of available language packs for this application
+
+    #[serde(default)]
     language_packs: Vec<LanguagePackInfo>,
 }
 

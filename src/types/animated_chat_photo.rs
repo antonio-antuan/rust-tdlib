@@ -11,10 +11,14 @@ pub struct AnimatedChatPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Animation width and height
+
+    #[serde(default)]
     length: i32,
     /// Information about the animation file
     file: File,
     /// Timestamp of the frame, used as a static chat photo
+
+    #[serde(default)]
     main_frame_timestamp: f32,
 }
 

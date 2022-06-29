@@ -11,6 +11,8 @@ pub struct AcceptCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
     /// The call protocols supported by the application
     protocol: CallProtocol,

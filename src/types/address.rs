@@ -11,16 +11,28 @@ pub struct Address {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A two-letter ISO 3166-1 alpha-2 country code
+
+    #[serde(default)]
     country_code: String,
     /// State, if applicable
+
+    #[serde(default)]
     state: String,
     /// City
+
+    #[serde(default)]
     city: String,
     /// First line of the address
+
+    #[serde(default)]
     street_line1: String,
     /// Second line of the address
+
+    #[serde(default)]
     street_line2: String,
     /// Address postal code
+
+    #[serde(default)]
     postal_code: String,
 }
 

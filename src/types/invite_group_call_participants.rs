@@ -11,8 +11,12 @@ pub struct InviteGroupCallParticipants {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group call identifier
+
+    #[serde(default)]
     group_call_id: i32,
     /// User identifiers. At most 10 users can be invited simultaneously
+
+    #[serde(default)]
     user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]

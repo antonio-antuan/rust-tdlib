@@ -11,8 +11,12 @@ pub struct VideoNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Duration of the video, in seconds; as defined by the sender
+
+    #[serde(default)]
     duration: i32,
     /// Video width and height; as defined by the sender
+
+    #[serde(default)]
     length: i32,
     /// Video minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,

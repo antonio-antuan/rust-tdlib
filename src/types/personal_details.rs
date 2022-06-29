@@ -11,24 +11,42 @@ pub struct PersonalDetails {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// First name of the user written in English; 1-255 characters
+
+    #[serde(default)]
     first_name: String,
     /// Middle name of the user written in English; 0-255 characters
+
+    #[serde(default)]
     middle_name: String,
     /// Last name of the user written in English; 1-255 characters
+
+    #[serde(default)]
     last_name: String,
     /// Native first name of the user; 1-255 characters
+
+    #[serde(default)]
     native_first_name: String,
     /// Native middle name of the user; 0-255 characters
+
+    #[serde(default)]
     native_middle_name: String,
     /// Native last name of the user; 1-255 characters
+
+    #[serde(default)]
     native_last_name: String,
     /// Birthdate of the user
     birthdate: Date,
     /// Gender of the user, "male" or "female"
+
+    #[serde(default)]
     gender: String,
     /// A two-letter ISO 3166-1 alpha-2 country code of the user's country
+
+    #[serde(default)]
     country_code: String,
     /// A two-letter ISO 3166-1 alpha-2 country code of the user's residence country
+
+    #[serde(default)]
     residence_country_code: String,
 }
 

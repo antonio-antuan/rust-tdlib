@@ -82,6 +82,8 @@ pub struct InputChatPhotoAnimation {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     animation: InputFile,
     /// Timestamp of the frame, which will be used as static chat photo
+
+    #[serde(default)]
     main_frame_timestamp: f32,
 }
 
@@ -162,6 +164,7 @@ pub struct InputChatPhotoPrevious {
     /// Identifier of the current user's profile photo to reuse
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     chat_photo_id: i64,
 }
 

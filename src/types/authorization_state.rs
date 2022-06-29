@@ -424,6 +424,8 @@ pub struct AuthorizationStateWaitEncryptionKey {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the database is currently encrypted
+
+    #[serde(default)]
     is_encrypted: bool,
 }
 
@@ -493,6 +495,8 @@ pub struct AuthorizationStateWaitOtherDeviceConfirmation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A tg:// URL for the QR code. The link will be updated frequently
+
+    #[serde(default)]
     link: String,
 }
 
@@ -566,10 +570,16 @@ pub struct AuthorizationStateWaitPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Hint for the password; may be empty
+
+    #[serde(default)]
     password_hint: String,
     /// True, if a recovery email address has been set up
+
+    #[serde(default)]
     has_recovery_email_address: bool,
     /// Pattern of the email address to which the recovery email was sent; empty until a recovery email has been sent
+
+    #[serde(default)]
     recovery_email_address_pattern: String,
 }
 
