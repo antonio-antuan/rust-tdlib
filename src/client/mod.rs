@@ -14,6 +14,8 @@ pub mod auth_handler;
 pub mod tdlib_client;
 
 pub use auth_handler::{AuthStateHandler, ConsoleAuthStateHandler, SignalAuthStateHandler};
+use observer::OBSERVER;
+use serde::de::DeserializeOwned;
 pub use worker::{Worker, WorkerBuilder};
 
 use crate::{
@@ -24,6 +26,10 @@ use tdlib_client::{TdJson, TdLibClient};
 use tokio::sync::mpsc;
 
 const CLIENT_NOT_AUTHORIZED: RTDError = RTDError::Internal("client not authorized yet");
+const CLOSED_RECEIVER_ERROR: RTDError = RTDError::Internal("receiver already closed");
+const INVALID_RESPONSE_ERROR: RTDError = RTDError::Internal("receive invalid response");
+const NO_EXTRA: RTDError =
+    RTDError::Internal("invalid tdlib response type, not have `extra` field");
 
 /// Represents state of particular client instance.
 #[derive(Debug, Clone, PartialEq)]
@@ -215,5 +221,27 @@ where
     /// Just a shortcut for `crate::client::client::Client::close`, allows you to stop the client.
     pub async fn stop(&self) -> RTDResult<Ok> {
         self.close(Close::builder().build()).await
+    }
+
+    async fn make_request<T: RFunction, P: AsRef<T>, Q: DeserializeOwned>(
+        &self,
+        param: P,
+    ) -> RTDResult<Q> {
+        let extra = param.as_ref().extra().ok_or(NO_EXTRA)?;
+        let signal = OBSERVER.subscribe(extra);
+        self.tdlib_client
+            .send(self.get_client_id()?, param.as_ref())?;
+        let received = signal.await;
+        OBSERVER.unsubscribe(extra);
+        match received {
+            Err(_) => Err(CLOSED_RECEIVER_ERROR),
+            Ok(v) => match serde_json::from_value::<Q>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
+                    Err(INVALID_RESPONSE_ERROR)
+                }
+            },
+        }
     }
 }

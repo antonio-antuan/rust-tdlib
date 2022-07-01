@@ -20,8 +20,8 @@ async fn main() {
     let tdlib_parameters = TdlibParameters::builder()
         .database_directory(db_dir)
         .use_test_dc(true)
-        .api_id(env!("API_ID").parse::<i32>().unwrap())
-        .api_hash(env!("API_HASH"))
+        .api_id(std::env::var("API_ID").unwrap().parse::<i32>().unwrap())
+        .api_hash(std::env::var("API_HASH").unwrap())
         .system_language_code("en")
         .device_model("Desktop")
         .system_version("Unknown")
@@ -72,10 +72,12 @@ async fn main() {
                             AuthorizationState::WaitPhoneNumber(_) => {
                                 log::info!("received error when setup phone number: {}", err);
                                 // send correct phone number
-                                sx.send(env!("PHONE_NUMBER").to_string()).await.unwrap();
+                                sx.send(std::env::var("PHONE_NUMBER").unwrap().to_string())
+                                    .await
+                                    .unwrap();
                                 // and handle auth state manually again
                                 worker
-                                    .handle_auth_state(&auth_state.authorization_state(), &client)
+                                    .handle_auth_state(auth_state.authorization_state(), &client)
                                     .await
                                     .expect("can't handle it");
                                 // on this step tdlib usually waits for auth code, which sent by special telegram account

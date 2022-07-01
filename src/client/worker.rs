@@ -422,7 +422,7 @@ where
                                 client_ctx.pub_state_message_sender(),
                                 client_ctx.private_state_message_sender(),
                                 auth_state_handler.as_ref(),
-                                &auth_state.authorization_state(),
+                                auth_state.authorization_state(),
                                 send_timeout,
                             )
                             .await
@@ -675,14 +675,14 @@ async fn first_internal_request<S: TdLibClient>(tdlib_client: &S, client_id: Cli
             return;
         }
     };
-    let signal = OBSERVER.subscribe(&extra);
+    let signal = OBSERVER.subscribe(extra);
     if let Err(err) = tdlib_client.send(client_id, req.as_ref()) {
         log::error!("{}", err);
         return;
     };
 
     let received = signal.await;
-    OBSERVER.unsubscribe(&extra);
+    OBSERVER.unsubscribe(extra);
     match received {
         Err(_) => log::error!("receiver already closed"),
         Ok(v) => {
@@ -695,9 +695,9 @@ async fn first_internal_request<S: TdLibClient>(tdlib_client: &S, client_id: Cli
 
 #[cfg(test)]
 mod tests {
-    use crate::client::client::Client;
     use crate::client::tdlib_client::TdLibClient;
     use crate::client::worker::Worker;
+    use crate::client::Client;
     use crate::errors::RTDResult;
     use crate::tdjson;
     use crate::types::{Chats, RFunction, RObject, SearchPublicChats, TdlibParameters};

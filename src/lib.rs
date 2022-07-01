@@ -47,7 +47,6 @@
 
 #[macro_use]
 extern crate serde_derive;
-extern crate core;
 
 #[cfg(feature = "client")]
 pub mod client;
