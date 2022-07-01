@@ -46,9 +46,6 @@ pub enum SearchMessagesFilter {
     /// Returns only messages with unread mentions of the current user, or messages that are replies to their messages. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
     #[serde(rename(deserialize = "searchMessagesFilterUnreadMention"))]
     UnreadMention(SearchMessagesFilterUnreadMention),
-    /// Returns only messages with unread reactions for the current user. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
-    #[serde(rename(deserialize = "searchMessagesFilterUnreadReaction"))]
-    UnreadReaction(SearchMessagesFilterUnreadReaction),
     /// Returns only messages containing URLs
     #[serde(rename(deserialize = "searchMessagesFilterUrl"))]
     Url(SearchMessagesFilterUrl),
@@ -87,7 +84,6 @@ impl RObject for SearchMessagesFilter {
             SearchMessagesFilter::PhotoAndVideo(t) => t.extra(),
             SearchMessagesFilter::Pinned(t) => t.extra(),
             SearchMessagesFilter::UnreadMention(t) => t.extra(),
-            SearchMessagesFilter::UnreadReaction(t) => t.extra(),
             SearchMessagesFilter::Url(t) => t.extra(),
             SearchMessagesFilter::Video(t) => t.extra(),
             SearchMessagesFilter::VideoNote(t) => t.extra(),
@@ -111,7 +107,6 @@ impl RObject for SearchMessagesFilter {
             SearchMessagesFilter::PhotoAndVideo(t) => t.client_id(),
             SearchMessagesFilter::Pinned(t) => t.client_id(),
             SearchMessagesFilter::UnreadMention(t) => t.client_id(),
-            SearchMessagesFilter::UnreadReaction(t) => t.client_id(),
             SearchMessagesFilter::Url(t) => t.client_id(),
             SearchMessagesFilter::Video(t) => t.client_id(),
             SearchMessagesFilter::VideoNote(t) => t.client_id(),
@@ -773,64 +768,6 @@ impl AsRef<SearchMessagesFilterUnreadMention> for SearchMessagesFilterUnreadMent
 
 impl AsRef<SearchMessagesFilterUnreadMention> for RTDSearchMessagesFilterUnreadMentionBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterUnreadMention {
-        &self.inner
-    }
-}
-
-/// Returns only messages with unread reactions for the current user. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SearchMessagesFilterUnreadReaction {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for SearchMessagesFilterUnreadReaction {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDSearchMessagesFilter for SearchMessagesFilterUnreadReaction {}
-
-impl SearchMessagesFilterUnreadReaction {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDSearchMessagesFilterUnreadReactionBuilder {
-        let mut inner = SearchMessagesFilterUnreadReaction::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDSearchMessagesFilterUnreadReactionBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDSearchMessagesFilterUnreadReactionBuilder {
-    inner: SearchMessagesFilterUnreadReaction,
-}
-
-impl RTDSearchMessagesFilterUnreadReactionBuilder {
-    pub fn build(&self) -> SearchMessagesFilterUnreadReaction {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<SearchMessagesFilterUnreadReaction> for SearchMessagesFilterUnreadReaction {
-    fn as_ref(&self) -> &SearchMessagesFilterUnreadReaction {
-        self
-    }
-}
-
-impl AsRef<SearchMessagesFilterUnreadReaction> for RTDSearchMessagesFilterUnreadReactionBuilder {
-    fn as_ref(&self) -> &SearchMessagesFilterUnreadReaction {
         &self.inner
     }
 }

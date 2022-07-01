@@ -18,7 +18,7 @@ pub struct WriteGeneratedFilePart {
     /// The offset from which to write the data to the file
 
     #[serde(default)]
-    offset: i64,
+    offset: i32,
     /// The data to write
 
     #[serde(default)]
@@ -58,7 +58,7 @@ impl WriteGeneratedFilePart {
         self.generation_id
     }
 
-    pub fn offset(&self) -> i64 {
+    pub fn offset(&self) -> i32 {
         self.offset
     }
 
@@ -82,7 +82,7 @@ impl RTDWriteGeneratedFilePartBuilder {
         self
     }
 
-    pub fn offset(&mut self, offset: i64) -> &mut Self {
+    pub fn offset(&mut self, offset: i32) -> &mut Self {
         self.inner.offset = offset;
         self
     }

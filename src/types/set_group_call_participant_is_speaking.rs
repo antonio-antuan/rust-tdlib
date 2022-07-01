@@ -18,7 +18,7 @@ pub struct SetGroupCallParticipantIsSpeaking {
 
     #[serde(default)]
     audio_source: i32,
-    /// Pass true if the user is speaking
+    /// True, if the user is speaking
 
     #[serde(default)]
     is_speaking: bool,

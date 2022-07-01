@@ -18,7 +18,7 @@ pub struct SearchCallMessages {
 
     #[serde(default)]
     limit: i32,
-    /// Pass true to search only for messages with missed/declined calls
+    /// If true, returns only messages with missed/declined calls
 
     #[serde(default)]
     only_missed: bool,

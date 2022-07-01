@@ -22,7 +22,7 @@ pub struct EditProxy {
 
     #[serde(default)]
     port: i32,
-    /// Pass true to immediately enable the proxy
+    /// True, if the proxy needs to be enabled
 
     #[serde(default)]
     enable: bool,

@@ -10,7 +10,7 @@ pub struct DraftMessage {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the replied message; 0 if none
+    /// Identifier of the message to reply to; 0 if none
 
     #[serde(default)]
     reply_to_message_id: i64,

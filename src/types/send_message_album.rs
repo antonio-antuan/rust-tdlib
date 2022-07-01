@@ -18,7 +18,7 @@ pub struct SendMessageAlbum {
 
     #[serde(default)]
     message_thread_id: i64,
-    /// Identifier of a replied message; 0 if none
+    /// Identifier of a message to reply to or 0
 
     #[serde(default)]
     reply_to_message_id: i64,
@@ -28,10 +28,6 @@ pub struct SendMessageAlbum {
 
     #[serde(default)]
     input_message_contents: Vec<InputMessageContent>,
-    /// Pass true to get fake messages instead of actually sending them
-
-    #[serde(default)]
-    only_preview: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -82,10 +78,6 @@ impl SendMessageAlbum {
     pub fn input_message_contents(&self) -> &Vec<InputMessageContent> {
         &self.input_message_contents
     }
-
-    pub fn only_preview(&self) -> bool {
-        self.only_preview
-    }
 }
 
 #[doc(hidden)]
@@ -123,11 +115,6 @@ impl RTDSendMessageAlbumBuilder {
         input_message_contents: Vec<InputMessageContent>,
     ) -> &mut Self {
         self.inner.input_message_contents = input_message_contents;
-        self
-    }
-
-    pub fn only_preview(&mut self, only_preview: bool) -> &mut Self {
-        self.inner.only_preview = only_preview;
         self
     }
 }

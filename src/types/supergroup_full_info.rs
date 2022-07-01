@@ -75,7 +75,7 @@ pub struct SupergroupFullInfo {
     sticker_set_id: i64,
     /// Location to which the supergroup is connected; may be null
     location: Option<ChatLocation>,
-    /// Primary invite link for the chat; may be null. For chat administrators with can_invite_users right only
+    /// Primary invite link for this chat; may be null. For chat administrators with can_invite_users right only
     invite_link: Option<ChatInviteLink>,
     /// List of commands of bots in the group
 

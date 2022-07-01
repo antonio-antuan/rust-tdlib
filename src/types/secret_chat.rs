@@ -30,7 +30,7 @@ pub struct SecretChat {
 
     #[serde(default)]
     key_hash: String,
-    /// Secret chat layer; determines features supported by the chat partner's application. Nested text entities and underline and strikethrough entities are supported if the layer >= 101, files bigger than 2000MB are supported if the layer >= 143
+    /// Secret chat layer; determines features supported by the chat partner's application. Nested text entities and underline and strikethrough entities are supported if the layer >= 101
 
     #[serde(default)]
     layer: i32,

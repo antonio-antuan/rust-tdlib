@@ -55,9 +55,6 @@ pub enum TextEntityType {
     /// Text that must be formatted as if inside pre, and code HTML tags
     #[serde(rename(deserialize = "textEntityTypePreCode"))]
     PreCode(TextEntityTypePreCode),
-    /// A spoiler text. Not supported in secret chats
-    #[serde(rename(deserialize = "textEntityTypeSpoiler"))]
-    Spoiler(TextEntityTypeSpoiler),
     /// A strikethrough text
     #[serde(rename(deserialize = "textEntityTypeStrikethrough"))]
     Strikethrough(TextEntityTypeStrikethrough),
@@ -96,7 +93,6 @@ impl RObject for TextEntityType {
             TextEntityType::PhoneNumber(t) => t.extra(),
             TextEntityType::Pre(t) => t.extra(),
             TextEntityType::PreCode(t) => t.extra(),
-            TextEntityType::Spoiler(t) => t.extra(),
             TextEntityType::Strikethrough(t) => t.extra(),
             TextEntityType::TextUrl(t) => t.extra(),
             TextEntityType::Underline(t) => t.extra(),
@@ -122,7 +118,6 @@ impl RObject for TextEntityType {
             TextEntityType::PhoneNumber(t) => t.client_id(),
             TextEntityType::Pre(t) => t.client_id(),
             TextEntityType::PreCode(t) => t.client_id(),
-            TextEntityType::Spoiler(t) => t.client_id(),
             TextEntityType::Strikethrough(t) => t.client_id(),
             TextEntityType::TextUrl(t) => t.client_id(),
             TextEntityType::Underline(t) => t.client_id(),
@@ -996,64 +991,6 @@ impl AsRef<TextEntityTypePreCode> for TextEntityTypePreCode {
 
 impl AsRef<TextEntityTypePreCode> for RTDTextEntityTypePreCodeBuilder {
     fn as_ref(&self) -> &TextEntityTypePreCode {
-        &self.inner
-    }
-}
-
-/// A spoiler text. Not supported in secret chats
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct TextEntityTypeSpoiler {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for TextEntityTypeSpoiler {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDTextEntityType for TextEntityTypeSpoiler {}
-
-impl TextEntityTypeSpoiler {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDTextEntityTypeSpoilerBuilder {
-        let mut inner = TextEntityTypeSpoiler::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDTextEntityTypeSpoilerBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDTextEntityTypeSpoilerBuilder {
-    inner: TextEntityTypeSpoiler,
-}
-
-impl RTDTextEntityTypeSpoilerBuilder {
-    pub fn build(&self) -> TextEntityTypeSpoiler {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<TextEntityTypeSpoiler> for TextEntityTypeSpoiler {
-    fn as_ref(&self) -> &TextEntityTypeSpoiler {
-        self
-    }
-}
-
-impl AsRef<TextEntityTypeSpoiler> for RTDTextEntityTypeSpoilerBuilder {
-    fn as_ref(&self) -> &TextEntityTypeSpoiler {
         &self.inner
     }
 }

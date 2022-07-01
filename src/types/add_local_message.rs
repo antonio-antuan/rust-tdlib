@@ -18,7 +18,7 @@ pub struct AddLocalMessage {
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender_id: MessageSender,
-    /// Identifier of the replied message; 0 if none
+    /// Identifier of the message to reply to or 0
 
     #[serde(default)]
     reply_to_message_id: i64,

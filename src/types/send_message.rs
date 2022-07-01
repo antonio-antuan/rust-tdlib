@@ -18,7 +18,7 @@ pub struct SendMessage {
 
     #[serde(default)]
     message_thread_id: i64,
-    /// Identifier of the replied message; 0 if none
+    /// Identifier of the message to reply to or 0
 
     #[serde(default)]
     reply_to_message_id: i64,

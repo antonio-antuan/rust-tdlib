@@ -18,7 +18,7 @@ pub struct Notification {
 
     #[serde(default)]
     date: i32,
-    /// True, if the notification was explicitly sent without sound
+    /// True, if the notification was initially silent
 
     #[serde(default)]
     is_silent: bool,

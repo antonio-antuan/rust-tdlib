@@ -25,9 +25,6 @@ pub enum Update {
     /// The parameters of animation search through GetOption("animation_search_bot_username") bot has changed
     #[serde(rename(deserialize = "updateAnimationSearchParameters"))]
     AnimationSearchParameters(UpdateAnimationSearchParameters),
-    /// The list of bots added to attachment menu has changed
-    #[serde(rename(deserialize = "updateAttachmentMenuBots"))]
-    AttachmentMenuBots(UpdateAttachmentMenuBots),
     /// The user authorization state has changed
     #[serde(rename(deserialize = "updateAuthorizationState"))]
     AuthorizationState(UpdateAuthorizationState),
@@ -46,9 +43,6 @@ pub enum Update {
     /// The chat action bar was changed
     #[serde(rename(deserialize = "updateChatActionBar"))]
     ChatActionBar(UpdateChatActionBar),
-    /// The chat available reactions were changed
-    #[serde(rename(deserialize = "updateChatAvailableReactions"))]
-    ChatAvailableReactions(UpdateChatAvailableReactions),
     /// The value of the default disable_notification parameter, used when a message is sent to the chat, was changed
     #[serde(rename(deserialize = "updateChatDefaultDisableNotification"))]
     ChatDefaultDisableNotification(UpdateChatDefaultDisableNotification),
@@ -85,7 +79,7 @@ pub enum Update {
     /// Notification settings for a chat were changed
     #[serde(rename(deserialize = "updateChatNotificationSettings"))]
     ChatNotificationSettings(UpdateChatNotificationSettings),
-    /// The number of online group members has changed. This update with non-zero number of online group members is sent only for currently opened chats. There is no guarantee that it will be sent just after the number of online users has changed
+    /// The number of online group members has changed. This update with non-zero count is sent only for currently opened chats. There is no guarantee that it will be sent just after the count has changed
     #[serde(rename(deserialize = "updateChatOnlineMemberCount"))]
     ChatOnlineMemberCount(UpdateChatOnlineMemberCount),
     /// The chat pending join requests were changed
@@ -121,9 +115,6 @@ pub enum Update {
     /// The chat unread_mention_count has changed
     #[serde(rename(deserialize = "updateChatUnreadMentionCount"))]
     ChatUnreadMentionCount(UpdateChatUnreadMentionCount),
-    /// The chat unread_reaction_count has changed
-    #[serde(rename(deserialize = "updateChatUnreadReactionCount"))]
-    ChatUnreadReactionCount(UpdateChatUnreadReactionCount),
     /// A chat video chat state has changed
     #[serde(rename(deserialize = "updateChatVideoChat"))]
     ChatVideoChat(UpdateChatVideoChat),
@@ -142,24 +133,12 @@ pub enum Update {
     /// Information about a file was updated
     #[serde(rename(deserialize = "updateFile"))]
     File(UpdateFile),
-    /// A file was added to the file download list. This update is sent only after file download list is loaded for the first time
-    #[serde(rename(deserialize = "updateFileAddedToDownloads"))]
-    FileAddedToDownloads(UpdateFileAddedToDownloads),
-    /// A file download was changed. This update is sent only after file download list is loaded for the first time
-    #[serde(rename(deserialize = "updateFileDownload"))]
-    FileDownload(UpdateFileDownload),
-    /// The state of the file download list has changed
-    #[serde(rename(deserialize = "updateFileDownloads"))]
-    FileDownloads(UpdateFileDownloads),
     /// The file generation process needs to be started by the application
     #[serde(rename(deserialize = "updateFileGenerationStart"))]
     FileGenerationStart(UpdateFileGenerationStart),
     /// File generation is no longer needed
     #[serde(rename(deserialize = "updateFileGenerationStop"))]
     FileGenerationStop(UpdateFileGenerationStop),
-    /// A file was removed from the file download list. This update is sent only after file download list is loaded for the first time
-    #[serde(rename(deserialize = "updateFileRemovedFromDownloads"))]
-    FileRemovedFromDownloads(UpdateFileRemovedFromDownloads),
     /// Information about a group call was updated
     #[serde(rename(deserialize = "updateGroupCall"))]
     GroupCall(UpdateGroupCall),
@@ -205,9 +184,6 @@ pub enum Update {
     /// A message has been successfully sent
     #[serde(rename(deserialize = "updateMessageSendSucceeded"))]
     MessageSendSucceeded(UpdateMessageSendSucceeded),
-    /// The list of unread reactions added to a message was changed
-    #[serde(rename(deserialize = "updateMessageUnreadReactions"))]
-    MessageUnreadReactions(UpdateMessageUnreadReactions),
     /// New call signaling data arrived
     #[serde(rename(deserialize = "updateNewCallSignalingData"))]
     NewCallSignalingData(UpdateNewCallSignalingData),
@@ -259,18 +235,12 @@ pub enum Update {
     /// A user changed the answer to a poll; for bots only
     #[serde(rename(deserialize = "updatePollAnswer"))]
     PollAnswer(UpdatePollAnswer),
-    /// The list of supported reactions has changed
-    #[serde(rename(deserialize = "updateReactions"))]
-    Reactions(UpdateReactions),
     /// The list of recently used stickers was updated
     #[serde(rename(deserialize = "updateRecentStickers"))]
     RecentStickers(UpdateRecentStickers),
     /// The list of saved animations was updated
     #[serde(rename(deserialize = "updateSavedAnimations"))]
     SavedAnimations(UpdateSavedAnimations),
-    /// The list of saved notifications sounds was updated. This update may not be sent until information about a notification sound was requested for the first time
-    #[serde(rename(deserialize = "updateSavedNotificationSounds"))]
-    SavedNotificationSounds(UpdateSavedNotificationSounds),
     /// Notification settings for some type of chats were updated
     #[serde(rename(deserialize = "updateScopeNotificationSettings"))]
     ScopeNotificationSettings(UpdateScopeNotificationSettings),
@@ -322,9 +292,6 @@ pub enum Update {
     /// The list of users nearby has changed. The update is guaranteed to be sent only 60 seconds after a successful searchChatsNearby request
     #[serde(rename(deserialize = "updateUsersNearby"))]
     UsersNearby(UpdateUsersNearby),
-    /// A message was sent by an opened Web App, so the Web App needs to be closed
-    #[serde(rename(deserialize = "updateWebAppMessageSent"))]
-    WebAppMessageSent(UpdateWebAppMessageSent),
 }
 
 impl Default for Update {
@@ -341,14 +308,12 @@ impl RObject for Update {
             Update::ActiveNotifications(t) => t.extra(),
             Update::AnimatedEmojiMessageClicked(t) => t.extra(),
             Update::AnimationSearchParameters(t) => t.extra(),
-            Update::AttachmentMenuBots(t) => t.extra(),
             Update::AuthorizationState(t) => t.extra(),
             Update::BasicGroup(t) => t.extra(),
             Update::BasicGroupFullInfo(t) => t.extra(),
             Update::Call(t) => t.extra(),
             Update::ChatAction(t) => t.extra(),
             Update::ChatActionBar(t) => t.extra(),
-            Update::ChatAvailableReactions(t) => t.extra(),
             Update::ChatDefaultDisableNotification(t) => t.extra(),
             Update::ChatDraftMessage(t) => t.extra(),
             Update::ChatFilters(t) => t.extra(),
@@ -373,19 +338,14 @@ impl RObject for Update {
             Update::ChatThemes(t) => t.extra(),
             Update::ChatTitle(t) => t.extra(),
             Update::ChatUnreadMentionCount(t) => t.extra(),
-            Update::ChatUnreadReactionCount(t) => t.extra(),
             Update::ChatVideoChat(t) => t.extra(),
             Update::ConnectionState(t) => t.extra(),
             Update::DeleteMessages(t) => t.extra(),
             Update::DiceEmojis(t) => t.extra(),
             Update::FavoriteStickers(t) => t.extra(),
             Update::File(t) => t.extra(),
-            Update::FileAddedToDownloads(t) => t.extra(),
-            Update::FileDownload(t) => t.extra(),
-            Update::FileDownloads(t) => t.extra(),
             Update::FileGenerationStart(t) => t.extra(),
             Update::FileGenerationStop(t) => t.extra(),
-            Update::FileRemovedFromDownloads(t) => t.extra(),
             Update::GroupCall(t) => t.extra(),
             Update::GroupCallParticipant(t) => t.extra(),
             Update::HavePendingNotifications(t) => t.extra(),
@@ -401,7 +361,6 @@ impl RObject for Update {
             Update::MessageSendAcknowledged(t) => t.extra(),
             Update::MessageSendFailed(t) => t.extra(),
             Update::MessageSendSucceeded(t) => t.extra(),
-            Update::MessageUnreadReactions(t) => t.extra(),
             Update::NewCallSignalingData(t) => t.extra(),
             Update::NewCallbackQuery(t) => t.extra(),
             Update::NewChat(t) => t.extra(),
@@ -419,10 +378,8 @@ impl RObject for Update {
             Update::Option(t) => t.extra(),
             Update::Poll(t) => t.extra(),
             Update::PollAnswer(t) => t.extra(),
-            Update::Reactions(t) => t.extra(),
             Update::RecentStickers(t) => t.extra(),
             Update::SavedAnimations(t) => t.extra(),
-            Update::SavedNotificationSounds(t) => t.extra(),
             Update::ScopeNotificationSettings(t) => t.extra(),
             Update::SecretChat(t) => t.extra(),
             Update::SelectedBackground(t) => t.extra(),
@@ -440,7 +397,6 @@ impl RObject for Update {
             Update::UserPrivacySettingRules(t) => t.extra(),
             Update::UserStatus(t) => t.extra(),
             Update::UsersNearby(t) => t.extra(),
-            Update::WebAppMessageSent(t) => t.extra(),
 
             _ => None,
         }
@@ -452,14 +408,12 @@ impl RObject for Update {
             Update::ActiveNotifications(t) => t.client_id(),
             Update::AnimatedEmojiMessageClicked(t) => t.client_id(),
             Update::AnimationSearchParameters(t) => t.client_id(),
-            Update::AttachmentMenuBots(t) => t.client_id(),
             Update::AuthorizationState(t) => t.client_id(),
             Update::BasicGroup(t) => t.client_id(),
             Update::BasicGroupFullInfo(t) => t.client_id(),
             Update::Call(t) => t.client_id(),
             Update::ChatAction(t) => t.client_id(),
             Update::ChatActionBar(t) => t.client_id(),
-            Update::ChatAvailableReactions(t) => t.client_id(),
             Update::ChatDefaultDisableNotification(t) => t.client_id(),
             Update::ChatDraftMessage(t) => t.client_id(),
             Update::ChatFilters(t) => t.client_id(),
@@ -484,19 +438,14 @@ impl RObject for Update {
             Update::ChatThemes(t) => t.client_id(),
             Update::ChatTitle(t) => t.client_id(),
             Update::ChatUnreadMentionCount(t) => t.client_id(),
-            Update::ChatUnreadReactionCount(t) => t.client_id(),
             Update::ChatVideoChat(t) => t.client_id(),
             Update::ConnectionState(t) => t.client_id(),
             Update::DeleteMessages(t) => t.client_id(),
             Update::DiceEmojis(t) => t.client_id(),
             Update::FavoriteStickers(t) => t.client_id(),
             Update::File(t) => t.client_id(),
-            Update::FileAddedToDownloads(t) => t.client_id(),
-            Update::FileDownload(t) => t.client_id(),
-            Update::FileDownloads(t) => t.client_id(),
             Update::FileGenerationStart(t) => t.client_id(),
             Update::FileGenerationStop(t) => t.client_id(),
-            Update::FileRemovedFromDownloads(t) => t.client_id(),
             Update::GroupCall(t) => t.client_id(),
             Update::GroupCallParticipant(t) => t.client_id(),
             Update::HavePendingNotifications(t) => t.client_id(),
@@ -512,7 +461,6 @@ impl RObject for Update {
             Update::MessageSendAcknowledged(t) => t.client_id(),
             Update::MessageSendFailed(t) => t.client_id(),
             Update::MessageSendSucceeded(t) => t.client_id(),
-            Update::MessageUnreadReactions(t) => t.client_id(),
             Update::NewCallSignalingData(t) => t.client_id(),
             Update::NewCallbackQuery(t) => t.client_id(),
             Update::NewChat(t) => t.client_id(),
@@ -530,10 +478,8 @@ impl RObject for Update {
             Update::Option(t) => t.client_id(),
             Update::Poll(t) => t.client_id(),
             Update::PollAnswer(t) => t.client_id(),
-            Update::Reactions(t) => t.client_id(),
             Update::RecentStickers(t) => t.client_id(),
             Update::SavedAnimations(t) => t.client_id(),
-            Update::SavedNotificationSounds(t) => t.client_id(),
             Update::ScopeNotificationSettings(t) => t.client_id(),
             Update::SecretChat(t) => t.client_id(),
             Update::SelectedBackground(t) => t.client_id(),
@@ -551,7 +497,6 @@ impl RObject for Update {
             Update::UserPrivacySettingRules(t) => t.client_id(),
             Update::UserStatus(t) => t.client_id(),
             Update::UsersNearby(t) => t.client_id(),
-            Update::WebAppMessageSent(t) => t.client_id(),
 
             _ => None,
         }
@@ -820,77 +765,6 @@ impl AsRef<UpdateAnimationSearchParameters> for UpdateAnimationSearchParameters 
 
 impl AsRef<UpdateAnimationSearchParameters> for RTDUpdateAnimationSearchParametersBuilder {
     fn as_ref(&self) -> &UpdateAnimationSearchParameters {
-        &self.inner
-    }
-}
-
-/// The list of bots added to attachment menu has changed
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateAttachmentMenuBots {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// The new list of bots added to attachment menu. The bots must not be shown on scheduled messages screen
-
-    #[serde(default)]
-    bots: Vec<AttachmentMenuBot>,
-}
-
-impl RObject for UpdateAttachmentMenuBots {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateAttachmentMenuBots {}
-
-impl UpdateAttachmentMenuBots {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateAttachmentMenuBotsBuilder {
-        let mut inner = UpdateAttachmentMenuBots::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateAttachmentMenuBotsBuilder { inner }
-    }
-
-    pub fn bots(&self) -> &Vec<AttachmentMenuBot> {
-        &self.bots
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateAttachmentMenuBotsBuilder {
-    inner: UpdateAttachmentMenuBots,
-}
-
-impl RTDUpdateAttachmentMenuBotsBuilder {
-    pub fn build(&self) -> UpdateAttachmentMenuBots {
-        self.inner.clone()
-    }
-
-    pub fn bots(&mut self, bots: Vec<AttachmentMenuBot>) -> &mut Self {
-        self.inner.bots = bots;
-        self
-    }
-}
-
-impl AsRef<UpdateAttachmentMenuBots> for UpdateAttachmentMenuBots {
-    fn as_ref(&self) -> &UpdateAttachmentMenuBots {
-        self
-    }
-}
-
-impl AsRef<UpdateAttachmentMenuBots> for RTDUpdateAttachmentMenuBotsBuilder {
-    fn as_ref(&self) -> &UpdateAttachmentMenuBots {
         &self.inner
     }
 }
@@ -1384,90 +1258,6 @@ impl AsRef<UpdateChatActionBar> for RTDUpdateChatActionBarBuilder {
     }
 }
 
-/// The chat available reactions were changed
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateChatAvailableReactions {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Chat identifier
-
-    #[serde(default)]
-    chat_id: i64,
-    /// The new list of reactions, available in the chat
-
-    #[serde(default)]
-    available_reactions: Vec<String>,
-}
-
-impl RObject for UpdateChatAvailableReactions {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateChatAvailableReactions {}
-
-impl UpdateChatAvailableReactions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateChatAvailableReactionsBuilder {
-        let mut inner = UpdateChatAvailableReactions::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateChatAvailableReactionsBuilder { inner }
-    }
-
-    pub fn chat_id(&self) -> i64 {
-        self.chat_id
-    }
-
-    pub fn available_reactions(&self) -> &Vec<String> {
-        &self.available_reactions
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateChatAvailableReactionsBuilder {
-    inner: UpdateChatAvailableReactions,
-}
-
-impl RTDUpdateChatAvailableReactionsBuilder {
-    pub fn build(&self) -> UpdateChatAvailableReactions {
-        self.inner.clone()
-    }
-
-    pub fn chat_id(&mut self, chat_id: i64) -> &mut Self {
-        self.inner.chat_id = chat_id;
-        self
-    }
-
-    pub fn available_reactions(&mut self, available_reactions: Vec<String>) -> &mut Self {
-        self.inner.available_reactions = available_reactions;
-        self
-    }
-}
-
-impl AsRef<UpdateChatAvailableReactions> for UpdateChatAvailableReactions {
-    fn as_ref(&self) -> &UpdateChatAvailableReactions {
-        self
-    }
-}
-
-impl AsRef<UpdateChatAvailableReactions> for RTDUpdateChatAvailableReactionsBuilder {
-    fn as_ref(&self) -> &UpdateChatAvailableReactions {
-        &self.inner
-    }
-}
-
 /// The value of the default disable_notification parameter, used when a message is sent to the chat, was changed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UpdateChatDefaultDisableNotification {
@@ -1664,10 +1454,6 @@ pub struct UpdateChatFilters {
 
     #[serde(default)]
     chat_filters: Vec<ChatFilterInfo>,
-    /// Position of the main chat list among chat filters, 0-based
-
-    #[serde(default)]
-    main_chat_list_position: i32,
 }
 
 impl RObject for UpdateChatFilters {
@@ -1697,10 +1483,6 @@ impl UpdateChatFilters {
     pub fn chat_filters(&self) -> &Vec<ChatFilterInfo> {
         &self.chat_filters
     }
-
-    pub fn main_chat_list_position(&self) -> i32 {
-        self.main_chat_list_position
-    }
 }
 
 #[doc(hidden)]
@@ -1715,11 +1497,6 @@ impl RTDUpdateChatFiltersBuilder {
 
     pub fn chat_filters(&mut self, chat_filters: Vec<ChatFilterInfo>) -> &mut Self {
         self.inner.chat_filters = chat_filters;
-        self
-    }
-
-    pub fn main_chat_list_position(&mut self, main_chat_list_position: i32) -> &mut Self {
-        self.inner.main_chat_list_position = main_chat_list_position;
         self
     }
 }
@@ -2551,7 +2328,7 @@ impl AsRef<UpdateChatNotificationSettings> for RTDUpdateChatNotificationSettings
     }
 }
 
-/// The number of online group members has changed. This update with non-zero number of online group members is sent only for currently opened chats. There is no guarantee that it will be sent just after the number of online users has changed
+/// The number of online group members has changed. This update with non-zero count is sent only for currently opened chats. There is no guarantee that it will be sent just after the count has changed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UpdateChatOnlineMemberCount {
     #[doc(hidden)]
@@ -3554,90 +3331,6 @@ impl AsRef<UpdateChatUnreadMentionCount> for RTDUpdateChatUnreadMentionCountBuil
     }
 }
 
-/// The chat unread_reaction_count has changed
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateChatUnreadReactionCount {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Chat identifier
-
-    #[serde(default)]
-    chat_id: i64,
-    /// The number of messages with unread reactions left in the chat
-
-    #[serde(default)]
-    unread_reaction_count: i32,
-}
-
-impl RObject for UpdateChatUnreadReactionCount {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateChatUnreadReactionCount {}
-
-impl UpdateChatUnreadReactionCount {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateChatUnreadReactionCountBuilder {
-        let mut inner = UpdateChatUnreadReactionCount::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateChatUnreadReactionCountBuilder { inner }
-    }
-
-    pub fn chat_id(&self) -> i64 {
-        self.chat_id
-    }
-
-    pub fn unread_reaction_count(&self) -> i32 {
-        self.unread_reaction_count
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateChatUnreadReactionCountBuilder {
-    inner: UpdateChatUnreadReactionCount,
-}
-
-impl RTDUpdateChatUnreadReactionCountBuilder {
-    pub fn build(&self) -> UpdateChatUnreadReactionCount {
-        self.inner.clone()
-    }
-
-    pub fn chat_id(&mut self, chat_id: i64) -> &mut Self {
-        self.inner.chat_id = chat_id;
-        self
-    }
-
-    pub fn unread_reaction_count(&mut self, unread_reaction_count: i32) -> &mut Self {
-        self.inner.unread_reaction_count = unread_reaction_count;
-        self
-    }
-}
-
-impl AsRef<UpdateChatUnreadReactionCount> for UpdateChatUnreadReactionCount {
-    fn as_ref(&self) -> &UpdateChatUnreadReactionCount {
-        self
-    }
-}
-
-impl AsRef<UpdateChatUnreadReactionCount> for RTDUpdateChatUnreadReactionCountBuilder {
-    fn as_ref(&self) -> &UpdateChatUnreadReactionCount {
-        &self.inner
-    }
-}
-
 /// A chat video chat state has changed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UpdateChatVideoChat {
@@ -4112,291 +3805,6 @@ impl AsRef<UpdateFile> for RTDUpdateFileBuilder {
     }
 }
 
-/// A file was added to the file download list. This update is sent only after file download list is loaded for the first time
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateFileAddedToDownloads {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// The added file download
-    file_download: FileDownload,
-    /// New number of being downloaded and recently downloaded files found
-    counts: DownloadedFileCounts,
-}
-
-impl RObject for UpdateFileAddedToDownloads {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateFileAddedToDownloads {}
-
-impl UpdateFileAddedToDownloads {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateFileAddedToDownloadsBuilder {
-        let mut inner = UpdateFileAddedToDownloads::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateFileAddedToDownloadsBuilder { inner }
-    }
-
-    pub fn file_download(&self) -> &FileDownload {
-        &self.file_download
-    }
-
-    pub fn counts(&self) -> &DownloadedFileCounts {
-        &self.counts
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateFileAddedToDownloadsBuilder {
-    inner: UpdateFileAddedToDownloads,
-}
-
-impl RTDUpdateFileAddedToDownloadsBuilder {
-    pub fn build(&self) -> UpdateFileAddedToDownloads {
-        self.inner.clone()
-    }
-
-    pub fn file_download<T: AsRef<FileDownload>>(&mut self, file_download: T) -> &mut Self {
-        self.inner.file_download = file_download.as_ref().clone();
-        self
-    }
-
-    pub fn counts<T: AsRef<DownloadedFileCounts>>(&mut self, counts: T) -> &mut Self {
-        self.inner.counts = counts.as_ref().clone();
-        self
-    }
-}
-
-impl AsRef<UpdateFileAddedToDownloads> for UpdateFileAddedToDownloads {
-    fn as_ref(&self) -> &UpdateFileAddedToDownloads {
-        self
-    }
-}
-
-impl AsRef<UpdateFileAddedToDownloads> for RTDUpdateFileAddedToDownloadsBuilder {
-    fn as_ref(&self) -> &UpdateFileAddedToDownloads {
-        &self.inner
-    }
-}
-
-/// A file download was changed. This update is sent only after file download list is loaded for the first time
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateFileDownload {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// File identifier
-
-    #[serde(default)]
-    file_id: i32,
-    /// Point in time (Unix timestamp) when the file downloading was completed; 0 if the file downloading isn't completed
-
-    #[serde(default)]
-    complete_date: i32,
-    /// True, if downloading of the file is paused
-
-    #[serde(default)]
-    is_paused: bool,
-    /// New number of being downloaded and recently downloaded files found
-    counts: DownloadedFileCounts,
-}
-
-impl RObject for UpdateFileDownload {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateFileDownload {}
-
-impl UpdateFileDownload {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateFileDownloadBuilder {
-        let mut inner = UpdateFileDownload::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateFileDownloadBuilder { inner }
-    }
-
-    pub fn file_id(&self) -> i32 {
-        self.file_id
-    }
-
-    pub fn complete_date(&self) -> i32 {
-        self.complete_date
-    }
-
-    pub fn is_paused(&self) -> bool {
-        self.is_paused
-    }
-
-    pub fn counts(&self) -> &DownloadedFileCounts {
-        &self.counts
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateFileDownloadBuilder {
-    inner: UpdateFileDownload,
-}
-
-impl RTDUpdateFileDownloadBuilder {
-    pub fn build(&self) -> UpdateFileDownload {
-        self.inner.clone()
-    }
-
-    pub fn file_id(&mut self, file_id: i32) -> &mut Self {
-        self.inner.file_id = file_id;
-        self
-    }
-
-    pub fn complete_date(&mut self, complete_date: i32) -> &mut Self {
-        self.inner.complete_date = complete_date;
-        self
-    }
-
-    pub fn is_paused(&mut self, is_paused: bool) -> &mut Self {
-        self.inner.is_paused = is_paused;
-        self
-    }
-
-    pub fn counts<T: AsRef<DownloadedFileCounts>>(&mut self, counts: T) -> &mut Self {
-        self.inner.counts = counts.as_ref().clone();
-        self
-    }
-}
-
-impl AsRef<UpdateFileDownload> for UpdateFileDownload {
-    fn as_ref(&self) -> &UpdateFileDownload {
-        self
-    }
-}
-
-impl AsRef<UpdateFileDownload> for RTDUpdateFileDownloadBuilder {
-    fn as_ref(&self) -> &UpdateFileDownload {
-        &self.inner
-    }
-}
-
-/// The state of the file download list has changed
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateFileDownloads {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Total size of files in the file download list, in bytes
-
-    #[serde(default)]
-    total_size: i64,
-    /// Total number of files in the file download list
-
-    #[serde(default)]
-    total_count: i32,
-    /// Total downloaded size of files in the file download list, in bytes
-
-    #[serde(default)]
-    downloaded_size: i64,
-}
-
-impl RObject for UpdateFileDownloads {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateFileDownloads {}
-
-impl UpdateFileDownloads {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateFileDownloadsBuilder {
-        let mut inner = UpdateFileDownloads::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateFileDownloadsBuilder { inner }
-    }
-
-    pub fn total_size(&self) -> i64 {
-        self.total_size
-    }
-
-    pub fn total_count(&self) -> i32 {
-        self.total_count
-    }
-
-    pub fn downloaded_size(&self) -> i64 {
-        self.downloaded_size
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateFileDownloadsBuilder {
-    inner: UpdateFileDownloads,
-}
-
-impl RTDUpdateFileDownloadsBuilder {
-    pub fn build(&self) -> UpdateFileDownloads {
-        self.inner.clone()
-    }
-
-    pub fn total_size(&mut self, total_size: i64) -> &mut Self {
-        self.inner.total_size = total_size;
-        self
-    }
-
-    pub fn total_count(&mut self, total_count: i32) -> &mut Self {
-        self.inner.total_count = total_count;
-        self
-    }
-
-    pub fn downloaded_size(&mut self, downloaded_size: i64) -> &mut Self {
-        self.inner.downloaded_size = downloaded_size;
-        self
-    }
-}
-
-impl AsRef<UpdateFileDownloads> for UpdateFileDownloads {
-    fn as_ref(&self) -> &UpdateFileDownloads {
-        self
-    }
-}
-
-impl AsRef<UpdateFileDownloads> for RTDUpdateFileDownloadsBuilder {
-    fn as_ref(&self) -> &UpdateFileDownloads {
-        &self.inner
-    }
-}
-
 /// The file generation process needs to be started by the application
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UpdateFileGenerationStart {
@@ -4576,88 +3984,6 @@ impl AsRef<UpdateFileGenerationStop> for UpdateFileGenerationStop {
 
 impl AsRef<UpdateFileGenerationStop> for RTDUpdateFileGenerationStopBuilder {
     fn as_ref(&self) -> &UpdateFileGenerationStop {
-        &self.inner
-    }
-}
-
-/// A file was removed from the file download list. This update is sent only after file download list is loaded for the first time
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateFileRemovedFromDownloads {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// File identifier
-
-    #[serde(default)]
-    file_id: i32,
-    /// New number of being downloaded and recently downloaded files found
-    counts: DownloadedFileCounts,
-}
-
-impl RObject for UpdateFileRemovedFromDownloads {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateFileRemovedFromDownloads {}
-
-impl UpdateFileRemovedFromDownloads {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateFileRemovedFromDownloadsBuilder {
-        let mut inner = UpdateFileRemovedFromDownloads::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateFileRemovedFromDownloadsBuilder { inner }
-    }
-
-    pub fn file_id(&self) -> i32 {
-        self.file_id
-    }
-
-    pub fn counts(&self) -> &DownloadedFileCounts {
-        &self.counts
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateFileRemovedFromDownloadsBuilder {
-    inner: UpdateFileRemovedFromDownloads,
-}
-
-impl RTDUpdateFileRemovedFromDownloadsBuilder {
-    pub fn build(&self) -> UpdateFileRemovedFromDownloads {
-        self.inner.clone()
-    }
-
-    pub fn file_id(&mut self, file_id: i32) -> &mut Self {
-        self.inner.file_id = file_id;
-        self
-    }
-
-    pub fn counts<T: AsRef<DownloadedFileCounts>>(&mut self, counts: T) -> &mut Self {
-        self.inner.counts = counts.as_ref().clone();
-        self
-    }
-}
-
-impl AsRef<UpdateFileRemovedFromDownloads> for UpdateFileRemovedFromDownloads {
-    fn as_ref(&self) -> &UpdateFileRemovedFromDownloads {
-        self
-    }
-}
-
-impl AsRef<UpdateFileRemovedFromDownloads> for RTDUpdateFileRemovedFromDownloadsBuilder {
-    fn as_ref(&self) -> &UpdateFileRemovedFromDownloads {
         &self.inner
     }
 }
@@ -6021,116 +5347,6 @@ impl AsRef<UpdateMessageSendSucceeded> for RTDUpdateMessageSendSucceededBuilder 
     }
 }
 
-/// The list of unread reactions added to a message was changed
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateMessageUnreadReactions {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Chat identifier
-
-    #[serde(default)]
-    chat_id: i64,
-    /// Message identifier
-
-    #[serde(default)]
-    message_id: i64,
-    /// The new list of unread reactions
-
-    #[serde(default)]
-    unread_reactions: Vec<UnreadReaction>,
-    /// The new number of messages with unread reactions left in the chat
-
-    #[serde(default)]
-    unread_reaction_count: i32,
-}
-
-impl RObject for UpdateMessageUnreadReactions {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateMessageUnreadReactions {}
-
-impl UpdateMessageUnreadReactions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateMessageUnreadReactionsBuilder {
-        let mut inner = UpdateMessageUnreadReactions::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateMessageUnreadReactionsBuilder { inner }
-    }
-
-    pub fn chat_id(&self) -> i64 {
-        self.chat_id
-    }
-
-    pub fn message_id(&self) -> i64 {
-        self.message_id
-    }
-
-    pub fn unread_reactions(&self) -> &Vec<UnreadReaction> {
-        &self.unread_reactions
-    }
-
-    pub fn unread_reaction_count(&self) -> i32 {
-        self.unread_reaction_count
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateMessageUnreadReactionsBuilder {
-    inner: UpdateMessageUnreadReactions,
-}
-
-impl RTDUpdateMessageUnreadReactionsBuilder {
-    pub fn build(&self) -> UpdateMessageUnreadReactions {
-        self.inner.clone()
-    }
-
-    pub fn chat_id(&mut self, chat_id: i64) -> &mut Self {
-        self.inner.chat_id = chat_id;
-        self
-    }
-
-    pub fn message_id(&mut self, message_id: i64) -> &mut Self {
-        self.inner.message_id = message_id;
-        self
-    }
-
-    pub fn unread_reactions(&mut self, unread_reactions: Vec<UnreadReaction>) -> &mut Self {
-        self.inner.unread_reactions = unread_reactions;
-        self
-    }
-
-    pub fn unread_reaction_count(&mut self, unread_reaction_count: i32) -> &mut Self {
-        self.inner.unread_reaction_count = unread_reaction_count;
-        self
-    }
-}
-
-impl AsRef<UpdateMessageUnreadReactions> for UpdateMessageUnreadReactions {
-    fn as_ref(&self) -> &UpdateMessageUnreadReactions {
-        self
-    }
-}
-
-impl AsRef<UpdateMessageUnreadReactions> for RTDUpdateMessageUnreadReactionsBuilder {
-    fn as_ref(&self) -> &UpdateMessageUnreadReactions {
-        &self.inner
-    }
-}
-
 /// New call signaling data arrived
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UpdateNewCallSignalingData {
@@ -6236,7 +5452,7 @@ pub struct UpdateNewCallbackQuery {
 
     #[serde(default)]
     chat_id: i64,
-    /// Identifier of the message from which the query originated
+    /// Identifier of the message, from which the query originated
 
     #[serde(default)]
     message_id: i64,
@@ -6822,7 +6038,7 @@ pub struct UpdateNewInlineCallbackQuery {
 
     #[serde(default)]
     sender_user_id: i64,
-    /// Identifier of the inline message from which the query originated
+    /// Identifier of the inline message, from which the query originated
 
     #[serde(default)]
     inline_message_id: String,
@@ -6949,7 +6165,7 @@ pub struct UpdateNewInlineQuery {
     sender_user_id: i64,
     /// User location; may be null
     user_location: Option<Location>,
-    /// The type of the chat from which the query originated; may be null if unknown
+    /// The type of the chat, from which the query originated; may be null if unknown
     chat_type: Option<ChatType>,
     /// Text of the query
 
@@ -7496,11 +6712,10 @@ pub struct UpdateNotificationGroup {
 
     #[serde(default)]
     notification_settings_chat_id: i64,
-    /// Identifier of the notification sound to be played; 0 if sound is disabled
+    /// True, if the notifications must be shown without sound
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
     #[serde(default)]
-    notification_sound_id: i64,
+    is_silent: bool,
     /// Total number of unread notifications in the group, can be bigger than number of active notifications
 
     #[serde(default)]
@@ -7555,8 +6770,8 @@ impl UpdateNotificationGroup {
         self.notification_settings_chat_id
     }
 
-    pub fn notification_sound_id(&self) -> i64 {
-        self.notification_sound_id
+    pub fn is_silent(&self) -> bool {
+        self.is_silent
     }
 
     pub fn total_count(&self) -> i32 {
@@ -7605,8 +6820,8 @@ impl RTDUpdateNotificationGroupBuilder {
         self
     }
 
-    pub fn notification_sound_id(&mut self, notification_sound_id: i64) -> &mut Self {
-        self.inner.notification_sound_id = notification_sound_id;
+    pub fn is_silent(&mut self, is_silent: bool) -> &mut Self {
+        self.inner.is_silent = is_silent;
         self
     }
 
@@ -7889,77 +7104,6 @@ impl AsRef<UpdatePollAnswer> for RTDUpdatePollAnswerBuilder {
     }
 }
 
-/// The list of supported reactions has changed
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateReactions {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// The new list of supported reactions
-
-    #[serde(default)]
-    reactions: Vec<Reaction>,
-}
-
-impl RObject for UpdateReactions {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateReactions {}
-
-impl UpdateReactions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateReactionsBuilder {
-        let mut inner = UpdateReactions::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateReactionsBuilder { inner }
-    }
-
-    pub fn reactions(&self) -> &Vec<Reaction> {
-        &self.reactions
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateReactionsBuilder {
-    inner: UpdateReactions,
-}
-
-impl RTDUpdateReactionsBuilder {
-    pub fn build(&self) -> UpdateReactions {
-        self.inner.clone()
-    }
-
-    pub fn reactions(&mut self, reactions: Vec<Reaction>) -> &mut Self {
-        self.inner.reactions = reactions;
-        self
-    }
-}
-
-impl AsRef<UpdateReactions> for UpdateReactions {
-    fn as_ref(&self) -> &UpdateReactions {
-        self
-    }
-}
-
-impl AsRef<UpdateReactions> for RTDUpdateReactionsBuilder {
-    fn as_ref(&self) -> &UpdateReactions {
-        &self.inner
-    }
-}
-
 /// The list of recently used stickers was updated
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UpdateRecentStickers {
@@ -8111,78 +7255,6 @@ impl AsRef<UpdateSavedAnimations> for UpdateSavedAnimations {
 
 impl AsRef<UpdateSavedAnimations> for RTDUpdateSavedAnimationsBuilder {
     fn as_ref(&self) -> &UpdateSavedAnimations {
-        &self.inner
-    }
-}
-
-/// The list of saved notifications sounds was updated. This update may not be sent until information about a notification sound was requested for the first time
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateSavedNotificationSounds {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// The new list of identifiers of saved notification sounds
-
-    #[serde(deserialize_with = "super::_common::vec_of_i64_from_str")]
-    #[serde(default)]
-    notification_sound_ids: Vec<i64>,
-}
-
-impl RObject for UpdateSavedNotificationSounds {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateSavedNotificationSounds {}
-
-impl UpdateSavedNotificationSounds {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateSavedNotificationSoundsBuilder {
-        let mut inner = UpdateSavedNotificationSounds::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateSavedNotificationSoundsBuilder { inner }
-    }
-
-    pub fn notification_sound_ids(&self) -> &Vec<i64> {
-        &self.notification_sound_ids
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateSavedNotificationSoundsBuilder {
-    inner: UpdateSavedNotificationSounds,
-}
-
-impl RTDUpdateSavedNotificationSoundsBuilder {
-    pub fn build(&self) -> UpdateSavedNotificationSounds {
-        self.inner.clone()
-    }
-
-    pub fn notification_sound_ids(&mut self, notification_sound_ids: Vec<i64>) -> &mut Self {
-        self.inner.notification_sound_ids = notification_sound_ids;
-        self
-    }
-}
-
-impl AsRef<UpdateSavedNotificationSounds> for UpdateSavedNotificationSounds {
-    fn as_ref(&self) -> &UpdateSavedNotificationSounds {
-        self
-    }
-}
-
-impl AsRef<UpdateSavedNotificationSounds> for RTDUpdateSavedNotificationSoundsBuilder {
-    fn as_ref(&self) -> &UpdateSavedNotificationSounds {
         &self.inner
     }
 }
@@ -8906,7 +7978,7 @@ pub struct UpdateTrendingStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The prefix of the list of trending sticker sets with the newest trending sticker sets
-    sticker_sets: TrendingStickerSets,
+    sticker_sets: StickerSets,
 }
 
 impl RObject for UpdateTrendingStickerSets {
@@ -8933,7 +8005,7 @@ impl UpdateTrendingStickerSets {
         RTDUpdateTrendingStickerSetsBuilder { inner }
     }
 
-    pub fn sticker_sets(&self) -> &TrendingStickerSets {
+    pub fn sticker_sets(&self) -> &StickerSets {
         &self.sticker_sets
     }
 }
@@ -8948,7 +8020,7 @@ impl RTDUpdateTrendingStickerSetsBuilder {
         self.inner.clone()
     }
 
-    pub fn sticker_sets<T: AsRef<TrendingStickerSets>>(&mut self, sticker_sets: T) -> &mut Self {
+    pub fn sticker_sets<T: AsRef<StickerSets>>(&mut self, sticker_sets: T) -> &mut Self {
         self.inner.sticker_sets = sticker_sets.as_ref().clone();
         self
     }
@@ -9586,78 +8658,6 @@ impl AsRef<UpdateUsersNearby> for UpdateUsersNearby {
 
 impl AsRef<UpdateUsersNearby> for RTDUpdateUsersNearbyBuilder {
     fn as_ref(&self) -> &UpdateUsersNearby {
-        &self.inner
-    }
-}
-
-/// A message was sent by an opened Web App, so the Web App needs to be closed
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct UpdateWebAppMessageSent {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Identifier of Web App launch
-
-    #[serde(deserialize_with = "super::_common::number_from_string")]
-    #[serde(default)]
-    web_app_launch_id: i64,
-}
-
-impl RObject for UpdateWebAppMessageSent {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDUpdate for UpdateWebAppMessageSent {}
-
-impl UpdateWebAppMessageSent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDUpdateWebAppMessageSentBuilder {
-        let mut inner = UpdateWebAppMessageSent::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDUpdateWebAppMessageSentBuilder { inner }
-    }
-
-    pub fn web_app_launch_id(&self) -> i64 {
-        self.web_app_launch_id
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDUpdateWebAppMessageSentBuilder {
-    inner: UpdateWebAppMessageSent,
-}
-
-impl RTDUpdateWebAppMessageSentBuilder {
-    pub fn build(&self) -> UpdateWebAppMessageSent {
-        self.inner.clone()
-    }
-
-    pub fn web_app_launch_id(&mut self, web_app_launch_id: i64) -> &mut Self {
-        self.inner.web_app_launch_id = web_app_launch_id;
-        self
-    }
-}
-
-impl AsRef<UpdateWebAppMessageSent> for UpdateWebAppMessageSent {
-    fn as_ref(&self) -> &UpdateWebAppMessageSent {
-        self
-    }
-}
-
-impl AsRef<UpdateWebAppMessageSent> for RTDUpdateWebAppMessageSentBuilder {
-    fn as_ref(&self) -> &UpdateWebAppMessageSent {
         &self.inner
     }
 }

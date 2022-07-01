@@ -18,7 +18,7 @@ pub struct OptimizeStorage {
 
     #[serde(default)]
     ttl: i32,
-    /// Limit on the total number of files after deletion. Pass 1 to use the default limit
+    /// Limit on the total count of files after deletion. Pass 1 to use the default limit
 
     #[serde(default)]
     count: i32,

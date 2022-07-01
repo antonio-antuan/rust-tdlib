@@ -26,10 +26,6 @@ pub struct Invoice {
 
     #[serde(default)]
     suggested_tip_amounts: Vec<i64>,
-    /// An HTTP URL with terms of service for recurring payments. If non-empty, the invoice payment will result in recurring payments and the user must accept the terms of service before allowed to pay
-
-    #[serde(default)]
-    recurring_payment_terms_of_service_url: String,
     /// True, if the payment is a test payment
 
     #[serde(default)]
@@ -102,10 +98,6 @@ impl Invoice {
         &self.suggested_tip_amounts
     }
 
-    pub fn recurring_payment_terms_of_service_url(&self) -> &String {
-        &self.recurring_payment_terms_of_service_url
-    }
-
     pub fn is_test(&self) -> bool {
         self.is_test
     }
@@ -166,15 +158,6 @@ impl RTDInvoiceBuilder {
 
     pub fn suggested_tip_amounts(&mut self, suggested_tip_amounts: Vec<i64>) -> &mut Self {
         self.inner.suggested_tip_amounts = suggested_tip_amounts;
-        self
-    }
-
-    pub fn recurring_payment_terms_of_service_url<T: AsRef<str>>(
-        &mut self,
-        recurring_payment_terms_of_service_url: T,
-    ) -> &mut Self {
-        self.inner.recurring_payment_terms_of_service_url =
-            recurring_payment_terms_of_service_url.as_ref().to_string();
         self
     }
 

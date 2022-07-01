@@ -23,7 +23,7 @@ pub struct StickerSet {
 
     #[serde(default)]
     name: String,
-    /// Sticker set thumbnail in WEBP, TGS, or WEBM format with width and height 100; may be null. The file can be downloaded only before the thumbnail is changed
+    /// Sticker set thumbnail in WEBP or TGS format with width and height 100; may be null. The file can be downloaded only before the thumbnail is changed
     thumbnail: Option<Thumbnail>,
     /// Sticker set thumbnail's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
 
@@ -41,10 +41,14 @@ pub struct StickerSet {
 
     #[serde(default)]
     is_official: bool,
-    /// Type of the stickers in the set
+    /// True, is the stickers in the set are animated
 
-    #[serde(skip_serializing_if = "StickerType::_is_default")]
-    sticker_type: StickerType,
+    #[serde(default)]
+    is_animated: bool,
+    /// True, if the stickers in the set are masks
+
+    #[serde(default)]
+    is_masks: bool,
     /// True for already viewed trending sticker sets
 
     #[serde(default)]
@@ -113,8 +117,12 @@ impl StickerSet {
         self.is_official
     }
 
-    pub fn sticker_type(&self) -> &StickerType {
-        &self.sticker_type
+    pub fn is_animated(&self) -> bool {
+        self.is_animated
+    }
+
+    pub fn is_masks(&self) -> bool {
+        self.is_masks
     }
 
     pub fn is_viewed(&self) -> bool {
@@ -180,8 +188,13 @@ impl RTDStickerSetBuilder {
         self
     }
 
-    pub fn sticker_type<T: AsRef<StickerType>>(&mut self, sticker_type: T) -> &mut Self {
-        self.inner.sticker_type = sticker_type.as_ref().clone();
+    pub fn is_animated(&mut self, is_animated: bool) -> &mut Self {
+        self.inner.is_animated = is_animated;
+        self
+    }
+
+    pub fn is_masks(&mut self, is_masks: bool) -> &mut Self {
+        self.inner.is_masks = is_masks;
         self
     }
 

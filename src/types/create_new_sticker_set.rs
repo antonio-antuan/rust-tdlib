@@ -22,7 +22,11 @@ pub struct CreateNewStickerSet {
 
     #[serde(default)]
     name: String,
-    /// List of stickers to be added to the set; must be non-empty. All stickers must have the same format. For TGS stickers, uploadStickerFile must be used before the sticker is shown
+    /// True, if stickers are masks. Animated stickers can't be masks
+
+    #[serde(default)]
+    is_masks: bool,
+    /// List of stickers to be added to the set; must be non-empty. All stickers must be of the same type. For animated stickers, uploadStickerFile must be used before the sticker is shown
 
     #[serde(default)]
     stickers: Vec<InputSticker>,
@@ -73,6 +77,10 @@ impl CreateNewStickerSet {
         &self.name
     }
 
+    pub fn is_masks(&self) -> bool {
+        self.is_masks
+    }
+
     pub fn stickers(&self) -> &Vec<InputSticker> {
         &self.stickers
     }
@@ -104,6 +112,11 @@ impl RTDCreateNewStickerSetBuilder {
 
     pub fn name<T: AsRef<str>>(&mut self, name: T) -> &mut Self {
         self.inner.name = name.as_ref().to_string();
+        self
+    }
+
+    pub fn is_masks(&mut self, is_masks: bool) -> &mut Self {
+        self.inner.is_masks = is_masks;
         self
     }
 

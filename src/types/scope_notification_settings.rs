@@ -14,11 +14,10 @@ pub struct ScopeNotificationSettings {
 
     #[serde(default)]
     mute_for: i32,
-    /// Identifier of the notification sound to be played; 0 if sound is disabled
+    /// The name of an audio file to be used for notification sounds; only applies to iOS applications
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
     #[serde(default)]
-    sound_id: i64,
+    sound: String,
     /// True, if message content must be displayed in notifications
 
     #[serde(default)]
@@ -59,8 +58,8 @@ impl ScopeNotificationSettings {
         self.mute_for
     }
 
-    pub fn sound_id(&self) -> i64 {
-        self.sound_id
+    pub fn sound(&self) -> &String {
+        &self.sound
     }
 
     pub fn show_preview(&self) -> bool {
@@ -91,8 +90,8 @@ impl RTDScopeNotificationSettingsBuilder {
         self
     }
 
-    pub fn sound_id(&mut self, sound_id: i64) -> &mut Self {
-        self.inner.sound_id = sound_id;
+    pub fn sound<T: AsRef<str>>(&mut self, sound: T) -> &mut Self {
+        self.inner.sound = sound.as_ref().to_string();
         self
     }
 

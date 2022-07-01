@@ -625,7 +625,7 @@ pub struct PageBlockChatLink {
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
-    /// Chat username by which all other information about the chat can be resolved
+    /// Chat username, by which all other information about the chat can be resolved
 
     #[serde(default)]
     username: String,

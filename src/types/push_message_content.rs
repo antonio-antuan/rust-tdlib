@@ -79,9 +79,6 @@ pub enum PushMessageContent {
     /// A message with a poll
     #[serde(rename(deserialize = "pushMessageContentPoll"))]
     Poll(PushMessageContentPoll),
-    /// A new recurrent payment was made by the current user
-    #[serde(rename(deserialize = "pushMessageContentRecurringPayment"))]
-    RecurringPayment(PushMessageContentRecurringPayment),
     /// A screenshot of a message in the chat has been taken
     #[serde(rename(deserialize = "pushMessageContentScreenshotTaken"))]
     ScreenshotTaken(PushMessageContentScreenshotTaken),
@@ -134,7 +131,6 @@ impl RObject for PushMessageContent {
             PushMessageContent::MessageForwards(t) => t.extra(),
             PushMessageContent::Photo(t) => t.extra(),
             PushMessageContent::Poll(t) => t.extra(),
-            PushMessageContent::RecurringPayment(t) => t.extra(),
             PushMessageContent::ScreenshotTaken(t) => t.extra(),
             PushMessageContent::Sticker(t) => t.extra(),
             PushMessageContent::Text(t) => t.extra(),
@@ -170,7 +166,6 @@ impl RObject for PushMessageContent {
             PushMessageContent::MessageForwards(t) => t.client_id(),
             PushMessageContent::Photo(t) => t.client_id(),
             PushMessageContent::Poll(t) => t.client_id(),
-            PushMessageContent::RecurringPayment(t) => t.client_id(),
             PushMessageContent::ScreenshotTaken(t) => t.client_id(),
             PushMessageContent::Sticker(t) => t.client_id(),
             PushMessageContent::Text(t) => t.client_id(),
@@ -1985,77 +1980,6 @@ impl AsRef<PushMessageContentPoll> for PushMessageContentPoll {
 
 impl AsRef<PushMessageContentPoll> for RTDPushMessageContentPollBuilder {
     fn as_ref(&self) -> &PushMessageContentPoll {
-        &self.inner
-    }
-}
-
-/// A new recurrent payment was made by the current user
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct PushMessageContentRecurringPayment {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// The paid amount
-
-    #[serde(default)]
-    amount: String,
-}
-
-impl RObject for PushMessageContentRecurringPayment {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDPushMessageContent for PushMessageContentRecurringPayment {}
-
-impl PushMessageContentRecurringPayment {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDPushMessageContentRecurringPaymentBuilder {
-        let mut inner = PushMessageContentRecurringPayment::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDPushMessageContentRecurringPaymentBuilder { inner }
-    }
-
-    pub fn amount(&self) -> &String {
-        &self.amount
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDPushMessageContentRecurringPaymentBuilder {
-    inner: PushMessageContentRecurringPayment,
-}
-
-impl RTDPushMessageContentRecurringPaymentBuilder {
-    pub fn build(&self) -> PushMessageContentRecurringPayment {
-        self.inner.clone()
-    }
-
-    pub fn amount<T: AsRef<str>>(&mut self, amount: T) -> &mut Self {
-        self.inner.amount = amount.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<PushMessageContentRecurringPayment> for PushMessageContentRecurringPayment {
-    fn as_ref(&self) -> &PushMessageContentRecurringPayment {
-        self
-    }
-}
-
-impl AsRef<PushMessageContentRecurringPayment> for RTDPushMessageContentRecurringPaymentBuilder {
-    fn as_ref(&self) -> &PushMessageContentRecurringPayment {
         &self.inner
     }
 }

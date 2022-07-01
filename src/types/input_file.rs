@@ -93,7 +93,7 @@ pub struct InputFileGenerated {
     /// Expected size of the generated file, in bytes; 0 if unknown
 
     #[serde(default)]
-    expected_size: i64,
+    expected_size: i32,
 }
 
 impl RObject for InputFileGenerated {
@@ -128,7 +128,7 @@ impl InputFileGenerated {
         &self.conversion
     }
 
-    pub fn expected_size(&self) -> i64 {
+    pub fn expected_size(&self) -> i32 {
         self.expected_size
     }
 }
@@ -153,7 +153,7 @@ impl RTDInputFileGeneratedBuilder {
         self
     }
 
-    pub fn expected_size(&mut self, expected_size: i64) -> &mut Self {
+    pub fn expected_size(&mut self, expected_size: i32) -> &mut Self {
         self.inner.expected_size = expected_size;
         self
     }

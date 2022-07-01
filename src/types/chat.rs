@@ -83,16 +83,8 @@ pub struct Chat {
 
     #[serde(default)]
     unread_mention_count: i32,
-    /// Number of messages with unread reactions in the chat
-
-    #[serde(default)]
-    unread_reaction_count: i32,
-    /// Notification settings for the chat
+    /// Notification settings for this chat
     notification_settings: ChatNotificationSettings,
-    /// List of reactions, available in the chat
-
-    #[serde(default)]
-    available_reactions: Vec<String>,
     /// Current message Time To Live setting (self-destruct timer) for the chat; 0 if not defined. TTL is counted from the time message or its content is viewed in secret chats and from the send date in other chats
 
     #[serde(default)]
@@ -221,16 +213,8 @@ impl Chat {
         self.unread_mention_count
     }
 
-    pub fn unread_reaction_count(&self) -> i32 {
-        self.unread_reaction_count
-    }
-
     pub fn notification_settings(&self) -> &ChatNotificationSettings {
         &self.notification_settings
-    }
-
-    pub fn available_reactions(&self) -> &Vec<String> {
-        &self.available_reactions
     }
 
     pub fn message_ttl(&self) -> i32 {
@@ -388,21 +372,11 @@ impl RTDChatBuilder {
         self
     }
 
-    pub fn unread_reaction_count(&mut self, unread_reaction_count: i32) -> &mut Self {
-        self.inner.unread_reaction_count = unread_reaction_count;
-        self
-    }
-
     pub fn notification_settings<T: AsRef<ChatNotificationSettings>>(
         &mut self,
         notification_settings: T,
     ) -> &mut Self {
         self.inner.notification_settings = notification_settings.as_ref().clone();
-        self
-    }
-
-    pub fn available_reactions(&mut self, available_reactions: Vec<String>) -> &mut Self {
-        self.inner.available_reactions = available_reactions;
         self
     }
 

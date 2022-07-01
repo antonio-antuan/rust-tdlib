@@ -13,7 +13,7 @@ pub trait TDMessageFileType: Debug + RObject {}
 pub enum MessageFileType {
     #[doc(hidden)]
     _Default,
-    /// Returns information about a file with messages exported from another application
+    /// Returns information about a file with messages exported from another app
     #[serde(rename(deserialize = "getMessageFileType"))]
     GetMessageFileType(GetMessageFileType),
     /// The messages was exported from a group chat

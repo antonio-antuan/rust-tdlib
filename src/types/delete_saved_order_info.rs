@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Deletes saved order information
+/// Deletes saved order info
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeleteSavedOrderInfo {
     #[doc(hidden)]

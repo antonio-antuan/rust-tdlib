@@ -42,14 +42,6 @@ pub struct Supergroup {
 
     #[serde(default)]
     sign_messages: bool,
-    /// True, if users need to join the supergroup before they can send messages. Always true for channels and non-discussion supergroups
-
-    #[serde(default)]
-    join_to_send_messages: bool,
-    /// True, if all users directly joining the supergroup need to be approved by supergroup administrators. Always false for channels and supergroups without username, location, or a linked chat
-
-    #[serde(default)]
-    join_by_request: bool,
     /// True, if the slow mode is enabled in the supergroup
 
     #[serde(default)]
@@ -134,14 +126,6 @@ impl Supergroup {
         self.sign_messages
     }
 
-    pub fn join_to_send_messages(&self) -> bool {
-        self.join_to_send_messages
-    }
-
-    pub fn join_by_request(&self) -> bool {
-        self.join_by_request
-    }
-
     pub fn is_slow_mode_enabled(&self) -> bool {
         self.is_slow_mode_enabled
     }
@@ -218,16 +202,6 @@ impl RTDSupergroupBuilder {
 
     pub fn sign_messages(&mut self, sign_messages: bool) -> &mut Self {
         self.inner.sign_messages = sign_messages;
-        self
-    }
-
-    pub fn join_to_send_messages(&mut self, join_to_send_messages: bool) -> &mut Self {
-        self.inner.join_to_send_messages = join_to_send_messages;
-        self
-    }
-
-    pub fn join_by_request(&mut self, join_by_request: bool) -> &mut Self {
-        self.inner.join_by_request = join_by_request;
         self
     }
 

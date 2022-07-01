@@ -54,15 +54,11 @@ pub struct Message {
 
     #[serde(default)]
     can_be_deleted_for_all_users: bool,
-    /// True, if the list of added reactions is available through getMessageAddedReactions
-
-    #[serde(default)]
-    can_get_added_reactions: bool,
-    /// True, if the message statistics are available through getMessageStatistics
+    /// True, if the message statistics are available
 
     #[serde(default)]
     can_get_statistics: bool,
-    /// True, if information about the message thread is available through getMessageThread
+    /// True, if the message thread info is available
 
     #[serde(default)]
     can_get_message_thread: bool,
@@ -70,7 +66,7 @@ pub struct Message {
 
     #[serde(default)]
     can_get_viewers: bool,
-    /// True, if media timestamp links can be generated for media timestamp entities in the message text, caption or web page description through getMessageLink
+    /// True, if media timestamp links can be generated for media timestamp entities in the message text, caption or web page description
 
     #[serde(default)]
     can_get_media_timestamp_links: bool,
@@ -98,10 +94,6 @@ pub struct Message {
     forward_info: Option<MessageForwardInfo>,
     /// Information about interactions with the message; may be null
     interaction_info: Option<MessageInteractionInfo>,
-    /// Information about unread reactions added to the message
-
-    #[serde(default)]
-    unread_reactions: Vec<UnreadReaction>,
     /// If non-zero, the identifier of the chat to which the replied message belongs; Currently, only messages in the Replies chat can have different reply_in_chat_id and chat_id
 
     #[serde(default)]
@@ -217,10 +209,6 @@ impl Message {
         self.can_be_deleted_for_all_users
     }
 
-    pub fn can_get_added_reactions(&self) -> bool {
-        self.can_get_added_reactions
-    }
-
     pub fn can_get_statistics(&self) -> bool {
         self.can_get_statistics
     }
@@ -263,10 +251,6 @@ impl Message {
 
     pub fn interaction_info(&self) -> &Option<MessageInteractionInfo> {
         &self.interaction_info
-    }
-
-    pub fn unread_reactions(&self) -> &Vec<UnreadReaction> {
-        &self.unread_reactions
     }
 
     pub fn reply_in_chat_id(&self) -> i64 {
@@ -393,11 +377,6 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn can_get_added_reactions(&mut self, can_get_added_reactions: bool) -> &mut Self {
-        self.inner.can_get_added_reactions = can_get_added_reactions;
-        self
-    }
-
     pub fn can_get_statistics(&mut self, can_get_statistics: bool) -> &mut Self {
         self.inner.can_get_statistics = can_get_statistics;
         self
@@ -456,11 +435,6 @@ impl RTDMessageBuilder {
         interaction_info: T,
     ) -> &mut Self {
         self.inner.interaction_info = Some(interaction_info.as_ref().clone());
-        self
-    }
-
-    pub fn unread_reactions(&mut self, unread_reactions: Vec<UnreadReaction>) -> &mut Self {
-        self.inner.unread_reactions = unread_reactions;
         self
     }
 

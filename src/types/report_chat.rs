@@ -14,7 +14,7 @@ pub struct ReportChat {
 
     #[serde(default)]
     chat_id: i64,
-    /// Identifiers of reported messages; may be empty to report the whole chat
+    /// Identifiers of reported messages, if any
 
     #[serde(default)]
     message_ids: Vec<i64>,

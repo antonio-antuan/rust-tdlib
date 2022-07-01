@@ -13,9 +13,6 @@ pub trait TDChatEventAction: Debug + RObject {}
 pub enum ChatEventAction {
     #[doc(hidden)]
     _Default,
-    /// The chat available reactions were changed
-    #[serde(rename(deserialize = "chatEventAvailableReactionsChanged"))]
-    ChatEventAvailableReactionsChanged(ChatEventAvailableReactionsChanged),
     /// The chat description was changed
     #[serde(rename(deserialize = "chatEventDescriptionChanged"))]
     ChatEventDescriptionChanged(ChatEventDescriptionChanged),
@@ -132,7 +129,6 @@ impl RObject for ChatEventAction {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         match self {
-            ChatEventAction::ChatEventAvailableReactionsChanged(t) => t.extra(),
             ChatEventAction::ChatEventDescriptionChanged(t) => t.extra(),
             ChatEventAction::ChatEventHasProtectedContentToggled(t) => t.extra(),
             ChatEventAction::ChatEventInviteLinkDeleted(t) => t.extra(),
@@ -174,7 +170,6 @@ impl RObject for ChatEventAction {
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         match self {
-            ChatEventAction::ChatEventAvailableReactionsChanged(t) => t.client_id(),
             ChatEventAction::ChatEventDescriptionChanged(t) => t.client_id(),
             ChatEventAction::ChatEventHasProtectedContentToggled(t) => t.client_id(),
             ChatEventAction::ChatEventInviteLinkDeleted(t) => t.client_id(),
@@ -228,90 +223,6 @@ impl ChatEventAction {
 impl AsRef<ChatEventAction> for ChatEventAction {
     fn as_ref(&self) -> &ChatEventAction {
         self
-    }
-}
-
-/// The chat available reactions were changed
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct ChatEventAvailableReactionsChanged {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Previous chat available reactions
-
-    #[serde(default)]
-    old_available_reactions: Vec<String>,
-    /// New chat available reactions
-
-    #[serde(default)]
-    new_available_reactions: Vec<String>,
-}
-
-impl RObject for ChatEventAvailableReactionsChanged {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDChatEventAction for ChatEventAvailableReactionsChanged {}
-
-impl ChatEventAvailableReactionsChanged {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDChatEventAvailableReactionsChangedBuilder {
-        let mut inner = ChatEventAvailableReactionsChanged::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDChatEventAvailableReactionsChangedBuilder { inner }
-    }
-
-    pub fn old_available_reactions(&self) -> &Vec<String> {
-        &self.old_available_reactions
-    }
-
-    pub fn new_available_reactions(&self) -> &Vec<String> {
-        &self.new_available_reactions
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDChatEventAvailableReactionsChangedBuilder {
-    inner: ChatEventAvailableReactionsChanged,
-}
-
-impl RTDChatEventAvailableReactionsChangedBuilder {
-    pub fn build(&self) -> ChatEventAvailableReactionsChanged {
-        self.inner.clone()
-    }
-
-    pub fn old_available_reactions(&mut self, old_available_reactions: Vec<String>) -> &mut Self {
-        self.inner.old_available_reactions = old_available_reactions;
-        self
-    }
-
-    pub fn new_available_reactions(&mut self, new_available_reactions: Vec<String>) -> &mut Self {
-        self.inner.new_available_reactions = new_available_reactions;
-        self
-    }
-}
-
-impl AsRef<ChatEventAvailableReactionsChanged> for ChatEventAvailableReactionsChanged {
-    fn as_ref(&self) -> &ChatEventAvailableReactionsChanged {
-        self
-    }
-}
-
-impl AsRef<ChatEventAvailableReactionsChanged> for RTDChatEventAvailableReactionsChangedBuilder {
-    fn as_ref(&self) -> &ChatEventAvailableReactionsChanged {
-        &self.inner
     }
 }
 

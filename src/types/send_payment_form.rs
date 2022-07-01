@@ -10,10 +10,14 @@ pub struct SendPaymentForm {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The invoice
+    /// Chat identifier of the Invoice message
 
-    #[serde(skip_serializing_if = "InputInvoice::_is_default")]
-    input_invoice: InputInvoice,
+    #[serde(default)]
+    chat_id: i64,
+    /// Message identifier
+
+    #[serde(default)]
+    message_id: i64,
     /// Payment form identifier returned by getPaymentForm
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
@@ -66,8 +70,12 @@ impl SendPaymentForm {
         RTDSendPaymentFormBuilder { inner }
     }
 
-    pub fn input_invoice(&self) -> &InputInvoice {
-        &self.input_invoice
+    pub fn chat_id(&self) -> i64 {
+        self.chat_id
+    }
+
+    pub fn message_id(&self) -> i64 {
+        self.message_id
     }
 
     pub fn payment_form_id(&self) -> i64 {
@@ -101,8 +109,13 @@ impl RTDSendPaymentFormBuilder {
         self.inner.clone()
     }
 
-    pub fn input_invoice<T: AsRef<InputInvoice>>(&mut self, input_invoice: T) -> &mut Self {
-        self.inner.input_invoice = input_invoice.as_ref().clone();
+    pub fn chat_id(&mut self, chat_id: i64) -> &mut Self {
+        self.inner.chat_id = chat_id;
+        self
+    }
+
+    pub fn message_id(&mut self, message_id: i64) -> &mut Self {
+        self.inner.message_id = message_id;
         self
     }
 

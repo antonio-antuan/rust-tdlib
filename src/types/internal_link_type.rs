@@ -4,10 +4,10 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Describes an internal https://t.me or tg: link, which must be processed by the application in a special way
+/// Describes an internal https://t.me or tg: link, which must be processed by the app in a special way
 pub trait TDInternalLinkType: Debug + RObject {}
 
-/// Describes an internal https://t.me or tg: link, which must be processed by the application in a special way
+/// Describes an internal https://t.me or tg: link, which must be processed by the app in a special way
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(tag = "@type")]
 pub enum InternalLinkType {
@@ -16,25 +16,19 @@ pub enum InternalLinkType {
     /// Returns information about the type of an internal link. Returns a 404 error if the link is not internal. Can be called before authorization
     #[serde(rename(deserialize = "getInternalLinkType"))]
     GetInternalLinkType(GetInternalLinkType),
-    /// The link is a link to the active sessions section of the application. Use getActiveSessions to handle the link
+    /// The link is a link to the active sessions section of the app. Use getActiveSessions to handle the link
     #[serde(rename(deserialize = "internalLinkTypeActiveSessions"))]
     ActiveSessions(InternalLinkTypeActiveSessions),
-    /// The link is a link to an attachment menu bot to be opened in the specified or a chosen chat. Process given target_chat to open the chat. Then call searchPublicChat with the given bot username, check that the user is a bot and can be added to attachment menu. Then use getAttachmentMenuBot to receive information about the bot. If the bot isn't added to attachment menu, then user needs to confirm adding the bot to attachment menu. If user confirms adding, then use toggleBotIsAddedToAttachmentMenu to add it. If the attachment menu bot can't be used in the opened chat, show an error to the user. If the bot is added to attachment menu and can be used in the chat, then use openWebApp with the given URL
-    #[serde(rename(deserialize = "internalLinkTypeAttachmentMenuBot"))]
-    AttachmentMenuBot(InternalLinkTypeAttachmentMenuBot),
     /// The link contains an authentication code. Call checkAuthenticationCode with the code if the current authorization state is authorizationStateWaitCode
     #[serde(rename(deserialize = "internalLinkTypeAuthenticationCode"))]
     AuthenticationCode(InternalLinkTypeAuthenticationCode),
     /// The link is a link to a background. Call searchBackground with the given background name to process the link
     #[serde(rename(deserialize = "internalLinkTypeBackground"))]
     Background(InternalLinkTypeBackground),
-    /// The link is a link to a Telegram bot, which is supposed to be added to a channel chat as an administrator. Call searchPublicChat with the given bot username and check that the user is a bot, ask the current user to select a channel chat to add the bot to as an administrator. Then call getChatMember to receive the current bot rights in the chat and if the bot already is an administrator, check that the current user can edit its administrator rights and combine received rights with the requested administrator rights. Then show confirmation box to the user, and call setChatMemberStatus with the chosen chat and confirmed rights
-    #[serde(rename(deserialize = "internalLinkTypeBotAddToChannel"))]
-    BotAddToChannel(InternalLinkTypeBotAddToChannel),
     /// The link is a link to a chat with a Telegram bot. Call searchPublicChat with the given bot username, check that the user is a bot, show START button in the chat with the bot, and then call sendBotStartMessage with the given start parameter after the button is pressed
     #[serde(rename(deserialize = "internalLinkTypeBotStart"))]
     BotStart(InternalLinkTypeBotStart),
-    /// The link is a link to a Telegram bot, which is supposed to be added to a group chat. Call searchPublicChat with the given bot username, check that the user is a bot and can be added to groups, ask the current user to select a basic group or a supergroup chat to add the bot to, taking into account that bots can be added to a public supergroup only by administrators of the supergroup. If administrator rights are provided by the link, call getChatMember to receive the current bot rights in the chat and if the bot already is an administrator, check that the current user can edit its administrator rights, combine received rights with the requested administrator rights, show confirmation box to the user, and call setChatMemberStatus with the chosen chat and confirmed administrator rights. Before call to setChatMemberStatus it may be required to upgrade the chosen basic group chat to a supergroup chat. Then if start_parameter isn't empty, call sendBotStartMessage with the given start parameter and the chosen chat, otherwise just send /start message with bot's username added to the chat.
+    /// The link is a link to a Telegram bot, which is supposed to be added to a group chat. Call searchPublicChat with the given bot username, check that the user is a bot and can be added to groups, ask the current user to select a group to add the bot to, and then call sendBotStartMessage with the given start parameter and the chosen group chat. Bots can be added to a public group only by administrators of the group
     #[serde(rename(deserialize = "internalLinkTypeBotStartInGroup"))]
     BotStartInGroup(InternalLinkTypeBotStartInGroup),
     /// The link is a link to the change phone number section of the app
@@ -49,33 +43,21 @@ pub enum InternalLinkType {
     /// The link is a link to a game. Call searchPublicChat with the given bot username, check that the user is a bot, ask the current user to select a chat to send the game, and then call sendMessage with inputMessageGame
     #[serde(rename(deserialize = "internalLinkTypeGame"))]
     Game(InternalLinkTypeGame),
-    /// The link is a link to an invoice. Call getPaymentForm with the given invoice name to process the link
-    #[serde(rename(deserialize = "internalLinkTypeInvoice"))]
-    Invoice(InternalLinkTypeInvoice),
     /// The link is a link to a language pack. Call getLanguagePackInfo with the given language pack identifier to process the link
     #[serde(rename(deserialize = "internalLinkTypeLanguagePack"))]
     LanguagePack(InternalLinkTypeLanguagePack),
-    /// The link is a link to the language settings section of the app
-    #[serde(rename(deserialize = "internalLinkTypeLanguageSettings"))]
-    LanguageSettings(InternalLinkTypeLanguageSettings),
     /// The link is a link to a Telegram message. Call getMessageLinkInfo with the given URL to process the link
     #[serde(rename(deserialize = "internalLinkTypeMessage"))]
     Message(InternalLinkTypeMessage),
     /// The link contains a message draft text. A share screen needs to be shown to the user, then the chosen chat must be opened and the text is added to the input field
     #[serde(rename(deserialize = "internalLinkTypeMessageDraft"))]
     MessageDraft(InternalLinkTypeMessageDraft),
-    /// The link contains a request of Telegram passport data. Call getPassportAuthorizationForm with the given parameters to process the link if the link was received from outside of the application, otherwise ignore it
+    /// The link contains a request of Telegram passport data. Call getPassportAuthorizationForm with the given parameters to process the link if the link was received from outside of the app, otherwise ignore it
     #[serde(rename(deserialize = "internalLinkTypePassportDataRequest"))]
     PassportDataRequest(InternalLinkTypePassportDataRequest),
     /// The link can be used to confirm ownership of a phone number to prevent account deletion. Call sendPhoneNumberConfirmationCode with the given hash and phone number to process the link
     #[serde(rename(deserialize = "internalLinkTypePhoneNumberConfirmation"))]
     PhoneNumberConfirmation(InternalLinkTypePhoneNumberConfirmation),
-    /// The link is a link to the Premium features screen of the applcation from which the user can subscribe to Telegram Premium. Call getPremiumFeatures with the given referrer to process the link
-    #[serde(rename(deserialize = "internalLinkTypePremiumFeatures"))]
-    PremiumFeatures(InternalLinkTypePremiumFeatures),
-    /// The link is a link to the privacy and security settings section of the app
-    #[serde(rename(deserialize = "internalLinkTypePrivacyAndSecuritySettings"))]
-    PrivacyAndSecuritySettings(InternalLinkTypePrivacyAndSecuritySettings),
     /// The link is a link to a proxy. Call addProxy with the given parameters to process the link and add the proxy
     #[serde(rename(deserialize = "internalLinkTypeProxy"))]
     Proxy(InternalLinkTypeProxy),
@@ -85,7 +67,7 @@ pub enum InternalLinkType {
     /// The link can be used to login the current user on another device, but it must be scanned from QR-code using in-app camera. An alert similar to "This code can be used to allow someone to log in to your Telegram account. To confirm Telegram login, please go to Settings > Devices > Scan QR and scan the code" needs to be shown
     #[serde(rename(deserialize = "internalLinkTypeQrCodeAuthentication"))]
     QrCodeAuthentication(InternalLinkTypeQrCodeAuthentication),
-    /// The link is a link to application settings
+    /// The link is a link to app settings
     #[serde(rename(deserialize = "internalLinkTypeSettings"))]
     Settings(InternalLinkTypeSettings),
     /// The link is a link to a sticker set. Call searchStickerSet with the given sticker set name to process the link and show the sticker set
@@ -103,10 +85,7 @@ pub enum InternalLinkType {
     /// The link is a link to an unsupported proxy. An alert can be shown to the user
     #[serde(rename(deserialize = "internalLinkTypeUnsupportedProxy"))]
     UnsupportedProxy(InternalLinkTypeUnsupportedProxy),
-    /// The link is a link to a user by its phone number. Call searchUserByPhoneNumber with the given phone number to process the link
-    #[serde(rename(deserialize = "internalLinkTypeUserPhoneNumber"))]
-    UserPhoneNumber(InternalLinkTypeUserPhoneNumber),
-    /// The link is a link to a video chat. Call searchPublicChat with the given chat username, and then joinGroupCall with the given invite hash to process the link
+    /// The link is a link to a video chat. Call searchPublicChat with the given chat username, and then joinGoupCall with the given invite hash to process the link
     #[serde(rename(deserialize = "internalLinkTypeVideoChat"))]
     VideoChat(InternalLinkTypeVideoChat),
 }
@@ -123,25 +102,19 @@ impl RObject for InternalLinkType {
         match self {
             InternalLinkType::GetInternalLinkType(t) => t.extra(),
             InternalLinkType::ActiveSessions(t) => t.extra(),
-            InternalLinkType::AttachmentMenuBot(t) => t.extra(),
             InternalLinkType::AuthenticationCode(t) => t.extra(),
             InternalLinkType::Background(t) => t.extra(),
-            InternalLinkType::BotAddToChannel(t) => t.extra(),
             InternalLinkType::BotStart(t) => t.extra(),
             InternalLinkType::BotStartInGroup(t) => t.extra(),
             InternalLinkType::ChangePhoneNumber(t) => t.extra(),
             InternalLinkType::ChatInvite(t) => t.extra(),
             InternalLinkType::FilterSettings(t) => t.extra(),
             InternalLinkType::Game(t) => t.extra(),
-            InternalLinkType::Invoice(t) => t.extra(),
             InternalLinkType::LanguagePack(t) => t.extra(),
-            InternalLinkType::LanguageSettings(t) => t.extra(),
             InternalLinkType::Message(t) => t.extra(),
             InternalLinkType::MessageDraft(t) => t.extra(),
             InternalLinkType::PassportDataRequest(t) => t.extra(),
             InternalLinkType::PhoneNumberConfirmation(t) => t.extra(),
-            InternalLinkType::PremiumFeatures(t) => t.extra(),
-            InternalLinkType::PrivacyAndSecuritySettings(t) => t.extra(),
             InternalLinkType::Proxy(t) => t.extra(),
             InternalLinkType::PublicChat(t) => t.extra(),
             InternalLinkType::QrCodeAuthentication(t) => t.extra(),
@@ -151,7 +124,6 @@ impl RObject for InternalLinkType {
             InternalLinkType::ThemeSettings(t) => t.extra(),
             InternalLinkType::UnknownDeepLink(t) => t.extra(),
             InternalLinkType::UnsupportedProxy(t) => t.extra(),
-            InternalLinkType::UserPhoneNumber(t) => t.extra(),
             InternalLinkType::VideoChat(t) => t.extra(),
 
             _ => None,
@@ -162,25 +134,19 @@ impl RObject for InternalLinkType {
         match self {
             InternalLinkType::GetInternalLinkType(t) => t.client_id(),
             InternalLinkType::ActiveSessions(t) => t.client_id(),
-            InternalLinkType::AttachmentMenuBot(t) => t.client_id(),
             InternalLinkType::AuthenticationCode(t) => t.client_id(),
             InternalLinkType::Background(t) => t.client_id(),
-            InternalLinkType::BotAddToChannel(t) => t.client_id(),
             InternalLinkType::BotStart(t) => t.client_id(),
             InternalLinkType::BotStartInGroup(t) => t.client_id(),
             InternalLinkType::ChangePhoneNumber(t) => t.client_id(),
             InternalLinkType::ChatInvite(t) => t.client_id(),
             InternalLinkType::FilterSettings(t) => t.client_id(),
             InternalLinkType::Game(t) => t.client_id(),
-            InternalLinkType::Invoice(t) => t.client_id(),
             InternalLinkType::LanguagePack(t) => t.client_id(),
-            InternalLinkType::LanguageSettings(t) => t.client_id(),
             InternalLinkType::Message(t) => t.client_id(),
             InternalLinkType::MessageDraft(t) => t.client_id(),
             InternalLinkType::PassportDataRequest(t) => t.client_id(),
             InternalLinkType::PhoneNumberConfirmation(t) => t.client_id(),
-            InternalLinkType::PremiumFeatures(t) => t.client_id(),
-            InternalLinkType::PrivacyAndSecuritySettings(t) => t.client_id(),
             InternalLinkType::Proxy(t) => t.client_id(),
             InternalLinkType::PublicChat(t) => t.client_id(),
             InternalLinkType::QrCodeAuthentication(t) => t.client_id(),
@@ -190,7 +156,6 @@ impl RObject for InternalLinkType {
             InternalLinkType::ThemeSettings(t) => t.client_id(),
             InternalLinkType::UnknownDeepLink(t) => t.client_id(),
             InternalLinkType::UnsupportedProxy(t) => t.client_id(),
-            InternalLinkType::UserPhoneNumber(t) => t.client_id(),
             InternalLinkType::VideoChat(t) => t.client_id(),
 
             _ => None,
@@ -214,7 +179,7 @@ impl AsRef<InternalLinkType> for InternalLinkType {
     }
 }
 
-/// The link is a link to the active sessions section of the application. Use getActiveSessions to handle the link
+/// The link is a link to the active sessions section of the app. Use getActiveSessions to handle the link
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InternalLinkTypeActiveSessions {
     #[doc(hidden)]
@@ -268,103 +233,6 @@ impl AsRef<InternalLinkTypeActiveSessions> for InternalLinkTypeActiveSessions {
 
 impl AsRef<InternalLinkTypeActiveSessions> for RTDInternalLinkTypeActiveSessionsBuilder {
     fn as_ref(&self) -> &InternalLinkTypeActiveSessions {
-        &self.inner
-    }
-}
-
-/// The link is a link to an attachment menu bot to be opened in the specified or a chosen chat. Process given target_chat to open the chat. Then call searchPublicChat with the given bot username, check that the user is a bot and can be added to attachment menu. Then use getAttachmentMenuBot to receive information about the bot. If the bot isn't added to attachment menu, then user needs to confirm adding the bot to attachment menu. If user confirms adding, then use toggleBotIsAddedToAttachmentMenu to add it. If the attachment menu bot can't be used in the opened chat, show an error to the user. If the bot is added to attachment menu and can be used in the chat, then use openWebApp with the given URL
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InternalLinkTypeAttachmentMenuBot {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Target chat to be opened
-
-    #[serde(skip_serializing_if = "TargetChat::_is_default")]
-    target_chat: TargetChat,
-    /// Username of the bot
-
-    #[serde(default)]
-    bot_username: String,
-    /// URL to be passed to openWebApp
-
-    #[serde(default)]
-    url: String,
-}
-
-impl RObject for InternalLinkTypeAttachmentMenuBot {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInternalLinkType for InternalLinkTypeAttachmentMenuBot {}
-
-impl InternalLinkTypeAttachmentMenuBot {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInternalLinkTypeAttachmentMenuBotBuilder {
-        let mut inner = InternalLinkTypeAttachmentMenuBot::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInternalLinkTypeAttachmentMenuBotBuilder { inner }
-    }
-
-    pub fn target_chat(&self) -> &TargetChat {
-        &self.target_chat
-    }
-
-    pub fn bot_username(&self) -> &String {
-        &self.bot_username
-    }
-
-    pub fn url(&self) -> &String {
-        &self.url
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInternalLinkTypeAttachmentMenuBotBuilder {
-    inner: InternalLinkTypeAttachmentMenuBot,
-}
-
-impl RTDInternalLinkTypeAttachmentMenuBotBuilder {
-    pub fn build(&self) -> InternalLinkTypeAttachmentMenuBot {
-        self.inner.clone()
-    }
-
-    pub fn target_chat<T: AsRef<TargetChat>>(&mut self, target_chat: T) -> &mut Self {
-        self.inner.target_chat = target_chat.as_ref().clone();
-        self
-    }
-
-    pub fn bot_username<T: AsRef<str>>(&mut self, bot_username: T) -> &mut Self {
-        self.inner.bot_username = bot_username.as_ref().to_string();
-        self
-    }
-
-    pub fn url<T: AsRef<str>>(&mut self, url: T) -> &mut Self {
-        self.inner.url = url.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeAttachmentMenuBot> for InternalLinkTypeAttachmentMenuBot {
-    fn as_ref(&self) -> &InternalLinkTypeAttachmentMenuBot {
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeAttachmentMenuBot> for RTDInternalLinkTypeAttachmentMenuBotBuilder {
-    fn as_ref(&self) -> &InternalLinkTypeAttachmentMenuBot {
         &self.inner
     }
 }
@@ -511,91 +379,6 @@ impl AsRef<InternalLinkTypeBackground> for RTDInternalLinkTypeBackgroundBuilder 
     }
 }
 
-/// The link is a link to a Telegram bot, which is supposed to be added to a channel chat as an administrator. Call searchPublicChat with the given bot username and check that the user is a bot, ask the current user to select a channel chat to add the bot to as an administrator. Then call getChatMember to receive the current bot rights in the chat and if the bot already is an administrator, check that the current user can edit its administrator rights and combine received rights with the requested administrator rights. Then show confirmation box to the user, and call setChatMemberStatus with the chosen chat and confirmed rights
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InternalLinkTypeBotAddToChannel {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Username of the bot
-
-    #[serde(default)]
-    bot_username: String,
-    /// Expected administrator rights for the bot
-    administrator_rights: ChatAdministratorRights,
-}
-
-impl RObject for InternalLinkTypeBotAddToChannel {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInternalLinkType for InternalLinkTypeBotAddToChannel {}
-
-impl InternalLinkTypeBotAddToChannel {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInternalLinkTypeBotAddToChannelBuilder {
-        let mut inner = InternalLinkTypeBotAddToChannel::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInternalLinkTypeBotAddToChannelBuilder { inner }
-    }
-
-    pub fn bot_username(&self) -> &String {
-        &self.bot_username
-    }
-
-    pub fn administrator_rights(&self) -> &ChatAdministratorRights {
-        &self.administrator_rights
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInternalLinkTypeBotAddToChannelBuilder {
-    inner: InternalLinkTypeBotAddToChannel,
-}
-
-impl RTDInternalLinkTypeBotAddToChannelBuilder {
-    pub fn build(&self) -> InternalLinkTypeBotAddToChannel {
-        self.inner.clone()
-    }
-
-    pub fn bot_username<T: AsRef<str>>(&mut self, bot_username: T) -> &mut Self {
-        self.inner.bot_username = bot_username.as_ref().to_string();
-        self
-    }
-
-    pub fn administrator_rights<T: AsRef<ChatAdministratorRights>>(
-        &mut self,
-        administrator_rights: T,
-    ) -> &mut Self {
-        self.inner.administrator_rights = administrator_rights.as_ref().clone();
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeBotAddToChannel> for InternalLinkTypeBotAddToChannel {
-    fn as_ref(&self) -> &InternalLinkTypeBotAddToChannel {
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeBotAddToChannel> for RTDInternalLinkTypeBotAddToChannelBuilder {
-    fn as_ref(&self) -> &InternalLinkTypeBotAddToChannel {
-        &self.inner
-    }
-}
-
 /// The link is a link to a chat with a Telegram bot. Call searchPublicChat with the given bot username, check that the user is a bot, show START button in the chat with the bot, and then call sendBotStartMessage with the given start parameter after the button is pressed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InternalLinkTypeBotStart {
@@ -680,7 +463,7 @@ impl AsRef<InternalLinkTypeBotStart> for RTDInternalLinkTypeBotStartBuilder {
     }
 }
 
-/// The link is a link to a Telegram bot, which is supposed to be added to a group chat. Call searchPublicChat with the given bot username, check that the user is a bot and can be added to groups, ask the current user to select a basic group or a supergroup chat to add the bot to, taking into account that bots can be added to a public supergroup only by administrators of the supergroup. If administrator rights are provided by the link, call getChatMember to receive the current bot rights in the chat and if the bot already is an administrator, check that the current user can edit its administrator rights, combine received rights with the requested administrator rights, show confirmation box to the user, and call setChatMemberStatus with the chosen chat and confirmed administrator rights. Before call to setChatMemberStatus it may be required to upgrade the chosen basic group chat to a supergroup chat. Then if start_parameter isn't empty, call sendBotStartMessage with the given start parameter and the chosen chat, otherwise just send /start message with bot's username added to the chat.
+/// The link is a link to a Telegram bot, which is supposed to be added to a group chat. Call searchPublicChat with the given bot username, check that the user is a bot and can be added to groups, ask the current user to select a group to add the bot to, and then call sendBotStartMessage with the given start parameter and the chosen group chat. Bots can be added to a public group only by administrators of the group
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InternalLinkTypeBotStartInGroup {
     #[doc(hidden)]
@@ -696,8 +479,6 @@ pub struct InternalLinkTypeBotStartInGroup {
 
     #[serde(default)]
     start_parameter: String,
-    /// Expected administrator rights for the bot; may be null
-    administrator_rights: Option<ChatAdministratorRights>,
 }
 
 impl RObject for InternalLinkTypeBotStartInGroup {
@@ -731,10 +512,6 @@ impl InternalLinkTypeBotStartInGroup {
     pub fn start_parameter(&self) -> &String {
         &self.start_parameter
     }
-
-    pub fn administrator_rights(&self) -> &Option<ChatAdministratorRights> {
-        &self.administrator_rights
-    }
 }
 
 #[doc(hidden)]
@@ -754,14 +531,6 @@ impl RTDInternalLinkTypeBotStartInGroupBuilder {
 
     pub fn start_parameter<T: AsRef<str>>(&mut self, start_parameter: T) -> &mut Self {
         self.inner.start_parameter = start_parameter.as_ref().to_string();
-        self
-    }
-
-    pub fn administrator_rights<T: AsRef<ChatAdministratorRights>>(
-        &mut self,
-        administrator_rights: T,
-    ) -> &mut Self {
-        self.inner.administrator_rights = Some(administrator_rights.as_ref().clone());
         self
     }
 }
@@ -1049,77 +818,6 @@ impl AsRef<InternalLinkTypeGame> for RTDInternalLinkTypeGameBuilder {
     }
 }
 
-/// The link is a link to an invoice. Call getPaymentForm with the given invoice name to process the link
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InternalLinkTypeInvoice {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Name of the invoice
-
-    #[serde(default)]
-    invoice_name: String,
-}
-
-impl RObject for InternalLinkTypeInvoice {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInternalLinkType for InternalLinkTypeInvoice {}
-
-impl InternalLinkTypeInvoice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInternalLinkTypeInvoiceBuilder {
-        let mut inner = InternalLinkTypeInvoice::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInternalLinkTypeInvoiceBuilder { inner }
-    }
-
-    pub fn invoice_name(&self) -> &String {
-        &self.invoice_name
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInternalLinkTypeInvoiceBuilder {
-    inner: InternalLinkTypeInvoice,
-}
-
-impl RTDInternalLinkTypeInvoiceBuilder {
-    pub fn build(&self) -> InternalLinkTypeInvoice {
-        self.inner.clone()
-    }
-
-    pub fn invoice_name<T: AsRef<str>>(&mut self, invoice_name: T) -> &mut Self {
-        self.inner.invoice_name = invoice_name.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeInvoice> for InternalLinkTypeInvoice {
-    fn as_ref(&self) -> &InternalLinkTypeInvoice {
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeInvoice> for RTDInternalLinkTypeInvoiceBuilder {
-    fn as_ref(&self) -> &InternalLinkTypeInvoice {
-        &self.inner
-    }
-}
-
 /// The link is a link to a language pack. Call getLanguagePackInfo with the given language pack identifier to process the link
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InternalLinkTypeLanguagePack {
@@ -1187,64 +885,6 @@ impl AsRef<InternalLinkTypeLanguagePack> for InternalLinkTypeLanguagePack {
 
 impl AsRef<InternalLinkTypeLanguagePack> for RTDInternalLinkTypeLanguagePackBuilder {
     fn as_ref(&self) -> &InternalLinkTypeLanguagePack {
-        &self.inner
-    }
-}
-
-/// The link is a link to the language settings section of the app
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InternalLinkTypeLanguageSettings {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for InternalLinkTypeLanguageSettings {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInternalLinkType for InternalLinkTypeLanguageSettings {}
-
-impl InternalLinkTypeLanguageSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInternalLinkTypeLanguageSettingsBuilder {
-        let mut inner = InternalLinkTypeLanguageSettings::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInternalLinkTypeLanguageSettingsBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInternalLinkTypeLanguageSettingsBuilder {
-    inner: InternalLinkTypeLanguageSettings,
-}
-
-impl RTDInternalLinkTypeLanguageSettingsBuilder {
-    pub fn build(&self) -> InternalLinkTypeLanguageSettings {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<InternalLinkTypeLanguageSettings> for InternalLinkTypeLanguageSettings {
-    fn as_ref(&self) -> &InternalLinkTypeLanguageSettings {
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeLanguageSettings> for RTDInternalLinkTypeLanguageSettingsBuilder {
-    fn as_ref(&self) -> &InternalLinkTypeLanguageSettings {
         &self.inner
     }
 }
@@ -1402,7 +1042,7 @@ impl AsRef<InternalLinkTypeMessageDraft> for RTDInternalLinkTypeMessageDraftBuil
     }
 }
 
-/// The link contains a request of Telegram passport data. Call getPassportAuthorizationForm with the given parameters to process the link if the link was received from outside of the application, otherwise ignore it
+/// The link contains a request of Telegram passport data. Call getPassportAuthorizationForm with the given parameters to process the link if the link was received from outside of the app, otherwise ignore it
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InternalLinkTypePassportDataRequest {
     #[doc(hidden)]
@@ -1607,139 +1247,6 @@ impl AsRef<InternalLinkTypePhoneNumberConfirmation>
     for RTDInternalLinkTypePhoneNumberConfirmationBuilder
 {
     fn as_ref(&self) -> &InternalLinkTypePhoneNumberConfirmation {
-        &self.inner
-    }
-}
-
-/// The link is a link to the Premium features screen of the applcation from which the user can subscribe to Telegram Premium. Call getPremiumFeatures with the given referrer to process the link
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InternalLinkTypePremiumFeatures {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Referrer specified in the link
-
-    #[serde(default)]
-    referrer: String,
-}
-
-impl RObject for InternalLinkTypePremiumFeatures {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInternalLinkType for InternalLinkTypePremiumFeatures {}
-
-impl InternalLinkTypePremiumFeatures {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInternalLinkTypePremiumFeaturesBuilder {
-        let mut inner = InternalLinkTypePremiumFeatures::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInternalLinkTypePremiumFeaturesBuilder { inner }
-    }
-
-    pub fn referrer(&self) -> &String {
-        &self.referrer
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInternalLinkTypePremiumFeaturesBuilder {
-    inner: InternalLinkTypePremiumFeatures,
-}
-
-impl RTDInternalLinkTypePremiumFeaturesBuilder {
-    pub fn build(&self) -> InternalLinkTypePremiumFeatures {
-        self.inner.clone()
-    }
-
-    pub fn referrer<T: AsRef<str>>(&mut self, referrer: T) -> &mut Self {
-        self.inner.referrer = referrer.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypePremiumFeatures> for InternalLinkTypePremiumFeatures {
-    fn as_ref(&self) -> &InternalLinkTypePremiumFeatures {
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypePremiumFeatures> for RTDInternalLinkTypePremiumFeaturesBuilder {
-    fn as_ref(&self) -> &InternalLinkTypePremiumFeatures {
-        &self.inner
-    }
-}
-
-/// The link is a link to the privacy and security settings section of the app
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InternalLinkTypePrivacyAndSecuritySettings {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for InternalLinkTypePrivacyAndSecuritySettings {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInternalLinkType for InternalLinkTypePrivacyAndSecuritySettings {}
-
-impl InternalLinkTypePrivacyAndSecuritySettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInternalLinkTypePrivacyAndSecuritySettingsBuilder {
-        let mut inner = InternalLinkTypePrivacyAndSecuritySettings::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInternalLinkTypePrivacyAndSecuritySettingsBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInternalLinkTypePrivacyAndSecuritySettingsBuilder {
-    inner: InternalLinkTypePrivacyAndSecuritySettings,
-}
-
-impl RTDInternalLinkTypePrivacyAndSecuritySettingsBuilder {
-    pub fn build(&self) -> InternalLinkTypePrivacyAndSecuritySettings {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<InternalLinkTypePrivacyAndSecuritySettings>
-    for InternalLinkTypePrivacyAndSecuritySettings
-{
-    fn as_ref(&self) -> &InternalLinkTypePrivacyAndSecuritySettings {
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypePrivacyAndSecuritySettings>
-    for RTDInternalLinkTypePrivacyAndSecuritySettingsBuilder
-{
-    fn as_ref(&self) -> &InternalLinkTypePrivacyAndSecuritySettings {
         &self.inner
     }
 }
@@ -1973,7 +1480,7 @@ impl AsRef<InternalLinkTypeQrCodeAuthentication>
     }
 }
 
-/// The link is a link to application settings
+/// The link is a link to app settings
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InternalLinkTypeSettings {
     #[doc(hidden)]
@@ -2360,78 +1867,7 @@ impl AsRef<InternalLinkTypeUnsupportedProxy> for RTDInternalLinkTypeUnsupportedP
     }
 }
 
-/// The link is a link to a user by its phone number. Call searchUserByPhoneNumber with the given phone number to process the link
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InternalLinkTypeUserPhoneNumber {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Phone number of the user
-
-    #[serde(default)]
-    phone_number: String,
-}
-
-impl RObject for InternalLinkTypeUserPhoneNumber {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInternalLinkType for InternalLinkTypeUserPhoneNumber {}
-
-impl InternalLinkTypeUserPhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInternalLinkTypeUserPhoneNumberBuilder {
-        let mut inner = InternalLinkTypeUserPhoneNumber::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInternalLinkTypeUserPhoneNumberBuilder { inner }
-    }
-
-    pub fn phone_number(&self) -> &String {
-        &self.phone_number
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInternalLinkTypeUserPhoneNumberBuilder {
-    inner: InternalLinkTypeUserPhoneNumber,
-}
-
-impl RTDInternalLinkTypeUserPhoneNumberBuilder {
-    pub fn build(&self) -> InternalLinkTypeUserPhoneNumber {
-        self.inner.clone()
-    }
-
-    pub fn phone_number<T: AsRef<str>>(&mut self, phone_number: T) -> &mut Self {
-        self.inner.phone_number = phone_number.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeUserPhoneNumber> for InternalLinkTypeUserPhoneNumber {
-    fn as_ref(&self) -> &InternalLinkTypeUserPhoneNumber {
-        self
-    }
-}
-
-impl AsRef<InternalLinkTypeUserPhoneNumber> for RTDInternalLinkTypeUserPhoneNumberBuilder {
-    fn as_ref(&self) -> &InternalLinkTypeUserPhoneNumber {
-        &self.inner
-    }
-}
-
-/// The link is a link to a video chat. Call searchPublicChat with the given chat username, and then joinGroupCall with the given invite hash to process the link
+/// The link is a link to a video chat. Call searchPublicChat with the given chat username, and then joinGoupCall with the given invite hash to process the link
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InternalLinkTypeVideoChat {
     #[doc(hidden)]

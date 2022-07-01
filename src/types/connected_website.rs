@@ -43,7 +43,7 @@ pub struct ConnectedWebsite {
 
     #[serde(default)]
     ip: String,
-    /// Human-readable description of a country and a region from which the user was logged in, based on the IP address
+    /// Human-readable description of a country and a region, from which the user was logged in, based on the IP address
 
     #[serde(default)]
     location: String,

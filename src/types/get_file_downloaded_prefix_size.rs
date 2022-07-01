@@ -17,7 +17,7 @@ pub struct GetFileDownloadedPrefixSize {
     /// Offset from which downloaded prefix size needs to be calculated
 
     #[serde(default)]
-    offset: i64,
+    offset: i32,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -53,7 +53,7 @@ impl GetFileDownloadedPrefixSize {
         self.file_id
     }
 
-    pub fn offset(&self) -> i64 {
+    pub fn offset(&self) -> i32 {
         self.offset
     }
 }
@@ -73,7 +73,7 @@ impl RTDGetFileDownloadedPrefixSizeBuilder {
         self
     }
 
-    pub fn offset(&mut self, offset: i64) -> &mut Self {
+    pub fn offset(&mut self, offset: i32) -> &mut Self {
         self.inner.offset = offset;
         self
     }

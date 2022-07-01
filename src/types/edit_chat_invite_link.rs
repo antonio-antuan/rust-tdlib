@@ -30,7 +30,7 @@ pub struct EditChatInviteLink {
 
     #[serde(default)]
     member_limit: i32,
-    /// Pass true if users joining the chat via the link need to be approved by chat administrators. In this case, member_limit must be 0
+    /// True, if the link only creates join request. If true, member_limit must not be specified
 
     #[serde(default)]
     creates_join_request: bool,

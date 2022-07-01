@@ -25,9 +25,6 @@ pub enum KeyboardButtonType {
     /// A simple button, with text that must be sent when the button is pressed
     #[serde(rename(deserialize = "keyboardButtonTypeText"))]
     Text(KeyboardButtonTypeText),
-    /// A button that opens a Web App by calling getWebAppUrl
-    #[serde(rename(deserialize = "keyboardButtonTypeWebApp"))]
-    WebApp(KeyboardButtonTypeWebApp),
 }
 
 impl Default for KeyboardButtonType {
@@ -44,7 +41,6 @@ impl RObject for KeyboardButtonType {
             KeyboardButtonType::RequestPhoneNumber(t) => t.extra(),
             KeyboardButtonType::RequestPoll(t) => t.extra(),
             KeyboardButtonType::Text(t) => t.extra(),
-            KeyboardButtonType::WebApp(t) => t.extra(),
 
             _ => None,
         }
@@ -56,7 +52,6 @@ impl RObject for KeyboardButtonType {
             KeyboardButtonType::RequestPhoneNumber(t) => t.client_id(),
             KeyboardButtonType::RequestPoll(t) => t.client_id(),
             KeyboardButtonType::Text(t) => t.client_id(),
-            KeyboardButtonType::WebApp(t) => t.client_id(),
 
             _ => None,
         }
@@ -335,77 +330,6 @@ impl AsRef<KeyboardButtonTypeText> for KeyboardButtonTypeText {
 
 impl AsRef<KeyboardButtonTypeText> for RTDKeyboardButtonTypeTextBuilder {
     fn as_ref(&self) -> &KeyboardButtonTypeText {
-        &self.inner
-    }
-}
-
-/// A button that opens a Web App by calling getWebAppUrl
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct KeyboardButtonTypeWebApp {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// An HTTP URL to pass to getWebAppUrl
-
-    #[serde(default)]
-    url: String,
-}
-
-impl RObject for KeyboardButtonTypeWebApp {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDKeyboardButtonType for KeyboardButtonTypeWebApp {}
-
-impl KeyboardButtonTypeWebApp {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDKeyboardButtonTypeWebAppBuilder {
-        let mut inner = KeyboardButtonTypeWebApp::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDKeyboardButtonTypeWebAppBuilder { inner }
-    }
-
-    pub fn url(&self) -> &String {
-        &self.url
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDKeyboardButtonTypeWebAppBuilder {
-    inner: KeyboardButtonTypeWebApp,
-}
-
-impl RTDKeyboardButtonTypeWebAppBuilder {
-    pub fn build(&self) -> KeyboardButtonTypeWebApp {
-        self.inner.clone()
-    }
-
-    pub fn url<T: AsRef<str>>(&mut self, url: T) -> &mut Self {
-        self.inner.url = url.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<KeyboardButtonTypeWebApp> for KeyboardButtonTypeWebApp {
-    fn as_ref(&self) -> &KeyboardButtonTypeWebApp {
-        self
-    }
-}
-
-impl AsRef<KeyboardButtonTypeWebApp> for RTDKeyboardButtonTypeWebAppBuilder {
-    fn as_ref(&self) -> &KeyboardButtonTypeWebApp {
         &self.inner
     }
 }

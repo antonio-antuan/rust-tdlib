@@ -15,7 +15,7 @@ pub struct AnswerInlineQuery {
     #[serde(deserialize_with = "super::_common::number_from_string")]
     #[serde(default)]
     inline_query_id: i64,
-    /// Pass true if results may be cached and returned only for the user that sent the query. By default, results may be returned to any user who sends the same query
+    /// True, if the result of the query can be cached for the specified user
 
     #[serde(default)]
     is_personal: bool,

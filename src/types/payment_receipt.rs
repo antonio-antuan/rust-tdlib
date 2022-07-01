@@ -15,7 +15,9 @@ pub struct PaymentReceipt {
     #[serde(default)]
     title: String,
     /// Contains information about a successful payment
-    description: FormattedText,
+
+    #[serde(default)]
+    description: String,
     /// Product photo; may be null
     photo: Option<Photo>,
     /// Point in time (Unix timestamp) when the payment was made
@@ -29,7 +31,7 @@ pub struct PaymentReceipt {
     /// User identifier of the payment provider bot
 
     #[serde(default)]
-    payment_provider_user_id: i64,
+    payments_provider_user_id: i64,
     /// Information about the invoice
     invoice: Invoice,
     /// Order information; may be null
@@ -72,7 +74,7 @@ impl PaymentReceipt {
         &self.title
     }
 
-    pub fn description(&self) -> &FormattedText {
+    pub fn description(&self) -> &String {
         &self.description
     }
 
@@ -88,8 +90,8 @@ impl PaymentReceipt {
         self.seller_bot_user_id
     }
 
-    pub fn payment_provider_user_id(&self) -> i64 {
-        self.payment_provider_user_id
+    pub fn payments_provider_user_id(&self) -> i64 {
+        self.payments_provider_user_id
     }
 
     pub fn invoice(&self) -> &Invoice {
@@ -128,8 +130,8 @@ impl RTDPaymentReceiptBuilder {
         self
     }
 
-    pub fn description<T: AsRef<FormattedText>>(&mut self, description: T) -> &mut Self {
-        self.inner.description = description.as_ref().clone();
+    pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
+        self.inner.description = description.as_ref().to_string();
         self
     }
 
@@ -148,8 +150,8 @@ impl RTDPaymentReceiptBuilder {
         self
     }
 
-    pub fn payment_provider_user_id(&mut self, payment_provider_user_id: i64) -> &mut Self {
-        self.inner.payment_provider_user_id = payment_provider_user_id;
+    pub fn payments_provider_user_id(&mut self, payments_provider_user_id: i64) -> &mut Self {
+        self.inner.payments_provider_user_id = payments_provider_user_id;
         self
     }
 

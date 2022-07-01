@@ -100,7 +100,7 @@ pub enum MessageContent {
     /// Telegram Passport data has been received; for bots only
     #[serde(rename(deserialize = "messagePassportDataReceived"))]
     MessagePassportDataReceived(MessagePassportDataReceived),
-    /// Telegram Passport data has been sent to a bot
+    /// Telegram Passport data has been sent
     #[serde(rename(deserialize = "messagePassportDataSent"))]
     MessagePassportDataSent(MessagePassportDataSent),
     /// A payment has been completed
@@ -157,12 +157,6 @@ pub enum MessageContent {
     /// A voice note message
     #[serde(rename(deserialize = "messageVoiceNote"))]
     MessageVoiceNote(MessageVoiceNote),
-    /// Data from a Web App has been received; for bots only
-    #[serde(rename(deserialize = "messageWebAppDataReceived"))]
-    MessageWebAppDataReceived(MessageWebAppDataReceived),
-    /// Data from a Web App has been sent to a bot
-    #[serde(rename(deserialize = "messageWebAppDataSent"))]
-    MessageWebAppDataSent(MessageWebAppDataSent),
     /// The current user has connected a website by logging in using Telegram Login Widget on it
     #[serde(rename(deserialize = "messageWebsiteConnected"))]
     MessageWebsiteConnected(MessageWebsiteConnected),
@@ -226,8 +220,6 @@ impl RObject for MessageContent {
             MessageContent::MessageVideoChatStarted(t) => t.extra(),
             MessageContent::MessageVideoNote(t) => t.extra(),
             MessageContent::MessageVoiceNote(t) => t.extra(),
-            MessageContent::MessageWebAppDataReceived(t) => t.extra(),
-            MessageContent::MessageWebAppDataSent(t) => t.extra(),
             MessageContent::MessageWebsiteConnected(t) => t.extra(),
 
             _ => None,
@@ -284,8 +276,6 @@ impl RObject for MessageContent {
             MessageContent::MessageVideoChatStarted(t) => t.client_id(),
             MessageContent::MessageVideoNote(t) => t.client_id(),
             MessageContent::MessageVoiceNote(t) => t.client_id(),
-            MessageContent::MessageWebAppDataReceived(t) => t.client_id(),
-            MessageContent::MessageWebAppDataSent(t) => t.client_id(),
             MessageContent::MessageWebsiteConnected(t) => t.client_id(),
 
             _ => None,
@@ -2278,7 +2268,9 @@ pub struct MessageInvoice {
     #[serde(default)]
     title: String,
     /// A message with an invoice from a bot
-    description: FormattedText,
+
+    #[serde(default)]
+    description: String,
     /// Product photo; may be null
     photo: Option<Photo>,
     /// Currency for the product price
@@ -2335,7 +2327,7 @@ impl MessageInvoice {
         &self.title
     }
 
-    pub fn description(&self) -> &FormattedText {
+    pub fn description(&self) -> &String {
         &self.description
     }
 
@@ -2383,8 +2375,8 @@ impl RTDMessageInvoiceBuilder {
         self
     }
 
-    pub fn description<T: AsRef<FormattedText>>(&mut self, description: T) -> &mut Self {
-        self.inner.description = description.as_ref().clone();
+    pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
+        self.inner.description = description.as_ref().to_string();
         self
     }
 
@@ -2639,7 +2631,7 @@ impl AsRef<MessagePassportDataReceived> for RTDMessagePassportDataReceivedBuilde
     }
 }
 
-/// Telegram Passport data has been sent to a bot
+/// Telegram Passport data has been sent
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessagePassportDataSent {
     #[doc(hidden)]
@@ -2722,7 +2714,7 @@ pub struct MessagePaymentSuccessful {
 
     #[serde(default)]
     invoice_chat_id: i64,
-    /// Identifier of the message with the corresponding invoice; can be 0 or an identifier of a deleted message
+    /// Identifier of the message with the corresponding invoice; can be an identifier of a deleted message
 
     #[serde(default)]
     invoice_message_id: i64,
@@ -2734,18 +2726,6 @@ pub struct MessagePaymentSuccessful {
 
     #[serde(default)]
     total_amount: i64,
-    /// True, if this is a recurring payment
-
-    #[serde(default)]
-    is_recurring: bool,
-    /// True, if this is the first recurring payment
-
-    #[serde(default)]
-    is_first_recurring: bool,
-    /// Name of the invoice; may be empty if unknown
-
-    #[serde(default)]
-    invoice_name: String,
 }
 
 impl RObject for MessagePaymentSuccessful {
@@ -2787,18 +2767,6 @@ impl MessagePaymentSuccessful {
     pub fn total_amount(&self) -> i64 {
         self.total_amount
     }
-
-    pub fn is_recurring(&self) -> bool {
-        self.is_recurring
-    }
-
-    pub fn is_first_recurring(&self) -> bool {
-        self.is_first_recurring
-    }
-
-    pub fn invoice_name(&self) -> &String {
-        &self.invoice_name
-    }
 }
 
 #[doc(hidden)]
@@ -2828,21 +2796,6 @@ impl RTDMessagePaymentSuccessfulBuilder {
 
     pub fn total_amount(&mut self, total_amount: i64) -> &mut Self {
         self.inner.total_amount = total_amount;
-        self
-    }
-
-    pub fn is_recurring(&mut self, is_recurring: bool) -> &mut Self {
-        self.inner.is_recurring = is_recurring;
-        self
-    }
-
-    pub fn is_first_recurring(&mut self, is_first_recurring: bool) -> &mut Self {
-        self.inner.is_first_recurring = is_first_recurring;
-        self
-    }
-
-    pub fn invoice_name<T: AsRef<str>>(&mut self, invoice_name: T) -> &mut Self {
-        self.inner.invoice_name = invoice_name.as_ref().to_string();
         self
     }
 }
@@ -2875,14 +2828,6 @@ pub struct MessagePaymentSuccessfulBot {
 
     #[serde(default)]
     total_amount: i64,
-    /// True, if this is a recurring payment
-
-    #[serde(default)]
-    is_recurring: bool,
-    /// True, if this is the first recurring payment
-
-    #[serde(default)]
-    is_first_recurring: bool,
     /// Invoice payload
 
     #[serde(default)]
@@ -2935,14 +2880,6 @@ impl MessagePaymentSuccessfulBot {
         self.total_amount
     }
 
-    pub fn is_recurring(&self) -> bool {
-        self.is_recurring
-    }
-
-    pub fn is_first_recurring(&self) -> bool {
-        self.is_first_recurring
-    }
-
     pub fn invoice_payload(&self) -> &String {
         &self.invoice_payload
     }
@@ -2981,16 +2918,6 @@ impl RTDMessagePaymentSuccessfulBotBuilder {
 
     pub fn total_amount(&mut self, total_amount: i64) -> &mut Self {
         self.inner.total_amount = total_amount;
-        self
-    }
-
-    pub fn is_recurring(&mut self, is_recurring: bool) -> &mut Self {
-        self.inner.is_recurring = is_recurring;
-        self
-    }
-
-    pub fn is_first_recurring(&mut self, is_first_recurring: bool) -> &mut Self {
-        self.inner.is_first_recurring = is_first_recurring;
         self
     }
 
@@ -3436,10 +3363,6 @@ pub struct MessageSticker {
     client_id: Option<i32>,
     /// The sticker description
     sticker: Sticker,
-    /// True, if premium animation of the sticker must be played
-
-    #[serde(default)]
-    is_premium: bool,
 }
 
 impl RObject for MessageSticker {
@@ -3469,10 +3392,6 @@ impl MessageSticker {
     pub fn sticker(&self) -> &Sticker {
         &self.sticker
     }
-
-    pub fn is_premium(&self) -> bool {
-        self.is_premium
-    }
 }
 
 #[doc(hidden)]
@@ -3487,11 +3406,6 @@ impl RTDMessageStickerBuilder {
 
     pub fn sticker<T: AsRef<Sticker>>(&mut self, sticker: T) -> &mut Self {
         self.inner.sticker = sticker.as_ref().clone();
-        self
-    }
-
-    pub fn is_premium(&mut self, is_premium: bool) -> &mut Self {
-        self.inner.is_premium = is_premium;
         self
     }
 }
@@ -4289,161 +4203,6 @@ impl AsRef<MessageVoiceNote> for MessageVoiceNote {
 
 impl AsRef<MessageVoiceNote> for RTDMessageVoiceNoteBuilder {
     fn as_ref(&self) -> &MessageVoiceNote {
-        &self.inner
-    }
-}
-
-/// Data from a Web App has been received; for bots only
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct MessageWebAppDataReceived {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Text of the keyboardButtonTypeWebApp button, which opened the Web App
-
-    #[serde(default)]
-    button_text: String,
-    /// Received data
-
-    #[serde(default)]
-    data: String,
-}
-
-impl RObject for MessageWebAppDataReceived {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDMessageContent for MessageWebAppDataReceived {}
-
-impl MessageWebAppDataReceived {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDMessageWebAppDataReceivedBuilder {
-        let mut inner = MessageWebAppDataReceived::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDMessageWebAppDataReceivedBuilder { inner }
-    }
-
-    pub fn button_text(&self) -> &String {
-        &self.button_text
-    }
-
-    pub fn data(&self) -> &String {
-        &self.data
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDMessageWebAppDataReceivedBuilder {
-    inner: MessageWebAppDataReceived,
-}
-
-impl RTDMessageWebAppDataReceivedBuilder {
-    pub fn build(&self) -> MessageWebAppDataReceived {
-        self.inner.clone()
-    }
-
-    pub fn button_text<T: AsRef<str>>(&mut self, button_text: T) -> &mut Self {
-        self.inner.button_text = button_text.as_ref().to_string();
-        self
-    }
-
-    pub fn data<T: AsRef<str>>(&mut self, data: T) -> &mut Self {
-        self.inner.data = data.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<MessageWebAppDataReceived> for MessageWebAppDataReceived {
-    fn as_ref(&self) -> &MessageWebAppDataReceived {
-        self
-    }
-}
-
-impl AsRef<MessageWebAppDataReceived> for RTDMessageWebAppDataReceivedBuilder {
-    fn as_ref(&self) -> &MessageWebAppDataReceived {
-        &self.inner
-    }
-}
-
-/// Data from a Web App has been sent to a bot
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct MessageWebAppDataSent {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// Text of the keyboardButtonTypeWebApp button, which opened the Web App
-
-    #[serde(default)]
-    button_text: String,
-}
-
-impl RObject for MessageWebAppDataSent {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDMessageContent for MessageWebAppDataSent {}
-
-impl MessageWebAppDataSent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDMessageWebAppDataSentBuilder {
-        let mut inner = MessageWebAppDataSent::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDMessageWebAppDataSentBuilder { inner }
-    }
-
-    pub fn button_text(&self) -> &String {
-        &self.button_text
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDMessageWebAppDataSentBuilder {
-    inner: MessageWebAppDataSent,
-}
-
-impl RTDMessageWebAppDataSentBuilder {
-    pub fn build(&self) -> MessageWebAppDataSent {
-        self.inner.clone()
-    }
-
-    pub fn button_text<T: AsRef<str>>(&mut self, button_text: T) -> &mut Self {
-        self.inner.button_text = button_text.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<MessageWebAppDataSent> for MessageWebAppDataSent {
-    fn as_ref(&self) -> &MessageWebAppDataSent {
-        self
-    }
-}
-
-impl AsRef<MessageWebAppDataSent> for RTDMessageWebAppDataSentBuilder {
-    fn as_ref(&self) -> &MessageWebAppDataSent {
         &self.inner
     }
 }

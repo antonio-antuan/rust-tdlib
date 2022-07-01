@@ -14,7 +14,7 @@ pub struct GetChatNotificationSettingsExceptions {
 
     #[serde(skip_serializing_if = "NotificationSettingsScope::_is_default")]
     scope: NotificationSettingsScope,
-    /// Pass true to include in the response chats with only non-default sound
+    /// If true, also chats with non-default sound will be returned
 
     #[serde(default)]
     compare_sound: bool,

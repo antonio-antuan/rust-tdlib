@@ -19,6 +19,8 @@ pub struct AddStickerToSet {
     #[serde(default)]
     name: String,
     /// Sticker to add to the set
+
+    #[serde(skip_serializing_if = "InputSticker::_is_default")]
     sticker: InputSticker,
 
     #[serde(rename(serialize = "@type"))]

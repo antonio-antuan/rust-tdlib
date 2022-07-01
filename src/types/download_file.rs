@@ -14,19 +14,19 @@ pub struct DownloadFile {
 
     #[serde(default)]
     file_id: i32,
-    /// Priority of the download (1-32). The higher the priority, the earlier the file will be downloaded. If the priorities of two files are equal, then the last one for which downloadFile/addFileToDownloads was called will be downloaded first
+    /// Priority of the download (1-32). The higher the priority, the earlier the file will be downloaded. If the priorities of two files are equal, then the last one for which downloadFile was called will be downloaded first
 
     #[serde(default)]
     priority: i32,
     /// The starting position from which the file needs to be downloaded
 
     #[serde(default)]
-    offset: i64,
+    offset: i32,
     /// Number of bytes which need to be downloaded starting from the "offset" position before the download will automatically be canceled; use 0 to download without a limit
 
     #[serde(default)]
-    limit: i64,
-    /// Pass true to return response only after the file download has succeeded, has failed, has been canceled, or a new downloadFile request with different offset/limit parameters was sent; pass false to return file state immediately, just after the download has been started
+    limit: i32,
+    /// If false, this request returns file state just after the download has been started. If true, this request returns file state only after the download has succeeded, has failed, has been canceled or a new downloadFile request with different offset/limit parameters was sent
 
     #[serde(default)]
     synchronous: bool,
@@ -69,11 +69,11 @@ impl DownloadFile {
         self.priority
     }
 
-    pub fn offset(&self) -> i64 {
+    pub fn offset(&self) -> i32 {
         self.offset
     }
 
-    pub fn limit(&self) -> i64 {
+    pub fn limit(&self) -> i32 {
         self.limit
     }
 
@@ -102,12 +102,12 @@ impl RTDDownloadFileBuilder {
         self
     }
 
-    pub fn offset(&mut self, offset: i64) -> &mut Self {
+    pub fn offset(&mut self, offset: i32) -> &mut Self {
         self.inner.offset = offset;
         self
     }
 
-    pub fn limit(&mut self, limit: i64) -> &mut Self {
+    pub fn limit(&mut self, limit: i32) -> &mut Self {
         self.inner.limit = limit;
         self
     }

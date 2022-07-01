@@ -48,10 +48,6 @@ pub struct User {
 
     #[serde(default)]
     is_verified: bool,
-    /// True, if the user is a Telegram Premium user
-
-    #[serde(default)]
-    is_premium: bool,
     /// True, if the user is Telegram support account
 
     #[serde(default)]
@@ -68,7 +64,7 @@ pub struct User {
 
     #[serde(default)]
     is_fake: bool,
-    /// If false, the user is inaccessible, and the only information known about the user is inside this class. Identifier of the user can't be passed to any method except GetUser
+    /// If false, the user is inaccessible, and the only information known about the user is inside this class. It can't be passed to any method except GetUser
 
     #[serde(default)]
     have_access: bool,
@@ -81,10 +77,6 @@ pub struct User {
 
     #[serde(default)]
     language_code: String,
-    /// True, if the user added the current bot to attachment menu; only available to bots
-
-    #[serde(default)]
-    added_to_attachment_menu: bool,
 }
 
 impl RObject for User {
@@ -149,10 +141,6 @@ impl User {
         self.is_verified
     }
 
-    pub fn is_premium(&self) -> bool {
-        self.is_premium
-    }
-
     pub fn is_support(&self) -> bool {
         self.is_support
     }
@@ -179,10 +167,6 @@ impl User {
 
     pub fn language_code(&self) -> &String {
         &self.language_code
-    }
-
-    pub fn added_to_attachment_menu(&self) -> bool {
-        self.added_to_attachment_menu
     }
 }
 
@@ -246,11 +230,6 @@ impl RTDUserBuilder {
         self
     }
 
-    pub fn is_premium(&mut self, is_premium: bool) -> &mut Self {
-        self.inner.is_premium = is_premium;
-        self
-    }
-
     pub fn is_support(&mut self, is_support: bool) -> &mut Self {
         self.inner.is_support = is_support;
         self
@@ -283,11 +262,6 @@ impl RTDUserBuilder {
 
     pub fn language_code<T: AsRef<str>>(&mut self, language_code: T) -> &mut Self {
         self.inner.language_code = language_code.as_ref().to_string();
-        self
-    }
-
-    pub fn added_to_attachment_menu(&mut self, added_to_attachment_menu: bool) -> &mut Self {
-        self.inner.added_to_attachment_menu = added_to_attachment_menu;
         self
     }
 }

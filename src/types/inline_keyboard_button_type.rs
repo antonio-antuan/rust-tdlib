@@ -25,7 +25,7 @@ pub enum InlineKeyboardButtonType {
     /// A button that asks for password of the current user and then sends a callback query to a bot
     #[serde(rename(deserialize = "inlineKeyboardButtonTypeCallbackWithPassword"))]
     CallbackWithPassword(InlineKeyboardButtonTypeCallbackWithPassword),
-    /// A button that opens a specified URL and automatically authorize the current user by calling getLoginUrlInfo
+    /// A button that opens a specified URL and automatically authorize the current user if allowed to do so
     #[serde(rename(deserialize = "inlineKeyboardButtonTypeLoginUrl"))]
     LoginUrl(InlineKeyboardButtonTypeLoginUrl),
     /// A button that forces an inline query to the bot to be inserted in the input field
@@ -37,9 +37,6 @@ pub enum InlineKeyboardButtonType {
     /// A button with a user reference to be handled in the same way as textEntityTypeMentionName entities
     #[serde(rename(deserialize = "inlineKeyboardButtonTypeUser"))]
     User(InlineKeyboardButtonTypeUser),
-    /// A button that opens a Web App by calling openWebApp
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeWebApp"))]
-    WebApp(InlineKeyboardButtonTypeWebApp),
 }
 
 impl Default for InlineKeyboardButtonType {
@@ -60,7 +57,6 @@ impl RObject for InlineKeyboardButtonType {
             InlineKeyboardButtonType::SwitchInline(t) => t.extra(),
             InlineKeyboardButtonType::Url(t) => t.extra(),
             InlineKeyboardButtonType::User(t) => t.extra(),
-            InlineKeyboardButtonType::WebApp(t) => t.extra(),
 
             _ => None,
         }
@@ -76,7 +72,6 @@ impl RObject for InlineKeyboardButtonType {
             InlineKeyboardButtonType::SwitchInline(t) => t.client_id(),
             InlineKeyboardButtonType::Url(t) => t.client_id(),
             InlineKeyboardButtonType::User(t) => t.client_id(),
-            InlineKeyboardButtonType::WebApp(t) => t.client_id(),
 
             _ => None,
         }
@@ -363,7 +358,7 @@ impl AsRef<InlineKeyboardButtonTypeCallbackWithPassword>
     }
 }
 
-/// A button that opens a specified URL and automatically authorize the current user by calling getLoginUrlInfo
+/// A button that opens a specified URL and automatically authorize the current user if allowed to do so
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InlineKeyboardButtonTypeLoginUrl {
     #[doc(hidden)]
@@ -371,7 +366,7 @@ pub struct InlineKeyboardButtonTypeLoginUrl {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// An HTTP URL to pass to getLoginUrlInfo
+    /// An HTTP URL to open
 
     #[serde(default)]
     url: String,
@@ -684,77 +679,6 @@ impl AsRef<InlineKeyboardButtonTypeUser> for InlineKeyboardButtonTypeUser {
 
 impl AsRef<InlineKeyboardButtonTypeUser> for RTDInlineKeyboardButtonTypeUserBuilder {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeUser {
-        &self.inner
-    }
-}
-
-/// A button that opens a Web App by calling openWebApp
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InlineKeyboardButtonTypeWebApp {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// An HTTP URL to pass to openWebApp
-
-    #[serde(default)]
-    url: String,
-}
-
-impl RObject for InlineKeyboardButtonTypeWebApp {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeWebApp {}
-
-impl InlineKeyboardButtonTypeWebApp {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeWebAppBuilder {
-        let mut inner = InlineKeyboardButtonTypeWebApp::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInlineKeyboardButtonTypeWebAppBuilder { inner }
-    }
-
-    pub fn url(&self) -> &String {
-        &self.url
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeWebAppBuilder {
-    inner: InlineKeyboardButtonTypeWebApp,
-}
-
-impl RTDInlineKeyboardButtonTypeWebAppBuilder {
-    pub fn build(&self) -> InlineKeyboardButtonTypeWebApp {
-        self.inner.clone()
-    }
-
-    pub fn url<T: AsRef<str>>(&mut self, url: T) -> &mut Self {
-        self.inner.url = url.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<InlineKeyboardButtonTypeWebApp> for InlineKeyboardButtonTypeWebApp {
-    fn as_ref(&self) -> &InlineKeyboardButtonTypeWebApp {
-        self
-    }
-}
-
-impl AsRef<InlineKeyboardButtonTypeWebApp> for RTDInlineKeyboardButtonTypeWebAppBuilder {
-    fn as_ref(&self) -> &InlineKeyboardButtonTypeWebApp {
         &self.inner
     }
 }

@@ -18,7 +18,7 @@ pub struct ProcessChatJoinRequests {
 
     #[serde(default)]
     invite_link: String,
-    /// Pass true to approve all requests; pass false to decline them
+    /// True, if the requests are approved. Otherwise the requests are declived
 
     #[serde(default)]
     approve: bool,

@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Creates new chat filter. Returns information about the created chat filter. There can be up to GetOption("chat_filter_count_max") chat filters, but the limit can be increased with Telegram Premium
+/// Creates new chat filter. Returns information about the created chat filter
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CreateChatFilter {
     #[doc(hidden)]

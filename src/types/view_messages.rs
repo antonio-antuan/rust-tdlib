@@ -22,7 +22,7 @@ pub struct ViewMessages {
 
     #[serde(default)]
     message_ids: Vec<i64>,
-    /// Pass true to mark as read the specified messages even the chat is closed
+    /// True, if messages in closed chats must be marked as read by the request
 
     #[serde(default)]
     force_read: bool,

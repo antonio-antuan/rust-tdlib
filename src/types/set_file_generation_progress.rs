@@ -18,11 +18,11 @@ pub struct SetFileGenerationProgress {
     /// Expected size of the generated file, in bytes; 0 if unknown
 
     #[serde(default)]
-    expected_size: i64,
+    expected_size: i32,
     /// The number of bytes already generated
 
     #[serde(default)]
-    local_prefix_size: i64,
+    local_prefix_size: i32,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -58,11 +58,11 @@ impl SetFileGenerationProgress {
         self.generation_id
     }
 
-    pub fn expected_size(&self) -> i64 {
+    pub fn expected_size(&self) -> i32 {
         self.expected_size
     }
 
-    pub fn local_prefix_size(&self) -> i64 {
+    pub fn local_prefix_size(&self) -> i32 {
         self.local_prefix_size
     }
 }
@@ -82,12 +82,12 @@ impl RTDSetFileGenerationProgressBuilder {
         self
     }
 
-    pub fn expected_size(&mut self, expected_size: i64) -> &mut Self {
+    pub fn expected_size(&mut self, expected_size: i32) -> &mut Self {
         self.inner.expected_size = expected_size;
         self
     }
 
-    pub fn local_prefix_size(&mut self, local_prefix_size: i64) -> &mut Self {
+    pub fn local_prefix_size(&mut self, local_prefix_size: i32) -> &mut Self {
         self.inner.local_prefix_size = local_prefix_size;
         self
     }

@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Clears message drafts in all chats
+/// Clears draft messages in all chats
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ClearAllDraftMessages {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct ClearAllDraftMessages {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Pass true to keep local message drafts in secret chats
+    /// If true, local draft messages in secret chats will not be cleared
 
     #[serde(default)]
     exclude_secret_chats: bool,

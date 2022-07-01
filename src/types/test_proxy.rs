@@ -23,7 +23,7 @@ pub struct TestProxy {
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "ProxyType::_is_default")]
     type_: ProxyType,
-    /// Identifier of a datacenter with which to test connection
+    /// Identifier of a datacenter, with which to test connection
 
     #[serde(default)]
     dc_id: i32,

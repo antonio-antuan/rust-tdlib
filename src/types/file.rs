@@ -17,11 +17,11 @@ pub struct File {
     /// File size, in bytes; 0 if unknown
 
     #[serde(default)]
-    size: i64,
+    size: i32,
     /// Approximate file size in bytes in case the exact file size is unknown. Can be used to show download/upload progress
 
     #[serde(default)]
-    expected_size: i64,
+    expected_size: i32,
     /// Information about the local copy of the file
     local: LocalFile,
     /// Information about the remote copy of the file
@@ -54,11 +54,11 @@ impl File {
         self.id
     }
 
-    pub fn size(&self) -> i64 {
+    pub fn size(&self) -> i32 {
         self.size
     }
 
-    pub fn expected_size(&self) -> i64 {
+    pub fn expected_size(&self) -> i32 {
         self.expected_size
     }
 
@@ -86,12 +86,12 @@ impl RTDFileBuilder {
         self
     }
 
-    pub fn size(&mut self, size: i64) -> &mut Self {
+    pub fn size(&mut self, size: i32) -> &mut Self {
         self.inner.size = size;
         self
     }
 
-    pub fn expected_size(&mut self, expected_size: i64) -> &mut Self {
+    pub fn expected_size(&mut self, expected_size: i32) -> &mut Self {
         self.inner.expected_size = expected_size;
         self
     }

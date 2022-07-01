@@ -14,7 +14,7 @@ pub struct SearchEmojis {
 
     #[serde(default)]
     text: String,
-    /// Pass true if only emojis, which exactly match the text, needs to be returned
+    /// True, if only emojis, which exactly match text needs to be returned
 
     #[serde(default)]
     exact_match: bool,

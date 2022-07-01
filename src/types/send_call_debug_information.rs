@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Sends debug information for a call to Telegram servers
+/// Sends debug information for a call
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SendCallDebugInformation {
     #[doc(hidden)]

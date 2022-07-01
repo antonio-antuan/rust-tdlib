@@ -18,7 +18,7 @@ pub struct GetMessagePublicForwards {
 
     #[serde(default)]
     message_id: i64,
-    /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    /// Offset of the first entry to return as received from the previous request; use empty string to get first chunk of results
 
     #[serde(default)]
     offset: String,

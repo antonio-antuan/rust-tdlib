@@ -15,8 +15,12 @@ pub struct PaymentForm {
     #[serde(deserialize_with = "super::_common::number_from_string")]
     #[serde(default)]
     id: i64,
-    /// Full information about the invoice
+    /// Full information of the invoice
     invoice: Invoice,
+    /// Payment form URL
+
+    #[serde(default)]
+    url: String,
     /// User identifier of the seller bot
 
     #[serde(default)]
@@ -24,11 +28,9 @@ pub struct PaymentForm {
     /// User identifier of the payment provider bot
 
     #[serde(default)]
-    payment_provider_user_id: i64,
-    /// Information about the payment provider
-
-    #[serde(skip_serializing_if = "PaymentProvider::_is_default")]
-    payment_provider: PaymentProvider,
+    payments_provider_user_id: i64,
+    /// Information about the payment provider, if available, to support it natively without the need for opening the URL; may be null
+    payments_provider: Option<PaymentsProviderStripe>,
     /// Saved server-side order information; may be null
     saved_order_info: Option<OrderInfo>,
     /// Information about saved card credentials; may be null
@@ -41,14 +43,6 @@ pub struct PaymentForm {
 
     #[serde(default)]
     need_password: bool,
-    /// Product title
-
-    #[serde(default)]
-    product_title: String,
-    /// Product description
-    product_description: FormattedText,
-    /// Product photo; may be null
-    product_photo: Option<Photo>,
 }
 
 impl RObject for PaymentForm {
@@ -81,16 +75,20 @@ impl PaymentForm {
         &self.invoice
     }
 
+    pub fn url(&self) -> &String {
+        &self.url
+    }
+
     pub fn seller_bot_user_id(&self) -> i64 {
         self.seller_bot_user_id
     }
 
-    pub fn payment_provider_user_id(&self) -> i64 {
-        self.payment_provider_user_id
+    pub fn payments_provider_user_id(&self) -> i64 {
+        self.payments_provider_user_id
     }
 
-    pub fn payment_provider(&self) -> &PaymentProvider {
-        &self.payment_provider
+    pub fn payments_provider(&self) -> &Option<PaymentsProviderStripe> {
+        &self.payments_provider
     }
 
     pub fn saved_order_info(&self) -> &Option<OrderInfo> {
@@ -107,18 +105,6 @@ impl PaymentForm {
 
     pub fn need_password(&self) -> bool {
         self.need_password
-    }
-
-    pub fn product_title(&self) -> &String {
-        &self.product_title
-    }
-
-    pub fn product_description(&self) -> &FormattedText {
-        &self.product_description
-    }
-
-    pub fn product_photo(&self) -> &Option<Photo> {
-        &self.product_photo
     }
 }
 
@@ -142,21 +128,26 @@ impl RTDPaymentFormBuilder {
         self
     }
 
+    pub fn url<T: AsRef<str>>(&mut self, url: T) -> &mut Self {
+        self.inner.url = url.as_ref().to_string();
+        self
+    }
+
     pub fn seller_bot_user_id(&mut self, seller_bot_user_id: i64) -> &mut Self {
         self.inner.seller_bot_user_id = seller_bot_user_id;
         self
     }
 
-    pub fn payment_provider_user_id(&mut self, payment_provider_user_id: i64) -> &mut Self {
-        self.inner.payment_provider_user_id = payment_provider_user_id;
+    pub fn payments_provider_user_id(&mut self, payments_provider_user_id: i64) -> &mut Self {
+        self.inner.payments_provider_user_id = payments_provider_user_id;
         self
     }
 
-    pub fn payment_provider<T: AsRef<PaymentProvider>>(
+    pub fn payments_provider<T: AsRef<PaymentsProviderStripe>>(
         &mut self,
-        payment_provider: T,
+        payments_provider: T,
     ) -> &mut Self {
-        self.inner.payment_provider = payment_provider.as_ref().clone();
+        self.inner.payments_provider = Some(payments_provider.as_ref().clone());
         self
     }
 
@@ -180,24 +171,6 @@ impl RTDPaymentFormBuilder {
 
     pub fn need_password(&mut self, need_password: bool) -> &mut Self {
         self.inner.need_password = need_password;
-        self
-    }
-
-    pub fn product_title<T: AsRef<str>>(&mut self, product_title: T) -> &mut Self {
-        self.inner.product_title = product_title.as_ref().to_string();
-        self
-    }
-
-    pub fn product_description<T: AsRef<FormattedText>>(
-        &mut self,
-        product_description: T,
-    ) -> &mut Self {
-        self.inner.product_description = product_description.as_ref().clone();
-        self
-    }
-
-    pub fn product_photo<T: AsRef<Photo>>(&mut self, product_photo: T) -> &mut Self {
-        self.inner.product_photo = Some(product_photo.as_ref().clone());
         self
     }
 }

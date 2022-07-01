@@ -14,7 +14,7 @@ pub struct ToggleChatHasProtectedContent {
 
     #[serde(default)]
     chat_id: i64,
-    /// New value of has_protected_content
+    /// True, if chat content can't be saved locally, forwarded, or copied
 
     #[serde(default)]
     has_protected_content: bool,

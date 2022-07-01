@@ -14,7 +14,7 @@ pub struct CreateNewSupergroupChat {
 
     #[serde(default)]
     title: String,
-    /// Pass true to create a channel chat
+    /// True, if a channel chat needs to be created
 
     #[serde(default)]
     is_channel: bool,
@@ -24,7 +24,7 @@ pub struct CreateNewSupergroupChat {
     description: String,
     /// Chat location if a location-based supergroup is being created; pass null to create an ordinary supergroup chat
     location: ChatLocation,
-    /// Pass true to create a supergroup for importing messages using importMessage
+    /// True, if the supergroup is created for importing messages using importMessage
 
     #[serde(default)]
     for_import: bool,

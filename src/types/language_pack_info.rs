@@ -26,7 +26,7 @@ pub struct LanguagePackInfo {
 
     #[serde(default)]
     native_name: String,
-    /// A language code to be used to apply plural forms. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more information
+    /// A language code to be used to apply plural forms. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
 
     #[serde(default)]
     plural_code: String,

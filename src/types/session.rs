@@ -31,11 +31,6 @@ pub struct Session {
 
     #[serde(default)]
     can_accept_calls: bool,
-    /// Session type based on the system and application version, which can be used to display a corresponding icon
-
-    #[serde(rename(serialize = "type", deserialize = "type"))]
-    #[serde(skip_serializing_if = "SessionType::_is_default")]
-    type_: SessionType,
     /// Telegram API identifier, as provided by the application
 
     #[serde(default)]
@@ -128,10 +123,6 @@ impl Session {
         self.can_accept_calls
     }
 
-    pub fn type_(&self) -> &SessionType {
-        &self.type_
-    }
-
     pub fn api_id(&self) -> i32 {
         self.api_id
     }
@@ -213,11 +204,6 @@ impl RTDSessionBuilder {
 
     pub fn can_accept_calls(&mut self, can_accept_calls: bool) -> &mut Self {
         self.inner.can_accept_calls = can_accept_calls;
-        self
-    }
-
-    pub fn type_<T: AsRef<SessionType>>(&mut self, type_: T) -> &mut Self {
-        self.inner.type_ = type_.as_ref().clone();
         self
     }
 

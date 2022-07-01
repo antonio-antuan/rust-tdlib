@@ -22,14 +22,6 @@ pub struct VoiceNote {
 
     #[serde(default)]
     mime_type: String,
-    /// True, if speech recognition is completed; Premium users only
-
-    #[serde(default)]
-    is_recognized: bool,
-    /// Recognized text of the voice note; Premium users only. Call recognizeSpeech to get recognized text of the voice note
-
-    #[serde(default)]
-    recognized_text: String,
     /// File containing the voice note
     voice: File,
 }
@@ -68,14 +60,6 @@ impl VoiceNote {
         &self.mime_type
     }
 
-    pub fn is_recognized(&self) -> bool {
-        self.is_recognized
-    }
-
-    pub fn recognized_text(&self) -> &String {
-        &self.recognized_text
-    }
-
     pub fn voice(&self) -> &File {
         &self.voice
     }
@@ -103,16 +87,6 @@ impl RTDVoiceNoteBuilder {
 
     pub fn mime_type<T: AsRef<str>>(&mut self, mime_type: T) -> &mut Self {
         self.inner.mime_type = mime_type.as_ref().to_string();
-        self
-    }
-
-    pub fn is_recognized(&mut self, is_recognized: bool) -> &mut Self {
-        self.inner.is_recognized = is_recognized;
-        self
-    }
-
-    pub fn recognized_text<T: AsRef<str>>(&mut self, recognized_text: T) -> &mut Self {
-        self.inner.recognized_text = recognized_text.as_ref().to_string();
         self
     }
 

@@ -18,15 +18,15 @@ pub struct ChatFilter {
 
     #[serde(default)]
     icon_name: String,
-    /// The chat identifiers of pinned chats in the filtered chat list. There can be up to GetOption("chat_filter_chosen_chat_count_max") pinned and always included non-secret chats and the same number of secret chats, but the limit can be increased with Telegram Premium
+    /// The chat identifiers of pinned chats in the filtered chat list
 
     #[serde(default)]
     pinned_chat_ids: Vec<i64>,
-    /// The chat identifiers of always included chats in the filtered chat list. There can be up to GetOption("chat_filter_chosen_chat_count_max") pinned and always included non-secret chats and the same number of secret chats, but the limit can be increased with Telegram Premium
+    /// The chat identifiers of always included chats in the filtered chat list
 
     #[serde(default)]
     included_chat_ids: Vec<i64>,
-    /// The chat identifiers of always excluded chats in the filtered chat list. There can be up to GetOption("chat_filter_chosen_chat_count_max") always excluded non-secret chats and the same number of secret chats, but the limit can be increased with Telegram Premium
+    /// The chat identifiers of always excluded chats in the filtered chat list
 
     #[serde(default)]
     excluded_chat_ids: Vec<i64>,

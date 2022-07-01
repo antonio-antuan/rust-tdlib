@@ -25,9 +25,6 @@ pub enum FileType {
     /// The data is not a file
     #[serde(rename(deserialize = "fileTypeNone"))]
     None(FileTypeNone),
-    /// The file is a notification sound
-    #[serde(rename(deserialize = "fileTypeNotificationSound"))]
-    NotificationSound(FileTypeNotificationSound),
     /// The file is a photo
     #[serde(rename(deserialize = "fileTypePhoto"))]
     Photo(FileTypePhoto),
@@ -80,7 +77,6 @@ impl RObject for FileType {
             FileType::Audio(t) => t.extra(),
             FileType::Document(t) => t.extra(),
             FileType::None(t) => t.extra(),
-            FileType::NotificationSound(t) => t.extra(),
             FileType::Photo(t) => t.extra(),
             FileType::ProfilePhoto(t) => t.extra(),
             FileType::Secret(t) => t.extra(),
@@ -104,7 +100,6 @@ impl RObject for FileType {
             FileType::Audio(t) => t.client_id(),
             FileType::Document(t) => t.client_id(),
             FileType::None(t) => t.client_id(),
-            FileType::NotificationSound(t) => t.client_id(),
             FileType::Photo(t) => t.client_id(),
             FileType::ProfilePhoto(t) => t.client_id(),
             FileType::Secret(t) => t.client_id(),
@@ -367,64 +362,6 @@ impl AsRef<FileTypeNone> for FileTypeNone {
 
 impl AsRef<FileTypeNone> for RTDFileTypeNoneBuilder {
     fn as_ref(&self) -> &FileTypeNone {
-        &self.inner
-    }
-}
-
-/// The file is a notification sound
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct FileTypeNotificationSound {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for FileTypeNotificationSound {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDFileType for FileTypeNotificationSound {}
-
-impl FileTypeNotificationSound {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDFileTypeNotificationSoundBuilder {
-        let mut inner = FileTypeNotificationSound::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDFileTypeNotificationSoundBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDFileTypeNotificationSoundBuilder {
-    inner: FileTypeNotificationSound,
-}
-
-impl RTDFileTypeNotificationSoundBuilder {
-    pub fn build(&self) -> FileTypeNotificationSound {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<FileTypeNotificationSound> for FileTypeNotificationSound {
-    fn as_ref(&self) -> &FileTypeNotificationSound {
-        self
-    }
-}
-
-impl AsRef<FileTypeNotificationSound> for RTDFileTypeNotificationSoundBuilder {
-    fn as_ref(&self) -> &FileTypeNotificationSound {
         &self.inner
     }
 }

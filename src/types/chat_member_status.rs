@@ -100,8 +100,50 @@ pub struct ChatMemberStatusAdministrator {
 
     #[serde(default)]
     can_be_edited: bool,
-    /// Rights of the administrator
-    rights: ChatAdministratorRights,
+    /// True, if the administrator can get chat event log, get chat statistics, get message statistics in channels, get channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other privilege; applicable to supergroups and channels only
+
+    #[serde(default)]
+    can_manage_chat: bool,
+    /// True, if the administrator can change the chat title, photo, and other settings
+
+    #[serde(default)]
+    can_change_info: bool,
+    /// True, if the administrator can create channel posts; applicable to channels only
+
+    #[serde(default)]
+    can_post_messages: bool,
+    /// True, if the administrator can edit messages of other users and pin messages; applicable to channels only
+
+    #[serde(default)]
+    can_edit_messages: bool,
+    /// True, if the administrator can delete messages of other users
+
+    #[serde(default)]
+    can_delete_messages: bool,
+    /// True, if the administrator can invite new users to the chat
+
+    #[serde(default)]
+    can_invite_users: bool,
+    /// True, if the administrator can restrict, ban, or unban chat members; always true for channels
+
+    #[serde(default)]
+    can_restrict_members: bool,
+    /// True, if the administrator can pin messages; applicable to basic groups and supergroups only
+
+    #[serde(default)]
+    can_pin_messages: bool,
+    /// True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that were directly or indirectly promoted by them
+
+    #[serde(default)]
+    can_promote_members: bool,
+    /// True, if the administrator can manage video chats
+
+    #[serde(default)]
+    can_manage_video_chats: bool,
+    /// True, if the administrator isn't shown in the chat member list and sends messages anonymously; applicable to supergroups only
+
+    #[serde(default)]
+    is_anonymous: bool,
 }
 
 impl RObject for ChatMemberStatusAdministrator {
@@ -136,8 +178,48 @@ impl ChatMemberStatusAdministrator {
         self.can_be_edited
     }
 
-    pub fn rights(&self) -> &ChatAdministratorRights {
-        &self.rights
+    pub fn can_manage_chat(&self) -> bool {
+        self.can_manage_chat
+    }
+
+    pub fn can_change_info(&self) -> bool {
+        self.can_change_info
+    }
+
+    pub fn can_post_messages(&self) -> bool {
+        self.can_post_messages
+    }
+
+    pub fn can_edit_messages(&self) -> bool {
+        self.can_edit_messages
+    }
+
+    pub fn can_delete_messages(&self) -> bool {
+        self.can_delete_messages
+    }
+
+    pub fn can_invite_users(&self) -> bool {
+        self.can_invite_users
+    }
+
+    pub fn can_restrict_members(&self) -> bool {
+        self.can_restrict_members
+    }
+
+    pub fn can_pin_messages(&self) -> bool {
+        self.can_pin_messages
+    }
+
+    pub fn can_promote_members(&self) -> bool {
+        self.can_promote_members
+    }
+
+    pub fn can_manage_video_chats(&self) -> bool {
+        self.can_manage_video_chats
+    }
+
+    pub fn is_anonymous(&self) -> bool {
+        self.is_anonymous
     }
 }
 
@@ -161,8 +243,58 @@ impl RTDChatMemberStatusAdministratorBuilder {
         self
     }
 
-    pub fn rights<T: AsRef<ChatAdministratorRights>>(&mut self, rights: T) -> &mut Self {
-        self.inner.rights = rights.as_ref().clone();
+    pub fn can_manage_chat(&mut self, can_manage_chat: bool) -> &mut Self {
+        self.inner.can_manage_chat = can_manage_chat;
+        self
+    }
+
+    pub fn can_change_info(&mut self, can_change_info: bool) -> &mut Self {
+        self.inner.can_change_info = can_change_info;
+        self
+    }
+
+    pub fn can_post_messages(&mut self, can_post_messages: bool) -> &mut Self {
+        self.inner.can_post_messages = can_post_messages;
+        self
+    }
+
+    pub fn can_edit_messages(&mut self, can_edit_messages: bool) -> &mut Self {
+        self.inner.can_edit_messages = can_edit_messages;
+        self
+    }
+
+    pub fn can_delete_messages(&mut self, can_delete_messages: bool) -> &mut Self {
+        self.inner.can_delete_messages = can_delete_messages;
+        self
+    }
+
+    pub fn can_invite_users(&mut self, can_invite_users: bool) -> &mut Self {
+        self.inner.can_invite_users = can_invite_users;
+        self
+    }
+
+    pub fn can_restrict_members(&mut self, can_restrict_members: bool) -> &mut Self {
+        self.inner.can_restrict_members = can_restrict_members;
+        self
+    }
+
+    pub fn can_pin_messages(&mut self, can_pin_messages: bool) -> &mut Self {
+        self.inner.can_pin_messages = can_pin_messages;
+        self
+    }
+
+    pub fn can_promote_members(&mut self, can_promote_members: bool) -> &mut Self {
+        self.inner.can_promote_members = can_promote_members;
+        self
+    }
+
+    pub fn can_manage_video_chats(&mut self, can_manage_video_chats: bool) -> &mut Self {
+        self.inner.can_manage_video_chats = can_manage_video_chats;
+        self
+    }
+
+    pub fn is_anonymous(&mut self, is_anonymous: bool) -> &mut Self {
+        self.inner.is_anonymous = is_anonymous;
         self
     }
 }

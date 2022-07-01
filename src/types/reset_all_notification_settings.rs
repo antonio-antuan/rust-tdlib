@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Resets all notification settings to their default values. By default, all chats are unmuted and message previews are shown
+/// Resets all notification settings to their default values. By default, all chats are unmuted, the sound is set to "default" and message previews are shown
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ResetAllNotificationSettings {
     #[doc(hidden)]

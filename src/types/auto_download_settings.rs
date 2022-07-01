@@ -21,11 +21,11 @@ pub struct AutoDownloadSettings {
     /// The maximum size of a video file to be auto-downloaded, in bytes
 
     #[serde(default)]
-    max_video_file_size: i64,
+    max_video_file_size: i32,
     /// The maximum size of other file types to be auto-downloaded, in bytes
 
     #[serde(default)]
-    max_other_file_size: i64,
+    max_other_file_size: i32,
     /// The maximum suggested bitrate for uploaded videos, in kbit/s
 
     #[serde(default)]
@@ -74,11 +74,11 @@ impl AutoDownloadSettings {
         self.max_photo_file_size
     }
 
-    pub fn max_video_file_size(&self) -> i64 {
+    pub fn max_video_file_size(&self) -> i32 {
         self.max_video_file_size
     }
 
-    pub fn max_other_file_size(&self) -> i64 {
+    pub fn max_other_file_size(&self) -> i32 {
         self.max_other_file_size
     }
 
@@ -119,12 +119,12 @@ impl RTDAutoDownloadSettingsBuilder {
         self
     }
 
-    pub fn max_video_file_size(&mut self, max_video_file_size: i64) -> &mut Self {
+    pub fn max_video_file_size(&mut self, max_video_file_size: i32) -> &mut Self {
         self.inner.max_video_file_size = max_video_file_size;
         self
     }
 
-    pub fn max_other_file_size(&mut self, max_other_file_size: i64) -> &mut Self {
+    pub fn max_other_file_size(&mut self, max_other_file_size: i32) -> &mut Self {
         self.inner.max_other_file_size = max_other_file_size;
         self
     }

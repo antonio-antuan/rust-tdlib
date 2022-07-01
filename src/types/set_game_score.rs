@@ -18,7 +18,7 @@ pub struct SetGameScore {
 
     #[serde(default)]
     message_id: i64,
-    /// Pass true to edit the game message to include the current scoreboard
+    /// True, if the message needs to be edited
 
     #[serde(default)]
     edit_message: bool,

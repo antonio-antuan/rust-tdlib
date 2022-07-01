@@ -22,7 +22,7 @@ pub struct SetPassword {
 
     #[serde(default)]
     new_hint: String,
-    /// Pass true to change also the recovery email address
+    /// Pass true if the recovery email address must be changed
 
     #[serde(default)]
     set_recovery_email_address: bool,

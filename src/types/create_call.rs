@@ -16,7 +16,7 @@ pub struct CreateCall {
     user_id: i64,
     /// The call protocols supported by the application
     protocol: CallProtocol,
-    /// Pass true to create a video call
+    /// True, if a video call needs to be created
 
     #[serde(default)]
     is_video: bool,

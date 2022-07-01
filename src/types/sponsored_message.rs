@@ -14,17 +14,11 @@ pub struct SponsoredMessage {
 
     #[serde(default)]
     message_id: i64,
-    /// True, if the message needs to be labeled as "recommended" instead of "sponsored"
-
-    #[serde(default)]
-    is_recommended: bool,
-    /// Sponsor chat identifier; 0 if the sponsor chat is accessible through an invite link
+    /// Chat identifier
 
     #[serde(default)]
     sponsor_chat_id: i64,
-    /// Information about the sponsor chat; may be null unless sponsor_chat_id == 0
-    sponsor_chat_info: Option<ChatInviteLinkInfo>,
-    /// An internal link to be opened when the sponsored message is clicked; may be null if the sponsor chat needs to be opened instead
+    /// An internal link to be opened when the sponsored message is clicked; may be null. If null, the sponsor chat needs to be opened instead
     link: Option<InternalLinkType>,
     /// Content of the message. Currently, can be only of the type messageText
 
@@ -58,16 +52,8 @@ impl SponsoredMessage {
         self.message_id
     }
 
-    pub fn is_recommended(&self) -> bool {
-        self.is_recommended
-    }
-
     pub fn sponsor_chat_id(&self) -> i64 {
         self.sponsor_chat_id
-    }
-
-    pub fn sponsor_chat_info(&self) -> &Option<ChatInviteLinkInfo> {
-        &self.sponsor_chat_info
     }
 
     pub fn link(&self) -> &Option<InternalLinkType> {
@@ -94,21 +80,8 @@ impl RTDSponsoredMessageBuilder {
         self
     }
 
-    pub fn is_recommended(&mut self, is_recommended: bool) -> &mut Self {
-        self.inner.is_recommended = is_recommended;
-        self
-    }
-
     pub fn sponsor_chat_id(&mut self, sponsor_chat_id: i64) -> &mut Self {
         self.inner.sponsor_chat_id = sponsor_chat_id;
-        self
-    }
-
-    pub fn sponsor_chat_info<T: AsRef<ChatInviteLinkInfo>>(
-        &mut self,
-        sponsor_chat_info: T,
-    ) -> &mut Self {
-        self.inner.sponsor_chat_info = Some(sponsor_chat_info.as_ref().clone());
         self
     }
 

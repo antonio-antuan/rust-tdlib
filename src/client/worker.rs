@@ -1,18 +1,18 @@
 //! Handlers for all incoming data
 use super::{
     auth_handler::{AuthStateHandler, ConsoleAuthStateHandler},
-    client::{Client, ClientState},
     observer::OBSERVER,
     tdlib_client::{TdJson, TdLibClient},
+    {Client, ClientState},
 };
-use crate::types::GetAuthorizationState;
+use crate::types::{GetAuthorizationState, JsonValue};
 use crate::{
     errors::{RTDError, RTDResult},
     tdjson::ClientId,
     types::{
-        from_json, AuthorizationState, CheckAuthenticationCode, CheckAuthenticationPassword,
+        AuthorizationState, CheckAuthenticationCode, CheckAuthenticationPassword,
         CheckDatabaseEncryptionKey, GetApplicationConfig, RObject, RegisterUser,
-        SetAuthenticationPhoneNumber, SetTdlibParameters, TdType, Update, UpdateAuthorizationState,
+        SetAuthenticationPhoneNumber, SetTdlibParameters, Update, UpdateAuthorizationState,
     },
 };
 use std::collections::HashMap;
@@ -370,49 +370,7 @@ where
                     .unwrap()
                 {
                     log::trace!("received json from tdlib: {}", json);
-                    match from_json::<TdType>(&json) {
-                        Err(e) => log::error!("can't deserialize tdlib data: {}", e),
-                        Ok(t) => {
-                            if let Some(TdType::Update(update)) = OBSERVER.notify(t) {
-                                if let Update::AuthorizationState(auth_state) = *update {
-                                    log::trace!("auth state send: {:?}", auth_state);
-                                    match auth_sx.send_timeout(auth_state, send_timeout).await {
-                                        Ok(_) => {
-                                            log::trace!("auth state sent");
-                                        }
-                                        Err(err) => {
-                                            log::error!("can't send auth state update: {}", err)
-                                        }
-                                    };
-                                } else if let Some(client_id) = update.client_id() {
-                                    match clients.read().await.get(&client_id) {
-                                        None => {
-                                            log::warn!(
-                                                "found updates for unavailable client ({})",
-                                                client_id
-                                            )
-                                        }
-                                        Some(ctx) => {
-                                            if let Some(sender) = ctx.client().updates_sender() {
-                                                log::trace!("sending update to client");
-                                                match sender
-                                                    .send_timeout(update, send_timeout)
-                                                    .await
-                                                {
-                                                    Ok(_) => {
-                                                        log::trace!("update sent");
-                                                    }
-                                                    Err(err) => {
-                                                        log::error!("can't send update: {}", err)
-                                                    }
-                                                };
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    };
+                    handle_td_resp_received(json.as_str(), &auth_sx, &clients, send_timeout).await;
                 }
             }
         })
@@ -496,6 +454,64 @@ where
                 }
             }
         })
+    }
+}
+
+async fn handle_td_resp_received<S: TdLibClient + Send + Sync + Clone>(
+    response: &str,
+    auth_sx: &mpsc::Sender<UpdateAuthorizationState>,
+    clients: &RwLock<ClientsMap<S>>,
+    send_timeout: Duration,
+) {
+    match serde_json::from_str::<serde_json::Value>(response) {
+        Err(e) => log::error!("can't deserialize tdlib data: {}", e),
+        Ok(t) => {
+            if let Some(t) = OBSERVER.notify(t) {
+                match serde_json::from_value::<Update>(t) {
+                    Err(err) => {
+                        log::error!("cannot deserialize to update: {err:?}, data: {response:?}")
+                    }
+                    Ok(update) => {
+                        if let Update::AuthorizationState(auth_state) = update {
+                            log::trace!("auth state send: {:?}", auth_state);
+                            match auth_sx.send_timeout(auth_state, send_timeout).await {
+                                Ok(_) => {
+                                    log::trace!("auth state sent");
+                                }
+                                Err(err) => {
+                                    log::error!("can't send auth state update: {}", err)
+                                }
+                            };
+                        } else if let Some(client_id) = update.client_id() {
+                            match clients.read().await.get(&client_id) {
+                                None => {
+                                    log::warn!(
+                                        "found updates for unavailable client ({})",
+                                        client_id
+                                    )
+                                }
+                                Some(ctx) => {
+                                    if let Some(sender) = ctx.client().updates_sender() {
+                                        log::trace!("sending update to client");
+                                        match sender
+                                            .send_timeout(Box::new(update), send_timeout)
+                                            .await
+                                        {
+                                            Ok(_) => {
+                                                log::trace!("update sent");
+                                            }
+                                            Err(err) => {
+                                                log::error!("can't send update: {}", err)
+                                            }
+                                        };
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -669,13 +685,11 @@ async fn first_internal_request<S: TdLibClient>(tdlib_client: &S, client_id: Cli
     OBSERVER.unsubscribe(&extra);
     match received {
         Err(_) => log::error!("receiver already closed"),
-        Ok(v) => match v {
-            TdType::JsonValue(_) => {}
-            TdType::Error(v) => log::error!("{}", v.message()),
-            _ => {
-                log::error!("invalid response received: {:?}", v);
+        Ok(v) => {
+            if let Err(e) = serde_json::from_value::<JsonValue>(v) {
+                log::error!("invalid response received: {}", e)
             }
-        },
+        }
     };
 }
 

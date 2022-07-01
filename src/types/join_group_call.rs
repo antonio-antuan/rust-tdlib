@@ -26,11 +26,11 @@ pub struct JoinGroupCall {
 
     #[serde(default)]
     payload: String,
-    /// Pass true to join the call with muted microphone
+    /// True, if the user's microphone is muted
 
     #[serde(default)]
     is_muted: bool,
-    /// Pass true if the user's video is enabled
+    /// True, if the user's video is enabled
 
     #[serde(default)]
     is_my_video_enabled: bool,

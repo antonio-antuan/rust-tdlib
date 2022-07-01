@@ -24,15 +24,15 @@ pub struct ForwardMessages {
     message_ids: Vec<i64>,
     /// Options to be used to send the messages; pass null to use default options
     options: MessageSendOptions,
-    /// Pass true to copy content of the messages without reference to the original sender. Always true if the messages are forwarded to a secret chat or are local
+    /// If true, content of the messages will be copied without reference to the original sender. Always true if the messages are forwarded to a secret chat or are local
 
     #[serde(default)]
     send_copy: bool,
-    /// Pass true to remove media captions of message copies. Ignored if send_copy is false
+    /// If true, media caption of message copies will be removed. Ignored if send_copy is false
 
     #[serde(default)]
     remove_caption: bool,
-    /// Pass true to get fake messages instead of actually forwarding them
+    /// If true, messages will not be forwarded and instead fake messages will be returned
 
     #[serde(default)]
     only_preview: bool,

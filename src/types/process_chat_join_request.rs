@@ -18,7 +18,7 @@ pub struct ProcessChatJoinRequest {
 
     #[serde(default)]
     user_id: i64,
-    /// Pass true to approve the request; pass false to decline it
+    /// True, if the request is approved. Otherwise the request is declived
 
     #[serde(default)]
     approve: bool,

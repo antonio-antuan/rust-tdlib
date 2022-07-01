@@ -10,7 +10,7 @@ pub struct ChatJoinRequests {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Approximate total number of requests found
+    /// Approximate total count of requests found
 
     #[serde(default)]
     total_count: i32,

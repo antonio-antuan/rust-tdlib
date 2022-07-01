@@ -102,10 +102,6 @@ pub struct UserTypeBot {
 
     #[serde(default)]
     need_location: bool,
-    /// True, if the bot can be added to attachment menu
-
-    #[serde(default)]
-    can_be_added_to_attachment_menu: bool,
 }
 
 impl RObject for UserTypeBot {
@@ -151,10 +147,6 @@ impl UserTypeBot {
     pub fn need_location(&self) -> bool {
         self.need_location
     }
-
-    pub fn can_be_added_to_attachment_menu(&self) -> bool {
-        self.can_be_added_to_attachment_menu
-    }
 }
 
 #[doc(hidden)]
@@ -192,14 +184,6 @@ impl RTDUserTypeBotBuilder {
 
     pub fn need_location(&mut self, need_location: bool) -> &mut Self {
         self.inner.need_location = need_location;
-        self
-    }
-
-    pub fn can_be_added_to_attachment_menu(
-        &mut self,
-        can_be_added_to_attachment_menu: bool,
-    ) -> &mut Self {
-        self.inner.can_be_added_to_attachment_menu = can_be_added_to_attachment_menu;
         self
     }
 }

@@ -28,7 +28,7 @@ pub struct GetMapThumbnailFile {
 
     #[serde(default)]
     scale: i32,
-    /// Identifier of a chat in which the thumbnail will be shown. Use 0 if unknown
+    /// Identifier of a chat, in which the thumbnail will be shown. Use 0 if unknown
 
     #[serde(default)]
     chat_id: i64,

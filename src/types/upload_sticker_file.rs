@@ -15,6 +15,8 @@ pub struct UploadStickerFile {
     #[serde(default)]
     user_id: i64,
     /// Sticker file to upload
+
+    #[serde(skip_serializing_if = "InputSticker::_is_default")]
     sticker: InputSticker,
 
     #[serde(rename(serialize = "@type"))]

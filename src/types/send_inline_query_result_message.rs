@@ -18,7 +18,7 @@ pub struct SendInlineQueryResultMessage {
 
     #[serde(default)]
     message_thread_id: i64,
-    /// Identifier of a replied message; 0 if none
+    /// Identifier of a message to reply to or 0
 
     #[serde(default)]
     reply_to_message_id: i64,
@@ -33,7 +33,7 @@ pub struct SendInlineQueryResultMessage {
 
     #[serde(default)]
     result_id: String,
-    /// Pass true to hide the bot, via which the message is sent. Can be used only for bots GetOption("animation_search_bot_username"), GetOption("photo_search_bot_username"), and GetOption("venue_search_bot_username")
+    /// If true, there will be no mention of a bot, via which the message is sent. Can be used only for bots GetOption("animation_search_bot_username"), GetOption("photo_search_bot_username") and GetOption("venue_search_bot_username")
 
     #[serde(default)]
     hide_via_bot: bool,

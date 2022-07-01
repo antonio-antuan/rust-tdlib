@@ -25,10 +25,8 @@ pub struct ChatPhoto {
 
     #[serde(default)]
     sizes: Vec<PhotoSize>,
-    /// A big (640x640) animated variant of the photo in MPEG4 format; may be null
+    /// Animated variant of the photo in MPEG4 format; may be null
     animation: Option<AnimatedChatPhoto>,
-    /// A small (160x160) animated variant of the photo in MPEG4 format; may be null even the big animation is available
-    small_animation: Option<AnimatedChatPhoto>,
 }
 
 impl RObject for ChatPhoto {
@@ -72,10 +70,6 @@ impl ChatPhoto {
     pub fn animation(&self) -> &Option<AnimatedChatPhoto> {
         &self.animation
     }
-
-    pub fn small_animation(&self) -> &Option<AnimatedChatPhoto> {
-        &self.small_animation
-    }
 }
 
 #[doc(hidden)]
@@ -110,14 +104,6 @@ impl RTDChatPhotoBuilder {
 
     pub fn animation<T: AsRef<AnimatedChatPhoto>>(&mut self, animation: T) -> &mut Self {
         self.inner.animation = Some(animation.as_ref().clone());
-        self
-    }
-
-    pub fn small_animation<T: AsRef<AnimatedChatPhoto>>(
-        &mut self,
-        small_animation: T,
-    ) -> &mut Self {
-        self.inner.small_animation = Some(small_animation.as_ref().clone());
         self
     }
 }

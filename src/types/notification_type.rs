@@ -155,10 +155,6 @@ pub struct NotificationTypeNewMessage {
     client_id: Option<i32>,
     /// The message
     message: Message,
-    /// True, if message content must be displayed in notifications
-
-    #[serde(default)]
-    show_preview: bool,
 }
 
 impl RObject for NotificationTypeNewMessage {
@@ -188,10 +184,6 @@ impl NotificationTypeNewMessage {
     pub fn message(&self) -> &Message {
         &self.message
     }
-
-    pub fn show_preview(&self) -> bool {
-        self.show_preview
-    }
 }
 
 #[doc(hidden)]
@@ -206,11 +198,6 @@ impl RTDNotificationTypeNewMessageBuilder {
 
     pub fn message<T: AsRef<Message>>(&mut self, message: T) -> &mut Self {
         self.inner.message = message.as_ref().clone();
-        self
-    }
-
-    pub fn show_preview(&mut self, show_preview: bool) -> &mut Self {
-        self.inner.show_preview = show_preview;
         self
     }
 }

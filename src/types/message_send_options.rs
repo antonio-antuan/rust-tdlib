@@ -18,10 +18,6 @@ pub struct MessageSendOptions {
 
     #[serde(default)]
     from_background: bool,
-    /// Pass true if the content of the message must be protected from forwarding and saving; for bots only
-
-    #[serde(default)]
-    protect_content: bool,
     /// Message scheduling state; pass null to send message immediately. Messages sent to a secret chat, live location messages and self-destructing messages can't be scheduled
 
     #[serde(skip_serializing_if = "MessageSchedulingState::_is_default")]
@@ -58,10 +54,6 @@ impl MessageSendOptions {
         self.from_background
     }
 
-    pub fn protect_content(&self) -> bool {
-        self.protect_content
-    }
-
     pub fn scheduling_state(&self) -> &MessageSchedulingState {
         &self.scheduling_state
     }
@@ -84,11 +76,6 @@ impl RTDMessageSendOptionsBuilder {
 
     pub fn from_background(&mut self, from_background: bool) -> &mut Self {
         self.inner.from_background = from_background;
-        self
-    }
-
-    pub fn protect_content(&mut self, protect_content: bool) -> &mut Self {
-        self.inner.protect_content = protect_content;
         self
     }
 

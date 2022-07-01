@@ -22,7 +22,7 @@ pub enum LanguagePackStringValue {
     /// An ordinary language pack string
     #[serde(rename(deserialize = "languagePackStringValueOrdinary"))]
     Ordinary(LanguagePackStringValueOrdinary),
-    /// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more information
+    /// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
     #[serde(rename(deserialize = "languagePackStringValuePluralized"))]
     Pluralized(LanguagePackStringValuePluralized),
 }
@@ -203,7 +203,7 @@ impl AsRef<LanguagePackStringValueOrdinary> for RTDLanguagePackStringValueOrdina
     }
 }
 
-/// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more information
+/// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LanguagePackStringValuePluralized {
     #[doc(hidden)]

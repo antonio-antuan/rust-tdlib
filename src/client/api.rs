@@ -1,211 +1,19 @@
-use super::{
-    observer::OBSERVER,
-    tdlib_client::{TdJson, TdLibClient},
-};
+use super::Client;
+use super::{observer::OBSERVER, tdlib_client::TdLibClient};
 use crate::{
     errors::{RTDError, RTDResult},
     types::*,
 };
-use tokio::sync::mpsc;
 
 const CLOSED_RECEIVER_ERROR: RTDError = RTDError::Internal("receiver already closed");
 const INVALID_RESPONSE_ERROR: RTDError = RTDError::Internal("receive invalid response");
 const NO_EXTRA: RTDError =
     RTDError::Internal("invalid tdlib response type, not have `extra` field");
-const CLIENT_NOT_AUTHORIZED: RTDError = RTDError::Internal("client not authorized yet");
 
-/// Represents state of particular client instance.
-#[derive(Debug, Clone, PartialEq)]
-pub enum ClientState {
-    /// Client opened. You can start interaction
-    Opened,
-    /// Client closed. You must reopen it if you want to interact with TDLib
-    Closed,
-    /// Client not authorizde yet
-    Authorizing,
-}
-
-/// Struct stores all methods which you can call to interact with Telegram, such as:
-/// [send_message](Api::send_message), [download_file](Api::download_file), [search_chats](Api::search_chats) and so on.
-#[derive(Clone, Debug)]
-pub struct Client<S>
-where
-    S: TdLibClient + Clone,
-{
-    tdlib_client: S,
-    client_id: Option<i32>,
-    is_started: bool,
-    updates_sender: Option<mpsc::Sender<Box<Update>>>,
-    tdlib_parameters: TdlibParameters,
-    auth_state_channel_size: Option<usize>,
-}
-
-impl<S> Client<S>
-where
-    S: TdLibClient + Clone,
-{
-    pub(crate) fn get_auth_state_channel_size(&self) -> Option<usize> {
-        self.auth_state_channel_size
-    }
-
-    pub(crate) fn tdlib_parameters(&self) -> &TdlibParameters {
-        &self.tdlib_parameters
-    }
-
-    pub fn get_tdlib_client(&self) -> S {
-        self.tdlib_client.clone()
-    }
-
-    pub(crate) fn get_client_id(&self) -> RTDResult<i32> {
-        match self.client_id {
-            Some(client_id) => Ok(client_id),
-            None => Err(CLIENT_NOT_AUTHORIZED),
-        }
-    }
-
-    pub(crate) fn take_client_id(&mut self) -> RTDResult<i32> {
-        match self.client_id.take() {
-            Some(client_id) => Ok(client_id),
-            None => Err(CLIENT_NOT_AUTHORIZED),
-        }
-    }
-
-    pub(crate) fn set_client_id(&mut self, client_id: i32) -> RTDResult<()> {
-        match self.client_id {
-            Some(_) => Err(RTDError::BadRequest("client already authorized")),
-            None => {
-                self.client_id = Some(client_id);
-                self.is_started = true;
-                Ok(())
-            }
-        }
-    }
-
-    pub(crate) fn updates_sender(&self) -> &Option<mpsc::Sender<Box<Update>>> {
-        &self.updates_sender
-    }
-}
-
-#[derive(Debug)]
-pub struct ClientBuilder<R>
-where
-    R: TdLibClient + Clone,
-{
-    updates_sender: Option<mpsc::Sender<Box<Update>>>,
-    tdlib_parameters: Option<TdlibParameters>,
-    tdlib_client: R,
-    auth_state_channel_size: Option<usize>,
-}
-
-impl Default for ClientBuilder<TdJson> {
-    fn default() -> Self {
-        Self {
-            updates_sender: None,
-            tdlib_parameters: None,
-            auth_state_channel_size: None,
-            tdlib_client: TdJson::new(),
-        }
-    }
-}
-
-impl<R> ClientBuilder<R>
-where
-    R: TdLibClient + Clone,
-{
-    /// If you want to receive Telegram updates (messages, channels, etc; see `crate::types::Update`),
-    /// you must set mpsc::Sender here.
-    pub fn with_updates_sender(mut self, updates_sender: mpsc::Sender<Box<Update>>) -> Self {
-        self.updates_sender = Some(updates_sender);
-        self
-    }
-
-    /// If you want to receive all (AuthorizationState)[crate::types::authorization_state::AuthorizationState] changes
-    /// you have to specify positive number of (channel)[tokio::sync::mpsc::channel] size.
-    /// Channel will be used to send state changes.
-    pub fn with_auth_state_channel(mut self, channel_size: usize) -> Self {
-        self.auth_state_channel_size = Some(channel_size);
-        self
-    }
-
-    /// Base parameters for your TDlib instance.
-    pub fn with_tdlib_parameters(mut self, tdlib_parameters: TdlibParameters) -> Self {
-        self.tdlib_parameters = Some(tdlib_parameters);
-        self
-    }
-
-    #[doc(hidden)]
-    pub fn with_tdlib_client<T: TdLibClient + Clone>(self, tdlib_client: T) -> ClientBuilder<T> {
-        ClientBuilder {
-            tdlib_client,
-            updates_sender: self.updates_sender,
-            tdlib_parameters: self.tdlib_parameters,
-            auth_state_channel_size: self.auth_state_channel_size,
-        }
-    }
-
-    pub fn build(self) -> RTDResult<Client<R>> {
-        if self.tdlib_parameters.is_none() {
-            return Err(RTDError::BadRequest("tdlib_parameters not set"));
-        };
-
-        let client = Client::new(
-            self.tdlib_client,
-            self.updates_sender,
-            self.tdlib_parameters.unwrap(),
-            self.auth_state_channel_size,
-        );
-        Ok(client)
-    }
-}
-
-impl Client<TdJson> {
-    pub fn builder() -> ClientBuilder<TdJson> {
-        ClientBuilder::default()
-    }
-}
-/// TDLib high-level API methods.
-/// Methods documentation can be found in https://core.telegram.org/tdlib/docs/td__api_8h.html
 impl<R> Client<R>
 where
     R: TdLibClient + Clone,
 {
-    #[doc(hidden)]
-    pub fn new(
-        tdlib_client: R,
-        updates_sender: Option<mpsc::Sender<Box<Update>>>,
-        tdlib_parameters: TdlibParameters,
-        auth_state_channel_size: Option<usize>,
-    ) -> Self {
-        Self {
-            tdlib_client,
-            updates_sender,
-            tdlib_parameters,
-            auth_state_channel_size,
-            is_started: false,
-            client_id: None,
-        }
-    }
-
-    pub fn set_updates_sender(
-        &mut self,
-        updates_sender: mpsc::Sender<Box<Update>>,
-    ) -> RTDResult<()> {
-        match self.is_started {
-            true => Err(RTDError::BadRequest(
-                "can't set updates sender when client already started",
-            )),
-            false => {
-                self.updates_sender = Some(updates_sender);
-                Ok(())
-            }
-        }
-    }
-
-    /// Just a shortcut for `crate::client::client::Client::close`, allows you to stop the client.
-    pub async fn stop(&self) -> RTDResult<Ok> {
-        self.close(Close::builder().build()).await
-    }
-
     // Accepts an incoming call
     pub async fn accept_call<C: AsRef<AcceptCall>>(&self, accept_call: C) -> RTDResult<Ok> {
         let extra = accept_call.as_ref().extra().ok_or(NO_EXTRA)?;
@@ -216,11 +24,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -240,11 +47,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -264,11 +70,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -288,11 +93,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -312,11 +116,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -333,11 +136,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -362,11 +164,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -386,35 +187,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Adds a file from a message to the list of file downloads. Download progress and completion of the download will be notified through updateFile updates. If message database is used, the list of file downloads is persistent across application restarts. The downloading is independent from download using downloadFile, i.e. it continues if downloadFile is canceled or is used to download a part of the file
-    pub async fn add_file_to_downloads<C: AsRef<AddFileToDownloads>>(
-        &self,
-        add_file_to_downloads: C,
-    ) -> RTDResult<File> {
-        let extra = add_file_to_downloads.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, add_file_to_downloads.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::File(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -434,11 +210,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -458,11 +233,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -482,11 +256,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -503,11 +276,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Proxy(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Proxy>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -527,11 +299,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Stickers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Stickers>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -551,11 +322,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -575,38 +345,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Adds a new notification sound to the list of saved notification sounds. The new notification sound is added to the top of the list. If it is already in the list, its position isn't changed
-    pub async fn add_saved_notification_sound<C: AsRef<AddSavedNotificationSound>>(
-        &self,
-        add_saved_notification_sound: C,
-    ) -> RTDResult<NotificationSound> {
-        let extra = add_saved_notification_sound
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, add_saved_notification_sound.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::NotificationSound(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -626,11 +368,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSet(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSet>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -650,11 +391,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -674,11 +414,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -698,11 +437,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -722,11 +460,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -746,35 +483,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Sets the result of interaction with a Web App and sends corresponding message on behalf of the user to the chat from which the query originated; for bots only
-    pub async fn answer_web_app_query<C: AsRef<AnswerWebAppQuery>>(
-        &self,
-        answer_web_app_query: C,
-    ) -> RTDResult<SentWebAppMessage> {
-        let extra = answer_web_app_query.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, answer_web_app_query.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::SentWebAppMessage(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -794,11 +506,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -823,11 +534,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -847,11 +557,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::CanTransferOwnershipResult(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<CanTransferOwnershipResult>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -871,11 +580,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -895,11 +603,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -919,11 +626,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -943,11 +649,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ImportedContacts(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ImportedContacts>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -967,11 +672,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -991,11 +695,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1020,11 +723,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1044,11 +746,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1073,11 +774,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1104,11 +804,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1133,11 +832,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1157,11 +855,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLinkInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLinkInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1181,18 +878,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::CheckChatUsernameResult(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<CheckChatUsernameResult>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Checks whether the maximum number of owned public chats has been reached. Returns corresponding error if the limit was reached. The limit can be increased with Telegram Premium
+    // Checks whether the maximum number of owned public chats has been reached. Returns corresponding error if the limit was reached
     pub async fn check_created_public_chats_limit<C: AsRef<CheckCreatedPublicChatsLimit>>(
         &self,
         check_created_public_chats_limit: C,
@@ -1210,11 +906,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1239,11 +934,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1270,11 +964,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1297,11 +990,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1328,11 +1020,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1359,11 +1050,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1388,11 +1078,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PasswordState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PasswordState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1412,11 +1101,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::CheckStickerSetNameResult(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<CheckStickerSetNameResult>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1436,18 +1124,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Clears message drafts in all chats
+    // Clears draft messages in all chats
     pub async fn clear_all_draft_messages<C: AsRef<ClearAllDraftMessages>>(
         &self,
         clear_all_draft_messages: C,
@@ -1460,11 +1147,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1484,11 +1170,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1508,11 +1193,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1535,11 +1219,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1562,40 +1245,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Sticker(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Informs TDLib that the user clicked Premium subscription button on the Premium features screen
-    pub async fn click_premium_subscription_button<C: AsRef<ClickPremiumSubscriptionButton>>(
-        &self,
-        click_premium_subscription_button: C,
-    ) -> RTDResult<Ok> {
-        let extra = click_premium_subscription_button
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            click_premium_subscription_button.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Sticker>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1612,11 +1265,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1633,11 +1285,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1657,32 +1308,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Informs TDLib that a previously opened Web App was closed
-    pub async fn close_web_app<C: AsRef<CloseWebApp>>(&self, close_web_app: C) -> RTDResult<Ok> {
-        let extra = close_web_app.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, close_web_app.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1707,11 +1336,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Session(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Session>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1731,11 +1359,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1752,18 +1379,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::CallId(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<CallId>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Creates new chat filter. Returns information about the created chat filter. There can be up to GetOption("chat_filter_count_max") chat filters, but the limit can be increased with Telegram Premium
+    // Creates new chat filter. Returns information about the created chat filter
     pub async fn create_chat_filter<C: AsRef<CreateChatFilter>>(
         &self,
         create_chat_filter: C,
@@ -1776,11 +1402,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatFilterInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatFilterInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1800,35 +1425,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLink(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Creates a link for the given invoice; for bots only
-    pub async fn create_invoice_link<C: AsRef<CreateInvoiceLink>>(
-        &self,
-        create_invoice_link: C,
-    ) -> RTDResult<HttpUrl> {
-        let extra = create_invoice_link.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, create_invoice_link.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLink>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1851,11 +1451,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1875,11 +1474,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1899,11 +1497,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSet(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSet>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1926,11 +1523,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1950,11 +1546,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1974,11 +1569,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -1998,11 +1592,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2022,11 +1615,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TemporaryPasswordState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TemporaryPasswordState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2046,11 +1638,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::GroupCallId(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<GroupCallId>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2070,11 +1661,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2094,11 +1684,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2123,18 +1712,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Deletes a chat along with all messages in the corresponding chat for all chat members. For group chats this will release the username and remove all members. Use the field chat.can_be_deleted_for_all_users to find whether the method can be applied to the chat
+    // Deletes a chat along with all messages in the corresponding chat for all chat members; requires owner privileges. For group chats this will release the username and remove all members. Chats with more than 1000 members can't be deleted using this method
     pub async fn delete_chat<C: AsRef<DeleteChat>>(&self, delete_chat: C) -> RTDResult<Ok> {
         let extra = delete_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
@@ -2144,11 +1732,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2168,11 +1755,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2192,11 +1778,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2219,11 +1804,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2248,11 +1832,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2272,11 +1855,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2296,11 +1878,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2317,11 +1898,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2341,11 +1921,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2365,11 +1944,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2389,11 +1967,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2413,11 +1990,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2442,11 +2018,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2466,18 +2041,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Deletes saved order information
+    // Deletes saved order info
     pub async fn delete_saved_order_info<C: AsRef<DeleteSavedOrderInfo>>(
         &self,
         delete_saved_order_info: C,
@@ -2490,11 +2064,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2511,11 +2084,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2532,11 +2104,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2553,11 +2124,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2577,11 +2147,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2601,11 +2170,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2622,11 +2190,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::File(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<File>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2646,11 +2213,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatFilterInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatFilterInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2670,11 +2236,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLink(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLink>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2699,11 +2264,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2726,11 +2290,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2755,11 +2318,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2779,11 +2341,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2808,11 +2369,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2832,11 +2392,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2856,11 +2415,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2883,11 +2441,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2907,11 +2464,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2931,11 +2487,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2960,11 +2515,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -2984,11 +2538,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3005,11 +2558,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Proxy(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Proxy>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3026,11 +2578,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3047,11 +2598,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3071,11 +2621,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3100,11 +2649,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3124,11 +2672,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3148,11 +2695,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3172,11 +2718,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AccountTtl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AccountTtl>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3201,11 +2746,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3225,35 +2769,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Sessions(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns all emojis, which has a corresponding animated emoji
-    pub async fn get_all_animated_emojis<C: AsRef<GetAllAnimatedEmojis>>(
-        &self,
-        get_all_animated_emojis: C,
-    ) -> RTDResult<Emojis> {
-        let extra = get_all_animated_emojis.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_all_animated_emojis.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Emojis(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Sessions>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3273,11 +2792,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PassportElements(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PassportElements>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3297,11 +2815,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AnimatedEmoji(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AnimatedEmoji>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3321,11 +2838,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::JsonValue(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<JsonValue>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3350,11 +2866,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<HttpUrl>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3374,11 +2889,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSets(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSets>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3398,35 +2912,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSets(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns information about a bot that can be added to attachment menu
-    pub async fn get_attachment_menu_bot<C: AsRef<GetAttachmentMenuBot>>(
-        &self,
-        get_attachment_menu_bot: C,
-    ) -> RTDResult<AttachmentMenuBot> {
-        let extra = get_attachment_menu_bot.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_attachment_menu_bot.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AttachmentMenuBot(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSets>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3446,11 +2935,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AuthorizationState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AuthorizationState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3475,11 +2963,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AutoDownloadSettingsPresets(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AutoDownloadSettingsPresets>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3499,11 +2986,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<HttpUrl>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3523,11 +3009,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Backgrounds(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Backgrounds>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3547,11 +3032,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::BankCardInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<BankCardInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3571,11 +3055,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::BasicGroup(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<BasicGroup>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3595,11 +3078,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::BasicGroupFullInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<BasicGroupFullInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3622,11 +3104,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageSenders(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageSenders>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3646,11 +3127,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::CallbackQueryAnswer(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<CallbackQueryAnswer>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3673,11 +3153,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3694,11 +3173,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3718,11 +3196,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatAdministrators(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatAdministrators>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3747,11 +3224,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageSenders(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageSenders>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3771,11 +3247,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatEvents(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatEvents>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3795,11 +3270,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatFilter(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatFilter>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3824,11 +3298,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3848,11 +3321,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3872,11 +3344,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLink(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLink>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3899,11 +3370,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLinkCounts(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLinkCounts>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3926,11 +3396,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLinkMembers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLinkMembers>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3950,11 +3419,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLinks(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLinks>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -3974,11 +3442,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatJoinRequests(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatJoinRequests>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4001,11 +3468,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatLists(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatLists>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4025,11 +3491,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatMember(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatMember>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4049,11 +3514,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4073,11 +3537,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageCalendar(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageCalendar>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4097,11 +3560,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Count(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Count>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4128,11 +3590,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4152,11 +3613,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4179,11 +3639,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4208,11 +3667,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessagePositions(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessagePositions>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4235,11 +3693,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::SponsoredMessage(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<SponsoredMessage>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4259,11 +3716,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatStatistics(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatStatistics>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4280,11 +3736,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4304,11 +3759,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::BotCommands(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<BotCommands>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4328,11 +3782,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ConnectedWebsites(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ConnectedWebsites>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4349,11 +3802,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Users(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Users>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4373,11 +3825,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Countries(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Countries>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4397,11 +3848,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4421,11 +3871,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4445,11 +3894,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Updates(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Updates>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4469,11 +3917,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::DatabaseStatistics(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<DatabaseStatistics>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4493,11 +3940,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::DeepLinkInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<DeepLinkInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4517,11 +3963,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<HttpUrl>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4541,11 +3986,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<HttpUrl>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4565,11 +4009,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LoginUrlInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LoginUrlInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4589,11 +4032,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Stickers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Stickers>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4610,11 +4052,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::File(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<File>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4625,7 +4066,7 @@ where
     pub async fn get_file_downloaded_prefix_size<C: AsRef<GetFileDownloadedPrefixSize>>(
         &self,
         get_file_downloaded_prefix_size: C,
-    ) -> RTDResult<FileDownloadedPrefixSize> {
+    ) -> RTDResult<Count> {
         let extra = get_file_downloaded_prefix_size
             .as_ref()
             .extra()
@@ -4639,11 +4080,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FileDownloadedPrefixSize(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Count>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4663,11 +4103,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4687,11 +4126,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4711,11 +4149,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::GameHighScores(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<GameHighScores>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4735,11 +4172,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::GroupCall(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<GroupCall>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4762,11 +4198,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<HttpUrl>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4791,35 +4226,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FilePart(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns information about available group call streams
-    pub async fn get_group_call_streams<C: AsRef<GetGroupCallStreams>>(
-        &self,
-        get_group_call_streams: C,
-    ) -> RTDResult<GroupCallStreams> {
-        let extra = get_group_call_streams.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_group_call_streams.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::GroupCallStreams(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<FilePart>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4839,11 +4249,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4866,18 +4275,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Count(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Count>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Returns a list of recently inactive supergroups and channels. Can be used when user reaches limit on the number of joined supergroups and channels and receives CHANNELS_TOO_MUCH error. Also, the limit can be increased with Telegram Premium
+    // Returns a list of recently inactive supergroups and channels. Can be used when user reaches limit on the number of joined supergroups and channels and receives CHANNELS_TOO_MUCH error
     pub async fn get_inactive_supergroup_chats<C: AsRef<GetInactiveSupergroupChats>>(
         &self,
         get_inactive_supergroup_chats: C,
@@ -4895,11 +4303,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4922,11 +4329,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::GameHighScores(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<GameHighScores>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4946,11 +4352,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::InlineQueryResults(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<InlineQueryResults>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4973,11 +4378,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSets(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSets>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -4997,11 +4401,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::InternalLinkType(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<InternalLinkType>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5021,11 +4424,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5045,11 +4447,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::JsonValue(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<JsonValue>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5069,11 +4470,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LanguagePackInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LanguagePackInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5093,11 +4493,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LanguagePackStringValue(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LanguagePackStringValue>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5117,11 +4516,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LanguagePackStrings(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LanguagePackStrings>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5144,11 +4542,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LocalizationTargetInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LocalizationTargetInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5168,11 +4565,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LogStream(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LogStream>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5195,11 +4591,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LogVerbosityLevel(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LogVerbosityLevel>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5216,11 +4611,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LogTags(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LogTags>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5240,11 +4634,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LogVerbosityLevel(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LogVerbosityLevel>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5264,11 +4657,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<HttpUrl>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5288,11 +4680,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::LoginUrlInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<LoginUrlInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5312,11 +4703,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::File(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<File>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5336,11 +4726,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FormattedText(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<FormattedText>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5357,35 +4746,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::User(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns menu button set by the bot for the given user; for bots only
-    pub async fn get_menu_button<C: AsRef<GetMenuButton>>(
-        &self,
-        get_menu_button: C,
-    ) -> RTDResult<BotMenuButton> {
-        let extra = get_menu_button.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_menu_button.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::BotMenuButton(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<User>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5402,67 +4766,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns reactions added for a message, along with their sender
-    pub async fn get_message_added_reactions<C: AsRef<GetMessageAddedReactions>>(
-        &self,
-        get_message_added_reactions: C,
-    ) -> RTDResult<AddedReactions> {
-        let extra = get_message_added_reactions
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_message_added_reactions.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AddedReactions(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns reactions, which can be added to a message. The list can change after updateReactions, updateChatAvailableReactions for the chat, or updateMessageInteractionInfo for the message. The method will return Premium reactions, even the current user has no Premium subscription
-    pub async fn get_message_available_reactions<C: AsRef<GetMessageAvailableReactions>>(
-        &self,
-        get_message_available_reactions: C,
-    ) -> RTDResult<AvailableReactions> {
-        let extra = get_message_available_reactions
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            get_message_available_reactions.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AvailableReactions(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5485,18 +4792,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Returns information about a file with messages exported from another application
+    // Returns information about a file with messages exported from another app
     pub async fn get_message_file_type<C: AsRef<GetMessageFileType>>(
         &self,
         get_message_file_type: C,
@@ -5509,11 +4815,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageFileType(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageFileType>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5540,11 +4845,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5564,11 +4868,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageLink(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageLink>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5588,18 +4891,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageLinkInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageLinkInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Returns information about a message, if it is available without sending network request. This is an offline request
+    // Returns information about a message, if it is available locally without sending network request. This is an offline request
     pub async fn get_message_locally<C: AsRef<GetMessageLocally>>(
         &self,
         get_message_locally: C,
@@ -5612,11 +4914,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5639,11 +4940,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FoundMessages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<FoundMessages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5663,11 +4963,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageStatistics(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageStatistics>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5687,11 +4986,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageThreadInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageThreadInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5714,11 +5012,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5738,11 +5035,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Users(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Users>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5762,11 +5058,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5786,11 +5081,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::NetworkStatistics(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<NetworkStatistics>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5807,11 +5101,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::OptionValue(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<OptionValue>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5836,11 +5129,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PassportAuthorizationForm(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PassportAuthorizationForm>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5867,11 +5159,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PassportElementsWithErrors(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PassportElementsWithErrors>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5891,11 +5182,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PassportElement(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PassportElement>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5915,11 +5205,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PasswordState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PasswordState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5939,11 +5228,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PaymentForm(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PaymentForm>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5963,11 +5251,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PaymentReceipt(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PaymentReceipt>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -5987,11 +5274,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PhoneNumberInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PhoneNumberInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6014,11 +5300,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PhoneNumberInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PhoneNumberInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6038,11 +5323,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Users(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Users>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6067,107 +5351,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns information about features, available to Premium users
-    pub async fn get_premium_features<C: AsRef<GetPremiumFeatures>>(
-        &self,
-        get_premium_features: C,
-    ) -> RTDResult<PremiumFeatures> {
-        let extra = get_premium_features.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_premium_features.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PremiumFeatures(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns information about a limit, increased for Premium users. Returns a 404 error if the limit is unknown
-    pub async fn get_premium_limit<C: AsRef<GetPremiumLimit>>(
-        &self,
-        get_premium_limit: C,
-    ) -> RTDResult<PremiumLimit> {
-        let extra = get_premium_limit.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_premium_limit.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PremiumLimit(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns state of Telegram Premium subscription and promotion videos for Premium features
-    pub async fn get_premium_state<C: AsRef<GetPremiumState>>(
-        &self,
-        get_premium_state: C,
-    ) -> RTDResult<PremiumState> {
-        let extra = get_premium_state.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_premium_state.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PremiumState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns examples of premium stickers for demonstration purposes
-    pub async fn get_premium_stickers<C: AsRef<GetPremiumStickers>>(
-        &self,
-        get_premium_stickers: C,
-    ) -> RTDResult<Stickers> {
-        let extra = get_premium_stickers.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_premium_stickers.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Stickers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6184,11 +5371,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Proxies(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Proxies>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6208,11 +5394,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<HttpUrl>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6232,11 +5417,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PushReceiverId(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PushReceiverId>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6256,11 +5440,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Users(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Users>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6280,11 +5463,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Stickers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Stickers>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6304,11 +5486,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6333,11 +5514,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TMeUrls(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TMeUrls>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6360,11 +5540,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::RecommendedChatFilters(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<RecommendedChatFilters>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6387,11 +5566,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::RecoveryEmailAddress(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<RecoveryEmailAddress>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6411,11 +5589,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::File(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<File>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6435,11 +5612,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6459,74 +5635,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Animations(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Animations>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Returns saved notification sound by its identifier. Returns a 404 error if there is no saved notification sound with the specified identifier
-    pub async fn get_saved_notification_sound<C: AsRef<GetSavedNotificationSound>>(
-        &self,
-        get_saved_notification_sound: C,
-    ) -> RTDResult<NotificationSounds> {
-        let extra = get_saved_notification_sound
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_saved_notification_sound.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::NotificationSounds(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns list of saved notification sounds. If a sound isn't in the list, then default sound needs to be used
-    pub async fn get_saved_notification_sounds<C: AsRef<GetSavedNotificationSounds>>(
-        &self,
-        get_saved_notification_sounds: C,
-    ) -> RTDResult<NotificationSounds> {
-        let extra = get_saved_notification_sounds
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            get_saved_notification_sounds.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::NotificationSounds(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns saved order information. Returns a 404 error if there is no saved order information
+    // Returns saved order info, if any
     pub async fn get_saved_order_info<C: AsRef<GetSavedOrderInfo>>(
         &self,
         get_saved_order_info: C,
@@ -6539,11 +5658,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::OrderInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<OrderInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6568,11 +5686,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ScopeNotificationSettings(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ScopeNotificationSettings>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6592,11 +5709,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::SecretChat(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<SecretChat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6616,11 +5732,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StatisticalGraph(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StatisticalGraph>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6640,11 +5755,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Emojis(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Emojis>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6664,11 +5778,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSet(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSet>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6688,11 +5801,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Stickers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Stickers>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6712,11 +5824,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StorageStatistics(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StorageStatistics>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6739,11 +5850,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StorageStatisticsFast(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StorageStatisticsFast>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6763,11 +5873,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6792,11 +5901,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6821,11 +5929,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6845,11 +5952,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Supergroup(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Supergroup>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6869,11 +5975,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::SupergroupFullInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<SupergroupFullInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6893,11 +5998,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatMembers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatMembers>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6917,11 +6021,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::User(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<User>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6944,11 +6047,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TemporaryPasswordState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TemporaryPasswordState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -6968,40 +6070,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TextEntities(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Converts a themeParameters object to corresponding JSON-serialized string. Can be called synchronously
-    pub async fn get_theme_parameters_json_string<C: AsRef<GetThemeParametersJsonString>>(
-        &self,
-        get_theme_parameters_json_string: C,
-    ) -> RTDResult<Text> {
-        let extra = get_theme_parameters_json_string
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            get_theme_parameters_json_string.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TextEntities>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7018,11 +6090,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7033,7 +6104,7 @@ where
     pub async fn get_trending_sticker_sets<C: AsRef<GetTrendingStickerSets>>(
         &self,
         get_trending_sticker_sets: C,
-    ) -> RTDResult<TrendingStickerSets> {
+    ) -> RTDResult<StickerSets> {
         let extra = get_trending_sticker_sets.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
         self.tdlib_client
@@ -7042,11 +6113,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TrendingStickerSets(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSets>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7063,11 +6133,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::User(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<User>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7087,11 +6156,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::UserFullInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<UserFullInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7116,11 +6184,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::UserPrivacySettingRules(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<UserPrivacySettingRules>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7140,11 +6207,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatPhotos(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatPhotos>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7171,59 +6237,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::MessageSenders(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns RTMP URL for streaming to the chat; requires creator privileges
-    pub async fn get_video_chat_rtmp_url<C: AsRef<GetVideoChatRtmpUrl>>(
-        &self,
-        get_video_chat_rtmp_url: C,
-    ) -> RTDResult<RtmpUrl> {
-        let extra = get_video_chat_rtmp_url.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_video_chat_rtmp_url.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::RtmpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Returns an HTTPS URL of a Web App to open after keyboardButtonTypeWebApp button is pressed
-    pub async fn get_web_app_url<C: AsRef<GetWebAppUrl>>(
-        &self,
-        get_web_app_url: C,
-    ) -> RTDResult<HttpUrl> {
-        let extra = get_web_app_url.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, get_web_app_url.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::HttpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<MessageSenders>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7243,11 +6260,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::WebPageInstantView(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<WebPageInstantView>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7267,11 +6283,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::WebPage(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<WebPage>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7291,11 +6306,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7315,11 +6329,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ImportedContacts(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ImportedContacts>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7339,11 +6352,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7368,18 +6380,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Adds the current user as a new member to a chat. Private and secret chats can't be joined using this method. May return an error with a message "INVITE_REQUEST_SENT" if only a join request was created
+    // Adds the current user as a new member to a chat. Private and secret chats can't be joined using this method
     pub async fn join_chat<C: AsRef<JoinChat>>(&self, join_chat: C) -> RTDResult<Ok> {
         let extra = join_chat.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(&extra);
@@ -7389,18 +6400,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Uses an invite link to add the current user to the chat if possible. May return an error with a message "INVITE_REQUEST_SENT" if only a join request was created
+    // Uses an invite link to add the current user to the chat if possible
     pub async fn join_chat_by_invite_link<C: AsRef<JoinChatByInviteLink>>(
         &self,
         join_chat_by_invite_link: C,
@@ -7413,11 +6423,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7437,11 +6446,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7458,11 +6466,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7482,11 +6489,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7503,11 +6509,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7530,11 +6535,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7551,11 +6555,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7572,11 +6575,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7596,35 +6598,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Informs TDLib that a Web App is being opened from attachment menu, a botMenuButton button, an internalLinkTypeAttachmentMenuBot link, or an inlineKeyboardButtonTypeWebApp button. For each bot, a confirmation alert about data sent to the bot must be shown once
-    pub async fn open_web_app<C: AsRef<OpenWebApp>>(
-        &self,
-        open_web_app: C,
-    ) -> RTDResult<WebAppInfo> {
-        let extra = open_web_app.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, open_web_app.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::WebAppInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7644,11 +6621,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StorageStatistics(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StorageStatistics>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7668,18 +6644,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FormattedText(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<FormattedText>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Parses Bold, Italic, Underline, Strikethrough, Spoiler, Code, Pre, PreCode, TextUrl and MentionName entities contained in the text. Can be called synchronously
+    // Parses Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities contained in the text. Can be called synchronously
     pub async fn parse_text_entities<C: AsRef<ParseTextEntities>>(
         &self,
         parse_text_entities: C,
@@ -7692,11 +6667,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FormattedText(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<FormattedText>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7716,11 +6690,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7737,11 +6710,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Seconds(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Seconds>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7761,11 +6733,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7788,11 +6759,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7812,35 +6782,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Rates recognized speech in a voice note message
-    pub async fn rate_speech_recognition<C: AsRef<RateSpeechRecognition>>(
-        &self,
-        rate_speech_recognition: C,
-    ) -> RTDResult<Ok> {
-        let extra = rate_speech_recognition.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, rate_speech_recognition.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7860,35 +6805,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Marks all reactions in a chat as read
-    pub async fn read_all_chat_reactions<C: AsRef<ReadAllChatReactions>>(
-        &self,
-        read_all_chat_reactions: C,
-    ) -> RTDResult<Ok> {
-        let extra = read_all_chat_reactions.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, read_all_chat_reactions.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7908,35 +6828,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FilePart(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Recognizes speech in a voice note message. The message must be successfully sent and must not be scheduled. May return an error with a message "MSG_VOICE_TOO_LONG" if the voice note is too long to be recognized
-    pub async fn recognize_speech<C: AsRef<RecognizeSpeech>>(
-        &self,
-        recognize_speech: C,
-    ) -> RTDResult<Ok> {
-        let extra = recognize_speech.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, recognize_speech.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<FilePart>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7961,11 +6856,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -7985,11 +6879,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PasswordState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PasswordState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8009,11 +6902,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PushReceiverId(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PushReceiverId>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8030,40 +6922,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Removes all files from the file download list
-    pub async fn remove_all_files_from_downloads<C: AsRef<RemoveAllFilesFromDownloads>>(
-        &self,
-        remove_all_files_from_downloads: C,
-    ) -> RTDResult<Ok> {
-        let extra = remove_all_files_from_downloads
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            remove_all_files_from_downloads.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8083,11 +6945,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8107,11 +6968,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8131,11 +6991,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8155,38 +7014,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Removes a file from the file download list
-    pub async fn remove_file_from_downloads<C: AsRef<RemoveFileFromDownloads>>(
-        &self,
-        remove_file_from_downloads: C,
-    ) -> RTDResult<Ok> {
-        let extra = remove_file_from_downloads
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, remove_file_from_downloads.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8206,11 +7037,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8230,11 +7060,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8251,11 +7080,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8275,11 +7103,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8299,11 +7126,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8326,11 +7152,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8350,40 +7175,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Removes a notification sound from the list of saved notification sounds
-    pub async fn remove_saved_notification_sound<C: AsRef<RemoveSavedNotificationSound>>(
-        &self,
-        remove_saved_notification_sound: C,
-    ) -> RTDResult<Ok> {
-        let extra = remove_saved_notification_sound
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            remove_saved_notification_sound.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8403,11 +7198,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8427,11 +7221,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8451,11 +7244,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8480,11 +7272,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8509,38 +7300,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLink(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Replaces the current RTMP URL for streaming to the chat; requires creator privileges
-    pub async fn replace_video_chat_rtmp_url<C: AsRef<ReplaceVideoChatRtmpUrl>>(
-        &self,
-        replace_video_chat_rtmp_url: C,
-    ) -> RTDResult<RtmpUrl> {
-        let extra = replace_video_chat_rtmp_url
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, replace_video_chat_rtmp_url.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::RtmpUrl(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLink>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8557,11 +7320,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8581,11 +7343,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8605,11 +7366,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8636,11 +7396,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8660,11 +7419,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::EmailAddressAuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<EmailAddressAuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8689,11 +7447,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8716,11 +7473,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8745,11 +7501,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8776,11 +7531,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::EmailAddressAuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<EmailAddressAuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8800,11 +7554,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8831,11 +7584,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8862,11 +7614,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8891,18 +7642,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PasswordState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PasswordState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Resets all notification settings to their default values. By default, all chats are unmuted and message previews are shown
+    // Resets all notification settings to their default values. By default, all chats are unmuted, the sound is set to "default" and message previews are shown
     pub async fn reset_all_notification_settings<C: AsRef<ResetAllNotificationSettings>>(
         &self,
         reset_all_notification_settings: C,
@@ -8920,11 +7670,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8944,11 +7693,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8968,11 +7716,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -8992,11 +7739,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ResetPasswordResult(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ResetPasswordResult>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9016,11 +7762,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatInviteLinks(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatInviteLinks>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9045,11 +7790,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9072,11 +7816,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9096,11 +7839,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Background(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Background>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9120,11 +7862,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9144,11 +7885,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatMembers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatMembers>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9168,11 +7908,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9199,11 +7938,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9220,11 +7958,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9244,11 +7981,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ChatsNearby(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ChatsNearby>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9268,11 +8004,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9292,11 +8027,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Users(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Users>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9316,35 +8050,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Emojis(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Searches for files in the file download list or recently downloaded files from the list
-    pub async fn search_file_downloads<C: AsRef<SearchFileDownloads>>(
-        &self,
-        search_file_downloads: C,
-    ) -> RTDResult<FoundFileDownloads> {
-        let extra = search_file_downloads.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, search_file_downloads.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FoundFileDownloads(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Emojis>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9364,11 +8073,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Hashtags(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Hashtags>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9393,11 +8101,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSets(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSets>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9417,40 +8124,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Searches for outgoing messages with content of the type messageDocument in all chats except secret chats. Returns the results in reverse chronological order
-    pub async fn search_outgoing_document_messages<C: AsRef<SearchOutgoingDocumentMessages>>(
-        &self,
-        search_outgoing_document_messages: C,
-    ) -> RTDResult<FoundMessages> {
-        let extra = search_outgoing_document_messages
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            search_outgoing_document_messages.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FoundMessages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9470,11 +8147,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9494,11 +8170,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chats(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chats>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9518,11 +8193,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::FoundMessages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<FoundMessages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9542,11 +8216,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSet(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSet>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9566,11 +8239,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSets(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSets>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9590,38 +8262,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Stickers(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Searches a user by their phone number. Returns a 404 error if the user can't be found
-    pub async fn search_user_by_phone_number<C: AsRef<SearchUserByPhoneNumber>>(
-        &self,
-        search_user_by_phone_number: C,
-    ) -> RTDResult<User> {
-        let extra = search_user_by_phone_number
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, search_user_by_phone_number.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::User(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Stickers>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9641,18 +8285,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Sends debug information for a call to Telegram servers
+    // Sends debug information for a call
     pub async fn send_call_debug_information<C: AsRef<SendCallDebugInformation>>(
         &self,
         send_call_debug_information: C,
@@ -9668,32 +8311,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Sends log file for a call to Telegram servers
-    pub async fn send_call_log<C: AsRef<SendCallLog>>(&self, send_call_log: C) -> RTDResult<Ok> {
-        let extra = send_call_log.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, send_call_log.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9713,11 +8334,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9737,11 +8357,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9761,11 +8380,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9792,11 +8410,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9816,11 +8433,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::CustomRequestResult(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<CustomRequestResult>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9847,11 +8463,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::EmailAddressAuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<EmailAddressAuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9876,11 +8491,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9897,11 +8511,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9921,11 +8534,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Messages(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Messages>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9950,11 +8562,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -9974,11 +8585,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PaymentResult(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PaymentResult>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10003,11 +8613,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10032,35 +8641,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::AuthenticationCodeInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Sends data received from a keyboardButtonTypeWebApp Web App to a bot
-    pub async fn send_web_app_data<C: AsRef<SendWebAppData>>(
-        &self,
-        send_web_app_data: C,
-    ) -> RTDResult<Ok> {
-        let extra = send_web_app_data.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, send_web_app_data.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<AuthenticationCodeInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10080,11 +8664,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10101,11 +8684,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10130,11 +8712,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10157,11 +8738,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10181,11 +8761,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Background(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Background>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10202,11 +8781,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10226,38 +8804,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Changes reactions, available in a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
-    pub async fn set_chat_available_reactions<C: AsRef<SetChatAvailableReactions>>(
-        &self,
-        set_chat_available_reactions: C,
-    ) -> RTDResult<Ok> {
-        let extra = set_chat_available_reactions
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, set_chat_available_reactions.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10277,11 +8827,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10301,11 +8850,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10325,11 +8873,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10349,11 +8896,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10373,11 +8919,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10397,11 +8942,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10421,18 +8965,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Changes the message TTL in a chat. Requires can_delete_messages administrator right in basic groups, supergroups and channels Message TTL can't be changed in a chat with the current user (Saved Messages) and the chat 777000 (Telegram).
+    // Changes the message TTL in a chat. Requires can_delete_messages administrator right in basic groups, supergroups and channels Message TTL can't be changed in a chat with the current user (Saved Messages) and the chat 777000 (Telegram)
     pub async fn set_chat_message_ttl<C: AsRef<SetChatMessageTtl>>(
         &self,
         set_chat_message_ttl: C,
@@ -10445,11 +8988,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10474,11 +9016,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10498,11 +9039,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10519,11 +9059,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10543,11 +9082,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10564,11 +9102,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10585,11 +9122,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10606,11 +9142,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10630,11 +9165,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10659,11 +9193,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10686,73 +9219,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Sets default administrator rights for adding the bot to channel chats; for bots only
-    pub async fn set_default_channel_administrator_rights<
-        C: AsRef<SetDefaultChannelAdministratorRights>,
-    >(
-        &self,
-        set_default_channel_administrator_rights: C,
-    ) -> RTDResult<Ok> {
-        let extra = set_default_channel_administrator_rights
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            set_default_channel_administrator_rights.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Sets default administrator rights for adding the bot to basic group and supergroup chats; for bots only
-    pub async fn set_default_group_administrator_rights<
-        C: AsRef<SetDefaultGroupAdministratorRights>,
-    >(
-        &self,
-        set_default_group_administrator_rights: C,
-    ) -> RTDResult<Ok> {
-        let extra = set_default_group_administrator_rights
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            set_default_group_administrator_rights.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10775,11 +9245,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10799,11 +9268,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Message(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Message>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10830,11 +9298,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10861,11 +9328,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10885,11 +9351,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10909,11 +9374,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10933,11 +9397,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10954,11 +9417,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -10975,11 +9437,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11002,11 +9463,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11026,59 +9486,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Sets menu button for the given user or for all users; for bots only
-    pub async fn set_menu_button<C: AsRef<SetMenuButton>>(
-        &self,
-        set_menu_button: C,
-    ) -> RTDResult<Ok> {
-        let extra = set_menu_button.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, set_menu_button.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Changes chosen reaction for a message
-    pub async fn set_message_reaction<C: AsRef<SetMessageReaction>>(
-        &self,
-        set_message_reaction: C,
-    ) -> RTDResult<Ok> {
-        let extra = set_message_reaction.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, set_message_reaction.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11095,11 +9506,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11119,11 +9529,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11140,11 +9549,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11164,11 +9572,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PassportElement(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PassportElement>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11191,11 +9598,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11215,11 +9621,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PasswordState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PasswordState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11239,11 +9644,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11263,11 +9667,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11287,11 +9690,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11314,11 +9716,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::PasswordState(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<PasswordState>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11343,11 +9744,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11370,11 +9770,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11394,11 +9793,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::StickerSet(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<StickerSet>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11421,11 +9819,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11445,11 +9842,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11469,11 +9865,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11498,11 +9893,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11519,11 +9913,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11548,11 +9941,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11572,11 +9964,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11599,11 +9990,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11628,11 +10018,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Text>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11655,11 +10044,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11676,11 +10064,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11700,11 +10087,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11727,11 +10113,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11751,11 +10136,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11775,11 +10159,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TestBytes(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TestBytes>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11799,11 +10182,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11823,11 +10205,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TestString(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TestString>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11847,11 +10228,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TestVectorInt(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TestVectorInt>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11874,11 +10254,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TestVectorIntObject(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TestVectorIntObject>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11898,11 +10277,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TestVectorString(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TestVectorString>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11927,11 +10305,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TestVectorStringObject(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TestVectorStringObject>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11951,11 +10328,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11972,11 +10348,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -11993,11 +10368,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12017,11 +10391,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Error(v) => Ok(v),
-
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Error>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12041,11 +10414,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::TestInt(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<TestInt>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12065,71 +10437,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Update(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Changes pause state of all files in the file download list
-    pub async fn toggle_all_downloads_are_paused<C: AsRef<ToggleAllDownloadsArePaused>>(
-        &self,
-        toggle_all_downloads_are_paused: C,
-    ) -> RTDResult<Ok> {
-        let extra = toggle_all_downloads_are_paused
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            toggle_all_downloads_are_paused.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Adds or removes a bot to attachment menu. Bot can be added to attachment menu, only if userTypeBot.can_be_added_to_attachment_menu == true
-    pub async fn toggle_bot_is_added_to_attachment_menu<
-        C: AsRef<ToggleBotIsAddedToAttachmentMenu>,
-    >(
-        &self,
-        toggle_bot_is_added_to_attachment_menu: C,
-    ) -> RTDResult<Ok> {
-        let extra = toggle_bot_is_added_to_attachment_menu
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            toggle_bot_is_added_to_attachment_menu.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Update>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12156,11 +10467,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12185,11 +10495,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12214,18 +10523,17 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
         }
     }
 
-    // Changes the pinned state of a chat. There can be up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") pinned non-secret chats and the same number of secret chats in the main/archive chat list. The limit can be increased with Telegram Premium
+    // Changes the pinned state of a chat. There can be up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") pinned non-secret chats and the same number of secret chats in the main/arhive chat list
     pub async fn toggle_chat_is_pinned<C: AsRef<ToggleChatIsPinned>>(
         &self,
         toggle_chat_is_pinned: C,
@@ -12238,35 +10546,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Changes pause state of a file in the file download list
-    pub async fn toggle_download_is_paused<C: AsRef<ToggleDownloadIsPaused>>(
-        &self,
-        toggle_download_is_paused: C,
-    ) -> RTDResult<Ok> {
-        let extra = toggle_download_is_paused.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, toggle_download_is_paused.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12293,11 +10576,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12324,11 +10606,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12353,11 +10634,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12384,11 +10664,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12415,11 +10694,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12446,11 +10724,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12477,11 +10754,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12506,11 +10782,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12535,11 +10810,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12566,11 +10840,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12597,11 +10870,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12628,71 +10900,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Toggles whether all users directly joining the supergroup need to be approved by supergroup administrators; requires can_restrict_members administrator right
-    pub async fn toggle_supergroup_join_by_request<C: AsRef<ToggleSupergroupJoinByRequest>>(
-        &self,
-        toggle_supergroup_join_by_request: C,
-    ) -> RTDResult<Ok> {
-        let extra = toggle_supergroup_join_by_request
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            toggle_supergroup_join_by_request.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Toggles whether joining is mandatory to send messages to a discussion supergroup; requires can_restrict_members administrator right
-    pub async fn toggle_supergroup_join_to_send_messages<
-        C: AsRef<ToggleSupergroupJoinToSendMessages>,
-    >(
-        &self,
-        toggle_supergroup_join_to_send_messages: C,
-    ) -> RTDResult<Ok> {
-        let extra = toggle_supergroup_join_to_send_messages
-            .as_ref()
-            .extra()
-            .ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client.send(
-            self.get_client_id()?,
-            toggle_supergroup_join_to_send_messages.as_ref(),
-        )?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12717,11 +10928,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12741,35 +10951,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Translates a text to the given language. Returns a 404 error if the translation can't be performed
-    pub async fn translate_text<C: AsRef<TranslateText>>(
-        &self,
-        translate_text: C,
-    ) -> RTDResult<Text> {
-        let extra = translate_text.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, translate_text.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Text(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12789,11 +10974,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12813,11 +10997,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12844,11 +11027,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Chat(v) => Ok(*v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Chat>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12865,11 +11047,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::File(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<File>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12889,11 +11070,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::File(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<File>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12913,11 +11093,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::ValidatedOrderInfo(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<ValidatedOrderInfo>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12934,35 +11113,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
-                    Err(INVALID_RESPONSE_ERROR)
-                }
-            },
-        }
-    }
-
-    // Informs TDLib that the user viewed detailed information about a Premium feature on the Premium features screen
-    pub async fn view_premium_feature<C: AsRef<ViewPremiumFeature>>(
-        &self,
-        view_premium_feature: C,
-    ) -> RTDResult<Ok> {
-        let extra = view_premium_feature.as_ref().extra().ok_or(NO_EXTRA)?;
-        let signal = OBSERVER.subscribe(&extra);
-        self.tdlib_client
-            .send(self.get_client_id()?, view_premium_feature.as_ref())?;
-        let received = signal.await;
-        OBSERVER.unsubscribe(&extra);
-        match received {
-            Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -12985,11 +11139,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
@@ -13009,11 +11162,10 @@ where
         OBSERVER.unsubscribe(&extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match v {
-                TdType::Ok(v) => Ok(v),
-                TdType::Error(v) => Err(RTDError::TDLibError(v)),
-                _ => {
-                    log::error!("invalid response received: {:?}", v);
+            Ok(v) => match serde_json::from_value::<Ok>(v) {
+                Ok(v) => Ok(v),
+                Err(e) => {
+                    log::error!("response serialization error: {:?}", e);
                     Err(INVALID_RESPONSE_ERROR)
                 }
             },
