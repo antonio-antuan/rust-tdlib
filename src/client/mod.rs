@@ -18,9 +18,10 @@ use observer::OBSERVER;
 use serde::de::DeserializeOwned;
 pub use worker::{Worker, WorkerBuilder};
 
+use crate::types::{Close, Ok, RFunction, TdlibParameters, Update};
 use crate::{
     errors::{Error, Result},
-    types::*,
+    types::Error as TDLibError,
 };
 use tdlib_client::{TdJson, TdLibClient};
 use tokio::sync::mpsc;
@@ -231,13 +232,29 @@ where
         OBSERVER.unsubscribe(extra);
         match received {
             Err(_) => Err(CLOSED_RECEIVER_ERROR),
-            Ok(v) => match serde_json::from_value::<Q>(v) {
-                Ok(v) => Ok(v),
-                Err(e) => {
-                    log::error!("response serialization error: {:?}", e);
-                    Err(INVALID_RESPONSE_ERROR)
+            Ok(v) => {
+                if error_received(&v) {
+                    match serde_json::from_value::<TDLibError>(v) {
+                        Ok(v) => Err(Error::TDLibError(v)),
+                        Err(e) => {
+                            log::error!("cannot deserialize error response: {:?}", e);
+                            Err(INVALID_RESPONSE_ERROR)
+                        }
+                    }
+                } else {
+                    match serde_json::from_value::<Q>(v) {
+                        Ok(v) => Ok(v),
+                        Err(e) => {
+                            log::error!("response serialization error: {:?}", e);
+                            Err(INVALID_RESPONSE_ERROR)
+                        }
+                    }
                 }
-            },
+            }
         }
     }
+}
+
+fn error_received(value: &serde_json::Value) -> bool {
+    value.get("@type") == Some(&serde_json::Value::String("error".to_string()))
 }

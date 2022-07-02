@@ -438,8 +438,8 @@ where
                                 None => {
                                     log::error!("client not found")
                                 }
-                                Some(cl) => {
-                                    if let Some(state_sender) = cl.pub_state_message_sender() {
+                                Some(cl) => match cl.pub_state_message_sender() {
+                                    Some(state_sender) => {
                                         if let Err(err) = state_sender
                                             .send_timeout(Err((err, auth_state)), send_timeout)
                                             .await
@@ -447,7 +447,10 @@ where
                                             log::error!("cannot send client state changes: {}", err)
                                         }
                                     }
-                                }
+                                    None => {
+                                        log::error!("error received and possibly cannot be handled because of empty state receiver: {err}")
+                                    }
+                                },
                             };
                         }
                     }
