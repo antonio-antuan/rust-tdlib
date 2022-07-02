@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -64,7 +64,7 @@ impl RObject for ConnectionState {
 }
 
 impl ConnectionState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -103,23 +103,26 @@ impl RObject for ConnectionStateConnecting {
 impl TDConnectionState for ConnectionStateConnecting {}
 
 impl ConnectionStateConnecting {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDConnectionStateConnectingBuilder {
+    pub fn builder() -> ConnectionStateConnectingBuilder {
         let mut inner = ConnectionStateConnecting::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDConnectionStateConnectingBuilder { inner }
+        ConnectionStateConnectingBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDConnectionStateConnectingBuilder {
+pub struct ConnectionStateConnectingBuilder {
     inner: ConnectionStateConnecting,
 }
 
-impl RTDConnectionStateConnectingBuilder {
+#[deprecated]
+pub type RTDConnectionStateConnectingBuilder = ConnectionStateConnectingBuilder;
+
+impl ConnectionStateConnectingBuilder {
     pub fn build(&self) -> ConnectionStateConnecting {
         self.inner.clone()
     }
@@ -131,7 +134,7 @@ impl AsRef<ConnectionStateConnecting> for ConnectionStateConnecting {
     }
 }
 
-impl AsRef<ConnectionStateConnecting> for RTDConnectionStateConnectingBuilder {
+impl AsRef<ConnectionStateConnecting> for ConnectionStateConnectingBuilder {
     fn as_ref(&self) -> &ConnectionStateConnecting {
         &self.inner
     }
@@ -161,23 +164,26 @@ impl RObject for ConnectionStateConnectingToProxy {
 impl TDConnectionState for ConnectionStateConnectingToProxy {}
 
 impl ConnectionStateConnectingToProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDConnectionStateConnectingToProxyBuilder {
+    pub fn builder() -> ConnectionStateConnectingToProxyBuilder {
         let mut inner = ConnectionStateConnectingToProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDConnectionStateConnectingToProxyBuilder { inner }
+        ConnectionStateConnectingToProxyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDConnectionStateConnectingToProxyBuilder {
+pub struct ConnectionStateConnectingToProxyBuilder {
     inner: ConnectionStateConnectingToProxy,
 }
 
-impl RTDConnectionStateConnectingToProxyBuilder {
+#[deprecated]
+pub type RTDConnectionStateConnectingToProxyBuilder = ConnectionStateConnectingToProxyBuilder;
+
+impl ConnectionStateConnectingToProxyBuilder {
     pub fn build(&self) -> ConnectionStateConnectingToProxy {
         self.inner.clone()
     }
@@ -189,7 +195,7 @@ impl AsRef<ConnectionStateConnectingToProxy> for ConnectionStateConnectingToProx
     }
 }
 
-impl AsRef<ConnectionStateConnectingToProxy> for RTDConnectionStateConnectingToProxyBuilder {
+impl AsRef<ConnectionStateConnectingToProxy> for ConnectionStateConnectingToProxyBuilder {
     fn as_ref(&self) -> &ConnectionStateConnectingToProxy {
         &self.inner
     }
@@ -219,23 +225,26 @@ impl RObject for ConnectionStateReady {
 impl TDConnectionState for ConnectionStateReady {}
 
 impl ConnectionStateReady {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDConnectionStateReadyBuilder {
+    pub fn builder() -> ConnectionStateReadyBuilder {
         let mut inner = ConnectionStateReady::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDConnectionStateReadyBuilder { inner }
+        ConnectionStateReadyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDConnectionStateReadyBuilder {
+pub struct ConnectionStateReadyBuilder {
     inner: ConnectionStateReady,
 }
 
-impl RTDConnectionStateReadyBuilder {
+#[deprecated]
+pub type RTDConnectionStateReadyBuilder = ConnectionStateReadyBuilder;
+
+impl ConnectionStateReadyBuilder {
     pub fn build(&self) -> ConnectionStateReady {
         self.inner.clone()
     }
@@ -247,7 +256,7 @@ impl AsRef<ConnectionStateReady> for ConnectionStateReady {
     }
 }
 
-impl AsRef<ConnectionStateReady> for RTDConnectionStateReadyBuilder {
+impl AsRef<ConnectionStateReady> for ConnectionStateReadyBuilder {
     fn as_ref(&self) -> &ConnectionStateReady {
         &self.inner
     }
@@ -277,23 +286,26 @@ impl RObject for ConnectionStateUpdating {
 impl TDConnectionState for ConnectionStateUpdating {}
 
 impl ConnectionStateUpdating {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDConnectionStateUpdatingBuilder {
+    pub fn builder() -> ConnectionStateUpdatingBuilder {
         let mut inner = ConnectionStateUpdating::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDConnectionStateUpdatingBuilder { inner }
+        ConnectionStateUpdatingBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDConnectionStateUpdatingBuilder {
+pub struct ConnectionStateUpdatingBuilder {
     inner: ConnectionStateUpdating,
 }
 
-impl RTDConnectionStateUpdatingBuilder {
+#[deprecated]
+pub type RTDConnectionStateUpdatingBuilder = ConnectionStateUpdatingBuilder;
+
+impl ConnectionStateUpdatingBuilder {
     pub fn build(&self) -> ConnectionStateUpdating {
         self.inner.clone()
     }
@@ -305,7 +317,7 @@ impl AsRef<ConnectionStateUpdating> for ConnectionStateUpdating {
     }
 }
 
-impl AsRef<ConnectionStateUpdating> for RTDConnectionStateUpdatingBuilder {
+impl AsRef<ConnectionStateUpdating> for ConnectionStateUpdatingBuilder {
     fn as_ref(&self) -> &ConnectionStateUpdating {
         &self.inner
     }
@@ -335,23 +347,26 @@ impl RObject for ConnectionStateWaitingForNetwork {
 impl TDConnectionState for ConnectionStateWaitingForNetwork {}
 
 impl ConnectionStateWaitingForNetwork {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDConnectionStateWaitingForNetworkBuilder {
+    pub fn builder() -> ConnectionStateWaitingForNetworkBuilder {
         let mut inner = ConnectionStateWaitingForNetwork::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDConnectionStateWaitingForNetworkBuilder { inner }
+        ConnectionStateWaitingForNetworkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDConnectionStateWaitingForNetworkBuilder {
+pub struct ConnectionStateWaitingForNetworkBuilder {
     inner: ConnectionStateWaitingForNetwork,
 }
 
-impl RTDConnectionStateWaitingForNetworkBuilder {
+#[deprecated]
+pub type RTDConnectionStateWaitingForNetworkBuilder = ConnectionStateWaitingForNetworkBuilder;
+
+impl ConnectionStateWaitingForNetworkBuilder {
     pub fn build(&self) -> ConnectionStateWaitingForNetwork {
         self.inner.clone()
     }
@@ -363,7 +378,7 @@ impl AsRef<ConnectionStateWaitingForNetwork> for ConnectionStateWaitingForNetwor
     }
 }
 
-impl AsRef<ConnectionStateWaitingForNetwork> for RTDConnectionStateWaitingForNetworkBuilder {
+impl AsRef<ConnectionStateWaitingForNetwork> for ConnectionStateWaitingForNetworkBuilder {
     fn as_ref(&self) -> &ConnectionStateWaitingForNetwork {
         &self.inner
     }

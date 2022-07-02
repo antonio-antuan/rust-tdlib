@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for EditMessageSchedulingState {
 impl RFunction for EditMessageSchedulingState {}
 
 impl EditMessageSchedulingState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditMessageSchedulingStateBuilder {
+    pub fn builder() -> EditMessageSchedulingStateBuilder {
         let mut inner = EditMessageSchedulingState::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editMessageSchedulingState".to_string();
 
-        RTDEditMessageSchedulingStateBuilder { inner }
+        EditMessageSchedulingStateBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl EditMessageSchedulingState {
 }
 
 #[doc(hidden)]
-pub struct RTDEditMessageSchedulingStateBuilder {
+pub struct EditMessageSchedulingStateBuilder {
     inner: EditMessageSchedulingState,
 }
 
-impl RTDEditMessageSchedulingStateBuilder {
+#[deprecated]
+pub type RTDEditMessageSchedulingStateBuilder = EditMessageSchedulingStateBuilder;
+
+impl EditMessageSchedulingStateBuilder {
     pub fn build(&self) -> EditMessageSchedulingState {
         self.inner.clone()
     }
@@ -101,7 +104,7 @@ impl AsRef<EditMessageSchedulingState> for EditMessageSchedulingState {
     }
 }
 
-impl AsRef<EditMessageSchedulingState> for RTDEditMessageSchedulingStateBuilder {
+impl AsRef<EditMessageSchedulingState> for EditMessageSchedulingStateBuilder {
     fn as_ref(&self) -> &EditMessageSchedulingState {
         &self.inner
     }

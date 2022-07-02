@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetChat {
 impl RFunction for GetChat {}
 
 impl GetChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatBuilder {
+    pub fn builder() -> GetChatBuilder {
         let mut inner = GetChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChat".to_string();
 
-        RTDGetChatBuilder { inner }
+        GetChatBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl GetChat {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatBuilder {
+pub struct GetChatBuilder {
     inner: GetChat,
 }
 
-impl RTDGetChatBuilder {
+#[deprecated]
+pub type RTDGetChatBuilder = GetChatBuilder;
+
+impl GetChatBuilder {
     pub fn build(&self) -> GetChat {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetChat> for GetChat {
     }
 }
 
-impl AsRef<GetChat> for RTDGetChatBuilder {
+impl AsRef<GetChat> for GetChatBuilder {
     fn as_ref(&self) -> &GetChat {
         &self.inner
     }

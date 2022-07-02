@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for ClearRecentStickers {
 impl RFunction for ClearRecentStickers {}
 
 impl ClearRecentStickers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDClearRecentStickersBuilder {
+    pub fn builder() -> ClearRecentStickersBuilder {
         let mut inner = ClearRecentStickers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "clearRecentStickers".to_string();
 
-        RTDClearRecentStickersBuilder { inner }
+        ClearRecentStickersBuilder { inner }
     }
 
     pub fn is_attached(&self) -> bool {
@@ -51,11 +51,14 @@ impl ClearRecentStickers {
 }
 
 #[doc(hidden)]
-pub struct RTDClearRecentStickersBuilder {
+pub struct ClearRecentStickersBuilder {
     inner: ClearRecentStickers,
 }
 
-impl RTDClearRecentStickersBuilder {
+#[deprecated]
+pub type RTDClearRecentStickersBuilder = ClearRecentStickersBuilder;
+
+impl ClearRecentStickersBuilder {
     pub fn build(&self) -> ClearRecentStickers {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<ClearRecentStickers> for ClearRecentStickers {
     }
 }
 
-impl AsRef<ClearRecentStickers> for RTDClearRecentStickersBuilder {
+impl AsRef<ClearRecentStickers> for ClearRecentStickersBuilder {
     fn as_ref(&self) -> &ClearRecentStickers {
         &self.inner
     }

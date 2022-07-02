@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,14 +34,14 @@ impl RObject for ChatPhotoInfo {
 }
 
 impl ChatPhotoInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatPhotoInfoBuilder {
+    pub fn builder() -> ChatPhotoInfoBuilder {
         let mut inner = ChatPhotoInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatPhotoInfoBuilder { inner }
+        ChatPhotoInfoBuilder { inner }
     }
 
     pub fn small(&self) -> &File {
@@ -62,11 +62,14 @@ impl ChatPhotoInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDChatPhotoInfoBuilder {
+pub struct ChatPhotoInfoBuilder {
     inner: ChatPhotoInfo,
 }
 
-impl RTDChatPhotoInfoBuilder {
+#[deprecated]
+pub type RTDChatPhotoInfoBuilder = ChatPhotoInfoBuilder;
+
+impl ChatPhotoInfoBuilder {
     pub fn build(&self) -> ChatPhotoInfo {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<ChatPhotoInfo> for ChatPhotoInfo {
     }
 }
 
-impl AsRef<ChatPhotoInfo> for RTDChatPhotoInfoBuilder {
+impl AsRef<ChatPhotoInfo> for ChatPhotoInfoBuilder {
     fn as_ref(&self) -> &ChatPhotoInfo {
         &self.inner
     }

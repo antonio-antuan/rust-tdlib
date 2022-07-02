@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for MessageFileType {
 }
 
 impl MessageFileType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -102,14 +102,14 @@ impl RObject for MessageFileTypeGroup {
 impl TDMessageFileType for MessageFileTypeGroup {}
 
 impl MessageFileTypeGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageFileTypeGroupBuilder {
+    pub fn builder() -> MessageFileTypeGroupBuilder {
         let mut inner = MessageFileTypeGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageFileTypeGroupBuilder { inner }
+        MessageFileTypeGroupBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -118,11 +118,14 @@ impl MessageFileTypeGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageFileTypeGroupBuilder {
+pub struct MessageFileTypeGroupBuilder {
     inner: MessageFileTypeGroup,
 }
 
-impl RTDMessageFileTypeGroupBuilder {
+#[deprecated]
+pub type RTDMessageFileTypeGroupBuilder = MessageFileTypeGroupBuilder;
+
+impl MessageFileTypeGroupBuilder {
     pub fn build(&self) -> MessageFileTypeGroup {
         self.inner.clone()
     }
@@ -139,7 +142,7 @@ impl AsRef<MessageFileTypeGroup> for MessageFileTypeGroup {
     }
 }
 
-impl AsRef<MessageFileTypeGroup> for RTDMessageFileTypeGroupBuilder {
+impl AsRef<MessageFileTypeGroup> for MessageFileTypeGroupBuilder {
     fn as_ref(&self) -> &MessageFileTypeGroup {
         &self.inner
     }
@@ -173,14 +176,14 @@ impl RObject for MessageFileTypePrivate {
 impl TDMessageFileType for MessageFileTypePrivate {}
 
 impl MessageFileTypePrivate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageFileTypePrivateBuilder {
+    pub fn builder() -> MessageFileTypePrivateBuilder {
         let mut inner = MessageFileTypePrivate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageFileTypePrivateBuilder { inner }
+        MessageFileTypePrivateBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -189,11 +192,14 @@ impl MessageFileTypePrivate {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageFileTypePrivateBuilder {
+pub struct MessageFileTypePrivateBuilder {
     inner: MessageFileTypePrivate,
 }
 
-impl RTDMessageFileTypePrivateBuilder {
+#[deprecated]
+pub type RTDMessageFileTypePrivateBuilder = MessageFileTypePrivateBuilder;
+
+impl MessageFileTypePrivateBuilder {
     pub fn build(&self) -> MessageFileTypePrivate {
         self.inner.clone()
     }
@@ -210,7 +216,7 @@ impl AsRef<MessageFileTypePrivate> for MessageFileTypePrivate {
     }
 }
 
-impl AsRef<MessageFileTypePrivate> for RTDMessageFileTypePrivateBuilder {
+impl AsRef<MessageFileTypePrivate> for MessageFileTypePrivateBuilder {
     fn as_ref(&self) -> &MessageFileTypePrivate {
         &self.inner
     }
@@ -240,23 +246,26 @@ impl RObject for MessageFileTypeUnknown {
 impl TDMessageFileType for MessageFileTypeUnknown {}
 
 impl MessageFileTypeUnknown {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageFileTypeUnknownBuilder {
+    pub fn builder() -> MessageFileTypeUnknownBuilder {
         let mut inner = MessageFileTypeUnknown::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageFileTypeUnknownBuilder { inner }
+        MessageFileTypeUnknownBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageFileTypeUnknownBuilder {
+pub struct MessageFileTypeUnknownBuilder {
     inner: MessageFileTypeUnknown,
 }
 
-impl RTDMessageFileTypeUnknownBuilder {
+#[deprecated]
+pub type RTDMessageFileTypeUnknownBuilder = MessageFileTypeUnknownBuilder;
+
+impl MessageFileTypeUnknownBuilder {
     pub fn build(&self) -> MessageFileTypeUnknown {
         self.inner.clone()
     }
@@ -268,7 +277,7 @@ impl AsRef<MessageFileTypeUnknown> for MessageFileTypeUnknown {
     }
 }
 
-impl AsRef<MessageFileTypeUnknown> for RTDMessageFileTypeUnknownBuilder {
+impl AsRef<MessageFileTypeUnknown> for MessageFileTypeUnknownBuilder {
     fn as_ref(&self) -> &MessageFileTypeUnknown {
         &self.inner
     }

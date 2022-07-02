@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for CancelPasswordReset {
 impl RFunction for CancelPasswordReset {}
 
 impl CancelPasswordReset {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCancelPasswordResetBuilder {
+    pub fn builder() -> CancelPasswordResetBuilder {
         let mut inner = CancelPasswordReset::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "cancelPasswordReset".to_string();
 
-        RTDCancelPasswordResetBuilder { inner }
+        CancelPasswordResetBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCancelPasswordResetBuilder {
+pub struct CancelPasswordResetBuilder {
     inner: CancelPasswordReset,
 }
 
-impl RTDCancelPasswordResetBuilder {
+#[deprecated]
+pub type RTDCancelPasswordResetBuilder = CancelPasswordResetBuilder;
+
+impl CancelPasswordResetBuilder {
     pub fn build(&self) -> CancelPasswordReset {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<CancelPasswordReset> for CancelPasswordReset {
     }
 }
 
-impl AsRef<CancelPasswordReset> for RTDCancelPasswordResetBuilder {
+impl AsRef<CancelPasswordReset> for CancelPasswordResetBuilder {
     fn as_ref(&self) -> &CancelPasswordReset {
         &self.inner
     }

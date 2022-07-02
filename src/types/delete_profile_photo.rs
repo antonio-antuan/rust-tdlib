@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,16 +34,16 @@ impl RObject for DeleteProfilePhoto {
 impl RFunction for DeleteProfilePhoto {}
 
 impl DeleteProfilePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteProfilePhotoBuilder {
+    pub fn builder() -> DeleteProfilePhotoBuilder {
         let mut inner = DeleteProfilePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteProfilePhoto".to_string();
 
-        RTDDeleteProfilePhotoBuilder { inner }
+        DeleteProfilePhotoBuilder { inner }
     }
 
     pub fn profile_photo_id(&self) -> i64 {
@@ -52,11 +52,14 @@ impl DeleteProfilePhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteProfilePhotoBuilder {
+pub struct DeleteProfilePhotoBuilder {
     inner: DeleteProfilePhoto,
 }
 
-impl RTDDeleteProfilePhotoBuilder {
+#[deprecated]
+pub type RTDDeleteProfilePhotoBuilder = DeleteProfilePhotoBuilder;
+
+impl DeleteProfilePhotoBuilder {
     pub fn build(&self) -> DeleteProfilePhoto {
         self.inner.clone()
     }
@@ -73,7 +76,7 @@ impl AsRef<DeleteProfilePhoto> for DeleteProfilePhoto {
     }
 }
 
-impl AsRef<DeleteProfilePhoto> for RTDDeleteProfilePhotoBuilder {
+impl AsRef<DeleteProfilePhoto> for DeleteProfilePhotoBuilder {
     fn as_ref(&self) -> &DeleteProfilePhoto {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for GroupCallVideoSourceGroup {
 }
 
 impl GroupCallVideoSourceGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGroupCallVideoSourceGroupBuilder {
+    pub fn builder() -> GroupCallVideoSourceGroupBuilder {
         let mut inner = GroupCallVideoSourceGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGroupCallVideoSourceGroupBuilder { inner }
+        GroupCallVideoSourceGroupBuilder { inner }
     }
 
     pub fn semantics(&self) -> &String {
@@ -52,11 +52,14 @@ impl GroupCallVideoSourceGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDGroupCallVideoSourceGroupBuilder {
+pub struct GroupCallVideoSourceGroupBuilder {
     inner: GroupCallVideoSourceGroup,
 }
 
-impl RTDGroupCallVideoSourceGroupBuilder {
+#[deprecated]
+pub type RTDGroupCallVideoSourceGroupBuilder = GroupCallVideoSourceGroupBuilder;
+
+impl GroupCallVideoSourceGroupBuilder {
     pub fn build(&self) -> GroupCallVideoSourceGroup {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<GroupCallVideoSourceGroup> for GroupCallVideoSourceGroup {
     }
 }
 
-impl AsRef<GroupCallVideoSourceGroup> for RTDGroupCallVideoSourceGroupBuilder {
+impl AsRef<GroupCallVideoSourceGroup> for GroupCallVideoSourceGroupBuilder {
     fn as_ref(&self) -> &GroupCallVideoSourceGroup {
         &self.inner
     }

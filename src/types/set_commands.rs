@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for SetCommands {
 impl RFunction for SetCommands {}
 
 impl SetCommands {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetCommandsBuilder {
+    pub fn builder() -> SetCommandsBuilder {
         let mut inner = SetCommands::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setCommands".to_string();
 
-        RTDSetCommandsBuilder { inner }
+        SetCommandsBuilder { inner }
     }
 
     pub fn scope(&self) -> &BotCommandScope {
@@ -67,11 +67,14 @@ impl SetCommands {
 }
 
 #[doc(hidden)]
-pub struct RTDSetCommandsBuilder {
+pub struct SetCommandsBuilder {
     inner: SetCommands,
 }
 
-impl RTDSetCommandsBuilder {
+#[deprecated]
+pub type RTDSetCommandsBuilder = SetCommandsBuilder;
+
+impl SetCommandsBuilder {
     pub fn build(&self) -> SetCommands {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<SetCommands> for SetCommands {
     }
 }
 
-impl AsRef<SetCommands> for RTDSetCommandsBuilder {
+impl AsRef<SetCommands> for SetCommandsBuilder {
     fn as_ref(&self) -> &SetCommands {
         &self.inner
     }

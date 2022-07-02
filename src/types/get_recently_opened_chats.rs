@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetRecentlyOpenedChats {
 impl RFunction for GetRecentlyOpenedChats {}
 
 impl GetRecentlyOpenedChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetRecentlyOpenedChatsBuilder {
+    pub fn builder() -> GetRecentlyOpenedChatsBuilder {
         let mut inner = GetRecentlyOpenedChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getRecentlyOpenedChats".to_string();
 
-        RTDGetRecentlyOpenedChatsBuilder { inner }
+        GetRecentlyOpenedChatsBuilder { inner }
     }
 
     pub fn limit(&self) -> i32 {
@@ -51,11 +51,14 @@ impl GetRecentlyOpenedChats {
 }
 
 #[doc(hidden)]
-pub struct RTDGetRecentlyOpenedChatsBuilder {
+pub struct GetRecentlyOpenedChatsBuilder {
     inner: GetRecentlyOpenedChats,
 }
 
-impl RTDGetRecentlyOpenedChatsBuilder {
+#[deprecated]
+pub type RTDGetRecentlyOpenedChatsBuilder = GetRecentlyOpenedChatsBuilder;
+
+impl GetRecentlyOpenedChatsBuilder {
     pub fn build(&self) -> GetRecentlyOpenedChats {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetRecentlyOpenedChats> for GetRecentlyOpenedChats {
     }
 }
 
-impl AsRef<GetRecentlyOpenedChats> for RTDGetRecentlyOpenedChatsBuilder {
+impl AsRef<GetRecentlyOpenedChats> for GetRecentlyOpenedChatsBuilder {
     fn as_ref(&self) -> &GetRecentlyOpenedChats {
         &self.inner
     }

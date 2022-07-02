@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SearchChatRecentLocationMessages {
 impl RFunction for SearchChatRecentLocationMessages {}
 
 impl SearchChatRecentLocationMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchChatRecentLocationMessagesBuilder {
+    pub fn builder() -> SearchChatRecentLocationMessagesBuilder {
         let mut inner = SearchChatRecentLocationMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchChatRecentLocationMessages".to_string();
 
-        RTDSearchChatRecentLocationMessagesBuilder { inner }
+        SearchChatRecentLocationMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl SearchChatRecentLocationMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchChatRecentLocationMessagesBuilder {
+pub struct SearchChatRecentLocationMessagesBuilder {
     inner: SearchChatRecentLocationMessages,
 }
 
-impl RTDSearchChatRecentLocationMessagesBuilder {
+#[deprecated]
+pub type RTDSearchChatRecentLocationMessagesBuilder = SearchChatRecentLocationMessagesBuilder;
+
+impl SearchChatRecentLocationMessagesBuilder {
     pub fn build(&self) -> SearchChatRecentLocationMessages {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SearchChatRecentLocationMessages> for SearchChatRecentLocationMessage
     }
 }
 
-impl AsRef<SearchChatRecentLocationMessages> for RTDSearchChatRecentLocationMessagesBuilder {
+impl AsRef<SearchChatRecentLocationMessages> for SearchChatRecentLocationMessagesBuilder {
     fn as_ref(&self) -> &SearchChatRecentLocationMessages {
         &self.inner
     }

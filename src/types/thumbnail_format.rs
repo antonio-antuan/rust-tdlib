@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -69,7 +69,7 @@ impl RObject for ThumbnailFormat {
 }
 
 impl ThumbnailFormat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -108,23 +108,26 @@ impl RObject for ThumbnailFormatGif {
 impl TDThumbnailFormat for ThumbnailFormatGif {}
 
 impl ThumbnailFormatGif {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDThumbnailFormatGifBuilder {
+    pub fn builder() -> ThumbnailFormatGifBuilder {
         let mut inner = ThumbnailFormatGif::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDThumbnailFormatGifBuilder { inner }
+        ThumbnailFormatGifBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDThumbnailFormatGifBuilder {
+pub struct ThumbnailFormatGifBuilder {
     inner: ThumbnailFormatGif,
 }
 
-impl RTDThumbnailFormatGifBuilder {
+#[deprecated]
+pub type RTDThumbnailFormatGifBuilder = ThumbnailFormatGifBuilder;
+
+impl ThumbnailFormatGifBuilder {
     pub fn build(&self) -> ThumbnailFormatGif {
         self.inner.clone()
     }
@@ -136,7 +139,7 @@ impl AsRef<ThumbnailFormatGif> for ThumbnailFormatGif {
     }
 }
 
-impl AsRef<ThumbnailFormatGif> for RTDThumbnailFormatGifBuilder {
+impl AsRef<ThumbnailFormatGif> for ThumbnailFormatGifBuilder {
     fn as_ref(&self) -> &ThumbnailFormatGif {
         &self.inner
     }
@@ -166,23 +169,26 @@ impl RObject for ThumbnailFormatJpeg {
 impl TDThumbnailFormat for ThumbnailFormatJpeg {}
 
 impl ThumbnailFormatJpeg {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDThumbnailFormatJpegBuilder {
+    pub fn builder() -> ThumbnailFormatJpegBuilder {
         let mut inner = ThumbnailFormatJpeg::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDThumbnailFormatJpegBuilder { inner }
+        ThumbnailFormatJpegBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDThumbnailFormatJpegBuilder {
+pub struct ThumbnailFormatJpegBuilder {
     inner: ThumbnailFormatJpeg,
 }
 
-impl RTDThumbnailFormatJpegBuilder {
+#[deprecated]
+pub type RTDThumbnailFormatJpegBuilder = ThumbnailFormatJpegBuilder;
+
+impl ThumbnailFormatJpegBuilder {
     pub fn build(&self) -> ThumbnailFormatJpeg {
         self.inner.clone()
     }
@@ -194,7 +200,7 @@ impl AsRef<ThumbnailFormatJpeg> for ThumbnailFormatJpeg {
     }
 }
 
-impl AsRef<ThumbnailFormatJpeg> for RTDThumbnailFormatJpegBuilder {
+impl AsRef<ThumbnailFormatJpeg> for ThumbnailFormatJpegBuilder {
     fn as_ref(&self) -> &ThumbnailFormatJpeg {
         &self.inner
     }
@@ -224,23 +230,26 @@ impl RObject for ThumbnailFormatMpeg4 {
 impl TDThumbnailFormat for ThumbnailFormatMpeg4 {}
 
 impl ThumbnailFormatMpeg4 {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDThumbnailFormatMpeg4Builder {
+    pub fn builder() -> ThumbnailFormatMpeg4Builder {
         let mut inner = ThumbnailFormatMpeg4::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDThumbnailFormatMpeg4Builder { inner }
+        ThumbnailFormatMpeg4Builder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDThumbnailFormatMpeg4Builder {
+pub struct ThumbnailFormatMpeg4Builder {
     inner: ThumbnailFormatMpeg4,
 }
 
-impl RTDThumbnailFormatMpeg4Builder {
+#[deprecated]
+pub type RTDThumbnailFormatMpeg4Builder = ThumbnailFormatMpeg4Builder;
+
+impl ThumbnailFormatMpeg4Builder {
     pub fn build(&self) -> ThumbnailFormatMpeg4 {
         self.inner.clone()
     }
@@ -252,7 +261,7 @@ impl AsRef<ThumbnailFormatMpeg4> for ThumbnailFormatMpeg4 {
     }
 }
 
-impl AsRef<ThumbnailFormatMpeg4> for RTDThumbnailFormatMpeg4Builder {
+impl AsRef<ThumbnailFormatMpeg4> for ThumbnailFormatMpeg4Builder {
     fn as_ref(&self) -> &ThumbnailFormatMpeg4 {
         &self.inner
     }
@@ -282,23 +291,26 @@ impl RObject for ThumbnailFormatPng {
 impl TDThumbnailFormat for ThumbnailFormatPng {}
 
 impl ThumbnailFormatPng {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDThumbnailFormatPngBuilder {
+    pub fn builder() -> ThumbnailFormatPngBuilder {
         let mut inner = ThumbnailFormatPng::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDThumbnailFormatPngBuilder { inner }
+        ThumbnailFormatPngBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDThumbnailFormatPngBuilder {
+pub struct ThumbnailFormatPngBuilder {
     inner: ThumbnailFormatPng,
 }
 
-impl RTDThumbnailFormatPngBuilder {
+#[deprecated]
+pub type RTDThumbnailFormatPngBuilder = ThumbnailFormatPngBuilder;
+
+impl ThumbnailFormatPngBuilder {
     pub fn build(&self) -> ThumbnailFormatPng {
         self.inner.clone()
     }
@@ -310,7 +322,7 @@ impl AsRef<ThumbnailFormatPng> for ThumbnailFormatPng {
     }
 }
 
-impl AsRef<ThumbnailFormatPng> for RTDThumbnailFormatPngBuilder {
+impl AsRef<ThumbnailFormatPng> for ThumbnailFormatPngBuilder {
     fn as_ref(&self) -> &ThumbnailFormatPng {
         &self.inner
     }
@@ -340,23 +352,26 @@ impl RObject for ThumbnailFormatTgs {
 impl TDThumbnailFormat for ThumbnailFormatTgs {}
 
 impl ThumbnailFormatTgs {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDThumbnailFormatTgsBuilder {
+    pub fn builder() -> ThumbnailFormatTgsBuilder {
         let mut inner = ThumbnailFormatTgs::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDThumbnailFormatTgsBuilder { inner }
+        ThumbnailFormatTgsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDThumbnailFormatTgsBuilder {
+pub struct ThumbnailFormatTgsBuilder {
     inner: ThumbnailFormatTgs,
 }
 
-impl RTDThumbnailFormatTgsBuilder {
+#[deprecated]
+pub type RTDThumbnailFormatTgsBuilder = ThumbnailFormatTgsBuilder;
+
+impl ThumbnailFormatTgsBuilder {
     pub fn build(&self) -> ThumbnailFormatTgs {
         self.inner.clone()
     }
@@ -368,7 +383,7 @@ impl AsRef<ThumbnailFormatTgs> for ThumbnailFormatTgs {
     }
 }
 
-impl AsRef<ThumbnailFormatTgs> for RTDThumbnailFormatTgsBuilder {
+impl AsRef<ThumbnailFormatTgs> for ThumbnailFormatTgsBuilder {
     fn as_ref(&self) -> &ThumbnailFormatTgs {
         &self.inner
     }
@@ -398,23 +413,26 @@ impl RObject for ThumbnailFormatWebp {
 impl TDThumbnailFormat for ThumbnailFormatWebp {}
 
 impl ThumbnailFormatWebp {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDThumbnailFormatWebpBuilder {
+    pub fn builder() -> ThumbnailFormatWebpBuilder {
         let mut inner = ThumbnailFormatWebp::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDThumbnailFormatWebpBuilder { inner }
+        ThumbnailFormatWebpBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDThumbnailFormatWebpBuilder {
+pub struct ThumbnailFormatWebpBuilder {
     inner: ThumbnailFormatWebp,
 }
 
-impl RTDThumbnailFormatWebpBuilder {
+#[deprecated]
+pub type RTDThumbnailFormatWebpBuilder = ThumbnailFormatWebpBuilder;
+
+impl ThumbnailFormatWebpBuilder {
     pub fn build(&self) -> ThumbnailFormatWebp {
         self.inner.clone()
     }
@@ -426,7 +444,7 @@ impl AsRef<ThumbnailFormatWebp> for ThumbnailFormatWebp {
     }
 }
 
-impl AsRef<ThumbnailFormatWebp> for RTDThumbnailFormatWebpBuilder {
+impl AsRef<ThumbnailFormatWebp> for ThumbnailFormatWebpBuilder {
     fn as_ref(&self) -> &ThumbnailFormatWebp {
         &self.inner
     }

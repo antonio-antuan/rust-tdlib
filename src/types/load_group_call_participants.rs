@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for LoadGroupCallParticipants {
 impl RFunction for LoadGroupCallParticipants {}
 
 impl LoadGroupCallParticipants {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLoadGroupCallParticipantsBuilder {
+    pub fn builder() -> LoadGroupCallParticipantsBuilder {
         let mut inner = LoadGroupCallParticipants::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "loadGroupCallParticipants".to_string();
 
-        RTDLoadGroupCallParticipantsBuilder { inner }
+        LoadGroupCallParticipantsBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -59,11 +59,14 @@ impl LoadGroupCallParticipants {
 }
 
 #[doc(hidden)]
-pub struct RTDLoadGroupCallParticipantsBuilder {
+pub struct LoadGroupCallParticipantsBuilder {
     inner: LoadGroupCallParticipants,
 }
 
-impl RTDLoadGroupCallParticipantsBuilder {
+#[deprecated]
+pub type RTDLoadGroupCallParticipantsBuilder = LoadGroupCallParticipantsBuilder;
+
+impl LoadGroupCallParticipantsBuilder {
     pub fn build(&self) -> LoadGroupCallParticipants {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<LoadGroupCallParticipants> for LoadGroupCallParticipants {
     }
 }
 
-impl AsRef<LoadGroupCallParticipants> for RTDLoadGroupCallParticipantsBuilder {
+impl AsRef<LoadGroupCallParticipants> for LoadGroupCallParticipantsBuilder {
     fn as_ref(&self) -> &LoadGroupCallParticipants {
         &self.inner
     }

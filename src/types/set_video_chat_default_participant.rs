@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SetVideoChatDefaultParticipant {
 impl RFunction for SetVideoChatDefaultParticipant {}
 
 impl SetVideoChatDefaultParticipant {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetVideoChatDefaultParticipantBuilder {
+    pub fn builder() -> SetVideoChatDefaultParticipantBuilder {
         let mut inner = SetVideoChatDefaultParticipant::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setVideoChatDefaultParticipant".to_string();
 
-        RTDSetVideoChatDefaultParticipantBuilder { inner }
+        SetVideoChatDefaultParticipantBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl SetVideoChatDefaultParticipant {
 }
 
 #[doc(hidden)]
-pub struct RTDSetVideoChatDefaultParticipantBuilder {
+pub struct SetVideoChatDefaultParticipantBuilder {
     inner: SetVideoChatDefaultParticipant,
 }
 
-impl RTDSetVideoChatDefaultParticipantBuilder {
+#[deprecated]
+pub type RTDSetVideoChatDefaultParticipantBuilder = SetVideoChatDefaultParticipantBuilder;
+
+impl SetVideoChatDefaultParticipantBuilder {
     pub fn build(&self) -> SetVideoChatDefaultParticipant {
         self.inner.clone()
     }
@@ -88,7 +91,7 @@ impl AsRef<SetVideoChatDefaultParticipant> for SetVideoChatDefaultParticipant {
     }
 }
 
-impl AsRef<SetVideoChatDefaultParticipant> for RTDSetVideoChatDefaultParticipantBuilder {
+impl AsRef<SetVideoChatDefaultParticipant> for SetVideoChatDefaultParticipantBuilder {
     fn as_ref(&self) -> &SetVideoChatDefaultParticipant {
         &self.inner
     }

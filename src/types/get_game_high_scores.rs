@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for GetGameHighScores {
 impl RFunction for GetGameHighScores {}
 
 impl GetGameHighScores {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetGameHighScoresBuilder {
+    pub fn builder() -> GetGameHighScoresBuilder {
         let mut inner = GetGameHighScores::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getGameHighScores".to_string();
 
-        RTDGetGameHighScoresBuilder { inner }
+        GetGameHighScoresBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl GetGameHighScores {
 }
 
 #[doc(hidden)]
-pub struct RTDGetGameHighScoresBuilder {
+pub struct GetGameHighScoresBuilder {
     inner: GetGameHighScores,
 }
 
-impl RTDGetGameHighScoresBuilder {
+#[deprecated]
+pub type RTDGetGameHighScoresBuilder = GetGameHighScoresBuilder;
+
+impl GetGameHighScoresBuilder {
     pub fn build(&self) -> GetGameHighScores {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<GetGameHighScores> for GetGameHighScores {
     }
 }
 
-impl AsRef<GetGameHighScores> for RTDGetGameHighScoresBuilder {
+impl AsRef<GetGameHighScores> for GetGameHighScoresBuilder {
     fn as_ref(&self) -> &GetGameHighScores {
         &self.inner
     }

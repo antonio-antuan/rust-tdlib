@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for FormattedText {
 }
 
 impl FormattedText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFormattedTextBuilder {
+    pub fn builder() -> FormattedTextBuilder {
         let mut inner = FormattedText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFormattedTextBuilder { inner }
+        FormattedTextBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -52,11 +52,14 @@ impl FormattedText {
 }
 
 #[doc(hidden)]
-pub struct RTDFormattedTextBuilder {
+pub struct FormattedTextBuilder {
     inner: FormattedText,
 }
 
-impl RTDFormattedTextBuilder {
+#[deprecated]
+pub type RTDFormattedTextBuilder = FormattedTextBuilder;
+
+impl FormattedTextBuilder {
     pub fn build(&self) -> FormattedText {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<FormattedText> for FormattedText {
     }
 }
 
-impl AsRef<FormattedText> for RTDFormattedTextBuilder {
+impl AsRef<FormattedText> for FormattedTextBuilder {
     fn as_ref(&self) -> &FormattedText {
         &self.inner
     }

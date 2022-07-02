@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for MessageCalendar {
 }
 
 impl MessageCalendar {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageCalendarBuilder {
+    pub fn builder() -> MessageCalendarBuilder {
         let mut inner = MessageCalendar::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageCalendarBuilder { inner }
+        MessageCalendarBuilder { inner }
     }
 
     pub fn total_count(&self) -> i32 {
@@ -52,11 +52,14 @@ impl MessageCalendar {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageCalendarBuilder {
+pub struct MessageCalendarBuilder {
     inner: MessageCalendar,
 }
 
-impl RTDMessageCalendarBuilder {
+#[deprecated]
+pub type RTDMessageCalendarBuilder = MessageCalendarBuilder;
+
+impl MessageCalendarBuilder {
     pub fn build(&self) -> MessageCalendar {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<MessageCalendar> for MessageCalendar {
     }
 }
 
-impl AsRef<MessageCalendar> for RTDMessageCalendarBuilder {
+impl AsRef<MessageCalendar> for MessageCalendarBuilder {
     fn as_ref(&self) -> &MessageCalendar {
         &self.inner
     }

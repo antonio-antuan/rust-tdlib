@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for ImportMessages {
 impl RFunction for ImportMessages {}
 
 impl ImportMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDImportMessagesBuilder {
+    pub fn builder() -> ImportMessagesBuilder {
         let mut inner = ImportMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "importMessages".to_string();
 
-        RTDImportMessagesBuilder { inner }
+        ImportMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl ImportMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDImportMessagesBuilder {
+pub struct ImportMessagesBuilder {
     inner: ImportMessages,
 }
 
-impl RTDImportMessagesBuilder {
+#[deprecated]
+pub type RTDImportMessagesBuilder = ImportMessagesBuilder;
+
+impl ImportMessagesBuilder {
     pub fn build(&self) -> ImportMessages {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<ImportMessages> for ImportMessages {
     }
 }
 
-impl AsRef<ImportMessages> for RTDImportMessagesBuilder {
+impl AsRef<ImportMessages> for ImportMessagesBuilder {
     fn as_ref(&self) -> &ImportMessages {
         &self.inner
     }

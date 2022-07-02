@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for InputFile {
 }
 
 impl InputFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -110,14 +110,14 @@ impl RObject for InputFileGenerated {
 impl TDInputFile for InputFileGenerated {}
 
 impl InputFileGenerated {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputFileGeneratedBuilder {
+    pub fn builder() -> InputFileGeneratedBuilder {
         let mut inner = InputFileGenerated::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputFileGeneratedBuilder { inner }
+        InputFileGeneratedBuilder { inner }
     }
 
     pub fn original_path(&self) -> &String {
@@ -134,11 +134,14 @@ impl InputFileGenerated {
 }
 
 #[doc(hidden)]
-pub struct RTDInputFileGeneratedBuilder {
+pub struct InputFileGeneratedBuilder {
     inner: InputFileGenerated,
 }
 
-impl RTDInputFileGeneratedBuilder {
+#[deprecated]
+pub type RTDInputFileGeneratedBuilder = InputFileGeneratedBuilder;
+
+impl InputFileGeneratedBuilder {
     pub fn build(&self) -> InputFileGenerated {
         self.inner.clone()
     }
@@ -165,7 +168,7 @@ impl AsRef<InputFileGenerated> for InputFileGenerated {
     }
 }
 
-impl AsRef<InputFileGenerated> for RTDInputFileGeneratedBuilder {
+impl AsRef<InputFileGenerated> for InputFileGeneratedBuilder {
     fn as_ref(&self) -> &InputFileGenerated {
         &self.inner
     }
@@ -199,14 +202,14 @@ impl RObject for InputFileId {
 impl TDInputFile for InputFileId {}
 
 impl InputFileId {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputFileIdBuilder {
+    pub fn builder() -> InputFileIdBuilder {
         let mut inner = InputFileId::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputFileIdBuilder { inner }
+        InputFileIdBuilder { inner }
     }
 
     pub fn id(&self) -> i32 {
@@ -215,11 +218,14 @@ impl InputFileId {
 }
 
 #[doc(hidden)]
-pub struct RTDInputFileIdBuilder {
+pub struct InputFileIdBuilder {
     inner: InputFileId,
 }
 
-impl RTDInputFileIdBuilder {
+#[deprecated]
+pub type RTDInputFileIdBuilder = InputFileIdBuilder;
+
+impl InputFileIdBuilder {
     pub fn build(&self) -> InputFileId {
         self.inner.clone()
     }
@@ -236,7 +242,7 @@ impl AsRef<InputFileId> for InputFileId {
     }
 }
 
-impl AsRef<InputFileId> for RTDInputFileIdBuilder {
+impl AsRef<InputFileId> for InputFileIdBuilder {
     fn as_ref(&self) -> &InputFileId {
         &self.inner
     }
@@ -270,14 +276,14 @@ impl RObject for InputFileLocal {
 impl TDInputFile for InputFileLocal {}
 
 impl InputFileLocal {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputFileLocalBuilder {
+    pub fn builder() -> InputFileLocalBuilder {
         let mut inner = InputFileLocal::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputFileLocalBuilder { inner }
+        InputFileLocalBuilder { inner }
     }
 
     pub fn path(&self) -> &String {
@@ -286,11 +292,14 @@ impl InputFileLocal {
 }
 
 #[doc(hidden)]
-pub struct RTDInputFileLocalBuilder {
+pub struct InputFileLocalBuilder {
     inner: InputFileLocal,
 }
 
-impl RTDInputFileLocalBuilder {
+#[deprecated]
+pub type RTDInputFileLocalBuilder = InputFileLocalBuilder;
+
+impl InputFileLocalBuilder {
     pub fn build(&self) -> InputFileLocal {
         self.inner.clone()
     }
@@ -307,7 +316,7 @@ impl AsRef<InputFileLocal> for InputFileLocal {
     }
 }
 
-impl AsRef<InputFileLocal> for RTDInputFileLocalBuilder {
+impl AsRef<InputFileLocal> for InputFileLocalBuilder {
     fn as_ref(&self) -> &InputFileLocal {
         &self.inner
     }
@@ -341,14 +350,14 @@ impl RObject for InputFileRemote {
 impl TDInputFile for InputFileRemote {}
 
 impl InputFileRemote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputFileRemoteBuilder {
+    pub fn builder() -> InputFileRemoteBuilder {
         let mut inner = InputFileRemote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputFileRemoteBuilder { inner }
+        InputFileRemoteBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -357,11 +366,14 @@ impl InputFileRemote {
 }
 
 #[doc(hidden)]
-pub struct RTDInputFileRemoteBuilder {
+pub struct InputFileRemoteBuilder {
     inner: InputFileRemote,
 }
 
-impl RTDInputFileRemoteBuilder {
+#[deprecated]
+pub type RTDInputFileRemoteBuilder = InputFileRemoteBuilder;
+
+impl InputFileRemoteBuilder {
     pub fn build(&self) -> InputFileRemote {
         self.inner.clone()
     }
@@ -378,7 +390,7 @@ impl AsRef<InputFileRemote> for InputFileRemote {
     }
 }
 
-impl AsRef<InputFileRemote> for RTDInputFileRemoteBuilder {
+impl AsRef<InputFileRemote> for InputFileRemoteBuilder {
     fn as_ref(&self) -> &InputFileRemote {
         &self.inner
     }

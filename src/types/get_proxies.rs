@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetProxies {
 impl RFunction for GetProxies {}
 
 impl GetProxies {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetProxiesBuilder {
+    pub fn builder() -> GetProxiesBuilder {
         let mut inner = GetProxies::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getProxies".to_string();
 
-        RTDGetProxiesBuilder { inner }
+        GetProxiesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetProxiesBuilder {
+pub struct GetProxiesBuilder {
     inner: GetProxies,
 }
 
-impl RTDGetProxiesBuilder {
+#[deprecated]
+pub type RTDGetProxiesBuilder = GetProxiesBuilder;
+
+impl GetProxiesBuilder {
     pub fn build(&self) -> GetProxies {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetProxies> for GetProxies {
     }
 }
 
-impl AsRef<GetProxies> for RTDGetProxiesBuilder {
+impl AsRef<GetProxies> for GetProxiesBuilder {
     fn as_ref(&self) -> &GetProxies {
         &self.inner
     }

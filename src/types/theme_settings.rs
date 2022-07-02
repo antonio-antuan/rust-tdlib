@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -42,14 +42,14 @@ impl RObject for ThemeSettings {
 }
 
 impl ThemeSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDThemeSettingsBuilder {
+    pub fn builder() -> ThemeSettingsBuilder {
         let mut inner = ThemeSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDThemeSettingsBuilder { inner }
+        ThemeSettingsBuilder { inner }
     }
 
     pub fn accent_color(&self) -> i32 {
@@ -74,11 +74,14 @@ impl ThemeSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDThemeSettingsBuilder {
+pub struct ThemeSettingsBuilder {
     inner: ThemeSettings,
 }
 
-impl RTDThemeSettingsBuilder {
+#[deprecated]
+pub type RTDThemeSettingsBuilder = ThemeSettingsBuilder;
+
+impl ThemeSettingsBuilder {
     pub fn build(&self) -> ThemeSettings {
         self.inner.clone()
     }
@@ -124,7 +127,7 @@ impl AsRef<ThemeSettings> for ThemeSettings {
     }
 }
 
-impl AsRef<ThemeSettings> for RTDThemeSettingsBuilder {
+impl AsRef<ThemeSettings> for ThemeSettingsBuilder {
     fn as_ref(&self) -> &ThemeSettings {
         &self.inner
     }

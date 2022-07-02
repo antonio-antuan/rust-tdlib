@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -55,14 +55,14 @@ impl RObject for EncryptedPassportElement {
 }
 
 impl EncryptedPassportElement {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEncryptedPassportElementBuilder {
+    pub fn builder() -> EncryptedPassportElementBuilder {
         let mut inner = EncryptedPassportElement::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDEncryptedPassportElementBuilder { inner }
+        EncryptedPassportElementBuilder { inner }
     }
 
     pub fn type_(&self) -> &PassportElementType {
@@ -103,11 +103,14 @@ impl EncryptedPassportElement {
 }
 
 #[doc(hidden)]
-pub struct RTDEncryptedPassportElementBuilder {
+pub struct EncryptedPassportElementBuilder {
     inner: EncryptedPassportElement,
 }
 
-impl RTDEncryptedPassportElementBuilder {
+#[deprecated]
+pub type RTDEncryptedPassportElementBuilder = EncryptedPassportElementBuilder;
+
+impl EncryptedPassportElementBuilder {
     pub fn build(&self) -> EncryptedPassportElement {
         self.inner.clone()
     }
@@ -164,7 +167,7 @@ impl AsRef<EncryptedPassportElement> for EncryptedPassportElement {
     }
 }
 
-impl AsRef<EncryptedPassportElement> for RTDEncryptedPassportElementBuilder {
+impl AsRef<EncryptedPassportElement> for EncryptedPassportElementBuilder {
     fn as_ref(&self) -> &EncryptedPassportElement {
         &self.inner
     }

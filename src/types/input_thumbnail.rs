@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for InputThumbnail {
 }
 
 impl InputThumbnail {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputThumbnailBuilder {
+    pub fn builder() -> InputThumbnailBuilder {
         let mut inner = InputThumbnail::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputThumbnailBuilder { inner }
+        InputThumbnailBuilder { inner }
     }
 
     pub fn thumbnail(&self) -> &InputFile {
@@ -60,11 +60,14 @@ impl InputThumbnail {
 }
 
 #[doc(hidden)]
-pub struct RTDInputThumbnailBuilder {
+pub struct InputThumbnailBuilder {
     inner: InputThumbnail,
 }
 
-impl RTDInputThumbnailBuilder {
+#[deprecated]
+pub type RTDInputThumbnailBuilder = InputThumbnailBuilder;
+
+impl InputThumbnailBuilder {
     pub fn build(&self) -> InputThumbnail {
         self.inner.clone()
     }
@@ -91,7 +94,7 @@ impl AsRef<InputThumbnail> for InputThumbnail {
     }
 }
 
-impl AsRef<InputThumbnail> for RTDInputThumbnailBuilder {
+impl AsRef<InputThumbnail> for InputThumbnailBuilder {
     fn as_ref(&self) -> &InputThumbnail {
         &self.inner
     }

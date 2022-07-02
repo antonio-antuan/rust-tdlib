@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -42,16 +42,16 @@ impl RObject for AnswerShippingQuery {
 impl RFunction for AnswerShippingQuery {}
 
 impl AnswerShippingQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAnswerShippingQueryBuilder {
+    pub fn builder() -> AnswerShippingQueryBuilder {
         let mut inner = AnswerShippingQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "answerShippingQuery".to_string();
 
-        RTDAnswerShippingQueryBuilder { inner }
+        AnswerShippingQueryBuilder { inner }
     }
 
     pub fn shipping_query_id(&self) -> i64 {
@@ -68,11 +68,14 @@ impl AnswerShippingQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDAnswerShippingQueryBuilder {
+pub struct AnswerShippingQueryBuilder {
     inner: AnswerShippingQuery,
 }
 
-impl RTDAnswerShippingQueryBuilder {
+#[deprecated]
+pub type RTDAnswerShippingQueryBuilder = AnswerShippingQueryBuilder;
+
+impl AnswerShippingQueryBuilder {
     pub fn build(&self) -> AnswerShippingQuery {
         self.inner.clone()
     }
@@ -99,7 +102,7 @@ impl AsRef<AnswerShippingQuery> for AnswerShippingQuery {
     }
 }
 
-impl AsRef<AnswerShippingQuery> for RTDAnswerShippingQueryBuilder {
+impl AsRef<AnswerShippingQuery> for AnswerShippingQueryBuilder {
     fn as_ref(&self) -> &AnswerShippingQuery {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for PaymentResult {
 }
 
 impl PaymentResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPaymentResultBuilder {
+    pub fn builder() -> PaymentResultBuilder {
         let mut inner = PaymentResult::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPaymentResultBuilder { inner }
+        PaymentResultBuilder { inner }
     }
 
     pub fn success(&self) -> bool {
@@ -52,11 +52,14 @@ impl PaymentResult {
 }
 
 #[doc(hidden)]
-pub struct RTDPaymentResultBuilder {
+pub struct PaymentResultBuilder {
     inner: PaymentResult,
 }
 
-impl RTDPaymentResultBuilder {
+#[deprecated]
+pub type RTDPaymentResultBuilder = PaymentResultBuilder;
+
+impl PaymentResultBuilder {
     pub fn build(&self) -> PaymentResult {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<PaymentResult> for PaymentResult {
     }
 }
 
-impl AsRef<PaymentResult> for RTDPaymentResultBuilder {
+impl AsRef<PaymentResult> for PaymentResultBuilder {
     fn as_ref(&self) -> &PaymentResult {
         &self.inner
     }

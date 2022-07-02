@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for CleanFileName {
 impl RFunction for CleanFileName {}
 
 impl CleanFileName {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCleanFileNameBuilder {
+    pub fn builder() -> CleanFileNameBuilder {
         let mut inner = CleanFileName::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "cleanFileName".to_string();
 
-        RTDCleanFileNameBuilder { inner }
+        CleanFileNameBuilder { inner }
     }
 
     pub fn file_name(&self) -> &String {
@@ -51,11 +51,14 @@ impl CleanFileName {
 }
 
 #[doc(hidden)]
-pub struct RTDCleanFileNameBuilder {
+pub struct CleanFileNameBuilder {
     inner: CleanFileName,
 }
 
-impl RTDCleanFileNameBuilder {
+#[deprecated]
+pub type RTDCleanFileNameBuilder = CleanFileNameBuilder;
+
+impl CleanFileNameBuilder {
     pub fn build(&self) -> CleanFileName {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<CleanFileName> for CleanFileName {
     }
 }
 
-impl AsRef<CleanFileName> for RTDCleanFileNameBuilder {
+impl AsRef<CleanFileName> for CleanFileNameBuilder {
     fn as_ref(&self) -> &CleanFileName {
         &self.inner
     }

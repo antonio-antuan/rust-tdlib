@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for ChatJoinRequestsInfo {
 }
 
 impl ChatJoinRequestsInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatJoinRequestsInfoBuilder {
+    pub fn builder() -> ChatJoinRequestsInfoBuilder {
         let mut inner = ChatJoinRequestsInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatJoinRequestsInfoBuilder { inner }
+        ChatJoinRequestsInfoBuilder { inner }
     }
 
     pub fn total_count(&self) -> i32 {
@@ -52,11 +52,14 @@ impl ChatJoinRequestsInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDChatJoinRequestsInfoBuilder {
+pub struct ChatJoinRequestsInfoBuilder {
     inner: ChatJoinRequestsInfo,
 }
 
-impl RTDChatJoinRequestsInfoBuilder {
+#[deprecated]
+pub type RTDChatJoinRequestsInfoBuilder = ChatJoinRequestsInfoBuilder;
+
+impl ChatJoinRequestsInfoBuilder {
     pub fn build(&self) -> ChatJoinRequestsInfo {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<ChatJoinRequestsInfo> for ChatJoinRequestsInfo {
     }
 }
 
-impl AsRef<ChatJoinRequestsInfo> for RTDChatJoinRequestsInfoBuilder {
+impl AsRef<ChatJoinRequestsInfo> for ChatJoinRequestsInfoBuilder {
     fn as_ref(&self) -> &ChatJoinRequestsInfo {
         &self.inner
     }

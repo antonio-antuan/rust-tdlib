@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetImportedContactCount {
 impl RFunction for GetImportedContactCount {}
 
 impl GetImportedContactCount {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetImportedContactCountBuilder {
+    pub fn builder() -> GetImportedContactCountBuilder {
         let mut inner = GetImportedContactCount::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getImportedContactCount".to_string();
 
-        RTDGetImportedContactCountBuilder { inner }
+        GetImportedContactCountBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetImportedContactCountBuilder {
+pub struct GetImportedContactCountBuilder {
     inner: GetImportedContactCount,
 }
 
-impl RTDGetImportedContactCountBuilder {
+#[deprecated]
+pub type RTDGetImportedContactCountBuilder = GetImportedContactCountBuilder;
+
+impl GetImportedContactCountBuilder {
     pub fn build(&self) -> GetImportedContactCount {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetImportedContactCount> for GetImportedContactCount {
     }
 }
 
-impl AsRef<GetImportedContactCount> for RTDGetImportedContactCountBuilder {
+impl AsRef<GetImportedContactCount> for GetImportedContactCountBuilder {
     fn as_ref(&self) -> &GetImportedContactCount {
         &self.inner
     }

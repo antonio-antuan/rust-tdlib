@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for SetGroupCallParticipantIsSpeaking {
 impl RFunction for SetGroupCallParticipantIsSpeaking {}
 
 impl SetGroupCallParticipantIsSpeaking {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetGroupCallParticipantIsSpeakingBuilder {
+    pub fn builder() -> SetGroupCallParticipantIsSpeakingBuilder {
         let mut inner = SetGroupCallParticipantIsSpeaking::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setGroupCallParticipantIsSpeaking".to_string();
 
-        RTDSetGroupCallParticipantIsSpeakingBuilder { inner }
+        SetGroupCallParticipantIsSpeakingBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -67,11 +67,14 @@ impl SetGroupCallParticipantIsSpeaking {
 }
 
 #[doc(hidden)]
-pub struct RTDSetGroupCallParticipantIsSpeakingBuilder {
+pub struct SetGroupCallParticipantIsSpeakingBuilder {
     inner: SetGroupCallParticipantIsSpeaking,
 }
 
-impl RTDSetGroupCallParticipantIsSpeakingBuilder {
+#[deprecated]
+pub type RTDSetGroupCallParticipantIsSpeakingBuilder = SetGroupCallParticipantIsSpeakingBuilder;
+
+impl SetGroupCallParticipantIsSpeakingBuilder {
     pub fn build(&self) -> SetGroupCallParticipantIsSpeaking {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<SetGroupCallParticipantIsSpeaking> for SetGroupCallParticipantIsSpeak
     }
 }
 
-impl AsRef<SetGroupCallParticipantIsSpeaking> for RTDSetGroupCallParticipantIsSpeakingBuilder {
+impl AsRef<SetGroupCallParticipantIsSpeaking> for SetGroupCallParticipantIsSpeakingBuilder {
     fn as_ref(&self) -> &SetGroupCallParticipantIsSpeaking {
         &self.inner
     }

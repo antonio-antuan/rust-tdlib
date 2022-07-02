@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -84,14 +84,14 @@ impl RObject for TdlibParameters {
 }
 
 impl TdlibParameters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTdlibParametersBuilder {
+    pub fn builder() -> TdlibParametersBuilder {
         let mut inner = TdlibParameters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTdlibParametersBuilder { inner }
+        TdlibParametersBuilder { inner }
     }
 
     pub fn use_test_dc(&self) -> bool {
@@ -156,11 +156,14 @@ impl TdlibParameters {
 }
 
 #[doc(hidden)]
-pub struct RTDTdlibParametersBuilder {
+pub struct TdlibParametersBuilder {
     inner: TdlibParameters,
 }
 
-impl RTDTdlibParametersBuilder {
+#[deprecated]
+pub type RTDTdlibParametersBuilder = TdlibParametersBuilder;
+
+impl TdlibParametersBuilder {
     pub fn build(&self) -> TdlibParameters {
         self.inner.clone()
     }
@@ -247,7 +250,7 @@ impl AsRef<TdlibParameters> for TdlibParameters {
     }
 }
 
-impl AsRef<TdlibParameters> for RTDTdlibParametersBuilder {
+impl AsRef<TdlibParameters> for TdlibParametersBuilder {
     fn as_ref(&self) -> &TdlibParameters {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for Point {
 }
 
 impl Point {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPointBuilder {
+    pub fn builder() -> PointBuilder {
         let mut inner = Point::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPointBuilder { inner }
+        PointBuilder { inner }
     }
 
     pub fn x(&self) -> f32 {
@@ -52,11 +52,14 @@ impl Point {
 }
 
 #[doc(hidden)]
-pub struct RTDPointBuilder {
+pub struct PointBuilder {
     inner: Point,
 }
 
-impl RTDPointBuilder {
+#[deprecated]
+pub type RTDPointBuilder = PointBuilder;
+
+impl PointBuilder {
     pub fn build(&self) -> Point {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<Point> for Point {
     }
 }
 
-impl AsRef<Point> for RTDPointBuilder {
+impl AsRef<Point> for PointBuilder {
     fn as_ref(&self) -> &Point {
         &self.inner
     }

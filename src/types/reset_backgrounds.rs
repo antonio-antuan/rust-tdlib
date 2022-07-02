@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for ResetBackgrounds {
 impl RFunction for ResetBackgrounds {}
 
 impl ResetBackgrounds {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResetBackgroundsBuilder {
+    pub fn builder() -> ResetBackgroundsBuilder {
         let mut inner = ResetBackgrounds::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "resetBackgrounds".to_string();
 
-        RTDResetBackgroundsBuilder { inner }
+        ResetBackgroundsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDResetBackgroundsBuilder {
+pub struct ResetBackgroundsBuilder {
     inner: ResetBackgrounds,
 }
 
-impl RTDResetBackgroundsBuilder {
+#[deprecated]
+pub type RTDResetBackgroundsBuilder = ResetBackgroundsBuilder;
+
+impl ResetBackgroundsBuilder {
     pub fn build(&self) -> ResetBackgrounds {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ResetBackgrounds> for ResetBackgrounds {
     }
 }
 
-impl AsRef<ResetBackgrounds> for RTDResetBackgroundsBuilder {
+impl AsRef<ResetBackgrounds> for ResetBackgroundsBuilder {
     fn as_ref(&self) -> &ResetBackgrounds {
         &self.inner
     }

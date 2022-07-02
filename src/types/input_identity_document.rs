@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -46,14 +46,14 @@ impl RObject for InputIdentityDocument {
 }
 
 impl InputIdentityDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputIdentityDocumentBuilder {
+    pub fn builder() -> InputIdentityDocumentBuilder {
         let mut inner = InputIdentityDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputIdentityDocumentBuilder { inner }
+        InputIdentityDocumentBuilder { inner }
     }
 
     pub fn number(&self) -> &String {
@@ -82,11 +82,14 @@ impl InputIdentityDocument {
 }
 
 #[doc(hidden)]
-pub struct RTDInputIdentityDocumentBuilder {
+pub struct InputIdentityDocumentBuilder {
     inner: InputIdentityDocument,
 }
 
-impl RTDInputIdentityDocumentBuilder {
+#[deprecated]
+pub type RTDInputIdentityDocumentBuilder = InputIdentityDocumentBuilder;
+
+impl InputIdentityDocumentBuilder {
     pub fn build(&self) -> InputIdentityDocument {
         self.inner.clone()
     }
@@ -128,7 +131,7 @@ impl AsRef<InputIdentityDocument> for InputIdentityDocument {
     }
 }
 
-impl AsRef<InputIdentityDocument> for RTDInputIdentityDocumentBuilder {
+impl AsRef<InputIdentityDocument> for InputIdentityDocumentBuilder {
     fn as_ref(&self) -> &InputIdentityDocument {
         &self.inner
     }

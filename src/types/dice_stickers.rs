@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for DiceStickers {
 }
 
 impl DiceStickers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -90,14 +90,14 @@ impl RObject for DiceStickersRegular {
 impl TDDiceStickers for DiceStickersRegular {}
 
 impl DiceStickersRegular {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDiceStickersRegularBuilder {
+    pub fn builder() -> DiceStickersRegularBuilder {
         let mut inner = DiceStickersRegular::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDiceStickersRegularBuilder { inner }
+        DiceStickersRegularBuilder { inner }
     }
 
     pub fn sticker(&self) -> &Sticker {
@@ -106,11 +106,14 @@ impl DiceStickersRegular {
 }
 
 #[doc(hidden)]
-pub struct RTDDiceStickersRegularBuilder {
+pub struct DiceStickersRegularBuilder {
     inner: DiceStickersRegular,
 }
 
-impl RTDDiceStickersRegularBuilder {
+#[deprecated]
+pub type RTDDiceStickersRegularBuilder = DiceStickersRegularBuilder;
+
+impl DiceStickersRegularBuilder {
     pub fn build(&self) -> DiceStickersRegular {
         self.inner.clone()
     }
@@ -127,7 +130,7 @@ impl AsRef<DiceStickersRegular> for DiceStickersRegular {
     }
 }
 
-impl AsRef<DiceStickersRegular> for RTDDiceStickersRegularBuilder {
+impl AsRef<DiceStickersRegular> for DiceStickersRegularBuilder {
     fn as_ref(&self) -> &DiceStickersRegular {
         &self.inner
     }
@@ -167,14 +170,14 @@ impl RObject for DiceStickersSlotMachine {
 impl TDDiceStickers for DiceStickersSlotMachine {}
 
 impl DiceStickersSlotMachine {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDiceStickersSlotMachineBuilder {
+    pub fn builder() -> DiceStickersSlotMachineBuilder {
         let mut inner = DiceStickersSlotMachine::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDiceStickersSlotMachineBuilder { inner }
+        DiceStickersSlotMachineBuilder { inner }
     }
 
     pub fn background(&self) -> &Sticker {
@@ -199,11 +202,14 @@ impl DiceStickersSlotMachine {
 }
 
 #[doc(hidden)]
-pub struct RTDDiceStickersSlotMachineBuilder {
+pub struct DiceStickersSlotMachineBuilder {
     inner: DiceStickersSlotMachine,
 }
 
-impl RTDDiceStickersSlotMachineBuilder {
+#[deprecated]
+pub type RTDDiceStickersSlotMachineBuilder = DiceStickersSlotMachineBuilder;
+
+impl DiceStickersSlotMachineBuilder {
     pub fn build(&self) -> DiceStickersSlotMachine {
         self.inner.clone()
     }
@@ -240,7 +246,7 @@ impl AsRef<DiceStickersSlotMachine> for DiceStickersSlotMachine {
     }
 }
 
-impl AsRef<DiceStickersSlotMachine> for RTDDiceStickersSlotMachineBuilder {
+impl AsRef<DiceStickersSlotMachine> for DiceStickersSlotMachineBuilder {
     fn as_ref(&self) -> &DiceStickersSlotMachine {
         &self.inner
     }

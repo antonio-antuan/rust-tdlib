@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -54,7 +54,7 @@ impl RObject for PageBlockVerticalAlignment {
 }
 
 impl PageBlockVerticalAlignment {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -93,23 +93,26 @@ impl RObject for PageBlockVerticalAlignmentBottom {
 impl TDPageBlockVerticalAlignment for PageBlockVerticalAlignmentBottom {}
 
 impl PageBlockVerticalAlignmentBottom {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockVerticalAlignmentBottomBuilder {
+    pub fn builder() -> PageBlockVerticalAlignmentBottomBuilder {
         let mut inner = PageBlockVerticalAlignmentBottom::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockVerticalAlignmentBottomBuilder { inner }
+        PageBlockVerticalAlignmentBottomBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockVerticalAlignmentBottomBuilder {
+pub struct PageBlockVerticalAlignmentBottomBuilder {
     inner: PageBlockVerticalAlignmentBottom,
 }
 
-impl RTDPageBlockVerticalAlignmentBottomBuilder {
+#[deprecated]
+pub type RTDPageBlockVerticalAlignmentBottomBuilder = PageBlockVerticalAlignmentBottomBuilder;
+
+impl PageBlockVerticalAlignmentBottomBuilder {
     pub fn build(&self) -> PageBlockVerticalAlignmentBottom {
         self.inner.clone()
     }
@@ -121,7 +124,7 @@ impl AsRef<PageBlockVerticalAlignmentBottom> for PageBlockVerticalAlignmentBotto
     }
 }
 
-impl AsRef<PageBlockVerticalAlignmentBottom> for RTDPageBlockVerticalAlignmentBottomBuilder {
+impl AsRef<PageBlockVerticalAlignmentBottom> for PageBlockVerticalAlignmentBottomBuilder {
     fn as_ref(&self) -> &PageBlockVerticalAlignmentBottom {
         &self.inner
     }
@@ -151,23 +154,26 @@ impl RObject for PageBlockVerticalAlignmentMiddle {
 impl TDPageBlockVerticalAlignment for PageBlockVerticalAlignmentMiddle {}
 
 impl PageBlockVerticalAlignmentMiddle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockVerticalAlignmentMiddleBuilder {
+    pub fn builder() -> PageBlockVerticalAlignmentMiddleBuilder {
         let mut inner = PageBlockVerticalAlignmentMiddle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockVerticalAlignmentMiddleBuilder { inner }
+        PageBlockVerticalAlignmentMiddleBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockVerticalAlignmentMiddleBuilder {
+pub struct PageBlockVerticalAlignmentMiddleBuilder {
     inner: PageBlockVerticalAlignmentMiddle,
 }
 
-impl RTDPageBlockVerticalAlignmentMiddleBuilder {
+#[deprecated]
+pub type RTDPageBlockVerticalAlignmentMiddleBuilder = PageBlockVerticalAlignmentMiddleBuilder;
+
+impl PageBlockVerticalAlignmentMiddleBuilder {
     pub fn build(&self) -> PageBlockVerticalAlignmentMiddle {
         self.inner.clone()
     }
@@ -179,7 +185,7 @@ impl AsRef<PageBlockVerticalAlignmentMiddle> for PageBlockVerticalAlignmentMiddl
     }
 }
 
-impl AsRef<PageBlockVerticalAlignmentMiddle> for RTDPageBlockVerticalAlignmentMiddleBuilder {
+impl AsRef<PageBlockVerticalAlignmentMiddle> for PageBlockVerticalAlignmentMiddleBuilder {
     fn as_ref(&self) -> &PageBlockVerticalAlignmentMiddle {
         &self.inner
     }
@@ -209,23 +215,26 @@ impl RObject for PageBlockVerticalAlignmentTop {
 impl TDPageBlockVerticalAlignment for PageBlockVerticalAlignmentTop {}
 
 impl PageBlockVerticalAlignmentTop {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockVerticalAlignmentTopBuilder {
+    pub fn builder() -> PageBlockVerticalAlignmentTopBuilder {
         let mut inner = PageBlockVerticalAlignmentTop::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockVerticalAlignmentTopBuilder { inner }
+        PageBlockVerticalAlignmentTopBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockVerticalAlignmentTopBuilder {
+pub struct PageBlockVerticalAlignmentTopBuilder {
     inner: PageBlockVerticalAlignmentTop,
 }
 
-impl RTDPageBlockVerticalAlignmentTopBuilder {
+#[deprecated]
+pub type RTDPageBlockVerticalAlignmentTopBuilder = PageBlockVerticalAlignmentTopBuilder;
+
+impl PageBlockVerticalAlignmentTopBuilder {
     pub fn build(&self) -> PageBlockVerticalAlignmentTop {
         self.inner.clone()
     }
@@ -237,7 +246,7 @@ impl AsRef<PageBlockVerticalAlignmentTop> for PageBlockVerticalAlignmentTop {
     }
 }
 
-impl AsRef<PageBlockVerticalAlignmentTop> for RTDPageBlockVerticalAlignmentTopBuilder {
+impl AsRef<PageBlockVerticalAlignmentTop> for PageBlockVerticalAlignmentTopBuilder {
     fn as_ref(&self) -> &PageBlockVerticalAlignmentTop {
         &self.inner
     }

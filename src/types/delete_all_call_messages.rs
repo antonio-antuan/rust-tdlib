@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for DeleteAllCallMessages {
 impl RFunction for DeleteAllCallMessages {}
 
 impl DeleteAllCallMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteAllCallMessagesBuilder {
+    pub fn builder() -> DeleteAllCallMessagesBuilder {
         let mut inner = DeleteAllCallMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteAllCallMessages".to_string();
 
-        RTDDeleteAllCallMessagesBuilder { inner }
+        DeleteAllCallMessagesBuilder { inner }
     }
 
     pub fn revoke(&self) -> bool {
@@ -51,11 +51,14 @@ impl DeleteAllCallMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteAllCallMessagesBuilder {
+pub struct DeleteAllCallMessagesBuilder {
     inner: DeleteAllCallMessages,
 }
 
-impl RTDDeleteAllCallMessagesBuilder {
+#[deprecated]
+pub type RTDDeleteAllCallMessagesBuilder = DeleteAllCallMessagesBuilder;
+
+impl DeleteAllCallMessagesBuilder {
     pub fn build(&self) -> DeleteAllCallMessages {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<DeleteAllCallMessages> for DeleteAllCallMessages {
     }
 }
 
-impl AsRef<DeleteAllCallMessages> for RTDDeleteAllCallMessagesBuilder {
+impl AsRef<DeleteAllCallMessages> for DeleteAllCallMessagesBuilder {
     fn as_ref(&self) -> &DeleteAllCallMessages {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -50,16 +50,16 @@ impl RObject for AnswerCallbackQuery {
 impl RFunction for AnswerCallbackQuery {}
 
 impl AnswerCallbackQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAnswerCallbackQueryBuilder {
+    pub fn builder() -> AnswerCallbackQueryBuilder {
         let mut inner = AnswerCallbackQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "answerCallbackQuery".to_string();
 
-        RTDAnswerCallbackQueryBuilder { inner }
+        AnswerCallbackQueryBuilder { inner }
     }
 
     pub fn callback_query_id(&self) -> i64 {
@@ -84,11 +84,14 @@ impl AnswerCallbackQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDAnswerCallbackQueryBuilder {
+pub struct AnswerCallbackQueryBuilder {
     inner: AnswerCallbackQuery,
 }
 
-impl RTDAnswerCallbackQueryBuilder {
+#[deprecated]
+pub type RTDAnswerCallbackQueryBuilder = AnswerCallbackQueryBuilder;
+
+impl AnswerCallbackQueryBuilder {
     pub fn build(&self) -> AnswerCallbackQuery {
         self.inner.clone()
     }
@@ -125,7 +128,7 @@ impl AsRef<AnswerCallbackQuery> for AnswerCallbackQuery {
     }
 }
 
-impl AsRef<AnswerCallbackQuery> for RTDAnswerCallbackQueryBuilder {
+impl AsRef<AnswerCallbackQuery> for AnswerCallbackQueryBuilder {
     fn as_ref(&self) -> &AnswerCallbackQuery {
         &self.inner
     }

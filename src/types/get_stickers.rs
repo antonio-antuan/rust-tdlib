@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetStickers {
 impl RFunction for GetStickers {}
 
 impl GetStickers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetStickersBuilder {
+    pub fn builder() -> GetStickersBuilder {
         let mut inner = GetStickers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getStickers".to_string();
 
-        RTDGetStickersBuilder { inner }
+        GetStickersBuilder { inner }
     }
 
     pub fn emoji(&self) -> &String {
@@ -59,11 +59,14 @@ impl GetStickers {
 }
 
 #[doc(hidden)]
-pub struct RTDGetStickersBuilder {
+pub struct GetStickersBuilder {
     inner: GetStickers,
 }
 
-impl RTDGetStickersBuilder {
+#[deprecated]
+pub type RTDGetStickersBuilder = GetStickersBuilder;
+
+impl GetStickersBuilder {
     pub fn build(&self) -> GetStickers {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<GetStickers> for GetStickers {
     }
 }
 
-impl AsRef<GetStickers> for RTDGetStickersBuilder {
+impl AsRef<GetStickers> for GetStickersBuilder {
     fn as_ref(&self) -> &GetStickers {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetTrendingStickerSets {
 impl RFunction for GetTrendingStickerSets {}
 
 impl GetTrendingStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetTrendingStickerSetsBuilder {
+    pub fn builder() -> GetTrendingStickerSetsBuilder {
         let mut inner = GetTrendingStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getTrendingStickerSets".to_string();
 
-        RTDGetTrendingStickerSetsBuilder { inner }
+        GetTrendingStickerSetsBuilder { inner }
     }
 
     pub fn offset(&self) -> i32 {
@@ -59,11 +59,14 @@ impl GetTrendingStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDGetTrendingStickerSetsBuilder {
+pub struct GetTrendingStickerSetsBuilder {
     inner: GetTrendingStickerSets,
 }
 
-impl RTDGetTrendingStickerSetsBuilder {
+#[deprecated]
+pub type RTDGetTrendingStickerSetsBuilder = GetTrendingStickerSetsBuilder;
+
+impl GetTrendingStickerSetsBuilder {
     pub fn build(&self) -> GetTrendingStickerSets {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<GetTrendingStickerSets> for GetTrendingStickerSets {
     }
 }
 
-impl AsRef<GetTrendingStickerSets> for RTDGetTrendingStickerSetsBuilder {
+impl AsRef<GetTrendingStickerSets> for GetTrendingStickerSetsBuilder {
     fn as_ref(&self) -> &GetTrendingStickerSets {
         &self.inner
     }

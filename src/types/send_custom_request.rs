@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SendCustomRequest {
 impl RFunction for SendCustomRequest {}
 
 impl SendCustomRequest {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendCustomRequestBuilder {
+    pub fn builder() -> SendCustomRequestBuilder {
         let mut inner = SendCustomRequest::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendCustomRequest".to_string();
 
-        RTDSendCustomRequestBuilder { inner }
+        SendCustomRequestBuilder { inner }
     }
 
     pub fn method(&self) -> &String {
@@ -59,11 +59,14 @@ impl SendCustomRequest {
 }
 
 #[doc(hidden)]
-pub struct RTDSendCustomRequestBuilder {
+pub struct SendCustomRequestBuilder {
     inner: SendCustomRequest,
 }
 
-impl RTDSendCustomRequestBuilder {
+#[deprecated]
+pub type RTDSendCustomRequestBuilder = SendCustomRequestBuilder;
+
+impl SendCustomRequestBuilder {
     pub fn build(&self) -> SendCustomRequest {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SendCustomRequest> for SendCustomRequest {
     }
 }
 
-impl AsRef<SendCustomRequest> for RTDSendCustomRequestBuilder {
+impl AsRef<SendCustomRequest> for SendCustomRequestBuilder {
     fn as_ref(&self) -> &SendCustomRequest {
         &self.inner
     }

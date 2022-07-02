@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for RegisterDevice {
 impl RFunction for RegisterDevice {}
 
 impl RegisterDevice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRegisterDeviceBuilder {
+    pub fn builder() -> RegisterDeviceBuilder {
         let mut inner = RegisterDevice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "registerDevice".to_string();
 
-        RTDRegisterDeviceBuilder { inner }
+        RegisterDeviceBuilder { inner }
     }
 
     pub fn device_token(&self) -> &DeviceToken {
@@ -59,11 +59,14 @@ impl RegisterDevice {
 }
 
 #[doc(hidden)]
-pub struct RTDRegisterDeviceBuilder {
+pub struct RegisterDeviceBuilder {
     inner: RegisterDevice,
 }
 
-impl RTDRegisterDeviceBuilder {
+#[deprecated]
+pub type RTDRegisterDeviceBuilder = RegisterDeviceBuilder;
+
+impl RegisterDeviceBuilder {
     pub fn build(&self) -> RegisterDevice {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<RegisterDevice> for RegisterDevice {
     }
 }
 
-impl AsRef<RegisterDevice> for RTDRegisterDeviceBuilder {
+impl AsRef<RegisterDevice> for RegisterDeviceBuilder {
     fn as_ref(&self) -> &RegisterDevice {
         &self.inner
     }

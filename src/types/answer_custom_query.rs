@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -38,16 +38,16 @@ impl RObject for AnswerCustomQuery {
 impl RFunction for AnswerCustomQuery {}
 
 impl AnswerCustomQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAnswerCustomQueryBuilder {
+    pub fn builder() -> AnswerCustomQueryBuilder {
         let mut inner = AnswerCustomQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "answerCustomQuery".to_string();
 
-        RTDAnswerCustomQueryBuilder { inner }
+        AnswerCustomQueryBuilder { inner }
     }
 
     pub fn custom_query_id(&self) -> i64 {
@@ -60,11 +60,14 @@ impl AnswerCustomQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDAnswerCustomQueryBuilder {
+pub struct AnswerCustomQueryBuilder {
     inner: AnswerCustomQuery,
 }
 
-impl RTDAnswerCustomQueryBuilder {
+#[deprecated]
+pub type RTDAnswerCustomQueryBuilder = AnswerCustomQueryBuilder;
+
+impl AnswerCustomQueryBuilder {
     pub fn build(&self) -> AnswerCustomQuery {
         self.inner.clone()
     }
@@ -86,7 +89,7 @@ impl AsRef<AnswerCustomQuery> for AnswerCustomQuery {
     }
 }
 
-impl AsRef<AnswerCustomQuery> for RTDAnswerCustomQueryBuilder {
+impl AsRef<AnswerCustomQuery> for AnswerCustomQueryBuilder {
     fn as_ref(&self) -> &AnswerCustomQuery {
         &self.inner
     }

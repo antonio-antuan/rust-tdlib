@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for SearchChatsNearby {
 impl RFunction for SearchChatsNearby {}
 
 impl SearchChatsNearby {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchChatsNearbyBuilder {
+    pub fn builder() -> SearchChatsNearbyBuilder {
         let mut inner = SearchChatsNearby::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchChatsNearby".to_string();
 
-        RTDSearchChatsNearbyBuilder { inner }
+        SearchChatsNearbyBuilder { inner }
     }
 
     pub fn location(&self) -> &Location {
@@ -49,11 +49,14 @@ impl SearchChatsNearby {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchChatsNearbyBuilder {
+pub struct SearchChatsNearbyBuilder {
     inner: SearchChatsNearby,
 }
 
-impl RTDSearchChatsNearbyBuilder {
+#[deprecated]
+pub type RTDSearchChatsNearbyBuilder = SearchChatsNearbyBuilder;
+
+impl SearchChatsNearbyBuilder {
     pub fn build(&self) -> SearchChatsNearby {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<SearchChatsNearby> for SearchChatsNearby {
     }
 }
 
-impl AsRef<SearchChatsNearby> for RTDSearchChatsNearbyBuilder {
+impl AsRef<SearchChatsNearby> for SearchChatsNearbyBuilder {
     fn as_ref(&self) -> &SearchChatsNearby {
         &self.inner
     }

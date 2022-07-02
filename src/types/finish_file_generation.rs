@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,16 +36,16 @@ impl RObject for FinishFileGeneration {
 impl RFunction for FinishFileGeneration {}
 
 impl FinishFileGeneration {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFinishFileGenerationBuilder {
+    pub fn builder() -> FinishFileGenerationBuilder {
         let mut inner = FinishFileGeneration::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "finishFileGeneration".to_string();
 
-        RTDFinishFileGenerationBuilder { inner }
+        FinishFileGenerationBuilder { inner }
     }
 
     pub fn generation_id(&self) -> i64 {
@@ -58,11 +58,14 @@ impl FinishFileGeneration {
 }
 
 #[doc(hidden)]
-pub struct RTDFinishFileGenerationBuilder {
+pub struct FinishFileGenerationBuilder {
     inner: FinishFileGeneration,
 }
 
-impl RTDFinishFileGenerationBuilder {
+#[deprecated]
+pub type RTDFinishFileGenerationBuilder = FinishFileGenerationBuilder;
+
+impl FinishFileGenerationBuilder {
     pub fn build(&self) -> FinishFileGeneration {
         self.inner.clone()
     }
@@ -84,7 +87,7 @@ impl AsRef<FinishFileGeneration> for FinishFileGeneration {
     }
 }
 
-impl AsRef<FinishFileGeneration> for RTDFinishFileGenerationBuilder {
+impl AsRef<FinishFileGeneration> for FinishFileGenerationBuilder {
     fn as_ref(&self) -> &FinishFileGeneration {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -72,14 +72,14 @@ impl RObject for Invoice {
 }
 
 impl Invoice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInvoiceBuilder {
+    pub fn builder() -> InvoiceBuilder {
         let mut inner = Invoice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInvoiceBuilder { inner }
+        InvoiceBuilder { inner }
     }
 
     pub fn currency(&self) -> &String {
@@ -132,11 +132,14 @@ impl Invoice {
 }
 
 #[doc(hidden)]
-pub struct RTDInvoiceBuilder {
+pub struct InvoiceBuilder {
     inner: Invoice,
 }
 
-impl RTDInvoiceBuilder {
+#[deprecated]
+pub type RTDInvoiceBuilder = InvoiceBuilder;
+
+impl InvoiceBuilder {
     pub fn build(&self) -> Invoice {
         self.inner.clone()
     }
@@ -214,7 +217,7 @@ impl AsRef<Invoice> for Invoice {
     }
 }
 
-impl AsRef<Invoice> for RTDInvoiceBuilder {
+impl AsRef<Invoice> for InvoiceBuilder {
     fn as_ref(&self) -> &Invoice {
         &self.inner
     }

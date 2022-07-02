@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for DeleteChatFilter {
 impl RFunction for DeleteChatFilter {}
 
 impl DeleteChatFilter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteChatFilterBuilder {
+    pub fn builder() -> DeleteChatFilterBuilder {
         let mut inner = DeleteChatFilter::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteChatFilter".to_string();
 
-        RTDDeleteChatFilterBuilder { inner }
+        DeleteChatFilterBuilder { inner }
     }
 
     pub fn chat_filter_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl DeleteChatFilter {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteChatFilterBuilder {
+pub struct DeleteChatFilterBuilder {
     inner: DeleteChatFilter,
 }
 
-impl RTDDeleteChatFilterBuilder {
+#[deprecated]
+pub type RTDDeleteChatFilterBuilder = DeleteChatFilterBuilder;
+
+impl DeleteChatFilterBuilder {
     pub fn build(&self) -> DeleteChatFilter {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<DeleteChatFilter> for DeleteChatFilter {
     }
 }
 
-impl AsRef<DeleteChatFilter> for RTDDeleteChatFilterBuilder {
+impl AsRef<DeleteChatFilter> for DeleteChatFilterBuilder {
     fn as_ref(&self) -> &DeleteChatFilter {
         &self.inner
     }

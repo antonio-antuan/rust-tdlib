@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -38,16 +38,16 @@ impl RObject for ReorderInstalledStickerSets {
 impl RFunction for ReorderInstalledStickerSets {}
 
 impl ReorderInstalledStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReorderInstalledStickerSetsBuilder {
+    pub fn builder() -> ReorderInstalledStickerSetsBuilder {
         let mut inner = ReorderInstalledStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "reorderInstalledStickerSets".to_string();
 
-        RTDReorderInstalledStickerSetsBuilder { inner }
+        ReorderInstalledStickerSetsBuilder { inner }
     }
 
     pub fn is_masks(&self) -> bool {
@@ -60,11 +60,14 @@ impl ReorderInstalledStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDReorderInstalledStickerSetsBuilder {
+pub struct ReorderInstalledStickerSetsBuilder {
     inner: ReorderInstalledStickerSets,
 }
 
-impl RTDReorderInstalledStickerSetsBuilder {
+#[deprecated]
+pub type RTDReorderInstalledStickerSetsBuilder = ReorderInstalledStickerSetsBuilder;
+
+impl ReorderInstalledStickerSetsBuilder {
     pub fn build(&self) -> ReorderInstalledStickerSets {
         self.inner.clone()
     }
@@ -86,7 +89,7 @@ impl AsRef<ReorderInstalledStickerSets> for ReorderInstalledStickerSets {
     }
 }
 
-impl AsRef<ReorderInstalledStickerSets> for RTDReorderInstalledStickerSetsBuilder {
+impl AsRef<ReorderInstalledStickerSets> for ReorderInstalledStickerSetsBuilder {
     fn as_ref(&self) -> &ReorderInstalledStickerSets {
         &self.inner
     }

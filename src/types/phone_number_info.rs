@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,14 +34,14 @@ impl RObject for PhoneNumberInfo {
 }
 
 impl PhoneNumberInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPhoneNumberInfoBuilder {
+    pub fn builder() -> PhoneNumberInfoBuilder {
         let mut inner = PhoneNumberInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPhoneNumberInfoBuilder { inner }
+        PhoneNumberInfoBuilder { inner }
     }
 
     pub fn country(&self) -> &Option<CountryInfo> {
@@ -58,11 +58,14 @@ impl PhoneNumberInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDPhoneNumberInfoBuilder {
+pub struct PhoneNumberInfoBuilder {
     inner: PhoneNumberInfo,
 }
 
-impl RTDPhoneNumberInfoBuilder {
+#[deprecated]
+pub type RTDPhoneNumberInfoBuilder = PhoneNumberInfoBuilder;
+
+impl PhoneNumberInfoBuilder {
     pub fn build(&self) -> PhoneNumberInfo {
         self.inner.clone()
     }
@@ -92,7 +95,7 @@ impl AsRef<PhoneNumberInfo> for PhoneNumberInfo {
     }
 }
 
-impl AsRef<PhoneNumberInfo> for RTDPhoneNumberInfoBuilder {
+impl AsRef<PhoneNumberInfo> for PhoneNumberInfoBuilder {
     fn as_ref(&self) -> &PhoneNumberInfo {
         &self.inner
     }

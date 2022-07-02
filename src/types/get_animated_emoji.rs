@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetAnimatedEmoji {
 impl RFunction for GetAnimatedEmoji {}
 
 impl GetAnimatedEmoji {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetAnimatedEmojiBuilder {
+    pub fn builder() -> GetAnimatedEmojiBuilder {
         let mut inner = GetAnimatedEmoji::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getAnimatedEmoji".to_string();
 
-        RTDGetAnimatedEmojiBuilder { inner }
+        GetAnimatedEmojiBuilder { inner }
     }
 
     pub fn emoji(&self) -> &String {
@@ -51,11 +51,14 @@ impl GetAnimatedEmoji {
 }
 
 #[doc(hidden)]
-pub struct RTDGetAnimatedEmojiBuilder {
+pub struct GetAnimatedEmojiBuilder {
     inner: GetAnimatedEmoji,
 }
 
-impl RTDGetAnimatedEmojiBuilder {
+#[deprecated]
+pub type RTDGetAnimatedEmojiBuilder = GetAnimatedEmojiBuilder;
+
+impl GetAnimatedEmojiBuilder {
     pub fn build(&self) -> GetAnimatedEmoji {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetAnimatedEmoji> for GetAnimatedEmoji {
     }
 }
 
-impl AsRef<GetAnimatedEmoji> for RTDGetAnimatedEmojiBuilder {
+impl AsRef<GetAnimatedEmoji> for GetAnimatedEmojiBuilder {
     fn as_ref(&self) -> &GetAnimatedEmoji {
         &self.inner
     }

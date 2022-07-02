@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetMe {
 impl RFunction for GetMe {}
 
 impl GetMe {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMeBuilder {
+    pub fn builder() -> GetMeBuilder {
         let mut inner = GetMe::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMe".to_string();
 
-        RTDGetMeBuilder { inner }
+        GetMeBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetMeBuilder {
+pub struct GetMeBuilder {
     inner: GetMe,
 }
 
-impl RTDGetMeBuilder {
+#[deprecated]
+pub type RTDGetMeBuilder = GetMeBuilder;
+
+impl GetMeBuilder {
     pub fn build(&self) -> GetMe {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetMe> for GetMe {
     }
 }
 
-impl AsRef<GetMe> for RTDGetMeBuilder {
+impl AsRef<GetMe> for GetMeBuilder {
     fn as_ref(&self) -> &GetMe {
         &self.inner
     }

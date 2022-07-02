@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for TMeUrlType {
 }
 
 impl TMeUrlType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -100,14 +100,14 @@ impl RObject for TMeUrlTypeChatInvite {
 impl TDTMeUrlType for TMeUrlTypeChatInvite {}
 
 impl TMeUrlTypeChatInvite {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTMeUrlTypeChatInviteBuilder {
+    pub fn builder() -> TMeUrlTypeChatInviteBuilder {
         let mut inner = TMeUrlTypeChatInvite::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTMeUrlTypeChatInviteBuilder { inner }
+        TMeUrlTypeChatInviteBuilder { inner }
     }
 
     pub fn info(&self) -> &ChatInviteLinkInfo {
@@ -116,11 +116,14 @@ impl TMeUrlTypeChatInvite {
 }
 
 #[doc(hidden)]
-pub struct RTDTMeUrlTypeChatInviteBuilder {
+pub struct TMeUrlTypeChatInviteBuilder {
     inner: TMeUrlTypeChatInvite,
 }
 
-impl RTDTMeUrlTypeChatInviteBuilder {
+#[deprecated]
+pub type RTDTMeUrlTypeChatInviteBuilder = TMeUrlTypeChatInviteBuilder;
+
+impl TMeUrlTypeChatInviteBuilder {
     pub fn build(&self) -> TMeUrlTypeChatInvite {
         self.inner.clone()
     }
@@ -137,7 +140,7 @@ impl AsRef<TMeUrlTypeChatInvite> for TMeUrlTypeChatInvite {
     }
 }
 
-impl AsRef<TMeUrlTypeChatInvite> for RTDTMeUrlTypeChatInviteBuilder {
+impl AsRef<TMeUrlTypeChatInvite> for TMeUrlTypeChatInviteBuilder {
     fn as_ref(&self) -> &TMeUrlTypeChatInvite {
         &self.inner
     }
@@ -172,14 +175,14 @@ impl RObject for TMeUrlTypeStickerSet {
 impl TDTMeUrlType for TMeUrlTypeStickerSet {}
 
 impl TMeUrlTypeStickerSet {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTMeUrlTypeStickerSetBuilder {
+    pub fn builder() -> TMeUrlTypeStickerSetBuilder {
         let mut inner = TMeUrlTypeStickerSet::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTMeUrlTypeStickerSetBuilder { inner }
+        TMeUrlTypeStickerSetBuilder { inner }
     }
 
     pub fn sticker_set_id(&self) -> i64 {
@@ -188,11 +191,14 @@ impl TMeUrlTypeStickerSet {
 }
 
 #[doc(hidden)]
-pub struct RTDTMeUrlTypeStickerSetBuilder {
+pub struct TMeUrlTypeStickerSetBuilder {
     inner: TMeUrlTypeStickerSet,
 }
 
-impl RTDTMeUrlTypeStickerSetBuilder {
+#[deprecated]
+pub type RTDTMeUrlTypeStickerSetBuilder = TMeUrlTypeStickerSetBuilder;
+
+impl TMeUrlTypeStickerSetBuilder {
     pub fn build(&self) -> TMeUrlTypeStickerSet {
         self.inner.clone()
     }
@@ -209,7 +215,7 @@ impl AsRef<TMeUrlTypeStickerSet> for TMeUrlTypeStickerSet {
     }
 }
 
-impl AsRef<TMeUrlTypeStickerSet> for RTDTMeUrlTypeStickerSetBuilder {
+impl AsRef<TMeUrlTypeStickerSet> for TMeUrlTypeStickerSetBuilder {
     fn as_ref(&self) -> &TMeUrlTypeStickerSet {
         &self.inner
     }
@@ -243,14 +249,14 @@ impl RObject for TMeUrlTypeSupergroup {
 impl TDTMeUrlType for TMeUrlTypeSupergroup {}
 
 impl TMeUrlTypeSupergroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTMeUrlTypeSupergroupBuilder {
+    pub fn builder() -> TMeUrlTypeSupergroupBuilder {
         let mut inner = TMeUrlTypeSupergroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTMeUrlTypeSupergroupBuilder { inner }
+        TMeUrlTypeSupergroupBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -259,11 +265,14 @@ impl TMeUrlTypeSupergroup {
 }
 
 #[doc(hidden)]
-pub struct RTDTMeUrlTypeSupergroupBuilder {
+pub struct TMeUrlTypeSupergroupBuilder {
     inner: TMeUrlTypeSupergroup,
 }
 
-impl RTDTMeUrlTypeSupergroupBuilder {
+#[deprecated]
+pub type RTDTMeUrlTypeSupergroupBuilder = TMeUrlTypeSupergroupBuilder;
+
+impl TMeUrlTypeSupergroupBuilder {
     pub fn build(&self) -> TMeUrlTypeSupergroup {
         self.inner.clone()
     }
@@ -280,7 +289,7 @@ impl AsRef<TMeUrlTypeSupergroup> for TMeUrlTypeSupergroup {
     }
 }
 
-impl AsRef<TMeUrlTypeSupergroup> for RTDTMeUrlTypeSupergroupBuilder {
+impl AsRef<TMeUrlTypeSupergroup> for TMeUrlTypeSupergroupBuilder {
     fn as_ref(&self) -> &TMeUrlTypeSupergroup {
         &self.inner
     }
@@ -314,14 +323,14 @@ impl RObject for TMeUrlTypeUser {
 impl TDTMeUrlType for TMeUrlTypeUser {}
 
 impl TMeUrlTypeUser {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTMeUrlTypeUserBuilder {
+    pub fn builder() -> TMeUrlTypeUserBuilder {
         let mut inner = TMeUrlTypeUser::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTMeUrlTypeUserBuilder { inner }
+        TMeUrlTypeUserBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -330,11 +339,14 @@ impl TMeUrlTypeUser {
 }
 
 #[doc(hidden)]
-pub struct RTDTMeUrlTypeUserBuilder {
+pub struct TMeUrlTypeUserBuilder {
     inner: TMeUrlTypeUser,
 }
 
-impl RTDTMeUrlTypeUserBuilder {
+#[deprecated]
+pub type RTDTMeUrlTypeUserBuilder = TMeUrlTypeUserBuilder;
+
+impl TMeUrlTypeUserBuilder {
     pub fn build(&self) -> TMeUrlTypeUser {
         self.inner.clone()
     }
@@ -351,7 +363,7 @@ impl AsRef<TMeUrlTypeUser> for TMeUrlTypeUser {
     }
 }
 
-impl AsRef<TMeUrlTypeUser> for RTDTMeUrlTypeUserBuilder {
+impl AsRef<TMeUrlTypeUser> for TMeUrlTypeUserBuilder {
     fn as_ref(&self) -> &TMeUrlTypeUser {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,25 +31,28 @@ impl TDUpdate for TestUseUpdate {}
 impl RFunction for TestUseUpdate {}
 
 impl TestUseUpdate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestUseUpdateBuilder {
+    pub fn builder() -> TestUseUpdateBuilder {
         let mut inner = TestUseUpdate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "testUseUpdate".to_string();
 
-        RTDTestUseUpdateBuilder { inner }
+        TestUseUpdateBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTestUseUpdateBuilder {
+pub struct TestUseUpdateBuilder {
     inner: TestUseUpdate,
 }
 
-impl RTDTestUseUpdateBuilder {
+#[deprecated]
+pub type RTDTestUseUpdateBuilder = TestUseUpdateBuilder;
+
+impl TestUseUpdateBuilder {
     pub fn build(&self) -> TestUseUpdate {
         self.inner.clone()
     }
@@ -61,7 +64,7 @@ impl AsRef<TestUseUpdate> for TestUseUpdate {
     }
 }
 
-impl AsRef<TestUseUpdate> for RTDTestUseUpdateBuilder {
+impl AsRef<TestUseUpdate> for TestUseUpdateBuilder {
     fn as_ref(&self) -> &TestUseUpdate {
         &self.inner
     }

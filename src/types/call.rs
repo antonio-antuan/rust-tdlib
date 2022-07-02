@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -44,14 +44,14 @@ impl RObject for Call {
 }
 
 impl Call {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallBuilder {
+    pub fn builder() -> CallBuilder {
         let mut inner = Call::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallBuilder { inner }
+        CallBuilder { inner }
     }
 
     pub fn id(&self) -> i32 {
@@ -76,11 +76,14 @@ impl Call {
 }
 
 #[doc(hidden)]
-pub struct RTDCallBuilder {
+pub struct CallBuilder {
     inner: Call,
 }
 
-impl RTDCallBuilder {
+#[deprecated]
+pub type RTDCallBuilder = CallBuilder;
+
+impl CallBuilder {
     pub fn build(&self) -> Call {
         self.inner.clone()
     }
@@ -117,7 +120,7 @@ impl AsRef<Call> for Call {
     }
 }
 
-impl AsRef<Call> for RTDCallBuilder {
+impl AsRef<Call> for CallBuilder {
     fn as_ref(&self) -> &Call {
         &self.inner
     }

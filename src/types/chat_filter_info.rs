@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for ChatFilterInfo {
 }
 
 impl ChatFilterInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatFilterInfoBuilder {
+    pub fn builder() -> ChatFilterInfoBuilder {
         let mut inner = ChatFilterInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatFilterInfoBuilder { inner }
+        ChatFilterInfoBuilder { inner }
     }
 
     pub fn id(&self) -> i32 {
@@ -60,11 +60,14 @@ impl ChatFilterInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDChatFilterInfoBuilder {
+pub struct ChatFilterInfoBuilder {
     inner: ChatFilterInfo,
 }
 
-impl RTDChatFilterInfoBuilder {
+#[deprecated]
+pub type RTDChatFilterInfoBuilder = ChatFilterInfoBuilder;
+
+impl ChatFilterInfoBuilder {
     pub fn build(&self) -> ChatFilterInfo {
         self.inner.clone()
     }
@@ -91,7 +94,7 @@ impl AsRef<ChatFilterInfo> for ChatFilterInfo {
     }
 }
 
-impl AsRef<ChatFilterInfo> for RTDChatFilterInfoBuilder {
+impl AsRef<ChatFilterInfo> for ChatFilterInfoBuilder {
     fn as_ref(&self) -> &ChatFilterInfo {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -54,7 +54,7 @@ impl RObject for BackgroundType {
 }
 
 impl BackgroundType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -97,14 +97,14 @@ impl RObject for BackgroundTypeFill {
 impl TDBackgroundType for BackgroundTypeFill {}
 
 impl BackgroundTypeFill {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundTypeFillBuilder {
+    pub fn builder() -> BackgroundTypeFillBuilder {
         let mut inner = BackgroundTypeFill::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundTypeFillBuilder { inner }
+        BackgroundTypeFillBuilder { inner }
     }
 
     pub fn fill(&self) -> &BackgroundFill {
@@ -113,11 +113,14 @@ impl BackgroundTypeFill {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundTypeFillBuilder {
+pub struct BackgroundTypeFillBuilder {
     inner: BackgroundTypeFill,
 }
 
-impl RTDBackgroundTypeFillBuilder {
+#[deprecated]
+pub type RTDBackgroundTypeFillBuilder = BackgroundTypeFillBuilder;
+
+impl BackgroundTypeFillBuilder {
     pub fn build(&self) -> BackgroundTypeFill {
         self.inner.clone()
     }
@@ -134,7 +137,7 @@ impl AsRef<BackgroundTypeFill> for BackgroundTypeFill {
     }
 }
 
-impl AsRef<BackgroundTypeFill> for RTDBackgroundTypeFillBuilder {
+impl AsRef<BackgroundTypeFill> for BackgroundTypeFillBuilder {
     fn as_ref(&self) -> &BackgroundTypeFill {
         &self.inner
     }
@@ -180,14 +183,14 @@ impl RObject for BackgroundTypePattern {
 impl TDBackgroundType for BackgroundTypePattern {}
 
 impl BackgroundTypePattern {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundTypePatternBuilder {
+    pub fn builder() -> BackgroundTypePatternBuilder {
         let mut inner = BackgroundTypePattern::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundTypePatternBuilder { inner }
+        BackgroundTypePatternBuilder { inner }
     }
 
     pub fn fill(&self) -> &BackgroundFill {
@@ -208,11 +211,14 @@ impl BackgroundTypePattern {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundTypePatternBuilder {
+pub struct BackgroundTypePatternBuilder {
     inner: BackgroundTypePattern,
 }
 
-impl RTDBackgroundTypePatternBuilder {
+#[deprecated]
+pub type RTDBackgroundTypePatternBuilder = BackgroundTypePatternBuilder;
+
+impl BackgroundTypePatternBuilder {
     pub fn build(&self) -> BackgroundTypePattern {
         self.inner.clone()
     }
@@ -244,7 +250,7 @@ impl AsRef<BackgroundTypePattern> for BackgroundTypePattern {
     }
 }
 
-impl AsRef<BackgroundTypePattern> for RTDBackgroundTypePatternBuilder {
+impl AsRef<BackgroundTypePattern> for BackgroundTypePatternBuilder {
     fn as_ref(&self) -> &BackgroundTypePattern {
         &self.inner
     }
@@ -282,14 +288,14 @@ impl RObject for BackgroundTypeWallpaper {
 impl TDBackgroundType for BackgroundTypeWallpaper {}
 
 impl BackgroundTypeWallpaper {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundTypeWallpaperBuilder {
+    pub fn builder() -> BackgroundTypeWallpaperBuilder {
         let mut inner = BackgroundTypeWallpaper::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundTypeWallpaperBuilder { inner }
+        BackgroundTypeWallpaperBuilder { inner }
     }
 
     pub fn is_blurred(&self) -> bool {
@@ -302,11 +308,14 @@ impl BackgroundTypeWallpaper {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundTypeWallpaperBuilder {
+pub struct BackgroundTypeWallpaperBuilder {
     inner: BackgroundTypeWallpaper,
 }
 
-impl RTDBackgroundTypeWallpaperBuilder {
+#[deprecated]
+pub type RTDBackgroundTypeWallpaperBuilder = BackgroundTypeWallpaperBuilder;
+
+impl BackgroundTypeWallpaperBuilder {
     pub fn build(&self) -> BackgroundTypeWallpaper {
         self.inner.clone()
     }
@@ -328,7 +337,7 @@ impl AsRef<BackgroundTypeWallpaper> for BackgroundTypeWallpaper {
     }
 }
 
-impl AsRef<BackgroundTypeWallpaper> for RTDBackgroundTypeWallpaperBuilder {
+impl AsRef<BackgroundTypeWallpaper> for BackgroundTypeWallpaperBuilder {
     fn as_ref(&self) -> &BackgroundTypeWallpaper {
         &self.inner
     }

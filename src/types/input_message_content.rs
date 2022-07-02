@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -124,7 +124,7 @@ impl RObject for InputMessageContent {
 }
 
 impl InputMessageContent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -187,14 +187,14 @@ impl RObject for InputMessageAnimation {
 impl TDInputMessageContent for InputMessageAnimation {}
 
 impl InputMessageAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageAnimationBuilder {
+    pub fn builder() -> InputMessageAnimationBuilder {
         let mut inner = InputMessageAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageAnimationBuilder { inner }
+        InputMessageAnimationBuilder { inner }
     }
 
     pub fn animation(&self) -> &InputFile {
@@ -227,11 +227,14 @@ impl InputMessageAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageAnimationBuilder {
+pub struct InputMessageAnimationBuilder {
     inner: InputMessageAnimation,
 }
 
-impl RTDInputMessageAnimationBuilder {
+#[deprecated]
+pub type RTDInputMessageAnimationBuilder = InputMessageAnimationBuilder;
+
+impl InputMessageAnimationBuilder {
     pub fn build(&self) -> InputMessageAnimation {
         self.inner.clone()
     }
@@ -278,7 +281,7 @@ impl AsRef<InputMessageAnimation> for InputMessageAnimation {
     }
 }
 
-impl AsRef<InputMessageAnimation> for RTDInputMessageAnimationBuilder {
+impl AsRef<InputMessageAnimation> for InputMessageAnimationBuilder {
     fn as_ref(&self) -> &InputMessageAnimation {
         &self.inner
     }
@@ -328,14 +331,14 @@ impl RObject for InputMessageAudio {
 impl TDInputMessageContent for InputMessageAudio {}
 
 impl InputMessageAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageAudioBuilder {
+    pub fn builder() -> InputMessageAudioBuilder {
         let mut inner = InputMessageAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageAudioBuilder { inner }
+        InputMessageAudioBuilder { inner }
     }
 
     pub fn audio(&self) -> &InputFile {
@@ -364,11 +367,14 @@ impl InputMessageAudio {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageAudioBuilder {
+pub struct InputMessageAudioBuilder {
     inner: InputMessageAudio,
 }
 
-impl RTDInputMessageAudioBuilder {
+#[deprecated]
+pub type RTDInputMessageAudioBuilder = InputMessageAudioBuilder;
+
+impl InputMessageAudioBuilder {
     pub fn build(&self) -> InputMessageAudio {
         self.inner.clone()
     }
@@ -413,7 +419,7 @@ impl AsRef<InputMessageAudio> for InputMessageAudio {
     }
 }
 
-impl AsRef<InputMessageAudio> for RTDInputMessageAudioBuilder {
+impl AsRef<InputMessageAudio> for InputMessageAudioBuilder {
     fn as_ref(&self) -> &InputMessageAudio {
         &self.inner
     }
@@ -445,14 +451,14 @@ impl RObject for InputMessageContact {
 impl TDInputMessageContent for InputMessageContact {}
 
 impl InputMessageContact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageContactBuilder {
+    pub fn builder() -> InputMessageContactBuilder {
         let mut inner = InputMessageContact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageContactBuilder { inner }
+        InputMessageContactBuilder { inner }
     }
 
     pub fn contact(&self) -> &Contact {
@@ -461,11 +467,14 @@ impl InputMessageContact {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageContactBuilder {
+pub struct InputMessageContactBuilder {
     inner: InputMessageContact,
 }
 
-impl RTDInputMessageContactBuilder {
+#[deprecated]
+pub type RTDInputMessageContactBuilder = InputMessageContactBuilder;
+
+impl InputMessageContactBuilder {
     pub fn build(&self) -> InputMessageContact {
         self.inner.clone()
     }
@@ -482,7 +491,7 @@ impl AsRef<InputMessageContact> for InputMessageContact {
     }
 }
 
-impl AsRef<InputMessageContact> for RTDInputMessageContactBuilder {
+impl AsRef<InputMessageContact> for InputMessageContactBuilder {
     fn as_ref(&self) -> &InputMessageContact {
         &self.inner
     }
@@ -520,14 +529,14 @@ impl RObject for InputMessageDice {
 impl TDInputMessageContent for InputMessageDice {}
 
 impl InputMessageDice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageDiceBuilder {
+    pub fn builder() -> InputMessageDiceBuilder {
         let mut inner = InputMessageDice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageDiceBuilder { inner }
+        InputMessageDiceBuilder { inner }
     }
 
     pub fn emoji(&self) -> &String {
@@ -540,11 +549,14 @@ impl InputMessageDice {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageDiceBuilder {
+pub struct InputMessageDiceBuilder {
     inner: InputMessageDice,
 }
 
-impl RTDInputMessageDiceBuilder {
+#[deprecated]
+pub type RTDInputMessageDiceBuilder = InputMessageDiceBuilder;
+
+impl InputMessageDiceBuilder {
     pub fn build(&self) -> InputMessageDice {
         self.inner.clone()
     }
@@ -566,7 +578,7 @@ impl AsRef<InputMessageDice> for InputMessageDice {
     }
 }
 
-impl AsRef<InputMessageDice> for RTDInputMessageDiceBuilder {
+impl AsRef<InputMessageDice> for InputMessageDiceBuilder {
     fn as_ref(&self) -> &InputMessageDice {
         &self.inner
     }
@@ -608,14 +620,14 @@ impl RObject for InputMessageDocument {
 impl TDInputMessageContent for InputMessageDocument {}
 
 impl InputMessageDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageDocumentBuilder {
+    pub fn builder() -> InputMessageDocumentBuilder {
         let mut inner = InputMessageDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageDocumentBuilder { inner }
+        InputMessageDocumentBuilder { inner }
     }
 
     pub fn document(&self) -> &InputFile {
@@ -636,11 +648,14 @@ impl InputMessageDocument {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageDocumentBuilder {
+pub struct InputMessageDocumentBuilder {
     inner: InputMessageDocument,
 }
 
-impl RTDInputMessageDocumentBuilder {
+#[deprecated]
+pub type RTDInputMessageDocumentBuilder = InputMessageDocumentBuilder;
+
+impl InputMessageDocumentBuilder {
     pub fn build(&self) -> InputMessageDocument {
         self.inner.clone()
     }
@@ -675,7 +690,7 @@ impl AsRef<InputMessageDocument> for InputMessageDocument {
     }
 }
 
-impl AsRef<InputMessageDocument> for RTDInputMessageDocumentBuilder {
+impl AsRef<InputMessageDocument> for InputMessageDocumentBuilder {
     fn as_ref(&self) -> &InputMessageDocument {
         &self.inner
     }
@@ -719,14 +734,14 @@ impl RObject for InputMessageForwarded {
 impl TDInputMessageContent for InputMessageForwarded {}
 
 impl InputMessageForwarded {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageForwardedBuilder {
+    pub fn builder() -> InputMessageForwardedBuilder {
         let mut inner = InputMessageForwarded::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageForwardedBuilder { inner }
+        InputMessageForwardedBuilder { inner }
     }
 
     pub fn from_chat_id(&self) -> i64 {
@@ -747,11 +762,14 @@ impl InputMessageForwarded {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageForwardedBuilder {
+pub struct InputMessageForwardedBuilder {
     inner: InputMessageForwarded,
 }
 
-impl RTDInputMessageForwardedBuilder {
+#[deprecated]
+pub type RTDInputMessageForwardedBuilder = InputMessageForwardedBuilder;
+
+impl InputMessageForwardedBuilder {
     pub fn build(&self) -> InputMessageForwarded {
         self.inner.clone()
     }
@@ -783,7 +801,7 @@ impl AsRef<InputMessageForwarded> for InputMessageForwarded {
     }
 }
 
-impl AsRef<InputMessageForwarded> for RTDInputMessageForwardedBuilder {
+impl AsRef<InputMessageForwarded> for InputMessageForwardedBuilder {
     fn as_ref(&self) -> &InputMessageForwarded {
         &self.inner
     }
@@ -821,14 +839,14 @@ impl RObject for InputMessageGame {
 impl TDInputMessageContent for InputMessageGame {}
 
 impl InputMessageGame {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageGameBuilder {
+    pub fn builder() -> InputMessageGameBuilder {
         let mut inner = InputMessageGame::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageGameBuilder { inner }
+        InputMessageGameBuilder { inner }
     }
 
     pub fn bot_user_id(&self) -> i64 {
@@ -841,11 +859,14 @@ impl InputMessageGame {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageGameBuilder {
+pub struct InputMessageGameBuilder {
     inner: InputMessageGame,
 }
 
-impl RTDInputMessageGameBuilder {
+#[deprecated]
+pub type RTDInputMessageGameBuilder = InputMessageGameBuilder;
+
+impl InputMessageGameBuilder {
     pub fn build(&self) -> InputMessageGame {
         self.inner.clone()
     }
@@ -867,7 +888,7 @@ impl AsRef<InputMessageGame> for InputMessageGame {
     }
 }
 
-impl AsRef<InputMessageGame> for RTDInputMessageGameBuilder {
+impl AsRef<InputMessageGame> for InputMessageGameBuilder {
     fn as_ref(&self) -> &InputMessageGame {
         &self.inner
     }
@@ -939,14 +960,14 @@ impl RObject for InputMessageInvoice {
 impl TDInputMessageContent for InputMessageInvoice {}
 
 impl InputMessageInvoice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageInvoiceBuilder {
+    pub fn builder() -> InputMessageInvoiceBuilder {
         let mut inner = InputMessageInvoice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageInvoiceBuilder { inner }
+        InputMessageInvoiceBuilder { inner }
     }
 
     pub fn invoice(&self) -> &Invoice {
@@ -995,11 +1016,14 @@ impl InputMessageInvoice {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageInvoiceBuilder {
+pub struct InputMessageInvoiceBuilder {
     inner: InputMessageInvoice,
 }
 
-impl RTDInputMessageInvoiceBuilder {
+#[deprecated]
+pub type RTDInputMessageInvoiceBuilder = InputMessageInvoiceBuilder;
+
+impl InputMessageInvoiceBuilder {
     pub fn build(&self) -> InputMessageInvoice {
         self.inner.clone()
     }
@@ -1066,7 +1090,7 @@ impl AsRef<InputMessageInvoice> for InputMessageInvoice {
     }
 }
 
-impl AsRef<InputMessageInvoice> for RTDInputMessageInvoiceBuilder {
+impl AsRef<InputMessageInvoice> for InputMessageInvoiceBuilder {
     fn as_ref(&self) -> &InputMessageInvoice {
         &self.inner
     }
@@ -1110,14 +1134,14 @@ impl RObject for InputMessageLocation {
 impl TDInputMessageContent for InputMessageLocation {}
 
 impl InputMessageLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageLocationBuilder {
+    pub fn builder() -> InputMessageLocationBuilder {
         let mut inner = InputMessageLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageLocationBuilder { inner }
+        InputMessageLocationBuilder { inner }
     }
 
     pub fn location(&self) -> &Location {
@@ -1138,11 +1162,14 @@ impl InputMessageLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageLocationBuilder {
+pub struct InputMessageLocationBuilder {
     inner: InputMessageLocation,
 }
 
-impl RTDInputMessageLocationBuilder {
+#[deprecated]
+pub type RTDInputMessageLocationBuilder = InputMessageLocationBuilder;
+
+impl InputMessageLocationBuilder {
     pub fn build(&self) -> InputMessageLocation {
         self.inner.clone()
     }
@@ -1174,7 +1201,7 @@ impl AsRef<InputMessageLocation> for InputMessageLocation {
     }
 }
 
-impl AsRef<InputMessageLocation> for RTDInputMessageLocationBuilder {
+impl AsRef<InputMessageLocation> for InputMessageLocationBuilder {
     fn as_ref(&self) -> &InputMessageLocation {
         &self.inner
     }
@@ -1228,14 +1255,14 @@ impl RObject for InputMessagePhoto {
 impl TDInputMessageContent for InputMessagePhoto {}
 
 impl InputMessagePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessagePhotoBuilder {
+    pub fn builder() -> InputMessagePhotoBuilder {
         let mut inner = InputMessagePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessagePhotoBuilder { inner }
+        InputMessagePhotoBuilder { inner }
     }
 
     pub fn photo(&self) -> &InputFile {
@@ -1268,11 +1295,14 @@ impl InputMessagePhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessagePhotoBuilder {
+pub struct InputMessagePhotoBuilder {
     inner: InputMessagePhoto,
 }
 
-impl RTDInputMessagePhotoBuilder {
+#[deprecated]
+pub type RTDInputMessagePhotoBuilder = InputMessagePhotoBuilder;
+
+impl InputMessagePhotoBuilder {
     pub fn build(&self) -> InputMessagePhoto {
         self.inner.clone()
     }
@@ -1319,7 +1349,7 @@ impl AsRef<InputMessagePhoto> for InputMessagePhoto {
     }
 }
 
-impl AsRef<InputMessagePhoto> for RTDInputMessagePhotoBuilder {
+impl AsRef<InputMessagePhoto> for InputMessagePhotoBuilder {
     fn as_ref(&self) -> &InputMessagePhoto {
         &self.inner
     }
@@ -1378,14 +1408,14 @@ impl RObject for InputMessagePoll {
 impl TDInputMessageContent for InputMessagePoll {}
 
 impl InputMessagePoll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessagePollBuilder {
+    pub fn builder() -> InputMessagePollBuilder {
         let mut inner = InputMessagePoll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessagePollBuilder { inner }
+        InputMessagePollBuilder { inner }
     }
 
     pub fn question(&self) -> &String {
@@ -1418,11 +1448,14 @@ impl InputMessagePoll {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessagePollBuilder {
+pub struct InputMessagePollBuilder {
     inner: InputMessagePoll,
 }
 
-impl RTDInputMessagePollBuilder {
+#[deprecated]
+pub type RTDInputMessagePollBuilder = InputMessagePollBuilder;
+
+impl InputMessagePollBuilder {
     pub fn build(&self) -> InputMessagePoll {
         self.inner.clone()
     }
@@ -1469,7 +1502,7 @@ impl AsRef<InputMessagePoll> for InputMessagePoll {
     }
 }
 
-impl AsRef<InputMessagePoll> for RTDInputMessagePollBuilder {
+impl AsRef<InputMessagePoll> for InputMessagePollBuilder {
     fn as_ref(&self) -> &InputMessagePoll {
         &self.inner
     }
@@ -1517,14 +1550,14 @@ impl RObject for InputMessageSticker {
 impl TDInputMessageContent for InputMessageSticker {}
 
 impl InputMessageSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageStickerBuilder {
+    pub fn builder() -> InputMessageStickerBuilder {
         let mut inner = InputMessageSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageStickerBuilder { inner }
+        InputMessageStickerBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -1549,11 +1582,14 @@ impl InputMessageSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageStickerBuilder {
+pub struct InputMessageStickerBuilder {
     inner: InputMessageSticker,
 }
 
-impl RTDInputMessageStickerBuilder {
+#[deprecated]
+pub type RTDInputMessageStickerBuilder = InputMessageStickerBuilder;
+
+impl InputMessageStickerBuilder {
     pub fn build(&self) -> InputMessageSticker {
         self.inner.clone()
     }
@@ -1590,7 +1626,7 @@ impl AsRef<InputMessageSticker> for InputMessageSticker {
     }
 }
 
-impl AsRef<InputMessageSticker> for RTDInputMessageStickerBuilder {
+impl AsRef<InputMessageSticker> for InputMessageStickerBuilder {
     fn as_ref(&self) -> &InputMessageSticker {
         &self.inner
     }
@@ -1630,14 +1666,14 @@ impl RObject for InputMessageText {
 impl TDInputMessageContent for InputMessageText {}
 
 impl InputMessageText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageTextBuilder {
+    pub fn builder() -> InputMessageTextBuilder {
         let mut inner = InputMessageText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageTextBuilder { inner }
+        InputMessageTextBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -1654,11 +1690,14 @@ impl InputMessageText {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageTextBuilder {
+pub struct InputMessageTextBuilder {
     inner: InputMessageText,
 }
 
-impl RTDInputMessageTextBuilder {
+#[deprecated]
+pub type RTDInputMessageTextBuilder = InputMessageTextBuilder;
+
+impl InputMessageTextBuilder {
     pub fn build(&self) -> InputMessageText {
         self.inner.clone()
     }
@@ -1685,7 +1724,7 @@ impl AsRef<InputMessageText> for InputMessageText {
     }
 }
 
-impl AsRef<InputMessageText> for RTDInputMessageTextBuilder {
+impl AsRef<InputMessageText> for InputMessageTextBuilder {
     fn as_ref(&self) -> &InputMessageText {
         &self.inner
     }
@@ -1717,14 +1756,14 @@ impl RObject for InputMessageVenue {
 impl TDInputMessageContent for InputMessageVenue {}
 
 impl InputMessageVenue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageVenueBuilder {
+    pub fn builder() -> InputMessageVenueBuilder {
         let mut inner = InputMessageVenue::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageVenueBuilder { inner }
+        InputMessageVenueBuilder { inner }
     }
 
     pub fn venue(&self) -> &Venue {
@@ -1733,11 +1772,14 @@ impl InputMessageVenue {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageVenueBuilder {
+pub struct InputMessageVenueBuilder {
     inner: InputMessageVenue,
 }
 
-impl RTDInputMessageVenueBuilder {
+#[deprecated]
+pub type RTDInputMessageVenueBuilder = InputMessageVenueBuilder;
+
+impl InputMessageVenueBuilder {
     pub fn build(&self) -> InputMessageVenue {
         self.inner.clone()
     }
@@ -1754,7 +1796,7 @@ impl AsRef<InputMessageVenue> for InputMessageVenue {
     }
 }
 
-impl AsRef<InputMessageVenue> for RTDInputMessageVenueBuilder {
+impl AsRef<InputMessageVenue> for InputMessageVenueBuilder {
     fn as_ref(&self) -> &InputMessageVenue {
         &self.inner
     }
@@ -1816,14 +1858,14 @@ impl RObject for InputMessageVideo {
 impl TDInputMessageContent for InputMessageVideo {}
 
 impl InputMessageVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageVideoBuilder {
+    pub fn builder() -> InputMessageVideoBuilder {
         let mut inner = InputMessageVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageVideoBuilder { inner }
+        InputMessageVideoBuilder { inner }
     }
 
     pub fn video(&self) -> &InputFile {
@@ -1864,11 +1906,14 @@ impl InputMessageVideo {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageVideoBuilder {
+pub struct InputMessageVideoBuilder {
     inner: InputMessageVideo,
 }
 
-impl RTDInputMessageVideoBuilder {
+#[deprecated]
+pub type RTDInputMessageVideoBuilder = InputMessageVideoBuilder;
+
+impl InputMessageVideoBuilder {
     pub fn build(&self) -> InputMessageVideo {
         self.inner.clone()
     }
@@ -1925,7 +1970,7 @@ impl AsRef<InputMessageVideo> for InputMessageVideo {
     }
 }
 
-impl AsRef<InputMessageVideo> for RTDInputMessageVideoBuilder {
+impl AsRef<InputMessageVideo> for InputMessageVideoBuilder {
     fn as_ref(&self) -> &InputMessageVideo {
         &self.inner
     }
@@ -1969,14 +2014,14 @@ impl RObject for InputMessageVideoNote {
 impl TDInputMessageContent for InputMessageVideoNote {}
 
 impl InputMessageVideoNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageVideoNoteBuilder {
+    pub fn builder() -> InputMessageVideoNoteBuilder {
         let mut inner = InputMessageVideoNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageVideoNoteBuilder { inner }
+        InputMessageVideoNoteBuilder { inner }
     }
 
     pub fn video_note(&self) -> &InputFile {
@@ -1997,11 +2042,14 @@ impl InputMessageVideoNote {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageVideoNoteBuilder {
+pub struct InputMessageVideoNoteBuilder {
     inner: InputMessageVideoNote,
 }
 
-impl RTDInputMessageVideoNoteBuilder {
+#[deprecated]
+pub type RTDInputMessageVideoNoteBuilder = InputMessageVideoNoteBuilder;
+
+impl InputMessageVideoNoteBuilder {
     pub fn build(&self) -> InputMessageVideoNote {
         self.inner.clone()
     }
@@ -2033,7 +2081,7 @@ impl AsRef<InputMessageVideoNote> for InputMessageVideoNote {
     }
 }
 
-impl AsRef<InputMessageVideoNote> for RTDInputMessageVideoNoteBuilder {
+impl AsRef<InputMessageVideoNote> for InputMessageVideoNoteBuilder {
     fn as_ref(&self) -> &InputMessageVideoNote {
         &self.inner
     }
@@ -2077,14 +2125,14 @@ impl RObject for InputMessageVoiceNote {
 impl TDInputMessageContent for InputMessageVoiceNote {}
 
 impl InputMessageVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageVoiceNoteBuilder {
+    pub fn builder() -> InputMessageVoiceNoteBuilder {
         let mut inner = InputMessageVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageVoiceNoteBuilder { inner }
+        InputMessageVoiceNoteBuilder { inner }
     }
 
     pub fn voice_note(&self) -> &InputFile {
@@ -2105,11 +2153,14 @@ impl InputMessageVoiceNote {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageVoiceNoteBuilder {
+pub struct InputMessageVoiceNoteBuilder {
     inner: InputMessageVoiceNote,
 }
 
-impl RTDInputMessageVoiceNoteBuilder {
+#[deprecated]
+pub type RTDInputMessageVoiceNoteBuilder = InputMessageVoiceNoteBuilder;
+
+impl InputMessageVoiceNoteBuilder {
     pub fn build(&self) -> InputMessageVoiceNote {
         self.inner.clone()
     }
@@ -2141,7 +2192,7 @@ impl AsRef<InputMessageVoiceNote> for InputMessageVoiceNote {
     }
 }
 
-impl AsRef<InputMessageVoiceNote> for RTDInputMessageVoiceNoteBuilder {
+impl AsRef<InputMessageVoiceNote> for InputMessageVoiceNoteBuilder {
     fn as_ref(&self) -> &InputMessageVoiceNote {
         &self.inner
     }

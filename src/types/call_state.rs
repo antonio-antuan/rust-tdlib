@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -69,7 +69,7 @@ impl RObject for CallState {
 }
 
 impl CallState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -120,14 +120,14 @@ impl RObject for CallStateDiscarded {
 impl TDCallState for CallStateDiscarded {}
 
 impl CallStateDiscarded {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallStateDiscardedBuilder {
+    pub fn builder() -> CallStateDiscardedBuilder {
         let mut inner = CallStateDiscarded::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallStateDiscardedBuilder { inner }
+        CallStateDiscardedBuilder { inner }
     }
 
     pub fn reason(&self) -> &CallDiscardReason {
@@ -144,11 +144,14 @@ impl CallStateDiscarded {
 }
 
 #[doc(hidden)]
-pub struct RTDCallStateDiscardedBuilder {
+pub struct CallStateDiscardedBuilder {
     inner: CallStateDiscarded,
 }
 
-impl RTDCallStateDiscardedBuilder {
+#[deprecated]
+pub type RTDCallStateDiscardedBuilder = CallStateDiscardedBuilder;
+
+impl CallStateDiscardedBuilder {
     pub fn build(&self) -> CallStateDiscarded {
         self.inner.clone()
     }
@@ -175,7 +178,7 @@ impl AsRef<CallStateDiscarded> for CallStateDiscarded {
     }
 }
 
-impl AsRef<CallStateDiscarded> for RTDCallStateDiscardedBuilder {
+impl AsRef<CallStateDiscarded> for CallStateDiscardedBuilder {
     fn as_ref(&self) -> &CallStateDiscarded {
         &self.inner
     }
@@ -207,14 +210,14 @@ impl RObject for CallStateError {
 impl TDCallState for CallStateError {}
 
 impl CallStateError {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallStateErrorBuilder {
+    pub fn builder() -> CallStateErrorBuilder {
         let mut inner = CallStateError::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallStateErrorBuilder { inner }
+        CallStateErrorBuilder { inner }
     }
 
     pub fn error(&self) -> &Error {
@@ -223,11 +226,14 @@ impl CallStateError {
 }
 
 #[doc(hidden)]
-pub struct RTDCallStateErrorBuilder {
+pub struct CallStateErrorBuilder {
     inner: CallStateError,
 }
 
-impl RTDCallStateErrorBuilder {
+#[deprecated]
+pub type RTDCallStateErrorBuilder = CallStateErrorBuilder;
+
+impl CallStateErrorBuilder {
     pub fn build(&self) -> CallStateError {
         self.inner.clone()
     }
@@ -244,7 +250,7 @@ impl AsRef<CallStateError> for CallStateError {
     }
 }
 
-impl AsRef<CallStateError> for RTDCallStateErrorBuilder {
+impl AsRef<CallStateError> for CallStateErrorBuilder {
     fn as_ref(&self) -> &CallStateError {
         &self.inner
     }
@@ -274,23 +280,26 @@ impl RObject for CallStateExchangingKeys {
 impl TDCallState for CallStateExchangingKeys {}
 
 impl CallStateExchangingKeys {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallStateExchangingKeysBuilder {
+    pub fn builder() -> CallStateExchangingKeysBuilder {
         let mut inner = CallStateExchangingKeys::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallStateExchangingKeysBuilder { inner }
+        CallStateExchangingKeysBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallStateExchangingKeysBuilder {
+pub struct CallStateExchangingKeysBuilder {
     inner: CallStateExchangingKeys,
 }
 
-impl RTDCallStateExchangingKeysBuilder {
+#[deprecated]
+pub type RTDCallStateExchangingKeysBuilder = CallStateExchangingKeysBuilder;
+
+impl CallStateExchangingKeysBuilder {
     pub fn build(&self) -> CallStateExchangingKeys {
         self.inner.clone()
     }
@@ -302,7 +311,7 @@ impl AsRef<CallStateExchangingKeys> for CallStateExchangingKeys {
     }
 }
 
-impl AsRef<CallStateExchangingKeys> for RTDCallStateExchangingKeysBuilder {
+impl AsRef<CallStateExchangingKeys> for CallStateExchangingKeysBuilder {
     fn as_ref(&self) -> &CallStateExchangingKeys {
         &self.inner
     }
@@ -332,23 +341,26 @@ impl RObject for CallStateHangingUp {
 impl TDCallState for CallStateHangingUp {}
 
 impl CallStateHangingUp {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallStateHangingUpBuilder {
+    pub fn builder() -> CallStateHangingUpBuilder {
         let mut inner = CallStateHangingUp::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallStateHangingUpBuilder { inner }
+        CallStateHangingUpBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallStateHangingUpBuilder {
+pub struct CallStateHangingUpBuilder {
     inner: CallStateHangingUp,
 }
 
-impl RTDCallStateHangingUpBuilder {
+#[deprecated]
+pub type RTDCallStateHangingUpBuilder = CallStateHangingUpBuilder;
+
+impl CallStateHangingUpBuilder {
     pub fn build(&self) -> CallStateHangingUp {
         self.inner.clone()
     }
@@ -360,7 +372,7 @@ impl AsRef<CallStateHangingUp> for CallStateHangingUp {
     }
 }
 
-impl AsRef<CallStateHangingUp> for RTDCallStateHangingUpBuilder {
+impl AsRef<CallStateHangingUp> for CallStateHangingUpBuilder {
     fn as_ref(&self) -> &CallStateHangingUp {
         &self.inner
     }
@@ -398,14 +410,14 @@ impl RObject for CallStatePending {
 impl TDCallState for CallStatePending {}
 
 impl CallStatePending {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallStatePendingBuilder {
+    pub fn builder() -> CallStatePendingBuilder {
         let mut inner = CallStatePending::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallStatePendingBuilder { inner }
+        CallStatePendingBuilder { inner }
     }
 
     pub fn is_created(&self) -> bool {
@@ -418,11 +430,14 @@ impl CallStatePending {
 }
 
 #[doc(hidden)]
-pub struct RTDCallStatePendingBuilder {
+pub struct CallStatePendingBuilder {
     inner: CallStatePending,
 }
 
-impl RTDCallStatePendingBuilder {
+#[deprecated]
+pub type RTDCallStatePendingBuilder = CallStatePendingBuilder;
+
+impl CallStatePendingBuilder {
     pub fn build(&self) -> CallStatePending {
         self.inner.clone()
     }
@@ -444,7 +459,7 @@ impl AsRef<CallStatePending> for CallStatePending {
     }
 }
 
-impl AsRef<CallStatePending> for RTDCallStatePendingBuilder {
+impl AsRef<CallStatePending> for CallStatePendingBuilder {
     fn as_ref(&self) -> &CallStatePending {
         &self.inner
     }
@@ -496,14 +511,14 @@ impl RObject for CallStateReady {
 impl TDCallState for CallStateReady {}
 
 impl CallStateReady {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallStateReadyBuilder {
+    pub fn builder() -> CallStateReadyBuilder {
         let mut inner = CallStateReady::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallStateReadyBuilder { inner }
+        CallStateReadyBuilder { inner }
     }
 
     pub fn protocol(&self) -> &CallProtocol {
@@ -532,11 +547,14 @@ impl CallStateReady {
 }
 
 #[doc(hidden)]
-pub struct RTDCallStateReadyBuilder {
+pub struct CallStateReadyBuilder {
     inner: CallStateReady,
 }
 
-impl RTDCallStateReadyBuilder {
+#[deprecated]
+pub type RTDCallStateReadyBuilder = CallStateReadyBuilder;
+
+impl CallStateReadyBuilder {
     pub fn build(&self) -> CallStateReady {
         self.inner.clone()
     }
@@ -578,7 +596,7 @@ impl AsRef<CallStateReady> for CallStateReady {
     }
 }
 
-impl AsRef<CallStateReady> for RTDCallStateReadyBuilder {
+impl AsRef<CallStateReady> for CallStateReadyBuilder {
     fn as_ref(&self) -> &CallStateReady {
         &self.inner
     }

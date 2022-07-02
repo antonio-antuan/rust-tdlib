@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -60,14 +60,14 @@ impl RObject for PaymentReceipt {
 }
 
 impl PaymentReceipt {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPaymentReceiptBuilder {
+    pub fn builder() -> PaymentReceiptBuilder {
         let mut inner = PaymentReceipt::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPaymentReceiptBuilder { inner }
+        PaymentReceiptBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -116,11 +116,14 @@ impl PaymentReceipt {
 }
 
 #[doc(hidden)]
-pub struct RTDPaymentReceiptBuilder {
+pub struct PaymentReceiptBuilder {
     inner: PaymentReceipt,
 }
 
-impl RTDPaymentReceiptBuilder {
+#[deprecated]
+pub type RTDPaymentReceiptBuilder = PaymentReceiptBuilder;
+
+impl PaymentReceiptBuilder {
     pub fn build(&self) -> PaymentReceipt {
         self.inner.clone()
     }
@@ -187,7 +190,7 @@ impl AsRef<PaymentReceipt> for PaymentReceipt {
     }
 }
 
-impl AsRef<PaymentReceipt> for RTDPaymentReceiptBuilder {
+impl AsRef<PaymentReceipt> for PaymentReceiptBuilder {
     fn as_ref(&self) -> &PaymentReceipt {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SearchHashtags {
 impl RFunction for SearchHashtags {}
 
 impl SearchHashtags {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchHashtagsBuilder {
+    pub fn builder() -> SearchHashtagsBuilder {
         let mut inner = SearchHashtags::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchHashtags".to_string();
 
-        RTDSearchHashtagsBuilder { inner }
+        SearchHashtagsBuilder { inner }
     }
 
     pub fn prefix(&self) -> &String {
@@ -59,11 +59,14 @@ impl SearchHashtags {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchHashtagsBuilder {
+pub struct SearchHashtagsBuilder {
     inner: SearchHashtags,
 }
 
-impl RTDSearchHashtagsBuilder {
+#[deprecated]
+pub type RTDSearchHashtagsBuilder = SearchHashtagsBuilder;
+
+impl SearchHashtagsBuilder {
     pub fn build(&self) -> SearchHashtags {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SearchHashtags> for SearchHashtags {
     }
 }
 
-impl AsRef<SearchHashtags> for RTDSearchHashtagsBuilder {
+impl AsRef<SearchHashtags> for SearchHashtagsBuilder {
     fn as_ref(&self) -> &SearchHashtags {
         &self.inner
     }

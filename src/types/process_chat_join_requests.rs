@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for ProcessChatJoinRequests {
 impl RFunction for ProcessChatJoinRequests {}
 
 impl ProcessChatJoinRequests {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDProcessChatJoinRequestsBuilder {
+    pub fn builder() -> ProcessChatJoinRequestsBuilder {
         let mut inner = ProcessChatJoinRequests::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "processChatJoinRequests".to_string();
 
-        RTDProcessChatJoinRequestsBuilder { inner }
+        ProcessChatJoinRequestsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl ProcessChatJoinRequests {
 }
 
 #[doc(hidden)]
-pub struct RTDProcessChatJoinRequestsBuilder {
+pub struct ProcessChatJoinRequestsBuilder {
     inner: ProcessChatJoinRequests,
 }
 
-impl RTDProcessChatJoinRequestsBuilder {
+#[deprecated]
+pub type RTDProcessChatJoinRequestsBuilder = ProcessChatJoinRequestsBuilder;
+
+impl ProcessChatJoinRequestsBuilder {
     pub fn build(&self) -> ProcessChatJoinRequests {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<ProcessChatJoinRequests> for ProcessChatJoinRequests {
     }
 }
 
-impl AsRef<ProcessChatJoinRequests> for RTDProcessChatJoinRequestsBuilder {
+impl AsRef<ProcessChatJoinRequests> for ProcessChatJoinRequestsBuilder {
     fn as_ref(&self) -> &ProcessChatJoinRequests {
         &self.inner
     }

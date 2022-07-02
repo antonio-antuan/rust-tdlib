@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -53,16 +53,16 @@ impl RObject for CreateNewStickerSet {
 impl RFunction for CreateNewStickerSet {}
 
 impl CreateNewStickerSet {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateNewStickerSetBuilder {
+    pub fn builder() -> CreateNewStickerSetBuilder {
         let mut inner = CreateNewStickerSet::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createNewStickerSet".to_string();
 
-        RTDCreateNewStickerSetBuilder { inner }
+        CreateNewStickerSetBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -91,11 +91,14 @@ impl CreateNewStickerSet {
 }
 
 #[doc(hidden)]
-pub struct RTDCreateNewStickerSetBuilder {
+pub struct CreateNewStickerSetBuilder {
     inner: CreateNewStickerSet,
 }
 
-impl RTDCreateNewStickerSetBuilder {
+#[deprecated]
+pub type RTDCreateNewStickerSetBuilder = CreateNewStickerSetBuilder;
+
+impl CreateNewStickerSetBuilder {
     pub fn build(&self) -> CreateNewStickerSet {
         self.inner.clone()
     }
@@ -137,7 +140,7 @@ impl AsRef<CreateNewStickerSet> for CreateNewStickerSet {
     }
 }
 
-impl AsRef<CreateNewStickerSet> for RTDCreateNewStickerSetBuilder {
+impl AsRef<CreateNewStickerSet> for CreateNewStickerSetBuilder {
     fn as_ref(&self) -> &CreateNewStickerSet {
         &self.inner
     }

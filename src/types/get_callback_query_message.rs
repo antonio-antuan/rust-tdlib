@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -42,16 +42,16 @@ impl RObject for GetCallbackQueryMessage {
 impl RFunction for GetCallbackQueryMessage {}
 
 impl GetCallbackQueryMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetCallbackQueryMessageBuilder {
+    pub fn builder() -> GetCallbackQueryMessageBuilder {
         let mut inner = GetCallbackQueryMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getCallbackQueryMessage".to_string();
 
-        RTDGetCallbackQueryMessageBuilder { inner }
+        GetCallbackQueryMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -68,11 +68,14 @@ impl GetCallbackQueryMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDGetCallbackQueryMessageBuilder {
+pub struct GetCallbackQueryMessageBuilder {
     inner: GetCallbackQueryMessage,
 }
 
-impl RTDGetCallbackQueryMessageBuilder {
+#[deprecated]
+pub type RTDGetCallbackQueryMessageBuilder = GetCallbackQueryMessageBuilder;
+
+impl GetCallbackQueryMessageBuilder {
     pub fn build(&self) -> GetCallbackQueryMessage {
         self.inner.clone()
     }
@@ -99,7 +102,7 @@ impl AsRef<GetCallbackQueryMessage> for GetCallbackQueryMessage {
     }
 }
 
-impl AsRef<GetCallbackQueryMessage> for RTDGetCallbackQueryMessageBuilder {
+impl AsRef<GetCallbackQueryMessage> for GetCallbackQueryMessageBuilder {
     fn as_ref(&self) -> &GetCallbackQueryMessage {
         &self.inner
     }

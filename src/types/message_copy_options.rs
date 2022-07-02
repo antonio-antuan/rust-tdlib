@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,14 +34,14 @@ impl RObject for MessageCopyOptions {
 }
 
 impl MessageCopyOptions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageCopyOptionsBuilder {
+    pub fn builder() -> MessageCopyOptionsBuilder {
         let mut inner = MessageCopyOptions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageCopyOptionsBuilder { inner }
+        MessageCopyOptionsBuilder { inner }
     }
 
     pub fn send_copy(&self) -> bool {
@@ -58,11 +58,14 @@ impl MessageCopyOptions {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageCopyOptionsBuilder {
+pub struct MessageCopyOptionsBuilder {
     inner: MessageCopyOptions,
 }
 
-impl RTDMessageCopyOptionsBuilder {
+#[deprecated]
+pub type RTDMessageCopyOptionsBuilder = MessageCopyOptionsBuilder;
+
+impl MessageCopyOptionsBuilder {
     pub fn build(&self) -> MessageCopyOptions {
         self.inner.clone()
     }
@@ -89,7 +92,7 @@ impl AsRef<MessageCopyOptions> for MessageCopyOptions {
     }
 }
 
-impl AsRef<MessageCopyOptions> for RTDMessageCopyOptionsBuilder {
+impl AsRef<MessageCopyOptions> for MessageCopyOptionsBuilder {
     fn as_ref(&self) -> &MessageCopyOptions {
         &self.inner
     }

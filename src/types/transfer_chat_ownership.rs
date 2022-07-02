@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for TransferChatOwnership {
 impl RFunction for TransferChatOwnership {}
 
 impl TransferChatOwnership {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTransferChatOwnershipBuilder {
+    pub fn builder() -> TransferChatOwnershipBuilder {
         let mut inner = TransferChatOwnership::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "transferChatOwnership".to_string();
 
-        RTDTransferChatOwnershipBuilder { inner }
+        TransferChatOwnershipBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl TransferChatOwnership {
 }
 
 #[doc(hidden)]
-pub struct RTDTransferChatOwnershipBuilder {
+pub struct TransferChatOwnershipBuilder {
     inner: TransferChatOwnership,
 }
 
-impl RTDTransferChatOwnershipBuilder {
+#[deprecated]
+pub type RTDTransferChatOwnershipBuilder = TransferChatOwnershipBuilder;
+
+impl TransferChatOwnershipBuilder {
     pub fn build(&self) -> TransferChatOwnership {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<TransferChatOwnership> for TransferChatOwnership {
     }
 }
 
-impl AsRef<TransferChatOwnership> for RTDTransferChatOwnershipBuilder {
+impl AsRef<TransferChatOwnership> for TransferChatOwnershipBuilder {
     fn as_ref(&self) -> &TransferChatOwnership {
         &self.inner
     }

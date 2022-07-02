@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -45,16 +45,16 @@ impl RObject for ViewMessages {
 impl RFunction for ViewMessages {}
 
 impl ViewMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDViewMessagesBuilder {
+    pub fn builder() -> ViewMessagesBuilder {
         let mut inner = ViewMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "viewMessages".to_string();
 
-        RTDViewMessagesBuilder { inner }
+        ViewMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -75,11 +75,14 @@ impl ViewMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDViewMessagesBuilder {
+pub struct ViewMessagesBuilder {
     inner: ViewMessages,
 }
 
-impl RTDViewMessagesBuilder {
+#[deprecated]
+pub type RTDViewMessagesBuilder = ViewMessagesBuilder;
+
+impl ViewMessagesBuilder {
     pub fn build(&self) -> ViewMessages {
         self.inner.clone()
     }
@@ -111,7 +114,7 @@ impl AsRef<ViewMessages> for ViewMessages {
     }
 }
 
-impl AsRef<ViewMessages> for RTDViewMessagesBuilder {
+impl AsRef<ViewMessages> for ViewMessagesBuilder {
     fn as_ref(&self) -> &ViewMessages {
         &self.inner
     }

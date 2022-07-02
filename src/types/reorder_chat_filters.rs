@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for ReorderChatFilters {
 impl RFunction for ReorderChatFilters {}
 
 impl ReorderChatFilters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReorderChatFiltersBuilder {
+    pub fn builder() -> ReorderChatFiltersBuilder {
         let mut inner = ReorderChatFilters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "reorderChatFilters".to_string();
 
-        RTDReorderChatFiltersBuilder { inner }
+        ReorderChatFiltersBuilder { inner }
     }
 
     pub fn chat_filter_ids(&self) -> &Vec<i32> {
@@ -51,11 +51,14 @@ impl ReorderChatFilters {
 }
 
 #[doc(hidden)]
-pub struct RTDReorderChatFiltersBuilder {
+pub struct ReorderChatFiltersBuilder {
     inner: ReorderChatFilters,
 }
 
-impl RTDReorderChatFiltersBuilder {
+#[deprecated]
+pub type RTDReorderChatFiltersBuilder = ReorderChatFiltersBuilder;
+
+impl ReorderChatFiltersBuilder {
     pub fn build(&self) -> ReorderChatFilters {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<ReorderChatFilters> for ReorderChatFilters {
     }
 }
 
-impl AsRef<ReorderChatFilters> for RTDReorderChatFiltersBuilder {
+impl AsRef<ReorderChatFilters> for ReorderChatFiltersBuilder {
     fn as_ref(&self) -> &ReorderChatFilters {
         &self.inner
     }

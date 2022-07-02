@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,14 +34,14 @@ impl RObject for TermsOfService {
 }
 
 impl TermsOfService {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTermsOfServiceBuilder {
+    pub fn builder() -> TermsOfServiceBuilder {
         let mut inner = TermsOfService::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTermsOfServiceBuilder { inner }
+        TermsOfServiceBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -58,11 +58,14 @@ impl TermsOfService {
 }
 
 #[doc(hidden)]
-pub struct RTDTermsOfServiceBuilder {
+pub struct TermsOfServiceBuilder {
     inner: TermsOfService,
 }
 
-impl RTDTermsOfServiceBuilder {
+#[deprecated]
+pub type RTDTermsOfServiceBuilder = TermsOfServiceBuilder;
+
+impl TermsOfServiceBuilder {
     pub fn build(&self) -> TermsOfService {
         self.inner.clone()
     }
@@ -89,7 +92,7 @@ impl AsRef<TermsOfService> for TermsOfService {
     }
 }
 
-impl AsRef<TermsOfService> for RTDTermsOfServiceBuilder {
+impl AsRef<TermsOfService> for TermsOfServiceBuilder {
     fn as_ref(&self) -> &TermsOfService {
         &self.inner
     }

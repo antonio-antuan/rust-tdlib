@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for LoginUrlInfo {
 }
 
 impl LoginUrlInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -106,14 +106,14 @@ impl RObject for LoginUrlInfoOpen {
 impl TDLoginUrlInfo for LoginUrlInfoOpen {}
 
 impl LoginUrlInfoOpen {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLoginUrlInfoOpenBuilder {
+    pub fn builder() -> LoginUrlInfoOpenBuilder {
         let mut inner = LoginUrlInfoOpen::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLoginUrlInfoOpenBuilder { inner }
+        LoginUrlInfoOpenBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -126,11 +126,14 @@ impl LoginUrlInfoOpen {
 }
 
 #[doc(hidden)]
-pub struct RTDLoginUrlInfoOpenBuilder {
+pub struct LoginUrlInfoOpenBuilder {
     inner: LoginUrlInfoOpen,
 }
 
-impl RTDLoginUrlInfoOpenBuilder {
+#[deprecated]
+pub type RTDLoginUrlInfoOpenBuilder = LoginUrlInfoOpenBuilder;
+
+impl LoginUrlInfoOpenBuilder {
     pub fn build(&self) -> LoginUrlInfoOpen {
         self.inner.clone()
     }
@@ -152,7 +155,7 @@ impl AsRef<LoginUrlInfoOpen> for LoginUrlInfoOpen {
     }
 }
 
-impl AsRef<LoginUrlInfoOpen> for RTDLoginUrlInfoOpenBuilder {
+impl AsRef<LoginUrlInfoOpen> for LoginUrlInfoOpenBuilder {
     fn as_ref(&self) -> &LoginUrlInfoOpen {
         &self.inner
     }
@@ -198,14 +201,14 @@ impl RObject for LoginUrlInfoRequestConfirmation {
 impl TDLoginUrlInfo for LoginUrlInfoRequestConfirmation {}
 
 impl LoginUrlInfoRequestConfirmation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLoginUrlInfoRequestConfirmationBuilder {
+    pub fn builder() -> LoginUrlInfoRequestConfirmationBuilder {
         let mut inner = LoginUrlInfoRequestConfirmation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLoginUrlInfoRequestConfirmationBuilder { inner }
+        LoginUrlInfoRequestConfirmationBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -226,11 +229,14 @@ impl LoginUrlInfoRequestConfirmation {
 }
 
 #[doc(hidden)]
-pub struct RTDLoginUrlInfoRequestConfirmationBuilder {
+pub struct LoginUrlInfoRequestConfirmationBuilder {
     inner: LoginUrlInfoRequestConfirmation,
 }
 
-impl RTDLoginUrlInfoRequestConfirmationBuilder {
+#[deprecated]
+pub type RTDLoginUrlInfoRequestConfirmationBuilder = LoginUrlInfoRequestConfirmationBuilder;
+
+impl LoginUrlInfoRequestConfirmationBuilder {
     pub fn build(&self) -> LoginUrlInfoRequestConfirmation {
         self.inner.clone()
     }
@@ -262,7 +268,7 @@ impl AsRef<LoginUrlInfoRequestConfirmation> for LoginUrlInfoRequestConfirmation 
     }
 }
 
-impl AsRef<LoginUrlInfoRequestConfirmation> for RTDLoginUrlInfoRequestConfirmationBuilder {
+impl AsRef<LoginUrlInfoRequestConfirmation> for LoginUrlInfoRequestConfirmationBuilder {
     fn as_ref(&self) -> &LoginUrlInfoRequestConfirmation {
         &self.inner
     }

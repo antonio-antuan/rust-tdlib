@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for RequestQrCodeAuthentication {
 impl RFunction for RequestQrCodeAuthentication {}
 
 impl RequestQrCodeAuthentication {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRequestQrCodeAuthenticationBuilder {
+    pub fn builder() -> RequestQrCodeAuthenticationBuilder {
         let mut inner = RequestQrCodeAuthentication::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "requestQrCodeAuthentication".to_string();
 
-        RTDRequestQrCodeAuthenticationBuilder { inner }
+        RequestQrCodeAuthenticationBuilder { inner }
     }
 
     pub fn other_user_ids(&self) -> &Vec<i64> {
@@ -51,11 +51,14 @@ impl RequestQrCodeAuthentication {
 }
 
 #[doc(hidden)]
-pub struct RTDRequestQrCodeAuthenticationBuilder {
+pub struct RequestQrCodeAuthenticationBuilder {
     inner: RequestQrCodeAuthentication,
 }
 
-impl RTDRequestQrCodeAuthenticationBuilder {
+#[deprecated]
+pub type RTDRequestQrCodeAuthenticationBuilder = RequestQrCodeAuthenticationBuilder;
+
+impl RequestQrCodeAuthenticationBuilder {
     pub fn build(&self) -> RequestQrCodeAuthentication {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<RequestQrCodeAuthentication> for RequestQrCodeAuthentication {
     }
 }
 
-impl AsRef<RequestQrCodeAuthentication> for RTDRequestQrCodeAuthenticationBuilder {
+impl AsRef<RequestQrCodeAuthentication> for RequestQrCodeAuthenticationBuilder {
     fn as_ref(&self) -> &RequestQrCodeAuthentication {
         &self.inner
     }

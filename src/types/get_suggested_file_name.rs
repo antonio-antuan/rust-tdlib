@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetSuggestedFileName {
 impl RFunction for GetSuggestedFileName {}
 
 impl GetSuggestedFileName {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetSuggestedFileNameBuilder {
+    pub fn builder() -> GetSuggestedFileNameBuilder {
         let mut inner = GetSuggestedFileName::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getSuggestedFileName".to_string();
 
-        RTDGetSuggestedFileNameBuilder { inner }
+        GetSuggestedFileNameBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -59,11 +59,14 @@ impl GetSuggestedFileName {
 }
 
 #[doc(hidden)]
-pub struct RTDGetSuggestedFileNameBuilder {
+pub struct GetSuggestedFileNameBuilder {
     inner: GetSuggestedFileName,
 }
 
-impl RTDGetSuggestedFileNameBuilder {
+#[deprecated]
+pub type RTDGetSuggestedFileNameBuilder = GetSuggestedFileNameBuilder;
+
+impl GetSuggestedFileNameBuilder {
     pub fn build(&self) -> GetSuggestedFileName {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<GetSuggestedFileName> for GetSuggestedFileName {
     }
 }
 
-impl AsRef<GetSuggestedFileName> for RTDGetSuggestedFileNameBuilder {
+impl AsRef<GetSuggestedFileName> for GetSuggestedFileNameBuilder {
     fn as_ref(&self) -> &GetSuggestedFileName {
         &self.inner
     }

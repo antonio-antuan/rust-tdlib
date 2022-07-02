@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for Sessions {
 }
 
 impl Sessions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSessionsBuilder {
+    pub fn builder() -> SessionsBuilder {
         let mut inner = Sessions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSessionsBuilder { inner }
+        SessionsBuilder { inner }
     }
 
     pub fn sessions(&self) -> &Vec<Session> {
@@ -52,11 +52,14 @@ impl Sessions {
 }
 
 #[doc(hidden)]
-pub struct RTDSessionsBuilder {
+pub struct SessionsBuilder {
     inner: Sessions,
 }
 
-impl RTDSessionsBuilder {
+#[deprecated]
+pub type RTDSessionsBuilder = SessionsBuilder;
+
+impl SessionsBuilder {
     pub fn build(&self) -> Sessions {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<Sessions> for Sessions {
     }
 }
 
-impl AsRef<Sessions> for RTDSessionsBuilder {
+impl AsRef<Sessions> for SessionsBuilder {
     fn as_ref(&self) -> &Sessions {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -28,14 +28,14 @@ impl RObject for TestVectorInt {
 }
 
 impl TestVectorInt {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestVectorIntBuilder {
+    pub fn builder() -> TestVectorIntBuilder {
         let mut inner = TestVectorInt::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTestVectorIntBuilder { inner }
+        TestVectorIntBuilder { inner }
     }
 
     pub fn value(&self) -> &Vec<i32> {
@@ -44,11 +44,14 @@ impl TestVectorInt {
 }
 
 #[doc(hidden)]
-pub struct RTDTestVectorIntBuilder {
+pub struct TestVectorIntBuilder {
     inner: TestVectorInt,
 }
 
-impl RTDTestVectorIntBuilder {
+#[deprecated]
+pub type RTDTestVectorIntBuilder = TestVectorIntBuilder;
+
+impl TestVectorIntBuilder {
     pub fn build(&self) -> TestVectorInt {
         self.inner.clone()
     }
@@ -65,7 +68,7 @@ impl AsRef<TestVectorInt> for TestVectorInt {
     }
 }
 
-impl AsRef<TestVectorInt> for RTDTestVectorIntBuilder {
+impl AsRef<TestVectorInt> for TestVectorIntBuilder {
     fn as_ref(&self) -> &TestVectorInt {
         &self.inner
     }

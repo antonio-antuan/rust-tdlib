@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -56,14 +56,14 @@ impl RObject for ChatPermissions {
 }
 
 impl ChatPermissions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatPermissionsBuilder {
+    pub fn builder() -> ChatPermissionsBuilder {
         let mut inner = ChatPermissions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatPermissionsBuilder { inner }
+        ChatPermissionsBuilder { inner }
     }
 
     pub fn can_send_messages(&self) -> bool {
@@ -100,11 +100,14 @@ impl ChatPermissions {
 }
 
 #[doc(hidden)]
-pub struct RTDChatPermissionsBuilder {
+pub struct ChatPermissionsBuilder {
     inner: ChatPermissions,
 }
 
-impl RTDChatPermissionsBuilder {
+#[deprecated]
+pub type RTDChatPermissionsBuilder = ChatPermissionsBuilder;
+
+impl ChatPermissionsBuilder {
     pub fn build(&self) -> ChatPermissions {
         self.inner.clone()
     }
@@ -156,7 +159,7 @@ impl AsRef<ChatPermissions> for ChatPermissions {
     }
 }
 
-impl AsRef<ChatPermissions> for RTDChatPermissionsBuilder {
+impl AsRef<ChatPermissions> for ChatPermissionsBuilder {
     fn as_ref(&self) -> &ChatPermissions {
         &self.inner
     }

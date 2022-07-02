@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetPhoneNumberInfoSync {
 impl RFunction for GetPhoneNumberInfoSync {}
 
 impl GetPhoneNumberInfoSync {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPhoneNumberInfoSyncBuilder {
+    pub fn builder() -> GetPhoneNumberInfoSyncBuilder {
         let mut inner = GetPhoneNumberInfoSync::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPhoneNumberInfoSync".to_string();
 
-        RTDGetPhoneNumberInfoSyncBuilder { inner }
+        GetPhoneNumberInfoSyncBuilder { inner }
     }
 
     pub fn language_code(&self) -> &String {
@@ -59,11 +59,14 @@ impl GetPhoneNumberInfoSync {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPhoneNumberInfoSyncBuilder {
+pub struct GetPhoneNumberInfoSyncBuilder {
     inner: GetPhoneNumberInfoSync,
 }
 
-impl RTDGetPhoneNumberInfoSyncBuilder {
+#[deprecated]
+pub type RTDGetPhoneNumberInfoSyncBuilder = GetPhoneNumberInfoSyncBuilder;
+
+impl GetPhoneNumberInfoSyncBuilder {
     pub fn build(&self) -> GetPhoneNumberInfoSync {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<GetPhoneNumberInfoSync> for GetPhoneNumberInfoSync {
     }
 }
 
-impl AsRef<GetPhoneNumberInfoSync> for RTDGetPhoneNumberInfoSyncBuilder {
+impl AsRef<GetPhoneNumberInfoSync> for GetPhoneNumberInfoSyncBuilder {
     fn as_ref(&self) -> &GetPhoneNumberInfoSync {
         &self.inner
     }

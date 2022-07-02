@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for StartScheduledGroupCall {
 impl RFunction for StartScheduledGroupCall {}
 
 impl StartScheduledGroupCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStartScheduledGroupCallBuilder {
+    pub fn builder() -> StartScheduledGroupCallBuilder {
         let mut inner = StartScheduledGroupCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "startScheduledGroupCall".to_string();
 
-        RTDStartScheduledGroupCallBuilder { inner }
+        StartScheduledGroupCallBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl StartScheduledGroupCall {
 }
 
 #[doc(hidden)]
-pub struct RTDStartScheduledGroupCallBuilder {
+pub struct StartScheduledGroupCallBuilder {
     inner: StartScheduledGroupCall,
 }
 
-impl RTDStartScheduledGroupCallBuilder {
+#[deprecated]
+pub type RTDStartScheduledGroupCallBuilder = StartScheduledGroupCallBuilder;
+
+impl StartScheduledGroupCallBuilder {
     pub fn build(&self) -> StartScheduledGroupCall {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<StartScheduledGroupCall> for StartScheduledGroupCall {
     }
 }
 
-impl AsRef<StartScheduledGroupCall> for RTDStartScheduledGroupCallBuilder {
+impl AsRef<StartScheduledGroupCall> for StartScheduledGroupCallBuilder {
     fn as_ref(&self) -> &StartScheduledGroupCall {
         &self.inner
     }

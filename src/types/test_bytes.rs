@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -28,14 +28,14 @@ impl RObject for TestBytes {
 }
 
 impl TestBytes {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestBytesBuilder {
+    pub fn builder() -> TestBytesBuilder {
         let mut inner = TestBytes::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTestBytesBuilder { inner }
+        TestBytesBuilder { inner }
     }
 
     pub fn value(&self) -> &String {
@@ -44,11 +44,14 @@ impl TestBytes {
 }
 
 #[doc(hidden)]
-pub struct RTDTestBytesBuilder {
+pub struct TestBytesBuilder {
     inner: TestBytes,
 }
 
-impl RTDTestBytesBuilder {
+#[deprecated]
+pub type RTDTestBytesBuilder = TestBytesBuilder;
+
+impl TestBytesBuilder {
     pub fn build(&self) -> TestBytes {
         self.inner.clone()
     }
@@ -65,7 +68,7 @@ impl AsRef<TestBytes> for TestBytes {
     }
 }
 
-impl AsRef<TestBytes> for RTDTestBytesBuilder {
+impl AsRef<TestBytes> for TestBytesBuilder {
     fn as_ref(&self) -> &TestBytes {
         &self.inner
     }

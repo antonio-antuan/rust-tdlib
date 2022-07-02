@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SetGroupCallTitle {
 impl RFunction for SetGroupCallTitle {}
 
 impl SetGroupCallTitle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetGroupCallTitleBuilder {
+    pub fn builder() -> SetGroupCallTitleBuilder {
         let mut inner = SetGroupCallTitle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setGroupCallTitle".to_string();
 
-        RTDSetGroupCallTitleBuilder { inner }
+        SetGroupCallTitleBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -59,11 +59,14 @@ impl SetGroupCallTitle {
 }
 
 #[doc(hidden)]
-pub struct RTDSetGroupCallTitleBuilder {
+pub struct SetGroupCallTitleBuilder {
     inner: SetGroupCallTitle,
 }
 
-impl RTDSetGroupCallTitleBuilder {
+#[deprecated]
+pub type RTDSetGroupCallTitleBuilder = SetGroupCallTitleBuilder;
+
+impl SetGroupCallTitleBuilder {
     pub fn build(&self) -> SetGroupCallTitle {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SetGroupCallTitle> for SetGroupCallTitle {
     }
 }
 
-impl AsRef<SetGroupCallTitle> for RTDSetGroupCallTitleBuilder {
+impl AsRef<SetGroupCallTitle> for SetGroupCallTitleBuilder {
     fn as_ref(&self) -> &SetGroupCallTitle {
         &self.inner
     }

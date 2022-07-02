@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -54,14 +54,14 @@ impl RObject for Animation {
 }
 
 impl Animation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAnimationBuilder {
+    pub fn builder() -> AnimationBuilder {
         let mut inner = Animation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAnimationBuilder { inner }
+        AnimationBuilder { inner }
     }
 
     pub fn duration(&self) -> i32 {
@@ -102,11 +102,14 @@ impl Animation {
 }
 
 #[doc(hidden)]
-pub struct RTDAnimationBuilder {
+pub struct AnimationBuilder {
     inner: Animation,
 }
 
-impl RTDAnimationBuilder {
+#[deprecated]
+pub type RTDAnimationBuilder = AnimationBuilder;
+
+impl AnimationBuilder {
     pub fn build(&self) -> Animation {
         self.inner.clone()
     }
@@ -163,7 +166,7 @@ impl AsRef<Animation> for Animation {
     }
 }
 
-impl AsRef<Animation> for RTDAnimationBuilder {
+impl AsRef<Animation> for AnimationBuilder {
     fn as_ref(&self) -> &Animation {
         &self.inner
     }

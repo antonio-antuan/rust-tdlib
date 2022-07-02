@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -53,16 +53,16 @@ impl RObject for EditChatInviteLink {
 impl RFunction for EditChatInviteLink {}
 
 impl EditChatInviteLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditChatInviteLinkBuilder {
+    pub fn builder() -> EditChatInviteLinkBuilder {
         let mut inner = EditChatInviteLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editChatInviteLink".to_string();
 
-        RTDEditChatInviteLinkBuilder { inner }
+        EditChatInviteLinkBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -91,11 +91,14 @@ impl EditChatInviteLink {
 }
 
 #[doc(hidden)]
-pub struct RTDEditChatInviteLinkBuilder {
+pub struct EditChatInviteLinkBuilder {
     inner: EditChatInviteLink,
 }
 
-impl RTDEditChatInviteLinkBuilder {
+#[deprecated]
+pub type RTDEditChatInviteLinkBuilder = EditChatInviteLinkBuilder;
+
+impl EditChatInviteLinkBuilder {
     pub fn build(&self) -> EditChatInviteLink {
         self.inner.clone()
     }
@@ -137,7 +140,7 @@ impl AsRef<EditChatInviteLink> for EditChatInviteLink {
     }
 }
 
-impl AsRef<EditChatInviteLink> for RTDEditChatInviteLinkBuilder {
+impl AsRef<EditChatInviteLink> for EditChatInviteLinkBuilder {
     fn as_ref(&self) -> &EditChatInviteLink {
         &self.inner
     }

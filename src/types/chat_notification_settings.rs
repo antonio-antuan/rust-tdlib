@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -64,14 +64,14 @@ impl RObject for ChatNotificationSettings {
 }
 
 impl ChatNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatNotificationSettingsBuilder {
+    pub fn builder() -> ChatNotificationSettingsBuilder {
         let mut inner = ChatNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatNotificationSettingsBuilder { inner }
+        ChatNotificationSettingsBuilder { inner }
     }
 
     pub fn use_default_mute_for(&self) -> bool {
@@ -116,11 +116,14 @@ impl ChatNotificationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDChatNotificationSettingsBuilder {
+pub struct ChatNotificationSettingsBuilder {
     inner: ChatNotificationSettings,
 }
 
-impl RTDChatNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDChatNotificationSettingsBuilder = ChatNotificationSettingsBuilder;
+
+impl ChatNotificationSettingsBuilder {
     pub fn build(&self) -> ChatNotificationSettings {
         self.inner.clone()
     }
@@ -196,7 +199,7 @@ impl AsRef<ChatNotificationSettings> for ChatNotificationSettings {
     }
 }
 
-impl AsRef<ChatNotificationSettings> for RTDChatNotificationSettingsBuilder {
+impl AsRef<ChatNotificationSettings> for ChatNotificationSettingsBuilder {
     fn as_ref(&self) -> &ChatNotificationSettings {
         &self.inner
     }

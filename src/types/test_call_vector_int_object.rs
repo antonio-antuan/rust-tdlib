@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for TestCallVectorIntObject {
 impl RFunction for TestCallVectorIntObject {}
 
 impl TestCallVectorIntObject {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestCallVectorIntObjectBuilder {
+    pub fn builder() -> TestCallVectorIntObjectBuilder {
         let mut inner = TestCallVectorIntObject::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "testCallVectorIntObject".to_string();
 
-        RTDTestCallVectorIntObjectBuilder { inner }
+        TestCallVectorIntObjectBuilder { inner }
     }
 
     pub fn x(&self) -> &Vec<TestInt> {
@@ -51,11 +51,14 @@ impl TestCallVectorIntObject {
 }
 
 #[doc(hidden)]
-pub struct RTDTestCallVectorIntObjectBuilder {
+pub struct TestCallVectorIntObjectBuilder {
     inner: TestCallVectorIntObject,
 }
 
-impl RTDTestCallVectorIntObjectBuilder {
+#[deprecated]
+pub type RTDTestCallVectorIntObjectBuilder = TestCallVectorIntObjectBuilder;
+
+impl TestCallVectorIntObjectBuilder {
     pub fn build(&self) -> TestCallVectorIntObject {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<TestCallVectorIntObject> for TestCallVectorIntObject {
     }
 }
 
-impl AsRef<TestCallVectorIntObject> for RTDTestCallVectorIntObjectBuilder {
+impl AsRef<TestCallVectorIntObject> for TestCallVectorIntObjectBuilder {
     fn as_ref(&self) -> &TestCallVectorIntObject {
         &self.inner
     }

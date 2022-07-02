@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for CallServerType {
 }
 
 impl CallServerType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -92,14 +92,14 @@ impl RObject for CallServerTypeTelegramReflector {
 impl TDCallServerType for CallServerTypeTelegramReflector {}
 
 impl CallServerTypeTelegramReflector {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallServerTypeTelegramReflectorBuilder {
+    pub fn builder() -> CallServerTypeTelegramReflectorBuilder {
         let mut inner = CallServerTypeTelegramReflector::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallServerTypeTelegramReflectorBuilder { inner }
+        CallServerTypeTelegramReflectorBuilder { inner }
     }
 
     pub fn peer_tag(&self) -> &String {
@@ -108,11 +108,14 @@ impl CallServerTypeTelegramReflector {
 }
 
 #[doc(hidden)]
-pub struct RTDCallServerTypeTelegramReflectorBuilder {
+pub struct CallServerTypeTelegramReflectorBuilder {
     inner: CallServerTypeTelegramReflector,
 }
 
-impl RTDCallServerTypeTelegramReflectorBuilder {
+#[deprecated]
+pub type RTDCallServerTypeTelegramReflectorBuilder = CallServerTypeTelegramReflectorBuilder;
+
+impl CallServerTypeTelegramReflectorBuilder {
     pub fn build(&self) -> CallServerTypeTelegramReflector {
         self.inner.clone()
     }
@@ -129,7 +132,7 @@ impl AsRef<CallServerTypeTelegramReflector> for CallServerTypeTelegramReflector 
     }
 }
 
-impl AsRef<CallServerTypeTelegramReflector> for RTDCallServerTypeTelegramReflectorBuilder {
+impl AsRef<CallServerTypeTelegramReflector> for CallServerTypeTelegramReflectorBuilder {
     fn as_ref(&self) -> &CallServerTypeTelegramReflector {
         &self.inner
     }
@@ -175,14 +178,14 @@ impl RObject for CallServerTypeWebrtc {
 impl TDCallServerType for CallServerTypeWebrtc {}
 
 impl CallServerTypeWebrtc {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallServerTypeWebrtcBuilder {
+    pub fn builder() -> CallServerTypeWebrtcBuilder {
         let mut inner = CallServerTypeWebrtc::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallServerTypeWebrtcBuilder { inner }
+        CallServerTypeWebrtcBuilder { inner }
     }
 
     pub fn username(&self) -> &String {
@@ -203,11 +206,14 @@ impl CallServerTypeWebrtc {
 }
 
 #[doc(hidden)]
-pub struct RTDCallServerTypeWebrtcBuilder {
+pub struct CallServerTypeWebrtcBuilder {
     inner: CallServerTypeWebrtc,
 }
 
-impl RTDCallServerTypeWebrtcBuilder {
+#[deprecated]
+pub type RTDCallServerTypeWebrtcBuilder = CallServerTypeWebrtcBuilder;
+
+impl CallServerTypeWebrtcBuilder {
     pub fn build(&self) -> CallServerTypeWebrtc {
         self.inner.clone()
     }
@@ -239,7 +245,7 @@ impl AsRef<CallServerTypeWebrtc> for CallServerTypeWebrtc {
     }
 }
 
-impl AsRef<CallServerTypeWebrtc> for RTDCallServerTypeWebrtcBuilder {
+impl AsRef<CallServerTypeWebrtc> for CallServerTypeWebrtcBuilder {
     fn as_ref(&self) -> &CallServerTypeWebrtc {
         &self.inner
     }

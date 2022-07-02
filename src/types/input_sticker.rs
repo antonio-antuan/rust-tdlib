@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for InputSticker {
 }
 
 impl InputSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -96,14 +96,14 @@ impl RObject for InputStickerAnimated {
 impl TDInputSticker for InputStickerAnimated {}
 
 impl InputStickerAnimated {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputStickerAnimatedBuilder {
+    pub fn builder() -> InputStickerAnimatedBuilder {
         let mut inner = InputStickerAnimated::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputStickerAnimatedBuilder { inner }
+        InputStickerAnimatedBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -116,11 +116,14 @@ impl InputStickerAnimated {
 }
 
 #[doc(hidden)]
-pub struct RTDInputStickerAnimatedBuilder {
+pub struct InputStickerAnimatedBuilder {
     inner: InputStickerAnimated,
 }
 
-impl RTDInputStickerAnimatedBuilder {
+#[deprecated]
+pub type RTDInputStickerAnimatedBuilder = InputStickerAnimatedBuilder;
+
+impl InputStickerAnimatedBuilder {
     pub fn build(&self) -> InputStickerAnimated {
         self.inner.clone()
     }
@@ -142,7 +145,7 @@ impl AsRef<InputStickerAnimated> for InputStickerAnimated {
     }
 }
 
-impl AsRef<InputStickerAnimated> for RTDInputStickerAnimatedBuilder {
+impl AsRef<InputStickerAnimated> for InputStickerAnimatedBuilder {
     fn as_ref(&self) -> &InputStickerAnimated {
         &self.inner
     }
@@ -182,14 +185,14 @@ impl RObject for InputStickerStatic {
 impl TDInputSticker for InputStickerStatic {}
 
 impl InputStickerStatic {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputStickerStaticBuilder {
+    pub fn builder() -> InputStickerStaticBuilder {
         let mut inner = InputStickerStatic::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputStickerStaticBuilder { inner }
+        InputStickerStaticBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -206,11 +209,14 @@ impl InputStickerStatic {
 }
 
 #[doc(hidden)]
-pub struct RTDInputStickerStaticBuilder {
+pub struct InputStickerStaticBuilder {
     inner: InputStickerStatic,
 }
 
-impl RTDInputStickerStaticBuilder {
+#[deprecated]
+pub type RTDInputStickerStaticBuilder = InputStickerStaticBuilder;
+
+impl InputStickerStaticBuilder {
     pub fn build(&self) -> InputStickerStatic {
         self.inner.clone()
     }
@@ -237,7 +243,7 @@ impl AsRef<InputStickerStatic> for InputStickerStatic {
     }
 }
 
-impl AsRef<InputStickerStatic> for RTDInputStickerStaticBuilder {
+impl AsRef<InputStickerStatic> for InputStickerStaticBuilder {
     fn as_ref(&self) -> &InputStickerStatic {
         &self.inner
     }

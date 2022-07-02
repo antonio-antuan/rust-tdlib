@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for RemoveTopChat {
 impl RFunction for RemoveTopChat {}
 
 impl RemoveTopChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveTopChatBuilder {
+    pub fn builder() -> RemoveTopChatBuilder {
         let mut inner = RemoveTopChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeTopChat".to_string();
 
-        RTDRemoveTopChatBuilder { inner }
+        RemoveTopChatBuilder { inner }
     }
 
     pub fn category(&self) -> &TopChatCategory {
@@ -59,11 +59,14 @@ impl RemoveTopChat {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveTopChatBuilder {
+pub struct RemoveTopChatBuilder {
     inner: RemoveTopChat,
 }
 
-impl RTDRemoveTopChatBuilder {
+#[deprecated]
+pub type RTDRemoveTopChatBuilder = RemoveTopChatBuilder;
+
+impl RemoveTopChatBuilder {
     pub fn build(&self) -> RemoveTopChat {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<RemoveTopChat> for RemoveTopChat {
     }
 }
 
-impl AsRef<RemoveTopChat> for RTDRemoveTopChatBuilder {
+impl AsRef<RemoveTopChat> for RemoveTopChatBuilder {
     fn as_ref(&self) -> &RemoveTopChat {
         &self.inner
     }

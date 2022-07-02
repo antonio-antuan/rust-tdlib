@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for ClearAllDraftMessages {
 impl RFunction for ClearAllDraftMessages {}
 
 impl ClearAllDraftMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDClearAllDraftMessagesBuilder {
+    pub fn builder() -> ClearAllDraftMessagesBuilder {
         let mut inner = ClearAllDraftMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "clearAllDraftMessages".to_string();
 
-        RTDClearAllDraftMessagesBuilder { inner }
+        ClearAllDraftMessagesBuilder { inner }
     }
 
     pub fn exclude_secret_chats(&self) -> bool {
@@ -51,11 +51,14 @@ impl ClearAllDraftMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDClearAllDraftMessagesBuilder {
+pub struct ClearAllDraftMessagesBuilder {
     inner: ClearAllDraftMessages,
 }
 
-impl RTDClearAllDraftMessagesBuilder {
+#[deprecated]
+pub type RTDClearAllDraftMessagesBuilder = ClearAllDraftMessagesBuilder;
+
+impl ClearAllDraftMessagesBuilder {
     pub fn build(&self) -> ClearAllDraftMessages {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<ClearAllDraftMessages> for ClearAllDraftMessages {
     }
 }
 
-impl AsRef<ClearAllDraftMessages> for RTDClearAllDraftMessagesBuilder {
+impl AsRef<ClearAllDraftMessages> for ClearAllDraftMessagesBuilder {
     fn as_ref(&self) -> &ClearAllDraftMessages {
         &self.inner
     }

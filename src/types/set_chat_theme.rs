@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SetChatTheme {
 impl RFunction for SetChatTheme {}
 
 impl SetChatTheme {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatThemeBuilder {
+    pub fn builder() -> SetChatThemeBuilder {
         let mut inner = SetChatTheme::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatTheme".to_string();
 
-        RTDSetChatThemeBuilder { inner }
+        SetChatThemeBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl SetChatTheme {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatThemeBuilder {
+pub struct SetChatThemeBuilder {
     inner: SetChatTheme,
 }
 
-impl RTDSetChatThemeBuilder {
+#[deprecated]
+pub type RTDSetChatThemeBuilder = SetChatThemeBuilder;
+
+impl SetChatThemeBuilder {
     pub fn build(&self) -> SetChatTheme {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SetChatTheme> for SetChatTheme {
     }
 }
 
-impl AsRef<SetChatTheme> for RTDSetChatThemeBuilder {
+impl AsRef<SetChatTheme> for SetChatThemeBuilder {
     fn as_ref(&self) -> &SetChatTheme {
         &self.inner
     }

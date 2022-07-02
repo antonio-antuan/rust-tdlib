@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -54,7 +54,7 @@ impl RObject for GroupCallVideoQuality {
 }
 
 impl GroupCallVideoQuality {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -93,23 +93,26 @@ impl RObject for GroupCallVideoQualityFull {
 impl TDGroupCallVideoQuality for GroupCallVideoQualityFull {}
 
 impl GroupCallVideoQualityFull {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGroupCallVideoQualityFullBuilder {
+    pub fn builder() -> GroupCallVideoQualityFullBuilder {
         let mut inner = GroupCallVideoQualityFull::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGroupCallVideoQualityFullBuilder { inner }
+        GroupCallVideoQualityFullBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGroupCallVideoQualityFullBuilder {
+pub struct GroupCallVideoQualityFullBuilder {
     inner: GroupCallVideoQualityFull,
 }
 
-impl RTDGroupCallVideoQualityFullBuilder {
+#[deprecated]
+pub type RTDGroupCallVideoQualityFullBuilder = GroupCallVideoQualityFullBuilder;
+
+impl GroupCallVideoQualityFullBuilder {
     pub fn build(&self) -> GroupCallVideoQualityFull {
         self.inner.clone()
     }
@@ -121,7 +124,7 @@ impl AsRef<GroupCallVideoQualityFull> for GroupCallVideoQualityFull {
     }
 }
 
-impl AsRef<GroupCallVideoQualityFull> for RTDGroupCallVideoQualityFullBuilder {
+impl AsRef<GroupCallVideoQualityFull> for GroupCallVideoQualityFullBuilder {
     fn as_ref(&self) -> &GroupCallVideoQualityFull {
         &self.inner
     }
@@ -151,23 +154,26 @@ impl RObject for GroupCallVideoQualityMedium {
 impl TDGroupCallVideoQuality for GroupCallVideoQualityMedium {}
 
 impl GroupCallVideoQualityMedium {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGroupCallVideoQualityMediumBuilder {
+    pub fn builder() -> GroupCallVideoQualityMediumBuilder {
         let mut inner = GroupCallVideoQualityMedium::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGroupCallVideoQualityMediumBuilder { inner }
+        GroupCallVideoQualityMediumBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGroupCallVideoQualityMediumBuilder {
+pub struct GroupCallVideoQualityMediumBuilder {
     inner: GroupCallVideoQualityMedium,
 }
 
-impl RTDGroupCallVideoQualityMediumBuilder {
+#[deprecated]
+pub type RTDGroupCallVideoQualityMediumBuilder = GroupCallVideoQualityMediumBuilder;
+
+impl GroupCallVideoQualityMediumBuilder {
     pub fn build(&self) -> GroupCallVideoQualityMedium {
         self.inner.clone()
     }
@@ -179,7 +185,7 @@ impl AsRef<GroupCallVideoQualityMedium> for GroupCallVideoQualityMedium {
     }
 }
 
-impl AsRef<GroupCallVideoQualityMedium> for RTDGroupCallVideoQualityMediumBuilder {
+impl AsRef<GroupCallVideoQualityMedium> for GroupCallVideoQualityMediumBuilder {
     fn as_ref(&self) -> &GroupCallVideoQualityMedium {
         &self.inner
     }
@@ -209,23 +215,26 @@ impl RObject for GroupCallVideoQualityThumbnail {
 impl TDGroupCallVideoQuality for GroupCallVideoQualityThumbnail {}
 
 impl GroupCallVideoQualityThumbnail {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGroupCallVideoQualityThumbnailBuilder {
+    pub fn builder() -> GroupCallVideoQualityThumbnailBuilder {
         let mut inner = GroupCallVideoQualityThumbnail::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGroupCallVideoQualityThumbnailBuilder { inner }
+        GroupCallVideoQualityThumbnailBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGroupCallVideoQualityThumbnailBuilder {
+pub struct GroupCallVideoQualityThumbnailBuilder {
     inner: GroupCallVideoQualityThumbnail,
 }
 
-impl RTDGroupCallVideoQualityThumbnailBuilder {
+#[deprecated]
+pub type RTDGroupCallVideoQualityThumbnailBuilder = GroupCallVideoQualityThumbnailBuilder;
+
+impl GroupCallVideoQualityThumbnailBuilder {
     pub fn build(&self) -> GroupCallVideoQualityThumbnail {
         self.inner.clone()
     }
@@ -237,7 +246,7 @@ impl AsRef<GroupCallVideoQualityThumbnail> for GroupCallVideoQualityThumbnail {
     }
 }
 
-impl AsRef<GroupCallVideoQualityThumbnail> for RTDGroupCallVideoQualityThumbnailBuilder {
+impl AsRef<GroupCallVideoQualityThumbnail> for GroupCallVideoQualityThumbnailBuilder {
     fn as_ref(&self) -> &GroupCallVideoQualityThumbnail {
         &self.inner
     }

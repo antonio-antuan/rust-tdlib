@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetSupergroupFullInfo {
 impl RFunction for GetSupergroupFullInfo {}
 
 impl GetSupergroupFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetSupergroupFullInfoBuilder {
+    pub fn builder() -> GetSupergroupFullInfoBuilder {
         let mut inner = GetSupergroupFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getSupergroupFullInfo".to_string();
 
-        RTDGetSupergroupFullInfoBuilder { inner }
+        GetSupergroupFullInfoBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl GetSupergroupFullInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDGetSupergroupFullInfoBuilder {
+pub struct GetSupergroupFullInfoBuilder {
     inner: GetSupergroupFullInfo,
 }
 
-impl RTDGetSupergroupFullInfoBuilder {
+#[deprecated]
+pub type RTDGetSupergroupFullInfoBuilder = GetSupergroupFullInfoBuilder;
+
+impl GetSupergroupFullInfoBuilder {
     pub fn build(&self) -> GetSupergroupFullInfo {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetSupergroupFullInfo> for GetSupergroupFullInfo {
     }
 }
 
-impl AsRef<GetSupergroupFullInfo> for RTDGetSupergroupFullInfoBuilder {
+impl AsRef<GetSupergroupFullInfo> for GetSupergroupFullInfoBuilder {
     fn as_ref(&self) -> &GetSupergroupFullInfo {
         &self.inner
     }

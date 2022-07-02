@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ReportSupergroupSpam {
 impl RFunction for ReportSupergroupSpam {}
 
 impl ReportSupergroupSpam {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReportSupergroupSpamBuilder {
+    pub fn builder() -> ReportSupergroupSpamBuilder {
         let mut inner = ReportSupergroupSpam::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "reportSupergroupSpam".to_string();
 
-        RTDReportSupergroupSpamBuilder { inner }
+        ReportSupergroupSpamBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl ReportSupergroupSpam {
 }
 
 #[doc(hidden)]
-pub struct RTDReportSupergroupSpamBuilder {
+pub struct ReportSupergroupSpamBuilder {
     inner: ReportSupergroupSpam,
 }
 
-impl RTDReportSupergroupSpamBuilder {
+#[deprecated]
+pub type RTDReportSupergroupSpamBuilder = ReportSupergroupSpamBuilder;
+
+impl ReportSupergroupSpamBuilder {
     pub fn build(&self) -> ReportSupergroupSpam {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<ReportSupergroupSpam> for ReportSupergroupSpam {
     }
 }
 
-impl AsRef<ReportSupergroupSpam> for RTDReportSupergroupSpamBuilder {
+impl AsRef<ReportSupergroupSpam> for ReportSupergroupSpamBuilder {
     fn as_ref(&self) -> &ReportSupergroupSpam {
         &self.inner
     }

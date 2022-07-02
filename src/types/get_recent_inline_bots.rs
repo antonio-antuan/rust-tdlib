@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetRecentInlineBots {
 impl RFunction for GetRecentInlineBots {}
 
 impl GetRecentInlineBots {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetRecentInlineBotsBuilder {
+    pub fn builder() -> GetRecentInlineBotsBuilder {
         let mut inner = GetRecentInlineBots::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getRecentInlineBots".to_string();
 
-        RTDGetRecentInlineBotsBuilder { inner }
+        GetRecentInlineBotsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetRecentInlineBotsBuilder {
+pub struct GetRecentInlineBotsBuilder {
     inner: GetRecentInlineBots,
 }
 
-impl RTDGetRecentInlineBotsBuilder {
+#[deprecated]
+pub type RTDGetRecentInlineBotsBuilder = GetRecentInlineBotsBuilder;
+
+impl GetRecentInlineBotsBuilder {
     pub fn build(&self) -> GetRecentInlineBots {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetRecentInlineBots> for GetRecentInlineBots {
     }
 }
 
-impl AsRef<GetRecentInlineBots> for RTDGetRecentInlineBotsBuilder {
+impl AsRef<GetRecentInlineBots> for GetRecentInlineBotsBuilder {
     fn as_ref(&self) -> &GetRecentInlineBots {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for CreateNewBasicGroupChat {
 impl RFunction for CreateNewBasicGroupChat {}
 
 impl CreateNewBasicGroupChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateNewBasicGroupChatBuilder {
+    pub fn builder() -> CreateNewBasicGroupChatBuilder {
         let mut inner = CreateNewBasicGroupChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createNewBasicGroupChat".to_string();
 
-        RTDCreateNewBasicGroupChatBuilder { inner }
+        CreateNewBasicGroupChatBuilder { inner }
     }
 
     pub fn user_ids(&self) -> &Vec<i64> {
@@ -59,11 +59,14 @@ impl CreateNewBasicGroupChat {
 }
 
 #[doc(hidden)]
-pub struct RTDCreateNewBasicGroupChatBuilder {
+pub struct CreateNewBasicGroupChatBuilder {
     inner: CreateNewBasicGroupChat,
 }
 
-impl RTDCreateNewBasicGroupChatBuilder {
+#[deprecated]
+pub type RTDCreateNewBasicGroupChatBuilder = CreateNewBasicGroupChatBuilder;
+
+impl CreateNewBasicGroupChatBuilder {
     pub fn build(&self) -> CreateNewBasicGroupChat {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<CreateNewBasicGroupChat> for CreateNewBasicGroupChat {
     }
 }
 
-impl AsRef<CreateNewBasicGroupChat> for RTDCreateNewBasicGroupChatBuilder {
+impl AsRef<CreateNewBasicGroupChat> for CreateNewBasicGroupChatBuilder {
     fn as_ref(&self) -> &CreateNewBasicGroupChat {
         &self.inner
     }

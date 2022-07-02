@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for SearchBackground {
 impl RFunction for SearchBackground {}
 
 impl SearchBackground {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchBackgroundBuilder {
+    pub fn builder() -> SearchBackgroundBuilder {
         let mut inner = SearchBackground::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchBackground".to_string();
 
-        RTDSearchBackgroundBuilder { inner }
+        SearchBackgroundBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -51,11 +51,14 @@ impl SearchBackground {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchBackgroundBuilder {
+pub struct SearchBackgroundBuilder {
     inner: SearchBackground,
 }
 
-impl RTDSearchBackgroundBuilder {
+#[deprecated]
+pub type RTDSearchBackgroundBuilder = SearchBackgroundBuilder;
+
+impl SearchBackgroundBuilder {
     pub fn build(&self) -> SearchBackground {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<SearchBackground> for SearchBackground {
     }
 }
 
-impl AsRef<SearchBackground> for RTDSearchBackgroundBuilder {
+impl AsRef<SearchBackground> for SearchBackgroundBuilder {
     fn as_ref(&self) -> &SearchBackground {
         &self.inner
     }

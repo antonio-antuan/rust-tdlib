@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetChatSponsoredMessage {
 impl RFunction for GetChatSponsoredMessage {}
 
 impl GetChatSponsoredMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatSponsoredMessageBuilder {
+    pub fn builder() -> GetChatSponsoredMessageBuilder {
         let mut inner = GetChatSponsoredMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatSponsoredMessage".to_string();
 
-        RTDGetChatSponsoredMessageBuilder { inner }
+        GetChatSponsoredMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl GetChatSponsoredMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatSponsoredMessageBuilder {
+pub struct GetChatSponsoredMessageBuilder {
     inner: GetChatSponsoredMessage,
 }
 
-impl RTDGetChatSponsoredMessageBuilder {
+#[deprecated]
+pub type RTDGetChatSponsoredMessageBuilder = GetChatSponsoredMessageBuilder;
+
+impl GetChatSponsoredMessageBuilder {
     pub fn build(&self) -> GetChatSponsoredMessage {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetChatSponsoredMessage> for GetChatSponsoredMessage {
     }
 }
 
-impl AsRef<GetChatSponsoredMessage> for RTDGetChatSponsoredMessageBuilder {
+impl AsRef<GetChatSponsoredMessage> for GetChatSponsoredMessageBuilder {
     fn as_ref(&self) -> &GetChatSponsoredMessage {
         &self.inner
     }

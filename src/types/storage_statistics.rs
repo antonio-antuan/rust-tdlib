@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for StorageStatistics {
 }
 
 impl StorageStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStorageStatisticsBuilder {
+    pub fn builder() -> StorageStatisticsBuilder {
         let mut inner = StorageStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStorageStatisticsBuilder { inner }
+        StorageStatisticsBuilder { inner }
     }
 
     pub fn size(&self) -> i64 {
@@ -60,11 +60,14 @@ impl StorageStatistics {
 }
 
 #[doc(hidden)]
-pub struct RTDStorageStatisticsBuilder {
+pub struct StorageStatisticsBuilder {
     inner: StorageStatistics,
 }
 
-impl RTDStorageStatisticsBuilder {
+#[deprecated]
+pub type RTDStorageStatisticsBuilder = StorageStatisticsBuilder;
+
+impl StorageStatisticsBuilder {
     pub fn build(&self) -> StorageStatistics {
         self.inner.clone()
     }
@@ -91,7 +94,7 @@ impl AsRef<StorageStatistics> for StorageStatistics {
     }
 }
 
-impl AsRef<StorageStatistics> for RTDStorageStatisticsBuilder {
+impl AsRef<StorageStatistics> for StorageStatisticsBuilder {
     fn as_ref(&self) -> &StorageStatistics {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for ImportContacts {
 impl RFunction for ImportContacts {}
 
 impl ImportContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDImportContactsBuilder {
+    pub fn builder() -> ImportContactsBuilder {
         let mut inner = ImportContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "importContacts".to_string();
 
-        RTDImportContactsBuilder { inner }
+        ImportContactsBuilder { inner }
     }
 
     pub fn contacts(&self) -> &Vec<Contact> {
@@ -51,11 +51,14 @@ impl ImportContacts {
 }
 
 #[doc(hidden)]
-pub struct RTDImportContactsBuilder {
+pub struct ImportContactsBuilder {
     inner: ImportContacts,
 }
 
-impl RTDImportContactsBuilder {
+#[deprecated]
+pub type RTDImportContactsBuilder = ImportContactsBuilder;
+
+impl ImportContactsBuilder {
     pub fn build(&self) -> ImportContacts {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<ImportContacts> for ImportContacts {
     }
 }
 
-impl AsRef<ImportContacts> for RTDImportContactsBuilder {
+impl AsRef<ImportContacts> for ImportContactsBuilder {
     fn as_ref(&self) -> &ImportContacts {
         &self.inner
     }

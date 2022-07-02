@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ToggleGroupCallEnabledStartNotification {
 impl RFunction for ToggleGroupCallEnabledStartNotification {}
 
 impl ToggleGroupCallEnabledStartNotification {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleGroupCallEnabledStartNotificationBuilder {
+    pub fn builder() -> ToggleGroupCallEnabledStartNotificationBuilder {
         let mut inner = ToggleGroupCallEnabledStartNotification::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleGroupCallEnabledStartNotification".to_string();
 
-        RTDToggleGroupCallEnabledStartNotificationBuilder { inner }
+        ToggleGroupCallEnabledStartNotificationBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -59,11 +59,15 @@ impl ToggleGroupCallEnabledStartNotification {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleGroupCallEnabledStartNotificationBuilder {
+pub struct ToggleGroupCallEnabledStartNotificationBuilder {
     inner: ToggleGroupCallEnabledStartNotification,
 }
 
-impl RTDToggleGroupCallEnabledStartNotificationBuilder {
+#[deprecated]
+pub type RTDToggleGroupCallEnabledStartNotificationBuilder =
+    ToggleGroupCallEnabledStartNotificationBuilder;
+
+impl ToggleGroupCallEnabledStartNotificationBuilder {
     pub fn build(&self) -> ToggleGroupCallEnabledStartNotification {
         self.inner.clone()
     }
@@ -86,7 +90,7 @@ impl AsRef<ToggleGroupCallEnabledStartNotification> for ToggleGroupCallEnabledSt
 }
 
 impl AsRef<ToggleGroupCallEnabledStartNotification>
-    for RTDToggleGroupCallEnabledStartNotificationBuilder
+    for ToggleGroupCallEnabledStartNotificationBuilder
 {
     fn as_ref(&self) -> &ToggleGroupCallEnabledStartNotification {
         &self.inner

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -40,14 +40,14 @@ impl RObject for PaymentsProviderStripe {
 }
 
 impl PaymentsProviderStripe {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPaymentsProviderStripeBuilder {
+    pub fn builder() -> PaymentsProviderStripeBuilder {
         let mut inner = PaymentsProviderStripe::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPaymentsProviderStripeBuilder { inner }
+        PaymentsProviderStripeBuilder { inner }
     }
 
     pub fn publishable_key(&self) -> &String {
@@ -68,11 +68,14 @@ impl PaymentsProviderStripe {
 }
 
 #[doc(hidden)]
-pub struct RTDPaymentsProviderStripeBuilder {
+pub struct PaymentsProviderStripeBuilder {
     inner: PaymentsProviderStripe,
 }
 
-impl RTDPaymentsProviderStripeBuilder {
+#[deprecated]
+pub type RTDPaymentsProviderStripeBuilder = PaymentsProviderStripeBuilder;
+
+impl PaymentsProviderStripeBuilder {
     pub fn build(&self) -> PaymentsProviderStripe {
         self.inner.clone()
     }
@@ -104,7 +107,7 @@ impl AsRef<PaymentsProviderStripe> for PaymentsProviderStripe {
     }
 }
 
-impl AsRef<PaymentsProviderStripe> for RTDPaymentsProviderStripeBuilder {
+impl AsRef<PaymentsProviderStripe> for PaymentsProviderStripeBuilder {
     fn as_ref(&self) -> &PaymentsProviderStripe {
         &self.inner
     }

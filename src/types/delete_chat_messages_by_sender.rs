@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for DeleteChatMessagesBySender {
 impl RFunction for DeleteChatMessagesBySender {}
 
 impl DeleteChatMessagesBySender {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteChatMessagesBySenderBuilder {
+    pub fn builder() -> DeleteChatMessagesBySenderBuilder {
         let mut inner = DeleteChatMessagesBySender::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteChatMessagesBySender".to_string();
 
-        RTDDeleteChatMessagesBySenderBuilder { inner }
+        DeleteChatMessagesBySenderBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl DeleteChatMessagesBySender {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteChatMessagesBySenderBuilder {
+pub struct DeleteChatMessagesBySenderBuilder {
     inner: DeleteChatMessagesBySender,
 }
 
-impl RTDDeleteChatMessagesBySenderBuilder {
+#[deprecated]
+pub type RTDDeleteChatMessagesBySenderBuilder = DeleteChatMessagesBySenderBuilder;
+
+impl DeleteChatMessagesBySenderBuilder {
     pub fn build(&self) -> DeleteChatMessagesBySender {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<DeleteChatMessagesBySender> for DeleteChatMessagesBySender {
     }
 }
 
-impl AsRef<DeleteChatMessagesBySender> for RTDDeleteChatMessagesBySenderBuilder {
+impl AsRef<DeleteChatMessagesBySender> for DeleteChatMessagesBySenderBuilder {
     fn as_ref(&self) -> &DeleteChatMessagesBySender {
         &self.inner
     }

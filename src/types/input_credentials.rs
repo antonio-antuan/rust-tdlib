@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for InputCredentials {
 }
 
 impl InputCredentials {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -102,14 +102,14 @@ impl RObject for InputCredentialsApplePay {
 impl TDInputCredentials for InputCredentialsApplePay {}
 
 impl InputCredentialsApplePay {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputCredentialsApplePayBuilder {
+    pub fn builder() -> InputCredentialsApplePayBuilder {
         let mut inner = InputCredentialsApplePay::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputCredentialsApplePayBuilder { inner }
+        InputCredentialsApplePayBuilder { inner }
     }
 
     pub fn data(&self) -> &String {
@@ -118,11 +118,14 @@ impl InputCredentialsApplePay {
 }
 
 #[doc(hidden)]
-pub struct RTDInputCredentialsApplePayBuilder {
+pub struct InputCredentialsApplePayBuilder {
     inner: InputCredentialsApplePay,
 }
 
-impl RTDInputCredentialsApplePayBuilder {
+#[deprecated]
+pub type RTDInputCredentialsApplePayBuilder = InputCredentialsApplePayBuilder;
+
+impl InputCredentialsApplePayBuilder {
     pub fn build(&self) -> InputCredentialsApplePay {
         self.inner.clone()
     }
@@ -139,7 +142,7 @@ impl AsRef<InputCredentialsApplePay> for InputCredentialsApplePay {
     }
 }
 
-impl AsRef<InputCredentialsApplePay> for RTDInputCredentialsApplePayBuilder {
+impl AsRef<InputCredentialsApplePay> for InputCredentialsApplePayBuilder {
     fn as_ref(&self) -> &InputCredentialsApplePay {
         &self.inner
     }
@@ -173,14 +176,14 @@ impl RObject for InputCredentialsGooglePay {
 impl TDInputCredentials for InputCredentialsGooglePay {}
 
 impl InputCredentialsGooglePay {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputCredentialsGooglePayBuilder {
+    pub fn builder() -> InputCredentialsGooglePayBuilder {
         let mut inner = InputCredentialsGooglePay::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputCredentialsGooglePayBuilder { inner }
+        InputCredentialsGooglePayBuilder { inner }
     }
 
     pub fn data(&self) -> &String {
@@ -189,11 +192,14 @@ impl InputCredentialsGooglePay {
 }
 
 #[doc(hidden)]
-pub struct RTDInputCredentialsGooglePayBuilder {
+pub struct InputCredentialsGooglePayBuilder {
     inner: InputCredentialsGooglePay,
 }
 
-impl RTDInputCredentialsGooglePayBuilder {
+#[deprecated]
+pub type RTDInputCredentialsGooglePayBuilder = InputCredentialsGooglePayBuilder;
+
+impl InputCredentialsGooglePayBuilder {
     pub fn build(&self) -> InputCredentialsGooglePay {
         self.inner.clone()
     }
@@ -210,7 +216,7 @@ impl AsRef<InputCredentialsGooglePay> for InputCredentialsGooglePay {
     }
 }
 
-impl AsRef<InputCredentialsGooglePay> for RTDInputCredentialsGooglePayBuilder {
+impl AsRef<InputCredentialsGooglePay> for InputCredentialsGooglePayBuilder {
     fn as_ref(&self) -> &InputCredentialsGooglePay {
         &self.inner
     }
@@ -248,14 +254,14 @@ impl RObject for InputCredentialsNew {
 impl TDInputCredentials for InputCredentialsNew {}
 
 impl InputCredentialsNew {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputCredentialsNewBuilder {
+    pub fn builder() -> InputCredentialsNewBuilder {
         let mut inner = InputCredentialsNew::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputCredentialsNewBuilder { inner }
+        InputCredentialsNewBuilder { inner }
     }
 
     pub fn data(&self) -> &String {
@@ -268,11 +274,14 @@ impl InputCredentialsNew {
 }
 
 #[doc(hidden)]
-pub struct RTDInputCredentialsNewBuilder {
+pub struct InputCredentialsNewBuilder {
     inner: InputCredentialsNew,
 }
 
-impl RTDInputCredentialsNewBuilder {
+#[deprecated]
+pub type RTDInputCredentialsNewBuilder = InputCredentialsNewBuilder;
+
+impl InputCredentialsNewBuilder {
     pub fn build(&self) -> InputCredentialsNew {
         self.inner.clone()
     }
@@ -294,7 +303,7 @@ impl AsRef<InputCredentialsNew> for InputCredentialsNew {
     }
 }
 
-impl AsRef<InputCredentialsNew> for RTDInputCredentialsNewBuilder {
+impl AsRef<InputCredentialsNew> for InputCredentialsNewBuilder {
     fn as_ref(&self) -> &InputCredentialsNew {
         &self.inner
     }
@@ -328,14 +337,14 @@ impl RObject for InputCredentialsSaved {
 impl TDInputCredentials for InputCredentialsSaved {}
 
 impl InputCredentialsSaved {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputCredentialsSavedBuilder {
+    pub fn builder() -> InputCredentialsSavedBuilder {
         let mut inner = InputCredentialsSaved::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputCredentialsSavedBuilder { inner }
+        InputCredentialsSavedBuilder { inner }
     }
 
     pub fn saved_credentials_id(&self) -> &String {
@@ -344,11 +353,14 @@ impl InputCredentialsSaved {
 }
 
 #[doc(hidden)]
-pub struct RTDInputCredentialsSavedBuilder {
+pub struct InputCredentialsSavedBuilder {
     inner: InputCredentialsSaved,
 }
 
-impl RTDInputCredentialsSavedBuilder {
+#[deprecated]
+pub type RTDInputCredentialsSavedBuilder = InputCredentialsSavedBuilder;
+
+impl InputCredentialsSavedBuilder {
     pub fn build(&self) -> InputCredentialsSaved {
         self.inner.clone()
     }
@@ -365,7 +377,7 @@ impl AsRef<InputCredentialsSaved> for InputCredentialsSaved {
     }
 }
 
-impl AsRef<InputCredentialsSaved> for RTDInputCredentialsSavedBuilder {
+impl AsRef<InputCredentialsSaved> for InputCredentialsSavedBuilder {
     fn as_ref(&self) -> &InputCredentialsSaved {
         &self.inner
     }

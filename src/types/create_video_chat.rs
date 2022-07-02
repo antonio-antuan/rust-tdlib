@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for CreateVideoChat {
 impl RFunction for CreateVideoChat {}
 
 impl CreateVideoChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateVideoChatBuilder {
+    pub fn builder() -> CreateVideoChatBuilder {
         let mut inner = CreateVideoChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createVideoChat".to_string();
 
-        RTDCreateVideoChatBuilder { inner }
+        CreateVideoChatBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl CreateVideoChat {
 }
 
 #[doc(hidden)]
-pub struct RTDCreateVideoChatBuilder {
+pub struct CreateVideoChatBuilder {
     inner: CreateVideoChat,
 }
 
-impl RTDCreateVideoChatBuilder {
+#[deprecated]
+pub type RTDCreateVideoChatBuilder = CreateVideoChatBuilder;
+
+impl CreateVideoChatBuilder {
     pub fn build(&self) -> CreateVideoChat {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<CreateVideoChat> for CreateVideoChat {
     }
 }
 
-impl AsRef<CreateVideoChat> for RTDCreateVideoChatBuilder {
+impl AsRef<CreateVideoChat> for CreateVideoChatBuilder {
     fn as_ref(&self) -> &CreateVideoChat {
         &self.inner
     }

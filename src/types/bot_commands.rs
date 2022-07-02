@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for BotCommands {
 }
 
 impl BotCommands {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandsBuilder {
+    pub fn builder() -> BotCommandsBuilder {
         let mut inner = BotCommands::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandsBuilder { inner }
+        BotCommandsBuilder { inner }
     }
 
     pub fn bot_user_id(&self) -> i64 {
@@ -52,11 +52,14 @@ impl BotCommands {
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandsBuilder {
+pub struct BotCommandsBuilder {
     inner: BotCommands,
 }
 
-impl RTDBotCommandsBuilder {
+#[deprecated]
+pub type RTDBotCommandsBuilder = BotCommandsBuilder;
+
+impl BotCommandsBuilder {
     pub fn build(&self) -> BotCommands {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<BotCommands> for BotCommands {
     }
 }
 
-impl AsRef<BotCommands> for RTDBotCommandsBuilder {
+impl AsRef<BotCommands> for BotCommandsBuilder {
     fn as_ref(&self) -> &BotCommands {
         &self.inner
     }

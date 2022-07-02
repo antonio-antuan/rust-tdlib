@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for TextParseMode {
 }
 
 impl TextParseMode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -88,23 +88,26 @@ impl RObject for TextParseModeHTML {
 impl TDTextParseMode for TextParseModeHTML {}
 
 impl TextParseModeHTML {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextParseModeHTMLBuilder {
+    pub fn builder() -> TextParseModeHTMLBuilder {
         let mut inner = TextParseModeHTML::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextParseModeHTMLBuilder { inner }
+        TextParseModeHTMLBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextParseModeHTMLBuilder {
+pub struct TextParseModeHTMLBuilder {
     inner: TextParseModeHTML,
 }
 
-impl RTDTextParseModeHTMLBuilder {
+#[deprecated]
+pub type RTDTextParseModeHTMLBuilder = TextParseModeHTMLBuilder;
+
+impl TextParseModeHTMLBuilder {
     pub fn build(&self) -> TextParseModeHTML {
         self.inner.clone()
     }
@@ -116,7 +119,7 @@ impl AsRef<TextParseModeHTML> for TextParseModeHTML {
     }
 }
 
-impl AsRef<TextParseModeHTML> for RTDTextParseModeHTMLBuilder {
+impl AsRef<TextParseModeHTML> for TextParseModeHTMLBuilder {
     fn as_ref(&self) -> &TextParseModeHTML {
         &self.inner
     }
@@ -150,14 +153,14 @@ impl RObject for TextParseModeMarkdown {
 impl TDTextParseMode for TextParseModeMarkdown {}
 
 impl TextParseModeMarkdown {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextParseModeMarkdownBuilder {
+    pub fn builder() -> TextParseModeMarkdownBuilder {
         let mut inner = TextParseModeMarkdown::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextParseModeMarkdownBuilder { inner }
+        TextParseModeMarkdownBuilder { inner }
     }
 
     pub fn version(&self) -> i32 {
@@ -166,11 +169,14 @@ impl TextParseModeMarkdown {
 }
 
 #[doc(hidden)]
-pub struct RTDTextParseModeMarkdownBuilder {
+pub struct TextParseModeMarkdownBuilder {
     inner: TextParseModeMarkdown,
 }
 
-impl RTDTextParseModeMarkdownBuilder {
+#[deprecated]
+pub type RTDTextParseModeMarkdownBuilder = TextParseModeMarkdownBuilder;
+
+impl TextParseModeMarkdownBuilder {
     pub fn build(&self) -> TextParseModeMarkdown {
         self.inner.clone()
     }
@@ -187,7 +193,7 @@ impl AsRef<TextParseModeMarkdown> for TextParseModeMarkdown {
     }
 }
 
-impl AsRef<TextParseModeMarkdown> for RTDTextParseModeMarkdownBuilder {
+impl AsRef<TextParseModeMarkdown> for TextParseModeMarkdownBuilder {
     fn as_ref(&self) -> &TextParseModeMarkdown {
         &self.inner
     }

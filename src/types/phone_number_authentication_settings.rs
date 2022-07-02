@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -44,14 +44,14 @@ impl RObject for PhoneNumberAuthenticationSettings {
 }
 
 impl PhoneNumberAuthenticationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPhoneNumberAuthenticationSettingsBuilder {
+    pub fn builder() -> PhoneNumberAuthenticationSettingsBuilder {
         let mut inner = PhoneNumberAuthenticationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPhoneNumberAuthenticationSettingsBuilder { inner }
+        PhoneNumberAuthenticationSettingsBuilder { inner }
     }
 
     pub fn allow_flash_call(&self) -> bool {
@@ -76,11 +76,14 @@ impl PhoneNumberAuthenticationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDPhoneNumberAuthenticationSettingsBuilder {
+pub struct PhoneNumberAuthenticationSettingsBuilder {
     inner: PhoneNumberAuthenticationSettings,
 }
 
-impl RTDPhoneNumberAuthenticationSettingsBuilder {
+#[deprecated]
+pub type RTDPhoneNumberAuthenticationSettingsBuilder = PhoneNumberAuthenticationSettingsBuilder;
+
+impl PhoneNumberAuthenticationSettingsBuilder {
     pub fn build(&self) -> PhoneNumberAuthenticationSettings {
         self.inner.clone()
     }
@@ -117,7 +120,7 @@ impl AsRef<PhoneNumberAuthenticationSettings> for PhoneNumberAuthenticationSetti
     }
 }
 
-impl AsRef<PhoneNumberAuthenticationSettings> for RTDPhoneNumberAuthenticationSettingsBuilder {
+impl AsRef<PhoneNumberAuthenticationSettings> for PhoneNumberAuthenticationSettingsBuilder {
     fn as_ref(&self) -> &PhoneNumberAuthenticationSettings {
         &self.inner
     }

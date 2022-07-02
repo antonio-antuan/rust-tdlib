@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for SendChatScreenshotTakenNotification {
 impl RFunction for SendChatScreenshotTakenNotification {}
 
 impl SendChatScreenshotTakenNotification {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendChatScreenshotTakenNotificationBuilder {
+    pub fn builder() -> SendChatScreenshotTakenNotificationBuilder {
         let mut inner = SendChatScreenshotTakenNotification::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendChatScreenshotTakenNotification".to_string();
 
-        RTDSendChatScreenshotTakenNotificationBuilder { inner }
+        SendChatScreenshotTakenNotificationBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl SendChatScreenshotTakenNotification {
 }
 
 #[doc(hidden)]
-pub struct RTDSendChatScreenshotTakenNotificationBuilder {
+pub struct SendChatScreenshotTakenNotificationBuilder {
     inner: SendChatScreenshotTakenNotification,
 }
 
-impl RTDSendChatScreenshotTakenNotificationBuilder {
+#[deprecated]
+pub type RTDSendChatScreenshotTakenNotificationBuilder = SendChatScreenshotTakenNotificationBuilder;
+
+impl SendChatScreenshotTakenNotificationBuilder {
     pub fn build(&self) -> SendChatScreenshotTakenNotification {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<SendChatScreenshotTakenNotification> for SendChatScreenshotTakenNotif
     }
 }
 
-impl AsRef<SendChatScreenshotTakenNotification> for RTDSendChatScreenshotTakenNotificationBuilder {
+impl AsRef<SendChatScreenshotTakenNotification> for SendChatScreenshotTakenNotificationBuilder {
     fn as_ref(&self) -> &SendChatScreenshotTakenNotification {
         &self.inner
     }

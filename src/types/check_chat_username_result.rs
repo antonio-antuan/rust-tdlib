@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -69,7 +69,7 @@ impl RObject for CheckChatUsernameResult {
 }
 
 impl CheckChatUsernameResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -108,23 +108,26 @@ impl RObject for CheckChatUsernameResultOk {
 impl TDCheckChatUsernameResult for CheckChatUsernameResultOk {}
 
 impl CheckChatUsernameResultOk {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckChatUsernameResultOkBuilder {
+    pub fn builder() -> CheckChatUsernameResultOkBuilder {
         let mut inner = CheckChatUsernameResultOk::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCheckChatUsernameResultOkBuilder { inner }
+        CheckChatUsernameResultOkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCheckChatUsernameResultOkBuilder {
+pub struct CheckChatUsernameResultOkBuilder {
     inner: CheckChatUsernameResultOk,
 }
 
-impl RTDCheckChatUsernameResultOkBuilder {
+#[deprecated]
+pub type RTDCheckChatUsernameResultOkBuilder = CheckChatUsernameResultOkBuilder;
+
+impl CheckChatUsernameResultOkBuilder {
     pub fn build(&self) -> CheckChatUsernameResultOk {
         self.inner.clone()
     }
@@ -136,7 +139,7 @@ impl AsRef<CheckChatUsernameResultOk> for CheckChatUsernameResultOk {
     }
 }
 
-impl AsRef<CheckChatUsernameResultOk> for RTDCheckChatUsernameResultOkBuilder {
+impl AsRef<CheckChatUsernameResultOk> for CheckChatUsernameResultOkBuilder {
     fn as_ref(&self) -> &CheckChatUsernameResultOk {
         &self.inner
     }
@@ -166,23 +169,27 @@ impl RObject for CheckChatUsernameResultPublicChatsTooMuch {
 impl TDCheckChatUsernameResult for CheckChatUsernameResultPublicChatsTooMuch {}
 
 impl CheckChatUsernameResultPublicChatsTooMuch {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckChatUsernameResultPublicChatsTooMuchBuilder {
+    pub fn builder() -> CheckChatUsernameResultPublicChatsTooMuchBuilder {
         let mut inner = CheckChatUsernameResultPublicChatsTooMuch::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCheckChatUsernameResultPublicChatsTooMuchBuilder { inner }
+        CheckChatUsernameResultPublicChatsTooMuchBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCheckChatUsernameResultPublicChatsTooMuchBuilder {
+pub struct CheckChatUsernameResultPublicChatsTooMuchBuilder {
     inner: CheckChatUsernameResultPublicChatsTooMuch,
 }
 
-impl RTDCheckChatUsernameResultPublicChatsTooMuchBuilder {
+#[deprecated]
+pub type RTDCheckChatUsernameResultPublicChatsTooMuchBuilder =
+    CheckChatUsernameResultPublicChatsTooMuchBuilder;
+
+impl CheckChatUsernameResultPublicChatsTooMuchBuilder {
     pub fn build(&self) -> CheckChatUsernameResultPublicChatsTooMuch {
         self.inner.clone()
     }
@@ -197,7 +204,7 @@ impl AsRef<CheckChatUsernameResultPublicChatsTooMuch>
 }
 
 impl AsRef<CheckChatUsernameResultPublicChatsTooMuch>
-    for RTDCheckChatUsernameResultPublicChatsTooMuchBuilder
+    for CheckChatUsernameResultPublicChatsTooMuchBuilder
 {
     fn as_ref(&self) -> &CheckChatUsernameResultPublicChatsTooMuch {
         &self.inner
@@ -228,23 +235,27 @@ impl RObject for CheckChatUsernameResultPublicGroupsUnavailable {
 impl TDCheckChatUsernameResult for CheckChatUsernameResultPublicGroupsUnavailable {}
 
 impl CheckChatUsernameResultPublicGroupsUnavailable {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckChatUsernameResultPublicGroupsUnavailableBuilder {
+    pub fn builder() -> CheckChatUsernameResultPublicGroupsUnavailableBuilder {
         let mut inner = CheckChatUsernameResultPublicGroupsUnavailable::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCheckChatUsernameResultPublicGroupsUnavailableBuilder { inner }
+        CheckChatUsernameResultPublicGroupsUnavailableBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCheckChatUsernameResultPublicGroupsUnavailableBuilder {
+pub struct CheckChatUsernameResultPublicGroupsUnavailableBuilder {
     inner: CheckChatUsernameResultPublicGroupsUnavailable,
 }
 
-impl RTDCheckChatUsernameResultPublicGroupsUnavailableBuilder {
+#[deprecated]
+pub type RTDCheckChatUsernameResultPublicGroupsUnavailableBuilder =
+    CheckChatUsernameResultPublicGroupsUnavailableBuilder;
+
+impl CheckChatUsernameResultPublicGroupsUnavailableBuilder {
     pub fn build(&self) -> CheckChatUsernameResultPublicGroupsUnavailable {
         self.inner.clone()
     }
@@ -259,7 +270,7 @@ impl AsRef<CheckChatUsernameResultPublicGroupsUnavailable>
 }
 
 impl AsRef<CheckChatUsernameResultPublicGroupsUnavailable>
-    for RTDCheckChatUsernameResultPublicGroupsUnavailableBuilder
+    for CheckChatUsernameResultPublicGroupsUnavailableBuilder
 {
     fn as_ref(&self) -> &CheckChatUsernameResultPublicGroupsUnavailable {
         &self.inner
@@ -290,23 +301,27 @@ impl RObject for CheckChatUsernameResultUsernameInvalid {
 impl TDCheckChatUsernameResult for CheckChatUsernameResultUsernameInvalid {}
 
 impl CheckChatUsernameResultUsernameInvalid {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckChatUsernameResultUsernameInvalidBuilder {
+    pub fn builder() -> CheckChatUsernameResultUsernameInvalidBuilder {
         let mut inner = CheckChatUsernameResultUsernameInvalid::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCheckChatUsernameResultUsernameInvalidBuilder { inner }
+        CheckChatUsernameResultUsernameInvalidBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCheckChatUsernameResultUsernameInvalidBuilder {
+pub struct CheckChatUsernameResultUsernameInvalidBuilder {
     inner: CheckChatUsernameResultUsernameInvalid,
 }
 
-impl RTDCheckChatUsernameResultUsernameInvalidBuilder {
+#[deprecated]
+pub type RTDCheckChatUsernameResultUsernameInvalidBuilder =
+    CheckChatUsernameResultUsernameInvalidBuilder;
+
+impl CheckChatUsernameResultUsernameInvalidBuilder {
     pub fn build(&self) -> CheckChatUsernameResultUsernameInvalid {
         self.inner.clone()
     }
@@ -319,7 +334,7 @@ impl AsRef<CheckChatUsernameResultUsernameInvalid> for CheckChatUsernameResultUs
 }
 
 impl AsRef<CheckChatUsernameResultUsernameInvalid>
-    for RTDCheckChatUsernameResultUsernameInvalidBuilder
+    for CheckChatUsernameResultUsernameInvalidBuilder
 {
     fn as_ref(&self) -> &CheckChatUsernameResultUsernameInvalid {
         &self.inner
@@ -350,23 +365,27 @@ impl RObject for CheckChatUsernameResultUsernameOccupied {
 impl TDCheckChatUsernameResult for CheckChatUsernameResultUsernameOccupied {}
 
 impl CheckChatUsernameResultUsernameOccupied {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckChatUsernameResultUsernameOccupiedBuilder {
+    pub fn builder() -> CheckChatUsernameResultUsernameOccupiedBuilder {
         let mut inner = CheckChatUsernameResultUsernameOccupied::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCheckChatUsernameResultUsernameOccupiedBuilder { inner }
+        CheckChatUsernameResultUsernameOccupiedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCheckChatUsernameResultUsernameOccupiedBuilder {
+pub struct CheckChatUsernameResultUsernameOccupiedBuilder {
     inner: CheckChatUsernameResultUsernameOccupied,
 }
 
-impl RTDCheckChatUsernameResultUsernameOccupiedBuilder {
+#[deprecated]
+pub type RTDCheckChatUsernameResultUsernameOccupiedBuilder =
+    CheckChatUsernameResultUsernameOccupiedBuilder;
+
+impl CheckChatUsernameResultUsernameOccupiedBuilder {
     pub fn build(&self) -> CheckChatUsernameResultUsernameOccupied {
         self.inner.clone()
     }
@@ -379,7 +398,7 @@ impl AsRef<CheckChatUsernameResultUsernameOccupied> for CheckChatUsernameResultU
 }
 
 impl AsRef<CheckChatUsernameResultUsernameOccupied>
-    for RTDCheckChatUsernameResultUsernameOccupiedBuilder
+    for CheckChatUsernameResultUsernameOccupiedBuilder
 {
     fn as_ref(&self) -> &CheckChatUsernameResultUsernameOccupied {
         &self.inner

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -45,16 +45,16 @@ impl RObject for EditMessageMedia {
 impl RFunction for EditMessageMedia {}
 
 impl EditMessageMedia {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditMessageMediaBuilder {
+    pub fn builder() -> EditMessageMediaBuilder {
         let mut inner = EditMessageMedia::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editMessageMedia".to_string();
 
-        RTDEditMessageMediaBuilder { inner }
+        EditMessageMediaBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -75,11 +75,14 @@ impl EditMessageMedia {
 }
 
 #[doc(hidden)]
-pub struct RTDEditMessageMediaBuilder {
+pub struct EditMessageMediaBuilder {
     inner: EditMessageMedia,
 }
 
-impl RTDEditMessageMediaBuilder {
+#[deprecated]
+pub type RTDEditMessageMediaBuilder = EditMessageMediaBuilder;
+
+impl EditMessageMediaBuilder {
     pub fn build(&self) -> EditMessageMedia {
         self.inner.clone()
     }
@@ -114,7 +117,7 @@ impl AsRef<EditMessageMedia> for EditMessageMedia {
     }
 }
 
-impl AsRef<EditMessageMedia> for RTDEditMessageMediaBuilder {
+impl AsRef<EditMessageMedia> for EditMessageMediaBuilder {
     fn as_ref(&self) -> &EditMessageMedia {
         &self.inner
     }

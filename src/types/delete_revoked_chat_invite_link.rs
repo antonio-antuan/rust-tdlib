@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for DeleteRevokedChatInviteLink {
 impl RFunction for DeleteRevokedChatInviteLink {}
 
 impl DeleteRevokedChatInviteLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteRevokedChatInviteLinkBuilder {
+    pub fn builder() -> DeleteRevokedChatInviteLinkBuilder {
         let mut inner = DeleteRevokedChatInviteLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteRevokedChatInviteLink".to_string();
 
-        RTDDeleteRevokedChatInviteLinkBuilder { inner }
+        DeleteRevokedChatInviteLinkBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl DeleteRevokedChatInviteLink {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteRevokedChatInviteLinkBuilder {
+pub struct DeleteRevokedChatInviteLinkBuilder {
     inner: DeleteRevokedChatInviteLink,
 }
 
-impl RTDDeleteRevokedChatInviteLinkBuilder {
+#[deprecated]
+pub type RTDDeleteRevokedChatInviteLinkBuilder = DeleteRevokedChatInviteLinkBuilder;
+
+impl DeleteRevokedChatInviteLinkBuilder {
     pub fn build(&self) -> DeleteRevokedChatInviteLink {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<DeleteRevokedChatInviteLink> for DeleteRevokedChatInviteLink {
     }
 }
 
-impl AsRef<DeleteRevokedChatInviteLink> for RTDDeleteRevokedChatInviteLinkBuilder {
+impl AsRef<DeleteRevokedChatInviteLink> for DeleteRevokedChatInviteLinkBuilder {
     fn as_ref(&self) -> &DeleteRevokedChatInviteLink {
         &self.inner
     }

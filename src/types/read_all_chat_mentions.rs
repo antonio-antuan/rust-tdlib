@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for ReadAllChatMentions {
 impl RFunction for ReadAllChatMentions {}
 
 impl ReadAllChatMentions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReadAllChatMentionsBuilder {
+    pub fn builder() -> ReadAllChatMentionsBuilder {
         let mut inner = ReadAllChatMentions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "readAllChatMentions".to_string();
 
-        RTDReadAllChatMentionsBuilder { inner }
+        ReadAllChatMentionsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl ReadAllChatMentions {
 }
 
 #[doc(hidden)]
-pub struct RTDReadAllChatMentionsBuilder {
+pub struct ReadAllChatMentionsBuilder {
     inner: ReadAllChatMentions,
 }
 
-impl RTDReadAllChatMentionsBuilder {
+#[deprecated]
+pub type RTDReadAllChatMentionsBuilder = ReadAllChatMentionsBuilder;
+
+impl ReadAllChatMentionsBuilder {
     pub fn build(&self) -> ReadAllChatMentions {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<ReadAllChatMentions> for ReadAllChatMentions {
     }
 }
 
-impl AsRef<ReadAllChatMentions> for RTDReadAllChatMentionsBuilder {
+impl AsRef<ReadAllChatMentions> for ReadAllChatMentionsBuilder {
     fn as_ref(&self) -> &ReadAllChatMentions {
         &self.inner
     }

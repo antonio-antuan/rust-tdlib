@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for RevokeChatInviteLink {
 impl RFunction for RevokeChatInviteLink {}
 
 impl RevokeChatInviteLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRevokeChatInviteLinkBuilder {
+    pub fn builder() -> RevokeChatInviteLinkBuilder {
         let mut inner = RevokeChatInviteLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "revokeChatInviteLink".to_string();
 
-        RTDRevokeChatInviteLinkBuilder { inner }
+        RevokeChatInviteLinkBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl RevokeChatInviteLink {
 }
 
 #[doc(hidden)]
-pub struct RTDRevokeChatInviteLinkBuilder {
+pub struct RevokeChatInviteLinkBuilder {
     inner: RevokeChatInviteLink,
 }
 
-impl RTDRevokeChatInviteLinkBuilder {
+#[deprecated]
+pub type RTDRevokeChatInviteLinkBuilder = RevokeChatInviteLinkBuilder;
+
+impl RevokeChatInviteLinkBuilder {
     pub fn build(&self) -> RevokeChatInviteLink {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<RevokeChatInviteLink> for RevokeChatInviteLink {
     }
 }
 
-impl AsRef<RevokeChatInviteLink> for RTDRevokeChatInviteLinkBuilder {
+impl AsRef<RevokeChatInviteLink> for RevokeChatInviteLinkBuilder {
     fn as_ref(&self) -> &RevokeChatInviteLink {
         &self.inner
     }

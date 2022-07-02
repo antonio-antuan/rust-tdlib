@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for SearchStickerSets {
 impl RFunction for SearchStickerSets {}
 
 impl SearchStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchStickerSetsBuilder {
+    pub fn builder() -> SearchStickerSetsBuilder {
         let mut inner = SearchStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchStickerSets".to_string();
 
-        RTDSearchStickerSetsBuilder { inner }
+        SearchStickerSetsBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -51,11 +51,14 @@ impl SearchStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchStickerSetsBuilder {
+pub struct SearchStickerSetsBuilder {
     inner: SearchStickerSets,
 }
 
-impl RTDSearchStickerSetsBuilder {
+#[deprecated]
+pub type RTDSearchStickerSetsBuilder = SearchStickerSetsBuilder;
+
+impl SearchStickerSetsBuilder {
     pub fn build(&self) -> SearchStickerSets {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<SearchStickerSets> for SearchStickerSets {
     }
 }
 
-impl AsRef<SearchStickerSets> for RTDSearchStickerSetsBuilder {
+impl AsRef<SearchStickerSets> for SearchStickerSetsBuilder {
     fn as_ref(&self) -> &SearchStickerSets {
         &self.inner
     }

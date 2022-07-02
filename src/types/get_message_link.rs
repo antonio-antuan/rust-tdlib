@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,16 +49,16 @@ impl RObject for GetMessageLink {
 impl RFunction for GetMessageLink {}
 
 impl GetMessageLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageLinkBuilder {
+    pub fn builder() -> GetMessageLinkBuilder {
         let mut inner = GetMessageLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageLink".to_string();
 
-        RTDGetMessageLinkBuilder { inner }
+        GetMessageLinkBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -83,11 +83,14 @@ impl GetMessageLink {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageLinkBuilder {
+pub struct GetMessageLinkBuilder {
     inner: GetMessageLink,
 }
 
-impl RTDGetMessageLinkBuilder {
+#[deprecated]
+pub type RTDGetMessageLinkBuilder = GetMessageLinkBuilder;
+
+impl GetMessageLinkBuilder {
     pub fn build(&self) -> GetMessageLink {
         self.inner.clone()
     }
@@ -124,7 +127,7 @@ impl AsRef<GetMessageLink> for GetMessageLink {
     }
 }
 
-impl AsRef<GetMessageLink> for RTDGetMessageLinkBuilder {
+impl AsRef<GetMessageLink> for GetMessageLinkBuilder {
     fn as_ref(&self) -> &GetMessageLink {
         &self.inner
     }

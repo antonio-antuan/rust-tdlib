@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -504,7 +504,7 @@ impl RObject for Update {
 }
 
 impl Update {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -547,14 +547,14 @@ impl RObject for UpdateActiveNotifications {
 impl TDUpdate for UpdateActiveNotifications {}
 
 impl UpdateActiveNotifications {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateActiveNotificationsBuilder {
+    pub fn builder() -> UpdateActiveNotificationsBuilder {
         let mut inner = UpdateActiveNotifications::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateActiveNotificationsBuilder { inner }
+        UpdateActiveNotificationsBuilder { inner }
     }
 
     pub fn groups(&self) -> &Vec<NotificationGroup> {
@@ -563,11 +563,14 @@ impl UpdateActiveNotifications {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateActiveNotificationsBuilder {
+pub struct UpdateActiveNotificationsBuilder {
     inner: UpdateActiveNotifications,
 }
 
-impl RTDUpdateActiveNotificationsBuilder {
+#[deprecated]
+pub type RTDUpdateActiveNotificationsBuilder = UpdateActiveNotificationsBuilder;
+
+impl UpdateActiveNotificationsBuilder {
     pub fn build(&self) -> UpdateActiveNotifications {
         self.inner.clone()
     }
@@ -584,7 +587,7 @@ impl AsRef<UpdateActiveNotifications> for UpdateActiveNotifications {
     }
 }
 
-impl AsRef<UpdateActiveNotifications> for RTDUpdateActiveNotificationsBuilder {
+impl AsRef<UpdateActiveNotifications> for UpdateActiveNotificationsBuilder {
     fn as_ref(&self) -> &UpdateActiveNotifications {
         &self.inner
     }
@@ -624,14 +627,14 @@ impl RObject for UpdateAnimatedEmojiMessageClicked {
 impl TDUpdate for UpdateAnimatedEmojiMessageClicked {}
 
 impl UpdateAnimatedEmojiMessageClicked {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateAnimatedEmojiMessageClickedBuilder {
+    pub fn builder() -> UpdateAnimatedEmojiMessageClickedBuilder {
         let mut inner = UpdateAnimatedEmojiMessageClicked::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateAnimatedEmojiMessageClickedBuilder { inner }
+        UpdateAnimatedEmojiMessageClickedBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -648,11 +651,14 @@ impl UpdateAnimatedEmojiMessageClicked {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateAnimatedEmojiMessageClickedBuilder {
+pub struct UpdateAnimatedEmojiMessageClickedBuilder {
     inner: UpdateAnimatedEmojiMessageClicked,
 }
 
-impl RTDUpdateAnimatedEmojiMessageClickedBuilder {
+#[deprecated]
+pub type RTDUpdateAnimatedEmojiMessageClickedBuilder = UpdateAnimatedEmojiMessageClickedBuilder;
+
+impl UpdateAnimatedEmojiMessageClickedBuilder {
     pub fn build(&self) -> UpdateAnimatedEmojiMessageClicked {
         self.inner.clone()
     }
@@ -679,7 +685,7 @@ impl AsRef<UpdateAnimatedEmojiMessageClicked> for UpdateAnimatedEmojiMessageClic
     }
 }
 
-impl AsRef<UpdateAnimatedEmojiMessageClicked> for RTDUpdateAnimatedEmojiMessageClickedBuilder {
+impl AsRef<UpdateAnimatedEmojiMessageClicked> for UpdateAnimatedEmojiMessageClickedBuilder {
     fn as_ref(&self) -> &UpdateAnimatedEmojiMessageClicked {
         &self.inner
     }
@@ -717,14 +723,14 @@ impl RObject for UpdateAnimationSearchParameters {
 impl TDUpdate for UpdateAnimationSearchParameters {}
 
 impl UpdateAnimationSearchParameters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateAnimationSearchParametersBuilder {
+    pub fn builder() -> UpdateAnimationSearchParametersBuilder {
         let mut inner = UpdateAnimationSearchParameters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateAnimationSearchParametersBuilder { inner }
+        UpdateAnimationSearchParametersBuilder { inner }
     }
 
     pub fn provider(&self) -> &String {
@@ -737,11 +743,14 @@ impl UpdateAnimationSearchParameters {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateAnimationSearchParametersBuilder {
+pub struct UpdateAnimationSearchParametersBuilder {
     inner: UpdateAnimationSearchParameters,
 }
 
-impl RTDUpdateAnimationSearchParametersBuilder {
+#[deprecated]
+pub type RTDUpdateAnimationSearchParametersBuilder = UpdateAnimationSearchParametersBuilder;
+
+impl UpdateAnimationSearchParametersBuilder {
     pub fn build(&self) -> UpdateAnimationSearchParameters {
         self.inner.clone()
     }
@@ -763,7 +772,7 @@ impl AsRef<UpdateAnimationSearchParameters> for UpdateAnimationSearchParameters 
     }
 }
 
-impl AsRef<UpdateAnimationSearchParameters> for RTDUpdateAnimationSearchParametersBuilder {
+impl AsRef<UpdateAnimationSearchParameters> for UpdateAnimationSearchParametersBuilder {
     fn as_ref(&self) -> &UpdateAnimationSearchParameters {
         &self.inner
     }
@@ -797,14 +806,14 @@ impl RObject for UpdateAuthorizationState {
 impl TDUpdate for UpdateAuthorizationState {}
 
 impl UpdateAuthorizationState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateAuthorizationStateBuilder {
+    pub fn builder() -> UpdateAuthorizationStateBuilder {
         let mut inner = UpdateAuthorizationState::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateAuthorizationStateBuilder { inner }
+        UpdateAuthorizationStateBuilder { inner }
     }
 
     pub fn authorization_state(&self) -> &AuthorizationState {
@@ -813,11 +822,14 @@ impl UpdateAuthorizationState {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateAuthorizationStateBuilder {
+pub struct UpdateAuthorizationStateBuilder {
     inner: UpdateAuthorizationState,
 }
 
-impl RTDUpdateAuthorizationStateBuilder {
+#[deprecated]
+pub type RTDUpdateAuthorizationStateBuilder = UpdateAuthorizationStateBuilder;
+
+impl UpdateAuthorizationStateBuilder {
     pub fn build(&self) -> UpdateAuthorizationState {
         self.inner.clone()
     }
@@ -837,7 +849,7 @@ impl AsRef<UpdateAuthorizationState> for UpdateAuthorizationState {
     }
 }
 
-impl AsRef<UpdateAuthorizationState> for RTDUpdateAuthorizationStateBuilder {
+impl AsRef<UpdateAuthorizationState> for UpdateAuthorizationStateBuilder {
     fn as_ref(&self) -> &UpdateAuthorizationState {
         &self.inner
     }
@@ -869,14 +881,14 @@ impl RObject for UpdateBasicGroup {
 impl TDUpdate for UpdateBasicGroup {}
 
 impl UpdateBasicGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateBasicGroupBuilder {
+    pub fn builder() -> UpdateBasicGroupBuilder {
         let mut inner = UpdateBasicGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateBasicGroupBuilder { inner }
+        UpdateBasicGroupBuilder { inner }
     }
 
     pub fn basic_group(&self) -> &BasicGroup {
@@ -885,11 +897,14 @@ impl UpdateBasicGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateBasicGroupBuilder {
+pub struct UpdateBasicGroupBuilder {
     inner: UpdateBasicGroup,
 }
 
-impl RTDUpdateBasicGroupBuilder {
+#[deprecated]
+pub type RTDUpdateBasicGroupBuilder = UpdateBasicGroupBuilder;
+
+impl UpdateBasicGroupBuilder {
     pub fn build(&self) -> UpdateBasicGroup {
         self.inner.clone()
     }
@@ -906,7 +921,7 @@ impl AsRef<UpdateBasicGroup> for UpdateBasicGroup {
     }
 }
 
-impl AsRef<UpdateBasicGroup> for RTDUpdateBasicGroupBuilder {
+impl AsRef<UpdateBasicGroup> for UpdateBasicGroupBuilder {
     fn as_ref(&self) -> &UpdateBasicGroup {
         &self.inner
     }
@@ -942,14 +957,14 @@ impl RObject for UpdateBasicGroupFullInfo {
 impl TDUpdate for UpdateBasicGroupFullInfo {}
 
 impl UpdateBasicGroupFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateBasicGroupFullInfoBuilder {
+    pub fn builder() -> UpdateBasicGroupFullInfoBuilder {
         let mut inner = UpdateBasicGroupFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateBasicGroupFullInfoBuilder { inner }
+        UpdateBasicGroupFullInfoBuilder { inner }
     }
 
     pub fn basic_group_id(&self) -> i64 {
@@ -962,11 +977,14 @@ impl UpdateBasicGroupFullInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateBasicGroupFullInfoBuilder {
+pub struct UpdateBasicGroupFullInfoBuilder {
     inner: UpdateBasicGroupFullInfo,
 }
 
-impl RTDUpdateBasicGroupFullInfoBuilder {
+#[deprecated]
+pub type RTDUpdateBasicGroupFullInfoBuilder = UpdateBasicGroupFullInfoBuilder;
+
+impl UpdateBasicGroupFullInfoBuilder {
     pub fn build(&self) -> UpdateBasicGroupFullInfo {
         self.inner.clone()
     }
@@ -991,7 +1009,7 @@ impl AsRef<UpdateBasicGroupFullInfo> for UpdateBasicGroupFullInfo {
     }
 }
 
-impl AsRef<UpdateBasicGroupFullInfo> for RTDUpdateBasicGroupFullInfoBuilder {
+impl AsRef<UpdateBasicGroupFullInfo> for UpdateBasicGroupFullInfoBuilder {
     fn as_ref(&self) -> &UpdateBasicGroupFullInfo {
         &self.inner
     }
@@ -1023,14 +1041,14 @@ impl RObject for UpdateCall {
 impl TDUpdate for UpdateCall {}
 
 impl UpdateCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateCallBuilder {
+    pub fn builder() -> UpdateCallBuilder {
         let mut inner = UpdateCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateCallBuilder { inner }
+        UpdateCallBuilder { inner }
     }
 
     pub fn call(&self) -> &Call {
@@ -1039,11 +1057,14 @@ impl UpdateCall {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateCallBuilder {
+pub struct UpdateCallBuilder {
     inner: UpdateCall,
 }
 
-impl RTDUpdateCallBuilder {
+#[deprecated]
+pub type RTDUpdateCallBuilder = UpdateCallBuilder;
+
+impl UpdateCallBuilder {
     pub fn build(&self) -> UpdateCall {
         self.inner.clone()
     }
@@ -1060,7 +1081,7 @@ impl AsRef<UpdateCall> for UpdateCall {
     }
 }
 
-impl AsRef<UpdateCall> for RTDUpdateCallBuilder {
+impl AsRef<UpdateCall> for UpdateCallBuilder {
     fn as_ref(&self) -> &UpdateCall {
         &self.inner
     }
@@ -1106,14 +1127,14 @@ impl RObject for UpdateChatAction {
 impl TDUpdate for UpdateChatAction {}
 
 impl UpdateChatAction {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatActionBuilder {
+    pub fn builder() -> UpdateChatActionBuilder {
         let mut inner = UpdateChatAction::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatActionBuilder { inner }
+        UpdateChatActionBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1134,11 +1155,14 @@ impl UpdateChatAction {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatActionBuilder {
+pub struct UpdateChatActionBuilder {
     inner: UpdateChatAction,
 }
 
-impl RTDUpdateChatActionBuilder {
+#[deprecated]
+pub type RTDUpdateChatActionBuilder = UpdateChatActionBuilder;
+
+impl UpdateChatActionBuilder {
     pub fn build(&self) -> UpdateChatAction {
         self.inner.clone()
     }
@@ -1170,7 +1194,7 @@ impl AsRef<UpdateChatAction> for UpdateChatAction {
     }
 }
 
-impl AsRef<UpdateChatAction> for RTDUpdateChatActionBuilder {
+impl AsRef<UpdateChatAction> for UpdateChatActionBuilder {
     fn as_ref(&self) -> &UpdateChatAction {
         &self.inner
     }
@@ -1206,14 +1230,14 @@ impl RObject for UpdateChatActionBar {
 impl TDUpdate for UpdateChatActionBar {}
 
 impl UpdateChatActionBar {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatActionBarBuilder {
+    pub fn builder() -> UpdateChatActionBarBuilder {
         let mut inner = UpdateChatActionBar::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatActionBarBuilder { inner }
+        UpdateChatActionBarBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1226,11 +1250,14 @@ impl UpdateChatActionBar {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatActionBarBuilder {
+pub struct UpdateChatActionBarBuilder {
     inner: UpdateChatActionBar,
 }
 
-impl RTDUpdateChatActionBarBuilder {
+#[deprecated]
+pub type RTDUpdateChatActionBarBuilder = UpdateChatActionBarBuilder;
+
+impl UpdateChatActionBarBuilder {
     pub fn build(&self) -> UpdateChatActionBar {
         self.inner.clone()
     }
@@ -1252,7 +1279,7 @@ impl AsRef<UpdateChatActionBar> for UpdateChatActionBar {
     }
 }
 
-impl AsRef<UpdateChatActionBar> for RTDUpdateChatActionBarBuilder {
+impl AsRef<UpdateChatActionBar> for UpdateChatActionBarBuilder {
     fn as_ref(&self) -> &UpdateChatActionBar {
         &self.inner
     }
@@ -1290,14 +1317,14 @@ impl RObject for UpdateChatDefaultDisableNotification {
 impl TDUpdate for UpdateChatDefaultDisableNotification {}
 
 impl UpdateChatDefaultDisableNotification {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatDefaultDisableNotificationBuilder {
+    pub fn builder() -> UpdateChatDefaultDisableNotificationBuilder {
         let mut inner = UpdateChatDefaultDisableNotification::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatDefaultDisableNotificationBuilder { inner }
+        UpdateChatDefaultDisableNotificationBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1310,11 +1337,15 @@ impl UpdateChatDefaultDisableNotification {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatDefaultDisableNotificationBuilder {
+pub struct UpdateChatDefaultDisableNotificationBuilder {
     inner: UpdateChatDefaultDisableNotification,
 }
 
-impl RTDUpdateChatDefaultDisableNotificationBuilder {
+#[deprecated]
+pub type RTDUpdateChatDefaultDisableNotificationBuilder =
+    UpdateChatDefaultDisableNotificationBuilder;
+
+impl UpdateChatDefaultDisableNotificationBuilder {
     pub fn build(&self) -> UpdateChatDefaultDisableNotification {
         self.inner.clone()
     }
@@ -1339,9 +1370,7 @@ impl AsRef<UpdateChatDefaultDisableNotification> for UpdateChatDefaultDisableNot
     }
 }
 
-impl AsRef<UpdateChatDefaultDisableNotification>
-    for RTDUpdateChatDefaultDisableNotificationBuilder
-{
+impl AsRef<UpdateChatDefaultDisableNotification> for UpdateChatDefaultDisableNotificationBuilder {
     fn as_ref(&self) -> &UpdateChatDefaultDisableNotification {
         &self.inner
     }
@@ -1381,14 +1410,14 @@ impl RObject for UpdateChatDraftMessage {
 impl TDUpdate for UpdateChatDraftMessage {}
 
 impl UpdateChatDraftMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatDraftMessageBuilder {
+    pub fn builder() -> UpdateChatDraftMessageBuilder {
         let mut inner = UpdateChatDraftMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatDraftMessageBuilder { inner }
+        UpdateChatDraftMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1405,11 +1434,14 @@ impl UpdateChatDraftMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatDraftMessageBuilder {
+pub struct UpdateChatDraftMessageBuilder {
     inner: UpdateChatDraftMessage,
 }
 
-impl RTDUpdateChatDraftMessageBuilder {
+#[deprecated]
+pub type RTDUpdateChatDraftMessageBuilder = UpdateChatDraftMessageBuilder;
+
+impl UpdateChatDraftMessageBuilder {
     pub fn build(&self) -> UpdateChatDraftMessage {
         self.inner.clone()
     }
@@ -1436,7 +1468,7 @@ impl AsRef<UpdateChatDraftMessage> for UpdateChatDraftMessage {
     }
 }
 
-impl AsRef<UpdateChatDraftMessage> for RTDUpdateChatDraftMessageBuilder {
+impl AsRef<UpdateChatDraftMessage> for UpdateChatDraftMessageBuilder {
     fn as_ref(&self) -> &UpdateChatDraftMessage {
         &self.inner
     }
@@ -1470,14 +1502,14 @@ impl RObject for UpdateChatFilters {
 impl TDUpdate for UpdateChatFilters {}
 
 impl UpdateChatFilters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatFiltersBuilder {
+    pub fn builder() -> UpdateChatFiltersBuilder {
         let mut inner = UpdateChatFilters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatFiltersBuilder { inner }
+        UpdateChatFiltersBuilder { inner }
     }
 
     pub fn chat_filters(&self) -> &Vec<ChatFilterInfo> {
@@ -1486,11 +1518,14 @@ impl UpdateChatFilters {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatFiltersBuilder {
+pub struct UpdateChatFiltersBuilder {
     inner: UpdateChatFilters,
 }
 
-impl RTDUpdateChatFiltersBuilder {
+#[deprecated]
+pub type RTDUpdateChatFiltersBuilder = UpdateChatFiltersBuilder;
+
+impl UpdateChatFiltersBuilder {
     pub fn build(&self) -> UpdateChatFilters {
         self.inner.clone()
     }
@@ -1507,7 +1542,7 @@ impl AsRef<UpdateChatFilters> for UpdateChatFilters {
     }
 }
 
-impl AsRef<UpdateChatFilters> for RTDUpdateChatFiltersBuilder {
+impl AsRef<UpdateChatFilters> for UpdateChatFiltersBuilder {
     fn as_ref(&self) -> &UpdateChatFilters {
         &self.inner
     }
@@ -1545,14 +1580,14 @@ impl RObject for UpdateChatHasProtectedContent {
 impl TDUpdate for UpdateChatHasProtectedContent {}
 
 impl UpdateChatHasProtectedContent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatHasProtectedContentBuilder {
+    pub fn builder() -> UpdateChatHasProtectedContentBuilder {
         let mut inner = UpdateChatHasProtectedContent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatHasProtectedContentBuilder { inner }
+        UpdateChatHasProtectedContentBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1565,11 +1600,14 @@ impl UpdateChatHasProtectedContent {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatHasProtectedContentBuilder {
+pub struct UpdateChatHasProtectedContentBuilder {
     inner: UpdateChatHasProtectedContent,
 }
 
-impl RTDUpdateChatHasProtectedContentBuilder {
+#[deprecated]
+pub type RTDUpdateChatHasProtectedContentBuilder = UpdateChatHasProtectedContentBuilder;
+
+impl UpdateChatHasProtectedContentBuilder {
     pub fn build(&self) -> UpdateChatHasProtectedContent {
         self.inner.clone()
     }
@@ -1591,7 +1629,7 @@ impl AsRef<UpdateChatHasProtectedContent> for UpdateChatHasProtectedContent {
     }
 }
 
-impl AsRef<UpdateChatHasProtectedContent> for RTDUpdateChatHasProtectedContentBuilder {
+impl AsRef<UpdateChatHasProtectedContent> for UpdateChatHasProtectedContentBuilder {
     fn as_ref(&self) -> &UpdateChatHasProtectedContent {
         &self.inner
     }
@@ -1629,14 +1667,14 @@ impl RObject for UpdateChatHasScheduledMessages {
 impl TDUpdate for UpdateChatHasScheduledMessages {}
 
 impl UpdateChatHasScheduledMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatHasScheduledMessagesBuilder {
+    pub fn builder() -> UpdateChatHasScheduledMessagesBuilder {
         let mut inner = UpdateChatHasScheduledMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatHasScheduledMessagesBuilder { inner }
+        UpdateChatHasScheduledMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1649,11 +1687,14 @@ impl UpdateChatHasScheduledMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatHasScheduledMessagesBuilder {
+pub struct UpdateChatHasScheduledMessagesBuilder {
     inner: UpdateChatHasScheduledMessages,
 }
 
-impl RTDUpdateChatHasScheduledMessagesBuilder {
+#[deprecated]
+pub type RTDUpdateChatHasScheduledMessagesBuilder = UpdateChatHasScheduledMessagesBuilder;
+
+impl UpdateChatHasScheduledMessagesBuilder {
     pub fn build(&self) -> UpdateChatHasScheduledMessages {
         self.inner.clone()
     }
@@ -1675,7 +1716,7 @@ impl AsRef<UpdateChatHasScheduledMessages> for UpdateChatHasScheduledMessages {
     }
 }
 
-impl AsRef<UpdateChatHasScheduledMessages> for RTDUpdateChatHasScheduledMessagesBuilder {
+impl AsRef<UpdateChatHasScheduledMessages> for UpdateChatHasScheduledMessagesBuilder {
     fn as_ref(&self) -> &UpdateChatHasScheduledMessages {
         &self.inner
     }
@@ -1713,14 +1754,14 @@ impl RObject for UpdateChatIsBlocked {
 impl TDUpdate for UpdateChatIsBlocked {}
 
 impl UpdateChatIsBlocked {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatIsBlockedBuilder {
+    pub fn builder() -> UpdateChatIsBlockedBuilder {
         let mut inner = UpdateChatIsBlocked::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatIsBlockedBuilder { inner }
+        UpdateChatIsBlockedBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1733,11 +1774,14 @@ impl UpdateChatIsBlocked {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatIsBlockedBuilder {
+pub struct UpdateChatIsBlockedBuilder {
     inner: UpdateChatIsBlocked,
 }
 
-impl RTDUpdateChatIsBlockedBuilder {
+#[deprecated]
+pub type RTDUpdateChatIsBlockedBuilder = UpdateChatIsBlockedBuilder;
+
+impl UpdateChatIsBlockedBuilder {
     pub fn build(&self) -> UpdateChatIsBlocked {
         self.inner.clone()
     }
@@ -1759,7 +1803,7 @@ impl AsRef<UpdateChatIsBlocked> for UpdateChatIsBlocked {
     }
 }
 
-impl AsRef<UpdateChatIsBlocked> for RTDUpdateChatIsBlockedBuilder {
+impl AsRef<UpdateChatIsBlocked> for UpdateChatIsBlockedBuilder {
     fn as_ref(&self) -> &UpdateChatIsBlocked {
         &self.inner
     }
@@ -1797,14 +1841,14 @@ impl RObject for UpdateChatIsMarkedAsUnread {
 impl TDUpdate for UpdateChatIsMarkedAsUnread {}
 
 impl UpdateChatIsMarkedAsUnread {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatIsMarkedAsUnreadBuilder {
+    pub fn builder() -> UpdateChatIsMarkedAsUnreadBuilder {
         let mut inner = UpdateChatIsMarkedAsUnread::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatIsMarkedAsUnreadBuilder { inner }
+        UpdateChatIsMarkedAsUnreadBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1817,11 +1861,14 @@ impl UpdateChatIsMarkedAsUnread {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatIsMarkedAsUnreadBuilder {
+pub struct UpdateChatIsMarkedAsUnreadBuilder {
     inner: UpdateChatIsMarkedAsUnread,
 }
 
-impl RTDUpdateChatIsMarkedAsUnreadBuilder {
+#[deprecated]
+pub type RTDUpdateChatIsMarkedAsUnreadBuilder = UpdateChatIsMarkedAsUnreadBuilder;
+
+impl UpdateChatIsMarkedAsUnreadBuilder {
     pub fn build(&self) -> UpdateChatIsMarkedAsUnread {
         self.inner.clone()
     }
@@ -1843,7 +1890,7 @@ impl AsRef<UpdateChatIsMarkedAsUnread> for UpdateChatIsMarkedAsUnread {
     }
 }
 
-impl AsRef<UpdateChatIsMarkedAsUnread> for RTDUpdateChatIsMarkedAsUnreadBuilder {
+impl AsRef<UpdateChatIsMarkedAsUnread> for UpdateChatIsMarkedAsUnreadBuilder {
     fn as_ref(&self) -> &UpdateChatIsMarkedAsUnread {
         &self.inner
     }
@@ -1883,14 +1930,14 @@ impl RObject for UpdateChatLastMessage {
 impl TDUpdate for UpdateChatLastMessage {}
 
 impl UpdateChatLastMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatLastMessageBuilder {
+    pub fn builder() -> UpdateChatLastMessageBuilder {
         let mut inner = UpdateChatLastMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatLastMessageBuilder { inner }
+        UpdateChatLastMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -1907,11 +1954,14 @@ impl UpdateChatLastMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatLastMessageBuilder {
+pub struct UpdateChatLastMessageBuilder {
     inner: UpdateChatLastMessage,
 }
 
-impl RTDUpdateChatLastMessageBuilder {
+#[deprecated]
+pub type RTDUpdateChatLastMessageBuilder = UpdateChatLastMessageBuilder;
+
+impl UpdateChatLastMessageBuilder {
     pub fn build(&self) -> UpdateChatLastMessage {
         self.inner.clone()
     }
@@ -1938,7 +1988,7 @@ impl AsRef<UpdateChatLastMessage> for UpdateChatLastMessage {
     }
 }
 
-impl AsRef<UpdateChatLastMessage> for RTDUpdateChatLastMessageBuilder {
+impl AsRef<UpdateChatLastMessage> for UpdateChatLastMessageBuilder {
     fn as_ref(&self) -> &UpdateChatLastMessage {
         &self.inner
     }
@@ -1986,14 +2036,14 @@ impl RObject for UpdateChatMember {
 impl TDUpdate for UpdateChatMember {}
 
 impl UpdateChatMember {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatMemberBuilder {
+    pub fn builder() -> UpdateChatMemberBuilder {
         let mut inner = UpdateChatMember::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatMemberBuilder { inner }
+        UpdateChatMemberBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2022,11 +2072,14 @@ impl UpdateChatMember {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatMemberBuilder {
+pub struct UpdateChatMemberBuilder {
     inner: UpdateChatMember,
 }
 
-impl RTDUpdateChatMemberBuilder {
+#[deprecated]
+pub type RTDUpdateChatMemberBuilder = UpdateChatMemberBuilder;
+
+impl UpdateChatMemberBuilder {
     pub fn build(&self) -> UpdateChatMember {
         self.inner.clone()
     }
@@ -2068,7 +2121,7 @@ impl AsRef<UpdateChatMember> for UpdateChatMember {
     }
 }
 
-impl AsRef<UpdateChatMember> for RTDUpdateChatMemberBuilder {
+impl AsRef<UpdateChatMember> for UpdateChatMemberBuilder {
     fn as_ref(&self) -> &UpdateChatMember {
         &self.inner
     }
@@ -2104,14 +2157,14 @@ impl RObject for UpdateChatMessageSender {
 impl TDUpdate for UpdateChatMessageSender {}
 
 impl UpdateChatMessageSender {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatMessageSenderBuilder {
+    pub fn builder() -> UpdateChatMessageSenderBuilder {
         let mut inner = UpdateChatMessageSender::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatMessageSenderBuilder { inner }
+        UpdateChatMessageSenderBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2124,11 +2177,14 @@ impl UpdateChatMessageSender {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatMessageSenderBuilder {
+pub struct UpdateChatMessageSenderBuilder {
     inner: UpdateChatMessageSender,
 }
 
-impl RTDUpdateChatMessageSenderBuilder {
+#[deprecated]
+pub type RTDUpdateChatMessageSenderBuilder = UpdateChatMessageSenderBuilder;
+
+impl UpdateChatMessageSenderBuilder {
     pub fn build(&self) -> UpdateChatMessageSender {
         self.inner.clone()
     }
@@ -2153,7 +2209,7 @@ impl AsRef<UpdateChatMessageSender> for UpdateChatMessageSender {
     }
 }
 
-impl AsRef<UpdateChatMessageSender> for RTDUpdateChatMessageSenderBuilder {
+impl AsRef<UpdateChatMessageSender> for UpdateChatMessageSenderBuilder {
     fn as_ref(&self) -> &UpdateChatMessageSender {
         &self.inner
     }
@@ -2191,14 +2247,14 @@ impl RObject for UpdateChatMessageTtl {
 impl TDUpdate for UpdateChatMessageTtl {}
 
 impl UpdateChatMessageTtl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatMessageTtlBuilder {
+    pub fn builder() -> UpdateChatMessageTtlBuilder {
         let mut inner = UpdateChatMessageTtl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatMessageTtlBuilder { inner }
+        UpdateChatMessageTtlBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2211,11 +2267,14 @@ impl UpdateChatMessageTtl {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatMessageTtlBuilder {
+pub struct UpdateChatMessageTtlBuilder {
     inner: UpdateChatMessageTtl,
 }
 
-impl RTDUpdateChatMessageTtlBuilder {
+#[deprecated]
+pub type RTDUpdateChatMessageTtlBuilder = UpdateChatMessageTtlBuilder;
+
+impl UpdateChatMessageTtlBuilder {
     pub fn build(&self) -> UpdateChatMessageTtl {
         self.inner.clone()
     }
@@ -2237,7 +2296,7 @@ impl AsRef<UpdateChatMessageTtl> for UpdateChatMessageTtl {
     }
 }
 
-impl AsRef<UpdateChatMessageTtl> for RTDUpdateChatMessageTtlBuilder {
+impl AsRef<UpdateChatMessageTtl> for UpdateChatMessageTtlBuilder {
     fn as_ref(&self) -> &UpdateChatMessageTtl {
         &self.inner
     }
@@ -2273,14 +2332,14 @@ impl RObject for UpdateChatNotificationSettings {
 impl TDUpdate for UpdateChatNotificationSettings {}
 
 impl UpdateChatNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatNotificationSettingsBuilder {
+    pub fn builder() -> UpdateChatNotificationSettingsBuilder {
         let mut inner = UpdateChatNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatNotificationSettingsBuilder { inner }
+        UpdateChatNotificationSettingsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2293,11 +2352,14 @@ impl UpdateChatNotificationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatNotificationSettingsBuilder {
+pub struct UpdateChatNotificationSettingsBuilder {
     inner: UpdateChatNotificationSettings,
 }
 
-impl RTDUpdateChatNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDUpdateChatNotificationSettingsBuilder = UpdateChatNotificationSettingsBuilder;
+
+impl UpdateChatNotificationSettingsBuilder {
     pub fn build(&self) -> UpdateChatNotificationSettings {
         self.inner.clone()
     }
@@ -2322,7 +2384,7 @@ impl AsRef<UpdateChatNotificationSettings> for UpdateChatNotificationSettings {
     }
 }
 
-impl AsRef<UpdateChatNotificationSettings> for RTDUpdateChatNotificationSettingsBuilder {
+impl AsRef<UpdateChatNotificationSettings> for UpdateChatNotificationSettingsBuilder {
     fn as_ref(&self) -> &UpdateChatNotificationSettings {
         &self.inner
     }
@@ -2360,14 +2422,14 @@ impl RObject for UpdateChatOnlineMemberCount {
 impl TDUpdate for UpdateChatOnlineMemberCount {}
 
 impl UpdateChatOnlineMemberCount {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatOnlineMemberCountBuilder {
+    pub fn builder() -> UpdateChatOnlineMemberCountBuilder {
         let mut inner = UpdateChatOnlineMemberCount::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatOnlineMemberCountBuilder { inner }
+        UpdateChatOnlineMemberCountBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2380,11 +2442,14 @@ impl UpdateChatOnlineMemberCount {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatOnlineMemberCountBuilder {
+pub struct UpdateChatOnlineMemberCountBuilder {
     inner: UpdateChatOnlineMemberCount,
 }
 
-impl RTDUpdateChatOnlineMemberCountBuilder {
+#[deprecated]
+pub type RTDUpdateChatOnlineMemberCountBuilder = UpdateChatOnlineMemberCountBuilder;
+
+impl UpdateChatOnlineMemberCountBuilder {
     pub fn build(&self) -> UpdateChatOnlineMemberCount {
         self.inner.clone()
     }
@@ -2406,7 +2471,7 @@ impl AsRef<UpdateChatOnlineMemberCount> for UpdateChatOnlineMemberCount {
     }
 }
 
-impl AsRef<UpdateChatOnlineMemberCount> for RTDUpdateChatOnlineMemberCountBuilder {
+impl AsRef<UpdateChatOnlineMemberCount> for UpdateChatOnlineMemberCountBuilder {
     fn as_ref(&self) -> &UpdateChatOnlineMemberCount {
         &self.inner
     }
@@ -2442,14 +2507,14 @@ impl RObject for UpdateChatPendingJoinRequests {
 impl TDUpdate for UpdateChatPendingJoinRequests {}
 
 impl UpdateChatPendingJoinRequests {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatPendingJoinRequestsBuilder {
+    pub fn builder() -> UpdateChatPendingJoinRequestsBuilder {
         let mut inner = UpdateChatPendingJoinRequests::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatPendingJoinRequestsBuilder { inner }
+        UpdateChatPendingJoinRequestsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2462,11 +2527,14 @@ impl UpdateChatPendingJoinRequests {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatPendingJoinRequestsBuilder {
+pub struct UpdateChatPendingJoinRequestsBuilder {
     inner: UpdateChatPendingJoinRequests,
 }
 
-impl RTDUpdateChatPendingJoinRequestsBuilder {
+#[deprecated]
+pub type RTDUpdateChatPendingJoinRequestsBuilder = UpdateChatPendingJoinRequestsBuilder;
+
+impl UpdateChatPendingJoinRequestsBuilder {
     pub fn build(&self) -> UpdateChatPendingJoinRequests {
         self.inner.clone()
     }
@@ -2491,7 +2559,7 @@ impl AsRef<UpdateChatPendingJoinRequests> for UpdateChatPendingJoinRequests {
     }
 }
 
-impl AsRef<UpdateChatPendingJoinRequests> for RTDUpdateChatPendingJoinRequestsBuilder {
+impl AsRef<UpdateChatPendingJoinRequests> for UpdateChatPendingJoinRequestsBuilder {
     fn as_ref(&self) -> &UpdateChatPendingJoinRequests {
         &self.inner
     }
@@ -2527,14 +2595,14 @@ impl RObject for UpdateChatPermissions {
 impl TDUpdate for UpdateChatPermissions {}
 
 impl UpdateChatPermissions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatPermissionsBuilder {
+    pub fn builder() -> UpdateChatPermissionsBuilder {
         let mut inner = UpdateChatPermissions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatPermissionsBuilder { inner }
+        UpdateChatPermissionsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2547,11 +2615,14 @@ impl UpdateChatPermissions {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatPermissionsBuilder {
+pub struct UpdateChatPermissionsBuilder {
     inner: UpdateChatPermissions,
 }
 
-impl RTDUpdateChatPermissionsBuilder {
+#[deprecated]
+pub type RTDUpdateChatPermissionsBuilder = UpdateChatPermissionsBuilder;
+
+impl UpdateChatPermissionsBuilder {
     pub fn build(&self) -> UpdateChatPermissions {
         self.inner.clone()
     }
@@ -2573,7 +2644,7 @@ impl AsRef<UpdateChatPermissions> for UpdateChatPermissions {
     }
 }
 
-impl AsRef<UpdateChatPermissions> for RTDUpdateChatPermissionsBuilder {
+impl AsRef<UpdateChatPermissions> for UpdateChatPermissionsBuilder {
     fn as_ref(&self) -> &UpdateChatPermissions {
         &self.inner
     }
@@ -2609,14 +2680,14 @@ impl RObject for UpdateChatPhoto {
 impl TDUpdate for UpdateChatPhoto {}
 
 impl UpdateChatPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatPhotoBuilder {
+    pub fn builder() -> UpdateChatPhotoBuilder {
         let mut inner = UpdateChatPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatPhotoBuilder { inner }
+        UpdateChatPhotoBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2629,11 +2700,14 @@ impl UpdateChatPhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatPhotoBuilder {
+pub struct UpdateChatPhotoBuilder {
     inner: UpdateChatPhoto,
 }
 
-impl RTDUpdateChatPhotoBuilder {
+#[deprecated]
+pub type RTDUpdateChatPhotoBuilder = UpdateChatPhotoBuilder;
+
+impl UpdateChatPhotoBuilder {
     pub fn build(&self) -> UpdateChatPhoto {
         self.inner.clone()
     }
@@ -2655,7 +2729,7 @@ impl AsRef<UpdateChatPhoto> for UpdateChatPhoto {
     }
 }
 
-impl AsRef<UpdateChatPhoto> for RTDUpdateChatPhotoBuilder {
+impl AsRef<UpdateChatPhoto> for UpdateChatPhotoBuilder {
     fn as_ref(&self) -> &UpdateChatPhoto {
         &self.inner
     }
@@ -2691,14 +2765,14 @@ impl RObject for UpdateChatPosition {
 impl TDUpdate for UpdateChatPosition {}
 
 impl UpdateChatPosition {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatPositionBuilder {
+    pub fn builder() -> UpdateChatPositionBuilder {
         let mut inner = UpdateChatPosition::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatPositionBuilder { inner }
+        UpdateChatPositionBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2711,11 +2785,14 @@ impl UpdateChatPosition {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatPositionBuilder {
+pub struct UpdateChatPositionBuilder {
     inner: UpdateChatPosition,
 }
 
-impl RTDUpdateChatPositionBuilder {
+#[deprecated]
+pub type RTDUpdateChatPositionBuilder = UpdateChatPositionBuilder;
+
+impl UpdateChatPositionBuilder {
     pub fn build(&self) -> UpdateChatPosition {
         self.inner.clone()
     }
@@ -2737,7 +2814,7 @@ impl AsRef<UpdateChatPosition> for UpdateChatPosition {
     }
 }
 
-impl AsRef<UpdateChatPosition> for RTDUpdateChatPositionBuilder {
+impl AsRef<UpdateChatPosition> for UpdateChatPositionBuilder {
     fn as_ref(&self) -> &UpdateChatPosition {
         &self.inner
     }
@@ -2779,14 +2856,14 @@ impl RObject for UpdateChatReadInbox {
 impl TDUpdate for UpdateChatReadInbox {}
 
 impl UpdateChatReadInbox {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatReadInboxBuilder {
+    pub fn builder() -> UpdateChatReadInboxBuilder {
         let mut inner = UpdateChatReadInbox::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatReadInboxBuilder { inner }
+        UpdateChatReadInboxBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2803,11 +2880,14 @@ impl UpdateChatReadInbox {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatReadInboxBuilder {
+pub struct UpdateChatReadInboxBuilder {
     inner: UpdateChatReadInbox,
 }
 
-impl RTDUpdateChatReadInboxBuilder {
+#[deprecated]
+pub type RTDUpdateChatReadInboxBuilder = UpdateChatReadInboxBuilder;
+
+impl UpdateChatReadInboxBuilder {
     pub fn build(&self) -> UpdateChatReadInbox {
         self.inner.clone()
     }
@@ -2834,7 +2914,7 @@ impl AsRef<UpdateChatReadInbox> for UpdateChatReadInbox {
     }
 }
 
-impl AsRef<UpdateChatReadInbox> for RTDUpdateChatReadInboxBuilder {
+impl AsRef<UpdateChatReadInbox> for UpdateChatReadInboxBuilder {
     fn as_ref(&self) -> &UpdateChatReadInbox {
         &self.inner
     }
@@ -2872,14 +2952,14 @@ impl RObject for UpdateChatReadOutbox {
 impl TDUpdate for UpdateChatReadOutbox {}
 
 impl UpdateChatReadOutbox {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatReadOutboxBuilder {
+    pub fn builder() -> UpdateChatReadOutboxBuilder {
         let mut inner = UpdateChatReadOutbox::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatReadOutboxBuilder { inner }
+        UpdateChatReadOutboxBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2892,11 +2972,14 @@ impl UpdateChatReadOutbox {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatReadOutboxBuilder {
+pub struct UpdateChatReadOutboxBuilder {
     inner: UpdateChatReadOutbox,
 }
 
-impl RTDUpdateChatReadOutboxBuilder {
+#[deprecated]
+pub type RTDUpdateChatReadOutboxBuilder = UpdateChatReadOutboxBuilder;
+
+impl UpdateChatReadOutboxBuilder {
     pub fn build(&self) -> UpdateChatReadOutbox {
         self.inner.clone()
     }
@@ -2918,7 +3001,7 @@ impl AsRef<UpdateChatReadOutbox> for UpdateChatReadOutbox {
     }
 }
 
-impl AsRef<UpdateChatReadOutbox> for RTDUpdateChatReadOutboxBuilder {
+impl AsRef<UpdateChatReadOutbox> for UpdateChatReadOutboxBuilder {
     fn as_ref(&self) -> &UpdateChatReadOutbox {
         &self.inner
     }
@@ -2956,14 +3039,14 @@ impl RObject for UpdateChatReplyMarkup {
 impl TDUpdate for UpdateChatReplyMarkup {}
 
 impl UpdateChatReplyMarkup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatReplyMarkupBuilder {
+    pub fn builder() -> UpdateChatReplyMarkupBuilder {
         let mut inner = UpdateChatReplyMarkup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatReplyMarkupBuilder { inner }
+        UpdateChatReplyMarkupBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -2976,11 +3059,14 @@ impl UpdateChatReplyMarkup {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatReplyMarkupBuilder {
+pub struct UpdateChatReplyMarkupBuilder {
     inner: UpdateChatReplyMarkup,
 }
 
-impl RTDUpdateChatReplyMarkupBuilder {
+#[deprecated]
+pub type RTDUpdateChatReplyMarkupBuilder = UpdateChatReplyMarkupBuilder;
+
+impl UpdateChatReplyMarkupBuilder {
     pub fn build(&self) -> UpdateChatReplyMarkup {
         self.inner.clone()
     }
@@ -3002,7 +3088,7 @@ impl AsRef<UpdateChatReplyMarkup> for UpdateChatReplyMarkup {
     }
 }
 
-impl AsRef<UpdateChatReplyMarkup> for RTDUpdateChatReplyMarkupBuilder {
+impl AsRef<UpdateChatReplyMarkup> for UpdateChatReplyMarkupBuilder {
     fn as_ref(&self) -> &UpdateChatReplyMarkup {
         &self.inner
     }
@@ -3040,14 +3126,14 @@ impl RObject for UpdateChatTheme {
 impl TDUpdate for UpdateChatTheme {}
 
 impl UpdateChatTheme {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatThemeBuilder {
+    pub fn builder() -> UpdateChatThemeBuilder {
         let mut inner = UpdateChatTheme::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatThemeBuilder { inner }
+        UpdateChatThemeBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -3060,11 +3146,14 @@ impl UpdateChatTheme {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatThemeBuilder {
+pub struct UpdateChatThemeBuilder {
     inner: UpdateChatTheme,
 }
 
-impl RTDUpdateChatThemeBuilder {
+#[deprecated]
+pub type RTDUpdateChatThemeBuilder = UpdateChatThemeBuilder;
+
+impl UpdateChatThemeBuilder {
     pub fn build(&self) -> UpdateChatTheme {
         self.inner.clone()
     }
@@ -3086,7 +3175,7 @@ impl AsRef<UpdateChatTheme> for UpdateChatTheme {
     }
 }
 
-impl AsRef<UpdateChatTheme> for RTDUpdateChatThemeBuilder {
+impl AsRef<UpdateChatTheme> for UpdateChatThemeBuilder {
     fn as_ref(&self) -> &UpdateChatTheme {
         &self.inner
     }
@@ -3120,14 +3209,14 @@ impl RObject for UpdateChatThemes {
 impl TDUpdate for UpdateChatThemes {}
 
 impl UpdateChatThemes {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatThemesBuilder {
+    pub fn builder() -> UpdateChatThemesBuilder {
         let mut inner = UpdateChatThemes::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatThemesBuilder { inner }
+        UpdateChatThemesBuilder { inner }
     }
 
     pub fn chat_themes(&self) -> &Vec<ChatTheme> {
@@ -3136,11 +3225,14 @@ impl UpdateChatThemes {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatThemesBuilder {
+pub struct UpdateChatThemesBuilder {
     inner: UpdateChatThemes,
 }
 
-impl RTDUpdateChatThemesBuilder {
+#[deprecated]
+pub type RTDUpdateChatThemesBuilder = UpdateChatThemesBuilder;
+
+impl UpdateChatThemesBuilder {
     pub fn build(&self) -> UpdateChatThemes {
         self.inner.clone()
     }
@@ -3157,7 +3249,7 @@ impl AsRef<UpdateChatThemes> for UpdateChatThemes {
     }
 }
 
-impl AsRef<UpdateChatThemes> for RTDUpdateChatThemesBuilder {
+impl AsRef<UpdateChatThemes> for UpdateChatThemesBuilder {
     fn as_ref(&self) -> &UpdateChatThemes {
         &self.inner
     }
@@ -3195,14 +3287,14 @@ impl RObject for UpdateChatTitle {
 impl TDUpdate for UpdateChatTitle {}
 
 impl UpdateChatTitle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatTitleBuilder {
+    pub fn builder() -> UpdateChatTitleBuilder {
         let mut inner = UpdateChatTitle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatTitleBuilder { inner }
+        UpdateChatTitleBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -3215,11 +3307,14 @@ impl UpdateChatTitle {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatTitleBuilder {
+pub struct UpdateChatTitleBuilder {
     inner: UpdateChatTitle,
 }
 
-impl RTDUpdateChatTitleBuilder {
+#[deprecated]
+pub type RTDUpdateChatTitleBuilder = UpdateChatTitleBuilder;
+
+impl UpdateChatTitleBuilder {
     pub fn build(&self) -> UpdateChatTitle {
         self.inner.clone()
     }
@@ -3241,7 +3336,7 @@ impl AsRef<UpdateChatTitle> for UpdateChatTitle {
     }
 }
 
-impl AsRef<UpdateChatTitle> for RTDUpdateChatTitleBuilder {
+impl AsRef<UpdateChatTitle> for UpdateChatTitleBuilder {
     fn as_ref(&self) -> &UpdateChatTitle {
         &self.inner
     }
@@ -3279,14 +3374,14 @@ impl RObject for UpdateChatUnreadMentionCount {
 impl TDUpdate for UpdateChatUnreadMentionCount {}
 
 impl UpdateChatUnreadMentionCount {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatUnreadMentionCountBuilder {
+    pub fn builder() -> UpdateChatUnreadMentionCountBuilder {
         let mut inner = UpdateChatUnreadMentionCount::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatUnreadMentionCountBuilder { inner }
+        UpdateChatUnreadMentionCountBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -3299,11 +3394,14 @@ impl UpdateChatUnreadMentionCount {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatUnreadMentionCountBuilder {
+pub struct UpdateChatUnreadMentionCountBuilder {
     inner: UpdateChatUnreadMentionCount,
 }
 
-impl RTDUpdateChatUnreadMentionCountBuilder {
+#[deprecated]
+pub type RTDUpdateChatUnreadMentionCountBuilder = UpdateChatUnreadMentionCountBuilder;
+
+impl UpdateChatUnreadMentionCountBuilder {
     pub fn build(&self) -> UpdateChatUnreadMentionCount {
         self.inner.clone()
     }
@@ -3325,7 +3423,7 @@ impl AsRef<UpdateChatUnreadMentionCount> for UpdateChatUnreadMentionCount {
     }
 }
 
-impl AsRef<UpdateChatUnreadMentionCount> for RTDUpdateChatUnreadMentionCountBuilder {
+impl AsRef<UpdateChatUnreadMentionCount> for UpdateChatUnreadMentionCountBuilder {
     fn as_ref(&self) -> &UpdateChatUnreadMentionCount {
         &self.inner
     }
@@ -3361,14 +3459,14 @@ impl RObject for UpdateChatVideoChat {
 impl TDUpdate for UpdateChatVideoChat {}
 
 impl UpdateChatVideoChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateChatVideoChatBuilder {
+    pub fn builder() -> UpdateChatVideoChatBuilder {
         let mut inner = UpdateChatVideoChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateChatVideoChatBuilder { inner }
+        UpdateChatVideoChatBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -3381,11 +3479,14 @@ impl UpdateChatVideoChat {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateChatVideoChatBuilder {
+pub struct UpdateChatVideoChatBuilder {
     inner: UpdateChatVideoChat,
 }
 
-impl RTDUpdateChatVideoChatBuilder {
+#[deprecated]
+pub type RTDUpdateChatVideoChatBuilder = UpdateChatVideoChatBuilder;
+
+impl UpdateChatVideoChatBuilder {
     pub fn build(&self) -> UpdateChatVideoChat {
         self.inner.clone()
     }
@@ -3407,7 +3508,7 @@ impl AsRef<UpdateChatVideoChat> for UpdateChatVideoChat {
     }
 }
 
-impl AsRef<UpdateChatVideoChat> for RTDUpdateChatVideoChatBuilder {
+impl AsRef<UpdateChatVideoChat> for UpdateChatVideoChatBuilder {
     fn as_ref(&self) -> &UpdateChatVideoChat {
         &self.inner
     }
@@ -3441,14 +3542,14 @@ impl RObject for UpdateConnectionState {
 impl TDUpdate for UpdateConnectionState {}
 
 impl UpdateConnectionState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateConnectionStateBuilder {
+    pub fn builder() -> UpdateConnectionStateBuilder {
         let mut inner = UpdateConnectionState::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateConnectionStateBuilder { inner }
+        UpdateConnectionStateBuilder { inner }
     }
 
     pub fn state(&self) -> &ConnectionState {
@@ -3457,11 +3558,14 @@ impl UpdateConnectionState {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateConnectionStateBuilder {
+pub struct UpdateConnectionStateBuilder {
     inner: UpdateConnectionState,
 }
 
-impl RTDUpdateConnectionStateBuilder {
+#[deprecated]
+pub type RTDUpdateConnectionStateBuilder = UpdateConnectionStateBuilder;
+
+impl UpdateConnectionStateBuilder {
     pub fn build(&self) -> UpdateConnectionState {
         self.inner.clone()
     }
@@ -3478,7 +3582,7 @@ impl AsRef<UpdateConnectionState> for UpdateConnectionState {
     }
 }
 
-impl AsRef<UpdateConnectionState> for RTDUpdateConnectionStateBuilder {
+impl AsRef<UpdateConnectionState> for UpdateConnectionStateBuilder {
     fn as_ref(&self) -> &UpdateConnectionState {
         &self.inner
     }
@@ -3524,14 +3628,14 @@ impl RObject for UpdateDeleteMessages {
 impl TDUpdate for UpdateDeleteMessages {}
 
 impl UpdateDeleteMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateDeleteMessagesBuilder {
+    pub fn builder() -> UpdateDeleteMessagesBuilder {
         let mut inner = UpdateDeleteMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateDeleteMessagesBuilder { inner }
+        UpdateDeleteMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -3552,11 +3656,14 @@ impl UpdateDeleteMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateDeleteMessagesBuilder {
+pub struct UpdateDeleteMessagesBuilder {
     inner: UpdateDeleteMessages,
 }
 
-impl RTDUpdateDeleteMessagesBuilder {
+#[deprecated]
+pub type RTDUpdateDeleteMessagesBuilder = UpdateDeleteMessagesBuilder;
+
+impl UpdateDeleteMessagesBuilder {
     pub fn build(&self) -> UpdateDeleteMessages {
         self.inner.clone()
     }
@@ -3588,7 +3695,7 @@ impl AsRef<UpdateDeleteMessages> for UpdateDeleteMessages {
     }
 }
 
-impl AsRef<UpdateDeleteMessages> for RTDUpdateDeleteMessagesBuilder {
+impl AsRef<UpdateDeleteMessages> for UpdateDeleteMessagesBuilder {
     fn as_ref(&self) -> &UpdateDeleteMessages {
         &self.inner
     }
@@ -3622,14 +3729,14 @@ impl RObject for UpdateDiceEmojis {
 impl TDUpdate for UpdateDiceEmojis {}
 
 impl UpdateDiceEmojis {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateDiceEmojisBuilder {
+    pub fn builder() -> UpdateDiceEmojisBuilder {
         let mut inner = UpdateDiceEmojis::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateDiceEmojisBuilder { inner }
+        UpdateDiceEmojisBuilder { inner }
     }
 
     pub fn emojis(&self) -> &Vec<String> {
@@ -3638,11 +3745,14 @@ impl UpdateDiceEmojis {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateDiceEmojisBuilder {
+pub struct UpdateDiceEmojisBuilder {
     inner: UpdateDiceEmojis,
 }
 
-impl RTDUpdateDiceEmojisBuilder {
+#[deprecated]
+pub type RTDUpdateDiceEmojisBuilder = UpdateDiceEmojisBuilder;
+
+impl UpdateDiceEmojisBuilder {
     pub fn build(&self) -> UpdateDiceEmojis {
         self.inner.clone()
     }
@@ -3659,7 +3769,7 @@ impl AsRef<UpdateDiceEmojis> for UpdateDiceEmojis {
     }
 }
 
-impl AsRef<UpdateDiceEmojis> for RTDUpdateDiceEmojisBuilder {
+impl AsRef<UpdateDiceEmojis> for UpdateDiceEmojisBuilder {
     fn as_ref(&self) -> &UpdateDiceEmojis {
         &self.inner
     }
@@ -3693,14 +3803,14 @@ impl RObject for UpdateFavoriteStickers {
 impl TDUpdate for UpdateFavoriteStickers {}
 
 impl UpdateFavoriteStickers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateFavoriteStickersBuilder {
+    pub fn builder() -> UpdateFavoriteStickersBuilder {
         let mut inner = UpdateFavoriteStickers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateFavoriteStickersBuilder { inner }
+        UpdateFavoriteStickersBuilder { inner }
     }
 
     pub fn sticker_ids(&self) -> &Vec<i32> {
@@ -3709,11 +3819,14 @@ impl UpdateFavoriteStickers {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateFavoriteStickersBuilder {
+pub struct UpdateFavoriteStickersBuilder {
     inner: UpdateFavoriteStickers,
 }
 
-impl RTDUpdateFavoriteStickersBuilder {
+#[deprecated]
+pub type RTDUpdateFavoriteStickersBuilder = UpdateFavoriteStickersBuilder;
+
+impl UpdateFavoriteStickersBuilder {
     pub fn build(&self) -> UpdateFavoriteStickers {
         self.inner.clone()
     }
@@ -3730,7 +3843,7 @@ impl AsRef<UpdateFavoriteStickers> for UpdateFavoriteStickers {
     }
 }
 
-impl AsRef<UpdateFavoriteStickers> for RTDUpdateFavoriteStickersBuilder {
+impl AsRef<UpdateFavoriteStickers> for UpdateFavoriteStickersBuilder {
     fn as_ref(&self) -> &UpdateFavoriteStickers {
         &self.inner
     }
@@ -3762,14 +3875,14 @@ impl RObject for UpdateFile {
 impl TDUpdate for UpdateFile {}
 
 impl UpdateFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateFileBuilder {
+    pub fn builder() -> UpdateFileBuilder {
         let mut inner = UpdateFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateFileBuilder { inner }
+        UpdateFileBuilder { inner }
     }
 
     pub fn file(&self) -> &File {
@@ -3778,11 +3891,14 @@ impl UpdateFile {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateFileBuilder {
+pub struct UpdateFileBuilder {
     inner: UpdateFile,
 }
 
-impl RTDUpdateFileBuilder {
+#[deprecated]
+pub type RTDUpdateFileBuilder = UpdateFileBuilder;
+
+impl UpdateFileBuilder {
     pub fn build(&self) -> UpdateFile {
         self.inner.clone()
     }
@@ -3799,7 +3915,7 @@ impl AsRef<UpdateFile> for UpdateFile {
     }
 }
 
-impl AsRef<UpdateFile> for RTDUpdateFileBuilder {
+impl AsRef<UpdateFile> for UpdateFileBuilder {
     fn as_ref(&self) -> &UpdateFile {
         &self.inner
     }
@@ -3846,14 +3962,14 @@ impl RObject for UpdateFileGenerationStart {
 impl TDUpdate for UpdateFileGenerationStart {}
 
 impl UpdateFileGenerationStart {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateFileGenerationStartBuilder {
+    pub fn builder() -> UpdateFileGenerationStartBuilder {
         let mut inner = UpdateFileGenerationStart::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateFileGenerationStartBuilder { inner }
+        UpdateFileGenerationStartBuilder { inner }
     }
 
     pub fn generation_id(&self) -> i64 {
@@ -3874,11 +3990,14 @@ impl UpdateFileGenerationStart {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateFileGenerationStartBuilder {
+pub struct UpdateFileGenerationStartBuilder {
     inner: UpdateFileGenerationStart,
 }
 
-impl RTDUpdateFileGenerationStartBuilder {
+#[deprecated]
+pub type RTDUpdateFileGenerationStartBuilder = UpdateFileGenerationStartBuilder;
+
+impl UpdateFileGenerationStartBuilder {
     pub fn build(&self) -> UpdateFileGenerationStart {
         self.inner.clone()
     }
@@ -3910,7 +4029,7 @@ impl AsRef<UpdateFileGenerationStart> for UpdateFileGenerationStart {
     }
 }
 
-impl AsRef<UpdateFileGenerationStart> for RTDUpdateFileGenerationStartBuilder {
+impl AsRef<UpdateFileGenerationStart> for UpdateFileGenerationStartBuilder {
     fn as_ref(&self) -> &UpdateFileGenerationStart {
         &self.inner
     }
@@ -3945,14 +4064,14 @@ impl RObject for UpdateFileGenerationStop {
 impl TDUpdate for UpdateFileGenerationStop {}
 
 impl UpdateFileGenerationStop {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateFileGenerationStopBuilder {
+    pub fn builder() -> UpdateFileGenerationStopBuilder {
         let mut inner = UpdateFileGenerationStop::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateFileGenerationStopBuilder { inner }
+        UpdateFileGenerationStopBuilder { inner }
     }
 
     pub fn generation_id(&self) -> i64 {
@@ -3961,11 +4080,14 @@ impl UpdateFileGenerationStop {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateFileGenerationStopBuilder {
+pub struct UpdateFileGenerationStopBuilder {
     inner: UpdateFileGenerationStop,
 }
 
-impl RTDUpdateFileGenerationStopBuilder {
+#[deprecated]
+pub type RTDUpdateFileGenerationStopBuilder = UpdateFileGenerationStopBuilder;
+
+impl UpdateFileGenerationStopBuilder {
     pub fn build(&self) -> UpdateFileGenerationStop {
         self.inner.clone()
     }
@@ -3982,7 +4104,7 @@ impl AsRef<UpdateFileGenerationStop> for UpdateFileGenerationStop {
     }
 }
 
-impl AsRef<UpdateFileGenerationStop> for RTDUpdateFileGenerationStopBuilder {
+impl AsRef<UpdateFileGenerationStop> for UpdateFileGenerationStopBuilder {
     fn as_ref(&self) -> &UpdateFileGenerationStop {
         &self.inner
     }
@@ -4014,14 +4136,14 @@ impl RObject for UpdateGroupCall {
 impl TDUpdate for UpdateGroupCall {}
 
 impl UpdateGroupCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateGroupCallBuilder {
+    pub fn builder() -> UpdateGroupCallBuilder {
         let mut inner = UpdateGroupCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateGroupCallBuilder { inner }
+        UpdateGroupCallBuilder { inner }
     }
 
     pub fn group_call(&self) -> &GroupCall {
@@ -4030,11 +4152,14 @@ impl UpdateGroupCall {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateGroupCallBuilder {
+pub struct UpdateGroupCallBuilder {
     inner: UpdateGroupCall,
 }
 
-impl RTDUpdateGroupCallBuilder {
+#[deprecated]
+pub type RTDUpdateGroupCallBuilder = UpdateGroupCallBuilder;
+
+impl UpdateGroupCallBuilder {
     pub fn build(&self) -> UpdateGroupCall {
         self.inner.clone()
     }
@@ -4051,7 +4176,7 @@ impl AsRef<UpdateGroupCall> for UpdateGroupCall {
     }
 }
 
-impl AsRef<UpdateGroupCall> for RTDUpdateGroupCallBuilder {
+impl AsRef<UpdateGroupCall> for UpdateGroupCallBuilder {
     fn as_ref(&self) -> &UpdateGroupCall {
         &self.inner
     }
@@ -4087,14 +4212,14 @@ impl RObject for UpdateGroupCallParticipant {
 impl TDUpdate for UpdateGroupCallParticipant {}
 
 impl UpdateGroupCallParticipant {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateGroupCallParticipantBuilder {
+    pub fn builder() -> UpdateGroupCallParticipantBuilder {
         let mut inner = UpdateGroupCallParticipant::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateGroupCallParticipantBuilder { inner }
+        UpdateGroupCallParticipantBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -4107,11 +4232,14 @@ impl UpdateGroupCallParticipant {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateGroupCallParticipantBuilder {
+pub struct UpdateGroupCallParticipantBuilder {
     inner: UpdateGroupCallParticipant,
 }
 
-impl RTDUpdateGroupCallParticipantBuilder {
+#[deprecated]
+pub type RTDUpdateGroupCallParticipantBuilder = UpdateGroupCallParticipantBuilder;
+
+impl UpdateGroupCallParticipantBuilder {
     pub fn build(&self) -> UpdateGroupCallParticipant {
         self.inner.clone()
     }
@@ -4133,7 +4261,7 @@ impl AsRef<UpdateGroupCallParticipant> for UpdateGroupCallParticipant {
     }
 }
 
-impl AsRef<UpdateGroupCallParticipant> for RTDUpdateGroupCallParticipantBuilder {
+impl AsRef<UpdateGroupCallParticipant> for UpdateGroupCallParticipantBuilder {
     fn as_ref(&self) -> &UpdateGroupCallParticipant {
         &self.inner
     }
@@ -4171,14 +4299,14 @@ impl RObject for UpdateHavePendingNotifications {
 impl TDUpdate for UpdateHavePendingNotifications {}
 
 impl UpdateHavePendingNotifications {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateHavePendingNotificationsBuilder {
+    pub fn builder() -> UpdateHavePendingNotificationsBuilder {
         let mut inner = UpdateHavePendingNotifications::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateHavePendingNotificationsBuilder { inner }
+        UpdateHavePendingNotificationsBuilder { inner }
     }
 
     pub fn have_delayed_notifications(&self) -> bool {
@@ -4191,11 +4319,14 @@ impl UpdateHavePendingNotifications {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateHavePendingNotificationsBuilder {
+pub struct UpdateHavePendingNotificationsBuilder {
     inner: UpdateHavePendingNotifications,
 }
 
-impl RTDUpdateHavePendingNotificationsBuilder {
+#[deprecated]
+pub type RTDUpdateHavePendingNotificationsBuilder = UpdateHavePendingNotificationsBuilder;
+
+impl UpdateHavePendingNotificationsBuilder {
     pub fn build(&self) -> UpdateHavePendingNotifications {
         self.inner.clone()
     }
@@ -4220,7 +4351,7 @@ impl AsRef<UpdateHavePendingNotifications> for UpdateHavePendingNotifications {
     }
 }
 
-impl AsRef<UpdateHavePendingNotifications> for RTDUpdateHavePendingNotificationsBuilder {
+impl AsRef<UpdateHavePendingNotifications> for UpdateHavePendingNotificationsBuilder {
     fn as_ref(&self) -> &UpdateHavePendingNotifications {
         &self.inner
     }
@@ -4259,14 +4390,14 @@ impl RObject for UpdateInstalledStickerSets {
 impl TDUpdate for UpdateInstalledStickerSets {}
 
 impl UpdateInstalledStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateInstalledStickerSetsBuilder {
+    pub fn builder() -> UpdateInstalledStickerSetsBuilder {
         let mut inner = UpdateInstalledStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateInstalledStickerSetsBuilder { inner }
+        UpdateInstalledStickerSetsBuilder { inner }
     }
 
     pub fn is_masks(&self) -> bool {
@@ -4279,11 +4410,14 @@ impl UpdateInstalledStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateInstalledStickerSetsBuilder {
+pub struct UpdateInstalledStickerSetsBuilder {
     inner: UpdateInstalledStickerSets,
 }
 
-impl RTDUpdateInstalledStickerSetsBuilder {
+#[deprecated]
+pub type RTDUpdateInstalledStickerSetsBuilder = UpdateInstalledStickerSetsBuilder;
+
+impl UpdateInstalledStickerSetsBuilder {
     pub fn build(&self) -> UpdateInstalledStickerSets {
         self.inner.clone()
     }
@@ -4305,7 +4439,7 @@ impl AsRef<UpdateInstalledStickerSets> for UpdateInstalledStickerSets {
     }
 }
 
-impl AsRef<UpdateInstalledStickerSets> for RTDUpdateInstalledStickerSetsBuilder {
+impl AsRef<UpdateInstalledStickerSets> for UpdateInstalledStickerSetsBuilder {
     fn as_ref(&self) -> &UpdateInstalledStickerSets {
         &self.inner
     }
@@ -4347,14 +4481,14 @@ impl RObject for UpdateLanguagePackStrings {
 impl TDUpdate for UpdateLanguagePackStrings {}
 
 impl UpdateLanguagePackStrings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateLanguagePackStringsBuilder {
+    pub fn builder() -> UpdateLanguagePackStringsBuilder {
         let mut inner = UpdateLanguagePackStrings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateLanguagePackStringsBuilder { inner }
+        UpdateLanguagePackStringsBuilder { inner }
     }
 
     pub fn localization_target(&self) -> &String {
@@ -4371,11 +4505,14 @@ impl UpdateLanguagePackStrings {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateLanguagePackStringsBuilder {
+pub struct UpdateLanguagePackStringsBuilder {
     inner: UpdateLanguagePackStrings,
 }
 
-impl RTDUpdateLanguagePackStringsBuilder {
+#[deprecated]
+pub type RTDUpdateLanguagePackStringsBuilder = UpdateLanguagePackStringsBuilder;
+
+impl UpdateLanguagePackStringsBuilder {
     pub fn build(&self) -> UpdateLanguagePackStrings {
         self.inner.clone()
     }
@@ -4402,7 +4539,7 @@ impl AsRef<UpdateLanguagePackStrings> for UpdateLanguagePackStrings {
     }
 }
 
-impl AsRef<UpdateLanguagePackStrings> for RTDUpdateLanguagePackStringsBuilder {
+impl AsRef<UpdateLanguagePackStrings> for UpdateLanguagePackStringsBuilder {
     fn as_ref(&self) -> &UpdateLanguagePackStrings {
         &self.inner
     }
@@ -4444,14 +4581,14 @@ impl RObject for UpdateMessageContent {
 impl TDUpdate for UpdateMessageContent {}
 
 impl UpdateMessageContent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageContentBuilder {
+    pub fn builder() -> UpdateMessageContentBuilder {
         let mut inner = UpdateMessageContent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageContentBuilder { inner }
+        UpdateMessageContentBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -4468,11 +4605,14 @@ impl UpdateMessageContent {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageContentBuilder {
+pub struct UpdateMessageContentBuilder {
     inner: UpdateMessageContent,
 }
 
-impl RTDUpdateMessageContentBuilder {
+#[deprecated]
+pub type RTDUpdateMessageContentBuilder = UpdateMessageContentBuilder;
+
+impl UpdateMessageContentBuilder {
     pub fn build(&self) -> UpdateMessageContent {
         self.inner.clone()
     }
@@ -4499,7 +4639,7 @@ impl AsRef<UpdateMessageContent> for UpdateMessageContent {
     }
 }
 
-impl AsRef<UpdateMessageContent> for RTDUpdateMessageContentBuilder {
+impl AsRef<UpdateMessageContent> for UpdateMessageContentBuilder {
     fn as_ref(&self) -> &UpdateMessageContent {
         &self.inner
     }
@@ -4537,14 +4677,14 @@ impl RObject for UpdateMessageContentOpened {
 impl TDUpdate for UpdateMessageContentOpened {}
 
 impl UpdateMessageContentOpened {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageContentOpenedBuilder {
+    pub fn builder() -> UpdateMessageContentOpenedBuilder {
         let mut inner = UpdateMessageContentOpened::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageContentOpenedBuilder { inner }
+        UpdateMessageContentOpenedBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -4557,11 +4697,14 @@ impl UpdateMessageContentOpened {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageContentOpenedBuilder {
+pub struct UpdateMessageContentOpenedBuilder {
     inner: UpdateMessageContentOpened,
 }
 
-impl RTDUpdateMessageContentOpenedBuilder {
+#[deprecated]
+pub type RTDUpdateMessageContentOpenedBuilder = UpdateMessageContentOpenedBuilder;
+
+impl UpdateMessageContentOpenedBuilder {
     pub fn build(&self) -> UpdateMessageContentOpened {
         self.inner.clone()
     }
@@ -4583,7 +4726,7 @@ impl AsRef<UpdateMessageContentOpened> for UpdateMessageContentOpened {
     }
 }
 
-impl AsRef<UpdateMessageContentOpened> for RTDUpdateMessageContentOpenedBuilder {
+impl AsRef<UpdateMessageContentOpened> for UpdateMessageContentOpenedBuilder {
     fn as_ref(&self) -> &UpdateMessageContentOpened {
         &self.inner
     }
@@ -4627,14 +4770,14 @@ impl RObject for UpdateMessageEdited {
 impl TDUpdate for UpdateMessageEdited {}
 
 impl UpdateMessageEdited {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageEditedBuilder {
+    pub fn builder() -> UpdateMessageEditedBuilder {
         let mut inner = UpdateMessageEdited::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageEditedBuilder { inner }
+        UpdateMessageEditedBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -4655,11 +4798,14 @@ impl UpdateMessageEdited {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageEditedBuilder {
+pub struct UpdateMessageEditedBuilder {
     inner: UpdateMessageEdited,
 }
 
-impl RTDUpdateMessageEditedBuilder {
+#[deprecated]
+pub type RTDUpdateMessageEditedBuilder = UpdateMessageEditedBuilder;
+
+impl UpdateMessageEditedBuilder {
     pub fn build(&self) -> UpdateMessageEdited {
         self.inner.clone()
     }
@@ -4691,7 +4837,7 @@ impl AsRef<UpdateMessageEdited> for UpdateMessageEdited {
     }
 }
 
-impl AsRef<UpdateMessageEdited> for RTDUpdateMessageEditedBuilder {
+impl AsRef<UpdateMessageEdited> for UpdateMessageEditedBuilder {
     fn as_ref(&self) -> &UpdateMessageEdited {
         &self.inner
     }
@@ -4731,14 +4877,14 @@ impl RObject for UpdateMessageInteractionInfo {
 impl TDUpdate for UpdateMessageInteractionInfo {}
 
 impl UpdateMessageInteractionInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageInteractionInfoBuilder {
+    pub fn builder() -> UpdateMessageInteractionInfoBuilder {
         let mut inner = UpdateMessageInteractionInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageInteractionInfoBuilder { inner }
+        UpdateMessageInteractionInfoBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -4755,11 +4901,14 @@ impl UpdateMessageInteractionInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageInteractionInfoBuilder {
+pub struct UpdateMessageInteractionInfoBuilder {
     inner: UpdateMessageInteractionInfo,
 }
 
-impl RTDUpdateMessageInteractionInfoBuilder {
+#[deprecated]
+pub type RTDUpdateMessageInteractionInfoBuilder = UpdateMessageInteractionInfoBuilder;
+
+impl UpdateMessageInteractionInfoBuilder {
     pub fn build(&self) -> UpdateMessageInteractionInfo {
         self.inner.clone()
     }
@@ -4789,7 +4938,7 @@ impl AsRef<UpdateMessageInteractionInfo> for UpdateMessageInteractionInfo {
     }
 }
 
-impl AsRef<UpdateMessageInteractionInfo> for RTDUpdateMessageInteractionInfoBuilder {
+impl AsRef<UpdateMessageInteractionInfo> for UpdateMessageInteractionInfoBuilder {
     fn as_ref(&self) -> &UpdateMessageInteractionInfo {
         &self.inner
     }
@@ -4831,14 +4980,14 @@ impl RObject for UpdateMessageIsPinned {
 impl TDUpdate for UpdateMessageIsPinned {}
 
 impl UpdateMessageIsPinned {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageIsPinnedBuilder {
+    pub fn builder() -> UpdateMessageIsPinnedBuilder {
         let mut inner = UpdateMessageIsPinned::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageIsPinnedBuilder { inner }
+        UpdateMessageIsPinnedBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -4855,11 +5004,14 @@ impl UpdateMessageIsPinned {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageIsPinnedBuilder {
+pub struct UpdateMessageIsPinnedBuilder {
     inner: UpdateMessageIsPinned,
 }
 
-impl RTDUpdateMessageIsPinnedBuilder {
+#[deprecated]
+pub type RTDUpdateMessageIsPinnedBuilder = UpdateMessageIsPinnedBuilder;
+
+impl UpdateMessageIsPinnedBuilder {
     pub fn build(&self) -> UpdateMessageIsPinned {
         self.inner.clone()
     }
@@ -4886,7 +5038,7 @@ impl AsRef<UpdateMessageIsPinned> for UpdateMessageIsPinned {
     }
 }
 
-impl AsRef<UpdateMessageIsPinned> for RTDUpdateMessageIsPinnedBuilder {
+impl AsRef<UpdateMessageIsPinned> for UpdateMessageIsPinnedBuilder {
     fn as_ref(&self) -> &UpdateMessageIsPinned {
         &self.inner
     }
@@ -4924,14 +5076,14 @@ impl RObject for UpdateMessageLiveLocationViewed {
 impl TDUpdate for UpdateMessageLiveLocationViewed {}
 
 impl UpdateMessageLiveLocationViewed {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageLiveLocationViewedBuilder {
+    pub fn builder() -> UpdateMessageLiveLocationViewedBuilder {
         let mut inner = UpdateMessageLiveLocationViewed::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageLiveLocationViewedBuilder { inner }
+        UpdateMessageLiveLocationViewedBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -4944,11 +5096,14 @@ impl UpdateMessageLiveLocationViewed {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageLiveLocationViewedBuilder {
+pub struct UpdateMessageLiveLocationViewedBuilder {
     inner: UpdateMessageLiveLocationViewed,
 }
 
-impl RTDUpdateMessageLiveLocationViewedBuilder {
+#[deprecated]
+pub type RTDUpdateMessageLiveLocationViewedBuilder = UpdateMessageLiveLocationViewedBuilder;
+
+impl UpdateMessageLiveLocationViewedBuilder {
     pub fn build(&self) -> UpdateMessageLiveLocationViewed {
         self.inner.clone()
     }
@@ -4970,7 +5125,7 @@ impl AsRef<UpdateMessageLiveLocationViewed> for UpdateMessageLiveLocationViewed 
     }
 }
 
-impl AsRef<UpdateMessageLiveLocationViewed> for RTDUpdateMessageLiveLocationViewedBuilder {
+impl AsRef<UpdateMessageLiveLocationViewed> for UpdateMessageLiveLocationViewedBuilder {
     fn as_ref(&self) -> &UpdateMessageLiveLocationViewed {
         &self.inner
     }
@@ -5012,14 +5167,14 @@ impl RObject for UpdateMessageMentionRead {
 impl TDUpdate for UpdateMessageMentionRead {}
 
 impl UpdateMessageMentionRead {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageMentionReadBuilder {
+    pub fn builder() -> UpdateMessageMentionReadBuilder {
         let mut inner = UpdateMessageMentionRead::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageMentionReadBuilder { inner }
+        UpdateMessageMentionReadBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -5036,11 +5191,14 @@ impl UpdateMessageMentionRead {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageMentionReadBuilder {
+pub struct UpdateMessageMentionReadBuilder {
     inner: UpdateMessageMentionRead,
 }
 
-impl RTDUpdateMessageMentionReadBuilder {
+#[deprecated]
+pub type RTDUpdateMessageMentionReadBuilder = UpdateMessageMentionReadBuilder;
+
+impl UpdateMessageMentionReadBuilder {
     pub fn build(&self) -> UpdateMessageMentionRead {
         self.inner.clone()
     }
@@ -5067,7 +5225,7 @@ impl AsRef<UpdateMessageMentionRead> for UpdateMessageMentionRead {
     }
 }
 
-impl AsRef<UpdateMessageMentionRead> for RTDUpdateMessageMentionReadBuilder {
+impl AsRef<UpdateMessageMentionRead> for UpdateMessageMentionReadBuilder {
     fn as_ref(&self) -> &UpdateMessageMentionRead {
         &self.inner
     }
@@ -5105,14 +5263,14 @@ impl RObject for UpdateMessageSendAcknowledged {
 impl TDUpdate for UpdateMessageSendAcknowledged {}
 
 impl UpdateMessageSendAcknowledged {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageSendAcknowledgedBuilder {
+    pub fn builder() -> UpdateMessageSendAcknowledgedBuilder {
         let mut inner = UpdateMessageSendAcknowledged::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageSendAcknowledgedBuilder { inner }
+        UpdateMessageSendAcknowledgedBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -5125,11 +5283,14 @@ impl UpdateMessageSendAcknowledged {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageSendAcknowledgedBuilder {
+pub struct UpdateMessageSendAcknowledgedBuilder {
     inner: UpdateMessageSendAcknowledged,
 }
 
-impl RTDUpdateMessageSendAcknowledgedBuilder {
+#[deprecated]
+pub type RTDUpdateMessageSendAcknowledgedBuilder = UpdateMessageSendAcknowledgedBuilder;
+
+impl UpdateMessageSendAcknowledgedBuilder {
     pub fn build(&self) -> UpdateMessageSendAcknowledged {
         self.inner.clone()
     }
@@ -5151,7 +5312,7 @@ impl AsRef<UpdateMessageSendAcknowledged> for UpdateMessageSendAcknowledged {
     }
 }
 
-impl AsRef<UpdateMessageSendAcknowledged> for RTDUpdateMessageSendAcknowledgedBuilder {
+impl AsRef<UpdateMessageSendAcknowledged> for UpdateMessageSendAcknowledgedBuilder {
     fn as_ref(&self) -> &UpdateMessageSendAcknowledged {
         &self.inner
     }
@@ -5195,14 +5356,14 @@ impl RObject for UpdateMessageSendFailed {
 impl TDUpdate for UpdateMessageSendFailed {}
 
 impl UpdateMessageSendFailed {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageSendFailedBuilder {
+    pub fn builder() -> UpdateMessageSendFailedBuilder {
         let mut inner = UpdateMessageSendFailed::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageSendFailedBuilder { inner }
+        UpdateMessageSendFailedBuilder { inner }
     }
 
     pub fn message(&self) -> &Message {
@@ -5223,11 +5384,14 @@ impl UpdateMessageSendFailed {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageSendFailedBuilder {
+pub struct UpdateMessageSendFailedBuilder {
     inner: UpdateMessageSendFailed,
 }
 
-impl RTDUpdateMessageSendFailedBuilder {
+#[deprecated]
+pub type RTDUpdateMessageSendFailedBuilder = UpdateMessageSendFailedBuilder;
+
+impl UpdateMessageSendFailedBuilder {
     pub fn build(&self) -> UpdateMessageSendFailed {
         self.inner.clone()
     }
@@ -5259,7 +5423,7 @@ impl AsRef<UpdateMessageSendFailed> for UpdateMessageSendFailed {
     }
 }
 
-impl AsRef<UpdateMessageSendFailed> for RTDUpdateMessageSendFailedBuilder {
+impl AsRef<UpdateMessageSendFailed> for UpdateMessageSendFailedBuilder {
     fn as_ref(&self) -> &UpdateMessageSendFailed {
         &self.inner
     }
@@ -5295,14 +5459,14 @@ impl RObject for UpdateMessageSendSucceeded {
 impl TDUpdate for UpdateMessageSendSucceeded {}
 
 impl UpdateMessageSendSucceeded {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateMessageSendSucceededBuilder {
+    pub fn builder() -> UpdateMessageSendSucceededBuilder {
         let mut inner = UpdateMessageSendSucceeded::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateMessageSendSucceededBuilder { inner }
+        UpdateMessageSendSucceededBuilder { inner }
     }
 
     pub fn message(&self) -> &Message {
@@ -5315,11 +5479,14 @@ impl UpdateMessageSendSucceeded {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateMessageSendSucceededBuilder {
+pub struct UpdateMessageSendSucceededBuilder {
     inner: UpdateMessageSendSucceeded,
 }
 
-impl RTDUpdateMessageSendSucceededBuilder {
+#[deprecated]
+pub type RTDUpdateMessageSendSucceededBuilder = UpdateMessageSendSucceededBuilder;
+
+impl UpdateMessageSendSucceededBuilder {
     pub fn build(&self) -> UpdateMessageSendSucceeded {
         self.inner.clone()
     }
@@ -5341,7 +5508,7 @@ impl AsRef<UpdateMessageSendSucceeded> for UpdateMessageSendSucceeded {
     }
 }
 
-impl AsRef<UpdateMessageSendSucceeded> for RTDUpdateMessageSendSucceededBuilder {
+impl AsRef<UpdateMessageSendSucceeded> for UpdateMessageSendSucceededBuilder {
     fn as_ref(&self) -> &UpdateMessageSendSucceeded {
         &self.inner
     }
@@ -5379,14 +5546,14 @@ impl RObject for UpdateNewCallSignalingData {
 impl TDUpdate for UpdateNewCallSignalingData {}
 
 impl UpdateNewCallSignalingData {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewCallSignalingDataBuilder {
+    pub fn builder() -> UpdateNewCallSignalingDataBuilder {
         let mut inner = UpdateNewCallSignalingData::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewCallSignalingDataBuilder { inner }
+        UpdateNewCallSignalingDataBuilder { inner }
     }
 
     pub fn call_id(&self) -> i32 {
@@ -5399,11 +5566,14 @@ impl UpdateNewCallSignalingData {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewCallSignalingDataBuilder {
+pub struct UpdateNewCallSignalingDataBuilder {
     inner: UpdateNewCallSignalingData,
 }
 
-impl RTDUpdateNewCallSignalingDataBuilder {
+#[deprecated]
+pub type RTDUpdateNewCallSignalingDataBuilder = UpdateNewCallSignalingDataBuilder;
+
+impl UpdateNewCallSignalingDataBuilder {
     pub fn build(&self) -> UpdateNewCallSignalingData {
         self.inner.clone()
     }
@@ -5425,7 +5595,7 @@ impl AsRef<UpdateNewCallSignalingData> for UpdateNewCallSignalingData {
     }
 }
 
-impl AsRef<UpdateNewCallSignalingData> for RTDUpdateNewCallSignalingDataBuilder {
+impl AsRef<UpdateNewCallSignalingData> for UpdateNewCallSignalingDataBuilder {
     fn as_ref(&self) -> &UpdateNewCallSignalingData {
         &self.inner
     }
@@ -5481,14 +5651,14 @@ impl RObject for UpdateNewCallbackQuery {
 impl TDUpdate for UpdateNewCallbackQuery {}
 
 impl UpdateNewCallbackQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewCallbackQueryBuilder {
+    pub fn builder() -> UpdateNewCallbackQueryBuilder {
         let mut inner = UpdateNewCallbackQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewCallbackQueryBuilder { inner }
+        UpdateNewCallbackQueryBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -5517,11 +5687,14 @@ impl UpdateNewCallbackQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewCallbackQueryBuilder {
+pub struct UpdateNewCallbackQueryBuilder {
     inner: UpdateNewCallbackQuery,
 }
 
-impl RTDUpdateNewCallbackQueryBuilder {
+#[deprecated]
+pub type RTDUpdateNewCallbackQueryBuilder = UpdateNewCallbackQueryBuilder;
+
+impl UpdateNewCallbackQueryBuilder {
     pub fn build(&self) -> UpdateNewCallbackQuery {
         self.inner.clone()
     }
@@ -5563,7 +5736,7 @@ impl AsRef<UpdateNewCallbackQuery> for UpdateNewCallbackQuery {
     }
 }
 
-impl AsRef<UpdateNewCallbackQuery> for RTDUpdateNewCallbackQueryBuilder {
+impl AsRef<UpdateNewCallbackQuery> for UpdateNewCallbackQueryBuilder {
     fn as_ref(&self) -> &UpdateNewCallbackQuery {
         &self.inner
     }
@@ -5595,14 +5768,14 @@ impl RObject for UpdateNewChat {
 impl TDUpdate for UpdateNewChat {}
 
 impl UpdateNewChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewChatBuilder {
+    pub fn builder() -> UpdateNewChatBuilder {
         let mut inner = UpdateNewChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewChatBuilder { inner }
+        UpdateNewChatBuilder { inner }
     }
 
     pub fn chat(&self) -> &Chat {
@@ -5611,11 +5784,14 @@ impl UpdateNewChat {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewChatBuilder {
+pub struct UpdateNewChatBuilder {
     inner: UpdateNewChat,
 }
 
-impl RTDUpdateNewChatBuilder {
+#[deprecated]
+pub type RTDUpdateNewChatBuilder = UpdateNewChatBuilder;
+
+impl UpdateNewChatBuilder {
     pub fn build(&self) -> UpdateNewChat {
         self.inner.clone()
     }
@@ -5632,7 +5808,7 @@ impl AsRef<UpdateNewChat> for UpdateNewChat {
     }
 }
 
-impl AsRef<UpdateNewChat> for RTDUpdateNewChatBuilder {
+impl AsRef<UpdateNewChat> for UpdateNewChatBuilder {
     fn as_ref(&self) -> &UpdateNewChat {
         &self.inner
     }
@@ -5670,14 +5846,14 @@ impl RObject for UpdateNewChatJoinRequest {
 impl TDUpdate for UpdateNewChatJoinRequest {}
 
 impl UpdateNewChatJoinRequest {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewChatJoinRequestBuilder {
+    pub fn builder() -> UpdateNewChatJoinRequestBuilder {
         let mut inner = UpdateNewChatJoinRequest::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewChatJoinRequestBuilder { inner }
+        UpdateNewChatJoinRequestBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -5694,11 +5870,14 @@ impl UpdateNewChatJoinRequest {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewChatJoinRequestBuilder {
+pub struct UpdateNewChatJoinRequestBuilder {
     inner: UpdateNewChatJoinRequest,
 }
 
-impl RTDUpdateNewChatJoinRequestBuilder {
+#[deprecated]
+pub type RTDUpdateNewChatJoinRequestBuilder = UpdateNewChatJoinRequestBuilder;
+
+impl UpdateNewChatJoinRequestBuilder {
     pub fn build(&self) -> UpdateNewChatJoinRequest {
         self.inner.clone()
     }
@@ -5725,7 +5904,7 @@ impl AsRef<UpdateNewChatJoinRequest> for UpdateNewChatJoinRequest {
     }
 }
 
-impl AsRef<UpdateNewChatJoinRequest> for RTDUpdateNewChatJoinRequestBuilder {
+impl AsRef<UpdateNewChatJoinRequest> for UpdateNewChatJoinRequestBuilder {
     fn as_ref(&self) -> &UpdateNewChatJoinRequest {
         &self.inner
     }
@@ -5773,14 +5952,14 @@ impl RObject for UpdateNewChosenInlineResult {
 impl TDUpdate for UpdateNewChosenInlineResult {}
 
 impl UpdateNewChosenInlineResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewChosenInlineResultBuilder {
+    pub fn builder() -> UpdateNewChosenInlineResultBuilder {
         let mut inner = UpdateNewChosenInlineResult::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewChosenInlineResultBuilder { inner }
+        UpdateNewChosenInlineResultBuilder { inner }
     }
 
     pub fn sender_user_id(&self) -> i64 {
@@ -5805,11 +5984,14 @@ impl UpdateNewChosenInlineResult {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewChosenInlineResultBuilder {
+pub struct UpdateNewChosenInlineResultBuilder {
     inner: UpdateNewChosenInlineResult,
 }
 
-impl RTDUpdateNewChosenInlineResultBuilder {
+#[deprecated]
+pub type RTDUpdateNewChosenInlineResultBuilder = UpdateNewChosenInlineResultBuilder;
+
+impl UpdateNewChosenInlineResultBuilder {
     pub fn build(&self) -> UpdateNewChosenInlineResult {
         self.inner.clone()
     }
@@ -5846,7 +6028,7 @@ impl AsRef<UpdateNewChosenInlineResult> for UpdateNewChosenInlineResult {
     }
 }
 
-impl AsRef<UpdateNewChosenInlineResult> for RTDUpdateNewChosenInlineResultBuilder {
+impl AsRef<UpdateNewChosenInlineResult> for UpdateNewChosenInlineResultBuilder {
     fn as_ref(&self) -> &UpdateNewChosenInlineResult {
         &self.inner
     }
@@ -5880,14 +6062,14 @@ impl RObject for UpdateNewCustomEvent {
 impl TDUpdate for UpdateNewCustomEvent {}
 
 impl UpdateNewCustomEvent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewCustomEventBuilder {
+    pub fn builder() -> UpdateNewCustomEventBuilder {
         let mut inner = UpdateNewCustomEvent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewCustomEventBuilder { inner }
+        UpdateNewCustomEventBuilder { inner }
     }
 
     pub fn event(&self) -> &String {
@@ -5896,11 +6078,14 @@ impl UpdateNewCustomEvent {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewCustomEventBuilder {
+pub struct UpdateNewCustomEventBuilder {
     inner: UpdateNewCustomEvent,
 }
 
-impl RTDUpdateNewCustomEventBuilder {
+#[deprecated]
+pub type RTDUpdateNewCustomEventBuilder = UpdateNewCustomEventBuilder;
+
+impl UpdateNewCustomEventBuilder {
     pub fn build(&self) -> UpdateNewCustomEvent {
         self.inner.clone()
     }
@@ -5917,7 +6102,7 @@ impl AsRef<UpdateNewCustomEvent> for UpdateNewCustomEvent {
     }
 }
 
-impl AsRef<UpdateNewCustomEvent> for RTDUpdateNewCustomEventBuilder {
+impl AsRef<UpdateNewCustomEvent> for UpdateNewCustomEventBuilder {
     fn as_ref(&self) -> &UpdateNewCustomEvent {
         &self.inner
     }
@@ -5960,14 +6145,14 @@ impl RObject for UpdateNewCustomQuery {
 impl TDUpdate for UpdateNewCustomQuery {}
 
 impl UpdateNewCustomQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewCustomQueryBuilder {
+    pub fn builder() -> UpdateNewCustomQueryBuilder {
         let mut inner = UpdateNewCustomQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewCustomQueryBuilder { inner }
+        UpdateNewCustomQueryBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -5984,11 +6169,14 @@ impl UpdateNewCustomQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewCustomQueryBuilder {
+pub struct UpdateNewCustomQueryBuilder {
     inner: UpdateNewCustomQuery,
 }
 
-impl RTDUpdateNewCustomQueryBuilder {
+#[deprecated]
+pub type RTDUpdateNewCustomQueryBuilder = UpdateNewCustomQueryBuilder;
+
+impl UpdateNewCustomQueryBuilder {
     pub fn build(&self) -> UpdateNewCustomQuery {
         self.inner.clone()
     }
@@ -6015,7 +6203,7 @@ impl AsRef<UpdateNewCustomQuery> for UpdateNewCustomQuery {
     }
 }
 
-impl AsRef<UpdateNewCustomQuery> for RTDUpdateNewCustomQueryBuilder {
+impl AsRef<UpdateNewCustomQuery> for UpdateNewCustomQueryBuilder {
     fn as_ref(&self) -> &UpdateNewCustomQuery {
         &self.inner
     }
@@ -6067,14 +6255,14 @@ impl RObject for UpdateNewInlineCallbackQuery {
 impl TDUpdate for UpdateNewInlineCallbackQuery {}
 
 impl UpdateNewInlineCallbackQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewInlineCallbackQueryBuilder {
+    pub fn builder() -> UpdateNewInlineCallbackQueryBuilder {
         let mut inner = UpdateNewInlineCallbackQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewInlineCallbackQueryBuilder { inner }
+        UpdateNewInlineCallbackQueryBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -6099,11 +6287,14 @@ impl UpdateNewInlineCallbackQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewInlineCallbackQueryBuilder {
+pub struct UpdateNewInlineCallbackQueryBuilder {
     inner: UpdateNewInlineCallbackQuery,
 }
 
-impl RTDUpdateNewInlineCallbackQueryBuilder {
+#[deprecated]
+pub type RTDUpdateNewInlineCallbackQueryBuilder = UpdateNewInlineCallbackQueryBuilder;
+
+impl UpdateNewInlineCallbackQueryBuilder {
     pub fn build(&self) -> UpdateNewInlineCallbackQuery {
         self.inner.clone()
     }
@@ -6140,7 +6331,7 @@ impl AsRef<UpdateNewInlineCallbackQuery> for UpdateNewInlineCallbackQuery {
     }
 }
 
-impl AsRef<UpdateNewInlineCallbackQuery> for RTDUpdateNewInlineCallbackQueryBuilder {
+impl AsRef<UpdateNewInlineCallbackQuery> for UpdateNewInlineCallbackQueryBuilder {
     fn as_ref(&self) -> &UpdateNewInlineCallbackQuery {
         &self.inner
     }
@@ -6191,14 +6382,14 @@ impl RObject for UpdateNewInlineQuery {
 impl TDUpdate for UpdateNewInlineQuery {}
 
 impl UpdateNewInlineQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewInlineQueryBuilder {
+    pub fn builder() -> UpdateNewInlineQueryBuilder {
         let mut inner = UpdateNewInlineQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewInlineQueryBuilder { inner }
+        UpdateNewInlineQueryBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -6227,11 +6418,14 @@ impl UpdateNewInlineQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewInlineQueryBuilder {
+pub struct UpdateNewInlineQueryBuilder {
     inner: UpdateNewInlineQuery,
 }
 
-impl RTDUpdateNewInlineQueryBuilder {
+#[deprecated]
+pub type RTDUpdateNewInlineQueryBuilder = UpdateNewInlineQueryBuilder;
+
+impl UpdateNewInlineQueryBuilder {
     pub fn build(&self) -> UpdateNewInlineQuery {
         self.inner.clone()
     }
@@ -6273,7 +6467,7 @@ impl AsRef<UpdateNewInlineQuery> for UpdateNewInlineQuery {
     }
 }
 
-impl AsRef<UpdateNewInlineQuery> for RTDUpdateNewInlineQueryBuilder {
+impl AsRef<UpdateNewInlineQuery> for UpdateNewInlineQueryBuilder {
     fn as_ref(&self) -> &UpdateNewInlineQuery {
         &self.inner
     }
@@ -6305,14 +6499,14 @@ impl RObject for UpdateNewMessage {
 impl TDUpdate for UpdateNewMessage {}
 
 impl UpdateNewMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewMessageBuilder {
+    pub fn builder() -> UpdateNewMessageBuilder {
         let mut inner = UpdateNewMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewMessageBuilder { inner }
+        UpdateNewMessageBuilder { inner }
     }
 
     pub fn message(&self) -> &Message {
@@ -6321,11 +6515,14 @@ impl UpdateNewMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewMessageBuilder {
+pub struct UpdateNewMessageBuilder {
     inner: UpdateNewMessage,
 }
 
-impl RTDUpdateNewMessageBuilder {
+#[deprecated]
+pub type RTDUpdateNewMessageBuilder = UpdateNewMessageBuilder;
+
+impl UpdateNewMessageBuilder {
     pub fn build(&self) -> UpdateNewMessage {
         self.inner.clone()
     }
@@ -6342,7 +6539,7 @@ impl AsRef<UpdateNewMessage> for UpdateNewMessage {
     }
 }
 
-impl AsRef<UpdateNewMessage> for RTDUpdateNewMessageBuilder {
+impl AsRef<UpdateNewMessage> for UpdateNewMessageBuilder {
     fn as_ref(&self) -> &UpdateNewMessage {
         &self.inner
     }
@@ -6399,14 +6596,14 @@ impl RObject for UpdateNewPreCheckoutQuery {
 impl TDUpdate for UpdateNewPreCheckoutQuery {}
 
 impl UpdateNewPreCheckoutQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewPreCheckoutQueryBuilder {
+    pub fn builder() -> UpdateNewPreCheckoutQueryBuilder {
         let mut inner = UpdateNewPreCheckoutQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewPreCheckoutQueryBuilder { inner }
+        UpdateNewPreCheckoutQueryBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -6439,11 +6636,14 @@ impl UpdateNewPreCheckoutQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewPreCheckoutQueryBuilder {
+pub struct UpdateNewPreCheckoutQueryBuilder {
     inner: UpdateNewPreCheckoutQuery,
 }
 
-impl RTDUpdateNewPreCheckoutQueryBuilder {
+#[deprecated]
+pub type RTDUpdateNewPreCheckoutQueryBuilder = UpdateNewPreCheckoutQueryBuilder;
+
+impl UpdateNewPreCheckoutQueryBuilder {
     pub fn build(&self) -> UpdateNewPreCheckoutQuery {
         self.inner.clone()
     }
@@ -6490,7 +6690,7 @@ impl AsRef<UpdateNewPreCheckoutQuery> for UpdateNewPreCheckoutQuery {
     }
 }
 
-impl AsRef<UpdateNewPreCheckoutQuery> for RTDUpdateNewPreCheckoutQueryBuilder {
+impl AsRef<UpdateNewPreCheckoutQuery> for UpdateNewPreCheckoutQueryBuilder {
     fn as_ref(&self) -> &UpdateNewPreCheckoutQuery {
         &self.inner
     }
@@ -6535,14 +6735,14 @@ impl RObject for UpdateNewShippingQuery {
 impl TDUpdate for UpdateNewShippingQuery {}
 
 impl UpdateNewShippingQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNewShippingQueryBuilder {
+    pub fn builder() -> UpdateNewShippingQueryBuilder {
         let mut inner = UpdateNewShippingQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNewShippingQueryBuilder { inner }
+        UpdateNewShippingQueryBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -6563,11 +6763,14 @@ impl UpdateNewShippingQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNewShippingQueryBuilder {
+pub struct UpdateNewShippingQueryBuilder {
     inner: UpdateNewShippingQuery,
 }
 
-impl RTDUpdateNewShippingQueryBuilder {
+#[deprecated]
+pub type RTDUpdateNewShippingQueryBuilder = UpdateNewShippingQueryBuilder;
+
+impl UpdateNewShippingQueryBuilder {
     pub fn build(&self) -> UpdateNewShippingQuery {
         self.inner.clone()
     }
@@ -6599,7 +6802,7 @@ impl AsRef<UpdateNewShippingQuery> for UpdateNewShippingQuery {
     }
 }
 
-impl AsRef<UpdateNewShippingQuery> for RTDUpdateNewShippingQueryBuilder {
+impl AsRef<UpdateNewShippingQuery> for UpdateNewShippingQueryBuilder {
     fn as_ref(&self) -> &UpdateNewShippingQuery {
         &self.inner
     }
@@ -6635,14 +6838,14 @@ impl RObject for UpdateNotification {
 impl TDUpdate for UpdateNotification {}
 
 impl UpdateNotification {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNotificationBuilder {
+    pub fn builder() -> UpdateNotificationBuilder {
         let mut inner = UpdateNotification::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNotificationBuilder { inner }
+        UpdateNotificationBuilder { inner }
     }
 
     pub fn notification_group_id(&self) -> i32 {
@@ -6655,11 +6858,14 @@ impl UpdateNotification {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNotificationBuilder {
+pub struct UpdateNotificationBuilder {
     inner: UpdateNotification,
 }
 
-impl RTDUpdateNotificationBuilder {
+#[deprecated]
+pub type RTDUpdateNotificationBuilder = UpdateNotificationBuilder;
+
+impl UpdateNotificationBuilder {
     pub fn build(&self) -> UpdateNotification {
         self.inner.clone()
     }
@@ -6681,7 +6887,7 @@ impl AsRef<UpdateNotification> for UpdateNotification {
     }
 }
 
-impl AsRef<UpdateNotification> for RTDUpdateNotificationBuilder {
+impl AsRef<UpdateNotification> for UpdateNotificationBuilder {
     fn as_ref(&self) -> &UpdateNotification {
         &self.inner
     }
@@ -6744,14 +6950,14 @@ impl RObject for UpdateNotificationGroup {
 impl TDUpdate for UpdateNotificationGroup {}
 
 impl UpdateNotificationGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateNotificationGroupBuilder {
+    pub fn builder() -> UpdateNotificationGroupBuilder {
         let mut inner = UpdateNotificationGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateNotificationGroupBuilder { inner }
+        UpdateNotificationGroupBuilder { inner }
     }
 
     pub fn notification_group_id(&self) -> i32 {
@@ -6788,11 +6994,14 @@ impl UpdateNotificationGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateNotificationGroupBuilder {
+pub struct UpdateNotificationGroupBuilder {
     inner: UpdateNotificationGroup,
 }
 
-impl RTDUpdateNotificationGroupBuilder {
+#[deprecated]
+pub type RTDUpdateNotificationGroupBuilder = UpdateNotificationGroupBuilder;
+
+impl UpdateNotificationGroupBuilder {
     pub fn build(&self) -> UpdateNotificationGroup {
         self.inner.clone()
     }
@@ -6847,7 +7056,7 @@ impl AsRef<UpdateNotificationGroup> for UpdateNotificationGroup {
     }
 }
 
-impl AsRef<UpdateNotificationGroup> for RTDUpdateNotificationGroupBuilder {
+impl AsRef<UpdateNotificationGroup> for UpdateNotificationGroupBuilder {
     fn as_ref(&self) -> &UpdateNotificationGroup {
         &self.inner
     }
@@ -6885,14 +7094,14 @@ impl RObject for UpdateOption {
 impl TDUpdate for UpdateOption {}
 
 impl UpdateOption {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateOptionBuilder {
+    pub fn builder() -> UpdateOptionBuilder {
         let mut inner = UpdateOption::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateOptionBuilder { inner }
+        UpdateOptionBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -6905,11 +7114,14 @@ impl UpdateOption {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateOptionBuilder {
+pub struct UpdateOptionBuilder {
     inner: UpdateOption,
 }
 
-impl RTDUpdateOptionBuilder {
+#[deprecated]
+pub type RTDUpdateOptionBuilder = UpdateOptionBuilder;
+
+impl UpdateOptionBuilder {
     pub fn build(&self) -> UpdateOption {
         self.inner.clone()
     }
@@ -6931,7 +7143,7 @@ impl AsRef<UpdateOption> for UpdateOption {
     }
 }
 
-impl AsRef<UpdateOption> for RTDUpdateOptionBuilder {
+impl AsRef<UpdateOption> for UpdateOptionBuilder {
     fn as_ref(&self) -> &UpdateOption {
         &self.inner
     }
@@ -6963,14 +7175,14 @@ impl RObject for UpdatePoll {
 impl TDUpdate for UpdatePoll {}
 
 impl UpdatePoll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdatePollBuilder {
+    pub fn builder() -> UpdatePollBuilder {
         let mut inner = UpdatePoll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdatePollBuilder { inner }
+        UpdatePollBuilder { inner }
     }
 
     pub fn poll(&self) -> &Poll {
@@ -6979,11 +7191,14 @@ impl UpdatePoll {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdatePollBuilder {
+pub struct UpdatePollBuilder {
     inner: UpdatePoll,
 }
 
-impl RTDUpdatePollBuilder {
+#[deprecated]
+pub type RTDUpdatePollBuilder = UpdatePollBuilder;
+
+impl UpdatePollBuilder {
     pub fn build(&self) -> UpdatePoll {
         self.inner.clone()
     }
@@ -7000,7 +7215,7 @@ impl AsRef<UpdatePoll> for UpdatePoll {
     }
 }
 
-impl AsRef<UpdatePoll> for RTDUpdatePollBuilder {
+impl AsRef<UpdatePoll> for UpdatePollBuilder {
     fn as_ref(&self) -> &UpdatePoll {
         &self.inner
     }
@@ -7043,14 +7258,14 @@ impl RObject for UpdatePollAnswer {
 impl TDUpdate for UpdatePollAnswer {}
 
 impl UpdatePollAnswer {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdatePollAnswerBuilder {
+    pub fn builder() -> UpdatePollAnswerBuilder {
         let mut inner = UpdatePollAnswer::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdatePollAnswerBuilder { inner }
+        UpdatePollAnswerBuilder { inner }
     }
 
     pub fn poll_id(&self) -> i64 {
@@ -7067,11 +7282,14 @@ impl UpdatePollAnswer {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdatePollAnswerBuilder {
+pub struct UpdatePollAnswerBuilder {
     inner: UpdatePollAnswer,
 }
 
-impl RTDUpdatePollAnswerBuilder {
+#[deprecated]
+pub type RTDUpdatePollAnswerBuilder = UpdatePollAnswerBuilder;
+
+impl UpdatePollAnswerBuilder {
     pub fn build(&self) -> UpdatePollAnswer {
         self.inner.clone()
     }
@@ -7098,7 +7316,7 @@ impl AsRef<UpdatePollAnswer> for UpdatePollAnswer {
     }
 }
 
-impl AsRef<UpdatePollAnswer> for RTDUpdatePollAnswerBuilder {
+impl AsRef<UpdatePollAnswer> for UpdatePollAnswerBuilder {
     fn as_ref(&self) -> &UpdatePollAnswer {
         &self.inner
     }
@@ -7136,14 +7354,14 @@ impl RObject for UpdateRecentStickers {
 impl TDUpdate for UpdateRecentStickers {}
 
 impl UpdateRecentStickers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateRecentStickersBuilder {
+    pub fn builder() -> UpdateRecentStickersBuilder {
         let mut inner = UpdateRecentStickers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateRecentStickersBuilder { inner }
+        UpdateRecentStickersBuilder { inner }
     }
 
     pub fn is_attached(&self) -> bool {
@@ -7156,11 +7374,14 @@ impl UpdateRecentStickers {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateRecentStickersBuilder {
+pub struct UpdateRecentStickersBuilder {
     inner: UpdateRecentStickers,
 }
 
-impl RTDUpdateRecentStickersBuilder {
+#[deprecated]
+pub type RTDUpdateRecentStickersBuilder = UpdateRecentStickersBuilder;
+
+impl UpdateRecentStickersBuilder {
     pub fn build(&self) -> UpdateRecentStickers {
         self.inner.clone()
     }
@@ -7182,7 +7403,7 @@ impl AsRef<UpdateRecentStickers> for UpdateRecentStickers {
     }
 }
 
-impl AsRef<UpdateRecentStickers> for RTDUpdateRecentStickersBuilder {
+impl AsRef<UpdateRecentStickers> for UpdateRecentStickersBuilder {
     fn as_ref(&self) -> &UpdateRecentStickers {
         &self.inner
     }
@@ -7216,14 +7437,14 @@ impl RObject for UpdateSavedAnimations {
 impl TDUpdate for UpdateSavedAnimations {}
 
 impl UpdateSavedAnimations {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateSavedAnimationsBuilder {
+    pub fn builder() -> UpdateSavedAnimationsBuilder {
         let mut inner = UpdateSavedAnimations::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateSavedAnimationsBuilder { inner }
+        UpdateSavedAnimationsBuilder { inner }
     }
 
     pub fn animation_ids(&self) -> &Vec<i32> {
@@ -7232,11 +7453,14 @@ impl UpdateSavedAnimations {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateSavedAnimationsBuilder {
+pub struct UpdateSavedAnimationsBuilder {
     inner: UpdateSavedAnimations,
 }
 
-impl RTDUpdateSavedAnimationsBuilder {
+#[deprecated]
+pub type RTDUpdateSavedAnimationsBuilder = UpdateSavedAnimationsBuilder;
+
+impl UpdateSavedAnimationsBuilder {
     pub fn build(&self) -> UpdateSavedAnimations {
         self.inner.clone()
     }
@@ -7253,7 +7477,7 @@ impl AsRef<UpdateSavedAnimations> for UpdateSavedAnimations {
     }
 }
 
-impl AsRef<UpdateSavedAnimations> for RTDUpdateSavedAnimationsBuilder {
+impl AsRef<UpdateSavedAnimations> for UpdateSavedAnimationsBuilder {
     fn as_ref(&self) -> &UpdateSavedAnimations {
         &self.inner
     }
@@ -7289,14 +7513,14 @@ impl RObject for UpdateScopeNotificationSettings {
 impl TDUpdate for UpdateScopeNotificationSettings {}
 
 impl UpdateScopeNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateScopeNotificationSettingsBuilder {
+    pub fn builder() -> UpdateScopeNotificationSettingsBuilder {
         let mut inner = UpdateScopeNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateScopeNotificationSettingsBuilder { inner }
+        UpdateScopeNotificationSettingsBuilder { inner }
     }
 
     pub fn scope(&self) -> &NotificationSettingsScope {
@@ -7309,11 +7533,14 @@ impl UpdateScopeNotificationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateScopeNotificationSettingsBuilder {
+pub struct UpdateScopeNotificationSettingsBuilder {
     inner: UpdateScopeNotificationSettings,
 }
 
-impl RTDUpdateScopeNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDUpdateScopeNotificationSettingsBuilder = UpdateScopeNotificationSettingsBuilder;
+
+impl UpdateScopeNotificationSettingsBuilder {
     pub fn build(&self) -> UpdateScopeNotificationSettings {
         self.inner.clone()
     }
@@ -7338,7 +7565,7 @@ impl AsRef<UpdateScopeNotificationSettings> for UpdateScopeNotificationSettings 
     }
 }
 
-impl AsRef<UpdateScopeNotificationSettings> for RTDUpdateScopeNotificationSettingsBuilder {
+impl AsRef<UpdateScopeNotificationSettings> for UpdateScopeNotificationSettingsBuilder {
     fn as_ref(&self) -> &UpdateScopeNotificationSettings {
         &self.inner
     }
@@ -7370,14 +7597,14 @@ impl RObject for UpdateSecretChat {
 impl TDUpdate for UpdateSecretChat {}
 
 impl UpdateSecretChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateSecretChatBuilder {
+    pub fn builder() -> UpdateSecretChatBuilder {
         let mut inner = UpdateSecretChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateSecretChatBuilder { inner }
+        UpdateSecretChatBuilder { inner }
     }
 
     pub fn secret_chat(&self) -> &SecretChat {
@@ -7386,11 +7613,14 @@ impl UpdateSecretChat {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateSecretChatBuilder {
+pub struct UpdateSecretChatBuilder {
     inner: UpdateSecretChat,
 }
 
-impl RTDUpdateSecretChatBuilder {
+#[deprecated]
+pub type RTDUpdateSecretChatBuilder = UpdateSecretChatBuilder;
+
+impl UpdateSecretChatBuilder {
     pub fn build(&self) -> UpdateSecretChat {
         self.inner.clone()
     }
@@ -7407,7 +7637,7 @@ impl AsRef<UpdateSecretChat> for UpdateSecretChat {
     }
 }
 
-impl AsRef<UpdateSecretChat> for RTDUpdateSecretChatBuilder {
+impl AsRef<UpdateSecretChat> for UpdateSecretChatBuilder {
     fn as_ref(&self) -> &UpdateSecretChat {
         &self.inner
     }
@@ -7443,14 +7673,14 @@ impl RObject for UpdateSelectedBackground {
 impl TDUpdate for UpdateSelectedBackground {}
 
 impl UpdateSelectedBackground {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateSelectedBackgroundBuilder {
+    pub fn builder() -> UpdateSelectedBackgroundBuilder {
         let mut inner = UpdateSelectedBackground::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateSelectedBackgroundBuilder { inner }
+        UpdateSelectedBackgroundBuilder { inner }
     }
 
     pub fn for_dark_theme(&self) -> bool {
@@ -7463,11 +7693,14 @@ impl UpdateSelectedBackground {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateSelectedBackgroundBuilder {
+pub struct UpdateSelectedBackgroundBuilder {
     inner: UpdateSelectedBackground,
 }
 
-impl RTDUpdateSelectedBackgroundBuilder {
+#[deprecated]
+pub type RTDUpdateSelectedBackgroundBuilder = UpdateSelectedBackgroundBuilder;
+
+impl UpdateSelectedBackgroundBuilder {
     pub fn build(&self) -> UpdateSelectedBackground {
         self.inner.clone()
     }
@@ -7489,7 +7722,7 @@ impl AsRef<UpdateSelectedBackground> for UpdateSelectedBackground {
     }
 }
 
-impl AsRef<UpdateSelectedBackground> for RTDUpdateSelectedBackgroundBuilder {
+impl AsRef<UpdateSelectedBackground> for UpdateSelectedBackgroundBuilder {
     fn as_ref(&self) -> &UpdateSelectedBackground {
         &self.inner
     }
@@ -7528,14 +7761,14 @@ impl RObject for UpdateServiceNotification {
 impl TDUpdate for UpdateServiceNotification {}
 
 impl UpdateServiceNotification {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateServiceNotificationBuilder {
+    pub fn builder() -> UpdateServiceNotificationBuilder {
         let mut inner = UpdateServiceNotification::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateServiceNotificationBuilder { inner }
+        UpdateServiceNotificationBuilder { inner }
     }
 
     pub fn type_(&self) -> &String {
@@ -7548,11 +7781,14 @@ impl UpdateServiceNotification {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateServiceNotificationBuilder {
+pub struct UpdateServiceNotificationBuilder {
     inner: UpdateServiceNotification,
 }
 
-impl RTDUpdateServiceNotificationBuilder {
+#[deprecated]
+pub type RTDUpdateServiceNotificationBuilder = UpdateServiceNotificationBuilder;
+
+impl UpdateServiceNotificationBuilder {
     pub fn build(&self) -> UpdateServiceNotification {
         self.inner.clone()
     }
@@ -7574,7 +7810,7 @@ impl AsRef<UpdateServiceNotification> for UpdateServiceNotification {
     }
 }
 
-impl AsRef<UpdateServiceNotification> for RTDUpdateServiceNotificationBuilder {
+impl AsRef<UpdateServiceNotification> for UpdateServiceNotificationBuilder {
     fn as_ref(&self) -> &UpdateServiceNotification {
         &self.inner
     }
@@ -7606,14 +7842,14 @@ impl RObject for UpdateStickerSet {
 impl TDUpdate for UpdateStickerSet {}
 
 impl UpdateStickerSet {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateStickerSetBuilder {
+    pub fn builder() -> UpdateStickerSetBuilder {
         let mut inner = UpdateStickerSet::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateStickerSetBuilder { inner }
+        UpdateStickerSetBuilder { inner }
     }
 
     pub fn sticker_set(&self) -> &StickerSet {
@@ -7622,11 +7858,14 @@ impl UpdateStickerSet {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateStickerSetBuilder {
+pub struct UpdateStickerSetBuilder {
     inner: UpdateStickerSet,
 }
 
-impl RTDUpdateStickerSetBuilder {
+#[deprecated]
+pub type RTDUpdateStickerSetBuilder = UpdateStickerSetBuilder;
+
+impl UpdateStickerSetBuilder {
     pub fn build(&self) -> UpdateStickerSet {
         self.inner.clone()
     }
@@ -7643,7 +7882,7 @@ impl AsRef<UpdateStickerSet> for UpdateStickerSet {
     }
 }
 
-impl AsRef<UpdateStickerSet> for RTDUpdateStickerSetBuilder {
+impl AsRef<UpdateStickerSet> for UpdateStickerSetBuilder {
     fn as_ref(&self) -> &UpdateStickerSet {
         &self.inner
     }
@@ -7681,14 +7920,14 @@ impl RObject for UpdateSuggestedActions {
 impl TDUpdate for UpdateSuggestedActions {}
 
 impl UpdateSuggestedActions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateSuggestedActionsBuilder {
+    pub fn builder() -> UpdateSuggestedActionsBuilder {
         let mut inner = UpdateSuggestedActions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateSuggestedActionsBuilder { inner }
+        UpdateSuggestedActionsBuilder { inner }
     }
 
     pub fn added_actions(&self) -> &Vec<SuggestedAction> {
@@ -7701,11 +7940,14 @@ impl UpdateSuggestedActions {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateSuggestedActionsBuilder {
+pub struct UpdateSuggestedActionsBuilder {
     inner: UpdateSuggestedActions,
 }
 
-impl RTDUpdateSuggestedActionsBuilder {
+#[deprecated]
+pub type RTDUpdateSuggestedActionsBuilder = UpdateSuggestedActionsBuilder;
+
+impl UpdateSuggestedActionsBuilder {
     pub fn build(&self) -> UpdateSuggestedActions {
         self.inner.clone()
     }
@@ -7727,7 +7969,7 @@ impl AsRef<UpdateSuggestedActions> for UpdateSuggestedActions {
     }
 }
 
-impl AsRef<UpdateSuggestedActions> for RTDUpdateSuggestedActionsBuilder {
+impl AsRef<UpdateSuggestedActions> for UpdateSuggestedActionsBuilder {
     fn as_ref(&self) -> &UpdateSuggestedActions {
         &self.inner
     }
@@ -7759,14 +8001,14 @@ impl RObject for UpdateSupergroup {
 impl TDUpdate for UpdateSupergroup {}
 
 impl UpdateSupergroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateSupergroupBuilder {
+    pub fn builder() -> UpdateSupergroupBuilder {
         let mut inner = UpdateSupergroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateSupergroupBuilder { inner }
+        UpdateSupergroupBuilder { inner }
     }
 
     pub fn supergroup(&self) -> &Supergroup {
@@ -7775,11 +8017,14 @@ impl UpdateSupergroup {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateSupergroupBuilder {
+pub struct UpdateSupergroupBuilder {
     inner: UpdateSupergroup,
 }
 
-impl RTDUpdateSupergroupBuilder {
+#[deprecated]
+pub type RTDUpdateSupergroupBuilder = UpdateSupergroupBuilder;
+
+impl UpdateSupergroupBuilder {
     pub fn build(&self) -> UpdateSupergroup {
         self.inner.clone()
     }
@@ -7796,7 +8041,7 @@ impl AsRef<UpdateSupergroup> for UpdateSupergroup {
     }
 }
 
-impl AsRef<UpdateSupergroup> for RTDUpdateSupergroupBuilder {
+impl AsRef<UpdateSupergroup> for UpdateSupergroupBuilder {
     fn as_ref(&self) -> &UpdateSupergroup {
         &self.inner
     }
@@ -7832,14 +8077,14 @@ impl RObject for UpdateSupergroupFullInfo {
 impl TDUpdate for UpdateSupergroupFullInfo {}
 
 impl UpdateSupergroupFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateSupergroupFullInfoBuilder {
+    pub fn builder() -> UpdateSupergroupFullInfoBuilder {
         let mut inner = UpdateSupergroupFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateSupergroupFullInfoBuilder { inner }
+        UpdateSupergroupFullInfoBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -7852,11 +8097,14 @@ impl UpdateSupergroupFullInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateSupergroupFullInfoBuilder {
+pub struct UpdateSupergroupFullInfoBuilder {
     inner: UpdateSupergroupFullInfo,
 }
 
-impl RTDUpdateSupergroupFullInfoBuilder {
+#[deprecated]
+pub type RTDUpdateSupergroupFullInfoBuilder = UpdateSupergroupFullInfoBuilder;
+
+impl UpdateSupergroupFullInfoBuilder {
     pub fn build(&self) -> UpdateSupergroupFullInfo {
         self.inner.clone()
     }
@@ -7881,7 +8129,7 @@ impl AsRef<UpdateSupergroupFullInfo> for UpdateSupergroupFullInfo {
     }
 }
 
-impl AsRef<UpdateSupergroupFullInfo> for RTDUpdateSupergroupFullInfoBuilder {
+impl AsRef<UpdateSupergroupFullInfo> for UpdateSupergroupFullInfoBuilder {
     fn as_ref(&self) -> &UpdateSupergroupFullInfo {
         &self.inner
     }
@@ -7917,14 +8165,14 @@ impl RObject for UpdateTermsOfService {
 impl TDUpdate for UpdateTermsOfService {}
 
 impl UpdateTermsOfService {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateTermsOfServiceBuilder {
+    pub fn builder() -> UpdateTermsOfServiceBuilder {
         let mut inner = UpdateTermsOfService::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateTermsOfServiceBuilder { inner }
+        UpdateTermsOfServiceBuilder { inner }
     }
 
     pub fn terms_of_service_id(&self) -> &String {
@@ -7937,11 +8185,14 @@ impl UpdateTermsOfService {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateTermsOfServiceBuilder {
+pub struct UpdateTermsOfServiceBuilder {
     inner: UpdateTermsOfService,
 }
 
-impl RTDUpdateTermsOfServiceBuilder {
+#[deprecated]
+pub type RTDUpdateTermsOfServiceBuilder = UpdateTermsOfServiceBuilder;
+
+impl UpdateTermsOfServiceBuilder {
     pub fn build(&self) -> UpdateTermsOfService {
         self.inner.clone()
     }
@@ -7963,7 +8214,7 @@ impl AsRef<UpdateTermsOfService> for UpdateTermsOfService {
     }
 }
 
-impl AsRef<UpdateTermsOfService> for RTDUpdateTermsOfServiceBuilder {
+impl AsRef<UpdateTermsOfService> for UpdateTermsOfServiceBuilder {
     fn as_ref(&self) -> &UpdateTermsOfService {
         &self.inner
     }
@@ -7995,14 +8246,14 @@ impl RObject for UpdateTrendingStickerSets {
 impl TDUpdate for UpdateTrendingStickerSets {}
 
 impl UpdateTrendingStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateTrendingStickerSetsBuilder {
+    pub fn builder() -> UpdateTrendingStickerSetsBuilder {
         let mut inner = UpdateTrendingStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateTrendingStickerSetsBuilder { inner }
+        UpdateTrendingStickerSetsBuilder { inner }
     }
 
     pub fn sticker_sets(&self) -> &StickerSets {
@@ -8011,11 +8262,14 @@ impl UpdateTrendingStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateTrendingStickerSetsBuilder {
+pub struct UpdateTrendingStickerSetsBuilder {
     inner: UpdateTrendingStickerSets,
 }
 
-impl RTDUpdateTrendingStickerSetsBuilder {
+#[deprecated]
+pub type RTDUpdateTrendingStickerSetsBuilder = UpdateTrendingStickerSetsBuilder;
+
+impl UpdateTrendingStickerSetsBuilder {
     pub fn build(&self) -> UpdateTrendingStickerSets {
         self.inner.clone()
     }
@@ -8032,7 +8286,7 @@ impl AsRef<UpdateTrendingStickerSets> for UpdateTrendingStickerSets {
     }
 }
 
-impl AsRef<UpdateTrendingStickerSets> for RTDUpdateTrendingStickerSetsBuilder {
+impl AsRef<UpdateTrendingStickerSets> for UpdateTrendingStickerSetsBuilder {
     fn as_ref(&self) -> &UpdateTrendingStickerSets {
         &self.inner
     }
@@ -8086,14 +8340,14 @@ impl RObject for UpdateUnreadChatCount {
 impl TDUpdate for UpdateUnreadChatCount {}
 
 impl UpdateUnreadChatCount {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateUnreadChatCountBuilder {
+    pub fn builder() -> UpdateUnreadChatCountBuilder {
         let mut inner = UpdateUnreadChatCount::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateUnreadChatCountBuilder { inner }
+        UpdateUnreadChatCountBuilder { inner }
     }
 
     pub fn chat_list(&self) -> &ChatList {
@@ -8122,11 +8376,14 @@ impl UpdateUnreadChatCount {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateUnreadChatCountBuilder {
+pub struct UpdateUnreadChatCountBuilder {
     inner: UpdateUnreadChatCount,
 }
 
-impl RTDUpdateUnreadChatCountBuilder {
+#[deprecated]
+pub type RTDUpdateUnreadChatCountBuilder = UpdateUnreadChatCountBuilder;
+
+impl UpdateUnreadChatCountBuilder {
     pub fn build(&self) -> UpdateUnreadChatCount {
         self.inner.clone()
     }
@@ -8171,7 +8428,7 @@ impl AsRef<UpdateUnreadChatCount> for UpdateUnreadChatCount {
     }
 }
 
-impl AsRef<UpdateUnreadChatCount> for RTDUpdateUnreadChatCountBuilder {
+impl AsRef<UpdateUnreadChatCount> for UpdateUnreadChatCountBuilder {
     fn as_ref(&self) -> &UpdateUnreadChatCount {
         &self.inner
     }
@@ -8213,14 +8470,14 @@ impl RObject for UpdateUnreadMessageCount {
 impl TDUpdate for UpdateUnreadMessageCount {}
 
 impl UpdateUnreadMessageCount {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateUnreadMessageCountBuilder {
+    pub fn builder() -> UpdateUnreadMessageCountBuilder {
         let mut inner = UpdateUnreadMessageCount::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateUnreadMessageCountBuilder { inner }
+        UpdateUnreadMessageCountBuilder { inner }
     }
 
     pub fn chat_list(&self) -> &ChatList {
@@ -8237,11 +8494,14 @@ impl UpdateUnreadMessageCount {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateUnreadMessageCountBuilder {
+pub struct UpdateUnreadMessageCountBuilder {
     inner: UpdateUnreadMessageCount,
 }
 
-impl RTDUpdateUnreadMessageCountBuilder {
+#[deprecated]
+pub type RTDUpdateUnreadMessageCountBuilder = UpdateUnreadMessageCountBuilder;
+
+impl UpdateUnreadMessageCountBuilder {
     pub fn build(&self) -> UpdateUnreadMessageCount {
         self.inner.clone()
     }
@@ -8268,7 +8528,7 @@ impl AsRef<UpdateUnreadMessageCount> for UpdateUnreadMessageCount {
     }
 }
 
-impl AsRef<UpdateUnreadMessageCount> for RTDUpdateUnreadMessageCountBuilder {
+impl AsRef<UpdateUnreadMessageCount> for UpdateUnreadMessageCountBuilder {
     fn as_ref(&self) -> &UpdateUnreadMessageCount {
         &self.inner
     }
@@ -8300,14 +8560,14 @@ impl RObject for UpdateUser {
 impl TDUpdate for UpdateUser {}
 
 impl UpdateUser {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateUserBuilder {
+    pub fn builder() -> UpdateUserBuilder {
         let mut inner = UpdateUser::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateUserBuilder { inner }
+        UpdateUserBuilder { inner }
     }
 
     pub fn user(&self) -> &User {
@@ -8316,11 +8576,14 @@ impl UpdateUser {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateUserBuilder {
+pub struct UpdateUserBuilder {
     inner: UpdateUser,
 }
 
-impl RTDUpdateUserBuilder {
+#[deprecated]
+pub type RTDUpdateUserBuilder = UpdateUserBuilder;
+
+impl UpdateUserBuilder {
     pub fn build(&self) -> UpdateUser {
         self.inner.clone()
     }
@@ -8337,7 +8600,7 @@ impl AsRef<UpdateUser> for UpdateUser {
     }
 }
 
-impl AsRef<UpdateUser> for RTDUpdateUserBuilder {
+impl AsRef<UpdateUser> for UpdateUserBuilder {
     fn as_ref(&self) -> &UpdateUser {
         &self.inner
     }
@@ -8373,14 +8636,14 @@ impl RObject for UpdateUserFullInfo {
 impl TDUpdate for UpdateUserFullInfo {}
 
 impl UpdateUserFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateUserFullInfoBuilder {
+    pub fn builder() -> UpdateUserFullInfoBuilder {
         let mut inner = UpdateUserFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateUserFullInfoBuilder { inner }
+        UpdateUserFullInfoBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -8393,11 +8656,14 @@ impl UpdateUserFullInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateUserFullInfoBuilder {
+pub struct UpdateUserFullInfoBuilder {
     inner: UpdateUserFullInfo,
 }
 
-impl RTDUpdateUserFullInfoBuilder {
+#[deprecated]
+pub type RTDUpdateUserFullInfoBuilder = UpdateUserFullInfoBuilder;
+
+impl UpdateUserFullInfoBuilder {
     pub fn build(&self) -> UpdateUserFullInfo {
         self.inner.clone()
     }
@@ -8419,7 +8685,7 @@ impl AsRef<UpdateUserFullInfo> for UpdateUserFullInfo {
     }
 }
 
-impl AsRef<UpdateUserFullInfo> for RTDUpdateUserFullInfoBuilder {
+impl AsRef<UpdateUserFullInfo> for UpdateUserFullInfoBuilder {
     fn as_ref(&self) -> &UpdateUserFullInfo {
         &self.inner
     }
@@ -8455,14 +8721,14 @@ impl RObject for UpdateUserPrivacySettingRules {
 impl TDUpdate for UpdateUserPrivacySettingRules {}
 
 impl UpdateUserPrivacySettingRules {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateUserPrivacySettingRulesBuilder {
+    pub fn builder() -> UpdateUserPrivacySettingRulesBuilder {
         let mut inner = UpdateUserPrivacySettingRules::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateUserPrivacySettingRulesBuilder { inner }
+        UpdateUserPrivacySettingRulesBuilder { inner }
     }
 
     pub fn setting(&self) -> &UserPrivacySetting {
@@ -8475,11 +8741,14 @@ impl UpdateUserPrivacySettingRules {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateUserPrivacySettingRulesBuilder {
+pub struct UpdateUserPrivacySettingRulesBuilder {
     inner: UpdateUserPrivacySettingRules,
 }
 
-impl RTDUpdateUserPrivacySettingRulesBuilder {
+#[deprecated]
+pub type RTDUpdateUserPrivacySettingRulesBuilder = UpdateUserPrivacySettingRulesBuilder;
+
+impl UpdateUserPrivacySettingRulesBuilder {
     pub fn build(&self) -> UpdateUserPrivacySettingRules {
         self.inner.clone()
     }
@@ -8501,7 +8770,7 @@ impl AsRef<UpdateUserPrivacySettingRules> for UpdateUserPrivacySettingRules {
     }
 }
 
-impl AsRef<UpdateUserPrivacySettingRules> for RTDUpdateUserPrivacySettingRulesBuilder {
+impl AsRef<UpdateUserPrivacySettingRules> for UpdateUserPrivacySettingRulesBuilder {
     fn as_ref(&self) -> &UpdateUserPrivacySettingRules {
         &self.inner
     }
@@ -8539,14 +8808,14 @@ impl RObject for UpdateUserStatus {
 impl TDUpdate for UpdateUserStatus {}
 
 impl UpdateUserStatus {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateUserStatusBuilder {
+    pub fn builder() -> UpdateUserStatusBuilder {
         let mut inner = UpdateUserStatus::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateUserStatusBuilder { inner }
+        UpdateUserStatusBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -8559,11 +8828,14 @@ impl UpdateUserStatus {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateUserStatusBuilder {
+pub struct UpdateUserStatusBuilder {
     inner: UpdateUserStatus,
 }
 
-impl RTDUpdateUserStatusBuilder {
+#[deprecated]
+pub type RTDUpdateUserStatusBuilder = UpdateUserStatusBuilder;
+
+impl UpdateUserStatusBuilder {
     pub fn build(&self) -> UpdateUserStatus {
         self.inner.clone()
     }
@@ -8585,7 +8857,7 @@ impl AsRef<UpdateUserStatus> for UpdateUserStatus {
     }
 }
 
-impl AsRef<UpdateUserStatus> for RTDUpdateUserStatusBuilder {
+impl AsRef<UpdateUserStatus> for UpdateUserStatusBuilder {
     fn as_ref(&self) -> &UpdateUserStatus {
         &self.inner
     }
@@ -8619,14 +8891,14 @@ impl RObject for UpdateUsersNearby {
 impl TDUpdate for UpdateUsersNearby {}
 
 impl UpdateUsersNearby {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpdateUsersNearbyBuilder {
+    pub fn builder() -> UpdateUsersNearbyBuilder {
         let mut inner = UpdateUsersNearby::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUpdateUsersNearbyBuilder { inner }
+        UpdateUsersNearbyBuilder { inner }
     }
 
     pub fn users_nearby(&self) -> &Vec<ChatNearby> {
@@ -8635,11 +8907,14 @@ impl UpdateUsersNearby {
 }
 
 #[doc(hidden)]
-pub struct RTDUpdateUsersNearbyBuilder {
+pub struct UpdateUsersNearbyBuilder {
     inner: UpdateUsersNearby,
 }
 
-impl RTDUpdateUsersNearbyBuilder {
+#[deprecated]
+pub type RTDUpdateUsersNearbyBuilder = UpdateUsersNearbyBuilder;
+
+impl UpdateUsersNearbyBuilder {
     pub fn build(&self) -> UpdateUsersNearby {
         self.inner.clone()
     }
@@ -8656,7 +8931,7 @@ impl AsRef<UpdateUsersNearby> for UpdateUsersNearby {
     }
 }
 
-impl AsRef<UpdateUsersNearby> for RTDUpdateUsersNearbyBuilder {
+impl AsRef<UpdateUsersNearby> for UpdateUsersNearbyBuilder {
     fn as_ref(&self) -> &UpdateUsersNearby {
         &self.inner
     }

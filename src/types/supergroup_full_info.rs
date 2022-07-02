@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -103,14 +103,14 @@ impl RObject for SupergroupFullInfo {
 }
 
 impl SupergroupFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupFullInfoBuilder {
+    pub fn builder() -> SupergroupFullInfoBuilder {
         let mut inner = SupergroupFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupFullInfoBuilder { inner }
+        SupergroupFullInfoBuilder { inner }
     }
 
     pub fn photo(&self) -> &Option<ChatPhoto> {
@@ -199,11 +199,14 @@ impl SupergroupFullInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupFullInfoBuilder {
+pub struct SupergroupFullInfoBuilder {
     inner: SupergroupFullInfo,
 }
 
-impl RTDSupergroupFullInfoBuilder {
+#[deprecated]
+pub type RTDSupergroupFullInfoBuilder = SupergroupFullInfoBuilder;
+
+impl SupergroupFullInfoBuilder {
     pub fn build(&self) -> SupergroupFullInfo {
         self.inner.clone()
     }
@@ -320,7 +323,7 @@ impl AsRef<SupergroupFullInfo> for SupergroupFullInfo {
     }
 }
 
-impl AsRef<SupergroupFullInfo> for RTDSupergroupFullInfoBuilder {
+impl AsRef<SupergroupFullInfo> for SupergroupFullInfoBuilder {
     fn as_ref(&self) -> &SupergroupFullInfo {
         &self.inner
     }

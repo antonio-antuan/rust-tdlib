@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetChatInviteLinkCounts {
 impl RFunction for GetChatInviteLinkCounts {}
 
 impl GetChatInviteLinkCounts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatInviteLinkCountsBuilder {
+    pub fn builder() -> GetChatInviteLinkCountsBuilder {
         let mut inner = GetChatInviteLinkCounts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatInviteLinkCounts".to_string();
 
-        RTDGetChatInviteLinkCountsBuilder { inner }
+        GetChatInviteLinkCountsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl GetChatInviteLinkCounts {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatInviteLinkCountsBuilder {
+pub struct GetChatInviteLinkCountsBuilder {
     inner: GetChatInviteLinkCounts,
 }
 
-impl RTDGetChatInviteLinkCountsBuilder {
+#[deprecated]
+pub type RTDGetChatInviteLinkCountsBuilder = GetChatInviteLinkCountsBuilder;
+
+impl GetChatInviteLinkCountsBuilder {
     pub fn build(&self) -> GetChatInviteLinkCounts {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetChatInviteLinkCounts> for GetChatInviteLinkCounts {
     }
 }
 
-impl AsRef<GetChatInviteLinkCounts> for RTDGetChatInviteLinkCountsBuilder {
+impl AsRef<GetChatInviteLinkCounts> for GetChatInviteLinkCountsBuilder {
     fn as_ref(&self) -> &GetChatInviteLinkCounts {
         &self.inner
     }

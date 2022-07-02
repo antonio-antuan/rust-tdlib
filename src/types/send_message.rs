@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -51,16 +51,16 @@ impl RObject for SendMessage {
 impl RFunction for SendMessage {}
 
 impl SendMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendMessageBuilder {
+    pub fn builder() -> SendMessageBuilder {
         let mut inner = SendMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendMessage".to_string();
 
-        RTDSendMessageBuilder { inner }
+        SendMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -89,11 +89,14 @@ impl SendMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDSendMessageBuilder {
+pub struct SendMessageBuilder {
     inner: SendMessage,
 }
 
-impl RTDSendMessageBuilder {
+#[deprecated]
+pub type RTDSendMessageBuilder = SendMessageBuilder;
+
+impl SendMessageBuilder {
     pub fn build(&self) -> SendMessage {
         self.inner.clone()
     }
@@ -138,7 +141,7 @@ impl AsRef<SendMessage> for SendMessage {
     }
 }
 
-impl AsRef<SendMessage> for RTDSendMessageBuilder {
+impl AsRef<SendMessage> for SendMessageBuilder {
     fn as_ref(&self) -> &SendMessage {
         &self.inner
     }

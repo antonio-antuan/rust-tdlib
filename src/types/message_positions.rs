@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for MessagePositions {
 }
 
 impl MessagePositions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePositionsBuilder {
+    pub fn builder() -> MessagePositionsBuilder {
         let mut inner = MessagePositions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePositionsBuilder { inner }
+        MessagePositionsBuilder { inner }
     }
 
     pub fn total_count(&self) -> i32 {
@@ -52,11 +52,14 @@ impl MessagePositions {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePositionsBuilder {
+pub struct MessagePositionsBuilder {
     inner: MessagePositions,
 }
 
-impl RTDMessagePositionsBuilder {
+#[deprecated]
+pub type RTDMessagePositionsBuilder = MessagePositionsBuilder;
+
+impl MessagePositionsBuilder {
     pub fn build(&self) -> MessagePositions {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<MessagePositions> for MessagePositions {
     }
 }
 
-impl AsRef<MessagePositions> for RTDMessagePositionsBuilder {
+impl AsRef<MessagePositions> for MessagePositionsBuilder {
     fn as_ref(&self) -> &MessagePositions {
         &self.inner
     }

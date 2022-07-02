@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -72,14 +72,14 @@ impl RObject for ChatEventLogFilters {
 }
 
 impl ChatEventLogFilters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatEventLogFiltersBuilder {
+    pub fn builder() -> ChatEventLogFiltersBuilder {
         let mut inner = ChatEventLogFilters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatEventLogFiltersBuilder { inner }
+        ChatEventLogFiltersBuilder { inner }
     }
 
     pub fn message_edits(&self) -> bool {
@@ -132,11 +132,14 @@ impl ChatEventLogFilters {
 }
 
 #[doc(hidden)]
-pub struct RTDChatEventLogFiltersBuilder {
+pub struct ChatEventLogFiltersBuilder {
     inner: ChatEventLogFilters,
 }
 
-impl RTDChatEventLogFiltersBuilder {
+#[deprecated]
+pub type RTDChatEventLogFiltersBuilder = ChatEventLogFiltersBuilder;
+
+impl ChatEventLogFiltersBuilder {
     pub fn build(&self) -> ChatEventLogFilters {
         self.inner.clone()
     }
@@ -208,7 +211,7 @@ impl AsRef<ChatEventLogFilters> for ChatEventLogFilters {
     }
 }
 
-impl AsRef<ChatEventLogFilters> for RTDChatEventLogFiltersBuilder {
+impl AsRef<ChatEventLogFilters> for ChatEventLogFiltersBuilder {
     fn as_ref(&self) -> &ChatEventLogFilters {
         &self.inner
     }

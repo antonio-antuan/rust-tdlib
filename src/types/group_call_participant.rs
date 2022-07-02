@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -92,14 +92,14 @@ impl RObject for GroupCallParticipant {
 }
 
 impl GroupCallParticipant {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGroupCallParticipantBuilder {
+    pub fn builder() -> GroupCallParticipantBuilder {
         let mut inner = GroupCallParticipant::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGroupCallParticipantBuilder { inner }
+        GroupCallParticipantBuilder { inner }
     }
 
     pub fn participant_id(&self) -> &MessageSender {
@@ -176,11 +176,14 @@ impl GroupCallParticipant {
 }
 
 #[doc(hidden)]
-pub struct RTDGroupCallParticipantBuilder {
+pub struct GroupCallParticipantBuilder {
     inner: GroupCallParticipant,
 }
 
-impl RTDGroupCallParticipantBuilder {
+#[deprecated]
+pub type RTDGroupCallParticipantBuilder = GroupCallParticipantBuilder;
+
+impl GroupCallParticipantBuilder {
     pub fn build(&self) -> GroupCallParticipant {
         self.inner.clone()
     }
@@ -300,7 +303,7 @@ impl AsRef<GroupCallParticipant> for GroupCallParticipant {
     }
 }
 
-impl AsRef<GroupCallParticipant> for RTDGroupCallParticipantBuilder {
+impl AsRef<GroupCallParticipant> for GroupCallParticipantBuilder {
     fn as_ref(&self) -> &GroupCallParticipant {
         &self.inner
     }

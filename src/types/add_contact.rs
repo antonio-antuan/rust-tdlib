@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl RObject for AddContact {
 impl RFunction for AddContact {}
 
 impl AddContact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddContactBuilder {
+    pub fn builder() -> AddContactBuilder {
         let mut inner = AddContact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "addContact".to_string();
 
-        RTDAddContactBuilder { inner }
+        AddContactBuilder { inner }
     }
 
     pub fn contact(&self) -> &Contact {
@@ -57,11 +57,14 @@ impl AddContact {
 }
 
 #[doc(hidden)]
-pub struct RTDAddContactBuilder {
+pub struct AddContactBuilder {
     inner: AddContact,
 }
 
-impl RTDAddContactBuilder {
+#[deprecated]
+pub type RTDAddContactBuilder = AddContactBuilder;
+
+impl AddContactBuilder {
     pub fn build(&self) -> AddContact {
         self.inner.clone()
     }
@@ -83,7 +86,7 @@ impl AsRef<AddContact> for AddContact {
     }
 }
 
-impl AsRef<AddContact> for RTDAddContactBuilder {
+impl AsRef<AddContact> for AddContactBuilder {
     fn as_ref(&self) -> &AddContact {
         &self.inner
     }

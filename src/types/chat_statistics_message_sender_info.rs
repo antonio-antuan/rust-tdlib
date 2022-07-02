@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for ChatStatisticsMessageSenderInfo {
 }
 
 impl ChatStatisticsMessageSenderInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatStatisticsMessageSenderInfoBuilder {
+    pub fn builder() -> ChatStatisticsMessageSenderInfoBuilder {
         let mut inner = ChatStatisticsMessageSenderInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatStatisticsMessageSenderInfoBuilder { inner }
+        ChatStatisticsMessageSenderInfoBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -60,11 +60,14 @@ impl ChatStatisticsMessageSenderInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDChatStatisticsMessageSenderInfoBuilder {
+pub struct ChatStatisticsMessageSenderInfoBuilder {
     inner: ChatStatisticsMessageSenderInfo,
 }
 
-impl RTDChatStatisticsMessageSenderInfoBuilder {
+#[deprecated]
+pub type RTDChatStatisticsMessageSenderInfoBuilder = ChatStatisticsMessageSenderInfoBuilder;
+
+impl ChatStatisticsMessageSenderInfoBuilder {
     pub fn build(&self) -> ChatStatisticsMessageSenderInfo {
         self.inner.clone()
     }
@@ -91,7 +94,7 @@ impl AsRef<ChatStatisticsMessageSenderInfo> for ChatStatisticsMessageSenderInfo 
     }
 }
 
-impl AsRef<ChatStatisticsMessageSenderInfo> for RTDChatStatisticsMessageSenderInfoBuilder {
+impl AsRef<ChatStatisticsMessageSenderInfo> for ChatStatisticsMessageSenderInfoBuilder {
     fn as_ref(&self) -> &ChatStatisticsMessageSenderInfo {
         &self.inner
     }

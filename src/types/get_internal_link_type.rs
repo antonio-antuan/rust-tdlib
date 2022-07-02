@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl TDInternalLinkType for GetInternalLinkType {}
 impl RFunction for GetInternalLinkType {}
 
 impl GetInternalLinkType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetInternalLinkTypeBuilder {
+    pub fn builder() -> GetInternalLinkTypeBuilder {
         let mut inner = GetInternalLinkType::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getInternalLinkType".to_string();
 
-        RTDGetInternalLinkTypeBuilder { inner }
+        GetInternalLinkTypeBuilder { inner }
     }
 
     pub fn link(&self) -> &String {
@@ -53,11 +53,14 @@ impl GetInternalLinkType {
 }
 
 #[doc(hidden)]
-pub struct RTDGetInternalLinkTypeBuilder {
+pub struct GetInternalLinkTypeBuilder {
     inner: GetInternalLinkType,
 }
 
-impl RTDGetInternalLinkTypeBuilder {
+#[deprecated]
+pub type RTDGetInternalLinkTypeBuilder = GetInternalLinkTypeBuilder;
+
+impl GetInternalLinkTypeBuilder {
     pub fn build(&self) -> GetInternalLinkType {
         self.inner.clone()
     }
@@ -74,7 +77,7 @@ impl AsRef<GetInternalLinkType> for GetInternalLinkType {
     }
 }
 
-impl AsRef<GetInternalLinkType> for RTDGetInternalLinkTypeBuilder {
+impl AsRef<GetInternalLinkType> for GetInternalLinkTypeBuilder {
     fn as_ref(&self) -> &GetInternalLinkType {
         &self.inner
     }

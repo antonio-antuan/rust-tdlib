@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for RemoveSavedAnimation {
 impl RFunction for RemoveSavedAnimation {}
 
 impl RemoveSavedAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveSavedAnimationBuilder {
+    pub fn builder() -> RemoveSavedAnimationBuilder {
         let mut inner = RemoveSavedAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeSavedAnimation".to_string();
 
-        RTDRemoveSavedAnimationBuilder { inner }
+        RemoveSavedAnimationBuilder { inner }
     }
 
     pub fn animation(&self) -> &InputFile {
@@ -51,11 +51,14 @@ impl RemoveSavedAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveSavedAnimationBuilder {
+pub struct RemoveSavedAnimationBuilder {
     inner: RemoveSavedAnimation,
 }
 
-impl RTDRemoveSavedAnimationBuilder {
+#[deprecated]
+pub type RTDRemoveSavedAnimationBuilder = RemoveSavedAnimationBuilder;
+
+impl RemoveSavedAnimationBuilder {
     pub fn build(&self) -> RemoveSavedAnimation {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<RemoveSavedAnimation> for RemoveSavedAnimation {
     }
 }
 
-impl AsRef<RemoveSavedAnimation> for RTDRemoveSavedAnimationBuilder {
+impl AsRef<RemoveSavedAnimation> for RemoveSavedAnimationBuilder {
     fn as_ref(&self) -> &RemoveSavedAnimation {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for DeleteChatHistory {
 impl RFunction for DeleteChatHistory {}
 
 impl DeleteChatHistory {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteChatHistoryBuilder {
+    pub fn builder() -> DeleteChatHistoryBuilder {
         let mut inner = DeleteChatHistory::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteChatHistory".to_string();
 
-        RTDDeleteChatHistoryBuilder { inner }
+        DeleteChatHistoryBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl DeleteChatHistory {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteChatHistoryBuilder {
+pub struct DeleteChatHistoryBuilder {
     inner: DeleteChatHistory,
 }
 
-impl RTDDeleteChatHistoryBuilder {
+#[deprecated]
+pub type RTDDeleteChatHistoryBuilder = DeleteChatHistoryBuilder;
+
+impl DeleteChatHistoryBuilder {
     pub fn build(&self) -> DeleteChatHistory {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<DeleteChatHistory> for DeleteChatHistory {
     }
 }
 
-impl AsRef<DeleteChatHistory> for RTDDeleteChatHistoryBuilder {
+impl AsRef<DeleteChatHistory> for DeleteChatHistoryBuilder {
     fn as_ref(&self) -> &DeleteChatHistory {
         &self.inner
     }

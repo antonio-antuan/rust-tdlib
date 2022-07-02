@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetProxyLink {
 impl RFunction for GetProxyLink {}
 
 impl GetProxyLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetProxyLinkBuilder {
+    pub fn builder() -> GetProxyLinkBuilder {
         let mut inner = GetProxyLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getProxyLink".to_string();
 
-        RTDGetProxyLinkBuilder { inner }
+        GetProxyLinkBuilder { inner }
     }
 
     pub fn proxy_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl GetProxyLink {
 }
 
 #[doc(hidden)]
-pub struct RTDGetProxyLinkBuilder {
+pub struct GetProxyLinkBuilder {
     inner: GetProxyLink,
 }
 
-impl RTDGetProxyLinkBuilder {
+#[deprecated]
+pub type RTDGetProxyLinkBuilder = GetProxyLinkBuilder;
+
+impl GetProxyLinkBuilder {
     pub fn build(&self) -> GetProxyLink {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetProxyLink> for GetProxyLink {
     }
 }
 
-impl AsRef<GetProxyLink> for RTDGetProxyLinkBuilder {
+impl AsRef<GetProxyLink> for GetProxyLinkBuilder {
     fn as_ref(&self) -> &GetProxyLink {
         &self.inner
     }

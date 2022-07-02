@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetChatAvailableMessageSenders {
 impl RFunction for GetChatAvailableMessageSenders {}
 
 impl GetChatAvailableMessageSenders {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatAvailableMessageSendersBuilder {
+    pub fn builder() -> GetChatAvailableMessageSendersBuilder {
         let mut inner = GetChatAvailableMessageSenders::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatAvailableMessageSenders".to_string();
 
-        RTDGetChatAvailableMessageSendersBuilder { inner }
+        GetChatAvailableMessageSendersBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl GetChatAvailableMessageSenders {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatAvailableMessageSendersBuilder {
+pub struct GetChatAvailableMessageSendersBuilder {
     inner: GetChatAvailableMessageSenders,
 }
 
-impl RTDGetChatAvailableMessageSendersBuilder {
+#[deprecated]
+pub type RTDGetChatAvailableMessageSendersBuilder = GetChatAvailableMessageSendersBuilder;
+
+impl GetChatAvailableMessageSendersBuilder {
     pub fn build(&self) -> GetChatAvailableMessageSenders {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetChatAvailableMessageSenders> for GetChatAvailableMessageSenders {
     }
 }
 
-impl AsRef<GetChatAvailableMessageSenders> for RTDGetChatAvailableMessageSendersBuilder {
+impl AsRef<GetChatAvailableMessageSenders> for GetChatAvailableMessageSendersBuilder {
     fn as_ref(&self) -> &GetChatAvailableMessageSenders {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -47,16 +47,16 @@ impl RObject for GetInlineQueryResults {
 impl RFunction for GetInlineQueryResults {}
 
 impl GetInlineQueryResults {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetInlineQueryResultsBuilder {
+    pub fn builder() -> GetInlineQueryResultsBuilder {
         let mut inner = GetInlineQueryResults::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getInlineQueryResults".to_string();
 
-        RTDGetInlineQueryResultsBuilder { inner }
+        GetInlineQueryResultsBuilder { inner }
     }
 
     pub fn bot_user_id(&self) -> i64 {
@@ -81,11 +81,14 @@ impl GetInlineQueryResults {
 }
 
 #[doc(hidden)]
-pub struct RTDGetInlineQueryResultsBuilder {
+pub struct GetInlineQueryResultsBuilder {
     inner: GetInlineQueryResults,
 }
 
-impl RTDGetInlineQueryResultsBuilder {
+#[deprecated]
+pub type RTDGetInlineQueryResultsBuilder = GetInlineQueryResultsBuilder;
+
+impl GetInlineQueryResultsBuilder {
     pub fn build(&self) -> GetInlineQueryResults {
         self.inner.clone()
     }
@@ -122,7 +125,7 @@ impl AsRef<GetInlineQueryResults> for GetInlineQueryResults {
     }
 }
 
-impl AsRef<GetInlineQueryResults> for RTDGetInlineQueryResultsBuilder {
+impl AsRef<GetInlineQueryResults> for GetInlineQueryResultsBuilder {
     fn as_ref(&self) -> &GetInlineQueryResults {
         &self.inner
     }

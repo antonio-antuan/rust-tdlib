@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ToggleChatHasProtectedContent {
 impl RFunction for ToggleChatHasProtectedContent {}
 
 impl ToggleChatHasProtectedContent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleChatHasProtectedContentBuilder {
+    pub fn builder() -> ToggleChatHasProtectedContentBuilder {
         let mut inner = ToggleChatHasProtectedContent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleChatHasProtectedContent".to_string();
 
-        RTDToggleChatHasProtectedContentBuilder { inner }
+        ToggleChatHasProtectedContentBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl ToggleChatHasProtectedContent {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleChatHasProtectedContentBuilder {
+pub struct ToggleChatHasProtectedContentBuilder {
     inner: ToggleChatHasProtectedContent,
 }
 
-impl RTDToggleChatHasProtectedContentBuilder {
+#[deprecated]
+pub type RTDToggleChatHasProtectedContentBuilder = ToggleChatHasProtectedContentBuilder;
+
+impl ToggleChatHasProtectedContentBuilder {
     pub fn build(&self) -> ToggleChatHasProtectedContent {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<ToggleChatHasProtectedContent> for ToggleChatHasProtectedContent {
     }
 }
 
-impl AsRef<ToggleChatHasProtectedContent> for RTDToggleChatHasProtectedContentBuilder {
+impl AsRef<ToggleChatHasProtectedContent> for ToggleChatHasProtectedContentBuilder {
     fn as_ref(&self) -> &ToggleChatHasProtectedContent {
         &self.inner
     }

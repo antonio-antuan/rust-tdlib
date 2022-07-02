@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for StorageStatisticsByFileType {
 }
 
 impl StorageStatisticsByFileType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStorageStatisticsByFileTypeBuilder {
+    pub fn builder() -> StorageStatisticsByFileTypeBuilder {
         let mut inner = StorageStatisticsByFileType::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStorageStatisticsByFileTypeBuilder { inner }
+        StorageStatisticsByFileTypeBuilder { inner }
     }
 
     pub fn file_type(&self) -> &FileType {
@@ -60,11 +60,14 @@ impl StorageStatisticsByFileType {
 }
 
 #[doc(hidden)]
-pub struct RTDStorageStatisticsByFileTypeBuilder {
+pub struct StorageStatisticsByFileTypeBuilder {
     inner: StorageStatisticsByFileType,
 }
 
-impl RTDStorageStatisticsByFileTypeBuilder {
+#[deprecated]
+pub type RTDStorageStatisticsByFileTypeBuilder = StorageStatisticsByFileTypeBuilder;
+
+impl StorageStatisticsByFileTypeBuilder {
     pub fn build(&self) -> StorageStatisticsByFileType {
         self.inner.clone()
     }
@@ -91,7 +94,7 @@ impl AsRef<StorageStatisticsByFileType> for StorageStatisticsByFileType {
     }
 }
 
-impl AsRef<StorageStatisticsByFileType> for RTDStorageStatisticsByFileTypeBuilder {
+impl AsRef<StorageStatisticsByFileType> for StorageStatisticsByFileTypeBuilder {
     fn as_ref(&self) -> &StorageStatisticsByFileType {
         &self.inner
     }

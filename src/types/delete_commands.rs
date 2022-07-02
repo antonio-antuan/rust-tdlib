@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for DeleteCommands {
 impl RFunction for DeleteCommands {}
 
 impl DeleteCommands {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteCommandsBuilder {
+    pub fn builder() -> DeleteCommandsBuilder {
         let mut inner = DeleteCommands::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteCommands".to_string();
 
-        RTDDeleteCommandsBuilder { inner }
+        DeleteCommandsBuilder { inner }
     }
 
     pub fn scope(&self) -> &BotCommandScope {
@@ -59,11 +59,14 @@ impl DeleteCommands {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteCommandsBuilder {
+pub struct DeleteCommandsBuilder {
     inner: DeleteCommands,
 }
 
-impl RTDDeleteCommandsBuilder {
+#[deprecated]
+pub type RTDDeleteCommandsBuilder = DeleteCommandsBuilder;
+
+impl DeleteCommandsBuilder {
     pub fn build(&self) -> DeleteCommands {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<DeleteCommands> for DeleteCommands {
     }
 }
 
-impl AsRef<DeleteCommands> for RTDDeleteCommandsBuilder {
+impl AsRef<DeleteCommands> for DeleteCommandsBuilder {
     fn as_ref(&self) -> &DeleteCommands {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for NetworkStatisticsEntry {
 }
 
 impl NetworkStatisticsEntry {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -104,14 +104,14 @@ impl RObject for NetworkStatisticsEntryCall {
 impl TDNetworkStatisticsEntry for NetworkStatisticsEntryCall {}
 
 impl NetworkStatisticsEntryCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNetworkStatisticsEntryCallBuilder {
+    pub fn builder() -> NetworkStatisticsEntryCallBuilder {
         let mut inner = NetworkStatisticsEntryCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNetworkStatisticsEntryCallBuilder { inner }
+        NetworkStatisticsEntryCallBuilder { inner }
     }
 
     pub fn network_type(&self) -> &NetworkType {
@@ -132,11 +132,14 @@ impl NetworkStatisticsEntryCall {
 }
 
 #[doc(hidden)]
-pub struct RTDNetworkStatisticsEntryCallBuilder {
+pub struct NetworkStatisticsEntryCallBuilder {
     inner: NetworkStatisticsEntryCall,
 }
 
-impl RTDNetworkStatisticsEntryCallBuilder {
+#[deprecated]
+pub type RTDNetworkStatisticsEntryCallBuilder = NetworkStatisticsEntryCallBuilder;
+
+impl NetworkStatisticsEntryCallBuilder {
     pub fn build(&self) -> NetworkStatisticsEntryCall {
         self.inner.clone()
     }
@@ -168,7 +171,7 @@ impl AsRef<NetworkStatisticsEntryCall> for NetworkStatisticsEntryCall {
     }
 }
 
-impl AsRef<NetworkStatisticsEntryCall> for RTDNetworkStatisticsEntryCallBuilder {
+impl AsRef<NetworkStatisticsEntryCall> for NetworkStatisticsEntryCallBuilder {
     fn as_ref(&self) -> &NetworkStatisticsEntryCall {
         &self.inner
     }
@@ -214,14 +217,14 @@ impl RObject for NetworkStatisticsEntryFile {
 impl TDNetworkStatisticsEntry for NetworkStatisticsEntryFile {}
 
 impl NetworkStatisticsEntryFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNetworkStatisticsEntryFileBuilder {
+    pub fn builder() -> NetworkStatisticsEntryFileBuilder {
         let mut inner = NetworkStatisticsEntryFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNetworkStatisticsEntryFileBuilder { inner }
+        NetworkStatisticsEntryFileBuilder { inner }
     }
 
     pub fn file_type(&self) -> &FileType {
@@ -242,11 +245,14 @@ impl NetworkStatisticsEntryFile {
 }
 
 #[doc(hidden)]
-pub struct RTDNetworkStatisticsEntryFileBuilder {
+pub struct NetworkStatisticsEntryFileBuilder {
     inner: NetworkStatisticsEntryFile,
 }
 
-impl RTDNetworkStatisticsEntryFileBuilder {
+#[deprecated]
+pub type RTDNetworkStatisticsEntryFileBuilder = NetworkStatisticsEntryFileBuilder;
+
+impl NetworkStatisticsEntryFileBuilder {
     pub fn build(&self) -> NetworkStatisticsEntryFile {
         self.inner.clone()
     }
@@ -278,7 +284,7 @@ impl AsRef<NetworkStatisticsEntryFile> for NetworkStatisticsEntryFile {
     }
 }
 
-impl AsRef<NetworkStatisticsEntryFile> for RTDNetworkStatisticsEntryFileBuilder {
+impl AsRef<NetworkStatisticsEntryFile> for NetworkStatisticsEntryFileBuilder {
     fn as_ref(&self) -> &NetworkStatisticsEntryFile {
         &self.inner
     }

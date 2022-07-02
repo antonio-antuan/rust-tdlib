@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -58,16 +58,16 @@ impl RObject for AnswerInlineQuery {
 impl RFunction for AnswerInlineQuery {}
 
 impl AnswerInlineQuery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAnswerInlineQueryBuilder {
+    pub fn builder() -> AnswerInlineQueryBuilder {
         let mut inner = AnswerInlineQuery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "answerInlineQuery".to_string();
 
-        RTDAnswerInlineQueryBuilder { inner }
+        AnswerInlineQueryBuilder { inner }
     }
 
     pub fn inline_query_id(&self) -> i64 {
@@ -100,11 +100,14 @@ impl AnswerInlineQuery {
 }
 
 #[doc(hidden)]
-pub struct RTDAnswerInlineQueryBuilder {
+pub struct AnswerInlineQueryBuilder {
     inner: AnswerInlineQuery,
 }
 
-impl RTDAnswerInlineQueryBuilder {
+#[deprecated]
+pub type RTDAnswerInlineQueryBuilder = AnswerInlineQueryBuilder;
+
+impl AnswerInlineQueryBuilder {
     pub fn build(&self) -> AnswerInlineQuery {
         self.inner.clone()
     }
@@ -151,7 +154,7 @@ impl AsRef<AnswerInlineQuery> for AnswerInlineQuery {
     }
 }
 
-impl AsRef<AnswerInlineQuery> for RTDAnswerInlineQueryBuilder {
+impl AsRef<AnswerInlineQuery> for AnswerInlineQueryBuilder {
     fn as_ref(&self) -> &AnswerInlineQuery {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -28,14 +28,14 @@ impl RObject for AccountTtl {
 }
 
 impl AccountTtl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAccountTtlBuilder {
+    pub fn builder() -> AccountTtlBuilder {
         let mut inner = AccountTtl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAccountTtlBuilder { inner }
+        AccountTtlBuilder { inner }
     }
 
     pub fn days(&self) -> i32 {
@@ -44,11 +44,14 @@ impl AccountTtl {
 }
 
 #[doc(hidden)]
-pub struct RTDAccountTtlBuilder {
+pub struct AccountTtlBuilder {
     inner: AccountTtl,
 }
 
-impl RTDAccountTtlBuilder {
+#[deprecated]
+pub type RTDAccountTtlBuilder = AccountTtlBuilder;
+
+impl AccountTtlBuilder {
     pub fn build(&self) -> AccountTtl {
         self.inner.clone()
     }
@@ -65,7 +68,7 @@ impl AsRef<AccountTtl> for AccountTtl {
     }
 }
 
-impl AsRef<AccountTtl> for RTDAccountTtlBuilder {
+impl AsRef<AccountTtl> for AccountTtlBuilder {
     fn as_ref(&self) -> &AccountTtl {
         &self.inner
     }

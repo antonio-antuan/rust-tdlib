@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -84,14 +84,14 @@ impl RObject for Supergroup {
 }
 
 impl Supergroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupBuilder {
+    pub fn builder() -> SupergroupBuilder {
         let mut inner = Supergroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupBuilder { inner }
+        SupergroupBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -156,11 +156,14 @@ impl Supergroup {
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupBuilder {
+pub struct SupergroupBuilder {
     inner: Supergroup,
 }
 
-impl RTDSupergroupBuilder {
+#[deprecated]
+pub type RTDSupergroupBuilder = SupergroupBuilder;
+
+impl SupergroupBuilder {
     pub fn build(&self) -> Supergroup {
         self.inner.clone()
     }
@@ -247,7 +250,7 @@ impl AsRef<Supergroup> for Supergroup {
     }
 }
 
-impl AsRef<Supergroup> for RTDSupergroupBuilder {
+impl AsRef<Supergroup> for SupergroupBuilder {
     fn as_ref(&self) -> &Supergroup {
         &self.inner
     }

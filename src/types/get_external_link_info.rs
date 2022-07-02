@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl TDLoginUrlInfo for GetExternalLinkInfo {}
 impl RFunction for GetExternalLinkInfo {}
 
 impl GetExternalLinkInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetExternalLinkInfoBuilder {
+    pub fn builder() -> GetExternalLinkInfoBuilder {
         let mut inner = GetExternalLinkInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getExternalLinkInfo".to_string();
 
-        RTDGetExternalLinkInfoBuilder { inner }
+        GetExternalLinkInfoBuilder { inner }
     }
 
     pub fn link(&self) -> &String {
@@ -53,11 +53,14 @@ impl GetExternalLinkInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDGetExternalLinkInfoBuilder {
+pub struct GetExternalLinkInfoBuilder {
     inner: GetExternalLinkInfo,
 }
 
-impl RTDGetExternalLinkInfoBuilder {
+#[deprecated]
+pub type RTDGetExternalLinkInfoBuilder = GetExternalLinkInfoBuilder;
+
+impl GetExternalLinkInfoBuilder {
     pub fn build(&self) -> GetExternalLinkInfo {
         self.inner.clone()
     }
@@ -74,7 +77,7 @@ impl AsRef<GetExternalLinkInfo> for GetExternalLinkInfo {
     }
 }
 
-impl AsRef<GetExternalLinkInfo> for RTDGetExternalLinkInfoBuilder {
+impl AsRef<GetExternalLinkInfo> for GetExternalLinkInfoBuilder {
     fn as_ref(&self) -> &GetExternalLinkInfo {
         &self.inner
     }

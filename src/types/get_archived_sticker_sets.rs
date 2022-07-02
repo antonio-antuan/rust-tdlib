@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -42,16 +42,16 @@ impl RObject for GetArchivedStickerSets {
 impl RFunction for GetArchivedStickerSets {}
 
 impl GetArchivedStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetArchivedStickerSetsBuilder {
+    pub fn builder() -> GetArchivedStickerSetsBuilder {
         let mut inner = GetArchivedStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getArchivedStickerSets".to_string();
 
-        RTDGetArchivedStickerSetsBuilder { inner }
+        GetArchivedStickerSetsBuilder { inner }
     }
 
     pub fn is_masks(&self) -> bool {
@@ -68,11 +68,14 @@ impl GetArchivedStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDGetArchivedStickerSetsBuilder {
+pub struct GetArchivedStickerSetsBuilder {
     inner: GetArchivedStickerSets,
 }
 
-impl RTDGetArchivedStickerSetsBuilder {
+#[deprecated]
+pub type RTDGetArchivedStickerSetsBuilder = GetArchivedStickerSetsBuilder;
+
+impl GetArchivedStickerSetsBuilder {
     pub fn build(&self) -> GetArchivedStickerSets {
         self.inner.clone()
     }
@@ -99,7 +102,7 @@ impl AsRef<GetArchivedStickerSets> for GetArchivedStickerSets {
     }
 }
 
-impl AsRef<GetArchivedStickerSets> for RTDGetArchivedStickerSetsBuilder {
+impl AsRef<GetArchivedStickerSets> for GetArchivedStickerSetsBuilder {
     fn as_ref(&self) -> &GetArchivedStickerSets {
         &self.inner
     }

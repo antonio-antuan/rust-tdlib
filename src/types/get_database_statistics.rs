@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetDatabaseStatistics {
 impl RFunction for GetDatabaseStatistics {}
 
 impl GetDatabaseStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetDatabaseStatisticsBuilder {
+    pub fn builder() -> GetDatabaseStatisticsBuilder {
         let mut inner = GetDatabaseStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getDatabaseStatistics".to_string();
 
-        RTDGetDatabaseStatisticsBuilder { inner }
+        GetDatabaseStatisticsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetDatabaseStatisticsBuilder {
+pub struct GetDatabaseStatisticsBuilder {
     inner: GetDatabaseStatistics,
 }
 
-impl RTDGetDatabaseStatisticsBuilder {
+#[deprecated]
+pub type RTDGetDatabaseStatisticsBuilder = GetDatabaseStatisticsBuilder;
+
+impl GetDatabaseStatisticsBuilder {
     pub fn build(&self) -> GetDatabaseStatistics {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetDatabaseStatistics> for GetDatabaseStatistics {
     }
 }
 
-impl AsRef<GetDatabaseStatistics> for RTDGetDatabaseStatisticsBuilder {
+impl AsRef<GetDatabaseStatistics> for GetDatabaseStatisticsBuilder {
     fn as_ref(&self) -> &GetDatabaseStatistics {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for EndGroupCallScreenSharing {
 impl RFunction for EndGroupCallScreenSharing {}
 
 impl EndGroupCallScreenSharing {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEndGroupCallScreenSharingBuilder {
+    pub fn builder() -> EndGroupCallScreenSharingBuilder {
         let mut inner = EndGroupCallScreenSharing::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "endGroupCallScreenSharing".to_string();
 
-        RTDEndGroupCallScreenSharingBuilder { inner }
+        EndGroupCallScreenSharingBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl EndGroupCallScreenSharing {
 }
 
 #[doc(hidden)]
-pub struct RTDEndGroupCallScreenSharingBuilder {
+pub struct EndGroupCallScreenSharingBuilder {
     inner: EndGroupCallScreenSharing,
 }
 
-impl RTDEndGroupCallScreenSharingBuilder {
+#[deprecated]
+pub type RTDEndGroupCallScreenSharingBuilder = EndGroupCallScreenSharingBuilder;
+
+impl EndGroupCallScreenSharingBuilder {
     pub fn build(&self) -> EndGroupCallScreenSharing {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<EndGroupCallScreenSharing> for EndGroupCallScreenSharing {
     }
 }
 
-impl AsRef<EndGroupCallScreenSharing> for RTDEndGroupCallScreenSharingBuilder {
+impl AsRef<EndGroupCallScreenSharing> for EndGroupCallScreenSharingBuilder {
     fn as_ref(&self) -> &EndGroupCallScreenSharing {
         &self.inner
     }

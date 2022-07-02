@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for NotificationGroupType {
 }
 
 impl NotificationGroupType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -98,23 +98,26 @@ impl RObject for NotificationGroupTypeCalls {
 impl TDNotificationGroupType for NotificationGroupTypeCalls {}
 
 impl NotificationGroupTypeCalls {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationGroupTypeCallsBuilder {
+    pub fn builder() -> NotificationGroupTypeCallsBuilder {
         let mut inner = NotificationGroupTypeCalls::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationGroupTypeCallsBuilder { inner }
+        NotificationGroupTypeCallsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationGroupTypeCallsBuilder {
+pub struct NotificationGroupTypeCallsBuilder {
     inner: NotificationGroupTypeCalls,
 }
 
-impl RTDNotificationGroupTypeCallsBuilder {
+#[deprecated]
+pub type RTDNotificationGroupTypeCallsBuilder = NotificationGroupTypeCallsBuilder;
+
+impl NotificationGroupTypeCallsBuilder {
     pub fn build(&self) -> NotificationGroupTypeCalls {
         self.inner.clone()
     }
@@ -126,7 +129,7 @@ impl AsRef<NotificationGroupTypeCalls> for NotificationGroupTypeCalls {
     }
 }
 
-impl AsRef<NotificationGroupTypeCalls> for RTDNotificationGroupTypeCallsBuilder {
+impl AsRef<NotificationGroupTypeCalls> for NotificationGroupTypeCallsBuilder {
     fn as_ref(&self) -> &NotificationGroupTypeCalls {
         &self.inner
     }
@@ -156,23 +159,26 @@ impl RObject for NotificationGroupTypeMentions {
 impl TDNotificationGroupType for NotificationGroupTypeMentions {}
 
 impl NotificationGroupTypeMentions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationGroupTypeMentionsBuilder {
+    pub fn builder() -> NotificationGroupTypeMentionsBuilder {
         let mut inner = NotificationGroupTypeMentions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationGroupTypeMentionsBuilder { inner }
+        NotificationGroupTypeMentionsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationGroupTypeMentionsBuilder {
+pub struct NotificationGroupTypeMentionsBuilder {
     inner: NotificationGroupTypeMentions,
 }
 
-impl RTDNotificationGroupTypeMentionsBuilder {
+#[deprecated]
+pub type RTDNotificationGroupTypeMentionsBuilder = NotificationGroupTypeMentionsBuilder;
+
+impl NotificationGroupTypeMentionsBuilder {
     pub fn build(&self) -> NotificationGroupTypeMentions {
         self.inner.clone()
     }
@@ -184,7 +190,7 @@ impl AsRef<NotificationGroupTypeMentions> for NotificationGroupTypeMentions {
     }
 }
 
-impl AsRef<NotificationGroupTypeMentions> for RTDNotificationGroupTypeMentionsBuilder {
+impl AsRef<NotificationGroupTypeMentions> for NotificationGroupTypeMentionsBuilder {
     fn as_ref(&self) -> &NotificationGroupTypeMentions {
         &self.inner
     }
@@ -214,23 +220,26 @@ impl RObject for NotificationGroupTypeMessages {
 impl TDNotificationGroupType for NotificationGroupTypeMessages {}
 
 impl NotificationGroupTypeMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationGroupTypeMessagesBuilder {
+    pub fn builder() -> NotificationGroupTypeMessagesBuilder {
         let mut inner = NotificationGroupTypeMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationGroupTypeMessagesBuilder { inner }
+        NotificationGroupTypeMessagesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationGroupTypeMessagesBuilder {
+pub struct NotificationGroupTypeMessagesBuilder {
     inner: NotificationGroupTypeMessages,
 }
 
-impl RTDNotificationGroupTypeMessagesBuilder {
+#[deprecated]
+pub type RTDNotificationGroupTypeMessagesBuilder = NotificationGroupTypeMessagesBuilder;
+
+impl NotificationGroupTypeMessagesBuilder {
     pub fn build(&self) -> NotificationGroupTypeMessages {
         self.inner.clone()
     }
@@ -242,7 +251,7 @@ impl AsRef<NotificationGroupTypeMessages> for NotificationGroupTypeMessages {
     }
 }
 
-impl AsRef<NotificationGroupTypeMessages> for RTDNotificationGroupTypeMessagesBuilder {
+impl AsRef<NotificationGroupTypeMessages> for NotificationGroupTypeMessagesBuilder {
     fn as_ref(&self) -> &NotificationGroupTypeMessages {
         &self.inner
     }
@@ -272,23 +281,26 @@ impl RObject for NotificationGroupTypeSecretChat {
 impl TDNotificationGroupType for NotificationGroupTypeSecretChat {}
 
 impl NotificationGroupTypeSecretChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationGroupTypeSecretChatBuilder {
+    pub fn builder() -> NotificationGroupTypeSecretChatBuilder {
         let mut inner = NotificationGroupTypeSecretChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationGroupTypeSecretChatBuilder { inner }
+        NotificationGroupTypeSecretChatBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationGroupTypeSecretChatBuilder {
+pub struct NotificationGroupTypeSecretChatBuilder {
     inner: NotificationGroupTypeSecretChat,
 }
 
-impl RTDNotificationGroupTypeSecretChatBuilder {
+#[deprecated]
+pub type RTDNotificationGroupTypeSecretChatBuilder = NotificationGroupTypeSecretChatBuilder;
+
+impl NotificationGroupTypeSecretChatBuilder {
     pub fn build(&self) -> NotificationGroupTypeSecretChat {
         self.inner.clone()
     }
@@ -300,7 +312,7 @@ impl AsRef<NotificationGroupTypeSecretChat> for NotificationGroupTypeSecretChat 
     }
 }
 
-impl AsRef<NotificationGroupTypeSecretChat> for RTDNotificationGroupTypeSecretChatBuilder {
+impl AsRef<NotificationGroupTypeSecretChat> for NotificationGroupTypeSecretChatBuilder {
     fn as_ref(&self) -> &NotificationGroupTypeSecretChat {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SetBotUpdatesStatus {
 impl RFunction for SetBotUpdatesStatus {}
 
 impl SetBotUpdatesStatus {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetBotUpdatesStatusBuilder {
+    pub fn builder() -> SetBotUpdatesStatusBuilder {
         let mut inner = SetBotUpdatesStatus::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setBotUpdatesStatus".to_string();
 
-        RTDSetBotUpdatesStatusBuilder { inner }
+        SetBotUpdatesStatusBuilder { inner }
     }
 
     pub fn pending_update_count(&self) -> i32 {
@@ -59,11 +59,14 @@ impl SetBotUpdatesStatus {
 }
 
 #[doc(hidden)]
-pub struct RTDSetBotUpdatesStatusBuilder {
+pub struct SetBotUpdatesStatusBuilder {
     inner: SetBotUpdatesStatus,
 }
 
-impl RTDSetBotUpdatesStatusBuilder {
+#[deprecated]
+pub type RTDSetBotUpdatesStatusBuilder = SetBotUpdatesStatusBuilder;
+
+impl SetBotUpdatesStatusBuilder {
     pub fn build(&self) -> SetBotUpdatesStatus {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SetBotUpdatesStatus> for SetBotUpdatesStatus {
     }
 }
 
-impl AsRef<SetBotUpdatesStatus> for RTDSetBotUpdatesStatusBuilder {
+impl AsRef<SetBotUpdatesStatus> for SetBotUpdatesStatusBuilder {
     fn as_ref(&self) -> &SetBotUpdatesStatus {
         &self.inner
     }

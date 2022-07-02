@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -45,16 +45,16 @@ impl RObject for BlockMessageSenderFromReplies {
 impl RFunction for BlockMessageSenderFromReplies {}
 
 impl BlockMessageSenderFromReplies {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBlockMessageSenderFromRepliesBuilder {
+    pub fn builder() -> BlockMessageSenderFromRepliesBuilder {
         let mut inner = BlockMessageSenderFromReplies::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "blockMessageSenderFromReplies".to_string();
 
-        RTDBlockMessageSenderFromRepliesBuilder { inner }
+        BlockMessageSenderFromRepliesBuilder { inner }
     }
 
     pub fn message_id(&self) -> i64 {
@@ -75,11 +75,14 @@ impl BlockMessageSenderFromReplies {
 }
 
 #[doc(hidden)]
-pub struct RTDBlockMessageSenderFromRepliesBuilder {
+pub struct BlockMessageSenderFromRepliesBuilder {
     inner: BlockMessageSenderFromReplies,
 }
 
-impl RTDBlockMessageSenderFromRepliesBuilder {
+#[deprecated]
+pub type RTDBlockMessageSenderFromRepliesBuilder = BlockMessageSenderFromRepliesBuilder;
+
+impl BlockMessageSenderFromRepliesBuilder {
     pub fn build(&self) -> BlockMessageSenderFromReplies {
         self.inner.clone()
     }
@@ -111,7 +114,7 @@ impl AsRef<BlockMessageSenderFromReplies> for BlockMessageSenderFromReplies {
     }
 }
 
-impl AsRef<BlockMessageSenderFromReplies> for RTDBlockMessageSenderFromRepliesBuilder {
+impl AsRef<BlockMessageSenderFromReplies> for BlockMessageSenderFromRepliesBuilder {
     fn as_ref(&self) -> &BlockMessageSenderFromReplies {
         &self.inner
     }

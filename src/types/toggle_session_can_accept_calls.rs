@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -38,16 +38,16 @@ impl RObject for ToggleSessionCanAcceptCalls {
 impl RFunction for ToggleSessionCanAcceptCalls {}
 
 impl ToggleSessionCanAcceptCalls {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleSessionCanAcceptCallsBuilder {
+    pub fn builder() -> ToggleSessionCanAcceptCallsBuilder {
         let mut inner = ToggleSessionCanAcceptCalls::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleSessionCanAcceptCalls".to_string();
 
-        RTDToggleSessionCanAcceptCallsBuilder { inner }
+        ToggleSessionCanAcceptCallsBuilder { inner }
     }
 
     pub fn session_id(&self) -> i64 {
@@ -60,11 +60,14 @@ impl ToggleSessionCanAcceptCalls {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleSessionCanAcceptCallsBuilder {
+pub struct ToggleSessionCanAcceptCallsBuilder {
     inner: ToggleSessionCanAcceptCalls,
 }
 
-impl RTDToggleSessionCanAcceptCallsBuilder {
+#[deprecated]
+pub type RTDToggleSessionCanAcceptCallsBuilder = ToggleSessionCanAcceptCallsBuilder;
+
+impl ToggleSessionCanAcceptCallsBuilder {
     pub fn build(&self) -> ToggleSessionCanAcceptCalls {
         self.inner.clone()
     }
@@ -86,7 +89,7 @@ impl AsRef<ToggleSessionCanAcceptCalls> for ToggleSessionCanAcceptCalls {
     }
 }
 
-impl AsRef<ToggleSessionCanAcceptCalls> for RTDToggleSessionCanAcceptCallsBuilder {
+impl AsRef<ToggleSessionCanAcceptCalls> for ToggleSessionCanAcceptCallsBuilder {
     fn as_ref(&self) -> &ToggleSessionCanAcceptCalls {
         &self.inner
     }

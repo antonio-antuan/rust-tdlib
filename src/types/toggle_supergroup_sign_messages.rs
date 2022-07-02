@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ToggleSupergroupSignMessages {
 impl RFunction for ToggleSupergroupSignMessages {}
 
 impl ToggleSupergroupSignMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleSupergroupSignMessagesBuilder {
+    pub fn builder() -> ToggleSupergroupSignMessagesBuilder {
         let mut inner = ToggleSupergroupSignMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleSupergroupSignMessages".to_string();
 
-        RTDToggleSupergroupSignMessagesBuilder { inner }
+        ToggleSupergroupSignMessagesBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl ToggleSupergroupSignMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleSupergroupSignMessagesBuilder {
+pub struct ToggleSupergroupSignMessagesBuilder {
     inner: ToggleSupergroupSignMessages,
 }
 
-impl RTDToggleSupergroupSignMessagesBuilder {
+#[deprecated]
+pub type RTDToggleSupergroupSignMessagesBuilder = ToggleSupergroupSignMessagesBuilder;
+
+impl ToggleSupergroupSignMessagesBuilder {
     pub fn build(&self) -> ToggleSupergroupSignMessages {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<ToggleSupergroupSignMessages> for ToggleSupergroupSignMessages {
     }
 }
 
-impl AsRef<ToggleSupergroupSignMessages> for RTDToggleSupergroupSignMessagesBuilder {
+impl AsRef<ToggleSupergroupSignMessages> for ToggleSupergroupSignMessagesBuilder {
     fn as_ref(&self) -> &ToggleSupergroupSignMessages {
         &self.inner
     }

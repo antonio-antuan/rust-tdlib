@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetGroupCallInviteLink {
 impl RFunction for GetGroupCallInviteLink {}
 
 impl GetGroupCallInviteLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetGroupCallInviteLinkBuilder {
+    pub fn builder() -> GetGroupCallInviteLinkBuilder {
         let mut inner = GetGroupCallInviteLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getGroupCallInviteLink".to_string();
 
-        RTDGetGroupCallInviteLinkBuilder { inner }
+        GetGroupCallInviteLinkBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -59,11 +59,14 @@ impl GetGroupCallInviteLink {
 }
 
 #[doc(hidden)]
-pub struct RTDGetGroupCallInviteLinkBuilder {
+pub struct GetGroupCallInviteLinkBuilder {
     inner: GetGroupCallInviteLink,
 }
 
-impl RTDGetGroupCallInviteLinkBuilder {
+#[deprecated]
+pub type RTDGetGroupCallInviteLinkBuilder = GetGroupCallInviteLinkBuilder;
+
+impl GetGroupCallInviteLinkBuilder {
     pub fn build(&self) -> GetGroupCallInviteLink {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<GetGroupCallInviteLink> for GetGroupCallInviteLink {
     }
 }
 
-impl AsRef<GetGroupCallInviteLink> for RTDGetGroupCallInviteLinkBuilder {
+impl AsRef<GetGroupCallInviteLink> for GetGroupCallInviteLinkBuilder {
     fn as_ref(&self) -> &GetGroupCallInviteLink {
         &self.inner
     }

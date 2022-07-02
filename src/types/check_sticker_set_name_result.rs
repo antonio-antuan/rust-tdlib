@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for CheckStickerSetNameResult {
 }
 
 impl CheckStickerSetNameResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -98,23 +98,27 @@ impl RObject for CheckStickerSetNameResultNameInvalid {
 impl TDCheckStickerSetNameResult for CheckStickerSetNameResultNameInvalid {}
 
 impl CheckStickerSetNameResultNameInvalid {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckStickerSetNameResultNameInvalidBuilder {
+    pub fn builder() -> CheckStickerSetNameResultNameInvalidBuilder {
         let mut inner = CheckStickerSetNameResultNameInvalid::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCheckStickerSetNameResultNameInvalidBuilder { inner }
+        CheckStickerSetNameResultNameInvalidBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCheckStickerSetNameResultNameInvalidBuilder {
+pub struct CheckStickerSetNameResultNameInvalidBuilder {
     inner: CheckStickerSetNameResultNameInvalid,
 }
 
-impl RTDCheckStickerSetNameResultNameInvalidBuilder {
+#[deprecated]
+pub type RTDCheckStickerSetNameResultNameInvalidBuilder =
+    CheckStickerSetNameResultNameInvalidBuilder;
+
+impl CheckStickerSetNameResultNameInvalidBuilder {
     pub fn build(&self) -> CheckStickerSetNameResultNameInvalid {
         self.inner.clone()
     }
@@ -126,9 +130,7 @@ impl AsRef<CheckStickerSetNameResultNameInvalid> for CheckStickerSetNameResultNa
     }
 }
 
-impl AsRef<CheckStickerSetNameResultNameInvalid>
-    for RTDCheckStickerSetNameResultNameInvalidBuilder
-{
+impl AsRef<CheckStickerSetNameResultNameInvalid> for CheckStickerSetNameResultNameInvalidBuilder {
     fn as_ref(&self) -> &CheckStickerSetNameResultNameInvalid {
         &self.inner
     }
@@ -158,23 +160,27 @@ impl RObject for CheckStickerSetNameResultNameOccupied {
 impl TDCheckStickerSetNameResult for CheckStickerSetNameResultNameOccupied {}
 
 impl CheckStickerSetNameResultNameOccupied {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckStickerSetNameResultNameOccupiedBuilder {
+    pub fn builder() -> CheckStickerSetNameResultNameOccupiedBuilder {
         let mut inner = CheckStickerSetNameResultNameOccupied::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCheckStickerSetNameResultNameOccupiedBuilder { inner }
+        CheckStickerSetNameResultNameOccupiedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCheckStickerSetNameResultNameOccupiedBuilder {
+pub struct CheckStickerSetNameResultNameOccupiedBuilder {
     inner: CheckStickerSetNameResultNameOccupied,
 }
 
-impl RTDCheckStickerSetNameResultNameOccupiedBuilder {
+#[deprecated]
+pub type RTDCheckStickerSetNameResultNameOccupiedBuilder =
+    CheckStickerSetNameResultNameOccupiedBuilder;
+
+impl CheckStickerSetNameResultNameOccupiedBuilder {
     pub fn build(&self) -> CheckStickerSetNameResultNameOccupied {
         self.inner.clone()
     }
@@ -186,9 +192,7 @@ impl AsRef<CheckStickerSetNameResultNameOccupied> for CheckStickerSetNameResultN
     }
 }
 
-impl AsRef<CheckStickerSetNameResultNameOccupied>
-    for RTDCheckStickerSetNameResultNameOccupiedBuilder
-{
+impl AsRef<CheckStickerSetNameResultNameOccupied> for CheckStickerSetNameResultNameOccupiedBuilder {
     fn as_ref(&self) -> &CheckStickerSetNameResultNameOccupied {
         &self.inner
     }
@@ -218,23 +222,26 @@ impl RObject for CheckStickerSetNameResultOk {
 impl TDCheckStickerSetNameResult for CheckStickerSetNameResultOk {}
 
 impl CheckStickerSetNameResultOk {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckStickerSetNameResultOkBuilder {
+    pub fn builder() -> CheckStickerSetNameResultOkBuilder {
         let mut inner = CheckStickerSetNameResultOk::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCheckStickerSetNameResultOkBuilder { inner }
+        CheckStickerSetNameResultOkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCheckStickerSetNameResultOkBuilder {
+pub struct CheckStickerSetNameResultOkBuilder {
     inner: CheckStickerSetNameResultOk,
 }
 
-impl RTDCheckStickerSetNameResultOkBuilder {
+#[deprecated]
+pub type RTDCheckStickerSetNameResultOkBuilder = CheckStickerSetNameResultOkBuilder;
+
+impl CheckStickerSetNameResultOkBuilder {
     pub fn build(&self) -> CheckStickerSetNameResultOk {
         self.inner.clone()
     }
@@ -246,7 +253,7 @@ impl AsRef<CheckStickerSetNameResultOk> for CheckStickerSetNameResultOk {
     }
 }
 
-impl AsRef<CheckStickerSetNameResultOk> for RTDCheckStickerSetNameResultOkBuilder {
+impl AsRef<CheckStickerSetNameResultOk> for CheckStickerSetNameResultOkBuilder {
     fn as_ref(&self) -> &CheckStickerSetNameResultOk {
         &self.inner
     }

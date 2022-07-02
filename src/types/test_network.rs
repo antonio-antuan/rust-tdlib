@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for TestNetwork {
 impl RFunction for TestNetwork {}
 
 impl TestNetwork {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestNetworkBuilder {
+    pub fn builder() -> TestNetworkBuilder {
         let mut inner = TestNetwork::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "testNetwork".to_string();
 
-        RTDTestNetworkBuilder { inner }
+        TestNetworkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTestNetworkBuilder {
+pub struct TestNetworkBuilder {
     inner: TestNetwork,
 }
 
-impl RTDTestNetworkBuilder {
+#[deprecated]
+pub type RTDTestNetworkBuilder = TestNetworkBuilder;
+
+impl TestNetworkBuilder {
     pub fn build(&self) -> TestNetwork {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<TestNetwork> for TestNetwork {
     }
 }
 
-impl AsRef<TestNetwork> for RTDTestNetworkBuilder {
+impl AsRef<TestNetwork> for TestNetworkBuilder {
     fn as_ref(&self) -> &TestNetwork {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -47,16 +47,16 @@ impl RObject for CreateNewSupergroupChat {
 impl RFunction for CreateNewSupergroupChat {}
 
 impl CreateNewSupergroupChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateNewSupergroupChatBuilder {
+    pub fn builder() -> CreateNewSupergroupChatBuilder {
         let mut inner = CreateNewSupergroupChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createNewSupergroupChat".to_string();
 
-        RTDCreateNewSupergroupChatBuilder { inner }
+        CreateNewSupergroupChatBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -81,11 +81,14 @@ impl CreateNewSupergroupChat {
 }
 
 #[doc(hidden)]
-pub struct RTDCreateNewSupergroupChatBuilder {
+pub struct CreateNewSupergroupChatBuilder {
     inner: CreateNewSupergroupChat,
 }
 
-impl RTDCreateNewSupergroupChatBuilder {
+#[deprecated]
+pub type RTDCreateNewSupergroupChatBuilder = CreateNewSupergroupChatBuilder;
+
+impl CreateNewSupergroupChatBuilder {
     pub fn build(&self) -> CreateNewSupergroupChat {
         self.inner.clone()
     }
@@ -122,7 +125,7 @@ impl AsRef<CreateNewSupergroupChat> for CreateNewSupergroupChat {
     }
 }
 
-impl AsRef<CreateNewSupergroupChat> for RTDCreateNewSupergroupChatBuilder {
+impl AsRef<CreateNewSupergroupChat> for CreateNewSupergroupChatBuilder {
     fn as_ref(&self) -> &CreateNewSupergroupChat {
         &self.inner
     }

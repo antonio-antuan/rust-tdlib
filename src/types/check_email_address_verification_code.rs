@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for CheckEmailAddressVerificationCode {
 impl RFunction for CheckEmailAddressVerificationCode {}
 
 impl CheckEmailAddressVerificationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckEmailAddressVerificationCodeBuilder {
+    pub fn builder() -> CheckEmailAddressVerificationCodeBuilder {
         let mut inner = CheckEmailAddressVerificationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkEmailAddressVerificationCode".to_string();
 
-        RTDCheckEmailAddressVerificationCodeBuilder { inner }
+        CheckEmailAddressVerificationCodeBuilder { inner }
     }
 
     pub fn code(&self) -> &String {
@@ -51,11 +51,14 @@ impl CheckEmailAddressVerificationCode {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckEmailAddressVerificationCodeBuilder {
+pub struct CheckEmailAddressVerificationCodeBuilder {
     inner: CheckEmailAddressVerificationCode,
 }
 
-impl RTDCheckEmailAddressVerificationCodeBuilder {
+#[deprecated]
+pub type RTDCheckEmailAddressVerificationCodeBuilder = CheckEmailAddressVerificationCodeBuilder;
+
+impl CheckEmailAddressVerificationCodeBuilder {
     pub fn build(&self) -> CheckEmailAddressVerificationCode {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<CheckEmailAddressVerificationCode> for CheckEmailAddressVerificationC
     }
 }
 
-impl AsRef<CheckEmailAddressVerificationCode> for RTDCheckEmailAddressVerificationCodeBuilder {
+impl AsRef<CheckEmailAddressVerificationCode> for CheckEmailAddressVerificationCodeBuilder {
     fn as_ref(&self) -> &CheckEmailAddressVerificationCode {
         &self.inner
     }

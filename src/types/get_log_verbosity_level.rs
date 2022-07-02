@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetLogVerbosityLevel {
 impl RFunction for GetLogVerbosityLevel {}
 
 impl GetLogVerbosityLevel {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetLogVerbosityLevelBuilder {
+    pub fn builder() -> GetLogVerbosityLevelBuilder {
         let mut inner = GetLogVerbosityLevel::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getLogVerbosityLevel".to_string();
 
-        RTDGetLogVerbosityLevelBuilder { inner }
+        GetLogVerbosityLevelBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetLogVerbosityLevelBuilder {
+pub struct GetLogVerbosityLevelBuilder {
     inner: GetLogVerbosityLevel,
 }
 
-impl RTDGetLogVerbosityLevelBuilder {
+#[deprecated]
+pub type RTDGetLogVerbosityLevelBuilder = GetLogVerbosityLevelBuilder;
+
+impl GetLogVerbosityLevelBuilder {
     pub fn build(&self) -> GetLogVerbosityLevel {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetLogVerbosityLevel> for GetLogVerbosityLevel {
     }
 }
 
-impl AsRef<GetLogVerbosityLevel> for RTDGetLogVerbosityLevelBuilder {
+impl AsRef<GetLogVerbosityLevel> for GetLogVerbosityLevelBuilder {
     fn as_ref(&self) -> &GetLogVerbosityLevel {
         &self.inner
     }

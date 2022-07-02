@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -64,7 +64,7 @@ impl RObject for AuthenticationCodeType {
 }
 
 impl AuthenticationCodeType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -107,14 +107,14 @@ impl RObject for AuthenticationCodeTypeCall {
 impl TDAuthenticationCodeType for AuthenticationCodeTypeCall {}
 
 impl AuthenticationCodeTypeCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAuthenticationCodeTypeCallBuilder {
+    pub fn builder() -> AuthenticationCodeTypeCallBuilder {
         let mut inner = AuthenticationCodeTypeCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAuthenticationCodeTypeCallBuilder { inner }
+        AuthenticationCodeTypeCallBuilder { inner }
     }
 
     pub fn length(&self) -> i32 {
@@ -123,11 +123,14 @@ impl AuthenticationCodeTypeCall {
 }
 
 #[doc(hidden)]
-pub struct RTDAuthenticationCodeTypeCallBuilder {
+pub struct AuthenticationCodeTypeCallBuilder {
     inner: AuthenticationCodeTypeCall,
 }
 
-impl RTDAuthenticationCodeTypeCallBuilder {
+#[deprecated]
+pub type RTDAuthenticationCodeTypeCallBuilder = AuthenticationCodeTypeCallBuilder;
+
+impl AuthenticationCodeTypeCallBuilder {
     pub fn build(&self) -> AuthenticationCodeTypeCall {
         self.inner.clone()
     }
@@ -144,7 +147,7 @@ impl AsRef<AuthenticationCodeTypeCall> for AuthenticationCodeTypeCall {
     }
 }
 
-impl AsRef<AuthenticationCodeTypeCall> for RTDAuthenticationCodeTypeCallBuilder {
+impl AsRef<AuthenticationCodeTypeCall> for AuthenticationCodeTypeCallBuilder {
     fn as_ref(&self) -> &AuthenticationCodeTypeCall {
         &self.inner
     }
@@ -178,14 +181,14 @@ impl RObject for AuthenticationCodeTypeFlashCall {
 impl TDAuthenticationCodeType for AuthenticationCodeTypeFlashCall {}
 
 impl AuthenticationCodeTypeFlashCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAuthenticationCodeTypeFlashCallBuilder {
+    pub fn builder() -> AuthenticationCodeTypeFlashCallBuilder {
         let mut inner = AuthenticationCodeTypeFlashCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAuthenticationCodeTypeFlashCallBuilder { inner }
+        AuthenticationCodeTypeFlashCallBuilder { inner }
     }
 
     pub fn pattern(&self) -> &String {
@@ -194,11 +197,14 @@ impl AuthenticationCodeTypeFlashCall {
 }
 
 #[doc(hidden)]
-pub struct RTDAuthenticationCodeTypeFlashCallBuilder {
+pub struct AuthenticationCodeTypeFlashCallBuilder {
     inner: AuthenticationCodeTypeFlashCall,
 }
 
-impl RTDAuthenticationCodeTypeFlashCallBuilder {
+#[deprecated]
+pub type RTDAuthenticationCodeTypeFlashCallBuilder = AuthenticationCodeTypeFlashCallBuilder;
+
+impl AuthenticationCodeTypeFlashCallBuilder {
     pub fn build(&self) -> AuthenticationCodeTypeFlashCall {
         self.inner.clone()
     }
@@ -215,7 +221,7 @@ impl AsRef<AuthenticationCodeTypeFlashCall> for AuthenticationCodeTypeFlashCall 
     }
 }
 
-impl AsRef<AuthenticationCodeTypeFlashCall> for RTDAuthenticationCodeTypeFlashCallBuilder {
+impl AsRef<AuthenticationCodeTypeFlashCall> for AuthenticationCodeTypeFlashCallBuilder {
     fn as_ref(&self) -> &AuthenticationCodeTypeFlashCall {
         &self.inner
     }
@@ -253,14 +259,14 @@ impl RObject for AuthenticationCodeTypeMissedCall {
 impl TDAuthenticationCodeType for AuthenticationCodeTypeMissedCall {}
 
 impl AuthenticationCodeTypeMissedCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAuthenticationCodeTypeMissedCallBuilder {
+    pub fn builder() -> AuthenticationCodeTypeMissedCallBuilder {
         let mut inner = AuthenticationCodeTypeMissedCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAuthenticationCodeTypeMissedCallBuilder { inner }
+        AuthenticationCodeTypeMissedCallBuilder { inner }
     }
 
     pub fn phone_number_prefix(&self) -> &String {
@@ -273,11 +279,14 @@ impl AuthenticationCodeTypeMissedCall {
 }
 
 #[doc(hidden)]
-pub struct RTDAuthenticationCodeTypeMissedCallBuilder {
+pub struct AuthenticationCodeTypeMissedCallBuilder {
     inner: AuthenticationCodeTypeMissedCall,
 }
 
-impl RTDAuthenticationCodeTypeMissedCallBuilder {
+#[deprecated]
+pub type RTDAuthenticationCodeTypeMissedCallBuilder = AuthenticationCodeTypeMissedCallBuilder;
+
+impl AuthenticationCodeTypeMissedCallBuilder {
     pub fn build(&self) -> AuthenticationCodeTypeMissedCall {
         self.inner.clone()
     }
@@ -299,7 +308,7 @@ impl AsRef<AuthenticationCodeTypeMissedCall> for AuthenticationCodeTypeMissedCal
     }
 }
 
-impl AsRef<AuthenticationCodeTypeMissedCall> for RTDAuthenticationCodeTypeMissedCallBuilder {
+impl AsRef<AuthenticationCodeTypeMissedCall> for AuthenticationCodeTypeMissedCallBuilder {
     fn as_ref(&self) -> &AuthenticationCodeTypeMissedCall {
         &self.inner
     }
@@ -333,14 +342,14 @@ impl RObject for AuthenticationCodeTypeSms {
 impl TDAuthenticationCodeType for AuthenticationCodeTypeSms {}
 
 impl AuthenticationCodeTypeSms {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAuthenticationCodeTypeSmsBuilder {
+    pub fn builder() -> AuthenticationCodeTypeSmsBuilder {
         let mut inner = AuthenticationCodeTypeSms::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAuthenticationCodeTypeSmsBuilder { inner }
+        AuthenticationCodeTypeSmsBuilder { inner }
     }
 
     pub fn length(&self) -> i32 {
@@ -349,11 +358,14 @@ impl AuthenticationCodeTypeSms {
 }
 
 #[doc(hidden)]
-pub struct RTDAuthenticationCodeTypeSmsBuilder {
+pub struct AuthenticationCodeTypeSmsBuilder {
     inner: AuthenticationCodeTypeSms,
 }
 
-impl RTDAuthenticationCodeTypeSmsBuilder {
+#[deprecated]
+pub type RTDAuthenticationCodeTypeSmsBuilder = AuthenticationCodeTypeSmsBuilder;
+
+impl AuthenticationCodeTypeSmsBuilder {
     pub fn build(&self) -> AuthenticationCodeTypeSms {
         self.inner.clone()
     }
@@ -370,7 +382,7 @@ impl AsRef<AuthenticationCodeTypeSms> for AuthenticationCodeTypeSms {
     }
 }
 
-impl AsRef<AuthenticationCodeTypeSms> for RTDAuthenticationCodeTypeSmsBuilder {
+impl AsRef<AuthenticationCodeTypeSms> for AuthenticationCodeTypeSmsBuilder {
     fn as_ref(&self) -> &AuthenticationCodeTypeSms {
         &self.inner
     }
@@ -404,14 +416,14 @@ impl RObject for AuthenticationCodeTypeTelegramMessage {
 impl TDAuthenticationCodeType for AuthenticationCodeTypeTelegramMessage {}
 
 impl AuthenticationCodeTypeTelegramMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAuthenticationCodeTypeTelegramMessageBuilder {
+    pub fn builder() -> AuthenticationCodeTypeTelegramMessageBuilder {
         let mut inner = AuthenticationCodeTypeTelegramMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAuthenticationCodeTypeTelegramMessageBuilder { inner }
+        AuthenticationCodeTypeTelegramMessageBuilder { inner }
     }
 
     pub fn length(&self) -> i32 {
@@ -420,11 +432,15 @@ impl AuthenticationCodeTypeTelegramMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDAuthenticationCodeTypeTelegramMessageBuilder {
+pub struct AuthenticationCodeTypeTelegramMessageBuilder {
     inner: AuthenticationCodeTypeTelegramMessage,
 }
 
-impl RTDAuthenticationCodeTypeTelegramMessageBuilder {
+#[deprecated]
+pub type RTDAuthenticationCodeTypeTelegramMessageBuilder =
+    AuthenticationCodeTypeTelegramMessageBuilder;
+
+impl AuthenticationCodeTypeTelegramMessageBuilder {
     pub fn build(&self) -> AuthenticationCodeTypeTelegramMessage {
         self.inner.clone()
     }
@@ -441,9 +457,7 @@ impl AsRef<AuthenticationCodeTypeTelegramMessage> for AuthenticationCodeTypeTele
     }
 }
 
-impl AsRef<AuthenticationCodeTypeTelegramMessage>
-    for RTDAuthenticationCodeTypeTelegramMessageBuilder
-{
+impl AsRef<AuthenticationCodeTypeTelegramMessage> for AuthenticationCodeTypeTelegramMessageBuilder {
     fn as_ref(&self) -> &AuthenticationCodeTypeTelegramMessage {
         &self.inner
     }

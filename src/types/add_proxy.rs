@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -46,16 +46,16 @@ impl RObject for AddProxy {
 impl RFunction for AddProxy {}
 
 impl AddProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddProxyBuilder {
+    pub fn builder() -> AddProxyBuilder {
         let mut inner = AddProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "addProxy".to_string();
 
-        RTDAddProxyBuilder { inner }
+        AddProxyBuilder { inner }
     }
 
     pub fn server(&self) -> &String {
@@ -76,11 +76,14 @@ impl AddProxy {
 }
 
 #[doc(hidden)]
-pub struct RTDAddProxyBuilder {
+pub struct AddProxyBuilder {
     inner: AddProxy,
 }
 
-impl RTDAddProxyBuilder {
+#[deprecated]
+pub type RTDAddProxyBuilder = AddProxyBuilder;
+
+impl AddProxyBuilder {
     pub fn build(&self) -> AddProxy {
         self.inner.clone()
     }
@@ -112,7 +115,7 @@ impl AsRef<AddProxy> for AddProxy {
     }
 }
 
-impl AsRef<AddProxy> for RTDAddProxyBuilder {
+impl AsRef<AddProxy> for AddProxyBuilder {
     fn as_ref(&self) -> &AddProxy {
         &self.inner
     }

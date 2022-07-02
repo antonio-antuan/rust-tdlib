@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetApplicationDownloadLink {
 impl RFunction for GetApplicationDownloadLink {}
 
 impl GetApplicationDownloadLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetApplicationDownloadLinkBuilder {
+    pub fn builder() -> GetApplicationDownloadLinkBuilder {
         let mut inner = GetApplicationDownloadLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getApplicationDownloadLink".to_string();
 
-        RTDGetApplicationDownloadLinkBuilder { inner }
+        GetApplicationDownloadLinkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetApplicationDownloadLinkBuilder {
+pub struct GetApplicationDownloadLinkBuilder {
     inner: GetApplicationDownloadLink,
 }
 
-impl RTDGetApplicationDownloadLinkBuilder {
+#[deprecated]
+pub type RTDGetApplicationDownloadLinkBuilder = GetApplicationDownloadLinkBuilder;
+
+impl GetApplicationDownloadLinkBuilder {
     pub fn build(&self) -> GetApplicationDownloadLink {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetApplicationDownloadLink> for GetApplicationDownloadLink {
     }
 }
 
-impl AsRef<GetApplicationDownloadLink> for RTDGetApplicationDownloadLinkBuilder {
+impl AsRef<GetApplicationDownloadLink> for GetApplicationDownloadLinkBuilder {
     fn as_ref(&self) -> &GetApplicationDownloadLink {
         &self.inner
     }

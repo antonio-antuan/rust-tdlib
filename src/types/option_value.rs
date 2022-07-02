@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -64,7 +64,7 @@ impl RObject for OptionValue {
 }
 
 impl OptionValue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -107,14 +107,14 @@ impl RObject for OptionValueBoolean {
 impl TDOptionValue for OptionValueBoolean {}
 
 impl OptionValueBoolean {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDOptionValueBooleanBuilder {
+    pub fn builder() -> OptionValueBooleanBuilder {
         let mut inner = OptionValueBoolean::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDOptionValueBooleanBuilder { inner }
+        OptionValueBooleanBuilder { inner }
     }
 
     pub fn value(&self) -> bool {
@@ -123,11 +123,14 @@ impl OptionValueBoolean {
 }
 
 #[doc(hidden)]
-pub struct RTDOptionValueBooleanBuilder {
+pub struct OptionValueBooleanBuilder {
     inner: OptionValueBoolean,
 }
 
-impl RTDOptionValueBooleanBuilder {
+#[deprecated]
+pub type RTDOptionValueBooleanBuilder = OptionValueBooleanBuilder;
+
+impl OptionValueBooleanBuilder {
     pub fn build(&self) -> OptionValueBoolean {
         self.inner.clone()
     }
@@ -144,7 +147,7 @@ impl AsRef<OptionValueBoolean> for OptionValueBoolean {
     }
 }
 
-impl AsRef<OptionValueBoolean> for RTDOptionValueBooleanBuilder {
+impl AsRef<OptionValueBoolean> for OptionValueBooleanBuilder {
     fn as_ref(&self) -> &OptionValueBoolean {
         &self.inner
     }
@@ -174,23 +177,26 @@ impl RObject for OptionValueEmpty {
 impl TDOptionValue for OptionValueEmpty {}
 
 impl OptionValueEmpty {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDOptionValueEmptyBuilder {
+    pub fn builder() -> OptionValueEmptyBuilder {
         let mut inner = OptionValueEmpty::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDOptionValueEmptyBuilder { inner }
+        OptionValueEmptyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDOptionValueEmptyBuilder {
+pub struct OptionValueEmptyBuilder {
     inner: OptionValueEmpty,
 }
 
-impl RTDOptionValueEmptyBuilder {
+#[deprecated]
+pub type RTDOptionValueEmptyBuilder = OptionValueEmptyBuilder;
+
+impl OptionValueEmptyBuilder {
     pub fn build(&self) -> OptionValueEmpty {
         self.inner.clone()
     }
@@ -202,7 +208,7 @@ impl AsRef<OptionValueEmpty> for OptionValueEmpty {
     }
 }
 
-impl AsRef<OptionValueEmpty> for RTDOptionValueEmptyBuilder {
+impl AsRef<OptionValueEmpty> for OptionValueEmptyBuilder {
     fn as_ref(&self) -> &OptionValueEmpty {
         &self.inner
     }
@@ -237,14 +243,14 @@ impl RObject for OptionValueInteger {
 impl TDOptionValue for OptionValueInteger {}
 
 impl OptionValueInteger {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDOptionValueIntegerBuilder {
+    pub fn builder() -> OptionValueIntegerBuilder {
         let mut inner = OptionValueInteger::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDOptionValueIntegerBuilder { inner }
+        OptionValueIntegerBuilder { inner }
     }
 
     pub fn value(&self) -> i64 {
@@ -253,11 +259,14 @@ impl OptionValueInteger {
 }
 
 #[doc(hidden)]
-pub struct RTDOptionValueIntegerBuilder {
+pub struct OptionValueIntegerBuilder {
     inner: OptionValueInteger,
 }
 
-impl RTDOptionValueIntegerBuilder {
+#[deprecated]
+pub type RTDOptionValueIntegerBuilder = OptionValueIntegerBuilder;
+
+impl OptionValueIntegerBuilder {
     pub fn build(&self) -> OptionValueInteger {
         self.inner.clone()
     }
@@ -274,7 +283,7 @@ impl AsRef<OptionValueInteger> for OptionValueInteger {
     }
 }
 
-impl AsRef<OptionValueInteger> for RTDOptionValueIntegerBuilder {
+impl AsRef<OptionValueInteger> for OptionValueIntegerBuilder {
     fn as_ref(&self) -> &OptionValueInteger {
         &self.inner
     }
@@ -308,14 +317,14 @@ impl RObject for OptionValueString {
 impl TDOptionValue for OptionValueString {}
 
 impl OptionValueString {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDOptionValueStringBuilder {
+    pub fn builder() -> OptionValueStringBuilder {
         let mut inner = OptionValueString::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDOptionValueStringBuilder { inner }
+        OptionValueStringBuilder { inner }
     }
 
     pub fn value(&self) -> &String {
@@ -324,11 +333,14 @@ impl OptionValueString {
 }
 
 #[doc(hidden)]
-pub struct RTDOptionValueStringBuilder {
+pub struct OptionValueStringBuilder {
     inner: OptionValueString,
 }
 
-impl RTDOptionValueStringBuilder {
+#[deprecated]
+pub type RTDOptionValueStringBuilder = OptionValueStringBuilder;
+
+impl OptionValueStringBuilder {
     pub fn build(&self) -> OptionValueString {
         self.inner.clone()
     }
@@ -345,7 +357,7 @@ impl AsRef<OptionValueString> for OptionValueString {
     }
 }
 
-impl AsRef<OptionValueString> for RTDOptionValueStringBuilder {
+impl AsRef<OptionValueString> for OptionValueStringBuilder {
     fn as_ref(&self) -> &OptionValueString {
         &self.inner
     }

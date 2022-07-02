@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -74,7 +74,7 @@ impl RObject for BotCommandScope {
 }
 
 impl BotCommandScope {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -113,23 +113,27 @@ impl RObject for BotCommandScopeAllChatAdministrators {
 impl TDBotCommandScope for BotCommandScopeAllChatAdministrators {}
 
 impl BotCommandScopeAllChatAdministrators {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandScopeAllChatAdministratorsBuilder {
+    pub fn builder() -> BotCommandScopeAllChatAdministratorsBuilder {
         let mut inner = BotCommandScopeAllChatAdministrators::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandScopeAllChatAdministratorsBuilder { inner }
+        BotCommandScopeAllChatAdministratorsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandScopeAllChatAdministratorsBuilder {
+pub struct BotCommandScopeAllChatAdministratorsBuilder {
     inner: BotCommandScopeAllChatAdministrators,
 }
 
-impl RTDBotCommandScopeAllChatAdministratorsBuilder {
+#[deprecated]
+pub type RTDBotCommandScopeAllChatAdministratorsBuilder =
+    BotCommandScopeAllChatAdministratorsBuilder;
+
+impl BotCommandScopeAllChatAdministratorsBuilder {
     pub fn build(&self) -> BotCommandScopeAllChatAdministrators {
         self.inner.clone()
     }
@@ -141,9 +145,7 @@ impl AsRef<BotCommandScopeAllChatAdministrators> for BotCommandScopeAllChatAdmin
     }
 }
 
-impl AsRef<BotCommandScopeAllChatAdministrators>
-    for RTDBotCommandScopeAllChatAdministratorsBuilder
-{
+impl AsRef<BotCommandScopeAllChatAdministrators> for BotCommandScopeAllChatAdministratorsBuilder {
     fn as_ref(&self) -> &BotCommandScopeAllChatAdministrators {
         &self.inner
     }
@@ -173,23 +175,26 @@ impl RObject for BotCommandScopeAllGroupChats {
 impl TDBotCommandScope for BotCommandScopeAllGroupChats {}
 
 impl BotCommandScopeAllGroupChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandScopeAllGroupChatsBuilder {
+    pub fn builder() -> BotCommandScopeAllGroupChatsBuilder {
         let mut inner = BotCommandScopeAllGroupChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandScopeAllGroupChatsBuilder { inner }
+        BotCommandScopeAllGroupChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandScopeAllGroupChatsBuilder {
+pub struct BotCommandScopeAllGroupChatsBuilder {
     inner: BotCommandScopeAllGroupChats,
 }
 
-impl RTDBotCommandScopeAllGroupChatsBuilder {
+#[deprecated]
+pub type RTDBotCommandScopeAllGroupChatsBuilder = BotCommandScopeAllGroupChatsBuilder;
+
+impl BotCommandScopeAllGroupChatsBuilder {
     pub fn build(&self) -> BotCommandScopeAllGroupChats {
         self.inner.clone()
     }
@@ -201,7 +206,7 @@ impl AsRef<BotCommandScopeAllGroupChats> for BotCommandScopeAllGroupChats {
     }
 }
 
-impl AsRef<BotCommandScopeAllGroupChats> for RTDBotCommandScopeAllGroupChatsBuilder {
+impl AsRef<BotCommandScopeAllGroupChats> for BotCommandScopeAllGroupChatsBuilder {
     fn as_ref(&self) -> &BotCommandScopeAllGroupChats {
         &self.inner
     }
@@ -231,23 +236,26 @@ impl RObject for BotCommandScopeAllPrivateChats {
 impl TDBotCommandScope for BotCommandScopeAllPrivateChats {}
 
 impl BotCommandScopeAllPrivateChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandScopeAllPrivateChatsBuilder {
+    pub fn builder() -> BotCommandScopeAllPrivateChatsBuilder {
         let mut inner = BotCommandScopeAllPrivateChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandScopeAllPrivateChatsBuilder { inner }
+        BotCommandScopeAllPrivateChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandScopeAllPrivateChatsBuilder {
+pub struct BotCommandScopeAllPrivateChatsBuilder {
     inner: BotCommandScopeAllPrivateChats,
 }
 
-impl RTDBotCommandScopeAllPrivateChatsBuilder {
+#[deprecated]
+pub type RTDBotCommandScopeAllPrivateChatsBuilder = BotCommandScopeAllPrivateChatsBuilder;
+
+impl BotCommandScopeAllPrivateChatsBuilder {
     pub fn build(&self) -> BotCommandScopeAllPrivateChats {
         self.inner.clone()
     }
@@ -259,7 +267,7 @@ impl AsRef<BotCommandScopeAllPrivateChats> for BotCommandScopeAllPrivateChats {
     }
 }
 
-impl AsRef<BotCommandScopeAllPrivateChats> for RTDBotCommandScopeAllPrivateChatsBuilder {
+impl AsRef<BotCommandScopeAllPrivateChats> for BotCommandScopeAllPrivateChatsBuilder {
     fn as_ref(&self) -> &BotCommandScopeAllPrivateChats {
         &self.inner
     }
@@ -293,14 +301,14 @@ impl RObject for BotCommandScopeChat {
 impl TDBotCommandScope for BotCommandScopeChat {}
 
 impl BotCommandScopeChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandScopeChatBuilder {
+    pub fn builder() -> BotCommandScopeChatBuilder {
         let mut inner = BotCommandScopeChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandScopeChatBuilder { inner }
+        BotCommandScopeChatBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -309,11 +317,14 @@ impl BotCommandScopeChat {
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandScopeChatBuilder {
+pub struct BotCommandScopeChatBuilder {
     inner: BotCommandScopeChat,
 }
 
-impl RTDBotCommandScopeChatBuilder {
+#[deprecated]
+pub type RTDBotCommandScopeChatBuilder = BotCommandScopeChatBuilder;
+
+impl BotCommandScopeChatBuilder {
     pub fn build(&self) -> BotCommandScopeChat {
         self.inner.clone()
     }
@@ -330,7 +341,7 @@ impl AsRef<BotCommandScopeChat> for BotCommandScopeChat {
     }
 }
 
-impl AsRef<BotCommandScopeChat> for RTDBotCommandScopeChatBuilder {
+impl AsRef<BotCommandScopeChat> for BotCommandScopeChatBuilder {
     fn as_ref(&self) -> &BotCommandScopeChat {
         &self.inner
     }
@@ -364,14 +375,14 @@ impl RObject for BotCommandScopeChatAdministrators {
 impl TDBotCommandScope for BotCommandScopeChatAdministrators {}
 
 impl BotCommandScopeChatAdministrators {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandScopeChatAdministratorsBuilder {
+    pub fn builder() -> BotCommandScopeChatAdministratorsBuilder {
         let mut inner = BotCommandScopeChatAdministrators::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandScopeChatAdministratorsBuilder { inner }
+        BotCommandScopeChatAdministratorsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -380,11 +391,14 @@ impl BotCommandScopeChatAdministrators {
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandScopeChatAdministratorsBuilder {
+pub struct BotCommandScopeChatAdministratorsBuilder {
     inner: BotCommandScopeChatAdministrators,
 }
 
-impl RTDBotCommandScopeChatAdministratorsBuilder {
+#[deprecated]
+pub type RTDBotCommandScopeChatAdministratorsBuilder = BotCommandScopeChatAdministratorsBuilder;
+
+impl BotCommandScopeChatAdministratorsBuilder {
     pub fn build(&self) -> BotCommandScopeChatAdministrators {
         self.inner.clone()
     }
@@ -401,7 +415,7 @@ impl AsRef<BotCommandScopeChatAdministrators> for BotCommandScopeChatAdministrat
     }
 }
 
-impl AsRef<BotCommandScopeChatAdministrators> for RTDBotCommandScopeChatAdministratorsBuilder {
+impl AsRef<BotCommandScopeChatAdministrators> for BotCommandScopeChatAdministratorsBuilder {
     fn as_ref(&self) -> &BotCommandScopeChatAdministrators {
         &self.inner
     }
@@ -439,14 +453,14 @@ impl RObject for BotCommandScopeChatMember {
 impl TDBotCommandScope for BotCommandScopeChatMember {}
 
 impl BotCommandScopeChatMember {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandScopeChatMemberBuilder {
+    pub fn builder() -> BotCommandScopeChatMemberBuilder {
         let mut inner = BotCommandScopeChatMember::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandScopeChatMemberBuilder { inner }
+        BotCommandScopeChatMemberBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -459,11 +473,14 @@ impl BotCommandScopeChatMember {
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandScopeChatMemberBuilder {
+pub struct BotCommandScopeChatMemberBuilder {
     inner: BotCommandScopeChatMember,
 }
 
-impl RTDBotCommandScopeChatMemberBuilder {
+#[deprecated]
+pub type RTDBotCommandScopeChatMemberBuilder = BotCommandScopeChatMemberBuilder;
+
+impl BotCommandScopeChatMemberBuilder {
     pub fn build(&self) -> BotCommandScopeChatMember {
         self.inner.clone()
     }
@@ -485,7 +502,7 @@ impl AsRef<BotCommandScopeChatMember> for BotCommandScopeChatMember {
     }
 }
 
-impl AsRef<BotCommandScopeChatMember> for RTDBotCommandScopeChatMemberBuilder {
+impl AsRef<BotCommandScopeChatMember> for BotCommandScopeChatMemberBuilder {
     fn as_ref(&self) -> &BotCommandScopeChatMember {
         &self.inner
     }
@@ -515,23 +532,26 @@ impl RObject for BotCommandScopeDefault {
 impl TDBotCommandScope for BotCommandScopeDefault {}
 
 impl BotCommandScopeDefault {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandScopeDefaultBuilder {
+    pub fn builder() -> BotCommandScopeDefaultBuilder {
         let mut inner = BotCommandScopeDefault::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandScopeDefaultBuilder { inner }
+        BotCommandScopeDefaultBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandScopeDefaultBuilder {
+pub struct BotCommandScopeDefaultBuilder {
     inner: BotCommandScopeDefault,
 }
 
-impl RTDBotCommandScopeDefaultBuilder {
+#[deprecated]
+pub type RTDBotCommandScopeDefaultBuilder = BotCommandScopeDefaultBuilder;
+
+impl BotCommandScopeDefaultBuilder {
     pub fn build(&self) -> BotCommandScopeDefault {
         self.inner.clone()
     }
@@ -543,7 +563,7 @@ impl AsRef<BotCommandScopeDefault> for BotCommandScopeDefault {
     }
 }
 
-impl AsRef<BotCommandScopeDefault> for RTDBotCommandScopeDefaultBuilder {
+impl AsRef<BotCommandScopeDefault> for BotCommandScopeDefaultBuilder {
     fn as_ref(&self) -> &BotCommandScopeDefault {
         &self.inner
     }

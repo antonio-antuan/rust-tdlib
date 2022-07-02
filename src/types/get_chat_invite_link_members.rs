@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -43,16 +43,16 @@ impl RObject for GetChatInviteLinkMembers {
 impl RFunction for GetChatInviteLinkMembers {}
 
 impl GetChatInviteLinkMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatInviteLinkMembersBuilder {
+    pub fn builder() -> GetChatInviteLinkMembersBuilder {
         let mut inner = GetChatInviteLinkMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatInviteLinkMembers".to_string();
 
-        RTDGetChatInviteLinkMembersBuilder { inner }
+        GetChatInviteLinkMembersBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -73,11 +73,14 @@ impl GetChatInviteLinkMembers {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatInviteLinkMembersBuilder {
+pub struct GetChatInviteLinkMembersBuilder {
     inner: GetChatInviteLinkMembers,
 }
 
-impl RTDGetChatInviteLinkMembersBuilder {
+#[deprecated]
+pub type RTDGetChatInviteLinkMembersBuilder = GetChatInviteLinkMembersBuilder;
+
+impl GetChatInviteLinkMembersBuilder {
     pub fn build(&self) -> GetChatInviteLinkMembers {
         self.inner.clone()
     }
@@ -109,7 +112,7 @@ impl AsRef<GetChatInviteLinkMembers> for GetChatInviteLinkMembers {
     }
 }
 
-impl AsRef<GetChatInviteLinkMembers> for RTDGetChatInviteLinkMembersBuilder {
+impl AsRef<GetChatInviteLinkMembers> for GetChatInviteLinkMembersBuilder {
     fn as_ref(&self) -> &GetChatInviteLinkMembers {
         &self.inner
     }

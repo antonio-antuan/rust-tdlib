@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for RecoverPassword {
 impl RFunction for RecoverPassword {}
 
 impl RecoverPassword {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRecoverPasswordBuilder {
+    pub fn builder() -> RecoverPasswordBuilder {
         let mut inner = RecoverPassword::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "recoverPassword".to_string();
 
-        RTDRecoverPasswordBuilder { inner }
+        RecoverPasswordBuilder { inner }
     }
 
     pub fn recovery_code(&self) -> &String {
@@ -67,11 +67,14 @@ impl RecoverPassword {
 }
 
 #[doc(hidden)]
-pub struct RTDRecoverPasswordBuilder {
+pub struct RecoverPasswordBuilder {
     inner: RecoverPassword,
 }
 
-impl RTDRecoverPasswordBuilder {
+#[deprecated]
+pub type RTDRecoverPasswordBuilder = RecoverPasswordBuilder;
+
+impl RecoverPasswordBuilder {
     pub fn build(&self) -> RecoverPassword {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<RecoverPassword> for RecoverPassword {
     }
 }
 
-impl AsRef<RecoverPassword> for RTDRecoverPasswordBuilder {
+impl AsRef<RecoverPassword> for RecoverPasswordBuilder {
     fn as_ref(&self) -> &RecoverPassword {
         &self.inner
     }

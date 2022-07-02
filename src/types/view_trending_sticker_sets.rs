@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,16 +34,16 @@ impl RObject for ViewTrendingStickerSets {
 impl RFunction for ViewTrendingStickerSets {}
 
 impl ViewTrendingStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDViewTrendingStickerSetsBuilder {
+    pub fn builder() -> ViewTrendingStickerSetsBuilder {
         let mut inner = ViewTrendingStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "viewTrendingStickerSets".to_string();
 
-        RTDViewTrendingStickerSetsBuilder { inner }
+        ViewTrendingStickerSetsBuilder { inner }
     }
 
     pub fn sticker_set_ids(&self) -> &Vec<i64> {
@@ -52,11 +52,14 @@ impl ViewTrendingStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDViewTrendingStickerSetsBuilder {
+pub struct ViewTrendingStickerSetsBuilder {
     inner: ViewTrendingStickerSets,
 }
 
-impl RTDViewTrendingStickerSetsBuilder {
+#[deprecated]
+pub type RTDViewTrendingStickerSetsBuilder = ViewTrendingStickerSetsBuilder;
+
+impl ViewTrendingStickerSetsBuilder {
     pub fn build(&self) -> ViewTrendingStickerSets {
         self.inner.clone()
     }
@@ -73,7 +76,7 @@ impl AsRef<ViewTrendingStickerSets> for ViewTrendingStickerSets {
     }
 }
 
-impl AsRef<ViewTrendingStickerSets> for RTDViewTrendingStickerSetsBuilder {
+impl AsRef<ViewTrendingStickerSets> for ViewTrendingStickerSetsBuilder {
     fn as_ref(&self) -> &ViewTrendingStickerSets {
         &self.inner
     }

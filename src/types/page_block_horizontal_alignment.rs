@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -54,7 +54,7 @@ impl RObject for PageBlockHorizontalAlignment {
 }
 
 impl PageBlockHorizontalAlignment {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -93,23 +93,26 @@ impl RObject for PageBlockHorizontalAlignmentCenter {
 impl TDPageBlockHorizontalAlignment for PageBlockHorizontalAlignmentCenter {}
 
 impl PageBlockHorizontalAlignmentCenter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockHorizontalAlignmentCenterBuilder {
+    pub fn builder() -> PageBlockHorizontalAlignmentCenterBuilder {
         let mut inner = PageBlockHorizontalAlignmentCenter::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockHorizontalAlignmentCenterBuilder { inner }
+        PageBlockHorizontalAlignmentCenterBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockHorizontalAlignmentCenterBuilder {
+pub struct PageBlockHorizontalAlignmentCenterBuilder {
     inner: PageBlockHorizontalAlignmentCenter,
 }
 
-impl RTDPageBlockHorizontalAlignmentCenterBuilder {
+#[deprecated]
+pub type RTDPageBlockHorizontalAlignmentCenterBuilder = PageBlockHorizontalAlignmentCenterBuilder;
+
+impl PageBlockHorizontalAlignmentCenterBuilder {
     pub fn build(&self) -> PageBlockHorizontalAlignmentCenter {
         self.inner.clone()
     }
@@ -121,7 +124,7 @@ impl AsRef<PageBlockHorizontalAlignmentCenter> for PageBlockHorizontalAlignmentC
     }
 }
 
-impl AsRef<PageBlockHorizontalAlignmentCenter> for RTDPageBlockHorizontalAlignmentCenterBuilder {
+impl AsRef<PageBlockHorizontalAlignmentCenter> for PageBlockHorizontalAlignmentCenterBuilder {
     fn as_ref(&self) -> &PageBlockHorizontalAlignmentCenter {
         &self.inner
     }
@@ -151,23 +154,26 @@ impl RObject for PageBlockHorizontalAlignmentLeft {
 impl TDPageBlockHorizontalAlignment for PageBlockHorizontalAlignmentLeft {}
 
 impl PageBlockHorizontalAlignmentLeft {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockHorizontalAlignmentLeftBuilder {
+    pub fn builder() -> PageBlockHorizontalAlignmentLeftBuilder {
         let mut inner = PageBlockHorizontalAlignmentLeft::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockHorizontalAlignmentLeftBuilder { inner }
+        PageBlockHorizontalAlignmentLeftBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockHorizontalAlignmentLeftBuilder {
+pub struct PageBlockHorizontalAlignmentLeftBuilder {
     inner: PageBlockHorizontalAlignmentLeft,
 }
 
-impl RTDPageBlockHorizontalAlignmentLeftBuilder {
+#[deprecated]
+pub type RTDPageBlockHorizontalAlignmentLeftBuilder = PageBlockHorizontalAlignmentLeftBuilder;
+
+impl PageBlockHorizontalAlignmentLeftBuilder {
     pub fn build(&self) -> PageBlockHorizontalAlignmentLeft {
         self.inner.clone()
     }
@@ -179,7 +185,7 @@ impl AsRef<PageBlockHorizontalAlignmentLeft> for PageBlockHorizontalAlignmentLef
     }
 }
 
-impl AsRef<PageBlockHorizontalAlignmentLeft> for RTDPageBlockHorizontalAlignmentLeftBuilder {
+impl AsRef<PageBlockHorizontalAlignmentLeft> for PageBlockHorizontalAlignmentLeftBuilder {
     fn as_ref(&self) -> &PageBlockHorizontalAlignmentLeft {
         &self.inner
     }
@@ -209,23 +215,26 @@ impl RObject for PageBlockHorizontalAlignmentRight {
 impl TDPageBlockHorizontalAlignment for PageBlockHorizontalAlignmentRight {}
 
 impl PageBlockHorizontalAlignmentRight {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockHorizontalAlignmentRightBuilder {
+    pub fn builder() -> PageBlockHorizontalAlignmentRightBuilder {
         let mut inner = PageBlockHorizontalAlignmentRight::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockHorizontalAlignmentRightBuilder { inner }
+        PageBlockHorizontalAlignmentRightBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockHorizontalAlignmentRightBuilder {
+pub struct PageBlockHorizontalAlignmentRightBuilder {
     inner: PageBlockHorizontalAlignmentRight,
 }
 
-impl RTDPageBlockHorizontalAlignmentRightBuilder {
+#[deprecated]
+pub type RTDPageBlockHorizontalAlignmentRightBuilder = PageBlockHorizontalAlignmentRightBuilder;
+
+impl PageBlockHorizontalAlignmentRightBuilder {
     pub fn build(&self) -> PageBlockHorizontalAlignmentRight {
         self.inner.clone()
     }
@@ -237,7 +246,7 @@ impl AsRef<PageBlockHorizontalAlignmentRight> for PageBlockHorizontalAlignmentRi
     }
 }
 
-impl AsRef<PageBlockHorizontalAlignmentRight> for RTDPageBlockHorizontalAlignmentRightBuilder {
+impl AsRef<PageBlockHorizontalAlignmentRight> for PageBlockHorizontalAlignmentRightBuilder {
     fn as_ref(&self) -> &PageBlockHorizontalAlignmentRight {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for DisableProxy {
 impl RFunction for DisableProxy {}
 
 impl DisableProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDisableProxyBuilder {
+    pub fn builder() -> DisableProxyBuilder {
         let mut inner = DisableProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "disableProxy".to_string();
 
-        RTDDisableProxyBuilder { inner }
+        DisableProxyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDDisableProxyBuilder {
+pub struct DisableProxyBuilder {
     inner: DisableProxy,
 }
 
-impl RTDDisableProxyBuilder {
+#[deprecated]
+pub type RTDDisableProxyBuilder = DisableProxyBuilder;
+
+impl DisableProxyBuilder {
     pub fn build(&self) -> DisableProxy {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<DisableProxy> for DisableProxy {
     }
 }
 
-impl AsRef<DisableProxy> for RTDDisableProxyBuilder {
+impl AsRef<DisableProxy> for DisableProxyBuilder {
     fn as_ref(&self) -> &DisableProxy {
         &self.inner
     }

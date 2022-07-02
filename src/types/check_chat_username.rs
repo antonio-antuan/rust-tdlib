@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -39,16 +39,16 @@ impl TDCheckChatUsernameResult for CheckChatUsername {}
 impl RFunction for CheckChatUsername {}
 
 impl CheckChatUsername {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckChatUsernameBuilder {
+    pub fn builder() -> CheckChatUsernameBuilder {
         let mut inner = CheckChatUsername::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkChatUsername".to_string();
 
-        RTDCheckChatUsernameBuilder { inner }
+        CheckChatUsernameBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -61,11 +61,14 @@ impl CheckChatUsername {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckChatUsernameBuilder {
+pub struct CheckChatUsernameBuilder {
     inner: CheckChatUsername,
 }
 
-impl RTDCheckChatUsernameBuilder {
+#[deprecated]
+pub type RTDCheckChatUsernameBuilder = CheckChatUsernameBuilder;
+
+impl CheckChatUsernameBuilder {
     pub fn build(&self) -> CheckChatUsername {
         self.inner.clone()
     }
@@ -87,7 +90,7 @@ impl AsRef<CheckChatUsername> for CheckChatUsername {
     }
 }
 
-impl AsRef<CheckChatUsername> for RTDCheckChatUsernameBuilder {
+impl AsRef<CheckChatUsername> for CheckChatUsernameBuilder {
     fn as_ref(&self) -> &CheckChatUsername {
         &self.inner
     }

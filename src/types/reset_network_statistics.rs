@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for ResetNetworkStatistics {
 impl RFunction for ResetNetworkStatistics {}
 
 impl ResetNetworkStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResetNetworkStatisticsBuilder {
+    pub fn builder() -> ResetNetworkStatisticsBuilder {
         let mut inner = ResetNetworkStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "resetNetworkStatistics".to_string();
 
-        RTDResetNetworkStatisticsBuilder { inner }
+        ResetNetworkStatisticsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDResetNetworkStatisticsBuilder {
+pub struct ResetNetworkStatisticsBuilder {
     inner: ResetNetworkStatistics,
 }
 
-impl RTDResetNetworkStatisticsBuilder {
+#[deprecated]
+pub type RTDResetNetworkStatisticsBuilder = ResetNetworkStatisticsBuilder;
+
+impl ResetNetworkStatisticsBuilder {
     pub fn build(&self) -> ResetNetworkStatistics {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ResetNetworkStatistics> for ResetNetworkStatistics {
     }
 }
 
-impl AsRef<ResetNetworkStatistics> for RTDResetNetworkStatisticsBuilder {
+impl AsRef<ResetNetworkStatistics> for ResetNetworkStatisticsBuilder {
     fn as_ref(&self) -> &ResetNetworkStatistics {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -129,7 +129,7 @@ impl RObject for TextEntityType {
 }
 
 impl TextEntityType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -168,23 +168,26 @@ impl RObject for TextEntityTypeBankCardNumber {
 impl TDTextEntityType for TextEntityTypeBankCardNumber {}
 
 impl TextEntityTypeBankCardNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeBankCardNumberBuilder {
+    pub fn builder() -> TextEntityTypeBankCardNumberBuilder {
         let mut inner = TextEntityTypeBankCardNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeBankCardNumberBuilder { inner }
+        TextEntityTypeBankCardNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeBankCardNumberBuilder {
+pub struct TextEntityTypeBankCardNumberBuilder {
     inner: TextEntityTypeBankCardNumber,
 }
 
-impl RTDTextEntityTypeBankCardNumberBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeBankCardNumberBuilder = TextEntityTypeBankCardNumberBuilder;
+
+impl TextEntityTypeBankCardNumberBuilder {
     pub fn build(&self) -> TextEntityTypeBankCardNumber {
         self.inner.clone()
     }
@@ -196,7 +199,7 @@ impl AsRef<TextEntityTypeBankCardNumber> for TextEntityTypeBankCardNumber {
     }
 }
 
-impl AsRef<TextEntityTypeBankCardNumber> for RTDTextEntityTypeBankCardNumberBuilder {
+impl AsRef<TextEntityTypeBankCardNumber> for TextEntityTypeBankCardNumberBuilder {
     fn as_ref(&self) -> &TextEntityTypeBankCardNumber {
         &self.inner
     }
@@ -226,23 +229,26 @@ impl RObject for TextEntityTypeBold {
 impl TDTextEntityType for TextEntityTypeBold {}
 
 impl TextEntityTypeBold {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeBoldBuilder {
+    pub fn builder() -> TextEntityTypeBoldBuilder {
         let mut inner = TextEntityTypeBold::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeBoldBuilder { inner }
+        TextEntityTypeBoldBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeBoldBuilder {
+pub struct TextEntityTypeBoldBuilder {
     inner: TextEntityTypeBold,
 }
 
-impl RTDTextEntityTypeBoldBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeBoldBuilder = TextEntityTypeBoldBuilder;
+
+impl TextEntityTypeBoldBuilder {
     pub fn build(&self) -> TextEntityTypeBold {
         self.inner.clone()
     }
@@ -254,7 +260,7 @@ impl AsRef<TextEntityTypeBold> for TextEntityTypeBold {
     }
 }
 
-impl AsRef<TextEntityTypeBold> for RTDTextEntityTypeBoldBuilder {
+impl AsRef<TextEntityTypeBold> for TextEntityTypeBoldBuilder {
     fn as_ref(&self) -> &TextEntityTypeBold {
         &self.inner
     }
@@ -284,23 +290,26 @@ impl RObject for TextEntityTypeBotCommand {
 impl TDTextEntityType for TextEntityTypeBotCommand {}
 
 impl TextEntityTypeBotCommand {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeBotCommandBuilder {
+    pub fn builder() -> TextEntityTypeBotCommandBuilder {
         let mut inner = TextEntityTypeBotCommand::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeBotCommandBuilder { inner }
+        TextEntityTypeBotCommandBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeBotCommandBuilder {
+pub struct TextEntityTypeBotCommandBuilder {
     inner: TextEntityTypeBotCommand,
 }
 
-impl RTDTextEntityTypeBotCommandBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeBotCommandBuilder = TextEntityTypeBotCommandBuilder;
+
+impl TextEntityTypeBotCommandBuilder {
     pub fn build(&self) -> TextEntityTypeBotCommand {
         self.inner.clone()
     }
@@ -312,7 +321,7 @@ impl AsRef<TextEntityTypeBotCommand> for TextEntityTypeBotCommand {
     }
 }
 
-impl AsRef<TextEntityTypeBotCommand> for RTDTextEntityTypeBotCommandBuilder {
+impl AsRef<TextEntityTypeBotCommand> for TextEntityTypeBotCommandBuilder {
     fn as_ref(&self) -> &TextEntityTypeBotCommand {
         &self.inner
     }
@@ -342,23 +351,26 @@ impl RObject for TextEntityTypeCashtag {
 impl TDTextEntityType for TextEntityTypeCashtag {}
 
 impl TextEntityTypeCashtag {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeCashtagBuilder {
+    pub fn builder() -> TextEntityTypeCashtagBuilder {
         let mut inner = TextEntityTypeCashtag::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeCashtagBuilder { inner }
+        TextEntityTypeCashtagBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeCashtagBuilder {
+pub struct TextEntityTypeCashtagBuilder {
     inner: TextEntityTypeCashtag,
 }
 
-impl RTDTextEntityTypeCashtagBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeCashtagBuilder = TextEntityTypeCashtagBuilder;
+
+impl TextEntityTypeCashtagBuilder {
     pub fn build(&self) -> TextEntityTypeCashtag {
         self.inner.clone()
     }
@@ -370,7 +382,7 @@ impl AsRef<TextEntityTypeCashtag> for TextEntityTypeCashtag {
     }
 }
 
-impl AsRef<TextEntityTypeCashtag> for RTDTextEntityTypeCashtagBuilder {
+impl AsRef<TextEntityTypeCashtag> for TextEntityTypeCashtagBuilder {
     fn as_ref(&self) -> &TextEntityTypeCashtag {
         &self.inner
     }
@@ -400,23 +412,26 @@ impl RObject for TextEntityTypeCode {
 impl TDTextEntityType for TextEntityTypeCode {}
 
 impl TextEntityTypeCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeCodeBuilder {
+    pub fn builder() -> TextEntityTypeCodeBuilder {
         let mut inner = TextEntityTypeCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeCodeBuilder { inner }
+        TextEntityTypeCodeBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeCodeBuilder {
+pub struct TextEntityTypeCodeBuilder {
     inner: TextEntityTypeCode,
 }
 
-impl RTDTextEntityTypeCodeBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeCodeBuilder = TextEntityTypeCodeBuilder;
+
+impl TextEntityTypeCodeBuilder {
     pub fn build(&self) -> TextEntityTypeCode {
         self.inner.clone()
     }
@@ -428,7 +443,7 @@ impl AsRef<TextEntityTypeCode> for TextEntityTypeCode {
     }
 }
 
-impl AsRef<TextEntityTypeCode> for RTDTextEntityTypeCodeBuilder {
+impl AsRef<TextEntityTypeCode> for TextEntityTypeCodeBuilder {
     fn as_ref(&self) -> &TextEntityTypeCode {
         &self.inner
     }
@@ -458,23 +473,26 @@ impl RObject for TextEntityTypeEmailAddress {
 impl TDTextEntityType for TextEntityTypeEmailAddress {}
 
 impl TextEntityTypeEmailAddress {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeEmailAddressBuilder {
+    pub fn builder() -> TextEntityTypeEmailAddressBuilder {
         let mut inner = TextEntityTypeEmailAddress::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeEmailAddressBuilder { inner }
+        TextEntityTypeEmailAddressBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeEmailAddressBuilder {
+pub struct TextEntityTypeEmailAddressBuilder {
     inner: TextEntityTypeEmailAddress,
 }
 
-impl RTDTextEntityTypeEmailAddressBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeEmailAddressBuilder = TextEntityTypeEmailAddressBuilder;
+
+impl TextEntityTypeEmailAddressBuilder {
     pub fn build(&self) -> TextEntityTypeEmailAddress {
         self.inner.clone()
     }
@@ -486,7 +504,7 @@ impl AsRef<TextEntityTypeEmailAddress> for TextEntityTypeEmailAddress {
     }
 }
 
-impl AsRef<TextEntityTypeEmailAddress> for RTDTextEntityTypeEmailAddressBuilder {
+impl AsRef<TextEntityTypeEmailAddress> for TextEntityTypeEmailAddressBuilder {
     fn as_ref(&self) -> &TextEntityTypeEmailAddress {
         &self.inner
     }
@@ -516,23 +534,26 @@ impl RObject for TextEntityTypeHashtag {
 impl TDTextEntityType for TextEntityTypeHashtag {}
 
 impl TextEntityTypeHashtag {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeHashtagBuilder {
+    pub fn builder() -> TextEntityTypeHashtagBuilder {
         let mut inner = TextEntityTypeHashtag::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeHashtagBuilder { inner }
+        TextEntityTypeHashtagBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeHashtagBuilder {
+pub struct TextEntityTypeHashtagBuilder {
     inner: TextEntityTypeHashtag,
 }
 
-impl RTDTextEntityTypeHashtagBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeHashtagBuilder = TextEntityTypeHashtagBuilder;
+
+impl TextEntityTypeHashtagBuilder {
     pub fn build(&self) -> TextEntityTypeHashtag {
         self.inner.clone()
     }
@@ -544,7 +565,7 @@ impl AsRef<TextEntityTypeHashtag> for TextEntityTypeHashtag {
     }
 }
 
-impl AsRef<TextEntityTypeHashtag> for RTDTextEntityTypeHashtagBuilder {
+impl AsRef<TextEntityTypeHashtag> for TextEntityTypeHashtagBuilder {
     fn as_ref(&self) -> &TextEntityTypeHashtag {
         &self.inner
     }
@@ -574,23 +595,26 @@ impl RObject for TextEntityTypeItalic {
 impl TDTextEntityType for TextEntityTypeItalic {}
 
 impl TextEntityTypeItalic {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeItalicBuilder {
+    pub fn builder() -> TextEntityTypeItalicBuilder {
         let mut inner = TextEntityTypeItalic::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeItalicBuilder { inner }
+        TextEntityTypeItalicBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeItalicBuilder {
+pub struct TextEntityTypeItalicBuilder {
     inner: TextEntityTypeItalic,
 }
 
-impl RTDTextEntityTypeItalicBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeItalicBuilder = TextEntityTypeItalicBuilder;
+
+impl TextEntityTypeItalicBuilder {
     pub fn build(&self) -> TextEntityTypeItalic {
         self.inner.clone()
     }
@@ -602,7 +626,7 @@ impl AsRef<TextEntityTypeItalic> for TextEntityTypeItalic {
     }
 }
 
-impl AsRef<TextEntityTypeItalic> for RTDTextEntityTypeItalicBuilder {
+impl AsRef<TextEntityTypeItalic> for TextEntityTypeItalicBuilder {
     fn as_ref(&self) -> &TextEntityTypeItalic {
         &self.inner
     }
@@ -636,14 +660,14 @@ impl RObject for TextEntityTypeMediaTimestamp {
 impl TDTextEntityType for TextEntityTypeMediaTimestamp {}
 
 impl TextEntityTypeMediaTimestamp {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeMediaTimestampBuilder {
+    pub fn builder() -> TextEntityTypeMediaTimestampBuilder {
         let mut inner = TextEntityTypeMediaTimestamp::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeMediaTimestampBuilder { inner }
+        TextEntityTypeMediaTimestampBuilder { inner }
     }
 
     pub fn media_timestamp(&self) -> i32 {
@@ -652,11 +676,14 @@ impl TextEntityTypeMediaTimestamp {
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeMediaTimestampBuilder {
+pub struct TextEntityTypeMediaTimestampBuilder {
     inner: TextEntityTypeMediaTimestamp,
 }
 
-impl RTDTextEntityTypeMediaTimestampBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeMediaTimestampBuilder = TextEntityTypeMediaTimestampBuilder;
+
+impl TextEntityTypeMediaTimestampBuilder {
     pub fn build(&self) -> TextEntityTypeMediaTimestamp {
         self.inner.clone()
     }
@@ -673,7 +700,7 @@ impl AsRef<TextEntityTypeMediaTimestamp> for TextEntityTypeMediaTimestamp {
     }
 }
 
-impl AsRef<TextEntityTypeMediaTimestamp> for RTDTextEntityTypeMediaTimestampBuilder {
+impl AsRef<TextEntityTypeMediaTimestamp> for TextEntityTypeMediaTimestampBuilder {
     fn as_ref(&self) -> &TextEntityTypeMediaTimestamp {
         &self.inner
     }
@@ -703,23 +730,26 @@ impl RObject for TextEntityTypeMention {
 impl TDTextEntityType for TextEntityTypeMention {}
 
 impl TextEntityTypeMention {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeMentionBuilder {
+    pub fn builder() -> TextEntityTypeMentionBuilder {
         let mut inner = TextEntityTypeMention::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeMentionBuilder { inner }
+        TextEntityTypeMentionBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeMentionBuilder {
+pub struct TextEntityTypeMentionBuilder {
     inner: TextEntityTypeMention,
 }
 
-impl RTDTextEntityTypeMentionBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeMentionBuilder = TextEntityTypeMentionBuilder;
+
+impl TextEntityTypeMentionBuilder {
     pub fn build(&self) -> TextEntityTypeMention {
         self.inner.clone()
     }
@@ -731,7 +761,7 @@ impl AsRef<TextEntityTypeMention> for TextEntityTypeMention {
     }
 }
 
-impl AsRef<TextEntityTypeMention> for RTDTextEntityTypeMentionBuilder {
+impl AsRef<TextEntityTypeMention> for TextEntityTypeMentionBuilder {
     fn as_ref(&self) -> &TextEntityTypeMention {
         &self.inner
     }
@@ -765,14 +795,14 @@ impl RObject for TextEntityTypeMentionName {
 impl TDTextEntityType for TextEntityTypeMentionName {}
 
 impl TextEntityTypeMentionName {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeMentionNameBuilder {
+    pub fn builder() -> TextEntityTypeMentionNameBuilder {
         let mut inner = TextEntityTypeMentionName::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeMentionNameBuilder { inner }
+        TextEntityTypeMentionNameBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -781,11 +811,14 @@ impl TextEntityTypeMentionName {
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeMentionNameBuilder {
+pub struct TextEntityTypeMentionNameBuilder {
     inner: TextEntityTypeMentionName,
 }
 
-impl RTDTextEntityTypeMentionNameBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeMentionNameBuilder = TextEntityTypeMentionNameBuilder;
+
+impl TextEntityTypeMentionNameBuilder {
     pub fn build(&self) -> TextEntityTypeMentionName {
         self.inner.clone()
     }
@@ -802,7 +835,7 @@ impl AsRef<TextEntityTypeMentionName> for TextEntityTypeMentionName {
     }
 }
 
-impl AsRef<TextEntityTypeMentionName> for RTDTextEntityTypeMentionNameBuilder {
+impl AsRef<TextEntityTypeMentionName> for TextEntityTypeMentionNameBuilder {
     fn as_ref(&self) -> &TextEntityTypeMentionName {
         &self.inner
     }
@@ -832,23 +865,26 @@ impl RObject for TextEntityTypePhoneNumber {
 impl TDTextEntityType for TextEntityTypePhoneNumber {}
 
 impl TextEntityTypePhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypePhoneNumberBuilder {
+    pub fn builder() -> TextEntityTypePhoneNumberBuilder {
         let mut inner = TextEntityTypePhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypePhoneNumberBuilder { inner }
+        TextEntityTypePhoneNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypePhoneNumberBuilder {
+pub struct TextEntityTypePhoneNumberBuilder {
     inner: TextEntityTypePhoneNumber,
 }
 
-impl RTDTextEntityTypePhoneNumberBuilder {
+#[deprecated]
+pub type RTDTextEntityTypePhoneNumberBuilder = TextEntityTypePhoneNumberBuilder;
+
+impl TextEntityTypePhoneNumberBuilder {
     pub fn build(&self) -> TextEntityTypePhoneNumber {
         self.inner.clone()
     }
@@ -860,7 +896,7 @@ impl AsRef<TextEntityTypePhoneNumber> for TextEntityTypePhoneNumber {
     }
 }
 
-impl AsRef<TextEntityTypePhoneNumber> for RTDTextEntityTypePhoneNumberBuilder {
+impl AsRef<TextEntityTypePhoneNumber> for TextEntityTypePhoneNumberBuilder {
     fn as_ref(&self) -> &TextEntityTypePhoneNumber {
         &self.inner
     }
@@ -890,23 +926,26 @@ impl RObject for TextEntityTypePre {
 impl TDTextEntityType for TextEntityTypePre {}
 
 impl TextEntityTypePre {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypePreBuilder {
+    pub fn builder() -> TextEntityTypePreBuilder {
         let mut inner = TextEntityTypePre::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypePreBuilder { inner }
+        TextEntityTypePreBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypePreBuilder {
+pub struct TextEntityTypePreBuilder {
     inner: TextEntityTypePre,
 }
 
-impl RTDTextEntityTypePreBuilder {
+#[deprecated]
+pub type RTDTextEntityTypePreBuilder = TextEntityTypePreBuilder;
+
+impl TextEntityTypePreBuilder {
     pub fn build(&self) -> TextEntityTypePre {
         self.inner.clone()
     }
@@ -918,7 +957,7 @@ impl AsRef<TextEntityTypePre> for TextEntityTypePre {
     }
 }
 
-impl AsRef<TextEntityTypePre> for RTDTextEntityTypePreBuilder {
+impl AsRef<TextEntityTypePre> for TextEntityTypePreBuilder {
     fn as_ref(&self) -> &TextEntityTypePre {
         &self.inner
     }
@@ -952,14 +991,14 @@ impl RObject for TextEntityTypePreCode {
 impl TDTextEntityType for TextEntityTypePreCode {}
 
 impl TextEntityTypePreCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypePreCodeBuilder {
+    pub fn builder() -> TextEntityTypePreCodeBuilder {
         let mut inner = TextEntityTypePreCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypePreCodeBuilder { inner }
+        TextEntityTypePreCodeBuilder { inner }
     }
 
     pub fn language(&self) -> &String {
@@ -968,11 +1007,14 @@ impl TextEntityTypePreCode {
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypePreCodeBuilder {
+pub struct TextEntityTypePreCodeBuilder {
     inner: TextEntityTypePreCode,
 }
 
-impl RTDTextEntityTypePreCodeBuilder {
+#[deprecated]
+pub type RTDTextEntityTypePreCodeBuilder = TextEntityTypePreCodeBuilder;
+
+impl TextEntityTypePreCodeBuilder {
     pub fn build(&self) -> TextEntityTypePreCode {
         self.inner.clone()
     }
@@ -989,7 +1031,7 @@ impl AsRef<TextEntityTypePreCode> for TextEntityTypePreCode {
     }
 }
 
-impl AsRef<TextEntityTypePreCode> for RTDTextEntityTypePreCodeBuilder {
+impl AsRef<TextEntityTypePreCode> for TextEntityTypePreCodeBuilder {
     fn as_ref(&self) -> &TextEntityTypePreCode {
         &self.inner
     }
@@ -1019,23 +1061,26 @@ impl RObject for TextEntityTypeStrikethrough {
 impl TDTextEntityType for TextEntityTypeStrikethrough {}
 
 impl TextEntityTypeStrikethrough {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeStrikethroughBuilder {
+    pub fn builder() -> TextEntityTypeStrikethroughBuilder {
         let mut inner = TextEntityTypeStrikethrough::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeStrikethroughBuilder { inner }
+        TextEntityTypeStrikethroughBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeStrikethroughBuilder {
+pub struct TextEntityTypeStrikethroughBuilder {
     inner: TextEntityTypeStrikethrough,
 }
 
-impl RTDTextEntityTypeStrikethroughBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeStrikethroughBuilder = TextEntityTypeStrikethroughBuilder;
+
+impl TextEntityTypeStrikethroughBuilder {
     pub fn build(&self) -> TextEntityTypeStrikethrough {
         self.inner.clone()
     }
@@ -1047,7 +1092,7 @@ impl AsRef<TextEntityTypeStrikethrough> for TextEntityTypeStrikethrough {
     }
 }
 
-impl AsRef<TextEntityTypeStrikethrough> for RTDTextEntityTypeStrikethroughBuilder {
+impl AsRef<TextEntityTypeStrikethrough> for TextEntityTypeStrikethroughBuilder {
     fn as_ref(&self) -> &TextEntityTypeStrikethrough {
         &self.inner
     }
@@ -1081,14 +1126,14 @@ impl RObject for TextEntityTypeTextUrl {
 impl TDTextEntityType for TextEntityTypeTextUrl {}
 
 impl TextEntityTypeTextUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeTextUrlBuilder {
+    pub fn builder() -> TextEntityTypeTextUrlBuilder {
         let mut inner = TextEntityTypeTextUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeTextUrlBuilder { inner }
+        TextEntityTypeTextUrlBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -1097,11 +1142,14 @@ impl TextEntityTypeTextUrl {
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeTextUrlBuilder {
+pub struct TextEntityTypeTextUrlBuilder {
     inner: TextEntityTypeTextUrl,
 }
 
-impl RTDTextEntityTypeTextUrlBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeTextUrlBuilder = TextEntityTypeTextUrlBuilder;
+
+impl TextEntityTypeTextUrlBuilder {
     pub fn build(&self) -> TextEntityTypeTextUrl {
         self.inner.clone()
     }
@@ -1118,7 +1166,7 @@ impl AsRef<TextEntityTypeTextUrl> for TextEntityTypeTextUrl {
     }
 }
 
-impl AsRef<TextEntityTypeTextUrl> for RTDTextEntityTypeTextUrlBuilder {
+impl AsRef<TextEntityTypeTextUrl> for TextEntityTypeTextUrlBuilder {
     fn as_ref(&self) -> &TextEntityTypeTextUrl {
         &self.inner
     }
@@ -1148,23 +1196,26 @@ impl RObject for TextEntityTypeUnderline {
 impl TDTextEntityType for TextEntityTypeUnderline {}
 
 impl TextEntityTypeUnderline {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeUnderlineBuilder {
+    pub fn builder() -> TextEntityTypeUnderlineBuilder {
         let mut inner = TextEntityTypeUnderline::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeUnderlineBuilder { inner }
+        TextEntityTypeUnderlineBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeUnderlineBuilder {
+pub struct TextEntityTypeUnderlineBuilder {
     inner: TextEntityTypeUnderline,
 }
 
-impl RTDTextEntityTypeUnderlineBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeUnderlineBuilder = TextEntityTypeUnderlineBuilder;
+
+impl TextEntityTypeUnderlineBuilder {
     pub fn build(&self) -> TextEntityTypeUnderline {
         self.inner.clone()
     }
@@ -1176,7 +1227,7 @@ impl AsRef<TextEntityTypeUnderline> for TextEntityTypeUnderline {
     }
 }
 
-impl AsRef<TextEntityTypeUnderline> for RTDTextEntityTypeUnderlineBuilder {
+impl AsRef<TextEntityTypeUnderline> for TextEntityTypeUnderlineBuilder {
     fn as_ref(&self) -> &TextEntityTypeUnderline {
         &self.inner
     }
@@ -1206,23 +1257,26 @@ impl RObject for TextEntityTypeUrl {
 impl TDTextEntityType for TextEntityTypeUrl {}
 
 impl TextEntityTypeUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityTypeUrlBuilder {
+    pub fn builder() -> TextEntityTypeUrlBuilder {
         let mut inner = TextEntityTypeUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityTypeUrlBuilder { inner }
+        TextEntityTypeUrlBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityTypeUrlBuilder {
+pub struct TextEntityTypeUrlBuilder {
     inner: TextEntityTypeUrl,
 }
 
-impl RTDTextEntityTypeUrlBuilder {
+#[deprecated]
+pub type RTDTextEntityTypeUrlBuilder = TextEntityTypeUrlBuilder;
+
+impl TextEntityTypeUrlBuilder {
     pub fn build(&self) -> TextEntityTypeUrl {
         self.inner.clone()
     }
@@ -1234,7 +1288,7 @@ impl AsRef<TextEntityTypeUrl> for TextEntityTypeUrl {
     }
 }
 
-impl AsRef<TextEntityTypeUrl> for RTDTextEntityTypeUrlBuilder {
+impl AsRef<TextEntityTypeUrl> for TextEntityTypeUrlBuilder {
     fn as_ref(&self) -> &TextEntityTypeUrl {
         &self.inner
     }

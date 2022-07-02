@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,16 +49,16 @@ impl RObject for GetMessageThreadHistory {
 impl RFunction for GetMessageThreadHistory {}
 
 impl GetMessageThreadHistory {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageThreadHistoryBuilder {
+    pub fn builder() -> GetMessageThreadHistoryBuilder {
         let mut inner = GetMessageThreadHistory::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageThreadHistory".to_string();
 
-        RTDGetMessageThreadHistoryBuilder { inner }
+        GetMessageThreadHistoryBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -83,11 +83,14 @@ impl GetMessageThreadHistory {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageThreadHistoryBuilder {
+pub struct GetMessageThreadHistoryBuilder {
     inner: GetMessageThreadHistory,
 }
 
-impl RTDGetMessageThreadHistoryBuilder {
+#[deprecated]
+pub type RTDGetMessageThreadHistoryBuilder = GetMessageThreadHistoryBuilder;
+
+impl GetMessageThreadHistoryBuilder {
     pub fn build(&self) -> GetMessageThreadHistory {
         self.inner.clone()
     }
@@ -124,7 +127,7 @@ impl AsRef<GetMessageThreadHistory> for GetMessageThreadHistory {
     }
 }
 
-impl AsRef<GetMessageThreadHistory> for RTDGetMessageThreadHistoryBuilder {
+impl AsRef<GetMessageThreadHistory> for GetMessageThreadHistoryBuilder {
     fn as_ref(&self) -> &GetMessageThreadHistory {
         &self.inner
     }

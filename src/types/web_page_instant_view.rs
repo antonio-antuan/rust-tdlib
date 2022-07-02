@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -48,14 +48,14 @@ impl RObject for WebPageInstantView {
 }
 
 impl WebPageInstantView {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDWebPageInstantViewBuilder {
+    pub fn builder() -> WebPageInstantViewBuilder {
         let mut inner = WebPageInstantView::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDWebPageInstantViewBuilder { inner }
+        WebPageInstantViewBuilder { inner }
     }
 
     pub fn page_blocks(&self) -> &Vec<PageBlock> {
@@ -84,11 +84,14 @@ impl WebPageInstantView {
 }
 
 #[doc(hidden)]
-pub struct RTDWebPageInstantViewBuilder {
+pub struct WebPageInstantViewBuilder {
     inner: WebPageInstantView,
 }
 
-impl RTDWebPageInstantViewBuilder {
+#[deprecated]
+pub type RTDWebPageInstantViewBuilder = WebPageInstantViewBuilder;
+
+impl WebPageInstantViewBuilder {
     pub fn build(&self) -> WebPageInstantView {
         self.inner.clone()
     }
@@ -130,7 +133,7 @@ impl AsRef<WebPageInstantView> for WebPageInstantView {
     }
 }
 
-impl AsRef<WebPageInstantView> for RTDWebPageInstantViewBuilder {
+impl AsRef<WebPageInstantView> for WebPageInstantViewBuilder {
     fn as_ref(&self) -> &WebPageInstantView {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for GameHighScore {
 }
 
 impl GameHighScore {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGameHighScoreBuilder {
+    pub fn builder() -> GameHighScoreBuilder {
         let mut inner = GameHighScore::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGameHighScoreBuilder { inner }
+        GameHighScoreBuilder { inner }
     }
 
     pub fn position(&self) -> i32 {
@@ -60,11 +60,14 @@ impl GameHighScore {
 }
 
 #[doc(hidden)]
-pub struct RTDGameHighScoreBuilder {
+pub struct GameHighScoreBuilder {
     inner: GameHighScore,
 }
 
-impl RTDGameHighScoreBuilder {
+#[deprecated]
+pub type RTDGameHighScoreBuilder = GameHighScoreBuilder;
+
+impl GameHighScoreBuilder {
     pub fn build(&self) -> GameHighScore {
         self.inner.clone()
     }
@@ -91,7 +94,7 @@ impl AsRef<GameHighScore> for GameHighScore {
     }
 }
 
-impl AsRef<GameHighScore> for RTDGameHighScoreBuilder {
+impl AsRef<GameHighScore> for GameHighScoreBuilder {
     fn as_ref(&self) -> &GameHighScore {
         &self.inner
     }

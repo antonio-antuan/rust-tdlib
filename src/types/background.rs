@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -48,14 +48,14 @@ impl RObject for Background {
 }
 
 impl Background {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundBuilder {
+    pub fn builder() -> BackgroundBuilder {
         let mut inner = Background::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundBuilder { inner }
+        BackgroundBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -84,11 +84,14 @@ impl Background {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundBuilder {
+pub struct BackgroundBuilder {
     inner: Background,
 }
 
-impl RTDBackgroundBuilder {
+#[deprecated]
+pub type RTDBackgroundBuilder = BackgroundBuilder;
+
+impl BackgroundBuilder {
     pub fn build(&self) -> Background {
         self.inner.clone()
     }
@@ -130,7 +133,7 @@ impl AsRef<Background> for Background {
     }
 }
 
-impl AsRef<Background> for RTDBackgroundBuilder {
+impl AsRef<Background> for BackgroundBuilder {
     fn as_ref(&self) -> &Background {
         &self.inner
     }

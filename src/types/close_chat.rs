@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for CloseChat {
 impl RFunction for CloseChat {}
 
 impl CloseChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCloseChatBuilder {
+    pub fn builder() -> CloseChatBuilder {
         let mut inner = CloseChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "closeChat".to_string();
 
-        RTDCloseChatBuilder { inner }
+        CloseChatBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl CloseChat {
 }
 
 #[doc(hidden)]
-pub struct RTDCloseChatBuilder {
+pub struct CloseChatBuilder {
     inner: CloseChat,
 }
 
-impl RTDCloseChatBuilder {
+#[deprecated]
+pub type RTDCloseChatBuilder = CloseChatBuilder;
+
+impl CloseChatBuilder {
     pub fn build(&self) -> CloseChat {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<CloseChat> for CloseChat {
     }
 }
 
-impl AsRef<CloseChat> for RTDCloseChatBuilder {
+impl AsRef<CloseChat> for CloseChatBuilder {
     fn as_ref(&self) -> &CloseChat {
         &self.inner
     }

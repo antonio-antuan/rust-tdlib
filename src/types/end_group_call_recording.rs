@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for EndGroupCallRecording {
 impl RFunction for EndGroupCallRecording {}
 
 impl EndGroupCallRecording {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEndGroupCallRecordingBuilder {
+    pub fn builder() -> EndGroupCallRecordingBuilder {
         let mut inner = EndGroupCallRecording::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "endGroupCallRecording".to_string();
 
-        RTDEndGroupCallRecordingBuilder { inner }
+        EndGroupCallRecordingBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl EndGroupCallRecording {
 }
 
 #[doc(hidden)]
-pub struct RTDEndGroupCallRecordingBuilder {
+pub struct EndGroupCallRecordingBuilder {
     inner: EndGroupCallRecording,
 }
 
-impl RTDEndGroupCallRecordingBuilder {
+#[deprecated]
+pub type RTDEndGroupCallRecordingBuilder = EndGroupCallRecordingBuilder;
+
+impl EndGroupCallRecordingBuilder {
     pub fn build(&self) -> EndGroupCallRecording {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<EndGroupCallRecording> for EndGroupCallRecording {
     }
 }
 
-impl AsRef<EndGroupCallRecording> for RTDEndGroupCallRecordingBuilder {
+impl AsRef<EndGroupCallRecording> for EndGroupCallRecordingBuilder {
     fn as_ref(&self) -> &EndGroupCallRecording {
         &self.inner
     }

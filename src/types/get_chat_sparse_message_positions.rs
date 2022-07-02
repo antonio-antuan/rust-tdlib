@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -45,16 +45,16 @@ impl RObject for GetChatSparseMessagePositions {
 impl RFunction for GetChatSparseMessagePositions {}
 
 impl GetChatSparseMessagePositions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatSparseMessagePositionsBuilder {
+    pub fn builder() -> GetChatSparseMessagePositionsBuilder {
         let mut inner = GetChatSparseMessagePositions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatSparseMessagePositions".to_string();
 
-        RTDGetChatSparseMessagePositionsBuilder { inner }
+        GetChatSparseMessagePositionsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -75,11 +75,14 @@ impl GetChatSparseMessagePositions {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatSparseMessagePositionsBuilder {
+pub struct GetChatSparseMessagePositionsBuilder {
     inner: GetChatSparseMessagePositions,
 }
 
-impl RTDGetChatSparseMessagePositionsBuilder {
+#[deprecated]
+pub type RTDGetChatSparseMessagePositionsBuilder = GetChatSparseMessagePositionsBuilder;
+
+impl GetChatSparseMessagePositionsBuilder {
     pub fn build(&self) -> GetChatSparseMessagePositions {
         self.inner.clone()
     }
@@ -111,7 +114,7 @@ impl AsRef<GetChatSparseMessagePositions> for GetChatSparseMessagePositions {
     }
 }
 
-impl AsRef<GetChatSparseMessagePositions> for RTDGetChatSparseMessagePositionsBuilder {
+impl AsRef<GetChatSparseMessagePositions> for GetChatSparseMessagePositionsBuilder {
     fn as_ref(&self) -> &GetChatSparseMessagePositions {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -44,14 +44,14 @@ impl RObject for ScopeNotificationSettings {
 }
 
 impl ScopeNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDScopeNotificationSettingsBuilder {
+    pub fn builder() -> ScopeNotificationSettingsBuilder {
         let mut inner = ScopeNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDScopeNotificationSettingsBuilder { inner }
+        ScopeNotificationSettingsBuilder { inner }
     }
 
     pub fn mute_for(&self) -> i32 {
@@ -76,11 +76,14 @@ impl ScopeNotificationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDScopeNotificationSettingsBuilder {
+pub struct ScopeNotificationSettingsBuilder {
     inner: ScopeNotificationSettings,
 }
 
-impl RTDScopeNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDScopeNotificationSettingsBuilder = ScopeNotificationSettingsBuilder;
+
+impl ScopeNotificationSettingsBuilder {
     pub fn build(&self) -> ScopeNotificationSettings {
         self.inner.clone()
     }
@@ -123,7 +126,7 @@ impl AsRef<ScopeNotificationSettings> for ScopeNotificationSettings {
     }
 }
 
-impl AsRef<ScopeNotificationSettings> for RTDScopeNotificationSettingsBuilder {
+impl AsRef<ScopeNotificationSettings> for ScopeNotificationSettingsBuilder {
     fn as_ref(&self) -> &ScopeNotificationSettings {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,16 +34,16 @@ impl RObject for SetNetworkType {
 impl RFunction for SetNetworkType {}
 
 impl SetNetworkType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetNetworkTypeBuilder {
+    pub fn builder() -> SetNetworkTypeBuilder {
         let mut inner = SetNetworkType::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setNetworkType".to_string();
 
-        RTDSetNetworkTypeBuilder { inner }
+        SetNetworkTypeBuilder { inner }
     }
 
     pub fn type_(&self) -> &NetworkType {
@@ -52,11 +52,14 @@ impl SetNetworkType {
 }
 
 #[doc(hidden)]
-pub struct RTDSetNetworkTypeBuilder {
+pub struct SetNetworkTypeBuilder {
     inner: SetNetworkType,
 }
 
-impl RTDSetNetworkTypeBuilder {
+#[deprecated]
+pub type RTDSetNetworkTypeBuilder = SetNetworkTypeBuilder;
+
+impl SetNetworkTypeBuilder {
     pub fn build(&self) -> SetNetworkType {
         self.inner.clone()
     }
@@ -73,7 +76,7 @@ impl AsRef<SetNetworkType> for SetNetworkType {
     }
 }
 
-impl AsRef<SetNetworkType> for RTDSetNetworkTypeBuilder {
+impl AsRef<SetNetworkType> for SetNetworkTypeBuilder {
     fn as_ref(&self) -> &SetNetworkType {
         &self.inner
     }

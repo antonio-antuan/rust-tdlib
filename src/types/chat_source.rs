@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for ChatSource {
 }
 
 impl ChatSource {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -88,23 +88,26 @@ impl RObject for ChatSourceMtprotoProxy {
 impl TDChatSource for ChatSourceMtprotoProxy {}
 
 impl ChatSourceMtprotoProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatSourceMtprotoProxyBuilder {
+    pub fn builder() -> ChatSourceMtprotoProxyBuilder {
         let mut inner = ChatSourceMtprotoProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatSourceMtprotoProxyBuilder { inner }
+        ChatSourceMtprotoProxyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatSourceMtprotoProxyBuilder {
+pub struct ChatSourceMtprotoProxyBuilder {
     inner: ChatSourceMtprotoProxy,
 }
 
-impl RTDChatSourceMtprotoProxyBuilder {
+#[deprecated]
+pub type RTDChatSourceMtprotoProxyBuilder = ChatSourceMtprotoProxyBuilder;
+
+impl ChatSourceMtprotoProxyBuilder {
     pub fn build(&self) -> ChatSourceMtprotoProxy {
         self.inner.clone()
     }
@@ -116,7 +119,7 @@ impl AsRef<ChatSourceMtprotoProxy> for ChatSourceMtprotoProxy {
     }
 }
 
-impl AsRef<ChatSourceMtprotoProxy> for RTDChatSourceMtprotoProxyBuilder {
+impl AsRef<ChatSourceMtprotoProxy> for ChatSourceMtprotoProxyBuilder {
     fn as_ref(&self) -> &ChatSourceMtprotoProxy {
         &self.inner
     }
@@ -155,14 +158,14 @@ impl RObject for ChatSourcePublicServiceAnnouncement {
 impl TDChatSource for ChatSourcePublicServiceAnnouncement {}
 
 impl ChatSourcePublicServiceAnnouncement {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatSourcePublicServiceAnnouncementBuilder {
+    pub fn builder() -> ChatSourcePublicServiceAnnouncementBuilder {
         let mut inner = ChatSourcePublicServiceAnnouncement::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatSourcePublicServiceAnnouncementBuilder { inner }
+        ChatSourcePublicServiceAnnouncementBuilder { inner }
     }
 
     pub fn type_(&self) -> &String {
@@ -175,11 +178,14 @@ impl ChatSourcePublicServiceAnnouncement {
 }
 
 #[doc(hidden)]
-pub struct RTDChatSourcePublicServiceAnnouncementBuilder {
+pub struct ChatSourcePublicServiceAnnouncementBuilder {
     inner: ChatSourcePublicServiceAnnouncement,
 }
 
-impl RTDChatSourcePublicServiceAnnouncementBuilder {
+#[deprecated]
+pub type RTDChatSourcePublicServiceAnnouncementBuilder = ChatSourcePublicServiceAnnouncementBuilder;
+
+impl ChatSourcePublicServiceAnnouncementBuilder {
     pub fn build(&self) -> ChatSourcePublicServiceAnnouncement {
         self.inner.clone()
     }
@@ -201,7 +207,7 @@ impl AsRef<ChatSourcePublicServiceAnnouncement> for ChatSourcePublicServiceAnnou
     }
 }
 
-impl AsRef<ChatSourcePublicServiceAnnouncement> for RTDChatSourcePublicServiceAnnouncementBuilder {
+impl AsRef<ChatSourcePublicServiceAnnouncement> for ChatSourcePublicServiceAnnouncementBuilder {
     fn as_ref(&self) -> &ChatSourcePublicServiceAnnouncement {
         &self.inner
     }

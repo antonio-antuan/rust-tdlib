@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for DeleteChatReplyMarkup {
 impl RFunction for DeleteChatReplyMarkup {}
 
 impl DeleteChatReplyMarkup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteChatReplyMarkupBuilder {
+    pub fn builder() -> DeleteChatReplyMarkupBuilder {
         let mut inner = DeleteChatReplyMarkup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteChatReplyMarkup".to_string();
 
-        RTDDeleteChatReplyMarkupBuilder { inner }
+        DeleteChatReplyMarkupBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl DeleteChatReplyMarkup {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteChatReplyMarkupBuilder {
+pub struct DeleteChatReplyMarkupBuilder {
     inner: DeleteChatReplyMarkup,
 }
 
-impl RTDDeleteChatReplyMarkupBuilder {
+#[deprecated]
+pub type RTDDeleteChatReplyMarkupBuilder = DeleteChatReplyMarkupBuilder;
+
+impl DeleteChatReplyMarkupBuilder {
     pub fn build(&self) -> DeleteChatReplyMarkup {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<DeleteChatReplyMarkup> for DeleteChatReplyMarkup {
     }
 }
 
-impl AsRef<DeleteChatReplyMarkup> for RTDDeleteChatReplyMarkupBuilder {
+impl AsRef<DeleteChatReplyMarkup> for DeleteChatReplyMarkupBuilder {
     fn as_ref(&self) -> &DeleteChatReplyMarkup {
         &self.inner
     }

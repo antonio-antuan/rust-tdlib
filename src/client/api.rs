@@ -1,13 +1,13 @@
 use super::tdlib_client::TdLibClient;
 use super::Client;
-use crate::{errors::RTDResult, types::*};
+use crate::{errors::Result, types::*};
 
 impl<R> Client<R>
 where
     R: TdLibClient + Clone,
 {
     // Accepts an incoming call
-    pub async fn accept_call<C: AsRef<AcceptCall>>(&self, accept_call: C) -> RTDResult<Ok> {
+    pub async fn accept_call<C: AsRef<AcceptCall>>(&self, accept_call: C) -> Result<Ok> {
         self.make_request(accept_call).await
     }
 
@@ -15,15 +15,12 @@ where
     pub async fn accept_terms_of_service<C: AsRef<AcceptTermsOfService>>(
         &self,
         accept_terms_of_service: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(accept_terms_of_service).await
     }
 
     // Adds a new member to a chat. Members can't be added to private or secret chats
-    pub async fn add_chat_member<C: AsRef<AddChatMember>>(
-        &self,
-        add_chat_member: C,
-    ) -> RTDResult<Ok> {
+    pub async fn add_chat_member<C: AsRef<AddChatMember>>(&self, add_chat_member: C) -> Result<Ok> {
         self.make_request(add_chat_member).await
     }
 
@@ -31,7 +28,7 @@ where
     pub async fn add_chat_members<C: AsRef<AddChatMembers>>(
         &self,
         add_chat_members: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(add_chat_members).await
     }
 
@@ -39,12 +36,12 @@ where
     pub async fn add_chat_to_list<C: AsRef<AddChatToList>>(
         &self,
         add_chat_to_list: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(add_chat_to_list).await
     }
 
     // Adds a user to the contact list or edits an existing contact by their user identifier
-    pub async fn add_contact<C: AsRef<AddContact>>(&self, add_contact: C) -> RTDResult<Ok> {
+    pub async fn add_contact<C: AsRef<AddContact>>(&self, add_contact: C) -> Result<Ok> {
         self.make_request(add_contact).await
     }
 
@@ -52,7 +49,7 @@ where
     pub async fn add_custom_server_language_pack<C: AsRef<AddCustomServerLanguagePack>>(
         &self,
         add_custom_server_language_pack: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(add_custom_server_language_pack).await
     }
 
@@ -60,7 +57,7 @@ where
     pub async fn add_favorite_sticker<C: AsRef<AddFavoriteSticker>>(
         &self,
         add_favorite_sticker: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(add_favorite_sticker).await
     }
 
@@ -68,15 +65,12 @@ where
     pub async fn add_local_message<C: AsRef<AddLocalMessage>>(
         &self,
         add_local_message: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(add_local_message).await
     }
 
     // Adds a message to TDLib internal log. Can be called synchronously
-    pub async fn add_log_message<C: AsRef<AddLogMessage>>(
-        &self,
-        add_log_message: C,
-    ) -> RTDResult<Ok> {
+    pub async fn add_log_message<C: AsRef<AddLogMessage>>(&self, add_log_message: C) -> Result<Ok> {
         self.make_request(add_log_message).await
     }
 
@@ -84,12 +78,12 @@ where
     pub async fn add_network_statistics<C: AsRef<AddNetworkStatistics>>(
         &self,
         add_network_statistics: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(add_network_statistics).await
     }
 
     // Adds a proxy server for network requests. Can be called before authorization
-    pub async fn add_proxy<C: AsRef<AddProxy>>(&self, add_proxy: C) -> RTDResult<Proxy> {
+    pub async fn add_proxy<C: AsRef<AddProxy>>(&self, add_proxy: C) -> Result<Proxy> {
         self.make_request(add_proxy).await
     }
 
@@ -97,7 +91,7 @@ where
     pub async fn add_recent_sticker<C: AsRef<AddRecentSticker>>(
         &self,
         add_recent_sticker: C,
-    ) -> RTDResult<Stickers> {
+    ) -> Result<Stickers> {
         self.make_request(add_recent_sticker).await
     }
 
@@ -105,7 +99,7 @@ where
     pub async fn add_recently_found_chat<C: AsRef<AddRecentlyFoundChat>>(
         &self,
         add_recently_found_chat: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(add_recently_found_chat).await
     }
 
@@ -113,7 +107,7 @@ where
     pub async fn add_saved_animation<C: AsRef<AddSavedAnimation>>(
         &self,
         add_saved_animation: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(add_saved_animation).await
     }
 
@@ -121,7 +115,7 @@ where
     pub async fn add_sticker_to_set<C: AsRef<AddStickerToSet>>(
         &self,
         add_sticker_to_set: C,
-    ) -> RTDResult<StickerSet> {
+    ) -> Result<StickerSet> {
         self.make_request(add_sticker_to_set).await
     }
 
@@ -129,7 +123,7 @@ where
     pub async fn answer_callback_query<C: AsRef<AnswerCallbackQuery>>(
         &self,
         answer_callback_query: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(answer_callback_query).await
     }
 
@@ -137,7 +131,7 @@ where
     pub async fn answer_custom_query<C: AsRef<AnswerCustomQuery>>(
         &self,
         answer_custom_query: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(answer_custom_query).await
     }
 
@@ -145,7 +139,7 @@ where
     pub async fn answer_inline_query<C: AsRef<AnswerInlineQuery>>(
         &self,
         answer_inline_query: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(answer_inline_query).await
     }
 
@@ -153,7 +147,7 @@ where
     pub async fn answer_pre_checkout_query<C: AsRef<AnswerPreCheckoutQuery>>(
         &self,
         answer_pre_checkout_query: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(answer_pre_checkout_query).await
     }
 
@@ -161,15 +155,12 @@ where
     pub async fn answer_shipping_query<C: AsRef<AnswerShippingQuery>>(
         &self,
         answer_shipping_query: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(answer_shipping_query).await
     }
 
     // Bans a member in a chat. Members can't be banned in private or secret chats. In supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless unbanned first
-    pub async fn ban_chat_member<C: AsRef<BanChatMember>>(
-        &self,
-        ban_chat_member: C,
-    ) -> RTDResult<Ok> {
+    pub async fn ban_chat_member<C: AsRef<BanChatMember>>(&self, ban_chat_member: C) -> Result<Ok> {
         self.make_request(ban_chat_member).await
     }
 
@@ -177,7 +168,7 @@ where
     pub async fn block_message_sender_from_replies<C: AsRef<BlockMessageSenderFromReplies>>(
         &self,
         block_message_sender_from_replies: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(block_message_sender_from_replies).await
     }
 
@@ -185,7 +176,7 @@ where
     pub async fn can_transfer_ownership<C: AsRef<CanTransferOwnership>>(
         &self,
         can_transfer_ownership: C,
-    ) -> RTDResult<CanTransferOwnershipResult> {
+    ) -> Result<CanTransferOwnershipResult> {
         self.make_request(can_transfer_ownership).await
     }
 
@@ -193,7 +184,7 @@ where
     pub async fn cancel_download_file<C: AsRef<CancelDownloadFile>>(
         &self,
         cancel_download_file: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(cancel_download_file).await
     }
 
@@ -201,7 +192,7 @@ where
     pub async fn cancel_password_reset<C: AsRef<CancelPasswordReset>>(
         &self,
         cancel_password_reset: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(cancel_password_reset).await
     }
 
@@ -209,7 +200,7 @@ where
     pub async fn cancel_upload_file<C: AsRef<CancelUploadFile>>(
         &self,
         cancel_upload_file: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(cancel_upload_file).await
     }
 
@@ -217,7 +208,7 @@ where
     pub async fn change_imported_contacts<C: AsRef<ChangeImportedContacts>>(
         &self,
         change_imported_contacts: C,
-    ) -> RTDResult<ImportedContacts> {
+    ) -> Result<ImportedContacts> {
         self.make_request(change_imported_contacts).await
     }
 
@@ -225,7 +216,7 @@ where
     pub async fn change_phone_number<C: AsRef<ChangePhoneNumber>>(
         &self,
         change_phone_number: C,
-    ) -> RTDResult<AuthenticationCodeInfo> {
+    ) -> Result<AuthenticationCodeInfo> {
         self.make_request(change_phone_number).await
     }
 
@@ -233,7 +224,7 @@ where
     pub async fn change_sticker_set<C: AsRef<ChangeStickerSet>>(
         &self,
         change_sticker_set: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(change_sticker_set).await
     }
 
@@ -241,7 +232,7 @@ where
     pub async fn check_authentication_bot_token<C: AsRef<CheckAuthenticationBotToken>>(
         &self,
         check_authentication_bot_token: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_authentication_bot_token).await
     }
 
@@ -249,7 +240,7 @@ where
     pub async fn check_authentication_code<C: AsRef<CheckAuthenticationCode>>(
         &self,
         check_authentication_code: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_authentication_code).await
     }
 
@@ -257,7 +248,7 @@ where
     pub async fn check_authentication_password<C: AsRef<CheckAuthenticationPassword>>(
         &self,
         check_authentication_password: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_authentication_password).await
     }
 
@@ -267,7 +258,7 @@ where
     >(
         &self,
         check_authentication_password_recovery_code: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_authentication_password_recovery_code)
             .await
     }
@@ -276,7 +267,7 @@ where
     pub async fn check_change_phone_number_code<C: AsRef<CheckChangePhoneNumberCode>>(
         &self,
         check_change_phone_number_code: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_change_phone_number_code).await
     }
 
@@ -284,7 +275,7 @@ where
     pub async fn check_chat_invite_link<C: AsRef<CheckChatInviteLink>>(
         &self,
         check_chat_invite_link: C,
-    ) -> RTDResult<ChatInviteLinkInfo> {
+    ) -> Result<ChatInviteLinkInfo> {
         self.make_request(check_chat_invite_link).await
     }
 
@@ -292,7 +283,7 @@ where
     pub async fn check_chat_username<C: AsRef<CheckChatUsername>>(
         &self,
         check_chat_username: C,
-    ) -> RTDResult<CheckChatUsernameResult> {
+    ) -> Result<CheckChatUsernameResult> {
         self.make_request(check_chat_username).await
     }
 
@@ -300,7 +291,7 @@ where
     pub async fn check_created_public_chats_limit<C: AsRef<CheckCreatedPublicChatsLimit>>(
         &self,
         check_created_public_chats_limit: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_created_public_chats_limit).await
     }
 
@@ -308,7 +299,7 @@ where
     pub async fn check_database_encryption_key<C: AsRef<CheckDatabaseEncryptionKey>>(
         &self,
         check_database_encryption_key: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_database_encryption_key).await
     }
 
@@ -318,7 +309,7 @@ where
     >(
         &self,
         check_email_address_verification_code: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_email_address_verification_code)
             .await
     }
@@ -327,7 +318,7 @@ where
     pub async fn check_password_recovery_code<C: AsRef<CheckPasswordRecoveryCode>>(
         &self,
         check_password_recovery_code: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_password_recovery_code).await
     }
 
@@ -337,7 +328,7 @@ where
     >(
         &self,
         check_phone_number_confirmation_code: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_phone_number_confirmation_code)
             .await
     }
@@ -348,7 +339,7 @@ where
     >(
         &self,
         check_phone_number_verification_code: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(check_phone_number_verification_code)
             .await
     }
@@ -357,7 +348,7 @@ where
     pub async fn check_recovery_email_address_code<C: AsRef<CheckRecoveryEmailAddressCode>>(
         &self,
         check_recovery_email_address_code: C,
-    ) -> RTDResult<PasswordState> {
+    ) -> Result<PasswordState> {
         self.make_request(check_recovery_email_address_code).await
     }
 
@@ -365,7 +356,7 @@ where
     pub async fn check_sticker_set_name<C: AsRef<CheckStickerSetName>>(
         &self,
         check_sticker_set_name: C,
-    ) -> RTDResult<CheckStickerSetNameResult> {
+    ) -> Result<CheckStickerSetNameResult> {
         self.make_request(check_sticker_set_name).await
     }
 
@@ -373,7 +364,7 @@ where
     pub async fn clean_file_name<C: AsRef<CleanFileName>>(
         &self,
         clean_file_name: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(clean_file_name).await
     }
 
@@ -381,7 +372,7 @@ where
     pub async fn clear_all_draft_messages<C: AsRef<ClearAllDraftMessages>>(
         &self,
         clear_all_draft_messages: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(clear_all_draft_messages).await
     }
 
@@ -389,7 +380,7 @@ where
     pub async fn clear_imported_contacts<C: AsRef<ClearImportedContacts>>(
         &self,
         clear_imported_contacts: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(clear_imported_contacts).await
     }
 
@@ -397,7 +388,7 @@ where
     pub async fn clear_recent_stickers<C: AsRef<ClearRecentStickers>>(
         &self,
         clear_recent_stickers: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(clear_recent_stickers).await
     }
 
@@ -405,7 +396,7 @@ where
     pub async fn clear_recently_found_chats<C: AsRef<ClearRecentlyFoundChats>>(
         &self,
         clear_recently_found_chats: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(clear_recently_found_chats).await
     }
 
@@ -413,17 +404,17 @@ where
     pub async fn click_animated_emoji_message<C: AsRef<ClickAnimatedEmojiMessage>>(
         &self,
         click_animated_emoji_message: C,
-    ) -> RTDResult<Sticker> {
+    ) -> Result<Sticker> {
         self.make_request(click_animated_emoji_message).await
     }
 
     // Closes the TDLib instance. All databases will be flushed to disk and properly closed. After the close completes, updateAuthorizationState with authorizationStateClosed will be sent. Can be called before initialization
-    pub async fn close<C: AsRef<Close>>(&self, close: C) -> RTDResult<Ok> {
+    pub async fn close<C: AsRef<Close>>(&self, close: C) -> Result<Ok> {
         self.make_request(close).await
     }
 
     // Informs TDLib that the chat is closed by the user. Many useful activities depend on the chat being opened or closed
-    pub async fn close_chat<C: AsRef<CloseChat>>(&self, close_chat: C) -> RTDResult<Ok> {
+    pub async fn close_chat<C: AsRef<CloseChat>>(&self, close_chat: C) -> Result<Ok> {
         self.make_request(close_chat).await
     }
 
@@ -431,7 +422,7 @@ where
     pub async fn close_secret_chat<C: AsRef<CloseSecretChat>>(
         &self,
         close_secret_chat: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(close_secret_chat).await
     }
 
@@ -439,7 +430,7 @@ where
     pub async fn confirm_qr_code_authentication<C: AsRef<ConfirmQrCodeAuthentication>>(
         &self,
         confirm_qr_code_authentication: C,
-    ) -> RTDResult<Session> {
+    ) -> Result<Session> {
         self.make_request(confirm_qr_code_authentication).await
     }
 
@@ -447,12 +438,12 @@ where
     pub async fn create_basic_group_chat<C: AsRef<CreateBasicGroupChat>>(
         &self,
         create_basic_group_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(create_basic_group_chat).await
     }
 
     // Creates a new call
-    pub async fn create_call<C: AsRef<CreateCall>>(&self, create_call: C) -> RTDResult<CallId> {
+    pub async fn create_call<C: AsRef<CreateCall>>(&self, create_call: C) -> Result<CallId> {
         self.make_request(create_call).await
     }
 
@@ -460,7 +451,7 @@ where
     pub async fn create_chat_filter<C: AsRef<CreateChatFilter>>(
         &self,
         create_chat_filter: C,
-    ) -> RTDResult<ChatFilterInfo> {
+    ) -> Result<ChatFilterInfo> {
         self.make_request(create_chat_filter).await
     }
 
@@ -468,7 +459,7 @@ where
     pub async fn create_chat_invite_link<C: AsRef<CreateChatInviteLink>>(
         &self,
         create_chat_invite_link: C,
-    ) -> RTDResult<ChatInviteLink> {
+    ) -> Result<ChatInviteLink> {
         self.make_request(create_chat_invite_link).await
     }
 
@@ -476,7 +467,7 @@ where
     pub async fn create_new_basic_group_chat<C: AsRef<CreateNewBasicGroupChat>>(
         &self,
         create_new_basic_group_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(create_new_basic_group_chat).await
     }
 
@@ -484,7 +475,7 @@ where
     pub async fn create_new_secret_chat<C: AsRef<CreateNewSecretChat>>(
         &self,
         create_new_secret_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(create_new_secret_chat).await
     }
 
@@ -492,7 +483,7 @@ where
     pub async fn create_new_sticker_set<C: AsRef<CreateNewStickerSet>>(
         &self,
         create_new_sticker_set: C,
-    ) -> RTDResult<StickerSet> {
+    ) -> Result<StickerSet> {
         self.make_request(create_new_sticker_set).await
     }
 
@@ -500,7 +491,7 @@ where
     pub async fn create_new_supergroup_chat<C: AsRef<CreateNewSupergroupChat>>(
         &self,
         create_new_supergroup_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(create_new_supergroup_chat).await
     }
 
@@ -508,7 +499,7 @@ where
     pub async fn create_private_chat<C: AsRef<CreatePrivateChat>>(
         &self,
         create_private_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(create_private_chat).await
     }
 
@@ -516,7 +507,7 @@ where
     pub async fn create_secret_chat<C: AsRef<CreateSecretChat>>(
         &self,
         create_secret_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(create_secret_chat).await
     }
 
@@ -524,7 +515,7 @@ where
     pub async fn create_supergroup_chat<C: AsRef<CreateSupergroupChat>>(
         &self,
         create_supergroup_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(create_supergroup_chat).await
     }
 
@@ -532,7 +523,7 @@ where
     pub async fn create_temporary_password<C: AsRef<CreateTemporaryPassword>>(
         &self,
         create_temporary_password: C,
-    ) -> RTDResult<TemporaryPasswordState> {
+    ) -> Result<TemporaryPasswordState> {
         self.make_request(create_temporary_password).await
     }
 
@@ -540,15 +531,12 @@ where
     pub async fn create_video_chat<C: AsRef<CreateVideoChat>>(
         &self,
         create_video_chat: C,
-    ) -> RTDResult<GroupCallId> {
+    ) -> Result<GroupCallId> {
         self.make_request(create_video_chat).await
     }
 
     // Deletes the account of the current user, deleting all information associated with the user from the server. The phone number of the account can be used to create a new account. Can be called before authorization when the current authorization state is authorizationStateWaitPassword
-    pub async fn delete_account<C: AsRef<DeleteAccount>>(
-        &self,
-        delete_account: C,
-    ) -> RTDResult<Ok> {
+    pub async fn delete_account<C: AsRef<DeleteAccount>>(&self, delete_account: C) -> Result<Ok> {
         self.make_request(delete_account).await
     }
 
@@ -556,7 +544,7 @@ where
     pub async fn delete_all_call_messages<C: AsRef<DeleteAllCallMessages>>(
         &self,
         delete_all_call_messages: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_all_call_messages).await
     }
 
@@ -564,13 +552,13 @@ where
     pub async fn delete_all_revoked_chat_invite_links<C: AsRef<DeleteAllRevokedChatInviteLinks>>(
         &self,
         delete_all_revoked_chat_invite_links: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_all_revoked_chat_invite_links)
             .await
     }
 
     // Deletes a chat along with all messages in the corresponding chat for all chat members; requires owner privileges. For group chats this will release the username and remove all members. Chats with more than 1000 members can't be deleted using this method
-    pub async fn delete_chat<C: AsRef<DeleteChat>>(&self, delete_chat: C) -> RTDResult<Ok> {
+    pub async fn delete_chat<C: AsRef<DeleteChat>>(&self, delete_chat: C) -> Result<Ok> {
         self.make_request(delete_chat).await
     }
 
@@ -578,7 +566,7 @@ where
     pub async fn delete_chat_filter<C: AsRef<DeleteChatFilter>>(
         &self,
         delete_chat_filter: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_chat_filter).await
     }
 
@@ -586,7 +574,7 @@ where
     pub async fn delete_chat_history<C: AsRef<DeleteChatHistory>>(
         &self,
         delete_chat_history: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_chat_history).await
     }
 
@@ -594,7 +582,7 @@ where
     pub async fn delete_chat_messages_by_date<C: AsRef<DeleteChatMessagesByDate>>(
         &self,
         delete_chat_messages_by_date: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_chat_messages_by_date).await
     }
 
@@ -602,7 +590,7 @@ where
     pub async fn delete_chat_messages_by_sender<C: AsRef<DeleteChatMessagesBySender>>(
         &self,
         delete_chat_messages_by_sender: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_chat_messages_by_sender).await
     }
 
@@ -610,7 +598,7 @@ where
     pub async fn delete_chat_reply_markup<C: AsRef<DeleteChatReplyMarkup>>(
         &self,
         delete_chat_reply_markup: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_chat_reply_markup).await
     }
 
@@ -618,12 +606,12 @@ where
     pub async fn delete_commands<C: AsRef<DeleteCommands>>(
         &self,
         delete_commands: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_commands).await
     }
 
     // Deletes a file from the TDLib file cache
-    pub async fn delete_file<C: AsRef<DeleteFile>>(&self, delete_file: C) -> RTDResult<Ok> {
+    pub async fn delete_file<C: AsRef<DeleteFile>>(&self, delete_file: C) -> Result<Ok> {
         self.make_request(delete_file).await
     }
 
@@ -631,7 +619,7 @@ where
     pub async fn delete_language_pack<C: AsRef<DeleteLanguagePack>>(
         &self,
         delete_language_pack: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_language_pack).await
     }
 
@@ -639,7 +627,7 @@ where
     pub async fn delete_messages<C: AsRef<DeleteMessages>>(
         &self,
         delete_messages: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_messages).await
     }
 
@@ -647,7 +635,7 @@ where
     pub async fn delete_passport_element<C: AsRef<DeletePassportElement>>(
         &self,
         delete_passport_element: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_passport_element).await
     }
 
@@ -655,7 +643,7 @@ where
     pub async fn delete_profile_photo<C: AsRef<DeleteProfilePhoto>>(
         &self,
         delete_profile_photo: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_profile_photo).await
     }
 
@@ -663,7 +651,7 @@ where
     pub async fn delete_revoked_chat_invite_link<C: AsRef<DeleteRevokedChatInviteLink>>(
         &self,
         delete_revoked_chat_invite_link: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_revoked_chat_invite_link).await
     }
 
@@ -671,7 +659,7 @@ where
     pub async fn delete_saved_credentials<C: AsRef<DeleteSavedCredentials>>(
         &self,
         delete_saved_credentials: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_saved_credentials).await
     }
 
@@ -679,22 +667,22 @@ where
     pub async fn delete_saved_order_info<C: AsRef<DeleteSavedOrderInfo>>(
         &self,
         delete_saved_order_info: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(delete_saved_order_info).await
     }
 
     // Closes the TDLib instance, destroying all local data without a proper logout. The current user session will remain in the list of all active sessions. All local data will be destroyed. After the destruction completes updateAuthorizationState with authorizationStateClosed will be sent. Can be called before authorization
-    pub async fn destroy<C: AsRef<Destroy>>(&self, destroy: C) -> RTDResult<Ok> {
+    pub async fn destroy<C: AsRef<Destroy>>(&self, destroy: C) -> Result<Ok> {
         self.make_request(destroy).await
     }
 
     // Disables the currently enabled proxy. Can be called before authorization
-    pub async fn disable_proxy<C: AsRef<DisableProxy>>(&self, disable_proxy: C) -> RTDResult<Ok> {
+    pub async fn disable_proxy<C: AsRef<DisableProxy>>(&self, disable_proxy: C) -> Result<Ok> {
         self.make_request(disable_proxy).await
     }
 
     // Discards a call
-    pub async fn discard_call<C: AsRef<DiscardCall>>(&self, discard_call: C) -> RTDResult<Ok> {
+    pub async fn discard_call<C: AsRef<DiscardCall>>(&self, discard_call: C) -> Result<Ok> {
         self.make_request(discard_call).await
     }
 
@@ -702,7 +690,7 @@ where
     pub async fn disconnect_all_websites<C: AsRef<DisconnectAllWebsites>>(
         &self,
         disconnect_all_websites: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(disconnect_all_websites).await
     }
 
@@ -710,12 +698,12 @@ where
     pub async fn disconnect_website<C: AsRef<DisconnectWebsite>>(
         &self,
         disconnect_website: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(disconnect_website).await
     }
 
     // Downloads a file from the cloud. Download progress and completion of the download will be notified through updateFile updates
-    pub async fn download_file<C: AsRef<DownloadFile>>(&self, download_file: C) -> RTDResult<File> {
+    pub async fn download_file<C: AsRef<DownloadFile>>(&self, download_file: C) -> Result<File> {
         self.make_request(download_file).await
     }
 
@@ -723,7 +711,7 @@ where
     pub async fn edit_chat_filter<C: AsRef<EditChatFilter>>(
         &self,
         edit_chat_filter: C,
-    ) -> RTDResult<ChatFilterInfo> {
+    ) -> Result<ChatFilterInfo> {
         self.make_request(edit_chat_filter).await
     }
 
@@ -731,7 +719,7 @@ where
     pub async fn edit_chat_invite_link<C: AsRef<EditChatInviteLink>>(
         &self,
         edit_chat_invite_link: C,
-    ) -> RTDResult<ChatInviteLink> {
+    ) -> Result<ChatInviteLink> {
         self.make_request(edit_chat_invite_link).await
     }
 
@@ -739,7 +727,7 @@ where
     pub async fn edit_custom_language_pack_info<C: AsRef<EditCustomLanguagePackInfo>>(
         &self,
         edit_custom_language_pack_info: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(edit_custom_language_pack_info).await
     }
 
@@ -747,7 +735,7 @@ where
     pub async fn edit_inline_message_caption<C: AsRef<EditInlineMessageCaption>>(
         &self,
         edit_inline_message_caption: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(edit_inline_message_caption).await
     }
 
@@ -755,7 +743,7 @@ where
     pub async fn edit_inline_message_live_location<C: AsRef<EditInlineMessageLiveLocation>>(
         &self,
         edit_inline_message_live_location: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(edit_inline_message_live_location).await
     }
 
@@ -763,7 +751,7 @@ where
     pub async fn edit_inline_message_media<C: AsRef<EditInlineMessageMedia>>(
         &self,
         edit_inline_message_media: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(edit_inline_message_media).await
     }
 
@@ -771,7 +759,7 @@ where
     pub async fn edit_inline_message_reply_markup<C: AsRef<EditInlineMessageReplyMarkup>>(
         &self,
         edit_inline_message_reply_markup: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(edit_inline_message_reply_markup).await
     }
 
@@ -779,7 +767,7 @@ where
     pub async fn edit_inline_message_text<C: AsRef<EditInlineMessageText>>(
         &self,
         edit_inline_message_text: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(edit_inline_message_text).await
     }
 
@@ -787,7 +775,7 @@ where
     pub async fn edit_message_caption<C: AsRef<EditMessageCaption>>(
         &self,
         edit_message_caption: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(edit_message_caption).await
     }
 
@@ -795,7 +783,7 @@ where
     pub async fn edit_message_live_location<C: AsRef<EditMessageLiveLocation>>(
         &self,
         edit_message_live_location: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(edit_message_live_location).await
     }
 
@@ -803,7 +791,7 @@ where
     pub async fn edit_message_media<C: AsRef<EditMessageMedia>>(
         &self,
         edit_message_media: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(edit_message_media).await
     }
 
@@ -811,7 +799,7 @@ where
     pub async fn edit_message_reply_markup<C: AsRef<EditMessageReplyMarkup>>(
         &self,
         edit_message_reply_markup: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(edit_message_reply_markup).await
     }
 
@@ -819,7 +807,7 @@ where
     pub async fn edit_message_scheduling_state<C: AsRef<EditMessageSchedulingState>>(
         &self,
         edit_message_scheduling_state: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(edit_message_scheduling_state).await
     }
 
@@ -827,22 +815,22 @@ where
     pub async fn edit_message_text<C: AsRef<EditMessageText>>(
         &self,
         edit_message_text: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(edit_message_text).await
     }
 
     // Edits an existing proxy server for network requests. Can be called before authorization
-    pub async fn edit_proxy<C: AsRef<EditProxy>>(&self, edit_proxy: C) -> RTDResult<Proxy> {
+    pub async fn edit_proxy<C: AsRef<EditProxy>>(&self, edit_proxy: C) -> Result<Proxy> {
         self.make_request(edit_proxy).await
     }
 
     // Enables a proxy. Only one proxy can be enabled at a time. Can be called before authorization
-    pub async fn enable_proxy<C: AsRef<EnableProxy>>(&self, enable_proxy: C) -> RTDResult<Ok> {
+    pub async fn enable_proxy<C: AsRef<EnableProxy>>(&self, enable_proxy: C) -> Result<Ok> {
         self.make_request(enable_proxy).await
     }
 
     // Ends a group call. Requires groupCall.can_be_managed
-    pub async fn end_group_call<C: AsRef<EndGroupCall>>(&self, end_group_call: C) -> RTDResult<Ok> {
+    pub async fn end_group_call<C: AsRef<EndGroupCall>>(&self, end_group_call: C) -> Result<Ok> {
         self.make_request(end_group_call).await
     }
 
@@ -850,7 +838,7 @@ where
     pub async fn end_group_call_recording<C: AsRef<EndGroupCallRecording>>(
         &self,
         end_group_call_recording: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(end_group_call_recording).await
     }
 
@@ -858,7 +846,7 @@ where
     pub async fn end_group_call_screen_sharing<C: AsRef<EndGroupCallScreenSharing>>(
         &self,
         end_group_call_screen_sharing: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(end_group_call_screen_sharing).await
     }
 
@@ -866,7 +854,7 @@ where
     pub async fn finish_file_generation<C: AsRef<FinishFileGeneration>>(
         &self,
         finish_file_generation: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(finish_file_generation).await
     }
 
@@ -874,7 +862,7 @@ where
     pub async fn forward_messages<C: AsRef<ForwardMessages>>(
         &self,
         forward_messages: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(forward_messages).await
     }
 
@@ -882,7 +870,7 @@ where
     pub async fn get_account_ttl<C: AsRef<GetAccountTtl>>(
         &self,
         get_account_ttl: C,
-    ) -> RTDResult<AccountTtl> {
+    ) -> Result<AccountTtl> {
         self.make_request(get_account_ttl).await
     }
 
@@ -890,7 +878,7 @@ where
     pub async fn get_active_live_location_messages<C: AsRef<GetActiveLiveLocationMessages>>(
         &self,
         get_active_live_location_messages: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(get_active_live_location_messages).await
     }
 
@@ -898,7 +886,7 @@ where
     pub async fn get_active_sessions<C: AsRef<GetActiveSessions>>(
         &self,
         get_active_sessions: C,
-    ) -> RTDResult<Sessions> {
+    ) -> Result<Sessions> {
         self.make_request(get_active_sessions).await
     }
 
@@ -906,7 +894,7 @@ where
     pub async fn get_all_passport_elements<C: AsRef<GetAllPassportElements>>(
         &self,
         get_all_passport_elements: C,
-    ) -> RTDResult<PassportElements> {
+    ) -> Result<PassportElements> {
         self.make_request(get_all_passport_elements).await
     }
 
@@ -914,7 +902,7 @@ where
     pub async fn get_animated_emoji<C: AsRef<GetAnimatedEmoji>>(
         &self,
         get_animated_emoji: C,
-    ) -> RTDResult<AnimatedEmoji> {
+    ) -> Result<AnimatedEmoji> {
         self.make_request(get_animated_emoji).await
     }
 
@@ -922,7 +910,7 @@ where
     pub async fn get_application_config<C: AsRef<GetApplicationConfig>>(
         &self,
         get_application_config: C,
-    ) -> RTDResult<JsonValue> {
+    ) -> Result<JsonValue> {
         self.make_request(get_application_config).await
     }
 
@@ -930,7 +918,7 @@ where
     pub async fn get_application_download_link<C: AsRef<GetApplicationDownloadLink>>(
         &self,
         get_application_download_link: C,
-    ) -> RTDResult<HttpUrl> {
+    ) -> Result<HttpUrl> {
         self.make_request(get_application_download_link).await
     }
 
@@ -938,7 +926,7 @@ where
     pub async fn get_archived_sticker_sets<C: AsRef<GetArchivedStickerSets>>(
         &self,
         get_archived_sticker_sets: C,
-    ) -> RTDResult<StickerSets> {
+    ) -> Result<StickerSets> {
         self.make_request(get_archived_sticker_sets).await
     }
 
@@ -946,7 +934,7 @@ where
     pub async fn get_attached_sticker_sets<C: AsRef<GetAttachedStickerSets>>(
         &self,
         get_attached_sticker_sets: C,
-    ) -> RTDResult<StickerSets> {
+    ) -> Result<StickerSets> {
         self.make_request(get_attached_sticker_sets).await
     }
 
@@ -954,7 +942,7 @@ where
     pub async fn get_authorization_state<C: AsRef<GetAuthorizationState>>(
         &self,
         get_authorization_state: C,
-    ) -> RTDResult<AuthorizationState> {
+    ) -> Result<AuthorizationState> {
         self.make_request(get_authorization_state).await
     }
 
@@ -962,7 +950,7 @@ where
     pub async fn get_auto_download_settings_presets<C: AsRef<GetAutoDownloadSettingsPresets>>(
         &self,
         get_auto_download_settings_presets: C,
-    ) -> RTDResult<AutoDownloadSettingsPresets> {
+    ) -> Result<AutoDownloadSettingsPresets> {
         self.make_request(get_auto_download_settings_presets).await
     }
 
@@ -970,7 +958,7 @@ where
     pub async fn get_background_url<C: AsRef<GetBackgroundUrl>>(
         &self,
         get_background_url: C,
-    ) -> RTDResult<HttpUrl> {
+    ) -> Result<HttpUrl> {
         self.make_request(get_background_url).await
     }
 
@@ -978,7 +966,7 @@ where
     pub async fn get_backgrounds<C: AsRef<GetBackgrounds>>(
         &self,
         get_backgrounds: C,
-    ) -> RTDResult<Backgrounds> {
+    ) -> Result<Backgrounds> {
         self.make_request(get_backgrounds).await
     }
 
@@ -986,7 +974,7 @@ where
     pub async fn get_bank_card_info<C: AsRef<GetBankCardInfo>>(
         &self,
         get_bank_card_info: C,
-    ) -> RTDResult<BankCardInfo> {
+    ) -> Result<BankCardInfo> {
         self.make_request(get_bank_card_info).await
     }
 
@@ -994,7 +982,7 @@ where
     pub async fn get_basic_group<C: AsRef<GetBasicGroup>>(
         &self,
         get_basic_group: C,
-    ) -> RTDResult<BasicGroup> {
+    ) -> Result<BasicGroup> {
         self.make_request(get_basic_group).await
     }
 
@@ -1002,7 +990,7 @@ where
     pub async fn get_basic_group_full_info<C: AsRef<GetBasicGroupFullInfo>>(
         &self,
         get_basic_group_full_info: C,
-    ) -> RTDResult<BasicGroupFullInfo> {
+    ) -> Result<BasicGroupFullInfo> {
         self.make_request(get_basic_group_full_info).await
     }
 
@@ -1010,7 +998,7 @@ where
     pub async fn get_blocked_message_senders<C: AsRef<GetBlockedMessageSenders>>(
         &self,
         get_blocked_message_senders: C,
-    ) -> RTDResult<MessageSenders> {
+    ) -> Result<MessageSenders> {
         self.make_request(get_blocked_message_senders).await
     }
 
@@ -1018,7 +1006,7 @@ where
     pub async fn get_callback_query_answer<C: AsRef<GetCallbackQueryAnswer>>(
         &self,
         get_callback_query_answer: C,
-    ) -> RTDResult<CallbackQueryAnswer> {
+    ) -> Result<CallbackQueryAnswer> {
         self.make_request(get_callback_query_answer).await
     }
 
@@ -1026,12 +1014,12 @@ where
     pub async fn get_callback_query_message<C: AsRef<GetCallbackQueryMessage>>(
         &self,
         get_callback_query_message: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(get_callback_query_message).await
     }
 
     // Returns information about a chat by its identifier, this is an offline request if the current user is not a bot
-    pub async fn get_chat<C: AsRef<GetChat>>(&self, get_chat: C) -> RTDResult<Chat> {
+    pub async fn get_chat<C: AsRef<GetChat>>(&self, get_chat: C) -> Result<Chat> {
         self.make_request(get_chat).await
     }
 
@@ -1039,7 +1027,7 @@ where
     pub async fn get_chat_administrators<C: AsRef<GetChatAdministrators>>(
         &self,
         get_chat_administrators: C,
-    ) -> RTDResult<ChatAdministrators> {
+    ) -> Result<ChatAdministrators> {
         self.make_request(get_chat_administrators).await
     }
 
@@ -1047,7 +1035,7 @@ where
     pub async fn get_chat_available_message_senders<C: AsRef<GetChatAvailableMessageSenders>>(
         &self,
         get_chat_available_message_senders: C,
-    ) -> RTDResult<MessageSenders> {
+    ) -> Result<MessageSenders> {
         self.make_request(get_chat_available_message_senders).await
     }
 
@@ -1055,7 +1043,7 @@ where
     pub async fn get_chat_event_log<C: AsRef<GetChatEventLog>>(
         &self,
         get_chat_event_log: C,
-    ) -> RTDResult<ChatEvents> {
+    ) -> Result<ChatEvents> {
         self.make_request(get_chat_event_log).await
     }
 
@@ -1063,7 +1051,7 @@ where
     pub async fn get_chat_filter<C: AsRef<GetChatFilter>>(
         &self,
         get_chat_filter: C,
-    ) -> RTDResult<ChatFilter> {
+    ) -> Result<ChatFilter> {
         self.make_request(get_chat_filter).await
     }
 
@@ -1071,7 +1059,7 @@ where
     pub async fn get_chat_filter_default_icon_name<C: AsRef<GetChatFilterDefaultIconName>>(
         &self,
         get_chat_filter_default_icon_name: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_chat_filter_default_icon_name).await
     }
 
@@ -1079,7 +1067,7 @@ where
     pub async fn get_chat_history<C: AsRef<GetChatHistory>>(
         &self,
         get_chat_history: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(get_chat_history).await
     }
 
@@ -1087,7 +1075,7 @@ where
     pub async fn get_chat_invite_link<C: AsRef<GetChatInviteLink>>(
         &self,
         get_chat_invite_link: C,
-    ) -> RTDResult<ChatInviteLink> {
+    ) -> Result<ChatInviteLink> {
         self.make_request(get_chat_invite_link).await
     }
 
@@ -1095,7 +1083,7 @@ where
     pub async fn get_chat_invite_link_counts<C: AsRef<GetChatInviteLinkCounts>>(
         &self,
         get_chat_invite_link_counts: C,
-    ) -> RTDResult<ChatInviteLinkCounts> {
+    ) -> Result<ChatInviteLinkCounts> {
         self.make_request(get_chat_invite_link_counts).await
     }
 
@@ -1103,7 +1091,7 @@ where
     pub async fn get_chat_invite_link_members<C: AsRef<GetChatInviteLinkMembers>>(
         &self,
         get_chat_invite_link_members: C,
-    ) -> RTDResult<ChatInviteLinkMembers> {
+    ) -> Result<ChatInviteLinkMembers> {
         self.make_request(get_chat_invite_link_members).await
     }
 
@@ -1111,7 +1099,7 @@ where
     pub async fn get_chat_invite_links<C: AsRef<GetChatInviteLinks>>(
         &self,
         get_chat_invite_links: C,
-    ) -> RTDResult<ChatInviteLinks> {
+    ) -> Result<ChatInviteLinks> {
         self.make_request(get_chat_invite_links).await
     }
 
@@ -1119,7 +1107,7 @@ where
     pub async fn get_chat_join_requests<C: AsRef<GetChatJoinRequests>>(
         &self,
         get_chat_join_requests: C,
-    ) -> RTDResult<ChatJoinRequests> {
+    ) -> Result<ChatJoinRequests> {
         self.make_request(get_chat_join_requests).await
     }
 
@@ -1127,7 +1115,7 @@ where
     pub async fn get_chat_lists_to_add_chat<C: AsRef<GetChatListsToAddChat>>(
         &self,
         get_chat_lists_to_add_chat: C,
-    ) -> RTDResult<ChatLists> {
+    ) -> Result<ChatLists> {
         self.make_request(get_chat_lists_to_add_chat).await
     }
 
@@ -1135,7 +1123,7 @@ where
     pub async fn get_chat_member<C: AsRef<GetChatMember>>(
         &self,
         get_chat_member: C,
-    ) -> RTDResult<ChatMember> {
+    ) -> Result<ChatMember> {
         self.make_request(get_chat_member).await
     }
 
@@ -1143,7 +1131,7 @@ where
     pub async fn get_chat_message_by_date<C: AsRef<GetChatMessageByDate>>(
         &self,
         get_chat_message_by_date: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(get_chat_message_by_date).await
     }
 
@@ -1151,7 +1139,7 @@ where
     pub async fn get_chat_message_calendar<C: AsRef<GetChatMessageCalendar>>(
         &self,
         get_chat_message_calendar: C,
-    ) -> RTDResult<MessageCalendar> {
+    ) -> Result<MessageCalendar> {
         self.make_request(get_chat_message_calendar).await
     }
 
@@ -1159,7 +1147,7 @@ where
     pub async fn get_chat_message_count<C: AsRef<GetChatMessageCount>>(
         &self,
         get_chat_message_count: C,
-    ) -> RTDResult<Count> {
+    ) -> Result<Count> {
         self.make_request(get_chat_message_count).await
     }
 
@@ -1169,7 +1157,7 @@ where
     >(
         &self,
         get_chat_notification_settings_exceptions: C,
-    ) -> RTDResult<Chats> {
+    ) -> Result<Chats> {
         self.make_request(get_chat_notification_settings_exceptions)
             .await
     }
@@ -1178,7 +1166,7 @@ where
     pub async fn get_chat_pinned_message<C: AsRef<GetChatPinnedMessage>>(
         &self,
         get_chat_pinned_message: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(get_chat_pinned_message).await
     }
 
@@ -1186,7 +1174,7 @@ where
     pub async fn get_chat_scheduled_messages<C: AsRef<GetChatScheduledMessages>>(
         &self,
         get_chat_scheduled_messages: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(get_chat_scheduled_messages).await
     }
 
@@ -1194,7 +1182,7 @@ where
     pub async fn get_chat_sparse_message_positions<C: AsRef<GetChatSparseMessagePositions>>(
         &self,
         get_chat_sparse_message_positions: C,
-    ) -> RTDResult<MessagePositions> {
+    ) -> Result<MessagePositions> {
         self.make_request(get_chat_sparse_message_positions).await
     }
 
@@ -1202,7 +1190,7 @@ where
     pub async fn get_chat_sponsored_message<C: AsRef<GetChatSponsoredMessage>>(
         &self,
         get_chat_sponsored_message: C,
-    ) -> RTDResult<SponsoredMessage> {
+    ) -> Result<SponsoredMessage> {
         self.make_request(get_chat_sponsored_message).await
     }
 
@@ -1210,12 +1198,12 @@ where
     pub async fn get_chat_statistics<C: AsRef<GetChatStatistics>>(
         &self,
         get_chat_statistics: C,
-    ) -> RTDResult<ChatStatistics> {
+    ) -> Result<ChatStatistics> {
         self.make_request(get_chat_statistics).await
     }
 
     // Returns an ordered list of chats from the beginning of a chat list. For informational purposes only. Use loadChats and updates processing instead to maintain chat lists in a consistent state
-    pub async fn get_chats<C: AsRef<GetChats>>(&self, get_chats: C) -> RTDResult<Chats> {
+    pub async fn get_chats<C: AsRef<GetChats>>(&self, get_chats: C) -> Result<Chats> {
         self.make_request(get_chats).await
     }
 
@@ -1223,7 +1211,7 @@ where
     pub async fn get_commands<C: AsRef<GetCommands>>(
         &self,
         get_commands: C,
-    ) -> RTDResult<BotCommands> {
+    ) -> Result<BotCommands> {
         self.make_request(get_commands).await
     }
 
@@ -1231,12 +1219,12 @@ where
     pub async fn get_connected_websites<C: AsRef<GetConnectedWebsites>>(
         &self,
         get_connected_websites: C,
-    ) -> RTDResult<ConnectedWebsites> {
+    ) -> Result<ConnectedWebsites> {
         self.make_request(get_connected_websites).await
     }
 
     // Returns all user contacts
-    pub async fn get_contacts<C: AsRef<GetContacts>>(&self, get_contacts: C) -> RTDResult<Users> {
+    pub async fn get_contacts<C: AsRef<GetContacts>>(&self, get_contacts: C) -> Result<Users> {
         self.make_request(get_contacts).await
     }
 
@@ -1244,7 +1232,7 @@ where
     pub async fn get_countries<C: AsRef<GetCountries>>(
         &self,
         get_countries: C,
-    ) -> RTDResult<Countries> {
+    ) -> Result<Countries> {
         self.make_request(get_countries).await
     }
 
@@ -1252,7 +1240,7 @@ where
     pub async fn get_country_code<C: AsRef<GetCountryCode>>(
         &self,
         get_country_code: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_country_code).await
     }
 
@@ -1260,7 +1248,7 @@ where
     pub async fn get_created_public_chats<C: AsRef<GetCreatedPublicChats>>(
         &self,
         get_created_public_chats: C,
-    ) -> RTDResult<Chats> {
+    ) -> Result<Chats> {
         self.make_request(get_created_public_chats).await
     }
 
@@ -1268,7 +1256,7 @@ where
     pub async fn get_current_state<C: AsRef<GetCurrentState>>(
         &self,
         get_current_state: C,
-    ) -> RTDResult<Updates> {
+    ) -> Result<Updates> {
         self.make_request(get_current_state).await
     }
 
@@ -1276,7 +1264,7 @@ where
     pub async fn get_database_statistics<C: AsRef<GetDatabaseStatistics>>(
         &self,
         get_database_statistics: C,
-    ) -> RTDResult<DatabaseStatistics> {
+    ) -> Result<DatabaseStatistics> {
         self.make_request(get_database_statistics).await
     }
 
@@ -1284,7 +1272,7 @@ where
     pub async fn get_deep_link_info<C: AsRef<GetDeepLinkInfo>>(
         &self,
         get_deep_link_info: C,
-    ) -> RTDResult<DeepLinkInfo> {
+    ) -> Result<DeepLinkInfo> {
         self.make_request(get_deep_link_info).await
     }
 
@@ -1292,7 +1280,7 @@ where
     pub async fn get_emoji_suggestions_url<C: AsRef<GetEmojiSuggestionsUrl>>(
         &self,
         get_emoji_suggestions_url: C,
-    ) -> RTDResult<HttpUrl> {
+    ) -> Result<HttpUrl> {
         self.make_request(get_emoji_suggestions_url).await
     }
 
@@ -1300,7 +1288,7 @@ where
     pub async fn get_external_link<C: AsRef<GetExternalLink>>(
         &self,
         get_external_link: C,
-    ) -> RTDResult<HttpUrl> {
+    ) -> Result<HttpUrl> {
         self.make_request(get_external_link).await
     }
 
@@ -1308,7 +1296,7 @@ where
     pub async fn get_external_link_info<C: AsRef<GetExternalLinkInfo>>(
         &self,
         get_external_link_info: C,
-    ) -> RTDResult<LoginUrlInfo> {
+    ) -> Result<LoginUrlInfo> {
         self.make_request(get_external_link_info).await
     }
 
@@ -1316,12 +1304,12 @@ where
     pub async fn get_favorite_stickers<C: AsRef<GetFavoriteStickers>>(
         &self,
         get_favorite_stickers: C,
-    ) -> RTDResult<Stickers> {
+    ) -> Result<Stickers> {
         self.make_request(get_favorite_stickers).await
     }
 
     // Returns information about a file; this is an offline request
-    pub async fn get_file<C: AsRef<GetFile>>(&self, get_file: C) -> RTDResult<File> {
+    pub async fn get_file<C: AsRef<GetFile>>(&self, get_file: C) -> Result<File> {
         self.make_request(get_file).await
     }
 
@@ -1329,7 +1317,7 @@ where
     pub async fn get_file_downloaded_prefix_size<C: AsRef<GetFileDownloadedPrefixSize>>(
         &self,
         get_file_downloaded_prefix_size: C,
-    ) -> RTDResult<Count> {
+    ) -> Result<Count> {
         self.make_request(get_file_downloaded_prefix_size).await
     }
 
@@ -1337,7 +1325,7 @@ where
     pub async fn get_file_extension<C: AsRef<GetFileExtension>>(
         &self,
         get_file_extension: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_file_extension).await
     }
 
@@ -1345,7 +1333,7 @@ where
     pub async fn get_file_mime_type<C: AsRef<GetFileMimeType>>(
         &self,
         get_file_mime_type: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_file_mime_type).await
     }
 
@@ -1353,7 +1341,7 @@ where
     pub async fn get_game_high_scores<C: AsRef<GetGameHighScores>>(
         &self,
         get_game_high_scores: C,
-    ) -> RTDResult<GameHighScores> {
+    ) -> Result<GameHighScores> {
         self.make_request(get_game_high_scores).await
     }
 
@@ -1361,7 +1349,7 @@ where
     pub async fn get_group_call<C: AsRef<GetGroupCall>>(
         &self,
         get_group_call: C,
-    ) -> RTDResult<GroupCall> {
+    ) -> Result<GroupCall> {
         self.make_request(get_group_call).await
     }
 
@@ -1369,7 +1357,7 @@ where
     pub async fn get_group_call_invite_link<C: AsRef<GetGroupCallInviteLink>>(
         &self,
         get_group_call_invite_link: C,
-    ) -> RTDResult<HttpUrl> {
+    ) -> Result<HttpUrl> {
         self.make_request(get_group_call_invite_link).await
     }
 
@@ -1377,7 +1365,7 @@ where
     pub async fn get_group_call_stream_segment<C: AsRef<GetGroupCallStreamSegment>>(
         &self,
         get_group_call_stream_segment: C,
-    ) -> RTDResult<FilePart> {
+    ) -> Result<FilePart> {
         self.make_request(get_group_call_stream_segment).await
     }
 
@@ -1385,7 +1373,7 @@ where
     pub async fn get_groups_in_common<C: AsRef<GetGroupsInCommon>>(
         &self,
         get_groups_in_common: C,
-    ) -> RTDResult<Chats> {
+    ) -> Result<Chats> {
         self.make_request(get_groups_in_common).await
     }
 
@@ -1393,7 +1381,7 @@ where
     pub async fn get_imported_contact_count<C: AsRef<GetImportedContactCount>>(
         &self,
         get_imported_contact_count: C,
-    ) -> RTDResult<Count> {
+    ) -> Result<Count> {
         self.make_request(get_imported_contact_count).await
     }
 
@@ -1401,7 +1389,7 @@ where
     pub async fn get_inactive_supergroup_chats<C: AsRef<GetInactiveSupergroupChats>>(
         &self,
         get_inactive_supergroup_chats: C,
-    ) -> RTDResult<Chats> {
+    ) -> Result<Chats> {
         self.make_request(get_inactive_supergroup_chats).await
     }
 
@@ -1409,7 +1397,7 @@ where
     pub async fn get_inline_game_high_scores<C: AsRef<GetInlineGameHighScores>>(
         &self,
         get_inline_game_high_scores: C,
-    ) -> RTDResult<GameHighScores> {
+    ) -> Result<GameHighScores> {
         self.make_request(get_inline_game_high_scores).await
     }
 
@@ -1417,7 +1405,7 @@ where
     pub async fn get_inline_query_results<C: AsRef<GetInlineQueryResults>>(
         &self,
         get_inline_query_results: C,
-    ) -> RTDResult<InlineQueryResults> {
+    ) -> Result<InlineQueryResults> {
         self.make_request(get_inline_query_results).await
     }
 
@@ -1425,7 +1413,7 @@ where
     pub async fn get_installed_sticker_sets<C: AsRef<GetInstalledStickerSets>>(
         &self,
         get_installed_sticker_sets: C,
-    ) -> RTDResult<StickerSets> {
+    ) -> Result<StickerSets> {
         self.make_request(get_installed_sticker_sets).await
     }
 
@@ -1433,7 +1421,7 @@ where
     pub async fn get_internal_link_type<C: AsRef<GetInternalLinkType>>(
         &self,
         get_internal_link_type: C,
-    ) -> RTDResult<InternalLinkType> {
+    ) -> Result<InternalLinkType> {
         self.make_request(get_internal_link_type).await
     }
 
@@ -1441,7 +1429,7 @@ where
     pub async fn get_json_string<C: AsRef<GetJsonString>>(
         &self,
         get_json_string: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_json_string).await
     }
 
@@ -1449,7 +1437,7 @@ where
     pub async fn get_json_value<C: AsRef<GetJsonValue>>(
         &self,
         get_json_value: C,
-    ) -> RTDResult<JsonValue> {
+    ) -> Result<JsonValue> {
         self.make_request(get_json_value).await
     }
 
@@ -1457,7 +1445,7 @@ where
     pub async fn get_language_pack_info<C: AsRef<GetLanguagePackInfo>>(
         &self,
         get_language_pack_info: C,
-    ) -> RTDResult<LanguagePackInfo> {
+    ) -> Result<LanguagePackInfo> {
         self.make_request(get_language_pack_info).await
     }
 
@@ -1465,7 +1453,7 @@ where
     pub async fn get_language_pack_string<C: AsRef<GetLanguagePackString>>(
         &self,
         get_language_pack_string: C,
-    ) -> RTDResult<LanguagePackStringValue> {
+    ) -> Result<LanguagePackStringValue> {
         self.make_request(get_language_pack_string).await
     }
 
@@ -1473,7 +1461,7 @@ where
     pub async fn get_language_pack_strings<C: AsRef<GetLanguagePackStrings>>(
         &self,
         get_language_pack_strings: C,
-    ) -> RTDResult<LanguagePackStrings> {
+    ) -> Result<LanguagePackStrings> {
         self.make_request(get_language_pack_strings).await
     }
 
@@ -1481,7 +1469,7 @@ where
     pub async fn get_localization_target_info<C: AsRef<GetLocalizationTargetInfo>>(
         &self,
         get_localization_target_info: C,
-    ) -> RTDResult<LocalizationTargetInfo> {
+    ) -> Result<LocalizationTargetInfo> {
         self.make_request(get_localization_target_info).await
     }
 
@@ -1489,7 +1477,7 @@ where
     pub async fn get_log_stream<C: AsRef<GetLogStream>>(
         &self,
         get_log_stream: C,
-    ) -> RTDResult<LogStream> {
+    ) -> Result<LogStream> {
         self.make_request(get_log_stream).await
     }
 
@@ -1497,12 +1485,12 @@ where
     pub async fn get_log_tag_verbosity_level<C: AsRef<GetLogTagVerbosityLevel>>(
         &self,
         get_log_tag_verbosity_level: C,
-    ) -> RTDResult<LogVerbosityLevel> {
+    ) -> Result<LogVerbosityLevel> {
         self.make_request(get_log_tag_verbosity_level).await
     }
 
     // Returns list of available TDLib internal log tags, for example, ["actor", "binlog", "connections", "notifications", "proxy"]. Can be called synchronously
-    pub async fn get_log_tags<C: AsRef<GetLogTags>>(&self, get_log_tags: C) -> RTDResult<LogTags> {
+    pub async fn get_log_tags<C: AsRef<GetLogTags>>(&self, get_log_tags: C) -> Result<LogTags> {
         self.make_request(get_log_tags).await
     }
 
@@ -1510,15 +1498,12 @@ where
     pub async fn get_log_verbosity_level<C: AsRef<GetLogVerbosityLevel>>(
         &self,
         get_log_verbosity_level: C,
-    ) -> RTDResult<LogVerbosityLevel> {
+    ) -> Result<LogVerbosityLevel> {
         self.make_request(get_log_verbosity_level).await
     }
 
     // Returns an HTTP URL which can be used to automatically authorize the user on a website after clicking an inline button of type inlineKeyboardButtonTypeLoginUrl. Use the method getLoginUrlInfo to find whether a prior user confirmation is needed. If an error is returned, then the button must be handled as an ordinary URL button
-    pub async fn get_login_url<C: AsRef<GetLoginUrl>>(
-        &self,
-        get_login_url: C,
-    ) -> RTDResult<HttpUrl> {
+    pub async fn get_login_url<C: AsRef<GetLoginUrl>>(&self, get_login_url: C) -> Result<HttpUrl> {
         self.make_request(get_login_url).await
     }
 
@@ -1526,7 +1511,7 @@ where
     pub async fn get_login_url_info<C: AsRef<GetLoginUrlInfo>>(
         &self,
         get_login_url_info: C,
-    ) -> RTDResult<LoginUrlInfo> {
+    ) -> Result<LoginUrlInfo> {
         self.make_request(get_login_url_info).await
     }
 
@@ -1534,7 +1519,7 @@ where
     pub async fn get_map_thumbnail_file<C: AsRef<GetMapThumbnailFile>>(
         &self,
         get_map_thumbnail_file: C,
-    ) -> RTDResult<File> {
+    ) -> Result<File> {
         self.make_request(get_map_thumbnail_file).await
     }
 
@@ -1542,17 +1527,17 @@ where
     pub async fn get_markdown_text<C: AsRef<GetMarkdownText>>(
         &self,
         get_markdown_text: C,
-    ) -> RTDResult<FormattedText> {
+    ) -> Result<FormattedText> {
         self.make_request(get_markdown_text).await
     }
 
     // Returns the current user
-    pub async fn get_me<C: AsRef<GetMe>>(&self, get_me: C) -> RTDResult<User> {
+    pub async fn get_me<C: AsRef<GetMe>>(&self, get_me: C) -> Result<User> {
         self.make_request(get_me).await
     }
 
     // Returns information about a message
-    pub async fn get_message<C: AsRef<GetMessage>>(&self, get_message: C) -> RTDResult<Message> {
+    pub async fn get_message<C: AsRef<GetMessage>>(&self, get_message: C) -> Result<Message> {
         self.make_request(get_message).await
     }
 
@@ -1560,7 +1545,7 @@ where
     pub async fn get_message_embedding_code<C: AsRef<GetMessageEmbeddingCode>>(
         &self,
         get_message_embedding_code: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_message_embedding_code).await
     }
 
@@ -1568,7 +1553,7 @@ where
     pub async fn get_message_file_type<C: AsRef<GetMessageFileType>>(
         &self,
         get_message_file_type: C,
-    ) -> RTDResult<MessageFileType> {
+    ) -> Result<MessageFileType> {
         self.make_request(get_message_file_type).await
     }
 
@@ -1578,7 +1563,7 @@ where
     >(
         &self,
         get_message_import_confirmation_text: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_message_import_confirmation_text)
             .await
     }
@@ -1587,7 +1572,7 @@ where
     pub async fn get_message_link<C: AsRef<GetMessageLink>>(
         &self,
         get_message_link: C,
-    ) -> RTDResult<MessageLink> {
+    ) -> Result<MessageLink> {
         self.make_request(get_message_link).await
     }
 
@@ -1595,7 +1580,7 @@ where
     pub async fn get_message_link_info<C: AsRef<GetMessageLinkInfo>>(
         &self,
         get_message_link_info: C,
-    ) -> RTDResult<MessageLinkInfo> {
+    ) -> Result<MessageLinkInfo> {
         self.make_request(get_message_link_info).await
     }
 
@@ -1603,7 +1588,7 @@ where
     pub async fn get_message_locally<C: AsRef<GetMessageLocally>>(
         &self,
         get_message_locally: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(get_message_locally).await
     }
 
@@ -1611,7 +1596,7 @@ where
     pub async fn get_message_public_forwards<C: AsRef<GetMessagePublicForwards>>(
         &self,
         get_message_public_forwards: C,
-    ) -> RTDResult<FoundMessages> {
+    ) -> Result<FoundMessages> {
         self.make_request(get_message_public_forwards).await
     }
 
@@ -1619,7 +1604,7 @@ where
     pub async fn get_message_statistics<C: AsRef<GetMessageStatistics>>(
         &self,
         get_message_statistics: C,
-    ) -> RTDResult<MessageStatistics> {
+    ) -> Result<MessageStatistics> {
         self.make_request(get_message_statistics).await
     }
 
@@ -1627,7 +1612,7 @@ where
     pub async fn get_message_thread<C: AsRef<GetMessageThread>>(
         &self,
         get_message_thread: C,
-    ) -> RTDResult<MessageThreadInfo> {
+    ) -> Result<MessageThreadInfo> {
         self.make_request(get_message_thread).await
     }
 
@@ -1635,7 +1620,7 @@ where
     pub async fn get_message_thread_history<C: AsRef<GetMessageThreadHistory>>(
         &self,
         get_message_thread_history: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(get_message_thread_history).await
     }
 
@@ -1643,15 +1628,12 @@ where
     pub async fn get_message_viewers<C: AsRef<GetMessageViewers>>(
         &self,
         get_message_viewers: C,
-    ) -> RTDResult<Users> {
+    ) -> Result<Users> {
         self.make_request(get_message_viewers).await
     }
 
     // Returns information about messages. If a message is not found, returns null on the corresponding position of the result
-    pub async fn get_messages<C: AsRef<GetMessages>>(
-        &self,
-        get_messages: C,
-    ) -> RTDResult<Messages> {
+    pub async fn get_messages<C: AsRef<GetMessages>>(&self, get_messages: C) -> Result<Messages> {
         self.make_request(get_messages).await
     }
 
@@ -1659,12 +1641,12 @@ where
     pub async fn get_network_statistics<C: AsRef<GetNetworkStatistics>>(
         &self,
         get_network_statistics: C,
-    ) -> RTDResult<NetworkStatistics> {
+    ) -> Result<NetworkStatistics> {
         self.make_request(get_network_statistics).await
     }
 
     // Returns the value of an option by its name. (Check the list of available options on https://core.telegram.org/tdlib/options.) Can be called before authorization
-    pub async fn get_option<C: AsRef<GetOption>>(&self, get_option: C) -> RTDResult<OptionValue> {
+    pub async fn get_option<C: AsRef<GetOption>>(&self, get_option: C) -> Result<OptionValue> {
         self.make_request(get_option).await
     }
 
@@ -1672,7 +1654,7 @@ where
     pub async fn get_passport_authorization_form<C: AsRef<GetPassportAuthorizationForm>>(
         &self,
         get_passport_authorization_form: C,
-    ) -> RTDResult<PassportAuthorizationForm> {
+    ) -> Result<PassportAuthorizationForm> {
         self.make_request(get_passport_authorization_form).await
     }
 
@@ -1682,7 +1664,7 @@ where
     >(
         &self,
         get_passport_authorization_form_available_elements: C,
-    ) -> RTDResult<PassportElementsWithErrors> {
+    ) -> Result<PassportElementsWithErrors> {
         self.make_request(get_passport_authorization_form_available_elements)
             .await
     }
@@ -1691,7 +1673,7 @@ where
     pub async fn get_passport_element<C: AsRef<GetPassportElement>>(
         &self,
         get_passport_element: C,
-    ) -> RTDResult<PassportElement> {
+    ) -> Result<PassportElement> {
         self.make_request(get_passport_element).await
     }
 
@@ -1699,7 +1681,7 @@ where
     pub async fn get_password_state<C: AsRef<GetPasswordState>>(
         &self,
         get_password_state: C,
-    ) -> RTDResult<PasswordState> {
+    ) -> Result<PasswordState> {
         self.make_request(get_password_state).await
     }
 
@@ -1707,7 +1689,7 @@ where
     pub async fn get_payment_form<C: AsRef<GetPaymentForm>>(
         &self,
         get_payment_form: C,
-    ) -> RTDResult<PaymentForm> {
+    ) -> Result<PaymentForm> {
         self.make_request(get_payment_form).await
     }
 
@@ -1715,7 +1697,7 @@ where
     pub async fn get_payment_receipt<C: AsRef<GetPaymentReceipt>>(
         &self,
         get_payment_receipt: C,
-    ) -> RTDResult<PaymentReceipt> {
+    ) -> Result<PaymentReceipt> {
         self.make_request(get_payment_receipt).await
     }
 
@@ -1723,7 +1705,7 @@ where
     pub async fn get_phone_number_info<C: AsRef<GetPhoneNumberInfo>>(
         &self,
         get_phone_number_info: C,
-    ) -> RTDResult<PhoneNumberInfo> {
+    ) -> Result<PhoneNumberInfo> {
         self.make_request(get_phone_number_info).await
     }
 
@@ -1731,7 +1713,7 @@ where
     pub async fn get_phone_number_info_sync<C: AsRef<GetPhoneNumberInfoSync>>(
         &self,
         get_phone_number_info_sync: C,
-    ) -> RTDResult<PhoneNumberInfo> {
+    ) -> Result<PhoneNumberInfo> {
         self.make_request(get_phone_number_info_sync).await
     }
 
@@ -1739,7 +1721,7 @@ where
     pub async fn get_poll_voters<C: AsRef<GetPollVoters>>(
         &self,
         get_poll_voters: C,
-    ) -> RTDResult<Users> {
+    ) -> Result<Users> {
         self.make_request(get_poll_voters).await
     }
 
@@ -1747,12 +1729,12 @@ where
     pub async fn get_preferred_country_language<C: AsRef<GetPreferredCountryLanguage>>(
         &self,
         get_preferred_country_language: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_preferred_country_language).await
     }
 
     // Returns list of proxies that are currently set up. Can be called before authorization
-    pub async fn get_proxies<C: AsRef<GetProxies>>(&self, get_proxies: C) -> RTDResult<Proxies> {
+    pub async fn get_proxies<C: AsRef<GetProxies>>(&self, get_proxies: C) -> Result<Proxies> {
         self.make_request(get_proxies).await
     }
 
@@ -1760,7 +1742,7 @@ where
     pub async fn get_proxy_link<C: AsRef<GetProxyLink>>(
         &self,
         get_proxy_link: C,
-    ) -> RTDResult<HttpUrl> {
+    ) -> Result<HttpUrl> {
         self.make_request(get_proxy_link).await
     }
 
@@ -1768,7 +1750,7 @@ where
     pub async fn get_push_receiver_id<C: AsRef<GetPushReceiverId>>(
         &self,
         get_push_receiver_id: C,
-    ) -> RTDResult<PushReceiverId> {
+    ) -> Result<PushReceiverId> {
         self.make_request(get_push_receiver_id).await
     }
 
@@ -1776,7 +1758,7 @@ where
     pub async fn get_recent_inline_bots<C: AsRef<GetRecentInlineBots>>(
         &self,
         get_recent_inline_bots: C,
-    ) -> RTDResult<Users> {
+    ) -> Result<Users> {
         self.make_request(get_recent_inline_bots).await
     }
 
@@ -1784,7 +1766,7 @@ where
     pub async fn get_recent_stickers<C: AsRef<GetRecentStickers>>(
         &self,
         get_recent_stickers: C,
-    ) -> RTDResult<Stickers> {
+    ) -> Result<Stickers> {
         self.make_request(get_recent_stickers).await
     }
 
@@ -1792,7 +1774,7 @@ where
     pub async fn get_recently_opened_chats<C: AsRef<GetRecentlyOpenedChats>>(
         &self,
         get_recently_opened_chats: C,
-    ) -> RTDResult<Chats> {
+    ) -> Result<Chats> {
         self.make_request(get_recently_opened_chats).await
     }
 
@@ -1800,7 +1782,7 @@ where
     pub async fn get_recently_visited_t_me_urls<C: AsRef<GetRecentlyVisitedTMeUrls>>(
         &self,
         get_recently_visited_t_me_urls: C,
-    ) -> RTDResult<TMeUrls> {
+    ) -> Result<TMeUrls> {
         self.make_request(get_recently_visited_t_me_urls).await
     }
 
@@ -1808,7 +1790,7 @@ where
     pub async fn get_recommended_chat_filters<C: AsRef<GetRecommendedChatFilters>>(
         &self,
         get_recommended_chat_filters: C,
-    ) -> RTDResult<RecommendedChatFilters> {
+    ) -> Result<RecommendedChatFilters> {
         self.make_request(get_recommended_chat_filters).await
     }
 
@@ -1816,7 +1798,7 @@ where
     pub async fn get_recovery_email_address<C: AsRef<GetRecoveryEmailAddress>>(
         &self,
         get_recovery_email_address: C,
-    ) -> RTDResult<RecoveryEmailAddress> {
+    ) -> Result<RecoveryEmailAddress> {
         self.make_request(get_recovery_email_address).await
     }
 
@@ -1824,7 +1806,7 @@ where
     pub async fn get_remote_file<C: AsRef<GetRemoteFile>>(
         &self,
         get_remote_file: C,
-    ) -> RTDResult<File> {
+    ) -> Result<File> {
         self.make_request(get_remote_file).await
     }
 
@@ -1832,7 +1814,7 @@ where
     pub async fn get_replied_message<C: AsRef<GetRepliedMessage>>(
         &self,
         get_replied_message: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(get_replied_message).await
     }
 
@@ -1840,7 +1822,7 @@ where
     pub async fn get_saved_animations<C: AsRef<GetSavedAnimations>>(
         &self,
         get_saved_animations: C,
-    ) -> RTDResult<Animations> {
+    ) -> Result<Animations> {
         self.make_request(get_saved_animations).await
     }
 
@@ -1848,7 +1830,7 @@ where
     pub async fn get_saved_order_info<C: AsRef<GetSavedOrderInfo>>(
         &self,
         get_saved_order_info: C,
-    ) -> RTDResult<OrderInfo> {
+    ) -> Result<OrderInfo> {
         self.make_request(get_saved_order_info).await
     }
 
@@ -1856,7 +1838,7 @@ where
     pub async fn get_scope_notification_settings<C: AsRef<GetScopeNotificationSettings>>(
         &self,
         get_scope_notification_settings: C,
-    ) -> RTDResult<ScopeNotificationSettings> {
+    ) -> Result<ScopeNotificationSettings> {
         self.make_request(get_scope_notification_settings).await
     }
 
@@ -1864,7 +1846,7 @@ where
     pub async fn get_secret_chat<C: AsRef<GetSecretChat>>(
         &self,
         get_secret_chat: C,
-    ) -> RTDResult<SecretChat> {
+    ) -> Result<SecretChat> {
         self.make_request(get_secret_chat).await
     }
 
@@ -1872,7 +1854,7 @@ where
     pub async fn get_statistical_graph<C: AsRef<GetStatisticalGraph>>(
         &self,
         get_statistical_graph: C,
-    ) -> RTDResult<StatisticalGraph> {
+    ) -> Result<StatisticalGraph> {
         self.make_request(get_statistical_graph).await
     }
 
@@ -1880,7 +1862,7 @@ where
     pub async fn get_sticker_emojis<C: AsRef<GetStickerEmojis>>(
         &self,
         get_sticker_emojis: C,
-    ) -> RTDResult<Emojis> {
+    ) -> Result<Emojis> {
         self.make_request(get_sticker_emojis).await
     }
 
@@ -1888,15 +1870,12 @@ where
     pub async fn get_sticker_set<C: AsRef<GetStickerSet>>(
         &self,
         get_sticker_set: C,
-    ) -> RTDResult<StickerSet> {
+    ) -> Result<StickerSet> {
         self.make_request(get_sticker_set).await
     }
 
     // Returns stickers from the installed sticker sets that correspond to a given emoji. If the emoji is non-empty, favorite and recently used stickers may also be returned
-    pub async fn get_stickers<C: AsRef<GetStickers>>(
-        &self,
-        get_stickers: C,
-    ) -> RTDResult<Stickers> {
+    pub async fn get_stickers<C: AsRef<GetStickers>>(&self, get_stickers: C) -> Result<Stickers> {
         self.make_request(get_stickers).await
     }
 
@@ -1904,7 +1883,7 @@ where
     pub async fn get_storage_statistics<C: AsRef<GetStorageStatistics>>(
         &self,
         get_storage_statistics: C,
-    ) -> RTDResult<StorageStatistics> {
+    ) -> Result<StorageStatistics> {
         self.make_request(get_storage_statistics).await
     }
 
@@ -1912,7 +1891,7 @@ where
     pub async fn get_storage_statistics_fast<C: AsRef<GetStorageStatisticsFast>>(
         &self,
         get_storage_statistics_fast: C,
-    ) -> RTDResult<StorageStatisticsFast> {
+    ) -> Result<StorageStatisticsFast> {
         self.make_request(get_storage_statistics_fast).await
     }
 
@@ -1920,7 +1899,7 @@ where
     pub async fn get_suggested_file_name<C: AsRef<GetSuggestedFileName>>(
         &self,
         get_suggested_file_name: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_suggested_file_name).await
     }
 
@@ -1928,7 +1907,7 @@ where
     pub async fn get_suggested_sticker_set_name<C: AsRef<GetSuggestedStickerSetName>>(
         &self,
         get_suggested_sticker_set_name: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(get_suggested_sticker_set_name).await
     }
 
@@ -1936,7 +1915,7 @@ where
     pub async fn get_suitable_discussion_chats<C: AsRef<GetSuitableDiscussionChats>>(
         &self,
         get_suitable_discussion_chats: C,
-    ) -> RTDResult<Chats> {
+    ) -> Result<Chats> {
         self.make_request(get_suitable_discussion_chats).await
     }
 
@@ -1944,7 +1923,7 @@ where
     pub async fn get_supergroup<C: AsRef<GetSupergroup>>(
         &self,
         get_supergroup: C,
-    ) -> RTDResult<Supergroup> {
+    ) -> Result<Supergroup> {
         self.make_request(get_supergroup).await
     }
 
@@ -1952,7 +1931,7 @@ where
     pub async fn get_supergroup_full_info<C: AsRef<GetSupergroupFullInfo>>(
         &self,
         get_supergroup_full_info: C,
-    ) -> RTDResult<SupergroupFullInfo> {
+    ) -> Result<SupergroupFullInfo> {
         self.make_request(get_supergroup_full_info).await
     }
 
@@ -1960,7 +1939,7 @@ where
     pub async fn get_supergroup_members<C: AsRef<GetSupergroupMembers>>(
         &self,
         get_supergroup_members: C,
-    ) -> RTDResult<ChatMembers> {
+    ) -> Result<ChatMembers> {
         self.make_request(get_supergroup_members).await
     }
 
@@ -1968,7 +1947,7 @@ where
     pub async fn get_support_user<C: AsRef<GetSupportUser>>(
         &self,
         get_support_user: C,
-    ) -> RTDResult<User> {
+    ) -> Result<User> {
         self.make_request(get_support_user).await
     }
 
@@ -1976,7 +1955,7 @@ where
     pub async fn get_temporary_password_state<C: AsRef<GetTemporaryPasswordState>>(
         &self,
         get_temporary_password_state: C,
-    ) -> RTDResult<TemporaryPasswordState> {
+    ) -> Result<TemporaryPasswordState> {
         self.make_request(get_temporary_password_state).await
     }
 
@@ -1984,12 +1963,12 @@ where
     pub async fn get_text_entities<C: AsRef<GetTextEntities>>(
         &self,
         get_text_entities: C,
-    ) -> RTDResult<TextEntities> {
+    ) -> Result<TextEntities> {
         self.make_request(get_text_entities).await
     }
 
     // Returns a list of frequently used chats. Supported only if the chat info database is enabled
-    pub async fn get_top_chats<C: AsRef<GetTopChats>>(&self, get_top_chats: C) -> RTDResult<Chats> {
+    pub async fn get_top_chats<C: AsRef<GetTopChats>>(&self, get_top_chats: C) -> Result<Chats> {
         self.make_request(get_top_chats).await
     }
 
@@ -1997,12 +1976,12 @@ where
     pub async fn get_trending_sticker_sets<C: AsRef<GetTrendingStickerSets>>(
         &self,
         get_trending_sticker_sets: C,
-    ) -> RTDResult<StickerSets> {
+    ) -> Result<StickerSets> {
         self.make_request(get_trending_sticker_sets).await
     }
 
     // Returns information about a user by their identifier. This is an offline request if the current user is not a bot
-    pub async fn get_user<C: AsRef<GetUser>>(&self, get_user: C) -> RTDResult<User> {
+    pub async fn get_user<C: AsRef<GetUser>>(&self, get_user: C) -> Result<User> {
         self.make_request(get_user).await
     }
 
@@ -2010,7 +1989,7 @@ where
     pub async fn get_user_full_info<C: AsRef<GetUserFullInfo>>(
         &self,
         get_user_full_info: C,
-    ) -> RTDResult<UserFullInfo> {
+    ) -> Result<UserFullInfo> {
         self.make_request(get_user_full_info).await
     }
 
@@ -2018,7 +1997,7 @@ where
     pub async fn get_user_privacy_setting_rules<C: AsRef<GetUserPrivacySettingRules>>(
         &self,
         get_user_privacy_setting_rules: C,
-    ) -> RTDResult<UserPrivacySettingRules> {
+    ) -> Result<UserPrivacySettingRules> {
         self.make_request(get_user_privacy_setting_rules).await
     }
 
@@ -2026,7 +2005,7 @@ where
     pub async fn get_user_profile_photos<C: AsRef<GetUserProfilePhotos>>(
         &self,
         get_user_profile_photos: C,
-    ) -> RTDResult<ChatPhotos> {
+    ) -> Result<ChatPhotos> {
         self.make_request(get_user_profile_photos).await
     }
 
@@ -2036,7 +2015,7 @@ where
     >(
         &self,
         get_video_chat_available_participants: C,
-    ) -> RTDResult<MessageSenders> {
+    ) -> Result<MessageSenders> {
         self.make_request(get_video_chat_available_participants)
             .await
     }
@@ -2045,7 +2024,7 @@ where
     pub async fn get_web_page_instant_view<C: AsRef<GetWebPageInstantView>>(
         &self,
         get_web_page_instant_view: C,
-    ) -> RTDResult<WebPageInstantView> {
+    ) -> Result<WebPageInstantView> {
         self.make_request(get_web_page_instant_view).await
     }
 
@@ -2053,7 +2032,7 @@ where
     pub async fn get_web_page_preview<C: AsRef<GetWebPagePreview>>(
         &self,
         get_web_page_preview: C,
-    ) -> RTDResult<WebPage> {
+    ) -> Result<WebPage> {
         self.make_request(get_web_page_preview).await
     }
 
@@ -2061,7 +2040,7 @@ where
     pub async fn hide_suggested_action<C: AsRef<HideSuggestedAction>>(
         &self,
         hide_suggested_action: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(hide_suggested_action).await
     }
 
@@ -2069,7 +2048,7 @@ where
     pub async fn import_contacts<C: AsRef<ImportContacts>>(
         &self,
         import_contacts: C,
-    ) -> RTDResult<ImportedContacts> {
+    ) -> Result<ImportedContacts> {
         self.make_request(import_contacts).await
     }
 
@@ -2077,7 +2056,7 @@ where
     pub async fn import_messages<C: AsRef<ImportMessages>>(
         &self,
         import_messages: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(import_messages).await
     }
 
@@ -2085,12 +2064,12 @@ where
     pub async fn invite_group_call_participants<C: AsRef<InviteGroupCallParticipants>>(
         &self,
         invite_group_call_participants: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(invite_group_call_participants).await
     }
 
     // Adds the current user as a new member to a chat. Private and secret chats can't be joined using this method
-    pub async fn join_chat<C: AsRef<JoinChat>>(&self, join_chat: C) -> RTDResult<Ok> {
+    pub async fn join_chat<C: AsRef<JoinChat>>(&self, join_chat: C) -> Result<Ok> {
         self.make_request(join_chat).await
     }
 
@@ -2098,7 +2077,7 @@ where
     pub async fn join_chat_by_invite_link<C: AsRef<JoinChatByInviteLink>>(
         &self,
         join_chat_by_invite_link: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(join_chat_by_invite_link).await
     }
 
@@ -2106,12 +2085,12 @@ where
     pub async fn join_group_call<C: AsRef<JoinGroupCall>>(
         &self,
         join_group_call: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(join_group_call).await
     }
 
     // Removes the current user from chat members. Private and secret chats can't be left using this method
-    pub async fn leave_chat<C: AsRef<LeaveChat>>(&self, leave_chat: C) -> RTDResult<Ok> {
+    pub async fn leave_chat<C: AsRef<LeaveChat>>(&self, leave_chat: C) -> Result<Ok> {
         self.make_request(leave_chat).await
     }
 
@@ -2119,12 +2098,12 @@ where
     pub async fn leave_group_call<C: AsRef<LeaveGroupCall>>(
         &self,
         leave_group_call: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(leave_group_call).await
     }
 
     // Loads more chats from a chat list. The loaded chats and their positions in the chat list will be sent through updates. Chats are sorted by the pair (chat.position.order, chat.id) in descending order. Returns a 404 error if all chats have been loaded
-    pub async fn load_chats<C: AsRef<LoadChats>>(&self, load_chats: C) -> RTDResult<Ok> {
+    pub async fn load_chats<C: AsRef<LoadChats>>(&self, load_chats: C) -> Result<Ok> {
         self.make_request(load_chats).await
     }
 
@@ -2132,17 +2111,17 @@ where
     pub async fn load_group_call_participants<C: AsRef<LoadGroupCallParticipants>>(
         &self,
         load_group_call_participants: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(load_group_call_participants).await
     }
 
     // Closes the TDLib instance after a proper logout. Requires an available network connection. All local data will be destroyed. After the logout completes, updateAuthorizationState with authorizationStateClosed will be sent
-    pub async fn log_out<C: AsRef<LogOut>>(&self, log_out: C) -> RTDResult<Ok> {
+    pub async fn log_out<C: AsRef<LogOut>>(&self, log_out: C) -> Result<Ok> {
         self.make_request(log_out).await
     }
 
     // Informs TDLib that the chat is opened by the user. Many useful activities depend on the chat being opened or closed (e.g., in supergroups and channels all updates are received only for opened chats)
-    pub async fn open_chat<C: AsRef<OpenChat>>(&self, open_chat: C) -> RTDResult<Ok> {
+    pub async fn open_chat<C: AsRef<OpenChat>>(&self, open_chat: C) -> Result<Ok> {
         self.make_request(open_chat).await
     }
 
@@ -2150,7 +2129,7 @@ where
     pub async fn open_message_content<C: AsRef<OpenMessageContent>>(
         &self,
         open_message_content: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(open_message_content).await
     }
 
@@ -2158,7 +2137,7 @@ where
     pub async fn optimize_storage<C: AsRef<OptimizeStorage>>(
         &self,
         optimize_storage: C,
-    ) -> RTDResult<StorageStatistics> {
+    ) -> Result<StorageStatistics> {
         self.make_request(optimize_storage).await
     }
 
@@ -2166,7 +2145,7 @@ where
     pub async fn parse_markdown<C: AsRef<ParseMarkdown>>(
         &self,
         parse_markdown: C,
-    ) -> RTDResult<FormattedText> {
+    ) -> Result<FormattedText> {
         self.make_request(parse_markdown).await
     }
 
@@ -2174,7 +2153,7 @@ where
     pub async fn parse_text_entities<C: AsRef<ParseTextEntities>>(
         &self,
         parse_text_entities: C,
-    ) -> RTDResult<FormattedText> {
+    ) -> Result<FormattedText> {
         self.make_request(parse_text_entities).await
     }
 
@@ -2182,12 +2161,12 @@ where
     pub async fn pin_chat_message<C: AsRef<PinChatMessage>>(
         &self,
         pin_chat_message: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(pin_chat_message).await
     }
 
     // Computes time needed to receive a response from a Telegram server through a proxy. Can be called before authorization
-    pub async fn ping_proxy<C: AsRef<PingProxy>>(&self, ping_proxy: C) -> RTDResult<Seconds> {
+    pub async fn ping_proxy<C: AsRef<PingProxy>>(&self, ping_proxy: C) -> Result<Seconds> {
         self.make_request(ping_proxy).await
     }
 
@@ -2195,7 +2174,7 @@ where
     pub async fn process_chat_join_request<C: AsRef<ProcessChatJoinRequest>>(
         &self,
         process_chat_join_request: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(process_chat_join_request).await
     }
 
@@ -2203,7 +2182,7 @@ where
     pub async fn process_chat_join_requests<C: AsRef<ProcessChatJoinRequests>>(
         &self,
         process_chat_join_requests: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(process_chat_join_requests).await
     }
 
@@ -2211,7 +2190,7 @@ where
     pub async fn process_push_notification<C: AsRef<ProcessPushNotification>>(
         &self,
         process_push_notification: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(process_push_notification).await
     }
 
@@ -2219,7 +2198,7 @@ where
     pub async fn read_all_chat_mentions<C: AsRef<ReadAllChatMentions>>(
         &self,
         read_all_chat_mentions: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(read_all_chat_mentions).await
     }
 
@@ -2227,7 +2206,7 @@ where
     pub async fn read_file_part<C: AsRef<ReadFilePart>>(
         &self,
         read_file_part: C,
-    ) -> RTDResult<FilePart> {
+    ) -> Result<FilePart> {
         self.make_request(read_file_part).await
     }
 
@@ -2235,7 +2214,7 @@ where
     pub async fn recover_authentication_password<C: AsRef<RecoverAuthenticationPassword>>(
         &self,
         recover_authentication_password: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(recover_authentication_password).await
     }
 
@@ -2243,7 +2222,7 @@ where
     pub async fn recover_password<C: AsRef<RecoverPassword>>(
         &self,
         recover_password: C,
-    ) -> RTDResult<PasswordState> {
+    ) -> Result<PasswordState> {
         self.make_request(recover_password).await
     }
 
@@ -2251,12 +2230,12 @@ where
     pub async fn register_device<C: AsRef<RegisterDevice>>(
         &self,
         register_device: C,
-    ) -> RTDResult<PushReceiverId> {
+    ) -> Result<PushReceiverId> {
         self.make_request(register_device).await
     }
 
     // Finishes user registration. Works only when the current authorization state is authorizationStateWaitRegistration
-    pub async fn register_user<C: AsRef<RegisterUser>>(&self, register_user: C) -> RTDResult<Ok> {
+    pub async fn register_user<C: AsRef<RegisterUser>>(&self, register_user: C) -> Result<Ok> {
         self.make_request(register_user).await
     }
 
@@ -2264,7 +2243,7 @@ where
     pub async fn remove_background<C: AsRef<RemoveBackground>>(
         &self,
         remove_background: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_background).await
     }
 
@@ -2272,7 +2251,7 @@ where
     pub async fn remove_chat_action_bar<C: AsRef<RemoveChatActionBar>>(
         &self,
         remove_chat_action_bar: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_chat_action_bar).await
     }
 
@@ -2280,7 +2259,7 @@ where
     pub async fn remove_contacts<C: AsRef<RemoveContacts>>(
         &self,
         remove_contacts: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_contacts).await
     }
 
@@ -2288,7 +2267,7 @@ where
     pub async fn remove_favorite_sticker<C: AsRef<RemoveFavoriteSticker>>(
         &self,
         remove_favorite_sticker: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_favorite_sticker).await
     }
 
@@ -2296,7 +2275,7 @@ where
     pub async fn remove_notification<C: AsRef<RemoveNotification>>(
         &self,
         remove_notification: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_notification).await
     }
 
@@ -2304,12 +2283,12 @@ where
     pub async fn remove_notification_group<C: AsRef<RemoveNotificationGroup>>(
         &self,
         remove_notification_group: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_notification_group).await
     }
 
     // Removes a proxy server. Can be called before authorization
-    pub async fn remove_proxy<C: AsRef<RemoveProxy>>(&self, remove_proxy: C) -> RTDResult<Ok> {
+    pub async fn remove_proxy<C: AsRef<RemoveProxy>>(&self, remove_proxy: C) -> Result<Ok> {
         self.make_request(remove_proxy).await
     }
 
@@ -2317,7 +2296,7 @@ where
     pub async fn remove_recent_hashtag<C: AsRef<RemoveRecentHashtag>>(
         &self,
         remove_recent_hashtag: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_recent_hashtag).await
     }
 
@@ -2325,7 +2304,7 @@ where
     pub async fn remove_recent_sticker<C: AsRef<RemoveRecentSticker>>(
         &self,
         remove_recent_sticker: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_recent_sticker).await
     }
 
@@ -2333,7 +2312,7 @@ where
     pub async fn remove_recently_found_chat<C: AsRef<RemoveRecentlyFoundChat>>(
         &self,
         remove_recently_found_chat: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_recently_found_chat).await
     }
 
@@ -2341,7 +2320,7 @@ where
     pub async fn remove_saved_animation<C: AsRef<RemoveSavedAnimation>>(
         &self,
         remove_saved_animation: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_saved_animation).await
     }
 
@@ -2349,15 +2328,12 @@ where
     pub async fn remove_sticker_from_set<C: AsRef<RemoveStickerFromSet>>(
         &self,
         remove_sticker_from_set: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(remove_sticker_from_set).await
     }
 
     // Removes a chat from the list of frequently used chats. Supported only if the chat info database is enabled
-    pub async fn remove_top_chat<C: AsRef<RemoveTopChat>>(
-        &self,
-        remove_top_chat: C,
-    ) -> RTDResult<Ok> {
+    pub async fn remove_top_chat<C: AsRef<RemoveTopChat>>(&self, remove_top_chat: C) -> Result<Ok> {
         self.make_request(remove_top_chat).await
     }
 
@@ -2365,7 +2341,7 @@ where
     pub async fn reorder_chat_filters<C: AsRef<ReorderChatFilters>>(
         &self,
         reorder_chat_filters: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(reorder_chat_filters).await
     }
 
@@ -2373,7 +2349,7 @@ where
     pub async fn reorder_installed_sticker_sets<C: AsRef<ReorderInstalledStickerSets>>(
         &self,
         reorder_installed_sticker_sets: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(reorder_installed_sticker_sets).await
     }
 
@@ -2381,12 +2357,12 @@ where
     pub async fn replace_primary_chat_invite_link<C: AsRef<ReplacePrimaryChatInviteLink>>(
         &self,
         replace_primary_chat_invite_link: C,
-    ) -> RTDResult<ChatInviteLink> {
+    ) -> Result<ChatInviteLink> {
         self.make_request(replace_primary_chat_invite_link).await
     }
 
     // Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if chat.can_be_reported
-    pub async fn report_chat<C: AsRef<ReportChat>>(&self, report_chat: C) -> RTDResult<Ok> {
+    pub async fn report_chat<C: AsRef<ReportChat>>(&self, report_chat: C) -> Result<Ok> {
         self.make_request(report_chat).await
     }
 
@@ -2394,7 +2370,7 @@ where
     pub async fn report_chat_photo<C: AsRef<ReportChatPhoto>>(
         &self,
         report_chat_photo: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(report_chat_photo).await
     }
 
@@ -2402,7 +2378,7 @@ where
     pub async fn report_supergroup_spam<C: AsRef<ReportSupergroupSpam>>(
         &self,
         report_supergroup_spam: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(report_supergroup_spam).await
     }
 
@@ -2412,7 +2388,7 @@ where
     >(
         &self,
         request_authentication_password_recovery: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(request_authentication_password_recovery)
             .await
     }
@@ -2421,7 +2397,7 @@ where
     pub async fn request_password_recovery<C: AsRef<RequestPasswordRecovery>>(
         &self,
         request_password_recovery: C,
-    ) -> RTDResult<EmailAddressAuthenticationCodeInfo> {
+    ) -> Result<EmailAddressAuthenticationCodeInfo> {
         self.make_request(request_password_recovery).await
     }
 
@@ -2429,7 +2405,7 @@ where
     pub async fn request_qr_code_authentication<C: AsRef<RequestQrCodeAuthentication>>(
         &self,
         request_qr_code_authentication: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(request_qr_code_authentication).await
     }
 
@@ -2437,7 +2413,7 @@ where
     pub async fn resend_authentication_code<C: AsRef<ResendAuthenticationCode>>(
         &self,
         resend_authentication_code: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(resend_authentication_code).await
     }
 
@@ -2445,7 +2421,7 @@ where
     pub async fn resend_change_phone_number_code<C: AsRef<ResendChangePhoneNumberCode>>(
         &self,
         resend_change_phone_number_code: C,
-    ) -> RTDResult<AuthenticationCodeInfo> {
+    ) -> Result<AuthenticationCodeInfo> {
         self.make_request(resend_change_phone_number_code).await
     }
 
@@ -2455,7 +2431,7 @@ where
     >(
         &self,
         resend_email_address_verification_code: C,
-    ) -> RTDResult<EmailAddressAuthenticationCodeInfo> {
+    ) -> Result<EmailAddressAuthenticationCodeInfo> {
         self.make_request(resend_email_address_verification_code)
             .await
     }
@@ -2464,7 +2440,7 @@ where
     pub async fn resend_messages<C: AsRef<ResendMessages>>(
         &self,
         resend_messages: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(resend_messages).await
     }
 
@@ -2474,7 +2450,7 @@ where
     >(
         &self,
         resend_phone_number_confirmation_code: C,
-    ) -> RTDResult<AuthenticationCodeInfo> {
+    ) -> Result<AuthenticationCodeInfo> {
         self.make_request(resend_phone_number_confirmation_code)
             .await
     }
@@ -2485,7 +2461,7 @@ where
     >(
         &self,
         resend_phone_number_verification_code: C,
-    ) -> RTDResult<AuthenticationCodeInfo> {
+    ) -> Result<AuthenticationCodeInfo> {
         self.make_request(resend_phone_number_verification_code)
             .await
     }
@@ -2494,7 +2470,7 @@ where
     pub async fn resend_recovery_email_address_code<C: AsRef<ResendRecoveryEmailAddressCode>>(
         &self,
         resend_recovery_email_address_code: C,
-    ) -> RTDResult<PasswordState> {
+    ) -> Result<PasswordState> {
         self.make_request(resend_recovery_email_address_code).await
     }
 
@@ -2502,7 +2478,7 @@ where
     pub async fn reset_all_notification_settings<C: AsRef<ResetAllNotificationSettings>>(
         &self,
         reset_all_notification_settings: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(reset_all_notification_settings).await
     }
 
@@ -2510,7 +2486,7 @@ where
     pub async fn reset_backgrounds<C: AsRef<ResetBackgrounds>>(
         &self,
         reset_backgrounds: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(reset_backgrounds).await
     }
 
@@ -2518,7 +2494,7 @@ where
     pub async fn reset_network_statistics<C: AsRef<ResetNetworkStatistics>>(
         &self,
         reset_network_statistics: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(reset_network_statistics).await
     }
 
@@ -2526,7 +2502,7 @@ where
     pub async fn reset_password<C: AsRef<ResetPassword>>(
         &self,
         reset_password: C,
-    ) -> RTDResult<ResetPasswordResult> {
+    ) -> Result<ResetPasswordResult> {
         self.make_request(reset_password).await
     }
 
@@ -2534,7 +2510,7 @@ where
     pub async fn revoke_chat_invite_link<C: AsRef<RevokeChatInviteLink>>(
         &self,
         revoke_chat_invite_link: C,
-    ) -> RTDResult<ChatInviteLinks> {
+    ) -> Result<ChatInviteLinks> {
         self.make_request(revoke_chat_invite_link).await
     }
 
@@ -2542,7 +2518,7 @@ where
     pub async fn revoke_group_call_invite_link<C: AsRef<RevokeGroupCallInviteLink>>(
         &self,
         revoke_group_call_invite_link: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(revoke_group_call_invite_link).await
     }
 
@@ -2550,7 +2526,7 @@ where
     pub async fn save_application_log_event<C: AsRef<SaveApplicationLogEvent>>(
         &self,
         save_application_log_event: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(save_application_log_event).await
     }
 
@@ -2558,7 +2534,7 @@ where
     pub async fn search_background<C: AsRef<SearchBackground>>(
         &self,
         search_background: C,
-    ) -> RTDResult<Background> {
+    ) -> Result<Background> {
         self.make_request(search_background).await
     }
 
@@ -2566,7 +2542,7 @@ where
     pub async fn search_call_messages<C: AsRef<SearchCallMessages>>(
         &self,
         search_call_messages: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(search_call_messages).await
     }
 
@@ -2574,7 +2550,7 @@ where
     pub async fn search_chat_members<C: AsRef<SearchChatMembers>>(
         &self,
         search_chat_members: C,
-    ) -> RTDResult<ChatMembers> {
+    ) -> Result<ChatMembers> {
         self.make_request(search_chat_members).await
     }
 
@@ -2582,7 +2558,7 @@ where
     pub async fn search_chat_messages<C: AsRef<SearchChatMessages>>(
         &self,
         search_chat_messages: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(search_chat_messages).await
     }
 
@@ -2592,13 +2568,13 @@ where
     >(
         &self,
         search_chat_recent_location_messages: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(search_chat_recent_location_messages)
             .await
     }
 
     // Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the main chat list
-    pub async fn search_chats<C: AsRef<SearchChats>>(&self, search_chats: C) -> RTDResult<Chats> {
+    pub async fn search_chats<C: AsRef<SearchChats>>(&self, search_chats: C) -> Result<Chats> {
         self.make_request(search_chats).await
     }
 
@@ -2606,7 +2582,7 @@ where
     pub async fn search_chats_nearby<C: AsRef<SearchChatsNearby>>(
         &self,
         search_chats_nearby: C,
-    ) -> RTDResult<ChatsNearby> {
+    ) -> Result<ChatsNearby> {
         self.make_request(search_chats_nearby).await
     }
 
@@ -2614,7 +2590,7 @@ where
     pub async fn search_chats_on_server<C: AsRef<SearchChatsOnServer>>(
         &self,
         search_chats_on_server: C,
-    ) -> RTDResult<Chats> {
+    ) -> Result<Chats> {
         self.make_request(search_chats_on_server).await
     }
 
@@ -2622,15 +2598,12 @@ where
     pub async fn search_contacts<C: AsRef<SearchContacts>>(
         &self,
         search_contacts: C,
-    ) -> RTDResult<Users> {
+    ) -> Result<Users> {
         self.make_request(search_contacts).await
     }
 
     // Searches for emojis by keywords. Supported only if the file database is enabled
-    pub async fn search_emojis<C: AsRef<SearchEmojis>>(
-        &self,
-        search_emojis: C,
-    ) -> RTDResult<Emojis> {
+    pub async fn search_emojis<C: AsRef<SearchEmojis>>(&self, search_emojis: C) -> Result<Emojis> {
         self.make_request(search_emojis).await
     }
 
@@ -2638,7 +2611,7 @@ where
     pub async fn search_hashtags<C: AsRef<SearchHashtags>>(
         &self,
         search_hashtags: C,
-    ) -> RTDResult<Hashtags> {
+    ) -> Result<Hashtags> {
         self.make_request(search_hashtags).await
     }
 
@@ -2646,7 +2619,7 @@ where
     pub async fn search_installed_sticker_sets<C: AsRef<SearchInstalledStickerSets>>(
         &self,
         search_installed_sticker_sets: C,
-    ) -> RTDResult<StickerSets> {
+    ) -> Result<StickerSets> {
         self.make_request(search_installed_sticker_sets).await
     }
 
@@ -2654,7 +2627,7 @@ where
     pub async fn search_messages<C: AsRef<SearchMessages>>(
         &self,
         search_messages: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(search_messages).await
     }
 
@@ -2662,7 +2635,7 @@ where
     pub async fn search_public_chat<C: AsRef<SearchPublicChat>>(
         &self,
         search_public_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(search_public_chat).await
     }
 
@@ -2670,7 +2643,7 @@ where
     pub async fn search_public_chats<C: AsRef<SearchPublicChats>>(
         &self,
         search_public_chats: C,
-    ) -> RTDResult<Chats> {
+    ) -> Result<Chats> {
         self.make_request(search_public_chats).await
     }
 
@@ -2678,7 +2651,7 @@ where
     pub async fn search_secret_messages<C: AsRef<SearchSecretMessages>>(
         &self,
         search_secret_messages: C,
-    ) -> RTDResult<FoundMessages> {
+    ) -> Result<FoundMessages> {
         self.make_request(search_secret_messages).await
     }
 
@@ -2686,7 +2659,7 @@ where
     pub async fn search_sticker_set<C: AsRef<SearchStickerSet>>(
         &self,
         search_sticker_set: C,
-    ) -> RTDResult<StickerSet> {
+    ) -> Result<StickerSet> {
         self.make_request(search_sticker_set).await
     }
 
@@ -2694,7 +2667,7 @@ where
     pub async fn search_sticker_sets<C: AsRef<SearchStickerSets>>(
         &self,
         search_sticker_sets: C,
-    ) -> RTDResult<StickerSets> {
+    ) -> Result<StickerSets> {
         self.make_request(search_sticker_sets).await
     }
 
@@ -2702,7 +2675,7 @@ where
     pub async fn search_stickers<C: AsRef<SearchStickers>>(
         &self,
         search_stickers: C,
-    ) -> RTDResult<Stickers> {
+    ) -> Result<Stickers> {
         self.make_request(search_stickers).await
     }
 
@@ -2710,7 +2683,7 @@ where
     pub async fn send_bot_start_message<C: AsRef<SendBotStartMessage>>(
         &self,
         send_bot_start_message: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(send_bot_start_message).await
     }
 
@@ -2718,7 +2691,7 @@ where
     pub async fn send_call_debug_information<C: AsRef<SendCallDebugInformation>>(
         &self,
         send_call_debug_information: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(send_call_debug_information).await
     }
 
@@ -2726,7 +2699,7 @@ where
     pub async fn send_call_rating<C: AsRef<SendCallRating>>(
         &self,
         send_call_rating: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(send_call_rating).await
     }
 
@@ -2734,7 +2707,7 @@ where
     pub async fn send_call_signaling_data<C: AsRef<SendCallSignalingData>>(
         &self,
         send_call_signaling_data: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(send_call_signaling_data).await
     }
 
@@ -2742,7 +2715,7 @@ where
     pub async fn send_chat_action<C: AsRef<SendChatAction>>(
         &self,
         send_chat_action: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(send_chat_action).await
     }
 
@@ -2752,7 +2725,7 @@ where
     >(
         &self,
         send_chat_screenshot_taken_notification: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(send_chat_screenshot_taken_notification)
             .await
     }
@@ -2761,7 +2734,7 @@ where
     pub async fn send_custom_request<C: AsRef<SendCustomRequest>>(
         &self,
         send_custom_request: C,
-    ) -> RTDResult<CustomRequestResult> {
+    ) -> Result<CustomRequestResult> {
         self.make_request(send_custom_request).await
     }
 
@@ -2771,7 +2744,7 @@ where
     >(
         &self,
         send_email_address_verification_code: C,
-    ) -> RTDResult<EmailAddressAuthenticationCodeInfo> {
+    ) -> Result<EmailAddressAuthenticationCodeInfo> {
         self.make_request(send_email_address_verification_code)
             .await
     }
@@ -2780,12 +2753,12 @@ where
     pub async fn send_inline_query_result_message<C: AsRef<SendInlineQueryResultMessage>>(
         &self,
         send_inline_query_result_message: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(send_inline_query_result_message).await
     }
 
     // Sends a message. Returns the sent message
-    pub async fn send_message<C: AsRef<SendMessage>>(&self, send_message: C) -> RTDResult<Message> {
+    pub async fn send_message<C: AsRef<SendMessage>>(&self, send_message: C) -> Result<Message> {
         self.make_request(send_message).await
     }
 
@@ -2793,7 +2766,7 @@ where
     pub async fn send_message_album<C: AsRef<SendMessageAlbum>>(
         &self,
         send_message_album: C,
-    ) -> RTDResult<Messages> {
+    ) -> Result<Messages> {
         self.make_request(send_message_album).await
     }
 
@@ -2801,7 +2774,7 @@ where
     pub async fn send_passport_authorization_form<C: AsRef<SendPassportAuthorizationForm>>(
         &self,
         send_passport_authorization_form: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(send_passport_authorization_form).await
     }
 
@@ -2809,7 +2782,7 @@ where
     pub async fn send_payment_form<C: AsRef<SendPaymentForm>>(
         &self,
         send_payment_form: C,
-    ) -> RTDResult<PaymentResult> {
+    ) -> Result<PaymentResult> {
         self.make_request(send_payment_form).await
     }
 
@@ -2817,7 +2790,7 @@ where
     pub async fn send_phone_number_confirmation_code<C: AsRef<SendPhoneNumberConfirmationCode>>(
         &self,
         send_phone_number_confirmation_code: C,
-    ) -> RTDResult<AuthenticationCodeInfo> {
+    ) -> Result<AuthenticationCodeInfo> {
         self.make_request(send_phone_number_confirmation_code).await
     }
 
@@ -2825,20 +2798,17 @@ where
     pub async fn send_phone_number_verification_code<C: AsRef<SendPhoneNumberVerificationCode>>(
         &self,
         send_phone_number_verification_code: C,
-    ) -> RTDResult<AuthenticationCodeInfo> {
+    ) -> Result<AuthenticationCodeInfo> {
         self.make_request(send_phone_number_verification_code).await
     }
 
     // Changes the period of inactivity after which the account of the current user will automatically be deleted
-    pub async fn set_account_ttl<C: AsRef<SetAccountTtl>>(
-        &self,
-        set_account_ttl: C,
-    ) -> RTDResult<Ok> {
+    pub async fn set_account_ttl<C: AsRef<SetAccountTtl>>(&self, set_account_ttl: C) -> Result<Ok> {
         self.make_request(set_account_ttl).await
     }
 
     // Succeeds after a specified amount of time has passed. Can be called before initialization
-    pub async fn set_alarm<C: AsRef<SetAlarm>>(&self, set_alarm: C) -> RTDResult<Ok> {
+    pub async fn set_alarm<C: AsRef<SetAlarm>>(&self, set_alarm: C) -> Result<Ok> {
         self.make_request(set_alarm).await
     }
 
@@ -2846,7 +2816,7 @@ where
     pub async fn set_authentication_phone_number<C: AsRef<SetAuthenticationPhoneNumber>>(
         &self,
         set_authentication_phone_number: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_authentication_phone_number).await
     }
 
@@ -2854,7 +2824,7 @@ where
     pub async fn set_auto_download_settings<C: AsRef<SetAutoDownloadSettings>>(
         &self,
         set_auto_download_settings: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_auto_download_settings).await
     }
 
@@ -2862,12 +2832,12 @@ where
     pub async fn set_background<C: AsRef<SetBackground>>(
         &self,
         set_background: C,
-    ) -> RTDResult<Background> {
+    ) -> Result<Background> {
         self.make_request(set_background).await
     }
 
     // Changes the bio of the current user
-    pub async fn set_bio<C: AsRef<SetBio>>(&self, set_bio: C) -> RTDResult<Ok> {
+    pub async fn set_bio<C: AsRef<SetBio>>(&self, set_bio: C) -> Result<Ok> {
         self.make_request(set_bio).await
     }
 
@@ -2875,7 +2845,7 @@ where
     pub async fn set_bot_updates_status<C: AsRef<SetBotUpdatesStatus>>(
         &self,
         set_bot_updates_status: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_bot_updates_status).await
     }
 
@@ -2883,7 +2853,7 @@ where
     pub async fn set_chat_client_data<C: AsRef<SetChatClientData>>(
         &self,
         set_chat_client_data: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_client_data).await
     }
 
@@ -2891,7 +2861,7 @@ where
     pub async fn set_chat_description<C: AsRef<SetChatDescription>>(
         &self,
         set_chat_description: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_description).await
     }
 
@@ -2899,7 +2869,7 @@ where
     pub async fn set_chat_discussion_group<C: AsRef<SetChatDiscussionGroup>>(
         &self,
         set_chat_discussion_group: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_discussion_group).await
     }
 
@@ -2907,7 +2877,7 @@ where
     pub async fn set_chat_draft_message<C: AsRef<SetChatDraftMessage>>(
         &self,
         set_chat_draft_message: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_draft_message).await
     }
 
@@ -2915,7 +2885,7 @@ where
     pub async fn set_chat_location<C: AsRef<SetChatLocation>>(
         &self,
         set_chat_location: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_location).await
     }
 
@@ -2923,7 +2893,7 @@ where
     pub async fn set_chat_member_status<C: AsRef<SetChatMemberStatus>>(
         &self,
         set_chat_member_status: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_member_status).await
     }
 
@@ -2931,7 +2901,7 @@ where
     pub async fn set_chat_message_sender<C: AsRef<SetChatMessageSender>>(
         &self,
         set_chat_message_sender: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_message_sender).await
     }
 
@@ -2939,7 +2909,7 @@ where
     pub async fn set_chat_message_ttl<C: AsRef<SetChatMessageTtl>>(
         &self,
         set_chat_message_ttl: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_message_ttl).await
     }
 
@@ -2947,7 +2917,7 @@ where
     pub async fn set_chat_notification_settings<C: AsRef<SetChatNotificationSettings>>(
         &self,
         set_chat_notification_settings: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_notification_settings).await
     }
 
@@ -2955,12 +2925,12 @@ where
     pub async fn set_chat_permissions<C: AsRef<SetChatPermissions>>(
         &self,
         set_chat_permissions: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_permissions).await
     }
 
     // Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
-    pub async fn set_chat_photo<C: AsRef<SetChatPhoto>>(&self, set_chat_photo: C) -> RTDResult<Ok> {
+    pub async fn set_chat_photo<C: AsRef<SetChatPhoto>>(&self, set_chat_photo: C) -> Result<Ok> {
         self.make_request(set_chat_photo).await
     }
 
@@ -2968,22 +2938,22 @@ where
     pub async fn set_chat_slow_mode_delay<C: AsRef<SetChatSlowModeDelay>>(
         &self,
         set_chat_slow_mode_delay: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_chat_slow_mode_delay).await
     }
 
     // Changes the chat theme. Supported only in private and secret chats
-    pub async fn set_chat_theme<C: AsRef<SetChatTheme>>(&self, set_chat_theme: C) -> RTDResult<Ok> {
+    pub async fn set_chat_theme<C: AsRef<SetChatTheme>>(&self, set_chat_theme: C) -> Result<Ok> {
         self.make_request(set_chat_theme).await
     }
 
     // Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
-    pub async fn set_chat_title<C: AsRef<SetChatTitle>>(&self, set_chat_title: C) -> RTDResult<Ok> {
+    pub async fn set_chat_title<C: AsRef<SetChatTitle>>(&self, set_chat_title: C) -> Result<Ok> {
         self.make_request(set_chat_title).await
     }
 
     // Sets the list of commands supported by the bot for the given user scope and language; for bots only
-    pub async fn set_commands<C: AsRef<SetCommands>>(&self, set_commands: C) -> RTDResult<Ok> {
+    pub async fn set_commands<C: AsRef<SetCommands>>(&self, set_commands: C) -> Result<Ok> {
         self.make_request(set_commands).await
     }
 
@@ -2991,7 +2961,7 @@ where
     pub async fn set_custom_language_pack<C: AsRef<SetCustomLanguagePack>>(
         &self,
         set_custom_language_pack: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_custom_language_pack).await
     }
 
@@ -2999,7 +2969,7 @@ where
     pub async fn set_custom_language_pack_string<C: AsRef<SetCustomLanguagePackString>>(
         &self,
         set_custom_language_pack_string: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_custom_language_pack_string).await
     }
 
@@ -3007,7 +2977,7 @@ where
     pub async fn set_database_encryption_key<C: AsRef<SetDatabaseEncryptionKey>>(
         &self,
         set_database_encryption_key: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_database_encryption_key).await
     }
 
@@ -3015,7 +2985,7 @@ where
     pub async fn set_file_generation_progress<C: AsRef<SetFileGenerationProgress>>(
         &self,
         set_file_generation_progress: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_file_generation_progress).await
     }
 
@@ -3023,7 +2993,7 @@ where
     pub async fn set_game_score<C: AsRef<SetGameScore>>(
         &self,
         set_game_score: C,
-    ) -> RTDResult<Message> {
+    ) -> Result<Message> {
         self.make_request(set_game_score).await
     }
 
@@ -3033,7 +3003,7 @@ where
     >(
         &self,
         set_group_call_participant_is_speaking: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_group_call_participant_is_speaking)
             .await
     }
@@ -3044,7 +3014,7 @@ where
     >(
         &self,
         set_group_call_participant_volume_level: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_group_call_participant_volume_level)
             .await
     }
@@ -3053,7 +3023,7 @@ where
     pub async fn set_group_call_title<C: AsRef<SetGroupCallTitle>>(
         &self,
         set_group_call_title: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_group_call_title).await
     }
 
@@ -3061,7 +3031,7 @@ where
     pub async fn set_inactive_session_ttl<C: AsRef<SetInactiveSessionTtl>>(
         &self,
         set_inactive_session_ttl: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_inactive_session_ttl).await
     }
 
@@ -3069,17 +3039,17 @@ where
     pub async fn set_inline_game_score<C: AsRef<SetInlineGameScore>>(
         &self,
         set_inline_game_score: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_inline_game_score).await
     }
 
     // Changes the location of the current user. Needs to be called if GetOption("is_location_visible") is true and location changes for more than 1 kilometer
-    pub async fn set_location<C: AsRef<SetLocation>>(&self, set_location: C) -> RTDResult<Ok> {
+    pub async fn set_location<C: AsRef<SetLocation>>(&self, set_location: C) -> Result<Ok> {
         self.make_request(set_location).await
     }
 
     // Sets new log stream for internal logging of TDLib. Can be called synchronously
-    pub async fn set_log_stream<C: AsRef<SetLogStream>>(&self, set_log_stream: C) -> RTDResult<Ok> {
+    pub async fn set_log_stream<C: AsRef<SetLogStream>>(&self, set_log_stream: C) -> Result<Ok> {
         self.make_request(set_log_stream).await
     }
 
@@ -3087,7 +3057,7 @@ where
     pub async fn set_log_tag_verbosity_level<C: AsRef<SetLogTagVerbosityLevel>>(
         &self,
         set_log_tag_verbosity_level: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_log_tag_verbosity_level).await
     }
 
@@ -3095,12 +3065,12 @@ where
     pub async fn set_log_verbosity_level<C: AsRef<SetLogVerbosityLevel>>(
         &self,
         set_log_verbosity_level: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_log_verbosity_level).await
     }
 
     // Changes the first and last name of the current user
-    pub async fn set_name<C: AsRef<SetName>>(&self, set_name: C) -> RTDResult<Ok> {
+    pub async fn set_name<C: AsRef<SetName>>(&self, set_name: C) -> Result<Ok> {
         self.make_request(set_name).await
     }
 
@@ -3108,12 +3078,12 @@ where
     pub async fn set_network_type<C: AsRef<SetNetworkType>>(
         &self,
         set_network_type: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_network_type).await
     }
 
     // Sets the value of an option. (Check the list of available options on https://core.telegram.org/tdlib/options.) Only writable options can be set. Can be called before authorization
-    pub async fn set_option<C: AsRef<SetOption>>(&self, set_option: C) -> RTDResult<Ok> {
+    pub async fn set_option<C: AsRef<SetOption>>(&self, set_option: C) -> Result<Ok> {
         self.make_request(set_option).await
     }
 
@@ -3121,7 +3091,7 @@ where
     pub async fn set_passport_element<C: AsRef<SetPassportElement>>(
         &self,
         set_passport_element: C,
-    ) -> RTDResult<PassportElement> {
+    ) -> Result<PassportElement> {
         self.make_request(set_passport_element).await
     }
 
@@ -3129,7 +3099,7 @@ where
     pub async fn set_passport_element_errors<C: AsRef<SetPassportElementErrors>>(
         &self,
         set_passport_element_errors: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_passport_element_errors).await
     }
 
@@ -3137,7 +3107,7 @@ where
     pub async fn set_password<C: AsRef<SetPassword>>(
         &self,
         set_password: C,
-    ) -> RTDResult<PasswordState> {
+    ) -> Result<PasswordState> {
         self.make_request(set_password).await
     }
 
@@ -3145,15 +3115,12 @@ where
     pub async fn set_pinned_chats<C: AsRef<SetPinnedChats>>(
         &self,
         set_pinned_chats: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_pinned_chats).await
     }
 
     // Changes the user answer to a poll. A poll in quiz mode can be answered only once
-    pub async fn set_poll_answer<C: AsRef<SetPollAnswer>>(
-        &self,
-        set_poll_answer: C,
-    ) -> RTDResult<Ok> {
+    pub async fn set_poll_answer<C: AsRef<SetPollAnswer>>(&self, set_poll_answer: C) -> Result<Ok> {
         self.make_request(set_poll_answer).await
     }
 
@@ -3161,7 +3128,7 @@ where
     pub async fn set_profile_photo<C: AsRef<SetProfilePhoto>>(
         &self,
         set_profile_photo: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_profile_photo).await
     }
 
@@ -3169,7 +3136,7 @@ where
     pub async fn set_recovery_email_address<C: AsRef<SetRecoveryEmailAddress>>(
         &self,
         set_recovery_email_address: C,
-    ) -> RTDResult<PasswordState> {
+    ) -> Result<PasswordState> {
         self.make_request(set_recovery_email_address).await
     }
 
@@ -3177,7 +3144,7 @@ where
     pub async fn set_scope_notification_settings<C: AsRef<SetScopeNotificationSettings>>(
         &self,
         set_scope_notification_settings: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_scope_notification_settings).await
     }
 
@@ -3185,7 +3152,7 @@ where
     pub async fn set_sticker_position_in_set<C: AsRef<SetStickerPositionInSet>>(
         &self,
         set_sticker_position_in_set: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_sticker_position_in_set).await
     }
 
@@ -3193,7 +3160,7 @@ where
     pub async fn set_sticker_set_thumbnail<C: AsRef<SetStickerSetThumbnail>>(
         &self,
         set_sticker_set_thumbnail: C,
-    ) -> RTDResult<StickerSet> {
+    ) -> Result<StickerSet> {
         self.make_request(set_sticker_set_thumbnail).await
     }
 
@@ -3201,7 +3168,7 @@ where
     pub async fn set_supergroup_sticker_set<C: AsRef<SetSupergroupStickerSet>>(
         &self,
         set_supergroup_sticker_set: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_supergroup_sticker_set).await
     }
 
@@ -3209,7 +3176,7 @@ where
     pub async fn set_supergroup_username<C: AsRef<SetSupergroupUsername>>(
         &self,
         set_supergroup_username: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_supergroup_username).await
     }
 
@@ -3217,7 +3184,7 @@ where
     pub async fn set_tdlib_parameters<C: AsRef<SetTdlibParameters>>(
         &self,
         set_tdlib_parameters: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_tdlib_parameters).await
     }
 
@@ -3225,12 +3192,12 @@ where
     pub async fn set_user_privacy_setting_rules<C: AsRef<SetUserPrivacySettingRules>>(
         &self,
         set_user_privacy_setting_rules: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_user_privacy_setting_rules).await
     }
 
     // Changes the username of the current user
-    pub async fn set_username<C: AsRef<SetUsername>>(&self, set_username: C) -> RTDResult<Ok> {
+    pub async fn set_username<C: AsRef<SetUsername>>(&self, set_username: C) -> Result<Ok> {
         self.make_request(set_username).await
     }
 
@@ -3238,7 +3205,7 @@ where
     pub async fn set_video_chat_default_participant<C: AsRef<SetVideoChatDefaultParticipant>>(
         &self,
         set_video_chat_default_participant: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(set_video_chat_default_participant).await
     }
 
@@ -3246,7 +3213,7 @@ where
     pub async fn share_phone_number<C: AsRef<SharePhoneNumber>>(
         &self,
         share_phone_number: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(share_phone_number).await
     }
 
@@ -3254,7 +3221,7 @@ where
     pub async fn start_group_call_recording<C: AsRef<StartGroupCallRecording>>(
         &self,
         start_group_call_recording: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(start_group_call_recording).await
     }
 
@@ -3262,7 +3229,7 @@ where
     pub async fn start_group_call_screen_sharing<C: AsRef<StartGroupCallScreenSharing>>(
         &self,
         start_group_call_screen_sharing: C,
-    ) -> RTDResult<Text> {
+    ) -> Result<Text> {
         self.make_request(start_group_call_screen_sharing).await
     }
 
@@ -3270,12 +3237,12 @@ where
     pub async fn start_scheduled_group_call<C: AsRef<StartScheduledGroupCall>>(
         &self,
         start_scheduled_group_call: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(start_scheduled_group_call).await
     }
 
     // Stops a poll. A poll in a message can be stopped when the message has can_be_edited flag set
-    pub async fn stop_poll<C: AsRef<StopPoll>>(&self, stop_poll: C) -> RTDResult<Ok> {
+    pub async fn stop_poll<C: AsRef<StopPoll>>(&self, stop_poll: C) -> Result<Ok> {
         self.make_request(stop_poll).await
     }
 
@@ -3283,7 +3250,7 @@ where
     pub async fn synchronize_language_pack<C: AsRef<SynchronizeLanguagePack>>(
         &self,
         synchronize_language_pack: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(synchronize_language_pack).await
     }
 
@@ -3291,7 +3258,7 @@ where
     pub async fn terminate_all_other_sessions<C: AsRef<TerminateAllOtherSessions>>(
         &self,
         terminate_all_other_sessions: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(terminate_all_other_sessions).await
     }
 
@@ -3299,7 +3266,7 @@ where
     pub async fn terminate_session<C: AsRef<TerminateSession>>(
         &self,
         terminate_session: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(terminate_session).await
     }
 
@@ -3307,15 +3274,12 @@ where
     pub async fn test_call_bytes<C: AsRef<TestCallBytes>>(
         &self,
         test_call_bytes: C,
-    ) -> RTDResult<TestBytes> {
+    ) -> Result<TestBytes> {
         self.make_request(test_call_bytes).await
     }
 
     // Does nothing; for testing only. This is an offline method. Can be called before authorization
-    pub async fn test_call_empty<C: AsRef<TestCallEmpty>>(
-        &self,
-        test_call_empty: C,
-    ) -> RTDResult<Ok> {
+    pub async fn test_call_empty<C: AsRef<TestCallEmpty>>(&self, test_call_empty: C) -> Result<Ok> {
         self.make_request(test_call_empty).await
     }
 
@@ -3323,7 +3287,7 @@ where
     pub async fn test_call_string<C: AsRef<TestCallString>>(
         &self,
         test_call_string: C,
-    ) -> RTDResult<TestString> {
+    ) -> Result<TestString> {
         self.make_request(test_call_string).await
     }
 
@@ -3331,7 +3295,7 @@ where
     pub async fn test_call_vector_int<C: AsRef<TestCallVectorInt>>(
         &self,
         test_call_vector_int: C,
-    ) -> RTDResult<TestVectorInt> {
+    ) -> Result<TestVectorInt> {
         self.make_request(test_call_vector_int).await
     }
 
@@ -3339,7 +3303,7 @@ where
     pub async fn test_call_vector_int_object<C: AsRef<TestCallVectorIntObject>>(
         &self,
         test_call_vector_int_object: C,
-    ) -> RTDResult<TestVectorIntObject> {
+    ) -> Result<TestVectorIntObject> {
         self.make_request(test_call_vector_int_object).await
     }
 
@@ -3347,7 +3311,7 @@ where
     pub async fn test_call_vector_string<C: AsRef<TestCallVectorString>>(
         &self,
         test_call_vector_string: C,
-    ) -> RTDResult<TestVectorString> {
+    ) -> Result<TestVectorString> {
         self.make_request(test_call_vector_string).await
     }
 
@@ -3355,7 +3319,7 @@ where
     pub async fn test_call_vector_string_object<C: AsRef<TestCallVectorStringObject>>(
         &self,
         test_call_vector_string_object: C,
-    ) -> RTDResult<TestVectorStringObject> {
+    ) -> Result<TestVectorStringObject> {
         self.make_request(test_call_vector_string_object).await
     }
 
@@ -3363,17 +3327,17 @@ where
     pub async fn test_get_difference<C: AsRef<TestGetDifference>>(
         &self,
         test_get_difference: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(test_get_difference).await
     }
 
     // Sends a simple network request to the Telegram servers; for testing only. Can be called before authorization
-    pub async fn test_network<C: AsRef<TestNetwork>>(&self, test_network: C) -> RTDResult<Ok> {
+    pub async fn test_network<C: AsRef<TestNetwork>>(&self, test_network: C) -> Result<Ok> {
         self.make_request(test_network).await
     }
 
     // Sends a simple network request to the Telegram servers via proxy; for testing only. Can be called before authorization
-    pub async fn test_proxy<C: AsRef<TestProxy>>(&self, test_proxy: C) -> RTDResult<Ok> {
+    pub async fn test_proxy<C: AsRef<TestProxy>>(&self, test_proxy: C) -> Result<Ok> {
         self.make_request(test_proxy).await
     }
 
@@ -3381,7 +3345,7 @@ where
     pub async fn test_return_error<C: AsRef<TestReturnError>>(
         &self,
         test_return_error: C,
-    ) -> RTDResult<Error> {
+    ) -> Result<Error> {
         self.make_request(test_return_error).await
     }
 
@@ -3389,7 +3353,7 @@ where
     pub async fn test_square_int<C: AsRef<TestSquareInt>>(
         &self,
         test_square_int: C,
-    ) -> RTDResult<TestInt> {
+    ) -> Result<TestInt> {
         self.make_request(test_square_int).await
     }
 
@@ -3397,7 +3361,7 @@ where
     pub async fn test_use_update<C: AsRef<TestUseUpdate>>(
         &self,
         test_use_update: C,
-    ) -> RTDResult<Update> {
+    ) -> Result<Update> {
         self.make_request(test_use_update).await
     }
 
@@ -3407,7 +3371,7 @@ where
     >(
         &self,
         toggle_chat_default_disable_notification: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_chat_default_disable_notification)
             .await
     }
@@ -3416,7 +3380,7 @@ where
     pub async fn toggle_chat_has_protected_content<C: AsRef<ToggleChatHasProtectedContent>>(
         &self,
         toggle_chat_has_protected_content: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_chat_has_protected_content).await
     }
 
@@ -3424,7 +3388,7 @@ where
     pub async fn toggle_chat_is_marked_as_unread<C: AsRef<ToggleChatIsMarkedAsUnread>>(
         &self,
         toggle_chat_is_marked_as_unread: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_chat_is_marked_as_unread).await
     }
 
@@ -3432,7 +3396,7 @@ where
     pub async fn toggle_chat_is_pinned<C: AsRef<ToggleChatIsPinned>>(
         &self,
         toggle_chat_is_pinned: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_chat_is_pinned).await
     }
 
@@ -3442,7 +3406,7 @@ where
     >(
         &self,
         toggle_group_call_enabled_start_notification: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_group_call_enabled_start_notification)
             .await
     }
@@ -3453,7 +3417,7 @@ where
     >(
         &self,
         toggle_group_call_is_my_video_enabled: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_group_call_is_my_video_enabled)
             .await
     }
@@ -3462,7 +3426,7 @@ where
     pub async fn toggle_group_call_is_my_video_paused<C: AsRef<ToggleGroupCallIsMyVideoPaused>>(
         &self,
         toggle_group_call_is_my_video_paused: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_group_call_is_my_video_paused)
             .await
     }
@@ -3473,7 +3437,7 @@ where
     >(
         &self,
         toggle_group_call_mute_new_participants: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_group_call_mute_new_participants)
             .await
     }
@@ -3484,7 +3448,7 @@ where
     >(
         &self,
         toggle_group_call_participant_is_hand_raised: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_group_call_participant_is_hand_raised)
             .await
     }
@@ -3495,7 +3459,7 @@ where
     >(
         &self,
         toggle_group_call_participant_is_muted: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_group_call_participant_is_muted)
             .await
     }
@@ -3506,7 +3470,7 @@ where
     >(
         &self,
         toggle_group_call_screen_sharing_is_paused: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_group_call_screen_sharing_is_paused)
             .await
     }
@@ -3515,7 +3479,7 @@ where
     pub async fn toggle_message_sender_is_blocked<C: AsRef<ToggleMessageSenderIsBlocked>>(
         &self,
         toggle_message_sender_is_blocked: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_message_sender_is_blocked).await
     }
 
@@ -3523,7 +3487,7 @@ where
     pub async fn toggle_session_can_accept_calls<C: AsRef<ToggleSessionCanAcceptCalls>>(
         &self,
         toggle_session_can_accept_calls: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_session_can_accept_calls).await
     }
 
@@ -3533,7 +3497,7 @@ where
     >(
         &self,
         toggle_session_can_accept_secret_chats: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_session_can_accept_secret_chats)
             .await
     }
@@ -3544,7 +3508,7 @@ where
     >(
         &self,
         toggle_supergroup_is_all_history_available: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_supergroup_is_all_history_available)
             .await
     }
@@ -3555,7 +3519,7 @@ where
     >(
         &self,
         toggle_supergroup_is_broadcast_group: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_supergroup_is_broadcast_group)
             .await
     }
@@ -3564,7 +3528,7 @@ where
     pub async fn toggle_supergroup_sign_messages<C: AsRef<ToggleSupergroupSignMessages>>(
         &self,
         toggle_supergroup_sign_messages: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(toggle_supergroup_sign_messages).await
     }
 
@@ -3572,7 +3536,7 @@ where
     pub async fn transfer_chat_ownership<C: AsRef<TransferChatOwnership>>(
         &self,
         transfer_chat_ownership: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(transfer_chat_ownership).await
     }
 
@@ -3580,7 +3544,7 @@ where
     pub async fn unpin_all_chat_messages<C: AsRef<UnpinAllChatMessages>>(
         &self,
         unpin_all_chat_messages: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(unpin_all_chat_messages).await
     }
 
@@ -3588,7 +3552,7 @@ where
     pub async fn unpin_chat_message<C: AsRef<UnpinChatMessage>>(
         &self,
         unpin_chat_message: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(unpin_chat_message).await
     }
 
@@ -3598,13 +3562,13 @@ where
     >(
         &self,
         upgrade_basic_group_chat_to_supergroup_chat: C,
-    ) -> RTDResult<Chat> {
+    ) -> Result<Chat> {
         self.make_request(upgrade_basic_group_chat_to_supergroup_chat)
             .await
     }
 
     // Asynchronously uploads a file to the cloud without sending it in a message. updateFile will be used to notify about upload progress and successful completion of the upload. The file will not have a persistent remote identifier until it will be sent in a message
-    pub async fn upload_file<C: AsRef<UploadFile>>(&self, upload_file: C) -> RTDResult<File> {
+    pub async fn upload_file<C: AsRef<UploadFile>>(&self, upload_file: C) -> Result<File> {
         self.make_request(upload_file).await
     }
 
@@ -3612,7 +3576,7 @@ where
     pub async fn upload_sticker_file<C: AsRef<UploadStickerFile>>(
         &self,
         upload_sticker_file: C,
-    ) -> RTDResult<File> {
+    ) -> Result<File> {
         self.make_request(upload_sticker_file).await
     }
 
@@ -3620,12 +3584,12 @@ where
     pub async fn validate_order_info<C: AsRef<ValidateOrderInfo>>(
         &self,
         validate_order_info: C,
-    ) -> RTDResult<ValidatedOrderInfo> {
+    ) -> Result<ValidatedOrderInfo> {
         self.make_request(validate_order_info).await
     }
 
     // Informs TDLib that messages are being viewed by the user. Sponsored messages must be marked as viewed only when the entire text of the message is shown on the screen (excluding the button). Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels)
-    pub async fn view_messages<C: AsRef<ViewMessages>>(&self, view_messages: C) -> RTDResult<Ok> {
+    pub async fn view_messages<C: AsRef<ViewMessages>>(&self, view_messages: C) -> Result<Ok> {
         self.make_request(view_messages).await
     }
 
@@ -3633,7 +3597,7 @@ where
     pub async fn view_trending_sticker_sets<C: AsRef<ViewTrendingStickerSets>>(
         &self,
         view_trending_sticker_sets: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(view_trending_sticker_sets).await
     }
 
@@ -3641,7 +3605,7 @@ where
     pub async fn write_generated_file_part<C: AsRef<WriteGeneratedFilePart>>(
         &self,
         write_generated_file_part: C,
-    ) -> RTDResult<Ok> {
+    ) -> Result<Ok> {
         self.make_request(write_generated_file_part).await
     }
 }

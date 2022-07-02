@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -30,14 +30,14 @@ impl RObject for DatedFile {
 }
 
 impl DatedFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDatedFileBuilder {
+    pub fn builder() -> DatedFileBuilder {
         let mut inner = DatedFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDatedFileBuilder { inner }
+        DatedFileBuilder { inner }
     }
 
     pub fn file(&self) -> &File {
@@ -50,11 +50,14 @@ impl DatedFile {
 }
 
 #[doc(hidden)]
-pub struct RTDDatedFileBuilder {
+pub struct DatedFileBuilder {
     inner: DatedFile,
 }
 
-impl RTDDatedFileBuilder {
+#[deprecated]
+pub type RTDDatedFileBuilder = DatedFileBuilder;
+
+impl DatedFileBuilder {
     pub fn build(&self) -> DatedFile {
         self.inner.clone()
     }
@@ -76,7 +79,7 @@ impl AsRef<DatedFile> for DatedFile {
     }
 }
 
-impl AsRef<DatedFile> for RTDDatedFileBuilder {
+impl AsRef<DatedFile> for DatedFileBuilder {
     fn as_ref(&self) -> &DatedFile {
         &self.inner
     }

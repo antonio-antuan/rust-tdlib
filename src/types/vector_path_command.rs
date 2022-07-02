@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for VectorPathCommand {
 }
 
 impl VectorPathCommand {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -94,14 +94,14 @@ impl RObject for VectorPathCommandCubicBezierCurve {
 impl TDVectorPathCommand for VectorPathCommandCubicBezierCurve {}
 
 impl VectorPathCommandCubicBezierCurve {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDVectorPathCommandCubicBezierCurveBuilder {
+    pub fn builder() -> VectorPathCommandCubicBezierCurveBuilder {
         let mut inner = VectorPathCommandCubicBezierCurve::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDVectorPathCommandCubicBezierCurveBuilder { inner }
+        VectorPathCommandCubicBezierCurveBuilder { inner }
     }
 
     pub fn start_control_point(&self) -> &Point {
@@ -118,11 +118,14 @@ impl VectorPathCommandCubicBezierCurve {
 }
 
 #[doc(hidden)]
-pub struct RTDVectorPathCommandCubicBezierCurveBuilder {
+pub struct VectorPathCommandCubicBezierCurveBuilder {
     inner: VectorPathCommandCubicBezierCurve,
 }
 
-impl RTDVectorPathCommandCubicBezierCurveBuilder {
+#[deprecated]
+pub type RTDVectorPathCommandCubicBezierCurveBuilder = VectorPathCommandCubicBezierCurveBuilder;
+
+impl VectorPathCommandCubicBezierCurveBuilder {
     pub fn build(&self) -> VectorPathCommandCubicBezierCurve {
         self.inner.clone()
     }
@@ -149,7 +152,7 @@ impl AsRef<VectorPathCommandCubicBezierCurve> for VectorPathCommandCubicBezierCu
     }
 }
 
-impl AsRef<VectorPathCommandCubicBezierCurve> for RTDVectorPathCommandCubicBezierCurveBuilder {
+impl AsRef<VectorPathCommandCubicBezierCurve> for VectorPathCommandCubicBezierCurveBuilder {
     fn as_ref(&self) -> &VectorPathCommandCubicBezierCurve {
         &self.inner
     }
@@ -181,14 +184,14 @@ impl RObject for VectorPathCommandLine {
 impl TDVectorPathCommand for VectorPathCommandLine {}
 
 impl VectorPathCommandLine {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDVectorPathCommandLineBuilder {
+    pub fn builder() -> VectorPathCommandLineBuilder {
         let mut inner = VectorPathCommandLine::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDVectorPathCommandLineBuilder { inner }
+        VectorPathCommandLineBuilder { inner }
     }
 
     pub fn end_point(&self) -> &Point {
@@ -197,11 +200,14 @@ impl VectorPathCommandLine {
 }
 
 #[doc(hidden)]
-pub struct RTDVectorPathCommandLineBuilder {
+pub struct VectorPathCommandLineBuilder {
     inner: VectorPathCommandLine,
 }
 
-impl RTDVectorPathCommandLineBuilder {
+#[deprecated]
+pub type RTDVectorPathCommandLineBuilder = VectorPathCommandLineBuilder;
+
+impl VectorPathCommandLineBuilder {
     pub fn build(&self) -> VectorPathCommandLine {
         self.inner.clone()
     }
@@ -218,7 +224,7 @@ impl AsRef<VectorPathCommandLine> for VectorPathCommandLine {
     }
 }
 
-impl AsRef<VectorPathCommandLine> for RTDVectorPathCommandLineBuilder {
+impl AsRef<VectorPathCommandLine> for VectorPathCommandLineBuilder {
     fn as_ref(&self) -> &VectorPathCommandLine {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -56,14 +56,14 @@ impl RObject for AutoDownloadSettings {
 }
 
 impl AutoDownloadSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAutoDownloadSettingsBuilder {
+    pub fn builder() -> AutoDownloadSettingsBuilder {
         let mut inner = AutoDownloadSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAutoDownloadSettingsBuilder { inner }
+        AutoDownloadSettingsBuilder { inner }
     }
 
     pub fn is_auto_download_enabled(&self) -> bool {
@@ -100,11 +100,14 @@ impl AutoDownloadSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDAutoDownloadSettingsBuilder {
+pub struct AutoDownloadSettingsBuilder {
     inner: AutoDownloadSettings,
 }
 
-impl RTDAutoDownloadSettingsBuilder {
+#[deprecated]
+pub type RTDAutoDownloadSettingsBuilder = AutoDownloadSettingsBuilder;
+
+impl AutoDownloadSettingsBuilder {
     pub fn build(&self) -> AutoDownloadSettings {
         self.inner.clone()
     }
@@ -156,7 +159,7 @@ impl AsRef<AutoDownloadSettings> for AutoDownloadSettings {
     }
 }
 
-impl AsRef<AutoDownloadSettings> for RTDAutoDownloadSettingsBuilder {
+impl AsRef<AutoDownloadSettings> for AutoDownloadSettingsBuilder {
     fn as_ref(&self) -> &AutoDownloadSettings {
         &self.inner
     }

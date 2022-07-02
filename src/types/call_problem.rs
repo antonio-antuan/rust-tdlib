@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -84,7 +84,7 @@ impl RObject for CallProblem {
 }
 
 impl CallProblem {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -123,23 +123,26 @@ impl RObject for CallProblemDistortedSpeech {
 impl TDCallProblem for CallProblemDistortedSpeech {}
 
 impl CallProblemDistortedSpeech {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemDistortedSpeechBuilder {
+    pub fn builder() -> CallProblemDistortedSpeechBuilder {
         let mut inner = CallProblemDistortedSpeech::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemDistortedSpeechBuilder { inner }
+        CallProblemDistortedSpeechBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemDistortedSpeechBuilder {
+pub struct CallProblemDistortedSpeechBuilder {
     inner: CallProblemDistortedSpeech,
 }
 
-impl RTDCallProblemDistortedSpeechBuilder {
+#[deprecated]
+pub type RTDCallProblemDistortedSpeechBuilder = CallProblemDistortedSpeechBuilder;
+
+impl CallProblemDistortedSpeechBuilder {
     pub fn build(&self) -> CallProblemDistortedSpeech {
         self.inner.clone()
     }
@@ -151,7 +154,7 @@ impl AsRef<CallProblemDistortedSpeech> for CallProblemDistortedSpeech {
     }
 }
 
-impl AsRef<CallProblemDistortedSpeech> for RTDCallProblemDistortedSpeechBuilder {
+impl AsRef<CallProblemDistortedSpeech> for CallProblemDistortedSpeechBuilder {
     fn as_ref(&self) -> &CallProblemDistortedSpeech {
         &self.inner
     }
@@ -181,23 +184,26 @@ impl RObject for CallProblemDistortedVideo {
 impl TDCallProblem for CallProblemDistortedVideo {}
 
 impl CallProblemDistortedVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemDistortedVideoBuilder {
+    pub fn builder() -> CallProblemDistortedVideoBuilder {
         let mut inner = CallProblemDistortedVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemDistortedVideoBuilder { inner }
+        CallProblemDistortedVideoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemDistortedVideoBuilder {
+pub struct CallProblemDistortedVideoBuilder {
     inner: CallProblemDistortedVideo,
 }
 
-impl RTDCallProblemDistortedVideoBuilder {
+#[deprecated]
+pub type RTDCallProblemDistortedVideoBuilder = CallProblemDistortedVideoBuilder;
+
+impl CallProblemDistortedVideoBuilder {
     pub fn build(&self) -> CallProblemDistortedVideo {
         self.inner.clone()
     }
@@ -209,7 +215,7 @@ impl AsRef<CallProblemDistortedVideo> for CallProblemDistortedVideo {
     }
 }
 
-impl AsRef<CallProblemDistortedVideo> for RTDCallProblemDistortedVideoBuilder {
+impl AsRef<CallProblemDistortedVideo> for CallProblemDistortedVideoBuilder {
     fn as_ref(&self) -> &CallProblemDistortedVideo {
         &self.inner
     }
@@ -239,23 +245,26 @@ impl RObject for CallProblemDropped {
 impl TDCallProblem for CallProblemDropped {}
 
 impl CallProblemDropped {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemDroppedBuilder {
+    pub fn builder() -> CallProblemDroppedBuilder {
         let mut inner = CallProblemDropped::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemDroppedBuilder { inner }
+        CallProblemDroppedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemDroppedBuilder {
+pub struct CallProblemDroppedBuilder {
     inner: CallProblemDropped,
 }
 
-impl RTDCallProblemDroppedBuilder {
+#[deprecated]
+pub type RTDCallProblemDroppedBuilder = CallProblemDroppedBuilder;
+
+impl CallProblemDroppedBuilder {
     pub fn build(&self) -> CallProblemDropped {
         self.inner.clone()
     }
@@ -267,7 +276,7 @@ impl AsRef<CallProblemDropped> for CallProblemDropped {
     }
 }
 
-impl AsRef<CallProblemDropped> for RTDCallProblemDroppedBuilder {
+impl AsRef<CallProblemDropped> for CallProblemDroppedBuilder {
     fn as_ref(&self) -> &CallProblemDropped {
         &self.inner
     }
@@ -297,23 +306,26 @@ impl RObject for CallProblemEcho {
 impl TDCallProblem for CallProblemEcho {}
 
 impl CallProblemEcho {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemEchoBuilder {
+    pub fn builder() -> CallProblemEchoBuilder {
         let mut inner = CallProblemEcho::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemEchoBuilder { inner }
+        CallProblemEchoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemEchoBuilder {
+pub struct CallProblemEchoBuilder {
     inner: CallProblemEcho,
 }
 
-impl RTDCallProblemEchoBuilder {
+#[deprecated]
+pub type RTDCallProblemEchoBuilder = CallProblemEchoBuilder;
+
+impl CallProblemEchoBuilder {
     pub fn build(&self) -> CallProblemEcho {
         self.inner.clone()
     }
@@ -325,7 +337,7 @@ impl AsRef<CallProblemEcho> for CallProblemEcho {
     }
 }
 
-impl AsRef<CallProblemEcho> for RTDCallProblemEchoBuilder {
+impl AsRef<CallProblemEcho> for CallProblemEchoBuilder {
     fn as_ref(&self) -> &CallProblemEcho {
         &self.inner
     }
@@ -355,23 +367,26 @@ impl RObject for CallProblemInterruptions {
 impl TDCallProblem for CallProblemInterruptions {}
 
 impl CallProblemInterruptions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemInterruptionsBuilder {
+    pub fn builder() -> CallProblemInterruptionsBuilder {
         let mut inner = CallProblemInterruptions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemInterruptionsBuilder { inner }
+        CallProblemInterruptionsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemInterruptionsBuilder {
+pub struct CallProblemInterruptionsBuilder {
     inner: CallProblemInterruptions,
 }
 
-impl RTDCallProblemInterruptionsBuilder {
+#[deprecated]
+pub type RTDCallProblemInterruptionsBuilder = CallProblemInterruptionsBuilder;
+
+impl CallProblemInterruptionsBuilder {
     pub fn build(&self) -> CallProblemInterruptions {
         self.inner.clone()
     }
@@ -383,7 +398,7 @@ impl AsRef<CallProblemInterruptions> for CallProblemInterruptions {
     }
 }
 
-impl AsRef<CallProblemInterruptions> for RTDCallProblemInterruptionsBuilder {
+impl AsRef<CallProblemInterruptions> for CallProblemInterruptionsBuilder {
     fn as_ref(&self) -> &CallProblemInterruptions {
         &self.inner
     }
@@ -413,23 +428,26 @@ impl RObject for CallProblemNoise {
 impl TDCallProblem for CallProblemNoise {}
 
 impl CallProblemNoise {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemNoiseBuilder {
+    pub fn builder() -> CallProblemNoiseBuilder {
         let mut inner = CallProblemNoise::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemNoiseBuilder { inner }
+        CallProblemNoiseBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemNoiseBuilder {
+pub struct CallProblemNoiseBuilder {
     inner: CallProblemNoise,
 }
 
-impl RTDCallProblemNoiseBuilder {
+#[deprecated]
+pub type RTDCallProblemNoiseBuilder = CallProblemNoiseBuilder;
+
+impl CallProblemNoiseBuilder {
     pub fn build(&self) -> CallProblemNoise {
         self.inner.clone()
     }
@@ -441,7 +459,7 @@ impl AsRef<CallProblemNoise> for CallProblemNoise {
     }
 }
 
-impl AsRef<CallProblemNoise> for RTDCallProblemNoiseBuilder {
+impl AsRef<CallProblemNoise> for CallProblemNoiseBuilder {
     fn as_ref(&self) -> &CallProblemNoise {
         &self.inner
     }
@@ -471,23 +489,26 @@ impl RObject for CallProblemPixelatedVideo {
 impl TDCallProblem for CallProblemPixelatedVideo {}
 
 impl CallProblemPixelatedVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemPixelatedVideoBuilder {
+    pub fn builder() -> CallProblemPixelatedVideoBuilder {
         let mut inner = CallProblemPixelatedVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemPixelatedVideoBuilder { inner }
+        CallProblemPixelatedVideoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemPixelatedVideoBuilder {
+pub struct CallProblemPixelatedVideoBuilder {
     inner: CallProblemPixelatedVideo,
 }
 
-impl RTDCallProblemPixelatedVideoBuilder {
+#[deprecated]
+pub type RTDCallProblemPixelatedVideoBuilder = CallProblemPixelatedVideoBuilder;
+
+impl CallProblemPixelatedVideoBuilder {
     pub fn build(&self) -> CallProblemPixelatedVideo {
         self.inner.clone()
     }
@@ -499,7 +520,7 @@ impl AsRef<CallProblemPixelatedVideo> for CallProblemPixelatedVideo {
     }
 }
 
-impl AsRef<CallProblemPixelatedVideo> for RTDCallProblemPixelatedVideoBuilder {
+impl AsRef<CallProblemPixelatedVideo> for CallProblemPixelatedVideoBuilder {
     fn as_ref(&self) -> &CallProblemPixelatedVideo {
         &self.inner
     }
@@ -529,23 +550,26 @@ impl RObject for CallProblemSilentLocal {
 impl TDCallProblem for CallProblemSilentLocal {}
 
 impl CallProblemSilentLocal {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemSilentLocalBuilder {
+    pub fn builder() -> CallProblemSilentLocalBuilder {
         let mut inner = CallProblemSilentLocal::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemSilentLocalBuilder { inner }
+        CallProblemSilentLocalBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemSilentLocalBuilder {
+pub struct CallProblemSilentLocalBuilder {
     inner: CallProblemSilentLocal,
 }
 
-impl RTDCallProblemSilentLocalBuilder {
+#[deprecated]
+pub type RTDCallProblemSilentLocalBuilder = CallProblemSilentLocalBuilder;
+
+impl CallProblemSilentLocalBuilder {
     pub fn build(&self) -> CallProblemSilentLocal {
         self.inner.clone()
     }
@@ -557,7 +581,7 @@ impl AsRef<CallProblemSilentLocal> for CallProblemSilentLocal {
     }
 }
 
-impl AsRef<CallProblemSilentLocal> for RTDCallProblemSilentLocalBuilder {
+impl AsRef<CallProblemSilentLocal> for CallProblemSilentLocalBuilder {
     fn as_ref(&self) -> &CallProblemSilentLocal {
         &self.inner
     }
@@ -587,23 +611,26 @@ impl RObject for CallProblemSilentRemote {
 impl TDCallProblem for CallProblemSilentRemote {}
 
 impl CallProblemSilentRemote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProblemSilentRemoteBuilder {
+    pub fn builder() -> CallProblemSilentRemoteBuilder {
         let mut inner = CallProblemSilentRemote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProblemSilentRemoteBuilder { inner }
+        CallProblemSilentRemoteBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallProblemSilentRemoteBuilder {
+pub struct CallProblemSilentRemoteBuilder {
     inner: CallProblemSilentRemote,
 }
 
-impl RTDCallProblemSilentRemoteBuilder {
+#[deprecated]
+pub type RTDCallProblemSilentRemoteBuilder = CallProblemSilentRemoteBuilder;
+
+impl CallProblemSilentRemoteBuilder {
     pub fn build(&self) -> CallProblemSilentRemote {
         self.inner.clone()
     }
@@ -615,7 +642,7 @@ impl AsRef<CallProblemSilentRemote> for CallProblemSilentRemote {
     }
 }
 
-impl AsRef<CallProblemSilentRemote> for RTDCallProblemSilentRemoteBuilder {
+impl AsRef<CallProblemSilentRemote> for CallProblemSilentRemoteBuilder {
     fn as_ref(&self) -> &CallProblemSilentRemote {
         &self.inner
     }

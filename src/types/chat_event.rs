@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,14 +41,14 @@ impl RObject for ChatEvent {
 }
 
 impl ChatEvent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatEventBuilder {
+    pub fn builder() -> ChatEventBuilder {
         let mut inner = ChatEvent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatEventBuilder { inner }
+        ChatEventBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -69,11 +69,14 @@ impl ChatEvent {
 }
 
 #[doc(hidden)]
-pub struct RTDChatEventBuilder {
+pub struct ChatEventBuilder {
     inner: ChatEvent,
 }
 
-impl RTDChatEventBuilder {
+#[deprecated]
+pub type RTDChatEventBuilder = ChatEventBuilder;
+
+impl ChatEventBuilder {
     pub fn build(&self) -> ChatEvent {
         self.inner.clone()
     }
@@ -105,7 +108,7 @@ impl AsRef<ChatEvent> for ChatEvent {
     }
 }
 
-impl AsRef<ChatEvent> for RTDChatEventBuilder {
+impl AsRef<ChatEvent> for ChatEventBuilder {
     fn as_ref(&self) -> &ChatEvent {
         &self.inner
     }

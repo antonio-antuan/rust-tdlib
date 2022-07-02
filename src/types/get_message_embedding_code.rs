@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for GetMessageEmbeddingCode {
 impl RFunction for GetMessageEmbeddingCode {}
 
 impl GetMessageEmbeddingCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageEmbeddingCodeBuilder {
+    pub fn builder() -> GetMessageEmbeddingCodeBuilder {
         let mut inner = GetMessageEmbeddingCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageEmbeddingCode".to_string();
 
-        RTDGetMessageEmbeddingCodeBuilder { inner }
+        GetMessageEmbeddingCodeBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl GetMessageEmbeddingCode {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageEmbeddingCodeBuilder {
+pub struct GetMessageEmbeddingCodeBuilder {
     inner: GetMessageEmbeddingCode,
 }
 
-impl RTDGetMessageEmbeddingCodeBuilder {
+#[deprecated]
+pub type RTDGetMessageEmbeddingCodeBuilder = GetMessageEmbeddingCodeBuilder;
+
+impl GetMessageEmbeddingCodeBuilder {
     pub fn build(&self) -> GetMessageEmbeddingCode {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<GetMessageEmbeddingCode> for GetMessageEmbeddingCode {
     }
 }
 
-impl AsRef<GetMessageEmbeddingCode> for RTDGetMessageEmbeddingCodeBuilder {
+impl AsRef<GetMessageEmbeddingCode> for GetMessageEmbeddingCodeBuilder {
     fn as_ref(&self) -> &GetMessageEmbeddingCode {
         &self.inner
     }

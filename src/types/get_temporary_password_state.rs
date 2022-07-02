@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetTemporaryPasswordState {
 impl RFunction for GetTemporaryPasswordState {}
 
 impl GetTemporaryPasswordState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetTemporaryPasswordStateBuilder {
+    pub fn builder() -> GetTemporaryPasswordStateBuilder {
         let mut inner = GetTemporaryPasswordState::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getTemporaryPasswordState".to_string();
 
-        RTDGetTemporaryPasswordStateBuilder { inner }
+        GetTemporaryPasswordStateBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetTemporaryPasswordStateBuilder {
+pub struct GetTemporaryPasswordStateBuilder {
     inner: GetTemporaryPasswordState,
 }
 
-impl RTDGetTemporaryPasswordStateBuilder {
+#[deprecated]
+pub type RTDGetTemporaryPasswordStateBuilder = GetTemporaryPasswordStateBuilder;
+
+impl GetTemporaryPasswordStateBuilder {
     pub fn build(&self) -> GetTemporaryPasswordState {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetTemporaryPasswordState> for GetTemporaryPasswordState {
     }
 }
 
-impl AsRef<GetTemporaryPasswordState> for RTDGetTemporaryPasswordStateBuilder {
+impl AsRef<GetTemporaryPasswordState> for GetTemporaryPasswordStateBuilder {
     fn as_ref(&self) -> &GetTemporaryPasswordState {
         &self.inner
     }

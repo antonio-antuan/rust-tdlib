@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -39,16 +39,16 @@ impl RObject for EditInlineMessageCaption {
 impl RFunction for EditInlineMessageCaption {}
 
 impl EditInlineMessageCaption {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditInlineMessageCaptionBuilder {
+    pub fn builder() -> EditInlineMessageCaptionBuilder {
         let mut inner = EditInlineMessageCaption::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editInlineMessageCaption".to_string();
 
-        RTDEditInlineMessageCaptionBuilder { inner }
+        EditInlineMessageCaptionBuilder { inner }
     }
 
     pub fn inline_message_id(&self) -> &String {
@@ -65,11 +65,14 @@ impl EditInlineMessageCaption {
 }
 
 #[doc(hidden)]
-pub struct RTDEditInlineMessageCaptionBuilder {
+pub struct EditInlineMessageCaptionBuilder {
     inner: EditInlineMessageCaption,
 }
 
-impl RTDEditInlineMessageCaptionBuilder {
+#[deprecated]
+pub type RTDEditInlineMessageCaptionBuilder = EditInlineMessageCaptionBuilder;
+
+impl EditInlineMessageCaptionBuilder {
     pub fn build(&self) -> EditInlineMessageCaption {
         self.inner.clone()
     }
@@ -96,7 +99,7 @@ impl AsRef<EditInlineMessageCaption> for EditInlineMessageCaption {
     }
 }
 
-impl AsRef<EditInlineMessageCaption> for RTDEditInlineMessageCaptionBuilder {
+impl AsRef<EditInlineMessageCaption> for EditInlineMessageCaptionBuilder {
     fn as_ref(&self) -> &EditInlineMessageCaption {
         &self.inner
     }

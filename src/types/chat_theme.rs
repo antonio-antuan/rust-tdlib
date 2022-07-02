@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for ChatTheme {
 }
 
 impl ChatTheme {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatThemeBuilder {
+    pub fn builder() -> ChatThemeBuilder {
         let mut inner = ChatTheme::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatThemeBuilder { inner }
+        ChatThemeBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -56,11 +56,14 @@ impl ChatTheme {
 }
 
 #[doc(hidden)]
-pub struct RTDChatThemeBuilder {
+pub struct ChatThemeBuilder {
     inner: ChatTheme,
 }
 
-impl RTDChatThemeBuilder {
+#[deprecated]
+pub type RTDChatThemeBuilder = ChatThemeBuilder;
+
+impl ChatThemeBuilder {
     pub fn build(&self) -> ChatTheme {
         self.inner.clone()
     }
@@ -87,7 +90,7 @@ impl AsRef<ChatTheme> for ChatTheme {
     }
 }
 
-impl AsRef<ChatTheme> for RTDChatThemeBuilder {
+impl AsRef<ChatTheme> for ChatThemeBuilder {
     fn as_ref(&self) -> &ChatTheme {
         &self.inner
     }

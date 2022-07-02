@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -65,16 +65,16 @@ impl RObject for OptimizeStorage {
 impl RFunction for OptimizeStorage {}
 
 impl OptimizeStorage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDOptimizeStorageBuilder {
+    pub fn builder() -> OptimizeStorageBuilder {
         let mut inner = OptimizeStorage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "optimizeStorage".to_string();
 
-        RTDOptimizeStorageBuilder { inner }
+        OptimizeStorageBuilder { inner }
     }
 
     pub fn size(&self) -> i64 {
@@ -115,11 +115,14 @@ impl OptimizeStorage {
 }
 
 #[doc(hidden)]
-pub struct RTDOptimizeStorageBuilder {
+pub struct OptimizeStorageBuilder {
     inner: OptimizeStorage,
 }
 
-impl RTDOptimizeStorageBuilder {
+#[deprecated]
+pub type RTDOptimizeStorageBuilder = OptimizeStorageBuilder;
+
+impl OptimizeStorageBuilder {
     pub fn build(&self) -> OptimizeStorage {
         self.inner.clone()
     }
@@ -179,7 +182,7 @@ impl AsRef<OptimizeStorage> for OptimizeStorage {
     }
 }
 
-impl AsRef<OptimizeStorage> for RTDOptimizeStorageBuilder {
+impl AsRef<OptimizeStorage> for OptimizeStorageBuilder {
     fn as_ref(&self) -> &OptimizeStorage {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for MessagePosition {
 }
 
 impl MessagePosition {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePositionBuilder {
+    pub fn builder() -> MessagePositionBuilder {
         let mut inner = MessagePosition::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePositionBuilder { inner }
+        MessagePositionBuilder { inner }
     }
 
     pub fn position(&self) -> i32 {
@@ -60,11 +60,14 @@ impl MessagePosition {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePositionBuilder {
+pub struct MessagePositionBuilder {
     inner: MessagePosition,
 }
 
-impl RTDMessagePositionBuilder {
+#[deprecated]
+pub type RTDMessagePositionBuilder = MessagePositionBuilder;
+
+impl MessagePositionBuilder {
     pub fn build(&self) -> MessagePosition {
         self.inner.clone()
     }
@@ -91,7 +94,7 @@ impl AsRef<MessagePosition> for MessagePosition {
     }
 }
 
-impl AsRef<MessagePosition> for RTDMessagePositionBuilder {
+impl AsRef<MessagePosition> for MessagePositionBuilder {
     fn as_ref(&self) -> &MessagePosition {
         &self.inner
     }

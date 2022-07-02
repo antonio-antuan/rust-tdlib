@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ToggleGroupCallMuteNewParticipants {
 impl RFunction for ToggleGroupCallMuteNewParticipants {}
 
 impl ToggleGroupCallMuteNewParticipants {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleGroupCallMuteNewParticipantsBuilder {
+    pub fn builder() -> ToggleGroupCallMuteNewParticipantsBuilder {
         let mut inner = ToggleGroupCallMuteNewParticipants::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleGroupCallMuteNewParticipants".to_string();
 
-        RTDToggleGroupCallMuteNewParticipantsBuilder { inner }
+        ToggleGroupCallMuteNewParticipantsBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -59,11 +59,14 @@ impl ToggleGroupCallMuteNewParticipants {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleGroupCallMuteNewParticipantsBuilder {
+pub struct ToggleGroupCallMuteNewParticipantsBuilder {
     inner: ToggleGroupCallMuteNewParticipants,
 }
 
-impl RTDToggleGroupCallMuteNewParticipantsBuilder {
+#[deprecated]
+pub type RTDToggleGroupCallMuteNewParticipantsBuilder = ToggleGroupCallMuteNewParticipantsBuilder;
+
+impl ToggleGroupCallMuteNewParticipantsBuilder {
     pub fn build(&self) -> ToggleGroupCallMuteNewParticipants {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<ToggleGroupCallMuteNewParticipants> for ToggleGroupCallMuteNewPartici
     }
 }
 
-impl AsRef<ToggleGroupCallMuteNewParticipants> for RTDToggleGroupCallMuteNewParticipantsBuilder {
+impl AsRef<ToggleGroupCallMuteNewParticipants> for ToggleGroupCallMuteNewParticipantsBuilder {
     fn as_ref(&self) -> &ToggleGroupCallMuteNewParticipants {
         &self.inner
     }

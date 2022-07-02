@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for StopPoll {
 impl RFunction for StopPoll {}
 
 impl StopPoll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStopPollBuilder {
+    pub fn builder() -> StopPollBuilder {
         let mut inner = StopPoll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "stopPoll".to_string();
 
-        RTDStopPollBuilder { inner }
+        StopPollBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl StopPoll {
 }
 
 #[doc(hidden)]
-pub struct RTDStopPollBuilder {
+pub struct StopPollBuilder {
     inner: StopPoll,
 }
 
-impl RTDStopPollBuilder {
+#[deprecated]
+pub type RTDStopPollBuilder = StopPollBuilder;
+
+impl StopPollBuilder {
     pub fn build(&self) -> StopPoll {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<StopPoll> for StopPoll {
     }
 }
 
-impl AsRef<StopPoll> for RTDStopPollBuilder {
+impl AsRef<StopPoll> for StopPollBuilder {
     fn as_ref(&self) -> &StopPoll {
         &self.inner
     }

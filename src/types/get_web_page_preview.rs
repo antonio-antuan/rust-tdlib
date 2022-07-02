@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for GetWebPagePreview {
 impl RFunction for GetWebPagePreview {}
 
 impl GetWebPagePreview {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetWebPagePreviewBuilder {
+    pub fn builder() -> GetWebPagePreviewBuilder {
         let mut inner = GetWebPagePreview::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getWebPagePreview".to_string();
 
-        RTDGetWebPagePreviewBuilder { inner }
+        GetWebPagePreviewBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -49,11 +49,14 @@ impl GetWebPagePreview {
 }
 
 #[doc(hidden)]
-pub struct RTDGetWebPagePreviewBuilder {
+pub struct GetWebPagePreviewBuilder {
     inner: GetWebPagePreview,
 }
 
-impl RTDGetWebPagePreviewBuilder {
+#[deprecated]
+pub type RTDGetWebPagePreviewBuilder = GetWebPagePreviewBuilder;
+
+impl GetWebPagePreviewBuilder {
     pub fn build(&self) -> GetWebPagePreview {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<GetWebPagePreview> for GetWebPagePreview {
     }
 }
 
-impl AsRef<GetWebPagePreview> for RTDGetWebPagePreviewBuilder {
+impl AsRef<GetWebPagePreview> for GetWebPagePreviewBuilder {
     fn as_ref(&self) -> &GetWebPagePreview {
         &self.inner
     }

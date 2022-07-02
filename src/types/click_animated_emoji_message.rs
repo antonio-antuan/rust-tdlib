@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ClickAnimatedEmojiMessage {
 impl RFunction for ClickAnimatedEmojiMessage {}
 
 impl ClickAnimatedEmojiMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDClickAnimatedEmojiMessageBuilder {
+    pub fn builder() -> ClickAnimatedEmojiMessageBuilder {
         let mut inner = ClickAnimatedEmojiMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "clickAnimatedEmojiMessage".to_string();
 
-        RTDClickAnimatedEmojiMessageBuilder { inner }
+        ClickAnimatedEmojiMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl ClickAnimatedEmojiMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDClickAnimatedEmojiMessageBuilder {
+pub struct ClickAnimatedEmojiMessageBuilder {
     inner: ClickAnimatedEmojiMessage,
 }
 
-impl RTDClickAnimatedEmojiMessageBuilder {
+#[deprecated]
+pub type RTDClickAnimatedEmojiMessageBuilder = ClickAnimatedEmojiMessageBuilder;
+
+impl ClickAnimatedEmojiMessageBuilder {
     pub fn build(&self) -> ClickAnimatedEmojiMessage {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<ClickAnimatedEmojiMessage> for ClickAnimatedEmojiMessage {
     }
 }
 
-impl AsRef<ClickAnimatedEmojiMessage> for RTDClickAnimatedEmojiMessageBuilder {
+impl AsRef<ClickAnimatedEmojiMessage> for ClickAnimatedEmojiMessageBuilder {
     fn as_ref(&self) -> &ClickAnimatedEmojiMessage {
         &self.inner
     }

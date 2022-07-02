@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for CheckAuthenticationCode {
 impl RFunction for CheckAuthenticationCode {}
 
 impl CheckAuthenticationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckAuthenticationCodeBuilder {
+    pub fn builder() -> CheckAuthenticationCodeBuilder {
         let mut inner = CheckAuthenticationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkAuthenticationCode".to_string();
 
-        RTDCheckAuthenticationCodeBuilder { inner }
+        CheckAuthenticationCodeBuilder { inner }
     }
 
     pub fn code(&self) -> &String {
@@ -51,11 +51,14 @@ impl CheckAuthenticationCode {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckAuthenticationCodeBuilder {
+pub struct CheckAuthenticationCodeBuilder {
     inner: CheckAuthenticationCode,
 }
 
-impl RTDCheckAuthenticationCodeBuilder {
+#[deprecated]
+pub type RTDCheckAuthenticationCodeBuilder = CheckAuthenticationCodeBuilder;
+
+impl CheckAuthenticationCodeBuilder {
     pub fn build(&self) -> CheckAuthenticationCode {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<CheckAuthenticationCode> for CheckAuthenticationCode {
     }
 }
 
-impl AsRef<CheckAuthenticationCode> for RTDCheckAuthenticationCodeBuilder {
+impl AsRef<CheckAuthenticationCode> for CheckAuthenticationCodeBuilder {
     fn as_ref(&self) -> &CheckAuthenticationCode {
         &self.inner
     }

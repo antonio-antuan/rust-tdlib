@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -66,14 +66,14 @@ impl RObject for Poll {
 }
 
 impl Poll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPollBuilder {
+    pub fn builder() -> PollBuilder {
         let mut inner = Poll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPollBuilder { inner }
+        PollBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -118,11 +118,14 @@ impl Poll {
 }
 
 #[doc(hidden)]
-pub struct RTDPollBuilder {
+pub struct PollBuilder {
     inner: Poll,
 }
 
-impl RTDPollBuilder {
+#[deprecated]
+pub type RTDPollBuilder = PollBuilder;
+
+impl PollBuilder {
     pub fn build(&self) -> Poll {
         self.inner.clone()
     }
@@ -184,7 +187,7 @@ impl AsRef<Poll> for Poll {
     }
 }
 
-impl AsRef<Poll> for RTDPollBuilder {
+impl AsRef<Poll> for PollBuilder {
     fn as_ref(&self) -> &Poll {
         &self.inner
     }

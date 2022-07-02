@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for PublicChatType {
 }
 
 impl PublicChatType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -88,23 +88,26 @@ impl RObject for PublicChatTypeHasUsername {
 impl TDPublicChatType for PublicChatTypeHasUsername {}
 
 impl PublicChatTypeHasUsername {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPublicChatTypeHasUsernameBuilder {
+    pub fn builder() -> PublicChatTypeHasUsernameBuilder {
         let mut inner = PublicChatTypeHasUsername::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPublicChatTypeHasUsernameBuilder { inner }
+        PublicChatTypeHasUsernameBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPublicChatTypeHasUsernameBuilder {
+pub struct PublicChatTypeHasUsernameBuilder {
     inner: PublicChatTypeHasUsername,
 }
 
-impl RTDPublicChatTypeHasUsernameBuilder {
+#[deprecated]
+pub type RTDPublicChatTypeHasUsernameBuilder = PublicChatTypeHasUsernameBuilder;
+
+impl PublicChatTypeHasUsernameBuilder {
     pub fn build(&self) -> PublicChatTypeHasUsername {
         self.inner.clone()
     }
@@ -116,7 +119,7 @@ impl AsRef<PublicChatTypeHasUsername> for PublicChatTypeHasUsername {
     }
 }
 
-impl AsRef<PublicChatTypeHasUsername> for RTDPublicChatTypeHasUsernameBuilder {
+impl AsRef<PublicChatTypeHasUsername> for PublicChatTypeHasUsernameBuilder {
     fn as_ref(&self) -> &PublicChatTypeHasUsername {
         &self.inner
     }
@@ -146,23 +149,26 @@ impl RObject for PublicChatTypeIsLocationBased {
 impl TDPublicChatType for PublicChatTypeIsLocationBased {}
 
 impl PublicChatTypeIsLocationBased {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPublicChatTypeIsLocationBasedBuilder {
+    pub fn builder() -> PublicChatTypeIsLocationBasedBuilder {
         let mut inner = PublicChatTypeIsLocationBased::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPublicChatTypeIsLocationBasedBuilder { inner }
+        PublicChatTypeIsLocationBasedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPublicChatTypeIsLocationBasedBuilder {
+pub struct PublicChatTypeIsLocationBasedBuilder {
     inner: PublicChatTypeIsLocationBased,
 }
 
-impl RTDPublicChatTypeIsLocationBasedBuilder {
+#[deprecated]
+pub type RTDPublicChatTypeIsLocationBasedBuilder = PublicChatTypeIsLocationBasedBuilder;
+
+impl PublicChatTypeIsLocationBasedBuilder {
     pub fn build(&self) -> PublicChatTypeIsLocationBased {
         self.inner.clone()
     }
@@ -174,7 +180,7 @@ impl AsRef<PublicChatTypeIsLocationBased> for PublicChatTypeIsLocationBased {
     }
 }
 
-impl AsRef<PublicChatTypeIsLocationBased> for RTDPublicChatTypeIsLocationBasedBuilder {
+impl AsRef<PublicChatTypeIsLocationBased> for PublicChatTypeIsLocationBasedBuilder {
     fn as_ref(&self) -> &PublicChatTypeIsLocationBased {
         &self.inner
     }

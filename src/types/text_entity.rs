@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,14 +37,14 @@ impl RObject for TextEntity {
 }
 
 impl TextEntity {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextEntityBuilder {
+    pub fn builder() -> TextEntityBuilder {
         let mut inner = TextEntity::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextEntityBuilder { inner }
+        TextEntityBuilder { inner }
     }
 
     pub fn offset(&self) -> i32 {
@@ -61,11 +61,14 @@ impl TextEntity {
 }
 
 #[doc(hidden)]
-pub struct RTDTextEntityBuilder {
+pub struct TextEntityBuilder {
     inner: TextEntity,
 }
 
-impl RTDTextEntityBuilder {
+#[deprecated]
+pub type RTDTextEntityBuilder = TextEntityBuilder;
+
+impl TextEntityBuilder {
     pub fn build(&self) -> TextEntity {
         self.inner.clone()
     }
@@ -92,7 +95,7 @@ impl AsRef<TextEntity> for TextEntity {
     }
 }
 
-impl AsRef<TextEntity> for RTDTextEntityBuilder {
+impl AsRef<TextEntity> for TextEntityBuilder {
     fn as_ref(&self) -> &TextEntity {
         &self.inner
     }

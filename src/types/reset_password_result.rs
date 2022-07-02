@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for ResetPasswordResult {
 }
 
 impl ResetPasswordResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -102,14 +102,14 @@ impl RObject for ResetPasswordResultDeclined {
 impl TDResetPasswordResult for ResetPasswordResultDeclined {}
 
 impl ResetPasswordResultDeclined {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResetPasswordResultDeclinedBuilder {
+    pub fn builder() -> ResetPasswordResultDeclinedBuilder {
         let mut inner = ResetPasswordResultDeclined::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDResetPasswordResultDeclinedBuilder { inner }
+        ResetPasswordResultDeclinedBuilder { inner }
     }
 
     pub fn retry_date(&self) -> i32 {
@@ -118,11 +118,14 @@ impl ResetPasswordResultDeclined {
 }
 
 #[doc(hidden)]
-pub struct RTDResetPasswordResultDeclinedBuilder {
+pub struct ResetPasswordResultDeclinedBuilder {
     inner: ResetPasswordResultDeclined,
 }
 
-impl RTDResetPasswordResultDeclinedBuilder {
+#[deprecated]
+pub type RTDResetPasswordResultDeclinedBuilder = ResetPasswordResultDeclinedBuilder;
+
+impl ResetPasswordResultDeclinedBuilder {
     pub fn build(&self) -> ResetPasswordResultDeclined {
         self.inner.clone()
     }
@@ -139,7 +142,7 @@ impl AsRef<ResetPasswordResultDeclined> for ResetPasswordResultDeclined {
     }
 }
 
-impl AsRef<ResetPasswordResultDeclined> for RTDResetPasswordResultDeclinedBuilder {
+impl AsRef<ResetPasswordResultDeclined> for ResetPasswordResultDeclinedBuilder {
     fn as_ref(&self) -> &ResetPasswordResultDeclined {
         &self.inner
     }
@@ -169,23 +172,26 @@ impl RObject for ResetPasswordResultOk {
 impl TDResetPasswordResult for ResetPasswordResultOk {}
 
 impl ResetPasswordResultOk {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResetPasswordResultOkBuilder {
+    pub fn builder() -> ResetPasswordResultOkBuilder {
         let mut inner = ResetPasswordResultOk::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDResetPasswordResultOkBuilder { inner }
+        ResetPasswordResultOkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDResetPasswordResultOkBuilder {
+pub struct ResetPasswordResultOkBuilder {
     inner: ResetPasswordResultOk,
 }
 
-impl RTDResetPasswordResultOkBuilder {
+#[deprecated]
+pub type RTDResetPasswordResultOkBuilder = ResetPasswordResultOkBuilder;
+
+impl ResetPasswordResultOkBuilder {
     pub fn build(&self) -> ResetPasswordResultOk {
         self.inner.clone()
     }
@@ -197,7 +203,7 @@ impl AsRef<ResetPasswordResultOk> for ResetPasswordResultOk {
     }
 }
 
-impl AsRef<ResetPasswordResultOk> for RTDResetPasswordResultOkBuilder {
+impl AsRef<ResetPasswordResultOk> for ResetPasswordResultOkBuilder {
     fn as_ref(&self) -> &ResetPasswordResultOk {
         &self.inner
     }
@@ -231,14 +237,14 @@ impl RObject for ResetPasswordResultPending {
 impl TDResetPasswordResult for ResetPasswordResultPending {}
 
 impl ResetPasswordResultPending {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResetPasswordResultPendingBuilder {
+    pub fn builder() -> ResetPasswordResultPendingBuilder {
         let mut inner = ResetPasswordResultPending::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDResetPasswordResultPendingBuilder { inner }
+        ResetPasswordResultPendingBuilder { inner }
     }
 
     pub fn pending_reset_date(&self) -> i32 {
@@ -247,11 +253,14 @@ impl ResetPasswordResultPending {
 }
 
 #[doc(hidden)]
-pub struct RTDResetPasswordResultPendingBuilder {
+pub struct ResetPasswordResultPendingBuilder {
     inner: ResetPasswordResultPending,
 }
 
-impl RTDResetPasswordResultPendingBuilder {
+#[deprecated]
+pub type RTDResetPasswordResultPendingBuilder = ResetPasswordResultPendingBuilder;
+
+impl ResetPasswordResultPendingBuilder {
     pub fn build(&self) -> ResetPasswordResultPending {
         self.inner.clone()
     }
@@ -268,7 +277,7 @@ impl AsRef<ResetPasswordResultPending> for ResetPasswordResultPending {
     }
 }
 
-impl AsRef<ResetPasswordResultPending> for RTDResetPasswordResultPendingBuilder {
+impl AsRef<ResetPasswordResultPending> for ResetPasswordResultPendingBuilder {
     fn as_ref(&self) -> &ResetPasswordResultPending {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,16 +49,16 @@ impl RObject for GetPollVoters {
 impl RFunction for GetPollVoters {}
 
 impl GetPollVoters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPollVotersBuilder {
+    pub fn builder() -> GetPollVotersBuilder {
         let mut inner = GetPollVoters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPollVoters".to_string();
 
-        RTDGetPollVotersBuilder { inner }
+        GetPollVotersBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -83,11 +83,14 @@ impl GetPollVoters {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPollVotersBuilder {
+pub struct GetPollVotersBuilder {
     inner: GetPollVoters,
 }
 
-impl RTDGetPollVotersBuilder {
+#[deprecated]
+pub type RTDGetPollVotersBuilder = GetPollVotersBuilder;
+
+impl GetPollVotersBuilder {
     pub fn build(&self) -> GetPollVoters {
         self.inner.clone()
     }
@@ -124,7 +127,7 @@ impl AsRef<GetPollVoters> for GetPollVoters {
     }
 }
 
-impl AsRef<GetPollVoters> for RTDGetPollVotersBuilder {
+impl AsRef<GetPollVoters> for GetPollVotersBuilder {
     fn as_ref(&self) -> &GetPollVoters {
         &self.inner
     }

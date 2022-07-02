@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -50,14 +50,14 @@ impl RObject for Audio {
 }
 
 impl Audio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAudioBuilder {
+    pub fn builder() -> AudioBuilder {
         let mut inner = Audio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAudioBuilder { inner }
+        AudioBuilder { inner }
     }
 
     pub fn duration(&self) -> i32 {
@@ -94,11 +94,14 @@ impl Audio {
 }
 
 #[doc(hidden)]
-pub struct RTDAudioBuilder {
+pub struct AudioBuilder {
     inner: Audio,
 }
 
-impl RTDAudioBuilder {
+#[deprecated]
+pub type RTDAudioBuilder = AudioBuilder;
+
+impl AudioBuilder {
     pub fn build(&self) -> Audio {
         self.inner.clone()
     }
@@ -156,7 +159,7 @@ impl AsRef<Audio> for Audio {
     }
 }
 
-impl AsRef<Audio> for RTDAudioBuilder {
+impl AsRef<Audio> for AudioBuilder {
     fn as_ref(&self) -> &Audio {
         &self.inner
     }

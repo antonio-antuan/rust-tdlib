@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -38,14 +38,14 @@ impl RObject for OrderInfo {
 }
 
 impl OrderInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDOrderInfoBuilder {
+    pub fn builder() -> OrderInfoBuilder {
         let mut inner = OrderInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDOrderInfoBuilder { inner }
+        OrderInfoBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -66,11 +66,14 @@ impl OrderInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDOrderInfoBuilder {
+pub struct OrderInfoBuilder {
     inner: OrderInfo,
 }
 
-impl RTDOrderInfoBuilder {
+#[deprecated]
+pub type RTDOrderInfoBuilder = OrderInfoBuilder;
+
+impl OrderInfoBuilder {
     pub fn build(&self) -> OrderInfo {
         self.inner.clone()
     }
@@ -102,7 +105,7 @@ impl AsRef<OrderInfo> for OrderInfo {
     }
 }
 
-impl AsRef<OrderInfo> for RTDOrderInfoBuilder {
+impl AsRef<OrderInfo> for OrderInfoBuilder {
     fn as_ref(&self) -> &OrderInfo {
         &self.inner
     }

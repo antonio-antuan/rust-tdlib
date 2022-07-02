@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for UserType {
 }
 
 impl UserType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -118,14 +118,14 @@ impl RObject for UserTypeBot {
 impl TDUserType for UserTypeBot {}
 
 impl UserTypeBot {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserTypeBotBuilder {
+    pub fn builder() -> UserTypeBotBuilder {
         let mut inner = UserTypeBot::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserTypeBotBuilder { inner }
+        UserTypeBotBuilder { inner }
     }
 
     pub fn can_join_groups(&self) -> bool {
@@ -150,11 +150,14 @@ impl UserTypeBot {
 }
 
 #[doc(hidden)]
-pub struct RTDUserTypeBotBuilder {
+pub struct UserTypeBotBuilder {
     inner: UserTypeBot,
 }
 
-impl RTDUserTypeBotBuilder {
+#[deprecated]
+pub type RTDUserTypeBotBuilder = UserTypeBotBuilder;
+
+impl UserTypeBotBuilder {
     pub fn build(&self) -> UserTypeBot {
         self.inner.clone()
     }
@@ -194,7 +197,7 @@ impl AsRef<UserTypeBot> for UserTypeBot {
     }
 }
 
-impl AsRef<UserTypeBot> for RTDUserTypeBotBuilder {
+impl AsRef<UserTypeBot> for UserTypeBotBuilder {
     fn as_ref(&self) -> &UserTypeBot {
         &self.inner
     }
@@ -224,23 +227,26 @@ impl RObject for UserTypeDeleted {
 impl TDUserType for UserTypeDeleted {}
 
 impl UserTypeDeleted {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserTypeDeletedBuilder {
+    pub fn builder() -> UserTypeDeletedBuilder {
         let mut inner = UserTypeDeleted::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserTypeDeletedBuilder { inner }
+        UserTypeDeletedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserTypeDeletedBuilder {
+pub struct UserTypeDeletedBuilder {
     inner: UserTypeDeleted,
 }
 
-impl RTDUserTypeDeletedBuilder {
+#[deprecated]
+pub type RTDUserTypeDeletedBuilder = UserTypeDeletedBuilder;
+
+impl UserTypeDeletedBuilder {
     pub fn build(&self) -> UserTypeDeleted {
         self.inner.clone()
     }
@@ -252,7 +258,7 @@ impl AsRef<UserTypeDeleted> for UserTypeDeleted {
     }
 }
 
-impl AsRef<UserTypeDeleted> for RTDUserTypeDeletedBuilder {
+impl AsRef<UserTypeDeleted> for UserTypeDeletedBuilder {
     fn as_ref(&self) -> &UserTypeDeleted {
         &self.inner
     }
@@ -282,23 +288,26 @@ impl RObject for UserTypeRegular {
 impl TDUserType for UserTypeRegular {}
 
 impl UserTypeRegular {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserTypeRegularBuilder {
+    pub fn builder() -> UserTypeRegularBuilder {
         let mut inner = UserTypeRegular::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserTypeRegularBuilder { inner }
+        UserTypeRegularBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserTypeRegularBuilder {
+pub struct UserTypeRegularBuilder {
     inner: UserTypeRegular,
 }
 
-impl RTDUserTypeRegularBuilder {
+#[deprecated]
+pub type RTDUserTypeRegularBuilder = UserTypeRegularBuilder;
+
+impl UserTypeRegularBuilder {
     pub fn build(&self) -> UserTypeRegular {
         self.inner.clone()
     }
@@ -310,7 +319,7 @@ impl AsRef<UserTypeRegular> for UserTypeRegular {
     }
 }
 
-impl AsRef<UserTypeRegular> for RTDUserTypeRegularBuilder {
+impl AsRef<UserTypeRegular> for UserTypeRegularBuilder {
     fn as_ref(&self) -> &UserTypeRegular {
         &self.inner
     }
@@ -340,23 +349,26 @@ impl RObject for UserTypeUnknown {
 impl TDUserType for UserTypeUnknown {}
 
 impl UserTypeUnknown {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserTypeUnknownBuilder {
+    pub fn builder() -> UserTypeUnknownBuilder {
         let mut inner = UserTypeUnknown::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserTypeUnknownBuilder { inner }
+        UserTypeUnknownBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserTypeUnknownBuilder {
+pub struct UserTypeUnknownBuilder {
     inner: UserTypeUnknown,
 }
 
-impl RTDUserTypeUnknownBuilder {
+#[deprecated]
+pub type RTDUserTypeUnknownBuilder = UserTypeUnknownBuilder;
+
+impl UserTypeUnknownBuilder {
     pub fn build(&self) -> UserTypeUnknown {
         self.inner.clone()
     }
@@ -368,7 +380,7 @@ impl AsRef<UserTypeUnknown> for UserTypeUnknown {
     }
 }
 
-impl AsRef<UserTypeUnknown> for RTDUserTypeUnknownBuilder {
+impl AsRef<UserTypeUnknown> for UserTypeUnknownBuilder {
     fn as_ref(&self) -> &UserTypeUnknown {
         &self.inner
     }

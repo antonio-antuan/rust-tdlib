@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for RevokeGroupCallInviteLink {
 impl RFunction for RevokeGroupCallInviteLink {}
 
 impl RevokeGroupCallInviteLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRevokeGroupCallInviteLinkBuilder {
+    pub fn builder() -> RevokeGroupCallInviteLinkBuilder {
         let mut inner = RevokeGroupCallInviteLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "revokeGroupCallInviteLink".to_string();
 
-        RTDRevokeGroupCallInviteLinkBuilder { inner }
+        RevokeGroupCallInviteLinkBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl RevokeGroupCallInviteLink {
 }
 
 #[doc(hidden)]
-pub struct RTDRevokeGroupCallInviteLinkBuilder {
+pub struct RevokeGroupCallInviteLinkBuilder {
     inner: RevokeGroupCallInviteLink,
 }
 
-impl RTDRevokeGroupCallInviteLinkBuilder {
+#[deprecated]
+pub type RTDRevokeGroupCallInviteLinkBuilder = RevokeGroupCallInviteLinkBuilder;
+
+impl RevokeGroupCallInviteLinkBuilder {
     pub fn build(&self) -> RevokeGroupCallInviteLink {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<RevokeGroupCallInviteLink> for RevokeGroupCallInviteLink {
     }
 }
 
-impl AsRef<RevokeGroupCallInviteLink> for RTDRevokeGroupCallInviteLinkBuilder {
+impl AsRef<RevokeGroupCallInviteLink> for RevokeGroupCallInviteLinkBuilder {
     fn as_ref(&self) -> &RevokeGroupCallInviteLink {
         &self.inner
     }

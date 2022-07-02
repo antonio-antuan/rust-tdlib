@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for SetChatMemberStatus {
 impl RFunction for SetChatMemberStatus {}
 
 impl SetChatMemberStatus {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatMemberStatusBuilder {
+    pub fn builder() -> SetChatMemberStatusBuilder {
         let mut inner = SetChatMemberStatus::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatMemberStatus".to_string();
 
-        RTDSetChatMemberStatusBuilder { inner }
+        SetChatMemberStatusBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl SetChatMemberStatus {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatMemberStatusBuilder {
+pub struct SetChatMemberStatusBuilder {
     inner: SetChatMemberStatus,
 }
 
-impl RTDSetChatMemberStatusBuilder {
+#[deprecated]
+pub type RTDSetChatMemberStatusBuilder = SetChatMemberStatusBuilder;
+
+impl SetChatMemberStatusBuilder {
     pub fn build(&self) -> SetChatMemberStatus {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<SetChatMemberStatus> for SetChatMemberStatus {
     }
 }
 
-impl AsRef<SetChatMemberStatus> for RTDSetChatMemberStatusBuilder {
+impl AsRef<SetChatMemberStatus> for SetChatMemberStatusBuilder {
     fn as_ref(&self) -> &SetChatMemberStatus {
         &self.inner
     }

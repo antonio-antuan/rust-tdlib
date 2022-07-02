@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,16 +49,16 @@ impl RObject for DownloadFile {
 impl RFunction for DownloadFile {}
 
 impl DownloadFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDownloadFileBuilder {
+    pub fn builder() -> DownloadFileBuilder {
         let mut inner = DownloadFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "downloadFile".to_string();
 
-        RTDDownloadFileBuilder { inner }
+        DownloadFileBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -83,11 +83,14 @@ impl DownloadFile {
 }
 
 #[doc(hidden)]
-pub struct RTDDownloadFileBuilder {
+pub struct DownloadFileBuilder {
     inner: DownloadFile,
 }
 
-impl RTDDownloadFileBuilder {
+#[deprecated]
+pub type RTDDownloadFileBuilder = DownloadFileBuilder;
+
+impl DownloadFileBuilder {
     pub fn build(&self) -> DownloadFile {
         self.inner.clone()
     }
@@ -124,7 +127,7 @@ impl AsRef<DownloadFile> for DownloadFile {
     }
 }
 
-impl AsRef<DownloadFile> for RTDDownloadFileBuilder {
+impl AsRef<DownloadFile> for DownloadFileBuilder {
     fn as_ref(&self) -> &DownloadFile {
         &self.inner
     }

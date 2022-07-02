@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -39,14 +39,14 @@ impl RObject for ProfilePhoto {
 }
 
 impl ProfilePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDProfilePhotoBuilder {
+    pub fn builder() -> ProfilePhotoBuilder {
         let mut inner = ProfilePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDProfilePhotoBuilder { inner }
+        ProfilePhotoBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -71,11 +71,14 @@ impl ProfilePhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDProfilePhotoBuilder {
+pub struct ProfilePhotoBuilder {
     inner: ProfilePhoto,
 }
 
-impl RTDProfilePhotoBuilder {
+#[deprecated]
+pub type RTDProfilePhotoBuilder = ProfilePhotoBuilder;
+
+impl ProfilePhotoBuilder {
     pub fn build(&self) -> ProfilePhoto {
         self.inner.clone()
     }
@@ -112,7 +115,7 @@ impl AsRef<ProfilePhoto> for ProfilePhoto {
     }
 }
 
-impl AsRef<ProfilePhoto> for RTDProfilePhotoBuilder {
+impl AsRef<ProfilePhoto> for ProfilePhotoBuilder {
     fn as_ref(&self) -> &ProfilePhoto {
         &self.inner
     }

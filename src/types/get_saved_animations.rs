@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetSavedAnimations {
 impl RFunction for GetSavedAnimations {}
 
 impl GetSavedAnimations {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetSavedAnimationsBuilder {
+    pub fn builder() -> GetSavedAnimationsBuilder {
         let mut inner = GetSavedAnimations::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getSavedAnimations".to_string();
 
-        RTDGetSavedAnimationsBuilder { inner }
+        GetSavedAnimationsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetSavedAnimationsBuilder {
+pub struct GetSavedAnimationsBuilder {
     inner: GetSavedAnimations,
 }
 
-impl RTDGetSavedAnimationsBuilder {
+#[deprecated]
+pub type RTDGetSavedAnimationsBuilder = GetSavedAnimationsBuilder;
+
+impl GetSavedAnimationsBuilder {
     pub fn build(&self) -> GetSavedAnimations {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetSavedAnimations> for GetSavedAnimations {
     }
 }
 
-impl AsRef<GetSavedAnimations> for RTDGetSavedAnimationsBuilder {
+impl AsRef<GetSavedAnimations> for GetSavedAnimationsBuilder {
     fn as_ref(&self) -> &GetSavedAnimations {
         &self.inner
     }

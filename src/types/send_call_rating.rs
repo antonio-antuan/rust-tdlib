@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -45,16 +45,16 @@ impl RObject for SendCallRating {
 impl RFunction for SendCallRating {}
 
 impl SendCallRating {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendCallRatingBuilder {
+    pub fn builder() -> SendCallRatingBuilder {
         let mut inner = SendCallRating::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendCallRating".to_string();
 
-        RTDSendCallRatingBuilder { inner }
+        SendCallRatingBuilder { inner }
     }
 
     pub fn call_id(&self) -> i32 {
@@ -75,11 +75,14 @@ impl SendCallRating {
 }
 
 #[doc(hidden)]
-pub struct RTDSendCallRatingBuilder {
+pub struct SendCallRatingBuilder {
     inner: SendCallRating,
 }
 
-impl RTDSendCallRatingBuilder {
+#[deprecated]
+pub type RTDSendCallRatingBuilder = SendCallRatingBuilder;
+
+impl SendCallRatingBuilder {
     pub fn build(&self) -> SendCallRating {
         self.inner.clone()
     }
@@ -111,7 +114,7 @@ impl AsRef<SendCallRating> for SendCallRating {
     }
 }
 
-impl AsRef<SendCallRating> for RTDSendCallRatingBuilder {
+impl AsRef<SendCallRating> for SendCallRatingBuilder {
     fn as_ref(&self) -> &SendCallRating {
         &self.inner
     }

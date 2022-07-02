@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl RObject for ChangePhoneNumber {
 impl RFunction for ChangePhoneNumber {}
 
 impl ChangePhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChangePhoneNumberBuilder {
+    pub fn builder() -> ChangePhoneNumberBuilder {
         let mut inner = ChangePhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "changePhoneNumber".to_string();
 
-        RTDChangePhoneNumberBuilder { inner }
+        ChangePhoneNumberBuilder { inner }
     }
 
     pub fn phone_number(&self) -> &String {
@@ -57,11 +57,14 @@ impl ChangePhoneNumber {
 }
 
 #[doc(hidden)]
-pub struct RTDChangePhoneNumberBuilder {
+pub struct ChangePhoneNumberBuilder {
     inner: ChangePhoneNumber,
 }
 
-impl RTDChangePhoneNumberBuilder {
+#[deprecated]
+pub type RTDChangePhoneNumberBuilder = ChangePhoneNumberBuilder;
+
+impl ChangePhoneNumberBuilder {
     pub fn build(&self) -> ChangePhoneNumber {
         self.inner.clone()
     }
@@ -86,7 +89,7 @@ impl AsRef<ChangePhoneNumber> for ChangePhoneNumber {
     }
 }
 
-impl AsRef<ChangePhoneNumber> for RTDChangePhoneNumberBuilder {
+impl AsRef<ChangePhoneNumber> for ChangePhoneNumberBuilder {
     fn as_ref(&self) -> &ChangePhoneNumber {
         &self.inner
     }

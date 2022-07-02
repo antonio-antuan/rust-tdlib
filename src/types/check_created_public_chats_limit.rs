@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,16 +34,16 @@ impl RObject for CheckCreatedPublicChatsLimit {
 impl RFunction for CheckCreatedPublicChatsLimit {}
 
 impl CheckCreatedPublicChatsLimit {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckCreatedPublicChatsLimitBuilder {
+    pub fn builder() -> CheckCreatedPublicChatsLimitBuilder {
         let mut inner = CheckCreatedPublicChatsLimit::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkCreatedPublicChatsLimit".to_string();
 
-        RTDCheckCreatedPublicChatsLimitBuilder { inner }
+        CheckCreatedPublicChatsLimitBuilder { inner }
     }
 
     pub fn type_(&self) -> &PublicChatType {
@@ -52,11 +52,14 @@ impl CheckCreatedPublicChatsLimit {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckCreatedPublicChatsLimitBuilder {
+pub struct CheckCreatedPublicChatsLimitBuilder {
     inner: CheckCreatedPublicChatsLimit,
 }
 
-impl RTDCheckCreatedPublicChatsLimitBuilder {
+#[deprecated]
+pub type RTDCheckCreatedPublicChatsLimitBuilder = CheckCreatedPublicChatsLimitBuilder;
+
+impl CheckCreatedPublicChatsLimitBuilder {
     pub fn build(&self) -> CheckCreatedPublicChatsLimit {
         self.inner.clone()
     }
@@ -73,7 +76,7 @@ impl AsRef<CheckCreatedPublicChatsLimit> for CheckCreatedPublicChatsLimit {
     }
 }
 
-impl AsRef<CheckCreatedPublicChatsLimit> for RTDCheckCreatedPublicChatsLimitBuilder {
+impl AsRef<CheckCreatedPublicChatsLimit> for CheckCreatedPublicChatsLimitBuilder {
     fn as_ref(&self) -> &CheckCreatedPublicChatsLimit {
         &self.inner
     }

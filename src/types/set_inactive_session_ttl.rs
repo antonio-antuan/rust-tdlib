@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for SetInactiveSessionTtl {
 impl RFunction for SetInactiveSessionTtl {}
 
 impl SetInactiveSessionTtl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetInactiveSessionTtlBuilder {
+    pub fn builder() -> SetInactiveSessionTtlBuilder {
         let mut inner = SetInactiveSessionTtl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setInactiveSessionTtl".to_string();
 
-        RTDSetInactiveSessionTtlBuilder { inner }
+        SetInactiveSessionTtlBuilder { inner }
     }
 
     pub fn inactive_session_ttl_days(&self) -> i32 {
@@ -51,11 +51,14 @@ impl SetInactiveSessionTtl {
 }
 
 #[doc(hidden)]
-pub struct RTDSetInactiveSessionTtlBuilder {
+pub struct SetInactiveSessionTtlBuilder {
     inner: SetInactiveSessionTtl,
 }
 
-impl RTDSetInactiveSessionTtlBuilder {
+#[deprecated]
+pub type RTDSetInactiveSessionTtlBuilder = SetInactiveSessionTtlBuilder;
+
+impl SetInactiveSessionTtlBuilder {
     pub fn build(&self) -> SetInactiveSessionTtl {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<SetInactiveSessionTtl> for SetInactiveSessionTtl {
     }
 }
 
-impl AsRef<SetInactiveSessionTtl> for RTDSetInactiveSessionTtlBuilder {
+impl AsRef<SetInactiveSessionTtl> for SetInactiveSessionTtlBuilder {
     fn as_ref(&self) -> &SetInactiveSessionTtl {
         &self.inner
     }

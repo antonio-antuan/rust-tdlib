@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -40,14 +40,14 @@ impl RObject for MaskPosition {
 }
 
 impl MaskPosition {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMaskPositionBuilder {
+    pub fn builder() -> MaskPositionBuilder {
         let mut inner = MaskPosition::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMaskPositionBuilder { inner }
+        MaskPositionBuilder { inner }
     }
 
     pub fn point(&self) -> &MaskPoint {
@@ -68,11 +68,14 @@ impl MaskPosition {
 }
 
 #[doc(hidden)]
-pub struct RTDMaskPositionBuilder {
+pub struct MaskPositionBuilder {
     inner: MaskPosition,
 }
 
-impl RTDMaskPositionBuilder {
+#[deprecated]
+pub type RTDMaskPositionBuilder = MaskPositionBuilder;
+
+impl MaskPositionBuilder {
     pub fn build(&self) -> MaskPosition {
         self.inner.clone()
     }
@@ -104,7 +107,7 @@ impl AsRef<MaskPosition> for MaskPosition {
     }
 }
 
-impl AsRef<MaskPosition> for RTDMaskPositionBuilder {
+impl AsRef<MaskPosition> for MaskPositionBuilder {
     fn as_ref(&self) -> &MaskPosition {
         &self.inner
     }

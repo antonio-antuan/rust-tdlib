@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for ChatType {
 }
 
 impl ChatType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -102,14 +102,14 @@ impl RObject for ChatTypeBasicGroup {
 impl TDChatType for ChatTypeBasicGroup {}
 
 impl ChatTypeBasicGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatTypeBasicGroupBuilder {
+    pub fn builder() -> ChatTypeBasicGroupBuilder {
         let mut inner = ChatTypeBasicGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatTypeBasicGroupBuilder { inner }
+        ChatTypeBasicGroupBuilder { inner }
     }
 
     pub fn basic_group_id(&self) -> i64 {
@@ -118,11 +118,14 @@ impl ChatTypeBasicGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDChatTypeBasicGroupBuilder {
+pub struct ChatTypeBasicGroupBuilder {
     inner: ChatTypeBasicGroup,
 }
 
-impl RTDChatTypeBasicGroupBuilder {
+#[deprecated]
+pub type RTDChatTypeBasicGroupBuilder = ChatTypeBasicGroupBuilder;
+
+impl ChatTypeBasicGroupBuilder {
     pub fn build(&self) -> ChatTypeBasicGroup {
         self.inner.clone()
     }
@@ -139,7 +142,7 @@ impl AsRef<ChatTypeBasicGroup> for ChatTypeBasicGroup {
     }
 }
 
-impl AsRef<ChatTypeBasicGroup> for RTDChatTypeBasicGroupBuilder {
+impl AsRef<ChatTypeBasicGroup> for ChatTypeBasicGroupBuilder {
     fn as_ref(&self) -> &ChatTypeBasicGroup {
         &self.inner
     }
@@ -173,14 +176,14 @@ impl RObject for ChatTypePrivate {
 impl TDChatType for ChatTypePrivate {}
 
 impl ChatTypePrivate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatTypePrivateBuilder {
+    pub fn builder() -> ChatTypePrivateBuilder {
         let mut inner = ChatTypePrivate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatTypePrivateBuilder { inner }
+        ChatTypePrivateBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -189,11 +192,14 @@ impl ChatTypePrivate {
 }
 
 #[doc(hidden)]
-pub struct RTDChatTypePrivateBuilder {
+pub struct ChatTypePrivateBuilder {
     inner: ChatTypePrivate,
 }
 
-impl RTDChatTypePrivateBuilder {
+#[deprecated]
+pub type RTDChatTypePrivateBuilder = ChatTypePrivateBuilder;
+
+impl ChatTypePrivateBuilder {
     pub fn build(&self) -> ChatTypePrivate {
         self.inner.clone()
     }
@@ -210,7 +216,7 @@ impl AsRef<ChatTypePrivate> for ChatTypePrivate {
     }
 }
 
-impl AsRef<ChatTypePrivate> for RTDChatTypePrivateBuilder {
+impl AsRef<ChatTypePrivate> for ChatTypePrivateBuilder {
     fn as_ref(&self) -> &ChatTypePrivate {
         &self.inner
     }
@@ -248,14 +254,14 @@ impl RObject for ChatTypeSecret {
 impl TDChatType for ChatTypeSecret {}
 
 impl ChatTypeSecret {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatTypeSecretBuilder {
+    pub fn builder() -> ChatTypeSecretBuilder {
         let mut inner = ChatTypeSecret::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatTypeSecretBuilder { inner }
+        ChatTypeSecretBuilder { inner }
     }
 
     pub fn secret_chat_id(&self) -> i32 {
@@ -268,11 +274,14 @@ impl ChatTypeSecret {
 }
 
 #[doc(hidden)]
-pub struct RTDChatTypeSecretBuilder {
+pub struct ChatTypeSecretBuilder {
     inner: ChatTypeSecret,
 }
 
-impl RTDChatTypeSecretBuilder {
+#[deprecated]
+pub type RTDChatTypeSecretBuilder = ChatTypeSecretBuilder;
+
+impl ChatTypeSecretBuilder {
     pub fn build(&self) -> ChatTypeSecret {
         self.inner.clone()
     }
@@ -294,7 +303,7 @@ impl AsRef<ChatTypeSecret> for ChatTypeSecret {
     }
 }
 
-impl AsRef<ChatTypeSecret> for RTDChatTypeSecretBuilder {
+impl AsRef<ChatTypeSecret> for ChatTypeSecretBuilder {
     fn as_ref(&self) -> &ChatTypeSecret {
         &self.inner
     }
@@ -332,14 +341,14 @@ impl RObject for ChatTypeSupergroup {
 impl TDChatType for ChatTypeSupergroup {}
 
 impl ChatTypeSupergroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatTypeSupergroupBuilder {
+    pub fn builder() -> ChatTypeSupergroupBuilder {
         let mut inner = ChatTypeSupergroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatTypeSupergroupBuilder { inner }
+        ChatTypeSupergroupBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -352,11 +361,14 @@ impl ChatTypeSupergroup {
 }
 
 #[doc(hidden)]
-pub struct RTDChatTypeSupergroupBuilder {
+pub struct ChatTypeSupergroupBuilder {
     inner: ChatTypeSupergroup,
 }
 
-impl RTDChatTypeSupergroupBuilder {
+#[deprecated]
+pub type RTDChatTypeSupergroupBuilder = ChatTypeSupergroupBuilder;
+
+impl ChatTypeSupergroupBuilder {
     pub fn build(&self) -> ChatTypeSupergroup {
         self.inner.clone()
     }
@@ -378,7 +390,7 @@ impl AsRef<ChatTypeSupergroup> for ChatTypeSupergroup {
     }
 }
 
-impl AsRef<ChatTypeSupergroup> for RTDChatTypeSupergroupBuilder {
+impl AsRef<ChatTypeSupergroup> for ChatTypeSupergroupBuilder {
     fn as_ref(&self) -> &ChatTypeSupergroup {
         &self.inner
     }

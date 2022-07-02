@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for RemoveChatActionBar {
 impl RFunction for RemoveChatActionBar {}
 
 impl RemoveChatActionBar {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveChatActionBarBuilder {
+    pub fn builder() -> RemoveChatActionBarBuilder {
         let mut inner = RemoveChatActionBar::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeChatActionBar".to_string();
 
-        RTDRemoveChatActionBarBuilder { inner }
+        RemoveChatActionBarBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl RemoveChatActionBar {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveChatActionBarBuilder {
+pub struct RemoveChatActionBarBuilder {
     inner: RemoveChatActionBar,
 }
 
-impl RTDRemoveChatActionBarBuilder {
+#[deprecated]
+pub type RTDRemoveChatActionBarBuilder = RemoveChatActionBarBuilder;
+
+impl RemoveChatActionBarBuilder {
     pub fn build(&self) -> RemoveChatActionBar {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<RemoveChatActionBar> for RemoveChatActionBar {
     }
 }
 
-impl AsRef<RemoveChatActionBar> for RTDRemoveChatActionBarBuilder {
+impl AsRef<RemoveChatActionBar> for RemoveChatActionBarBuilder {
     fn as_ref(&self) -> &RemoveChatActionBar {
         &self.inner
     }

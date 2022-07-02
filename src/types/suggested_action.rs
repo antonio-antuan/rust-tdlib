@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -69,7 +69,7 @@ impl RObject for SuggestedAction {
 }
 
 impl SuggestedAction {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -108,23 +108,26 @@ impl RObject for SuggestedActionCheckPassword {
 impl TDSuggestedAction for SuggestedActionCheckPassword {}
 
 impl SuggestedActionCheckPassword {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSuggestedActionCheckPasswordBuilder {
+    pub fn builder() -> SuggestedActionCheckPasswordBuilder {
         let mut inner = SuggestedActionCheckPassword::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSuggestedActionCheckPasswordBuilder { inner }
+        SuggestedActionCheckPasswordBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSuggestedActionCheckPasswordBuilder {
+pub struct SuggestedActionCheckPasswordBuilder {
     inner: SuggestedActionCheckPassword,
 }
 
-impl RTDSuggestedActionCheckPasswordBuilder {
+#[deprecated]
+pub type RTDSuggestedActionCheckPasswordBuilder = SuggestedActionCheckPasswordBuilder;
+
+impl SuggestedActionCheckPasswordBuilder {
     pub fn build(&self) -> SuggestedActionCheckPassword {
         self.inner.clone()
     }
@@ -136,7 +139,7 @@ impl AsRef<SuggestedActionCheckPassword> for SuggestedActionCheckPassword {
     }
 }
 
-impl AsRef<SuggestedActionCheckPassword> for RTDSuggestedActionCheckPasswordBuilder {
+impl AsRef<SuggestedActionCheckPassword> for SuggestedActionCheckPasswordBuilder {
     fn as_ref(&self) -> &SuggestedActionCheckPassword {
         &self.inner
     }
@@ -166,23 +169,26 @@ impl RObject for SuggestedActionCheckPhoneNumber {
 impl TDSuggestedAction for SuggestedActionCheckPhoneNumber {}
 
 impl SuggestedActionCheckPhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSuggestedActionCheckPhoneNumberBuilder {
+    pub fn builder() -> SuggestedActionCheckPhoneNumberBuilder {
         let mut inner = SuggestedActionCheckPhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSuggestedActionCheckPhoneNumberBuilder { inner }
+        SuggestedActionCheckPhoneNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSuggestedActionCheckPhoneNumberBuilder {
+pub struct SuggestedActionCheckPhoneNumberBuilder {
     inner: SuggestedActionCheckPhoneNumber,
 }
 
-impl RTDSuggestedActionCheckPhoneNumberBuilder {
+#[deprecated]
+pub type RTDSuggestedActionCheckPhoneNumberBuilder = SuggestedActionCheckPhoneNumberBuilder;
+
+impl SuggestedActionCheckPhoneNumberBuilder {
     pub fn build(&self) -> SuggestedActionCheckPhoneNumber {
         self.inner.clone()
     }
@@ -194,7 +200,7 @@ impl AsRef<SuggestedActionCheckPhoneNumber> for SuggestedActionCheckPhoneNumber 
     }
 }
 
-impl AsRef<SuggestedActionCheckPhoneNumber> for RTDSuggestedActionCheckPhoneNumberBuilder {
+impl AsRef<SuggestedActionCheckPhoneNumber> for SuggestedActionCheckPhoneNumberBuilder {
     fn as_ref(&self) -> &SuggestedActionCheckPhoneNumber {
         &self.inner
     }
@@ -228,14 +234,14 @@ impl RObject for SuggestedActionConvertToBroadcastGroup {
 impl TDSuggestedAction for SuggestedActionConvertToBroadcastGroup {}
 
 impl SuggestedActionConvertToBroadcastGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSuggestedActionConvertToBroadcastGroupBuilder {
+    pub fn builder() -> SuggestedActionConvertToBroadcastGroupBuilder {
         let mut inner = SuggestedActionConvertToBroadcastGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSuggestedActionConvertToBroadcastGroupBuilder { inner }
+        SuggestedActionConvertToBroadcastGroupBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -244,11 +250,15 @@ impl SuggestedActionConvertToBroadcastGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDSuggestedActionConvertToBroadcastGroupBuilder {
+pub struct SuggestedActionConvertToBroadcastGroupBuilder {
     inner: SuggestedActionConvertToBroadcastGroup,
 }
 
-impl RTDSuggestedActionConvertToBroadcastGroupBuilder {
+#[deprecated]
+pub type RTDSuggestedActionConvertToBroadcastGroupBuilder =
+    SuggestedActionConvertToBroadcastGroupBuilder;
+
+impl SuggestedActionConvertToBroadcastGroupBuilder {
     pub fn build(&self) -> SuggestedActionConvertToBroadcastGroup {
         self.inner.clone()
     }
@@ -266,7 +276,7 @@ impl AsRef<SuggestedActionConvertToBroadcastGroup> for SuggestedActionConvertToB
 }
 
 impl AsRef<SuggestedActionConvertToBroadcastGroup>
-    for RTDSuggestedActionConvertToBroadcastGroupBuilder
+    for SuggestedActionConvertToBroadcastGroupBuilder
 {
     fn as_ref(&self) -> &SuggestedActionConvertToBroadcastGroup {
         &self.inner
@@ -297,23 +307,27 @@ impl RObject for SuggestedActionEnableArchiveAndMuteNewChats {
 impl TDSuggestedAction for SuggestedActionEnableArchiveAndMuteNewChats {}
 
 impl SuggestedActionEnableArchiveAndMuteNewChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder {
+    pub fn builder() -> SuggestedActionEnableArchiveAndMuteNewChatsBuilder {
         let mut inner = SuggestedActionEnableArchiveAndMuteNewChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder { inner }
+        SuggestedActionEnableArchiveAndMuteNewChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder {
+pub struct SuggestedActionEnableArchiveAndMuteNewChatsBuilder {
     inner: SuggestedActionEnableArchiveAndMuteNewChats,
 }
 
-impl RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder {
+#[deprecated]
+pub type RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder =
+    SuggestedActionEnableArchiveAndMuteNewChatsBuilder;
+
+impl SuggestedActionEnableArchiveAndMuteNewChatsBuilder {
     pub fn build(&self) -> SuggestedActionEnableArchiveAndMuteNewChats {
         self.inner.clone()
     }
@@ -328,7 +342,7 @@ impl AsRef<SuggestedActionEnableArchiveAndMuteNewChats>
 }
 
 impl AsRef<SuggestedActionEnableArchiveAndMuteNewChats>
-    for RTDSuggestedActionEnableArchiveAndMuteNewChatsBuilder
+    for SuggestedActionEnableArchiveAndMuteNewChatsBuilder
 {
     fn as_ref(&self) -> &SuggestedActionEnableArchiveAndMuteNewChats {
         &self.inner
@@ -363,14 +377,14 @@ impl RObject for SuggestedActionSetPassword {
 impl TDSuggestedAction for SuggestedActionSetPassword {}
 
 impl SuggestedActionSetPassword {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSuggestedActionSetPasswordBuilder {
+    pub fn builder() -> SuggestedActionSetPasswordBuilder {
         let mut inner = SuggestedActionSetPassword::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSuggestedActionSetPasswordBuilder { inner }
+        SuggestedActionSetPasswordBuilder { inner }
     }
 
     pub fn authorization_delay(&self) -> i32 {
@@ -379,11 +393,14 @@ impl SuggestedActionSetPassword {
 }
 
 #[doc(hidden)]
-pub struct RTDSuggestedActionSetPasswordBuilder {
+pub struct SuggestedActionSetPasswordBuilder {
     inner: SuggestedActionSetPassword,
 }
 
-impl RTDSuggestedActionSetPasswordBuilder {
+#[deprecated]
+pub type RTDSuggestedActionSetPasswordBuilder = SuggestedActionSetPasswordBuilder;
+
+impl SuggestedActionSetPasswordBuilder {
     pub fn build(&self) -> SuggestedActionSetPassword {
         self.inner.clone()
     }
@@ -400,7 +417,7 @@ impl AsRef<SuggestedActionSetPassword> for SuggestedActionSetPassword {
     }
 }
 
-impl AsRef<SuggestedActionSetPassword> for RTDSuggestedActionSetPasswordBuilder {
+impl AsRef<SuggestedActionSetPassword> for SuggestedActionSetPasswordBuilder {
     fn as_ref(&self) -> &SuggestedActionSetPassword {
         &self.inner
     }
@@ -430,23 +447,26 @@ impl RObject for SuggestedActionViewChecksHint {
 impl TDSuggestedAction for SuggestedActionViewChecksHint {}
 
 impl SuggestedActionViewChecksHint {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSuggestedActionViewChecksHintBuilder {
+    pub fn builder() -> SuggestedActionViewChecksHintBuilder {
         let mut inner = SuggestedActionViewChecksHint::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSuggestedActionViewChecksHintBuilder { inner }
+        SuggestedActionViewChecksHintBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSuggestedActionViewChecksHintBuilder {
+pub struct SuggestedActionViewChecksHintBuilder {
     inner: SuggestedActionViewChecksHint,
 }
 
-impl RTDSuggestedActionViewChecksHintBuilder {
+#[deprecated]
+pub type RTDSuggestedActionViewChecksHintBuilder = SuggestedActionViewChecksHintBuilder;
+
+impl SuggestedActionViewChecksHintBuilder {
     pub fn build(&self) -> SuggestedActionViewChecksHint {
         self.inner.clone()
     }
@@ -458,7 +478,7 @@ impl AsRef<SuggestedActionViewChecksHint> for SuggestedActionViewChecksHint {
     }
 }
 
-impl AsRef<SuggestedActionViewChecksHint> for RTDSuggestedActionViewChecksHintBuilder {
+impl AsRef<SuggestedActionViewChecksHint> for SuggestedActionViewChecksHintBuilder {
     fn as_ref(&self) -> &SuggestedActionViewChecksHint {
         &self.inner
     }

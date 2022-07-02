@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -28,14 +28,14 @@ impl RObject for PassportRequiredElement {
 }
 
 impl PassportRequiredElement {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportRequiredElementBuilder {
+    pub fn builder() -> PassportRequiredElementBuilder {
         let mut inner = PassportRequiredElement::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportRequiredElementBuilder { inner }
+        PassportRequiredElementBuilder { inner }
     }
 
     pub fn suitable_elements(&self) -> &Vec<PassportSuitableElement> {
@@ -44,11 +44,14 @@ impl PassportRequiredElement {
 }
 
 #[doc(hidden)]
-pub struct RTDPassportRequiredElementBuilder {
+pub struct PassportRequiredElementBuilder {
     inner: PassportRequiredElement,
 }
 
-impl RTDPassportRequiredElementBuilder {
+#[deprecated]
+pub type RTDPassportRequiredElementBuilder = PassportRequiredElementBuilder;
+
+impl PassportRequiredElementBuilder {
     pub fn build(&self) -> PassportRequiredElement {
         self.inner.clone()
     }
@@ -68,7 +71,7 @@ impl AsRef<PassportRequiredElement> for PassportRequiredElement {
     }
 }
 
-impl AsRef<PassportRequiredElement> for RTDPassportRequiredElementBuilder {
+impl AsRef<PassportRequiredElement> for PassportRequiredElementBuilder {
     fn as_ref(&self) -> &PassportRequiredElement {
         &self.inner
     }

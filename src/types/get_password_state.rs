@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetPasswordState {
 impl RFunction for GetPasswordState {}
 
 impl GetPasswordState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPasswordStateBuilder {
+    pub fn builder() -> GetPasswordStateBuilder {
         let mut inner = GetPasswordState::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPasswordState".to_string();
 
-        RTDGetPasswordStateBuilder { inner }
+        GetPasswordStateBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetPasswordStateBuilder {
+pub struct GetPasswordStateBuilder {
     inner: GetPasswordState,
 }
 
-impl RTDGetPasswordStateBuilder {
+#[deprecated]
+pub type RTDGetPasswordStateBuilder = GetPasswordStateBuilder;
+
+impl GetPasswordStateBuilder {
     pub fn build(&self) -> GetPasswordState {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetPasswordState> for GetPasswordState {
     }
 }
 
-impl AsRef<GetPasswordState> for RTDGetPasswordStateBuilder {
+impl AsRef<GetPasswordState> for GetPasswordStateBuilder {
     fn as_ref(&self) -> &GetPasswordState {
         &self.inner
     }

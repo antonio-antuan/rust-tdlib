@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetMessageViewers {
 impl RFunction for GetMessageViewers {}
 
 impl GetMessageViewers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageViewersBuilder {
+    pub fn builder() -> GetMessageViewersBuilder {
         let mut inner = GetMessageViewers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageViewers".to_string();
 
-        RTDGetMessageViewersBuilder { inner }
+        GetMessageViewersBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl GetMessageViewers {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageViewersBuilder {
+pub struct GetMessageViewersBuilder {
     inner: GetMessageViewers,
 }
 
-impl RTDGetMessageViewersBuilder {
+#[deprecated]
+pub type RTDGetMessageViewersBuilder = GetMessageViewersBuilder;
+
+impl GetMessageViewersBuilder {
     pub fn build(&self) -> GetMessageViewers {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<GetMessageViewers> for GetMessageViewers {
     }
 }
 
-impl AsRef<GetMessageViewers> for RTDGetMessageViewersBuilder {
+impl AsRef<GetMessageViewers> for GetMessageViewersBuilder {
     fn as_ref(&self) -> &GetMessageViewers {
         &self.inner
     }

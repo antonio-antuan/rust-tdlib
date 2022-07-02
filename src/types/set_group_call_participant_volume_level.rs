@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for SetGroupCallParticipantVolumeLevel {
 impl RFunction for SetGroupCallParticipantVolumeLevel {}
 
 impl SetGroupCallParticipantVolumeLevel {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetGroupCallParticipantVolumeLevelBuilder {
+    pub fn builder() -> SetGroupCallParticipantVolumeLevelBuilder {
         let mut inner = SetGroupCallParticipantVolumeLevel::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setGroupCallParticipantVolumeLevel".to_string();
 
-        RTDSetGroupCallParticipantVolumeLevelBuilder { inner }
+        SetGroupCallParticipantVolumeLevelBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -67,11 +67,14 @@ impl SetGroupCallParticipantVolumeLevel {
 }
 
 #[doc(hidden)]
-pub struct RTDSetGroupCallParticipantVolumeLevelBuilder {
+pub struct SetGroupCallParticipantVolumeLevelBuilder {
     inner: SetGroupCallParticipantVolumeLevel,
 }
 
-impl RTDSetGroupCallParticipantVolumeLevelBuilder {
+#[deprecated]
+pub type RTDSetGroupCallParticipantVolumeLevelBuilder = SetGroupCallParticipantVolumeLevelBuilder;
+
+impl SetGroupCallParticipantVolumeLevelBuilder {
     pub fn build(&self) -> SetGroupCallParticipantVolumeLevel {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<SetGroupCallParticipantVolumeLevel> for SetGroupCallParticipantVolume
     }
 }
 
-impl AsRef<SetGroupCallParticipantVolumeLevel> for RTDSetGroupCallParticipantVolumeLevelBuilder {
+impl AsRef<SetGroupCallParticipantVolumeLevel> for SetGroupCallParticipantVolumeLevelBuilder {
     fn as_ref(&self) -> &SetGroupCallParticipantVolumeLevel {
         &self.inner
     }

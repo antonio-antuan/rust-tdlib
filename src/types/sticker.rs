@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,14 +59,14 @@ impl RObject for Sticker {
 }
 
 impl Sticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStickerBuilder {
+    pub fn builder() -> StickerBuilder {
         let mut inner = Sticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStickerBuilder { inner }
+        StickerBuilder { inner }
     }
 
     pub fn set_id(&self) -> i64 {
@@ -111,11 +111,14 @@ impl Sticker {
 }
 
 #[doc(hidden)]
-pub struct RTDStickerBuilder {
+pub struct StickerBuilder {
     inner: Sticker,
 }
 
-impl RTDStickerBuilder {
+#[deprecated]
+pub type RTDStickerBuilder = StickerBuilder;
+
+impl StickerBuilder {
     pub fn build(&self) -> Sticker {
         self.inner.clone()
     }
@@ -177,7 +180,7 @@ impl AsRef<Sticker> for Sticker {
     }
 }
 
-impl AsRef<Sticker> for RTDStickerBuilder {
+impl AsRef<Sticker> for StickerBuilder {
     fn as_ref(&self) -> &Sticker {
         &self.inner
     }

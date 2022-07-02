@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for ChangeImportedContacts {
 impl RFunction for ChangeImportedContacts {}
 
 impl ChangeImportedContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChangeImportedContactsBuilder {
+    pub fn builder() -> ChangeImportedContactsBuilder {
         let mut inner = ChangeImportedContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "changeImportedContacts".to_string();
 
-        RTDChangeImportedContactsBuilder { inner }
+        ChangeImportedContactsBuilder { inner }
     }
 
     pub fn contacts(&self) -> &Vec<Contact> {
@@ -51,11 +51,14 @@ impl ChangeImportedContacts {
 }
 
 #[doc(hidden)]
-pub struct RTDChangeImportedContactsBuilder {
+pub struct ChangeImportedContactsBuilder {
     inner: ChangeImportedContacts,
 }
 
-impl RTDChangeImportedContactsBuilder {
+#[deprecated]
+pub type RTDChangeImportedContactsBuilder = ChangeImportedContactsBuilder;
+
+impl ChangeImportedContactsBuilder {
     pub fn build(&self) -> ChangeImportedContacts {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<ChangeImportedContacts> for ChangeImportedContacts {
     }
 }
 
-impl AsRef<ChangeImportedContacts> for RTDChangeImportedContactsBuilder {
+impl AsRef<ChangeImportedContacts> for ChangeImportedContactsBuilder {
     fn as_ref(&self) -> &ChangeImportedContacts {
         &self.inner
     }

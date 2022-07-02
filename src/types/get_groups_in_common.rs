@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for GetGroupsInCommon {
 impl RFunction for GetGroupsInCommon {}
 
 impl GetGroupsInCommon {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetGroupsInCommonBuilder {
+    pub fn builder() -> GetGroupsInCommonBuilder {
         let mut inner = GetGroupsInCommon::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getGroupsInCommon".to_string();
 
-        RTDGetGroupsInCommonBuilder { inner }
+        GetGroupsInCommonBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl GetGroupsInCommon {
 }
 
 #[doc(hidden)]
-pub struct RTDGetGroupsInCommonBuilder {
+pub struct GetGroupsInCommonBuilder {
     inner: GetGroupsInCommon,
 }
 
-impl RTDGetGroupsInCommonBuilder {
+#[deprecated]
+pub type RTDGetGroupsInCommonBuilder = GetGroupsInCommonBuilder;
+
+impl GetGroupsInCommonBuilder {
     pub fn build(&self) -> GetGroupsInCommon {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<GetGroupsInCommon> for GetGroupsInCommon {
     }
 }
 
-impl AsRef<GetGroupsInCommon> for RTDGetGroupsInCommonBuilder {
+impl AsRef<GetGroupsInCommon> for GetGroupsInCommonBuilder {
     fn as_ref(&self) -> &GetGroupsInCommon {
         &self.inner
     }

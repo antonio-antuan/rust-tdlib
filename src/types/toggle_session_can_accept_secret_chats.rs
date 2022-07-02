@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -38,16 +38,16 @@ impl RObject for ToggleSessionCanAcceptSecretChats {
 impl RFunction for ToggleSessionCanAcceptSecretChats {}
 
 impl ToggleSessionCanAcceptSecretChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleSessionCanAcceptSecretChatsBuilder {
+    pub fn builder() -> ToggleSessionCanAcceptSecretChatsBuilder {
         let mut inner = ToggleSessionCanAcceptSecretChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleSessionCanAcceptSecretChats".to_string();
 
-        RTDToggleSessionCanAcceptSecretChatsBuilder { inner }
+        ToggleSessionCanAcceptSecretChatsBuilder { inner }
     }
 
     pub fn session_id(&self) -> i64 {
@@ -60,11 +60,14 @@ impl ToggleSessionCanAcceptSecretChats {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleSessionCanAcceptSecretChatsBuilder {
+pub struct ToggleSessionCanAcceptSecretChatsBuilder {
     inner: ToggleSessionCanAcceptSecretChats,
 }
 
-impl RTDToggleSessionCanAcceptSecretChatsBuilder {
+#[deprecated]
+pub type RTDToggleSessionCanAcceptSecretChatsBuilder = ToggleSessionCanAcceptSecretChatsBuilder;
+
+impl ToggleSessionCanAcceptSecretChatsBuilder {
     pub fn build(&self) -> ToggleSessionCanAcceptSecretChats {
         self.inner.clone()
     }
@@ -86,7 +89,7 @@ impl AsRef<ToggleSessionCanAcceptSecretChats> for ToggleSessionCanAcceptSecretCh
     }
 }
 
-impl AsRef<ToggleSessionCanAcceptSecretChats> for RTDToggleSessionCanAcceptSecretChatsBuilder {
+impl AsRef<ToggleSessionCanAcceptSecretChats> for ToggleSessionCanAcceptSecretChatsBuilder {
     fn as_ref(&self) -> &ToggleSessionCanAcceptSecretChats {
         &self.inner
     }

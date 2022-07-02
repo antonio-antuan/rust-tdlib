@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for LogStream {
 }
 
 impl LogStream {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -98,23 +98,26 @@ impl RObject for LogStreamDefault {
 impl TDLogStream for LogStreamDefault {}
 
 impl LogStreamDefault {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLogStreamDefaultBuilder {
+    pub fn builder() -> LogStreamDefaultBuilder {
         let mut inner = LogStreamDefault::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLogStreamDefaultBuilder { inner }
+        LogStreamDefaultBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDLogStreamDefaultBuilder {
+pub struct LogStreamDefaultBuilder {
     inner: LogStreamDefault,
 }
 
-impl RTDLogStreamDefaultBuilder {
+#[deprecated]
+pub type RTDLogStreamDefaultBuilder = LogStreamDefaultBuilder;
+
+impl LogStreamDefaultBuilder {
     pub fn build(&self) -> LogStreamDefault {
         self.inner.clone()
     }
@@ -126,7 +129,7 @@ impl AsRef<LogStreamDefault> for LogStreamDefault {
     }
 }
 
-impl AsRef<LogStreamDefault> for RTDLogStreamDefaultBuilder {
+impl AsRef<LogStreamDefault> for LogStreamDefaultBuilder {
     fn as_ref(&self) -> &LogStreamDefault {
         &self.inner
     }
@@ -156,23 +159,26 @@ impl RObject for LogStreamEmpty {
 impl TDLogStream for LogStreamEmpty {}
 
 impl LogStreamEmpty {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLogStreamEmptyBuilder {
+    pub fn builder() -> LogStreamEmptyBuilder {
         let mut inner = LogStreamEmpty::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLogStreamEmptyBuilder { inner }
+        LogStreamEmptyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDLogStreamEmptyBuilder {
+pub struct LogStreamEmptyBuilder {
     inner: LogStreamEmpty,
 }
 
-impl RTDLogStreamEmptyBuilder {
+#[deprecated]
+pub type RTDLogStreamEmptyBuilder = LogStreamEmptyBuilder;
+
+impl LogStreamEmptyBuilder {
     pub fn build(&self) -> LogStreamEmpty {
         self.inner.clone()
     }
@@ -184,7 +190,7 @@ impl AsRef<LogStreamEmpty> for LogStreamEmpty {
     }
 }
 
-impl AsRef<LogStreamEmpty> for RTDLogStreamEmptyBuilder {
+impl AsRef<LogStreamEmpty> for LogStreamEmptyBuilder {
     fn as_ref(&self) -> &LogStreamEmpty {
         &self.inner
     }
@@ -226,14 +232,14 @@ impl RObject for LogStreamFile {
 impl TDLogStream for LogStreamFile {}
 
 impl LogStreamFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLogStreamFileBuilder {
+    pub fn builder() -> LogStreamFileBuilder {
         let mut inner = LogStreamFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLogStreamFileBuilder { inner }
+        LogStreamFileBuilder { inner }
     }
 
     pub fn path(&self) -> &String {
@@ -250,11 +256,14 @@ impl LogStreamFile {
 }
 
 #[doc(hidden)]
-pub struct RTDLogStreamFileBuilder {
+pub struct LogStreamFileBuilder {
     inner: LogStreamFile,
 }
 
-impl RTDLogStreamFileBuilder {
+#[deprecated]
+pub type RTDLogStreamFileBuilder = LogStreamFileBuilder;
+
+impl LogStreamFileBuilder {
     pub fn build(&self) -> LogStreamFile {
         self.inner.clone()
     }
@@ -281,7 +290,7 @@ impl AsRef<LogStreamFile> for LogStreamFile {
     }
 }
 
-impl AsRef<LogStreamFile> for RTDLogStreamFileBuilder {
+impl AsRef<LogStreamFile> for LogStreamFileBuilder {
     fn as_ref(&self) -> &LogStreamFile {
         &self.inner
     }

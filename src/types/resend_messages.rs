@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ResendMessages {
 impl RFunction for ResendMessages {}
 
 impl ResendMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResendMessagesBuilder {
+    pub fn builder() -> ResendMessagesBuilder {
         let mut inner = ResendMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "resendMessages".to_string();
 
-        RTDResendMessagesBuilder { inner }
+        ResendMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl ResendMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDResendMessagesBuilder {
+pub struct ResendMessagesBuilder {
     inner: ResendMessages,
 }
 
-impl RTDResendMessagesBuilder {
+#[deprecated]
+pub type RTDResendMessagesBuilder = ResendMessagesBuilder;
+
+impl ResendMessagesBuilder {
     pub fn build(&self) -> ResendMessages {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<ResendMessages> for ResendMessages {
     }
 }
 
-impl AsRef<ResendMessages> for RTDResendMessagesBuilder {
+impl AsRef<ResendMessages> for ResendMessagesBuilder {
     fn as_ref(&self) -> &ResendMessages {
         &self.inner
     }

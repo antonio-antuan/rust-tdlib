@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for GetMarkdownText {
 impl RFunction for GetMarkdownText {}
 
 impl GetMarkdownText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMarkdownTextBuilder {
+    pub fn builder() -> GetMarkdownTextBuilder {
         let mut inner = GetMarkdownText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMarkdownText".to_string();
 
-        RTDGetMarkdownTextBuilder { inner }
+        GetMarkdownTextBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -49,11 +49,14 @@ impl GetMarkdownText {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMarkdownTextBuilder {
+pub struct GetMarkdownTextBuilder {
     inner: GetMarkdownText,
 }
 
-impl RTDGetMarkdownTextBuilder {
+#[deprecated]
+pub type RTDGetMarkdownTextBuilder = GetMarkdownTextBuilder;
+
+impl GetMarkdownTextBuilder {
     pub fn build(&self) -> GetMarkdownText {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<GetMarkdownText> for GetMarkdownText {
     }
 }
 
-impl AsRef<GetMarkdownText> for RTDGetMarkdownTextBuilder {
+impl AsRef<GetMarkdownText> for GetMarkdownTextBuilder {
     fn as_ref(&self) -> &GetMarkdownText {
         &self.inner
     }

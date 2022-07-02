@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,16 +34,16 @@ impl RObject for RemoveBackground {
 impl RFunction for RemoveBackground {}
 
 impl RemoveBackground {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveBackgroundBuilder {
+    pub fn builder() -> RemoveBackgroundBuilder {
         let mut inner = RemoveBackground::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeBackground".to_string();
 
-        RTDRemoveBackgroundBuilder { inner }
+        RemoveBackgroundBuilder { inner }
     }
 
     pub fn background_id(&self) -> i64 {
@@ -52,11 +52,14 @@ impl RemoveBackground {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveBackgroundBuilder {
+pub struct RemoveBackgroundBuilder {
     inner: RemoveBackground,
 }
 
-impl RTDRemoveBackgroundBuilder {
+#[deprecated]
+pub type RTDRemoveBackgroundBuilder = RemoveBackgroundBuilder;
+
+impl RemoveBackgroundBuilder {
     pub fn build(&self) -> RemoveBackground {
         self.inner.clone()
     }
@@ -73,7 +76,7 @@ impl AsRef<RemoveBackground> for RemoveBackground {
     }
 }
 
-impl AsRef<RemoveBackground> for RTDRemoveBackgroundBuilder {
+impl AsRef<RemoveBackground> for RemoveBackgroundBuilder {
     fn as_ref(&self) -> &RemoveBackground {
         &self.inner
     }

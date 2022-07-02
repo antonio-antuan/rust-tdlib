@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SetStickerPositionInSet {
 impl RFunction for SetStickerPositionInSet {}
 
 impl SetStickerPositionInSet {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetStickerPositionInSetBuilder {
+    pub fn builder() -> SetStickerPositionInSetBuilder {
         let mut inner = SetStickerPositionInSet::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setStickerPositionInSet".to_string();
 
-        RTDSetStickerPositionInSetBuilder { inner }
+        SetStickerPositionInSetBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -59,11 +59,14 @@ impl SetStickerPositionInSet {
 }
 
 #[doc(hidden)]
-pub struct RTDSetStickerPositionInSetBuilder {
+pub struct SetStickerPositionInSetBuilder {
     inner: SetStickerPositionInSet,
 }
 
-impl RTDSetStickerPositionInSetBuilder {
+#[deprecated]
+pub type RTDSetStickerPositionInSetBuilder = SetStickerPositionInSetBuilder;
+
+impl SetStickerPositionInSetBuilder {
     pub fn build(&self) -> SetStickerPositionInSet {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SetStickerPositionInSet> for SetStickerPositionInSet {
     }
 }
 
-impl AsRef<SetStickerPositionInSet> for RTDSetStickerPositionInSetBuilder {
+impl AsRef<SetStickerPositionInSet> for SetStickerPositionInSetBuilder {
     fn as_ref(&self) -> &SetStickerPositionInSet {
         &self.inner
     }

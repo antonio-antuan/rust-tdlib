@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -53,16 +53,16 @@ impl RObject for SetGameScore {
 impl RFunction for SetGameScore {}
 
 impl SetGameScore {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetGameScoreBuilder {
+    pub fn builder() -> SetGameScoreBuilder {
         let mut inner = SetGameScore::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setGameScore".to_string();
 
-        RTDSetGameScoreBuilder { inner }
+        SetGameScoreBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -91,11 +91,14 @@ impl SetGameScore {
 }
 
 #[doc(hidden)]
-pub struct RTDSetGameScoreBuilder {
+pub struct SetGameScoreBuilder {
     inner: SetGameScore,
 }
 
-impl RTDSetGameScoreBuilder {
+#[deprecated]
+pub type RTDSetGameScoreBuilder = SetGameScoreBuilder;
+
+impl SetGameScoreBuilder {
     pub fn build(&self) -> SetGameScore {
         self.inner.clone()
     }
@@ -137,7 +140,7 @@ impl AsRef<SetGameScore> for SetGameScore {
     }
 }
 
-impl AsRef<SetGameScore> for RTDSetGameScoreBuilder {
+impl AsRef<SetGameScore> for SetGameScoreBuilder {
     fn as_ref(&self) -> &SetGameScore {
         &self.inner
     }

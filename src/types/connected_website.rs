@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -61,14 +61,14 @@ impl RObject for ConnectedWebsite {
 }
 
 impl ConnectedWebsite {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDConnectedWebsiteBuilder {
+    pub fn builder() -> ConnectedWebsiteBuilder {
         let mut inner = ConnectedWebsite::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDConnectedWebsiteBuilder { inner }
+        ConnectedWebsiteBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -109,11 +109,14 @@ impl ConnectedWebsite {
 }
 
 #[doc(hidden)]
-pub struct RTDConnectedWebsiteBuilder {
+pub struct ConnectedWebsiteBuilder {
     inner: ConnectedWebsite,
 }
 
-impl RTDConnectedWebsiteBuilder {
+#[deprecated]
+pub type RTDConnectedWebsiteBuilder = ConnectedWebsiteBuilder;
+
+impl ConnectedWebsiteBuilder {
     pub fn build(&self) -> ConnectedWebsite {
         self.inner.clone()
     }
@@ -170,7 +173,7 @@ impl AsRef<ConnectedWebsite> for ConnectedWebsite {
     }
 }
 
-impl AsRef<ConnectedWebsite> for RTDConnectedWebsiteBuilder {
+impl AsRef<ConnectedWebsite> for ConnectedWebsiteBuilder {
     fn as_ref(&self) -> &ConnectedWebsite {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for DeleteSavedOrderInfo {
 impl RFunction for DeleteSavedOrderInfo {}
 
 impl DeleteSavedOrderInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteSavedOrderInfoBuilder {
+    pub fn builder() -> DeleteSavedOrderInfoBuilder {
         let mut inner = DeleteSavedOrderInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteSavedOrderInfo".to_string();
 
-        RTDDeleteSavedOrderInfoBuilder { inner }
+        DeleteSavedOrderInfoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteSavedOrderInfoBuilder {
+pub struct DeleteSavedOrderInfoBuilder {
     inner: DeleteSavedOrderInfo,
 }
 
-impl RTDDeleteSavedOrderInfoBuilder {
+#[deprecated]
+pub type RTDDeleteSavedOrderInfoBuilder = DeleteSavedOrderInfoBuilder;
+
+impl DeleteSavedOrderInfoBuilder {
     pub fn build(&self) -> DeleteSavedOrderInfo {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<DeleteSavedOrderInfo> for DeleteSavedOrderInfo {
     }
 }
 
-impl AsRef<DeleteSavedOrderInfo> for RTDDeleteSavedOrderInfoBuilder {
+impl AsRef<DeleteSavedOrderInfo> for DeleteSavedOrderInfoBuilder {
     fn as_ref(&self) -> &DeleteSavedOrderInfo {
         &self.inner
     }

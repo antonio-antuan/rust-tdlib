@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -28,14 +28,14 @@ impl RObject for GroupCallId {
 }
 
 impl GroupCallId {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGroupCallIdBuilder {
+    pub fn builder() -> GroupCallIdBuilder {
         let mut inner = GroupCallId::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGroupCallIdBuilder { inner }
+        GroupCallIdBuilder { inner }
     }
 
     pub fn id(&self) -> i32 {
@@ -44,11 +44,14 @@ impl GroupCallId {
 }
 
 #[doc(hidden)]
-pub struct RTDGroupCallIdBuilder {
+pub struct GroupCallIdBuilder {
     inner: GroupCallId,
 }
 
-impl RTDGroupCallIdBuilder {
+#[deprecated]
+pub type RTDGroupCallIdBuilder = GroupCallIdBuilder;
+
+impl GroupCallIdBuilder {
     pub fn build(&self) -> GroupCallId {
         self.inner.clone()
     }
@@ -65,7 +68,7 @@ impl AsRef<GroupCallId> for GroupCallId {
     }
 }
 
-impl AsRef<GroupCallId> for RTDGroupCallIdBuilder {
+impl AsRef<GroupCallId> for GroupCallIdBuilder {
     fn as_ref(&self) -> &GroupCallId {
         &self.inner
     }

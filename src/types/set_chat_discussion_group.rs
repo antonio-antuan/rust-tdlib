@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SetChatDiscussionGroup {
 impl RFunction for SetChatDiscussionGroup {}
 
 impl SetChatDiscussionGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatDiscussionGroupBuilder {
+    pub fn builder() -> SetChatDiscussionGroupBuilder {
         let mut inner = SetChatDiscussionGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatDiscussionGroup".to_string();
 
-        RTDSetChatDiscussionGroupBuilder { inner }
+        SetChatDiscussionGroupBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl SetChatDiscussionGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatDiscussionGroupBuilder {
+pub struct SetChatDiscussionGroupBuilder {
     inner: SetChatDiscussionGroup,
 }
 
-impl RTDSetChatDiscussionGroupBuilder {
+#[deprecated]
+pub type RTDSetChatDiscussionGroupBuilder = SetChatDiscussionGroupBuilder;
+
+impl SetChatDiscussionGroupBuilder {
     pub fn build(&self) -> SetChatDiscussionGroup {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SetChatDiscussionGroup> for SetChatDiscussionGroup {
     }
 }
 
-impl AsRef<SetChatDiscussionGroup> for RTDSetChatDiscussionGroupBuilder {
+impl AsRef<SetChatDiscussionGroup> for SetChatDiscussionGroupBuilder {
     fn as_ref(&self) -> &SetChatDiscussionGroup {
         &self.inner
     }

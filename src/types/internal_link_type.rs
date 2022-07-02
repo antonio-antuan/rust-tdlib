@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -164,7 +164,7 @@ impl RObject for InternalLinkType {
 }
 
 impl InternalLinkType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -203,23 +203,26 @@ impl RObject for InternalLinkTypeActiveSessions {
 impl TDInternalLinkType for InternalLinkTypeActiveSessions {}
 
 impl InternalLinkTypeActiveSessions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeActiveSessionsBuilder {
+    pub fn builder() -> InternalLinkTypeActiveSessionsBuilder {
         let mut inner = InternalLinkTypeActiveSessions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeActiveSessionsBuilder { inner }
+        InternalLinkTypeActiveSessionsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeActiveSessionsBuilder {
+pub struct InternalLinkTypeActiveSessionsBuilder {
     inner: InternalLinkTypeActiveSessions,
 }
 
-impl RTDInternalLinkTypeActiveSessionsBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeActiveSessionsBuilder = InternalLinkTypeActiveSessionsBuilder;
+
+impl InternalLinkTypeActiveSessionsBuilder {
     pub fn build(&self) -> InternalLinkTypeActiveSessions {
         self.inner.clone()
     }
@@ -231,7 +234,7 @@ impl AsRef<InternalLinkTypeActiveSessions> for InternalLinkTypeActiveSessions {
     }
 }
 
-impl AsRef<InternalLinkTypeActiveSessions> for RTDInternalLinkTypeActiveSessionsBuilder {
+impl AsRef<InternalLinkTypeActiveSessions> for InternalLinkTypeActiveSessionsBuilder {
     fn as_ref(&self) -> &InternalLinkTypeActiveSessions {
         &self.inner
     }
@@ -265,14 +268,14 @@ impl RObject for InternalLinkTypeAuthenticationCode {
 impl TDInternalLinkType for InternalLinkTypeAuthenticationCode {}
 
 impl InternalLinkTypeAuthenticationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeAuthenticationCodeBuilder {
+    pub fn builder() -> InternalLinkTypeAuthenticationCodeBuilder {
         let mut inner = InternalLinkTypeAuthenticationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeAuthenticationCodeBuilder { inner }
+        InternalLinkTypeAuthenticationCodeBuilder { inner }
     }
 
     pub fn code(&self) -> &String {
@@ -281,11 +284,14 @@ impl InternalLinkTypeAuthenticationCode {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeAuthenticationCodeBuilder {
+pub struct InternalLinkTypeAuthenticationCodeBuilder {
     inner: InternalLinkTypeAuthenticationCode,
 }
 
-impl RTDInternalLinkTypeAuthenticationCodeBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeAuthenticationCodeBuilder = InternalLinkTypeAuthenticationCodeBuilder;
+
+impl InternalLinkTypeAuthenticationCodeBuilder {
     pub fn build(&self) -> InternalLinkTypeAuthenticationCode {
         self.inner.clone()
     }
@@ -302,7 +308,7 @@ impl AsRef<InternalLinkTypeAuthenticationCode> for InternalLinkTypeAuthenticatio
     }
 }
 
-impl AsRef<InternalLinkTypeAuthenticationCode> for RTDInternalLinkTypeAuthenticationCodeBuilder {
+impl AsRef<InternalLinkTypeAuthenticationCode> for InternalLinkTypeAuthenticationCodeBuilder {
     fn as_ref(&self) -> &InternalLinkTypeAuthenticationCode {
         &self.inner
     }
@@ -336,14 +342,14 @@ impl RObject for InternalLinkTypeBackground {
 impl TDInternalLinkType for InternalLinkTypeBackground {}
 
 impl InternalLinkTypeBackground {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeBackgroundBuilder {
+    pub fn builder() -> InternalLinkTypeBackgroundBuilder {
         let mut inner = InternalLinkTypeBackground::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeBackgroundBuilder { inner }
+        InternalLinkTypeBackgroundBuilder { inner }
     }
 
     pub fn background_name(&self) -> &String {
@@ -352,11 +358,14 @@ impl InternalLinkTypeBackground {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeBackgroundBuilder {
+pub struct InternalLinkTypeBackgroundBuilder {
     inner: InternalLinkTypeBackground,
 }
 
-impl RTDInternalLinkTypeBackgroundBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeBackgroundBuilder = InternalLinkTypeBackgroundBuilder;
+
+impl InternalLinkTypeBackgroundBuilder {
     pub fn build(&self) -> InternalLinkTypeBackground {
         self.inner.clone()
     }
@@ -373,7 +382,7 @@ impl AsRef<InternalLinkTypeBackground> for InternalLinkTypeBackground {
     }
 }
 
-impl AsRef<InternalLinkTypeBackground> for RTDInternalLinkTypeBackgroundBuilder {
+impl AsRef<InternalLinkTypeBackground> for InternalLinkTypeBackgroundBuilder {
     fn as_ref(&self) -> &InternalLinkTypeBackground {
         &self.inner
     }
@@ -411,14 +420,14 @@ impl RObject for InternalLinkTypeBotStart {
 impl TDInternalLinkType for InternalLinkTypeBotStart {}
 
 impl InternalLinkTypeBotStart {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeBotStartBuilder {
+    pub fn builder() -> InternalLinkTypeBotStartBuilder {
         let mut inner = InternalLinkTypeBotStart::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeBotStartBuilder { inner }
+        InternalLinkTypeBotStartBuilder { inner }
     }
 
     pub fn bot_username(&self) -> &String {
@@ -431,11 +440,14 @@ impl InternalLinkTypeBotStart {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeBotStartBuilder {
+pub struct InternalLinkTypeBotStartBuilder {
     inner: InternalLinkTypeBotStart,
 }
 
-impl RTDInternalLinkTypeBotStartBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeBotStartBuilder = InternalLinkTypeBotStartBuilder;
+
+impl InternalLinkTypeBotStartBuilder {
     pub fn build(&self) -> InternalLinkTypeBotStart {
         self.inner.clone()
     }
@@ -457,7 +469,7 @@ impl AsRef<InternalLinkTypeBotStart> for InternalLinkTypeBotStart {
     }
 }
 
-impl AsRef<InternalLinkTypeBotStart> for RTDInternalLinkTypeBotStartBuilder {
+impl AsRef<InternalLinkTypeBotStart> for InternalLinkTypeBotStartBuilder {
     fn as_ref(&self) -> &InternalLinkTypeBotStart {
         &self.inner
     }
@@ -495,14 +507,14 @@ impl RObject for InternalLinkTypeBotStartInGroup {
 impl TDInternalLinkType for InternalLinkTypeBotStartInGroup {}
 
 impl InternalLinkTypeBotStartInGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeBotStartInGroupBuilder {
+    pub fn builder() -> InternalLinkTypeBotStartInGroupBuilder {
         let mut inner = InternalLinkTypeBotStartInGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeBotStartInGroupBuilder { inner }
+        InternalLinkTypeBotStartInGroupBuilder { inner }
     }
 
     pub fn bot_username(&self) -> &String {
@@ -515,11 +527,14 @@ impl InternalLinkTypeBotStartInGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeBotStartInGroupBuilder {
+pub struct InternalLinkTypeBotStartInGroupBuilder {
     inner: InternalLinkTypeBotStartInGroup,
 }
 
-impl RTDInternalLinkTypeBotStartInGroupBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeBotStartInGroupBuilder = InternalLinkTypeBotStartInGroupBuilder;
+
+impl InternalLinkTypeBotStartInGroupBuilder {
     pub fn build(&self) -> InternalLinkTypeBotStartInGroup {
         self.inner.clone()
     }
@@ -541,7 +556,7 @@ impl AsRef<InternalLinkTypeBotStartInGroup> for InternalLinkTypeBotStartInGroup 
     }
 }
 
-impl AsRef<InternalLinkTypeBotStartInGroup> for RTDInternalLinkTypeBotStartInGroupBuilder {
+impl AsRef<InternalLinkTypeBotStartInGroup> for InternalLinkTypeBotStartInGroupBuilder {
     fn as_ref(&self) -> &InternalLinkTypeBotStartInGroup {
         &self.inner
     }
@@ -571,23 +586,26 @@ impl RObject for InternalLinkTypeChangePhoneNumber {
 impl TDInternalLinkType for InternalLinkTypeChangePhoneNumber {}
 
 impl InternalLinkTypeChangePhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeChangePhoneNumberBuilder {
+    pub fn builder() -> InternalLinkTypeChangePhoneNumberBuilder {
         let mut inner = InternalLinkTypeChangePhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeChangePhoneNumberBuilder { inner }
+        InternalLinkTypeChangePhoneNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeChangePhoneNumberBuilder {
+pub struct InternalLinkTypeChangePhoneNumberBuilder {
     inner: InternalLinkTypeChangePhoneNumber,
 }
 
-impl RTDInternalLinkTypeChangePhoneNumberBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeChangePhoneNumberBuilder = InternalLinkTypeChangePhoneNumberBuilder;
+
+impl InternalLinkTypeChangePhoneNumberBuilder {
     pub fn build(&self) -> InternalLinkTypeChangePhoneNumber {
         self.inner.clone()
     }
@@ -599,7 +617,7 @@ impl AsRef<InternalLinkTypeChangePhoneNumber> for InternalLinkTypeChangePhoneNum
     }
 }
 
-impl AsRef<InternalLinkTypeChangePhoneNumber> for RTDInternalLinkTypeChangePhoneNumberBuilder {
+impl AsRef<InternalLinkTypeChangePhoneNumber> for InternalLinkTypeChangePhoneNumberBuilder {
     fn as_ref(&self) -> &InternalLinkTypeChangePhoneNumber {
         &self.inner
     }
@@ -633,14 +651,14 @@ impl RObject for InternalLinkTypeChatInvite {
 impl TDInternalLinkType for InternalLinkTypeChatInvite {}
 
 impl InternalLinkTypeChatInvite {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeChatInviteBuilder {
+    pub fn builder() -> InternalLinkTypeChatInviteBuilder {
         let mut inner = InternalLinkTypeChatInvite::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeChatInviteBuilder { inner }
+        InternalLinkTypeChatInviteBuilder { inner }
     }
 
     pub fn invite_link(&self) -> &String {
@@ -649,11 +667,14 @@ impl InternalLinkTypeChatInvite {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeChatInviteBuilder {
+pub struct InternalLinkTypeChatInviteBuilder {
     inner: InternalLinkTypeChatInvite,
 }
 
-impl RTDInternalLinkTypeChatInviteBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeChatInviteBuilder = InternalLinkTypeChatInviteBuilder;
+
+impl InternalLinkTypeChatInviteBuilder {
     pub fn build(&self) -> InternalLinkTypeChatInvite {
         self.inner.clone()
     }
@@ -670,7 +691,7 @@ impl AsRef<InternalLinkTypeChatInvite> for InternalLinkTypeChatInvite {
     }
 }
 
-impl AsRef<InternalLinkTypeChatInvite> for RTDInternalLinkTypeChatInviteBuilder {
+impl AsRef<InternalLinkTypeChatInvite> for InternalLinkTypeChatInviteBuilder {
     fn as_ref(&self) -> &InternalLinkTypeChatInvite {
         &self.inner
     }
@@ -700,23 +721,26 @@ impl RObject for InternalLinkTypeFilterSettings {
 impl TDInternalLinkType for InternalLinkTypeFilterSettings {}
 
 impl InternalLinkTypeFilterSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeFilterSettingsBuilder {
+    pub fn builder() -> InternalLinkTypeFilterSettingsBuilder {
         let mut inner = InternalLinkTypeFilterSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeFilterSettingsBuilder { inner }
+        InternalLinkTypeFilterSettingsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeFilterSettingsBuilder {
+pub struct InternalLinkTypeFilterSettingsBuilder {
     inner: InternalLinkTypeFilterSettings,
 }
 
-impl RTDInternalLinkTypeFilterSettingsBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeFilterSettingsBuilder = InternalLinkTypeFilterSettingsBuilder;
+
+impl InternalLinkTypeFilterSettingsBuilder {
     pub fn build(&self) -> InternalLinkTypeFilterSettings {
         self.inner.clone()
     }
@@ -728,7 +752,7 @@ impl AsRef<InternalLinkTypeFilterSettings> for InternalLinkTypeFilterSettings {
     }
 }
 
-impl AsRef<InternalLinkTypeFilterSettings> for RTDInternalLinkTypeFilterSettingsBuilder {
+impl AsRef<InternalLinkTypeFilterSettings> for InternalLinkTypeFilterSettingsBuilder {
     fn as_ref(&self) -> &InternalLinkTypeFilterSettings {
         &self.inner
     }
@@ -766,14 +790,14 @@ impl RObject for InternalLinkTypeGame {
 impl TDInternalLinkType for InternalLinkTypeGame {}
 
 impl InternalLinkTypeGame {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeGameBuilder {
+    pub fn builder() -> InternalLinkTypeGameBuilder {
         let mut inner = InternalLinkTypeGame::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeGameBuilder { inner }
+        InternalLinkTypeGameBuilder { inner }
     }
 
     pub fn bot_username(&self) -> &String {
@@ -786,11 +810,14 @@ impl InternalLinkTypeGame {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeGameBuilder {
+pub struct InternalLinkTypeGameBuilder {
     inner: InternalLinkTypeGame,
 }
 
-impl RTDInternalLinkTypeGameBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeGameBuilder = InternalLinkTypeGameBuilder;
+
+impl InternalLinkTypeGameBuilder {
     pub fn build(&self) -> InternalLinkTypeGame {
         self.inner.clone()
     }
@@ -812,7 +839,7 @@ impl AsRef<InternalLinkTypeGame> for InternalLinkTypeGame {
     }
 }
 
-impl AsRef<InternalLinkTypeGame> for RTDInternalLinkTypeGameBuilder {
+impl AsRef<InternalLinkTypeGame> for InternalLinkTypeGameBuilder {
     fn as_ref(&self) -> &InternalLinkTypeGame {
         &self.inner
     }
@@ -846,14 +873,14 @@ impl RObject for InternalLinkTypeLanguagePack {
 impl TDInternalLinkType for InternalLinkTypeLanguagePack {}
 
 impl InternalLinkTypeLanguagePack {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeLanguagePackBuilder {
+    pub fn builder() -> InternalLinkTypeLanguagePackBuilder {
         let mut inner = InternalLinkTypeLanguagePack::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeLanguagePackBuilder { inner }
+        InternalLinkTypeLanguagePackBuilder { inner }
     }
 
     pub fn language_pack_id(&self) -> &String {
@@ -862,11 +889,14 @@ impl InternalLinkTypeLanguagePack {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeLanguagePackBuilder {
+pub struct InternalLinkTypeLanguagePackBuilder {
     inner: InternalLinkTypeLanguagePack,
 }
 
-impl RTDInternalLinkTypeLanguagePackBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeLanguagePackBuilder = InternalLinkTypeLanguagePackBuilder;
+
+impl InternalLinkTypeLanguagePackBuilder {
     pub fn build(&self) -> InternalLinkTypeLanguagePack {
         self.inner.clone()
     }
@@ -883,7 +913,7 @@ impl AsRef<InternalLinkTypeLanguagePack> for InternalLinkTypeLanguagePack {
     }
 }
 
-impl AsRef<InternalLinkTypeLanguagePack> for RTDInternalLinkTypeLanguagePackBuilder {
+impl AsRef<InternalLinkTypeLanguagePack> for InternalLinkTypeLanguagePackBuilder {
     fn as_ref(&self) -> &InternalLinkTypeLanguagePack {
         &self.inner
     }
@@ -917,14 +947,14 @@ impl RObject for InternalLinkTypeMessage {
 impl TDInternalLinkType for InternalLinkTypeMessage {}
 
 impl InternalLinkTypeMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeMessageBuilder {
+    pub fn builder() -> InternalLinkTypeMessageBuilder {
         let mut inner = InternalLinkTypeMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeMessageBuilder { inner }
+        InternalLinkTypeMessageBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -933,11 +963,14 @@ impl InternalLinkTypeMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeMessageBuilder {
+pub struct InternalLinkTypeMessageBuilder {
     inner: InternalLinkTypeMessage,
 }
 
-impl RTDInternalLinkTypeMessageBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeMessageBuilder = InternalLinkTypeMessageBuilder;
+
+impl InternalLinkTypeMessageBuilder {
     pub fn build(&self) -> InternalLinkTypeMessage {
         self.inner.clone()
     }
@@ -954,7 +987,7 @@ impl AsRef<InternalLinkTypeMessage> for InternalLinkTypeMessage {
     }
 }
 
-impl AsRef<InternalLinkTypeMessage> for RTDInternalLinkTypeMessageBuilder {
+impl AsRef<InternalLinkTypeMessage> for InternalLinkTypeMessageBuilder {
     fn as_ref(&self) -> &InternalLinkTypeMessage {
         &self.inner
     }
@@ -990,14 +1023,14 @@ impl RObject for InternalLinkTypeMessageDraft {
 impl TDInternalLinkType for InternalLinkTypeMessageDraft {}
 
 impl InternalLinkTypeMessageDraft {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeMessageDraftBuilder {
+    pub fn builder() -> InternalLinkTypeMessageDraftBuilder {
         let mut inner = InternalLinkTypeMessageDraft::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeMessageDraftBuilder { inner }
+        InternalLinkTypeMessageDraftBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -1010,11 +1043,14 @@ impl InternalLinkTypeMessageDraft {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeMessageDraftBuilder {
+pub struct InternalLinkTypeMessageDraftBuilder {
     inner: InternalLinkTypeMessageDraft,
 }
 
-impl RTDInternalLinkTypeMessageDraftBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeMessageDraftBuilder = InternalLinkTypeMessageDraftBuilder;
+
+impl InternalLinkTypeMessageDraftBuilder {
     pub fn build(&self) -> InternalLinkTypeMessageDraft {
         self.inner.clone()
     }
@@ -1036,7 +1072,7 @@ impl AsRef<InternalLinkTypeMessageDraft> for InternalLinkTypeMessageDraft {
     }
 }
 
-impl AsRef<InternalLinkTypeMessageDraft> for RTDInternalLinkTypeMessageDraftBuilder {
+impl AsRef<InternalLinkTypeMessageDraft> for InternalLinkTypeMessageDraftBuilder {
     fn as_ref(&self) -> &InternalLinkTypeMessageDraft {
         &self.inner
     }
@@ -1086,14 +1122,14 @@ impl RObject for InternalLinkTypePassportDataRequest {
 impl TDInternalLinkType for InternalLinkTypePassportDataRequest {}
 
 impl InternalLinkTypePassportDataRequest {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypePassportDataRequestBuilder {
+    pub fn builder() -> InternalLinkTypePassportDataRequestBuilder {
         let mut inner = InternalLinkTypePassportDataRequest::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypePassportDataRequestBuilder { inner }
+        InternalLinkTypePassportDataRequestBuilder { inner }
     }
 
     pub fn bot_user_id(&self) -> i64 {
@@ -1118,11 +1154,14 @@ impl InternalLinkTypePassportDataRequest {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypePassportDataRequestBuilder {
+pub struct InternalLinkTypePassportDataRequestBuilder {
     inner: InternalLinkTypePassportDataRequest,
 }
 
-impl RTDInternalLinkTypePassportDataRequestBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypePassportDataRequestBuilder = InternalLinkTypePassportDataRequestBuilder;
+
+impl InternalLinkTypePassportDataRequestBuilder {
     pub fn build(&self) -> InternalLinkTypePassportDataRequest {
         self.inner.clone()
     }
@@ -1159,7 +1198,7 @@ impl AsRef<InternalLinkTypePassportDataRequest> for InternalLinkTypePassportData
     }
 }
 
-impl AsRef<InternalLinkTypePassportDataRequest> for RTDInternalLinkTypePassportDataRequestBuilder {
+impl AsRef<InternalLinkTypePassportDataRequest> for InternalLinkTypePassportDataRequestBuilder {
     fn as_ref(&self) -> &InternalLinkTypePassportDataRequest {
         &self.inner
     }
@@ -1197,14 +1236,14 @@ impl RObject for InternalLinkTypePhoneNumberConfirmation {
 impl TDInternalLinkType for InternalLinkTypePhoneNumberConfirmation {}
 
 impl InternalLinkTypePhoneNumberConfirmation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypePhoneNumberConfirmationBuilder {
+    pub fn builder() -> InternalLinkTypePhoneNumberConfirmationBuilder {
         let mut inner = InternalLinkTypePhoneNumberConfirmation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypePhoneNumberConfirmationBuilder { inner }
+        InternalLinkTypePhoneNumberConfirmationBuilder { inner }
     }
 
     pub fn hash(&self) -> &String {
@@ -1217,11 +1256,15 @@ impl InternalLinkTypePhoneNumberConfirmation {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypePhoneNumberConfirmationBuilder {
+pub struct InternalLinkTypePhoneNumberConfirmationBuilder {
     inner: InternalLinkTypePhoneNumberConfirmation,
 }
 
-impl RTDInternalLinkTypePhoneNumberConfirmationBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypePhoneNumberConfirmationBuilder =
+    InternalLinkTypePhoneNumberConfirmationBuilder;
+
+impl InternalLinkTypePhoneNumberConfirmationBuilder {
     pub fn build(&self) -> InternalLinkTypePhoneNumberConfirmation {
         self.inner.clone()
     }
@@ -1244,7 +1287,7 @@ impl AsRef<InternalLinkTypePhoneNumberConfirmation> for InternalLinkTypePhoneNum
 }
 
 impl AsRef<InternalLinkTypePhoneNumberConfirmation>
-    for RTDInternalLinkTypePhoneNumberConfirmationBuilder
+    for InternalLinkTypePhoneNumberConfirmationBuilder
 {
     fn as_ref(&self) -> &InternalLinkTypePhoneNumberConfirmation {
         &self.inner
@@ -1288,14 +1331,14 @@ impl RObject for InternalLinkTypeProxy {
 impl TDInternalLinkType for InternalLinkTypeProxy {}
 
 impl InternalLinkTypeProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeProxyBuilder {
+    pub fn builder() -> InternalLinkTypeProxyBuilder {
         let mut inner = InternalLinkTypeProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeProxyBuilder { inner }
+        InternalLinkTypeProxyBuilder { inner }
     }
 
     pub fn server(&self) -> &String {
@@ -1312,11 +1355,14 @@ impl InternalLinkTypeProxy {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeProxyBuilder {
+pub struct InternalLinkTypeProxyBuilder {
     inner: InternalLinkTypeProxy,
 }
 
-impl RTDInternalLinkTypeProxyBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeProxyBuilder = InternalLinkTypeProxyBuilder;
+
+impl InternalLinkTypeProxyBuilder {
     pub fn build(&self) -> InternalLinkTypeProxy {
         self.inner.clone()
     }
@@ -1343,7 +1389,7 @@ impl AsRef<InternalLinkTypeProxy> for InternalLinkTypeProxy {
     }
 }
 
-impl AsRef<InternalLinkTypeProxy> for RTDInternalLinkTypeProxyBuilder {
+impl AsRef<InternalLinkTypeProxy> for InternalLinkTypeProxyBuilder {
     fn as_ref(&self) -> &InternalLinkTypeProxy {
         &self.inner
     }
@@ -1377,14 +1423,14 @@ impl RObject for InternalLinkTypePublicChat {
 impl TDInternalLinkType for InternalLinkTypePublicChat {}
 
 impl InternalLinkTypePublicChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypePublicChatBuilder {
+    pub fn builder() -> InternalLinkTypePublicChatBuilder {
         let mut inner = InternalLinkTypePublicChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypePublicChatBuilder { inner }
+        InternalLinkTypePublicChatBuilder { inner }
     }
 
     pub fn chat_username(&self) -> &String {
@@ -1393,11 +1439,14 @@ impl InternalLinkTypePublicChat {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypePublicChatBuilder {
+pub struct InternalLinkTypePublicChatBuilder {
     inner: InternalLinkTypePublicChat,
 }
 
-impl RTDInternalLinkTypePublicChatBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypePublicChatBuilder = InternalLinkTypePublicChatBuilder;
+
+impl InternalLinkTypePublicChatBuilder {
     pub fn build(&self) -> InternalLinkTypePublicChat {
         self.inner.clone()
     }
@@ -1414,7 +1463,7 @@ impl AsRef<InternalLinkTypePublicChat> for InternalLinkTypePublicChat {
     }
 }
 
-impl AsRef<InternalLinkTypePublicChat> for RTDInternalLinkTypePublicChatBuilder {
+impl AsRef<InternalLinkTypePublicChat> for InternalLinkTypePublicChatBuilder {
     fn as_ref(&self) -> &InternalLinkTypePublicChat {
         &self.inner
     }
@@ -1444,23 +1493,27 @@ impl RObject for InternalLinkTypeQrCodeAuthentication {
 impl TDInternalLinkType for InternalLinkTypeQrCodeAuthentication {}
 
 impl InternalLinkTypeQrCodeAuthentication {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeQrCodeAuthenticationBuilder {
+    pub fn builder() -> InternalLinkTypeQrCodeAuthenticationBuilder {
         let mut inner = InternalLinkTypeQrCodeAuthentication::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeQrCodeAuthenticationBuilder { inner }
+        InternalLinkTypeQrCodeAuthenticationBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeQrCodeAuthenticationBuilder {
+pub struct InternalLinkTypeQrCodeAuthenticationBuilder {
     inner: InternalLinkTypeQrCodeAuthentication,
 }
 
-impl RTDInternalLinkTypeQrCodeAuthenticationBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeQrCodeAuthenticationBuilder =
+    InternalLinkTypeQrCodeAuthenticationBuilder;
+
+impl InternalLinkTypeQrCodeAuthenticationBuilder {
     pub fn build(&self) -> InternalLinkTypeQrCodeAuthentication {
         self.inner.clone()
     }
@@ -1472,9 +1525,7 @@ impl AsRef<InternalLinkTypeQrCodeAuthentication> for InternalLinkTypeQrCodeAuthe
     }
 }
 
-impl AsRef<InternalLinkTypeQrCodeAuthentication>
-    for RTDInternalLinkTypeQrCodeAuthenticationBuilder
-{
+impl AsRef<InternalLinkTypeQrCodeAuthentication> for InternalLinkTypeQrCodeAuthenticationBuilder {
     fn as_ref(&self) -> &InternalLinkTypeQrCodeAuthentication {
         &self.inner
     }
@@ -1504,23 +1555,26 @@ impl RObject for InternalLinkTypeSettings {
 impl TDInternalLinkType for InternalLinkTypeSettings {}
 
 impl InternalLinkTypeSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeSettingsBuilder {
+    pub fn builder() -> InternalLinkTypeSettingsBuilder {
         let mut inner = InternalLinkTypeSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeSettingsBuilder { inner }
+        InternalLinkTypeSettingsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeSettingsBuilder {
+pub struct InternalLinkTypeSettingsBuilder {
     inner: InternalLinkTypeSettings,
 }
 
-impl RTDInternalLinkTypeSettingsBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeSettingsBuilder = InternalLinkTypeSettingsBuilder;
+
+impl InternalLinkTypeSettingsBuilder {
     pub fn build(&self) -> InternalLinkTypeSettings {
         self.inner.clone()
     }
@@ -1532,7 +1586,7 @@ impl AsRef<InternalLinkTypeSettings> for InternalLinkTypeSettings {
     }
 }
 
-impl AsRef<InternalLinkTypeSettings> for RTDInternalLinkTypeSettingsBuilder {
+impl AsRef<InternalLinkTypeSettings> for InternalLinkTypeSettingsBuilder {
     fn as_ref(&self) -> &InternalLinkTypeSettings {
         &self.inner
     }
@@ -1566,14 +1620,14 @@ impl RObject for InternalLinkTypeStickerSet {
 impl TDInternalLinkType for InternalLinkTypeStickerSet {}
 
 impl InternalLinkTypeStickerSet {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeStickerSetBuilder {
+    pub fn builder() -> InternalLinkTypeStickerSetBuilder {
         let mut inner = InternalLinkTypeStickerSet::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeStickerSetBuilder { inner }
+        InternalLinkTypeStickerSetBuilder { inner }
     }
 
     pub fn sticker_set_name(&self) -> &String {
@@ -1582,11 +1636,14 @@ impl InternalLinkTypeStickerSet {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeStickerSetBuilder {
+pub struct InternalLinkTypeStickerSetBuilder {
     inner: InternalLinkTypeStickerSet,
 }
 
-impl RTDInternalLinkTypeStickerSetBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeStickerSetBuilder = InternalLinkTypeStickerSetBuilder;
+
+impl InternalLinkTypeStickerSetBuilder {
     pub fn build(&self) -> InternalLinkTypeStickerSet {
         self.inner.clone()
     }
@@ -1603,7 +1660,7 @@ impl AsRef<InternalLinkTypeStickerSet> for InternalLinkTypeStickerSet {
     }
 }
 
-impl AsRef<InternalLinkTypeStickerSet> for RTDInternalLinkTypeStickerSetBuilder {
+impl AsRef<InternalLinkTypeStickerSet> for InternalLinkTypeStickerSetBuilder {
     fn as_ref(&self) -> &InternalLinkTypeStickerSet {
         &self.inner
     }
@@ -1637,14 +1694,14 @@ impl RObject for InternalLinkTypeTheme {
 impl TDInternalLinkType for InternalLinkTypeTheme {}
 
 impl InternalLinkTypeTheme {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeThemeBuilder {
+    pub fn builder() -> InternalLinkTypeThemeBuilder {
         let mut inner = InternalLinkTypeTheme::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeThemeBuilder { inner }
+        InternalLinkTypeThemeBuilder { inner }
     }
 
     pub fn theme_name(&self) -> &String {
@@ -1653,11 +1710,14 @@ impl InternalLinkTypeTheme {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeThemeBuilder {
+pub struct InternalLinkTypeThemeBuilder {
     inner: InternalLinkTypeTheme,
 }
 
-impl RTDInternalLinkTypeThemeBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeThemeBuilder = InternalLinkTypeThemeBuilder;
+
+impl InternalLinkTypeThemeBuilder {
     pub fn build(&self) -> InternalLinkTypeTheme {
         self.inner.clone()
     }
@@ -1674,7 +1734,7 @@ impl AsRef<InternalLinkTypeTheme> for InternalLinkTypeTheme {
     }
 }
 
-impl AsRef<InternalLinkTypeTheme> for RTDInternalLinkTypeThemeBuilder {
+impl AsRef<InternalLinkTypeTheme> for InternalLinkTypeThemeBuilder {
     fn as_ref(&self) -> &InternalLinkTypeTheme {
         &self.inner
     }
@@ -1704,23 +1764,26 @@ impl RObject for InternalLinkTypeThemeSettings {
 impl TDInternalLinkType for InternalLinkTypeThemeSettings {}
 
 impl InternalLinkTypeThemeSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeThemeSettingsBuilder {
+    pub fn builder() -> InternalLinkTypeThemeSettingsBuilder {
         let mut inner = InternalLinkTypeThemeSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeThemeSettingsBuilder { inner }
+        InternalLinkTypeThemeSettingsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeThemeSettingsBuilder {
+pub struct InternalLinkTypeThemeSettingsBuilder {
     inner: InternalLinkTypeThemeSettings,
 }
 
-impl RTDInternalLinkTypeThemeSettingsBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeThemeSettingsBuilder = InternalLinkTypeThemeSettingsBuilder;
+
+impl InternalLinkTypeThemeSettingsBuilder {
     pub fn build(&self) -> InternalLinkTypeThemeSettings {
         self.inner.clone()
     }
@@ -1732,7 +1795,7 @@ impl AsRef<InternalLinkTypeThemeSettings> for InternalLinkTypeThemeSettings {
     }
 }
 
-impl AsRef<InternalLinkTypeThemeSettings> for RTDInternalLinkTypeThemeSettingsBuilder {
+impl AsRef<InternalLinkTypeThemeSettings> for InternalLinkTypeThemeSettingsBuilder {
     fn as_ref(&self) -> &InternalLinkTypeThemeSettings {
         &self.inner
     }
@@ -1766,14 +1829,14 @@ impl RObject for InternalLinkTypeUnknownDeepLink {
 impl TDInternalLinkType for InternalLinkTypeUnknownDeepLink {}
 
 impl InternalLinkTypeUnknownDeepLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeUnknownDeepLinkBuilder {
+    pub fn builder() -> InternalLinkTypeUnknownDeepLinkBuilder {
         let mut inner = InternalLinkTypeUnknownDeepLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeUnknownDeepLinkBuilder { inner }
+        InternalLinkTypeUnknownDeepLinkBuilder { inner }
     }
 
     pub fn link(&self) -> &String {
@@ -1782,11 +1845,14 @@ impl InternalLinkTypeUnknownDeepLink {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeUnknownDeepLinkBuilder {
+pub struct InternalLinkTypeUnknownDeepLinkBuilder {
     inner: InternalLinkTypeUnknownDeepLink,
 }
 
-impl RTDInternalLinkTypeUnknownDeepLinkBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeUnknownDeepLinkBuilder = InternalLinkTypeUnknownDeepLinkBuilder;
+
+impl InternalLinkTypeUnknownDeepLinkBuilder {
     pub fn build(&self) -> InternalLinkTypeUnknownDeepLink {
         self.inner.clone()
     }
@@ -1803,7 +1869,7 @@ impl AsRef<InternalLinkTypeUnknownDeepLink> for InternalLinkTypeUnknownDeepLink 
     }
 }
 
-impl AsRef<InternalLinkTypeUnknownDeepLink> for RTDInternalLinkTypeUnknownDeepLinkBuilder {
+impl AsRef<InternalLinkTypeUnknownDeepLink> for InternalLinkTypeUnknownDeepLinkBuilder {
     fn as_ref(&self) -> &InternalLinkTypeUnknownDeepLink {
         &self.inner
     }
@@ -1833,23 +1899,26 @@ impl RObject for InternalLinkTypeUnsupportedProxy {
 impl TDInternalLinkType for InternalLinkTypeUnsupportedProxy {}
 
 impl InternalLinkTypeUnsupportedProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeUnsupportedProxyBuilder {
+    pub fn builder() -> InternalLinkTypeUnsupportedProxyBuilder {
         let mut inner = InternalLinkTypeUnsupportedProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeUnsupportedProxyBuilder { inner }
+        InternalLinkTypeUnsupportedProxyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeUnsupportedProxyBuilder {
+pub struct InternalLinkTypeUnsupportedProxyBuilder {
     inner: InternalLinkTypeUnsupportedProxy,
 }
 
-impl RTDInternalLinkTypeUnsupportedProxyBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeUnsupportedProxyBuilder = InternalLinkTypeUnsupportedProxyBuilder;
+
+impl InternalLinkTypeUnsupportedProxyBuilder {
     pub fn build(&self) -> InternalLinkTypeUnsupportedProxy {
         self.inner.clone()
     }
@@ -1861,7 +1930,7 @@ impl AsRef<InternalLinkTypeUnsupportedProxy> for InternalLinkTypeUnsupportedProx
     }
 }
 
-impl AsRef<InternalLinkTypeUnsupportedProxy> for RTDInternalLinkTypeUnsupportedProxyBuilder {
+impl AsRef<InternalLinkTypeUnsupportedProxy> for InternalLinkTypeUnsupportedProxyBuilder {
     fn as_ref(&self) -> &InternalLinkTypeUnsupportedProxy {
         &self.inner
     }
@@ -1903,14 +1972,14 @@ impl RObject for InternalLinkTypeVideoChat {
 impl TDInternalLinkType for InternalLinkTypeVideoChat {}
 
 impl InternalLinkTypeVideoChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInternalLinkTypeVideoChatBuilder {
+    pub fn builder() -> InternalLinkTypeVideoChatBuilder {
         let mut inner = InternalLinkTypeVideoChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInternalLinkTypeVideoChatBuilder { inner }
+        InternalLinkTypeVideoChatBuilder { inner }
     }
 
     pub fn chat_username(&self) -> &String {
@@ -1927,11 +1996,14 @@ impl InternalLinkTypeVideoChat {
 }
 
 #[doc(hidden)]
-pub struct RTDInternalLinkTypeVideoChatBuilder {
+pub struct InternalLinkTypeVideoChatBuilder {
     inner: InternalLinkTypeVideoChat,
 }
 
-impl RTDInternalLinkTypeVideoChatBuilder {
+#[deprecated]
+pub type RTDInternalLinkTypeVideoChatBuilder = InternalLinkTypeVideoChatBuilder;
+
+impl InternalLinkTypeVideoChatBuilder {
     pub fn build(&self) -> InternalLinkTypeVideoChat {
         self.inner.clone()
     }
@@ -1958,7 +2030,7 @@ impl AsRef<InternalLinkTypeVideoChat> for InternalLinkTypeVideoChat {
     }
 }
 
-impl AsRef<InternalLinkTypeVideoChat> for RTDInternalLinkTypeVideoChatBuilder {
+impl AsRef<InternalLinkTypeVideoChat> for InternalLinkTypeVideoChatBuilder {
     fn as_ref(&self) -> &InternalLinkTypeVideoChat {
         &self.inner
     }

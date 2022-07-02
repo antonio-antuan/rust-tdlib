@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetChatPinnedMessage {
 impl RFunction for GetChatPinnedMessage {}
 
 impl GetChatPinnedMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatPinnedMessageBuilder {
+    pub fn builder() -> GetChatPinnedMessageBuilder {
         let mut inner = GetChatPinnedMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatPinnedMessage".to_string();
 
-        RTDGetChatPinnedMessageBuilder { inner }
+        GetChatPinnedMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl GetChatPinnedMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatPinnedMessageBuilder {
+pub struct GetChatPinnedMessageBuilder {
     inner: GetChatPinnedMessage,
 }
 
-impl RTDGetChatPinnedMessageBuilder {
+#[deprecated]
+pub type RTDGetChatPinnedMessageBuilder = GetChatPinnedMessageBuilder;
+
+impl GetChatPinnedMessageBuilder {
     pub fn build(&self) -> GetChatPinnedMessage {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetChatPinnedMessage> for GetChatPinnedMessage {
     }
 }
 
-impl AsRef<GetChatPinnedMessage> for RTDGetChatPinnedMessageBuilder {
+impl AsRef<GetChatPinnedMessage> for GetChatPinnedMessageBuilder {
     fn as_ref(&self) -> &GetChatPinnedMessage {
         &self.inner
     }

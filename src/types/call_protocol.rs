@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -44,14 +44,14 @@ impl RObject for CallProtocol {
 }
 
 impl CallProtocol {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallProtocolBuilder {
+    pub fn builder() -> CallProtocolBuilder {
         let mut inner = CallProtocol::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallProtocolBuilder { inner }
+        CallProtocolBuilder { inner }
     }
 
     pub fn udp_p2p(&self) -> bool {
@@ -76,11 +76,14 @@ impl CallProtocol {
 }
 
 #[doc(hidden)]
-pub struct RTDCallProtocolBuilder {
+pub struct CallProtocolBuilder {
     inner: CallProtocol,
 }
 
-impl RTDCallProtocolBuilder {
+#[deprecated]
+pub type RTDCallProtocolBuilder = CallProtocolBuilder;
+
+impl CallProtocolBuilder {
     pub fn build(&self) -> CallProtocol {
         self.inner.clone()
     }
@@ -117,7 +120,7 @@ impl AsRef<CallProtocol> for CallProtocol {
     }
 }
 
-impl AsRef<CallProtocol> for RTDCallProtocolBuilder {
+impl AsRef<CallProtocol> for CallProtocolBuilder {
     fn as_ref(&self) -> &CallProtocol {
         &self.inner
     }

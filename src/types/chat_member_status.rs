@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -69,7 +69,7 @@ impl RObject for ChatMemberStatus {
 }
 
 impl ChatMemberStatus {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -160,14 +160,14 @@ impl RObject for ChatMemberStatusAdministrator {
 impl TDChatMemberStatus for ChatMemberStatusAdministrator {}
 
 impl ChatMemberStatusAdministrator {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMemberStatusAdministratorBuilder {
+    pub fn builder() -> ChatMemberStatusAdministratorBuilder {
         let mut inner = ChatMemberStatusAdministrator::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMemberStatusAdministratorBuilder { inner }
+        ChatMemberStatusAdministratorBuilder { inner }
     }
 
     pub fn custom_title(&self) -> &String {
@@ -224,11 +224,14 @@ impl ChatMemberStatusAdministrator {
 }
 
 #[doc(hidden)]
-pub struct RTDChatMemberStatusAdministratorBuilder {
+pub struct ChatMemberStatusAdministratorBuilder {
     inner: ChatMemberStatusAdministrator,
 }
 
-impl RTDChatMemberStatusAdministratorBuilder {
+#[deprecated]
+pub type RTDChatMemberStatusAdministratorBuilder = ChatMemberStatusAdministratorBuilder;
+
+impl ChatMemberStatusAdministratorBuilder {
     pub fn build(&self) -> ChatMemberStatusAdministrator {
         self.inner.clone()
     }
@@ -305,7 +308,7 @@ impl AsRef<ChatMemberStatusAdministrator> for ChatMemberStatusAdministrator {
     }
 }
 
-impl AsRef<ChatMemberStatusAdministrator> for RTDChatMemberStatusAdministratorBuilder {
+impl AsRef<ChatMemberStatusAdministrator> for ChatMemberStatusAdministratorBuilder {
     fn as_ref(&self) -> &ChatMemberStatusAdministrator {
         &self.inner
     }
@@ -339,14 +342,14 @@ impl RObject for ChatMemberStatusBanned {
 impl TDChatMemberStatus for ChatMemberStatusBanned {}
 
 impl ChatMemberStatusBanned {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMemberStatusBannedBuilder {
+    pub fn builder() -> ChatMemberStatusBannedBuilder {
         let mut inner = ChatMemberStatusBanned::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMemberStatusBannedBuilder { inner }
+        ChatMemberStatusBannedBuilder { inner }
     }
 
     pub fn banned_until_date(&self) -> i32 {
@@ -355,11 +358,14 @@ impl ChatMemberStatusBanned {
 }
 
 #[doc(hidden)]
-pub struct RTDChatMemberStatusBannedBuilder {
+pub struct ChatMemberStatusBannedBuilder {
     inner: ChatMemberStatusBanned,
 }
 
-impl RTDChatMemberStatusBannedBuilder {
+#[deprecated]
+pub type RTDChatMemberStatusBannedBuilder = ChatMemberStatusBannedBuilder;
+
+impl ChatMemberStatusBannedBuilder {
     pub fn build(&self) -> ChatMemberStatusBanned {
         self.inner.clone()
     }
@@ -376,7 +382,7 @@ impl AsRef<ChatMemberStatusBanned> for ChatMemberStatusBanned {
     }
 }
 
-impl AsRef<ChatMemberStatusBanned> for RTDChatMemberStatusBannedBuilder {
+impl AsRef<ChatMemberStatusBanned> for ChatMemberStatusBannedBuilder {
     fn as_ref(&self) -> &ChatMemberStatusBanned {
         &self.inner
     }
@@ -418,14 +424,14 @@ impl RObject for ChatMemberStatusCreator {
 impl TDChatMemberStatus for ChatMemberStatusCreator {}
 
 impl ChatMemberStatusCreator {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMemberStatusCreatorBuilder {
+    pub fn builder() -> ChatMemberStatusCreatorBuilder {
         let mut inner = ChatMemberStatusCreator::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMemberStatusCreatorBuilder { inner }
+        ChatMemberStatusCreatorBuilder { inner }
     }
 
     pub fn custom_title(&self) -> &String {
@@ -442,11 +448,14 @@ impl ChatMemberStatusCreator {
 }
 
 #[doc(hidden)]
-pub struct RTDChatMemberStatusCreatorBuilder {
+pub struct ChatMemberStatusCreatorBuilder {
     inner: ChatMemberStatusCreator,
 }
 
-impl RTDChatMemberStatusCreatorBuilder {
+#[deprecated]
+pub type RTDChatMemberStatusCreatorBuilder = ChatMemberStatusCreatorBuilder;
+
+impl ChatMemberStatusCreatorBuilder {
     pub fn build(&self) -> ChatMemberStatusCreator {
         self.inner.clone()
     }
@@ -473,7 +482,7 @@ impl AsRef<ChatMemberStatusCreator> for ChatMemberStatusCreator {
     }
 }
 
-impl AsRef<ChatMemberStatusCreator> for RTDChatMemberStatusCreatorBuilder {
+impl AsRef<ChatMemberStatusCreator> for ChatMemberStatusCreatorBuilder {
     fn as_ref(&self) -> &ChatMemberStatusCreator {
         &self.inner
     }
@@ -503,23 +512,26 @@ impl RObject for ChatMemberStatusLeft {
 impl TDChatMemberStatus for ChatMemberStatusLeft {}
 
 impl ChatMemberStatusLeft {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMemberStatusLeftBuilder {
+    pub fn builder() -> ChatMemberStatusLeftBuilder {
         let mut inner = ChatMemberStatusLeft::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMemberStatusLeftBuilder { inner }
+        ChatMemberStatusLeftBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatMemberStatusLeftBuilder {
+pub struct ChatMemberStatusLeftBuilder {
     inner: ChatMemberStatusLeft,
 }
 
-impl RTDChatMemberStatusLeftBuilder {
+#[deprecated]
+pub type RTDChatMemberStatusLeftBuilder = ChatMemberStatusLeftBuilder;
+
+impl ChatMemberStatusLeftBuilder {
     pub fn build(&self) -> ChatMemberStatusLeft {
         self.inner.clone()
     }
@@ -531,7 +543,7 @@ impl AsRef<ChatMemberStatusLeft> for ChatMemberStatusLeft {
     }
 }
 
-impl AsRef<ChatMemberStatusLeft> for RTDChatMemberStatusLeftBuilder {
+impl AsRef<ChatMemberStatusLeft> for ChatMemberStatusLeftBuilder {
     fn as_ref(&self) -> &ChatMemberStatusLeft {
         &self.inner
     }
@@ -561,23 +573,26 @@ impl RObject for ChatMemberStatusMember {
 impl TDChatMemberStatus for ChatMemberStatusMember {}
 
 impl ChatMemberStatusMember {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMemberStatusMemberBuilder {
+    pub fn builder() -> ChatMemberStatusMemberBuilder {
         let mut inner = ChatMemberStatusMember::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMemberStatusMemberBuilder { inner }
+        ChatMemberStatusMemberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatMemberStatusMemberBuilder {
+pub struct ChatMemberStatusMemberBuilder {
     inner: ChatMemberStatusMember,
 }
 
-impl RTDChatMemberStatusMemberBuilder {
+#[deprecated]
+pub type RTDChatMemberStatusMemberBuilder = ChatMemberStatusMemberBuilder;
+
+impl ChatMemberStatusMemberBuilder {
     pub fn build(&self) -> ChatMemberStatusMember {
         self.inner.clone()
     }
@@ -589,7 +604,7 @@ impl AsRef<ChatMemberStatusMember> for ChatMemberStatusMember {
     }
 }
 
-impl AsRef<ChatMemberStatusMember> for RTDChatMemberStatusMemberBuilder {
+impl AsRef<ChatMemberStatusMember> for ChatMemberStatusMemberBuilder {
     fn as_ref(&self) -> &ChatMemberStatusMember {
         &self.inner
     }
@@ -629,14 +644,14 @@ impl RObject for ChatMemberStatusRestricted {
 impl TDChatMemberStatus for ChatMemberStatusRestricted {}
 
 impl ChatMemberStatusRestricted {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMemberStatusRestrictedBuilder {
+    pub fn builder() -> ChatMemberStatusRestrictedBuilder {
         let mut inner = ChatMemberStatusRestricted::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMemberStatusRestrictedBuilder { inner }
+        ChatMemberStatusRestrictedBuilder { inner }
     }
 
     pub fn is_member(&self) -> bool {
@@ -653,11 +668,14 @@ impl ChatMemberStatusRestricted {
 }
 
 #[doc(hidden)]
-pub struct RTDChatMemberStatusRestrictedBuilder {
+pub struct ChatMemberStatusRestrictedBuilder {
     inner: ChatMemberStatusRestricted,
 }
 
-impl RTDChatMemberStatusRestrictedBuilder {
+#[deprecated]
+pub type RTDChatMemberStatusRestrictedBuilder = ChatMemberStatusRestrictedBuilder;
+
+impl ChatMemberStatusRestrictedBuilder {
     pub fn build(&self) -> ChatMemberStatusRestricted {
         self.inner.clone()
     }
@@ -684,7 +702,7 @@ impl AsRef<ChatMemberStatusRestricted> for ChatMemberStatusRestricted {
     }
 }
 
-impl AsRef<ChatMemberStatusRestricted> for RTDChatMemberStatusRestrictedBuilder {
+impl AsRef<ChatMemberStatusRestricted> for ChatMemberStatusRestrictedBuilder {
     fn as_ref(&self) -> &ChatMemberStatusRestricted {
         &self.inner
     }

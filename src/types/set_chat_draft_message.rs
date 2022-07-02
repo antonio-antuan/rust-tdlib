@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -39,16 +39,16 @@ impl RObject for SetChatDraftMessage {
 impl RFunction for SetChatDraftMessage {}
 
 impl SetChatDraftMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatDraftMessageBuilder {
+    pub fn builder() -> SetChatDraftMessageBuilder {
         let mut inner = SetChatDraftMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatDraftMessage".to_string();
 
-        RTDSetChatDraftMessageBuilder { inner }
+        SetChatDraftMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -65,11 +65,14 @@ impl SetChatDraftMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatDraftMessageBuilder {
+pub struct SetChatDraftMessageBuilder {
     inner: SetChatDraftMessage,
 }
 
-impl RTDSetChatDraftMessageBuilder {
+#[deprecated]
+pub type RTDSetChatDraftMessageBuilder = SetChatDraftMessageBuilder;
+
+impl SetChatDraftMessageBuilder {
     pub fn build(&self) -> SetChatDraftMessage {
         self.inner.clone()
     }
@@ -96,7 +99,7 @@ impl AsRef<SetChatDraftMessage> for SetChatDraftMessage {
     }
 }
 
-impl AsRef<SetChatDraftMessage> for RTDSetChatDraftMessageBuilder {
+impl AsRef<SetChatDraftMessage> for SetChatDraftMessageBuilder {
     fn as_ref(&self) -> &SetChatDraftMessage {
         &self.inner
     }

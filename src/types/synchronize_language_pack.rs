@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for SynchronizeLanguagePack {
 impl RFunction for SynchronizeLanguagePack {}
 
 impl SynchronizeLanguagePack {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSynchronizeLanguagePackBuilder {
+    pub fn builder() -> SynchronizeLanguagePackBuilder {
         let mut inner = SynchronizeLanguagePack::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "synchronizeLanguagePack".to_string();
 
-        RTDSynchronizeLanguagePackBuilder { inner }
+        SynchronizeLanguagePackBuilder { inner }
     }
 
     pub fn language_pack_id(&self) -> &String {
@@ -51,11 +51,14 @@ impl SynchronizeLanguagePack {
 }
 
 #[doc(hidden)]
-pub struct RTDSynchronizeLanguagePackBuilder {
+pub struct SynchronizeLanguagePackBuilder {
     inner: SynchronizeLanguagePack,
 }
 
-impl RTDSynchronizeLanguagePackBuilder {
+#[deprecated]
+pub type RTDSynchronizeLanguagePackBuilder = SynchronizeLanguagePackBuilder;
+
+impl SynchronizeLanguagePackBuilder {
     pub fn build(&self) -> SynchronizeLanguagePack {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<SynchronizeLanguagePack> for SynchronizeLanguagePack {
     }
 }
 
-impl AsRef<SynchronizeLanguagePack> for RTDSynchronizeLanguagePackBuilder {
+impl AsRef<SynchronizeLanguagePack> for SynchronizeLanguagePackBuilder {
     fn as_ref(&self) -> &SynchronizeLanguagePack {
         &self.inner
     }

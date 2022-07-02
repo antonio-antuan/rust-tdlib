@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for EmailAddressAuthenticationCodeInfo {
 }
 
 impl EmailAddressAuthenticationCodeInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEmailAddressAuthenticationCodeInfoBuilder {
+    pub fn builder() -> EmailAddressAuthenticationCodeInfoBuilder {
         let mut inner = EmailAddressAuthenticationCodeInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDEmailAddressAuthenticationCodeInfoBuilder { inner }
+        EmailAddressAuthenticationCodeInfoBuilder { inner }
     }
 
     pub fn email_address_pattern(&self) -> &String {
@@ -52,11 +52,14 @@ impl EmailAddressAuthenticationCodeInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDEmailAddressAuthenticationCodeInfoBuilder {
+pub struct EmailAddressAuthenticationCodeInfoBuilder {
     inner: EmailAddressAuthenticationCodeInfo,
 }
 
-impl RTDEmailAddressAuthenticationCodeInfoBuilder {
+#[deprecated]
+pub type RTDEmailAddressAuthenticationCodeInfoBuilder = EmailAddressAuthenticationCodeInfoBuilder;
+
+impl EmailAddressAuthenticationCodeInfoBuilder {
     pub fn build(&self) -> EmailAddressAuthenticationCodeInfo {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<EmailAddressAuthenticationCodeInfo> for EmailAddressAuthenticationCod
     }
 }
 
-impl AsRef<EmailAddressAuthenticationCodeInfo> for RTDEmailAddressAuthenticationCodeInfoBuilder {
+impl AsRef<EmailAddressAuthenticationCodeInfo> for EmailAddressAuthenticationCodeInfoBuilder {
     fn as_ref(&self) -> &EmailAddressAuthenticationCodeInfo {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl TDMessageFileType for GetMessageFileType {}
 impl RFunction for GetMessageFileType {}
 
 impl GetMessageFileType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageFileTypeBuilder {
+    pub fn builder() -> GetMessageFileTypeBuilder {
         let mut inner = GetMessageFileType::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageFileType".to_string();
 
-        RTDGetMessageFileTypeBuilder { inner }
+        GetMessageFileTypeBuilder { inner }
     }
 
     pub fn message_file_head(&self) -> &String {
@@ -53,11 +53,14 @@ impl GetMessageFileType {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageFileTypeBuilder {
+pub struct GetMessageFileTypeBuilder {
     inner: GetMessageFileType,
 }
 
-impl RTDGetMessageFileTypeBuilder {
+#[deprecated]
+pub type RTDGetMessageFileTypeBuilder = GetMessageFileTypeBuilder;
+
+impl GetMessageFileTypeBuilder {
     pub fn build(&self) -> GetMessageFileType {
         self.inner.clone()
     }
@@ -74,7 +77,7 @@ impl AsRef<GetMessageFileType> for GetMessageFileType {
     }
 }
 
-impl AsRef<GetMessageFileType> for RTDGetMessageFileTypeBuilder {
+impl AsRef<GetMessageFileType> for GetMessageFileTypeBuilder {
     fn as_ref(&self) -> &GetMessageFileType {
         &self.inner
     }

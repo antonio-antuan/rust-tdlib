@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,16 +34,16 @@ impl RObject for DeletePassportElement {
 impl RFunction for DeletePassportElement {}
 
 impl DeletePassportElement {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeletePassportElementBuilder {
+    pub fn builder() -> DeletePassportElementBuilder {
         let mut inner = DeletePassportElement::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deletePassportElement".to_string();
 
-        RTDDeletePassportElementBuilder { inner }
+        DeletePassportElementBuilder { inner }
     }
 
     pub fn type_(&self) -> &PassportElementType {
@@ -52,11 +52,14 @@ impl DeletePassportElement {
 }
 
 #[doc(hidden)]
-pub struct RTDDeletePassportElementBuilder {
+pub struct DeletePassportElementBuilder {
     inner: DeletePassportElement,
 }
 
-impl RTDDeletePassportElementBuilder {
+#[deprecated]
+pub type RTDDeletePassportElementBuilder = DeletePassportElementBuilder;
+
+impl DeletePassportElementBuilder {
     pub fn build(&self) -> DeletePassportElement {
         self.inner.clone()
     }
@@ -73,7 +76,7 @@ impl AsRef<DeletePassportElement> for DeletePassportElement {
     }
 }
 
-impl AsRef<DeletePassportElement> for RTDDeletePassportElementBuilder {
+impl AsRef<DeletePassportElement> for DeletePassportElementBuilder {
     fn as_ref(&self) -> &DeletePassportElement {
         &self.inner
     }

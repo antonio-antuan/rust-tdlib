@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for UpgradeBasicGroupChatToSupergroupChat {
 impl RFunction for UpgradeBasicGroupChatToSupergroupChat {}
 
 impl UpgradeBasicGroupChatToSupergroupChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUpgradeBasicGroupChatToSupergroupChatBuilder {
+    pub fn builder() -> UpgradeBasicGroupChatToSupergroupChatBuilder {
         let mut inner = UpgradeBasicGroupChatToSupergroupChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "upgradeBasicGroupChatToSupergroupChat".to_string();
 
-        RTDUpgradeBasicGroupChatToSupergroupChatBuilder { inner }
+        UpgradeBasicGroupChatToSupergroupChatBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,15 @@ impl UpgradeBasicGroupChatToSupergroupChat {
 }
 
 #[doc(hidden)]
-pub struct RTDUpgradeBasicGroupChatToSupergroupChatBuilder {
+pub struct UpgradeBasicGroupChatToSupergroupChatBuilder {
     inner: UpgradeBasicGroupChatToSupergroupChat,
 }
 
-impl RTDUpgradeBasicGroupChatToSupergroupChatBuilder {
+#[deprecated]
+pub type RTDUpgradeBasicGroupChatToSupergroupChatBuilder =
+    UpgradeBasicGroupChatToSupergroupChatBuilder;
+
+impl UpgradeBasicGroupChatToSupergroupChatBuilder {
     pub fn build(&self) -> UpgradeBasicGroupChatToSupergroupChat {
         self.inner.clone()
     }
@@ -72,9 +76,7 @@ impl AsRef<UpgradeBasicGroupChatToSupergroupChat> for UpgradeBasicGroupChatToSup
     }
 }
 
-impl AsRef<UpgradeBasicGroupChatToSupergroupChat>
-    for RTDUpgradeBasicGroupChatToSupergroupChatBuilder
-{
+impl AsRef<UpgradeBasicGroupChatToSupergroupChat> for UpgradeBasicGroupChatToSupergroupChatBuilder {
     fn as_ref(&self) -> &UpgradeBasicGroupChatToSupergroupChat {
         &self.inner
     }

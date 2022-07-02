@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetFileDownloadedPrefixSize {
 impl RFunction for GetFileDownloadedPrefixSize {}
 
 impl GetFileDownloadedPrefixSize {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetFileDownloadedPrefixSizeBuilder {
+    pub fn builder() -> GetFileDownloadedPrefixSizeBuilder {
         let mut inner = GetFileDownloadedPrefixSize::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getFileDownloadedPrefixSize".to_string();
 
-        RTDGetFileDownloadedPrefixSizeBuilder { inner }
+        GetFileDownloadedPrefixSizeBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -59,11 +59,14 @@ impl GetFileDownloadedPrefixSize {
 }
 
 #[doc(hidden)]
-pub struct RTDGetFileDownloadedPrefixSizeBuilder {
+pub struct GetFileDownloadedPrefixSizeBuilder {
     inner: GetFileDownloadedPrefixSize,
 }
 
-impl RTDGetFileDownloadedPrefixSizeBuilder {
+#[deprecated]
+pub type RTDGetFileDownloadedPrefixSizeBuilder = GetFileDownloadedPrefixSizeBuilder;
+
+impl GetFileDownloadedPrefixSizeBuilder {
     pub fn build(&self) -> GetFileDownloadedPrefixSize {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<GetFileDownloadedPrefixSize> for GetFileDownloadedPrefixSize {
     }
 }
 
-impl AsRef<GetFileDownloadedPrefixSize> for RTDGetFileDownloadedPrefixSizeBuilder {
+impl AsRef<GetFileDownloadedPrefixSize> for GetFileDownloadedPrefixSizeBuilder {
     fn as_ref(&self) -> &GetFileDownloadedPrefixSize {
         &self.inner
     }

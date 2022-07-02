@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for InputBackground {
 }
 
 impl InputBackground {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -92,14 +92,14 @@ impl RObject for InputBackgroundLocal {
 impl TDInputBackground for InputBackgroundLocal {}
 
 impl InputBackgroundLocal {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputBackgroundLocalBuilder {
+    pub fn builder() -> InputBackgroundLocalBuilder {
         let mut inner = InputBackgroundLocal::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputBackgroundLocalBuilder { inner }
+        InputBackgroundLocalBuilder { inner }
     }
 
     pub fn background(&self) -> &InputFile {
@@ -108,11 +108,14 @@ impl InputBackgroundLocal {
 }
 
 #[doc(hidden)]
-pub struct RTDInputBackgroundLocalBuilder {
+pub struct InputBackgroundLocalBuilder {
     inner: InputBackgroundLocal,
 }
 
-impl RTDInputBackgroundLocalBuilder {
+#[deprecated]
+pub type RTDInputBackgroundLocalBuilder = InputBackgroundLocalBuilder;
+
+impl InputBackgroundLocalBuilder {
     pub fn build(&self) -> InputBackgroundLocal {
         self.inner.clone()
     }
@@ -129,7 +132,7 @@ impl AsRef<InputBackgroundLocal> for InputBackgroundLocal {
     }
 }
 
-impl AsRef<InputBackgroundLocal> for RTDInputBackgroundLocalBuilder {
+impl AsRef<InputBackgroundLocal> for InputBackgroundLocalBuilder {
     fn as_ref(&self) -> &InputBackgroundLocal {
         &self.inner
     }
@@ -164,14 +167,14 @@ impl RObject for InputBackgroundRemote {
 impl TDInputBackground for InputBackgroundRemote {}
 
 impl InputBackgroundRemote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputBackgroundRemoteBuilder {
+    pub fn builder() -> InputBackgroundRemoteBuilder {
         let mut inner = InputBackgroundRemote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputBackgroundRemoteBuilder { inner }
+        InputBackgroundRemoteBuilder { inner }
     }
 
     pub fn background_id(&self) -> i64 {
@@ -180,11 +183,14 @@ impl InputBackgroundRemote {
 }
 
 #[doc(hidden)]
-pub struct RTDInputBackgroundRemoteBuilder {
+pub struct InputBackgroundRemoteBuilder {
     inner: InputBackgroundRemote,
 }
 
-impl RTDInputBackgroundRemoteBuilder {
+#[deprecated]
+pub type RTDInputBackgroundRemoteBuilder = InputBackgroundRemoteBuilder;
+
+impl InputBackgroundRemoteBuilder {
     pub fn build(&self) -> InputBackgroundRemote {
         self.inner.clone()
     }
@@ -201,7 +207,7 @@ impl AsRef<InputBackgroundRemote> for InputBackgroundRemote {
     }
 }
 
-impl AsRef<InputBackgroundRemote> for RTDInputBackgroundRemoteBuilder {
+impl AsRef<InputBackgroundRemote> for InputBackgroundRemoteBuilder {
     fn as_ref(&self) -> &InputBackgroundRemote {
         &self.inner
     }

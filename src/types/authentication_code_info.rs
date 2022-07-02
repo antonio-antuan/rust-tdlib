@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -39,14 +39,14 @@ impl RObject for AuthenticationCodeInfo {
 }
 
 impl AuthenticationCodeInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAuthenticationCodeInfoBuilder {
+    pub fn builder() -> AuthenticationCodeInfoBuilder {
         let mut inner = AuthenticationCodeInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAuthenticationCodeInfoBuilder { inner }
+        AuthenticationCodeInfoBuilder { inner }
     }
 
     pub fn phone_number(&self) -> &String {
@@ -67,11 +67,14 @@ impl AuthenticationCodeInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDAuthenticationCodeInfoBuilder {
+pub struct AuthenticationCodeInfoBuilder {
     inner: AuthenticationCodeInfo,
 }
 
-impl RTDAuthenticationCodeInfoBuilder {
+#[deprecated]
+pub type RTDAuthenticationCodeInfoBuilder = AuthenticationCodeInfoBuilder;
+
+impl AuthenticationCodeInfoBuilder {
     pub fn build(&self) -> AuthenticationCodeInfo {
         self.inner.clone()
     }
@@ -103,7 +106,7 @@ impl AsRef<AuthenticationCodeInfo> for AuthenticationCodeInfo {
     }
 }
 
-impl AsRef<AuthenticationCodeInfo> for RTDAuthenticationCodeInfoBuilder {
+impl AsRef<AuthenticationCodeInfo> for AuthenticationCodeInfoBuilder {
     fn as_ref(&self) -> &AuthenticationCodeInfo {
         &self.inner
     }

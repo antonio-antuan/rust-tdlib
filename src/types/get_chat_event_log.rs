@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -52,16 +52,16 @@ impl RObject for GetChatEventLog {
 impl RFunction for GetChatEventLog {}
 
 impl GetChatEventLog {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatEventLogBuilder {
+    pub fn builder() -> GetChatEventLogBuilder {
         let mut inner = GetChatEventLog::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatEventLog".to_string();
 
-        RTDGetChatEventLogBuilder { inner }
+        GetChatEventLogBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -90,11 +90,14 @@ impl GetChatEventLog {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatEventLogBuilder {
+pub struct GetChatEventLogBuilder {
     inner: GetChatEventLog,
 }
 
-impl RTDGetChatEventLogBuilder {
+#[deprecated]
+pub type RTDGetChatEventLogBuilder = GetChatEventLogBuilder;
+
+impl GetChatEventLogBuilder {
     pub fn build(&self) -> GetChatEventLog {
         self.inner.clone()
     }
@@ -136,7 +139,7 @@ impl AsRef<GetChatEventLog> for GetChatEventLog {
     }
 }
 
-impl AsRef<GetChatEventLog> for RTDGetChatEventLogBuilder {
+impl AsRef<GetChatEventLog> for GetChatEventLogBuilder {
     fn as_ref(&self) -> &GetChatEventLog {
         &self.inner
     }

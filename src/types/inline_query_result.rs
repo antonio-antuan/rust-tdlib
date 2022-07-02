@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -99,7 +99,7 @@ impl RObject for InlineQueryResult {
 }
 
 impl InlineQueryResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -148,14 +148,14 @@ impl RObject for InlineQueryResultAnimation {
 impl TDInlineQueryResult for InlineQueryResultAnimation {}
 
 impl InlineQueryResultAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultAnimationBuilder {
+    pub fn builder() -> InlineQueryResultAnimationBuilder {
         let mut inner = InlineQueryResultAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultAnimationBuilder { inner }
+        InlineQueryResultAnimationBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -172,11 +172,14 @@ impl InlineQueryResultAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultAnimationBuilder {
+pub struct InlineQueryResultAnimationBuilder {
     inner: InlineQueryResultAnimation,
 }
 
-impl RTDInlineQueryResultAnimationBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultAnimationBuilder = InlineQueryResultAnimationBuilder;
+
+impl InlineQueryResultAnimationBuilder {
     pub fn build(&self) -> InlineQueryResultAnimation {
         self.inner.clone()
     }
@@ -203,7 +206,7 @@ impl AsRef<InlineQueryResultAnimation> for InlineQueryResultAnimation {
     }
 }
 
-impl AsRef<InlineQueryResultAnimation> for RTDInlineQueryResultAnimationBuilder {
+impl AsRef<InlineQueryResultAnimation> for InlineQueryResultAnimationBuilder {
     fn as_ref(&self) -> &InlineQueryResultAnimation {
         &self.inner
     }
@@ -255,14 +258,14 @@ impl RObject for InlineQueryResultArticle {
 impl TDInlineQueryResult for InlineQueryResultArticle {}
 
 impl InlineQueryResultArticle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultArticleBuilder {
+    pub fn builder() -> InlineQueryResultArticleBuilder {
         let mut inner = InlineQueryResultArticle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultArticleBuilder { inner }
+        InlineQueryResultArticleBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -291,11 +294,14 @@ impl InlineQueryResultArticle {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultArticleBuilder {
+pub struct InlineQueryResultArticleBuilder {
     inner: InlineQueryResultArticle,
 }
 
-impl RTDInlineQueryResultArticleBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultArticleBuilder = InlineQueryResultArticleBuilder;
+
+impl InlineQueryResultArticleBuilder {
     pub fn build(&self) -> InlineQueryResultArticle {
         self.inner.clone()
     }
@@ -337,7 +343,7 @@ impl AsRef<InlineQueryResultArticle> for InlineQueryResultArticle {
     }
 }
 
-impl AsRef<InlineQueryResultArticle> for RTDInlineQueryResultArticleBuilder {
+impl AsRef<InlineQueryResultArticle> for InlineQueryResultArticleBuilder {
     fn as_ref(&self) -> &InlineQueryResultArticle {
         &self.inner
     }
@@ -373,14 +379,14 @@ impl RObject for InlineQueryResultAudio {
 impl TDInlineQueryResult for InlineQueryResultAudio {}
 
 impl InlineQueryResultAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultAudioBuilder {
+    pub fn builder() -> InlineQueryResultAudioBuilder {
         let mut inner = InlineQueryResultAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultAudioBuilder { inner }
+        InlineQueryResultAudioBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -393,11 +399,14 @@ impl InlineQueryResultAudio {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultAudioBuilder {
+pub struct InlineQueryResultAudioBuilder {
     inner: InlineQueryResultAudio,
 }
 
-impl RTDInlineQueryResultAudioBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultAudioBuilder = InlineQueryResultAudioBuilder;
+
+impl InlineQueryResultAudioBuilder {
     pub fn build(&self) -> InlineQueryResultAudio {
         self.inner.clone()
     }
@@ -419,7 +428,7 @@ impl AsRef<InlineQueryResultAudio> for InlineQueryResultAudio {
     }
 }
 
-impl AsRef<InlineQueryResultAudio> for RTDInlineQueryResultAudioBuilder {
+impl AsRef<InlineQueryResultAudio> for InlineQueryResultAudioBuilder {
     fn as_ref(&self) -> &InlineQueryResultAudio {
         &self.inner
     }
@@ -457,14 +466,14 @@ impl RObject for InlineQueryResultContact {
 impl TDInlineQueryResult for InlineQueryResultContact {}
 
 impl InlineQueryResultContact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultContactBuilder {
+    pub fn builder() -> InlineQueryResultContactBuilder {
         let mut inner = InlineQueryResultContact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultContactBuilder { inner }
+        InlineQueryResultContactBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -481,11 +490,14 @@ impl InlineQueryResultContact {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultContactBuilder {
+pub struct InlineQueryResultContactBuilder {
     inner: InlineQueryResultContact,
 }
 
-impl RTDInlineQueryResultContactBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultContactBuilder = InlineQueryResultContactBuilder;
+
+impl InlineQueryResultContactBuilder {
     pub fn build(&self) -> InlineQueryResultContact {
         self.inner.clone()
     }
@@ -512,7 +524,7 @@ impl AsRef<InlineQueryResultContact> for InlineQueryResultContact {
     }
 }
 
-impl AsRef<InlineQueryResultContact> for RTDInlineQueryResultContactBuilder {
+impl AsRef<InlineQueryResultContact> for InlineQueryResultContactBuilder {
     fn as_ref(&self) -> &InlineQueryResultContact {
         &self.inner
     }
@@ -556,14 +568,14 @@ impl RObject for InlineQueryResultDocument {
 impl TDInlineQueryResult for InlineQueryResultDocument {}
 
 impl InlineQueryResultDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultDocumentBuilder {
+    pub fn builder() -> InlineQueryResultDocumentBuilder {
         let mut inner = InlineQueryResultDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultDocumentBuilder { inner }
+        InlineQueryResultDocumentBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -584,11 +596,14 @@ impl InlineQueryResultDocument {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultDocumentBuilder {
+pub struct InlineQueryResultDocumentBuilder {
     inner: InlineQueryResultDocument,
 }
 
-impl RTDInlineQueryResultDocumentBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultDocumentBuilder = InlineQueryResultDocumentBuilder;
+
+impl InlineQueryResultDocumentBuilder {
     pub fn build(&self) -> InlineQueryResultDocument {
         self.inner.clone()
     }
@@ -620,7 +635,7 @@ impl AsRef<InlineQueryResultDocument> for InlineQueryResultDocument {
     }
 }
 
-impl AsRef<InlineQueryResultDocument> for RTDInlineQueryResultDocumentBuilder {
+impl AsRef<InlineQueryResultDocument> for InlineQueryResultDocumentBuilder {
     fn as_ref(&self) -> &InlineQueryResultDocument {
         &self.inner
     }
@@ -656,14 +671,14 @@ impl RObject for InlineQueryResultGame {
 impl TDInlineQueryResult for InlineQueryResultGame {}
 
 impl InlineQueryResultGame {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultGameBuilder {
+    pub fn builder() -> InlineQueryResultGameBuilder {
         let mut inner = InlineQueryResultGame::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultGameBuilder { inner }
+        InlineQueryResultGameBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -676,11 +691,14 @@ impl InlineQueryResultGame {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultGameBuilder {
+pub struct InlineQueryResultGameBuilder {
     inner: InlineQueryResultGame,
 }
 
-impl RTDInlineQueryResultGameBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultGameBuilder = InlineQueryResultGameBuilder;
+
+impl InlineQueryResultGameBuilder {
     pub fn build(&self) -> InlineQueryResultGame {
         self.inner.clone()
     }
@@ -702,7 +720,7 @@ impl AsRef<InlineQueryResultGame> for InlineQueryResultGame {
     }
 }
 
-impl AsRef<InlineQueryResultGame> for RTDInlineQueryResultGameBuilder {
+impl AsRef<InlineQueryResultGame> for InlineQueryResultGameBuilder {
     fn as_ref(&self) -> &InlineQueryResultGame {
         &self.inner
     }
@@ -744,14 +762,14 @@ impl RObject for InlineQueryResultLocation {
 impl TDInlineQueryResult for InlineQueryResultLocation {}
 
 impl InlineQueryResultLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultLocationBuilder {
+    pub fn builder() -> InlineQueryResultLocationBuilder {
         let mut inner = InlineQueryResultLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultLocationBuilder { inner }
+        InlineQueryResultLocationBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -772,11 +790,14 @@ impl InlineQueryResultLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultLocationBuilder {
+pub struct InlineQueryResultLocationBuilder {
     inner: InlineQueryResultLocation,
 }
 
-impl RTDInlineQueryResultLocationBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultLocationBuilder = InlineQueryResultLocationBuilder;
+
+impl InlineQueryResultLocationBuilder {
     pub fn build(&self) -> InlineQueryResultLocation {
         self.inner.clone()
     }
@@ -808,7 +829,7 @@ impl AsRef<InlineQueryResultLocation> for InlineQueryResultLocation {
     }
 }
 
-impl AsRef<InlineQueryResultLocation> for RTDInlineQueryResultLocationBuilder {
+impl AsRef<InlineQueryResultLocation> for InlineQueryResultLocationBuilder {
     fn as_ref(&self) -> &InlineQueryResultLocation {
         &self.inner
     }
@@ -852,14 +873,14 @@ impl RObject for InlineQueryResultPhoto {
 impl TDInlineQueryResult for InlineQueryResultPhoto {}
 
 impl InlineQueryResultPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultPhotoBuilder {
+    pub fn builder() -> InlineQueryResultPhotoBuilder {
         let mut inner = InlineQueryResultPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultPhotoBuilder { inner }
+        InlineQueryResultPhotoBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -880,11 +901,14 @@ impl InlineQueryResultPhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultPhotoBuilder {
+pub struct InlineQueryResultPhotoBuilder {
     inner: InlineQueryResultPhoto,
 }
 
-impl RTDInlineQueryResultPhotoBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultPhotoBuilder = InlineQueryResultPhotoBuilder;
+
+impl InlineQueryResultPhotoBuilder {
     pub fn build(&self) -> InlineQueryResultPhoto {
         self.inner.clone()
     }
@@ -916,7 +940,7 @@ impl AsRef<InlineQueryResultPhoto> for InlineQueryResultPhoto {
     }
 }
 
-impl AsRef<InlineQueryResultPhoto> for RTDInlineQueryResultPhotoBuilder {
+impl AsRef<InlineQueryResultPhoto> for InlineQueryResultPhotoBuilder {
     fn as_ref(&self) -> &InlineQueryResultPhoto {
         &self.inner
     }
@@ -952,14 +976,14 @@ impl RObject for InlineQueryResultSticker {
 impl TDInlineQueryResult for InlineQueryResultSticker {}
 
 impl InlineQueryResultSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultStickerBuilder {
+    pub fn builder() -> InlineQueryResultStickerBuilder {
         let mut inner = InlineQueryResultSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultStickerBuilder { inner }
+        InlineQueryResultStickerBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -972,11 +996,14 @@ impl InlineQueryResultSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultStickerBuilder {
+pub struct InlineQueryResultStickerBuilder {
     inner: InlineQueryResultSticker,
 }
 
-impl RTDInlineQueryResultStickerBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultStickerBuilder = InlineQueryResultStickerBuilder;
+
+impl InlineQueryResultStickerBuilder {
     pub fn build(&self) -> InlineQueryResultSticker {
         self.inner.clone()
     }
@@ -998,7 +1025,7 @@ impl AsRef<InlineQueryResultSticker> for InlineQueryResultSticker {
     }
 }
 
-impl AsRef<InlineQueryResultSticker> for RTDInlineQueryResultStickerBuilder {
+impl AsRef<InlineQueryResultSticker> for InlineQueryResultStickerBuilder {
     fn as_ref(&self) -> &InlineQueryResultSticker {
         &self.inner
     }
@@ -1036,14 +1063,14 @@ impl RObject for InlineQueryResultVenue {
 impl TDInlineQueryResult for InlineQueryResultVenue {}
 
 impl InlineQueryResultVenue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultVenueBuilder {
+    pub fn builder() -> InlineQueryResultVenueBuilder {
         let mut inner = InlineQueryResultVenue::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultVenueBuilder { inner }
+        InlineQueryResultVenueBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1060,11 +1087,14 @@ impl InlineQueryResultVenue {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultVenueBuilder {
+pub struct InlineQueryResultVenueBuilder {
     inner: InlineQueryResultVenue,
 }
 
-impl RTDInlineQueryResultVenueBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultVenueBuilder = InlineQueryResultVenueBuilder;
+
+impl InlineQueryResultVenueBuilder {
     pub fn build(&self) -> InlineQueryResultVenue {
         self.inner.clone()
     }
@@ -1091,7 +1121,7 @@ impl AsRef<InlineQueryResultVenue> for InlineQueryResultVenue {
     }
 }
 
-impl AsRef<InlineQueryResultVenue> for RTDInlineQueryResultVenueBuilder {
+impl AsRef<InlineQueryResultVenue> for InlineQueryResultVenueBuilder {
     fn as_ref(&self) -> &InlineQueryResultVenue {
         &self.inner
     }
@@ -1135,14 +1165,14 @@ impl RObject for InlineQueryResultVideo {
 impl TDInlineQueryResult for InlineQueryResultVideo {}
 
 impl InlineQueryResultVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultVideoBuilder {
+    pub fn builder() -> InlineQueryResultVideoBuilder {
         let mut inner = InlineQueryResultVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultVideoBuilder { inner }
+        InlineQueryResultVideoBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1163,11 +1193,14 @@ impl InlineQueryResultVideo {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultVideoBuilder {
+pub struct InlineQueryResultVideoBuilder {
     inner: InlineQueryResultVideo,
 }
 
-impl RTDInlineQueryResultVideoBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultVideoBuilder = InlineQueryResultVideoBuilder;
+
+impl InlineQueryResultVideoBuilder {
     pub fn build(&self) -> InlineQueryResultVideo {
         self.inner.clone()
     }
@@ -1199,7 +1232,7 @@ impl AsRef<InlineQueryResultVideo> for InlineQueryResultVideo {
     }
 }
 
-impl AsRef<InlineQueryResultVideo> for RTDInlineQueryResultVideoBuilder {
+impl AsRef<InlineQueryResultVideo> for InlineQueryResultVideoBuilder {
     fn as_ref(&self) -> &InlineQueryResultVideo {
         &self.inner
     }
@@ -1239,14 +1272,14 @@ impl RObject for InlineQueryResultVoiceNote {
 impl TDInlineQueryResult for InlineQueryResultVoiceNote {}
 
 impl InlineQueryResultVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultVoiceNoteBuilder {
+    pub fn builder() -> InlineQueryResultVoiceNoteBuilder {
         let mut inner = InlineQueryResultVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultVoiceNoteBuilder { inner }
+        InlineQueryResultVoiceNoteBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1263,11 +1296,14 @@ impl InlineQueryResultVoiceNote {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultVoiceNoteBuilder {
+pub struct InlineQueryResultVoiceNoteBuilder {
     inner: InlineQueryResultVoiceNote,
 }
 
-impl RTDInlineQueryResultVoiceNoteBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultVoiceNoteBuilder = InlineQueryResultVoiceNoteBuilder;
+
+impl InlineQueryResultVoiceNoteBuilder {
     pub fn build(&self) -> InlineQueryResultVoiceNote {
         self.inner.clone()
     }
@@ -1294,7 +1330,7 @@ impl AsRef<InlineQueryResultVoiceNote> for InlineQueryResultVoiceNote {
     }
 }
 
-impl AsRef<InlineQueryResultVoiceNote> for RTDInlineQueryResultVoiceNoteBuilder {
+impl AsRef<InlineQueryResultVoiceNote> for InlineQueryResultVoiceNoteBuilder {
     fn as_ref(&self) -> &InlineQueryResultVoiceNote {
         &self.inner
     }

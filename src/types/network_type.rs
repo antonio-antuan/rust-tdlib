@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -64,7 +64,7 @@ impl RObject for NetworkType {
 }
 
 impl NetworkType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -103,23 +103,26 @@ impl RObject for NetworkTypeMobile {
 impl TDNetworkType for NetworkTypeMobile {}
 
 impl NetworkTypeMobile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNetworkTypeMobileBuilder {
+    pub fn builder() -> NetworkTypeMobileBuilder {
         let mut inner = NetworkTypeMobile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNetworkTypeMobileBuilder { inner }
+        NetworkTypeMobileBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNetworkTypeMobileBuilder {
+pub struct NetworkTypeMobileBuilder {
     inner: NetworkTypeMobile,
 }
 
-impl RTDNetworkTypeMobileBuilder {
+#[deprecated]
+pub type RTDNetworkTypeMobileBuilder = NetworkTypeMobileBuilder;
+
+impl NetworkTypeMobileBuilder {
     pub fn build(&self) -> NetworkTypeMobile {
         self.inner.clone()
     }
@@ -131,7 +134,7 @@ impl AsRef<NetworkTypeMobile> for NetworkTypeMobile {
     }
 }
 
-impl AsRef<NetworkTypeMobile> for RTDNetworkTypeMobileBuilder {
+impl AsRef<NetworkTypeMobile> for NetworkTypeMobileBuilder {
     fn as_ref(&self) -> &NetworkTypeMobile {
         &self.inner
     }
@@ -161,23 +164,26 @@ impl RObject for NetworkTypeMobileRoaming {
 impl TDNetworkType for NetworkTypeMobileRoaming {}
 
 impl NetworkTypeMobileRoaming {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNetworkTypeMobileRoamingBuilder {
+    pub fn builder() -> NetworkTypeMobileRoamingBuilder {
         let mut inner = NetworkTypeMobileRoaming::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNetworkTypeMobileRoamingBuilder { inner }
+        NetworkTypeMobileRoamingBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNetworkTypeMobileRoamingBuilder {
+pub struct NetworkTypeMobileRoamingBuilder {
     inner: NetworkTypeMobileRoaming,
 }
 
-impl RTDNetworkTypeMobileRoamingBuilder {
+#[deprecated]
+pub type RTDNetworkTypeMobileRoamingBuilder = NetworkTypeMobileRoamingBuilder;
+
+impl NetworkTypeMobileRoamingBuilder {
     pub fn build(&self) -> NetworkTypeMobileRoaming {
         self.inner.clone()
     }
@@ -189,7 +195,7 @@ impl AsRef<NetworkTypeMobileRoaming> for NetworkTypeMobileRoaming {
     }
 }
 
-impl AsRef<NetworkTypeMobileRoaming> for RTDNetworkTypeMobileRoamingBuilder {
+impl AsRef<NetworkTypeMobileRoaming> for NetworkTypeMobileRoamingBuilder {
     fn as_ref(&self) -> &NetworkTypeMobileRoaming {
         &self.inner
     }
@@ -219,23 +225,26 @@ impl RObject for NetworkTypeNone {
 impl TDNetworkType for NetworkTypeNone {}
 
 impl NetworkTypeNone {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNetworkTypeNoneBuilder {
+    pub fn builder() -> NetworkTypeNoneBuilder {
         let mut inner = NetworkTypeNone::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNetworkTypeNoneBuilder { inner }
+        NetworkTypeNoneBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNetworkTypeNoneBuilder {
+pub struct NetworkTypeNoneBuilder {
     inner: NetworkTypeNone,
 }
 
-impl RTDNetworkTypeNoneBuilder {
+#[deprecated]
+pub type RTDNetworkTypeNoneBuilder = NetworkTypeNoneBuilder;
+
+impl NetworkTypeNoneBuilder {
     pub fn build(&self) -> NetworkTypeNone {
         self.inner.clone()
     }
@@ -247,7 +256,7 @@ impl AsRef<NetworkTypeNone> for NetworkTypeNone {
     }
 }
 
-impl AsRef<NetworkTypeNone> for RTDNetworkTypeNoneBuilder {
+impl AsRef<NetworkTypeNone> for NetworkTypeNoneBuilder {
     fn as_ref(&self) -> &NetworkTypeNone {
         &self.inner
     }
@@ -277,23 +286,26 @@ impl RObject for NetworkTypeOther {
 impl TDNetworkType for NetworkTypeOther {}
 
 impl NetworkTypeOther {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNetworkTypeOtherBuilder {
+    pub fn builder() -> NetworkTypeOtherBuilder {
         let mut inner = NetworkTypeOther::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNetworkTypeOtherBuilder { inner }
+        NetworkTypeOtherBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNetworkTypeOtherBuilder {
+pub struct NetworkTypeOtherBuilder {
     inner: NetworkTypeOther,
 }
 
-impl RTDNetworkTypeOtherBuilder {
+#[deprecated]
+pub type RTDNetworkTypeOtherBuilder = NetworkTypeOtherBuilder;
+
+impl NetworkTypeOtherBuilder {
     pub fn build(&self) -> NetworkTypeOther {
         self.inner.clone()
     }
@@ -305,7 +317,7 @@ impl AsRef<NetworkTypeOther> for NetworkTypeOther {
     }
 }
 
-impl AsRef<NetworkTypeOther> for RTDNetworkTypeOtherBuilder {
+impl AsRef<NetworkTypeOther> for NetworkTypeOtherBuilder {
     fn as_ref(&self) -> &NetworkTypeOther {
         &self.inner
     }
@@ -335,23 +347,26 @@ impl RObject for NetworkTypeWiFi {
 impl TDNetworkType for NetworkTypeWiFi {}
 
 impl NetworkTypeWiFi {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNetworkTypeWiFiBuilder {
+    pub fn builder() -> NetworkTypeWiFiBuilder {
         let mut inner = NetworkTypeWiFi::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNetworkTypeWiFiBuilder { inner }
+        NetworkTypeWiFiBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNetworkTypeWiFiBuilder {
+pub struct NetworkTypeWiFiBuilder {
     inner: NetworkTypeWiFi,
 }
 
-impl RTDNetworkTypeWiFiBuilder {
+#[deprecated]
+pub type RTDNetworkTypeWiFiBuilder = NetworkTypeWiFiBuilder;
+
+impl NetworkTypeWiFiBuilder {
     pub fn build(&self) -> NetworkTypeWiFi {
         self.inner.clone()
     }
@@ -363,7 +378,7 @@ impl AsRef<NetworkTypeWiFi> for NetworkTypeWiFi {
     }
 }
 
-impl AsRef<NetworkTypeWiFi> for RTDNetworkTypeWiFiBuilder {
+impl AsRef<NetworkTypeWiFi> for NetworkTypeWiFiBuilder {
     fn as_ref(&self) -> &NetworkTypeWiFi {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for CreatePrivateChat {
 impl RFunction for CreatePrivateChat {}
 
 impl CreatePrivateChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreatePrivateChatBuilder {
+    pub fn builder() -> CreatePrivateChatBuilder {
         let mut inner = CreatePrivateChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createPrivateChat".to_string();
 
-        RTDCreatePrivateChatBuilder { inner }
+        CreatePrivateChatBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl CreatePrivateChat {
 }
 
 #[doc(hidden)]
-pub struct RTDCreatePrivateChatBuilder {
+pub struct CreatePrivateChatBuilder {
     inner: CreatePrivateChat,
 }
 
-impl RTDCreatePrivateChatBuilder {
+#[deprecated]
+pub type RTDCreatePrivateChatBuilder = CreatePrivateChatBuilder;
+
+impl CreatePrivateChatBuilder {
     pub fn build(&self) -> CreatePrivateChat {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<CreatePrivateChat> for CreatePrivateChat {
     }
 }
 
-impl AsRef<CreatePrivateChat> for RTDCreatePrivateChatBuilder {
+impl AsRef<CreatePrivateChat> for CreatePrivateChatBuilder {
     fn as_ref(&self) -> &CreatePrivateChat {
         &self.inner
     }

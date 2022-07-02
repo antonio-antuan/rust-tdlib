@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -54,7 +54,7 @@ impl RObject for NotificationSettingsScope {
 }
 
 impl NotificationSettingsScope {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -93,23 +93,27 @@ impl RObject for NotificationSettingsScopeChannelChats {
 impl TDNotificationSettingsScope for NotificationSettingsScopeChannelChats {}
 
 impl NotificationSettingsScopeChannelChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationSettingsScopeChannelChatsBuilder {
+    pub fn builder() -> NotificationSettingsScopeChannelChatsBuilder {
         let mut inner = NotificationSettingsScopeChannelChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationSettingsScopeChannelChatsBuilder { inner }
+        NotificationSettingsScopeChannelChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationSettingsScopeChannelChatsBuilder {
+pub struct NotificationSettingsScopeChannelChatsBuilder {
     inner: NotificationSettingsScopeChannelChats,
 }
 
-impl RTDNotificationSettingsScopeChannelChatsBuilder {
+#[deprecated]
+pub type RTDNotificationSettingsScopeChannelChatsBuilder =
+    NotificationSettingsScopeChannelChatsBuilder;
+
+impl NotificationSettingsScopeChannelChatsBuilder {
     pub fn build(&self) -> NotificationSettingsScopeChannelChats {
         self.inner.clone()
     }
@@ -121,9 +125,7 @@ impl AsRef<NotificationSettingsScopeChannelChats> for NotificationSettingsScopeC
     }
 }
 
-impl AsRef<NotificationSettingsScopeChannelChats>
-    for RTDNotificationSettingsScopeChannelChatsBuilder
-{
+impl AsRef<NotificationSettingsScopeChannelChats> for NotificationSettingsScopeChannelChatsBuilder {
     fn as_ref(&self) -> &NotificationSettingsScopeChannelChats {
         &self.inner
     }
@@ -153,23 +155,26 @@ impl RObject for NotificationSettingsScopeGroupChats {
 impl TDNotificationSettingsScope for NotificationSettingsScopeGroupChats {}
 
 impl NotificationSettingsScopeGroupChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationSettingsScopeGroupChatsBuilder {
+    pub fn builder() -> NotificationSettingsScopeGroupChatsBuilder {
         let mut inner = NotificationSettingsScopeGroupChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationSettingsScopeGroupChatsBuilder { inner }
+        NotificationSettingsScopeGroupChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationSettingsScopeGroupChatsBuilder {
+pub struct NotificationSettingsScopeGroupChatsBuilder {
     inner: NotificationSettingsScopeGroupChats,
 }
 
-impl RTDNotificationSettingsScopeGroupChatsBuilder {
+#[deprecated]
+pub type RTDNotificationSettingsScopeGroupChatsBuilder = NotificationSettingsScopeGroupChatsBuilder;
+
+impl NotificationSettingsScopeGroupChatsBuilder {
     pub fn build(&self) -> NotificationSettingsScopeGroupChats {
         self.inner.clone()
     }
@@ -181,7 +186,7 @@ impl AsRef<NotificationSettingsScopeGroupChats> for NotificationSettingsScopeGro
     }
 }
 
-impl AsRef<NotificationSettingsScopeGroupChats> for RTDNotificationSettingsScopeGroupChatsBuilder {
+impl AsRef<NotificationSettingsScopeGroupChats> for NotificationSettingsScopeGroupChatsBuilder {
     fn as_ref(&self) -> &NotificationSettingsScopeGroupChats {
         &self.inner
     }
@@ -211,23 +216,27 @@ impl RObject for NotificationSettingsScopePrivateChats {
 impl TDNotificationSettingsScope for NotificationSettingsScopePrivateChats {}
 
 impl NotificationSettingsScopePrivateChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationSettingsScopePrivateChatsBuilder {
+    pub fn builder() -> NotificationSettingsScopePrivateChatsBuilder {
         let mut inner = NotificationSettingsScopePrivateChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationSettingsScopePrivateChatsBuilder { inner }
+        NotificationSettingsScopePrivateChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationSettingsScopePrivateChatsBuilder {
+pub struct NotificationSettingsScopePrivateChatsBuilder {
     inner: NotificationSettingsScopePrivateChats,
 }
 
-impl RTDNotificationSettingsScopePrivateChatsBuilder {
+#[deprecated]
+pub type RTDNotificationSettingsScopePrivateChatsBuilder =
+    NotificationSettingsScopePrivateChatsBuilder;
+
+impl NotificationSettingsScopePrivateChatsBuilder {
     pub fn build(&self) -> NotificationSettingsScopePrivateChats {
         self.inner.clone()
     }
@@ -239,9 +248,7 @@ impl AsRef<NotificationSettingsScopePrivateChats> for NotificationSettingsScopeP
     }
 }
 
-impl AsRef<NotificationSettingsScopePrivateChats>
-    for RTDNotificationSettingsScopePrivateChatsBuilder
-{
+impl AsRef<NotificationSettingsScopePrivateChats> for NotificationSettingsScopePrivateChatsBuilder {
     fn as_ref(&self) -> &NotificationSettingsScopePrivateChats {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -56,14 +56,14 @@ impl RObject for LocalFile {
 }
 
 impl LocalFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLocalFileBuilder {
+    pub fn builder() -> LocalFileBuilder {
         let mut inner = LocalFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLocalFileBuilder { inner }
+        LocalFileBuilder { inner }
     }
 
     pub fn path(&self) -> &String {
@@ -100,11 +100,14 @@ impl LocalFile {
 }
 
 #[doc(hidden)]
-pub struct RTDLocalFileBuilder {
+pub struct LocalFileBuilder {
     inner: LocalFile,
 }
 
-impl RTDLocalFileBuilder {
+#[deprecated]
+pub type RTDLocalFileBuilder = LocalFileBuilder;
+
+impl LocalFileBuilder {
     pub fn build(&self) -> LocalFile {
         self.inner.clone()
     }
@@ -156,7 +159,7 @@ impl AsRef<LocalFile> for LocalFile {
     }
 }
 
-impl AsRef<LocalFile> for RTDLocalFileBuilder {
+impl AsRef<LocalFile> for LocalFileBuilder {
     fn as_ref(&self) -> &LocalFile {
         &self.inner
     }

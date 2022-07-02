@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,16 +49,16 @@ impl RObject for GetChatHistory {
 impl RFunction for GetChatHistory {}
 
 impl GetChatHistory {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatHistoryBuilder {
+    pub fn builder() -> GetChatHistoryBuilder {
         let mut inner = GetChatHistory::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatHistory".to_string();
 
-        RTDGetChatHistoryBuilder { inner }
+        GetChatHistoryBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -83,11 +83,14 @@ impl GetChatHistory {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatHistoryBuilder {
+pub struct GetChatHistoryBuilder {
     inner: GetChatHistory,
 }
 
-impl RTDGetChatHistoryBuilder {
+#[deprecated]
+pub type RTDGetChatHistoryBuilder = GetChatHistoryBuilder;
+
+impl GetChatHistoryBuilder {
     pub fn build(&self) -> GetChatHistory {
         self.inner.clone()
     }
@@ -124,7 +127,7 @@ impl AsRef<GetChatHistory> for GetChatHistory {
     }
 }
 
-impl AsRef<GetChatHistory> for RTDGetChatHistoryBuilder {
+impl AsRef<GetChatHistory> for GetChatHistoryBuilder {
     fn as_ref(&self) -> &GetChatHistory {
         &self.inner
     }

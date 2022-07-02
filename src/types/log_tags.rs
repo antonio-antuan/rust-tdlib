@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -28,14 +28,14 @@ impl RObject for LogTags {
 }
 
 impl LogTags {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLogTagsBuilder {
+    pub fn builder() -> LogTagsBuilder {
         let mut inner = LogTags::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLogTagsBuilder { inner }
+        LogTagsBuilder { inner }
     }
 
     pub fn tags(&self) -> &Vec<String> {
@@ -44,11 +44,14 @@ impl LogTags {
 }
 
 #[doc(hidden)]
-pub struct RTDLogTagsBuilder {
+pub struct LogTagsBuilder {
     inner: LogTags,
 }
 
-impl RTDLogTagsBuilder {
+#[deprecated]
+pub type RTDLogTagsBuilder = LogTagsBuilder;
+
+impl LogTagsBuilder {
     pub fn build(&self) -> LogTags {
         self.inner.clone()
     }
@@ -65,7 +68,7 @@ impl AsRef<LogTags> for LogTags {
     }
 }
 
-impl AsRef<LogTags> for RTDLogTagsBuilder {
+impl AsRef<LogTags> for LogTagsBuilder {
     fn as_ref(&self) -> &LogTags {
         &self.inner
     }

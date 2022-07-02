@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -46,14 +46,14 @@ impl RObject for MessageLinkInfo {
 }
 
 impl MessageLinkInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageLinkInfoBuilder {
+    pub fn builder() -> MessageLinkInfoBuilder {
         let mut inner = MessageLinkInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageLinkInfoBuilder { inner }
+        MessageLinkInfoBuilder { inner }
     }
 
     pub fn is_public(&self) -> bool {
@@ -82,11 +82,14 @@ impl MessageLinkInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageLinkInfoBuilder {
+pub struct MessageLinkInfoBuilder {
     inner: MessageLinkInfo,
 }
 
-impl RTDMessageLinkInfoBuilder {
+#[deprecated]
+pub type RTDMessageLinkInfoBuilder = MessageLinkInfoBuilder;
+
+impl MessageLinkInfoBuilder {
     pub fn build(&self) -> MessageLinkInfo {
         self.inner.clone()
     }
@@ -128,7 +131,7 @@ impl AsRef<MessageLinkInfo> for MessageLinkInfo {
     }
 }
 
-impl AsRef<MessageLinkInfo> for RTDMessageLinkInfoBuilder {
+impl AsRef<MessageLinkInfo> for MessageLinkInfoBuilder {
     fn as_ref(&self) -> &MessageLinkInfo {
         &self.inner
     }

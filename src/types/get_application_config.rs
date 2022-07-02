@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,25 +31,28 @@ impl TDJsonValue for GetApplicationConfig {}
 impl RFunction for GetApplicationConfig {}
 
 impl GetApplicationConfig {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetApplicationConfigBuilder {
+    pub fn builder() -> GetApplicationConfigBuilder {
         let mut inner = GetApplicationConfig::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getApplicationConfig".to_string();
 
-        RTDGetApplicationConfigBuilder { inner }
+        GetApplicationConfigBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetApplicationConfigBuilder {
+pub struct GetApplicationConfigBuilder {
     inner: GetApplicationConfig,
 }
 
-impl RTDGetApplicationConfigBuilder {
+#[deprecated]
+pub type RTDGetApplicationConfigBuilder = GetApplicationConfigBuilder;
+
+impl GetApplicationConfigBuilder {
     pub fn build(&self) -> GetApplicationConfig {
         self.inner.clone()
     }
@@ -61,7 +64,7 @@ impl AsRef<GetApplicationConfig> for GetApplicationConfig {
     }
 }
 
-impl AsRef<GetApplicationConfig> for RTDGetApplicationConfigBuilder {
+impl AsRef<GetApplicationConfig> for GetApplicationConfigBuilder {
     fn as_ref(&self) -> &GetApplicationConfig {
         &self.inner
     }

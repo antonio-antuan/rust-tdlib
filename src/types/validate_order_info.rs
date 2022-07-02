@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -43,16 +43,16 @@ impl RObject for ValidateOrderInfo {
 impl RFunction for ValidateOrderInfo {}
 
 impl ValidateOrderInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDValidateOrderInfoBuilder {
+    pub fn builder() -> ValidateOrderInfoBuilder {
         let mut inner = ValidateOrderInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "validateOrderInfo".to_string();
 
-        RTDValidateOrderInfoBuilder { inner }
+        ValidateOrderInfoBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -73,11 +73,14 @@ impl ValidateOrderInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDValidateOrderInfoBuilder {
+pub struct ValidateOrderInfoBuilder {
     inner: ValidateOrderInfo,
 }
 
-impl RTDValidateOrderInfoBuilder {
+#[deprecated]
+pub type RTDValidateOrderInfoBuilder = ValidateOrderInfoBuilder;
+
+impl ValidateOrderInfoBuilder {
     pub fn build(&self) -> ValidateOrderInfo {
         self.inner.clone()
     }
@@ -109,7 +112,7 @@ impl AsRef<ValidateOrderInfo> for ValidateOrderInfo {
     }
 }
 
-impl AsRef<ValidateOrderInfo> for RTDValidateOrderInfoBuilder {
+impl AsRef<ValidateOrderInfo> for ValidateOrderInfoBuilder {
     fn as_ref(&self) -> &ValidateOrderInfo {
         &self.inner
     }

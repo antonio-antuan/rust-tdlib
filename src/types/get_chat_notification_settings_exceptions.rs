@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetChatNotificationSettingsExceptions {
 impl RFunction for GetChatNotificationSettingsExceptions {}
 
 impl GetChatNotificationSettingsExceptions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatNotificationSettingsExceptionsBuilder {
+    pub fn builder() -> GetChatNotificationSettingsExceptionsBuilder {
         let mut inner = GetChatNotificationSettingsExceptions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatNotificationSettingsExceptions".to_string();
 
-        RTDGetChatNotificationSettingsExceptionsBuilder { inner }
+        GetChatNotificationSettingsExceptionsBuilder { inner }
     }
 
     pub fn scope(&self) -> &NotificationSettingsScope {
@@ -59,11 +59,15 @@ impl GetChatNotificationSettingsExceptions {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatNotificationSettingsExceptionsBuilder {
+pub struct GetChatNotificationSettingsExceptionsBuilder {
     inner: GetChatNotificationSettingsExceptions,
 }
 
-impl RTDGetChatNotificationSettingsExceptionsBuilder {
+#[deprecated]
+pub type RTDGetChatNotificationSettingsExceptionsBuilder =
+    GetChatNotificationSettingsExceptionsBuilder;
+
+impl GetChatNotificationSettingsExceptionsBuilder {
     pub fn build(&self) -> GetChatNotificationSettingsExceptions {
         self.inner.clone()
     }
@@ -85,9 +89,7 @@ impl AsRef<GetChatNotificationSettingsExceptions> for GetChatNotificationSetting
     }
 }
 
-impl AsRef<GetChatNotificationSettingsExceptions>
-    for RTDGetChatNotificationSettingsExceptionsBuilder
-{
+impl AsRef<GetChatNotificationSettingsExceptions> for GetChatNotificationSettingsExceptionsBuilder {
     fn as_ref(&self) -> &GetChatNotificationSettingsExceptions {
         &self.inner
     }

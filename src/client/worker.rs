@@ -7,7 +7,7 @@ use super::{
 };
 use crate::types::{GetAuthorizationState, JsonValue};
 use crate::{
-    errors::{RTDError, RTDResult},
+    errors::{Error, Result},
     tdjson::ClientId,
     types::{
         AuthorizationState, CheckAuthenticationCode, CheckAuthenticationPassword,
@@ -93,7 +93,7 @@ where
         }
     }
 
-    pub fn build(self) -> RTDResult<Worker<A, T>> {
+    pub fn build(self) -> Result<Worker<A, T>> {
         let worker = Worker::new(
             self.auth_state_handler,
             self.read_updates_timeout,
@@ -104,7 +104,7 @@ where
     }
 }
 
-pub(crate) type StateMessage = RTDResult<ClientState, (RTDError, UpdateAuthorizationState)>;
+pub(crate) type StateMessage = Result<ClientState, (Error, UpdateAuthorizationState)>;
 
 #[derive(Debug, Clone)]
 struct ClientContext<S: TdLibClient + Clone> {
@@ -169,7 +169,7 @@ where
     pub async fn get_client_state(
         &self,
         client: &Client<T>,
-    ) -> RTDResult<(ClientState, AuthorizationState)> {
+    ) -> Result<(ClientState, AuthorizationState)> {
         let state = client
             .get_authorization_state(GetAuthorizationState::builder().build())
             .await?;
@@ -198,7 +198,7 @@ where
 
     /// Drops authorized client.
     /// After method call you cannot interact with TDLib by the client.
-    pub async fn reset_auth(&mut self, client: &mut Client<T>) -> RTDResult<()> {
+    pub async fn reset_auth(&mut self, client: &mut Client<T>) -> Result<()> {
         client.stop().await?;
         let client_id = client.take_client_id()?;
         self.clients.write().await.remove(&client_id);
@@ -208,15 +208,15 @@ where
     /// Method waits for client state changes.
     /// If an error occured during authorization flow, you receive [AuthorizationState](crate::types::authorization_state::AuthorizationState) on which it happened.
     /// You have to setup [channel](tokio::sync::mpsc::channel) by call [Client::builder().with_auth_state_channel(...)](Client::builder().with_auth_state_channel(...))
-    pub async fn wait_auth_state_change(&self, client: &Client<T>) -> RTDResult<StateMessage> {
+    pub async fn wait_auth_state_change(&self, client: &Client<T>) -> Result<StateMessage> {
         let client_id = client.get_client_id()?;
         match self.clients.read().await.get(&client_id) {
-            None => {Err(RTDError::BadRequest("client not authorized yet"))}
+            None => {Err(Error::BadRequest("client not authorized yet"))}
             Some(v) => {
                 match v.pub_state_message_receiver() {
-                    None => {Err(RTDError::BadRequest("state receiver not specified, need to call `Client::builder().with_auth_state_channel(...) before Worker::bind_client(...)"))}
+                    None => {Err(Error::BadRequest("state receiver not specified, need to call `Client::builder().with_auth_state_channel(...) before Worker::bind_client(...)"))}
                     Some(rec) => {
-                        let state = rec.lock().await.recv().await.ok_or(RTDError::Internal("can't receive state: channel closed"))?;
+                        let state = rec.lock().await.recv().await.ok_or(Error::Internal("can't receive state: channel closed"))?;
                         Ok(state)
                     }
                 }
@@ -227,10 +227,10 @@ where
     /// Method waits for client state changes.
     /// It differ from [wait_auth_state_change](crate::client::worker::Worker::wait_auth_state_change) by error type: you won't receive (AuthorizationState)[crate::types::authorization_state::AuthorizationState] when error occured.
     /// Method may be useful if client already authorized on, for example, previous application startup.
-    pub async fn wait_client_state(&self, client: &Client<T>) -> RTDResult<ClientState> {
+    pub async fn wait_client_state(&self, client: &Client<T>) -> Result<ClientState> {
         let guard = self.clients.read().await;
         match guard.get(&client.get_client_id()?) {
-            None => Err(RTDError::BadRequest("client not bound yet")),
+            None => Err(Error::BadRequest("client not bound yet")),
             Some(ctx) => {
                 let mut rec = ctx.private_state_message_receiver().lock().await;
                 Ok(rec.recv().await.unwrap())
@@ -240,9 +240,9 @@ where
 
     /// Binds client with worker and runs authorization routines.
     /// Method returns error if worker is not running or client already bound
-    pub async fn bind_client(&mut self, mut client: Client<T>) -> RTDResult<Client<T>> {
+    pub async fn bind_client(&mut self, mut client: Client<T>) -> Result<Client<T>> {
         if !self.is_running() {
-            return Err(RTDError::BadRequest("worker not started yet"));
+            return Err(Error::BadRequest("worker not started yet"));
         };
         let client_id = client.get_tdlib_client().new_client();
         log::debug!("new client created: {}", client_id);
@@ -380,10 +380,10 @@ where
         &self,
         auth_state: &AuthorizationState,
         client: &Client<T>,
-    ) -> RTDResult<()> {
+    ) -> Result<()> {
         let clients_guard = self.clients.read().await;
         match clients_guard.get(&client.get_client_id()?) {
-            None => Err(RTDError::BadRequest("client not bound yet")),
+            None => Err(Error::BadRequest("client not bound yet")),
             Some(ctx) => {
                 handle_auth_state(
                     client,
@@ -532,7 +532,7 @@ async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
     auth_state_handler: &A,
     state: &AuthorizationState,
     send_state_timeout: time::Duration,
-) -> RTDResult<()> {
+) -> Result<()> {
     log::debug!("handling new auth state: {:?}", state);
     let mut result_state = None;
     let res = match state {
@@ -629,7 +629,7 @@ async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
             log::debug!("tdlib parameters set");
             Ok(())
         }
-        AuthorizationState::GetAuthorizationState(_) => Err(RTDError::Internal(
+        AuthorizationState::GetAuthorizationState(_) => Err(Error::Internal(
             "retrieved GetAuthorizationState update but observer not found any subscriber",
         )),
     };
@@ -666,7 +666,7 @@ async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
 
 async fn first_internal_request<S: TdLibClient>(tdlib_client: &S, client_id: ClientId) {
     let req = GetApplicationConfig::builder().build();
-    let extra = match req.as_ref().extra().ok_or(RTDError::Internal(
+    let extra = match req.as_ref().extra().ok_or(Error::Internal(
         "invalid tdlib response type, not have `extra` field",
     )) {
         Ok(v) => v,
@@ -698,7 +698,7 @@ mod tests {
     use crate::client::tdlib_client::TdLibClient;
     use crate::client::worker::Worker;
     use crate::client::Client;
-    use crate::errors::RTDResult;
+    use crate::errors::Result;
     use crate::tdjson;
     use crate::types::{Chats, RFunction, RObject, SearchPublicChats, TdlibParameters};
     use std::time::Duration;
@@ -721,7 +721,7 @@ mod tests {
     }
 
     impl TdLibClient for MockedRawApi {
-        fn send<Fnc: RFunction>(&self, _client_id: tdjson::ClientId, _fnc: Fnc) -> RTDResult<()> {
+        fn send<Fnc: RFunction>(&self, _client_id: tdjson::ClientId, _fnc: Fnc) -> Result<()> {
             Ok(())
         }
 
@@ -729,7 +729,7 @@ mod tests {
             self.to_receive.clone()
         }
 
-        fn execute<Fnc: RFunction>(&self, _fnc: Fnc) -> RTDResult<Option<String>> {
+        fn execute<Fnc: RFunction>(&self, _fnc: Fnc) -> Result<Option<String>> {
             unimplemented!()
         }
 

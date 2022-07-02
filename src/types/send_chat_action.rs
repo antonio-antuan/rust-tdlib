@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for SendChatAction {
 impl RFunction for SendChatAction {}
 
 impl SendChatAction {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendChatActionBuilder {
+    pub fn builder() -> SendChatActionBuilder {
         let mut inner = SendChatAction::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendChatAction".to_string();
 
-        RTDSendChatActionBuilder { inner }
+        SendChatActionBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl SendChatAction {
 }
 
 #[doc(hidden)]
-pub struct RTDSendChatActionBuilder {
+pub struct SendChatActionBuilder {
     inner: SendChatAction,
 }
 
-impl RTDSendChatActionBuilder {
+#[deprecated]
+pub type RTDSendChatActionBuilder = SendChatActionBuilder;
+
+impl SendChatActionBuilder {
     pub fn build(&self) -> SendChatAction {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<SendChatAction> for SendChatAction {
     }
 }
 
-impl AsRef<SendChatAction> for RTDSendChatActionBuilder {
+impl AsRef<SendChatAction> for SendChatActionBuilder {
     fn as_ref(&self) -> &SendChatAction {
         &self.inner
     }

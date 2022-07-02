@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -59,7 +59,7 @@ impl RObject for NotificationType {
 }
 
 impl NotificationType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -102,14 +102,14 @@ impl RObject for NotificationTypeNewCall {
 impl TDNotificationType for NotificationTypeNewCall {}
 
 impl NotificationTypeNewCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationTypeNewCallBuilder {
+    pub fn builder() -> NotificationTypeNewCallBuilder {
         let mut inner = NotificationTypeNewCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationTypeNewCallBuilder { inner }
+        NotificationTypeNewCallBuilder { inner }
     }
 
     pub fn call_id(&self) -> i32 {
@@ -118,11 +118,14 @@ impl NotificationTypeNewCall {
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationTypeNewCallBuilder {
+pub struct NotificationTypeNewCallBuilder {
     inner: NotificationTypeNewCall,
 }
 
-impl RTDNotificationTypeNewCallBuilder {
+#[deprecated]
+pub type RTDNotificationTypeNewCallBuilder = NotificationTypeNewCallBuilder;
+
+impl NotificationTypeNewCallBuilder {
     pub fn build(&self) -> NotificationTypeNewCall {
         self.inner.clone()
     }
@@ -139,7 +142,7 @@ impl AsRef<NotificationTypeNewCall> for NotificationTypeNewCall {
     }
 }
 
-impl AsRef<NotificationTypeNewCall> for RTDNotificationTypeNewCallBuilder {
+impl AsRef<NotificationTypeNewCall> for NotificationTypeNewCallBuilder {
     fn as_ref(&self) -> &NotificationTypeNewCall {
         &self.inner
     }
@@ -171,14 +174,14 @@ impl RObject for NotificationTypeNewMessage {
 impl TDNotificationType for NotificationTypeNewMessage {}
 
 impl NotificationTypeNewMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationTypeNewMessageBuilder {
+    pub fn builder() -> NotificationTypeNewMessageBuilder {
         let mut inner = NotificationTypeNewMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationTypeNewMessageBuilder { inner }
+        NotificationTypeNewMessageBuilder { inner }
     }
 
     pub fn message(&self) -> &Message {
@@ -187,11 +190,14 @@ impl NotificationTypeNewMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationTypeNewMessageBuilder {
+pub struct NotificationTypeNewMessageBuilder {
     inner: NotificationTypeNewMessage,
 }
 
-impl RTDNotificationTypeNewMessageBuilder {
+#[deprecated]
+pub type RTDNotificationTypeNewMessageBuilder = NotificationTypeNewMessageBuilder;
+
+impl NotificationTypeNewMessageBuilder {
     pub fn build(&self) -> NotificationTypeNewMessage {
         self.inner.clone()
     }
@@ -208,7 +214,7 @@ impl AsRef<NotificationTypeNewMessage> for NotificationTypeNewMessage {
     }
 }
 
-impl AsRef<NotificationTypeNewMessage> for RTDNotificationTypeNewMessageBuilder {
+impl AsRef<NotificationTypeNewMessage> for NotificationTypeNewMessageBuilder {
     fn as_ref(&self) -> &NotificationTypeNewMessage {
         &self.inner
     }
@@ -258,14 +264,14 @@ impl RObject for NotificationTypeNewPushMessage {
 impl TDNotificationType for NotificationTypeNewPushMessage {}
 
 impl NotificationTypeNewPushMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationTypeNewPushMessageBuilder {
+    pub fn builder() -> NotificationTypeNewPushMessageBuilder {
         let mut inner = NotificationTypeNewPushMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationTypeNewPushMessageBuilder { inner }
+        NotificationTypeNewPushMessageBuilder { inner }
     }
 
     pub fn message_id(&self) -> i64 {
@@ -290,11 +296,14 @@ impl NotificationTypeNewPushMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationTypeNewPushMessageBuilder {
+pub struct NotificationTypeNewPushMessageBuilder {
     inner: NotificationTypeNewPushMessage,
 }
 
-impl RTDNotificationTypeNewPushMessageBuilder {
+#[deprecated]
+pub type RTDNotificationTypeNewPushMessageBuilder = NotificationTypeNewPushMessageBuilder;
+
+impl NotificationTypeNewPushMessageBuilder {
     pub fn build(&self) -> NotificationTypeNewPushMessage {
         self.inner.clone()
     }
@@ -331,7 +340,7 @@ impl AsRef<NotificationTypeNewPushMessage> for NotificationTypeNewPushMessage {
     }
 }
 
-impl AsRef<NotificationTypeNewPushMessage> for RTDNotificationTypeNewPushMessageBuilder {
+impl AsRef<NotificationTypeNewPushMessage> for NotificationTypeNewPushMessageBuilder {
     fn as_ref(&self) -> &NotificationTypeNewPushMessage {
         &self.inner
     }
@@ -361,23 +370,26 @@ impl RObject for NotificationTypeNewSecretChat {
 impl TDNotificationType for NotificationTypeNewSecretChat {}
 
 impl NotificationTypeNewSecretChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationTypeNewSecretChatBuilder {
+    pub fn builder() -> NotificationTypeNewSecretChatBuilder {
         let mut inner = NotificationTypeNewSecretChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationTypeNewSecretChatBuilder { inner }
+        NotificationTypeNewSecretChatBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationTypeNewSecretChatBuilder {
+pub struct NotificationTypeNewSecretChatBuilder {
     inner: NotificationTypeNewSecretChat,
 }
 
-impl RTDNotificationTypeNewSecretChatBuilder {
+#[deprecated]
+pub type RTDNotificationTypeNewSecretChatBuilder = NotificationTypeNewSecretChatBuilder;
+
+impl NotificationTypeNewSecretChatBuilder {
     pub fn build(&self) -> NotificationTypeNewSecretChat {
         self.inner.clone()
     }
@@ -389,7 +401,7 @@ impl AsRef<NotificationTypeNewSecretChat> for NotificationTypeNewSecretChat {
     }
 }
 
-impl AsRef<NotificationTypeNewSecretChat> for RTDNotificationTypeNewSecretChatBuilder {
+impl AsRef<NotificationTypeNewSecretChat> for NotificationTypeNewSecretChatBuilder {
     fn as_ref(&self) -> &NotificationTypeNewSecretChat {
         &self.inner
     }

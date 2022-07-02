@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for ToggleSupergroupIsBroadcastGroup {
 impl RFunction for ToggleSupergroupIsBroadcastGroup {}
 
 impl ToggleSupergroupIsBroadcastGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleSupergroupIsBroadcastGroupBuilder {
+    pub fn builder() -> ToggleSupergroupIsBroadcastGroupBuilder {
         let mut inner = ToggleSupergroupIsBroadcastGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleSupergroupIsBroadcastGroup".to_string();
 
-        RTDToggleSupergroupIsBroadcastGroupBuilder { inner }
+        ToggleSupergroupIsBroadcastGroupBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl ToggleSupergroupIsBroadcastGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleSupergroupIsBroadcastGroupBuilder {
+pub struct ToggleSupergroupIsBroadcastGroupBuilder {
     inner: ToggleSupergroupIsBroadcastGroup,
 }
 
-impl RTDToggleSupergroupIsBroadcastGroupBuilder {
+#[deprecated]
+pub type RTDToggleSupergroupIsBroadcastGroupBuilder = ToggleSupergroupIsBroadcastGroupBuilder;
+
+impl ToggleSupergroupIsBroadcastGroupBuilder {
     pub fn build(&self) -> ToggleSupergroupIsBroadcastGroup {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<ToggleSupergroupIsBroadcastGroup> for ToggleSupergroupIsBroadcastGrou
     }
 }
 
-impl AsRef<ToggleSupergroupIsBroadcastGroup> for RTDToggleSupergroupIsBroadcastGroupBuilder {
+impl AsRef<ToggleSupergroupIsBroadcastGroup> for ToggleSupergroupIsBroadcastGroupBuilder {
     fn as_ref(&self) -> &ToggleSupergroupIsBroadcastGroup {
         &self.inner
     }

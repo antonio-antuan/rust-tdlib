@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for EndGroupCall {
 impl RFunction for EndGroupCall {}
 
 impl EndGroupCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEndGroupCallBuilder {
+    pub fn builder() -> EndGroupCallBuilder {
         let mut inner = EndGroupCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "endGroupCall".to_string();
 
-        RTDEndGroupCallBuilder { inner }
+        EndGroupCallBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl EndGroupCall {
 }
 
 #[doc(hidden)]
-pub struct RTDEndGroupCallBuilder {
+pub struct EndGroupCallBuilder {
     inner: EndGroupCall,
 }
 
-impl RTDEndGroupCallBuilder {
+#[deprecated]
+pub type RTDEndGroupCallBuilder = EndGroupCallBuilder;
+
+impl EndGroupCallBuilder {
     pub fn build(&self) -> EndGroupCall {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<EndGroupCall> for EndGroupCall {
     }
 }
 
-impl AsRef<EndGroupCall> for RTDEndGroupCallBuilder {
+impl AsRef<EndGroupCall> for EndGroupCallBuilder {
     fn as_ref(&self) -> &EndGroupCall {
         &self.inner
     }

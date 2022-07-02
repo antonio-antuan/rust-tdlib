@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ToggleGroupCallScreenSharingIsPaused {
 impl RFunction for ToggleGroupCallScreenSharingIsPaused {}
 
 impl ToggleGroupCallScreenSharingIsPaused {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleGroupCallScreenSharingIsPausedBuilder {
+    pub fn builder() -> ToggleGroupCallScreenSharingIsPausedBuilder {
         let mut inner = ToggleGroupCallScreenSharingIsPaused::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleGroupCallScreenSharingIsPaused".to_string();
 
-        RTDToggleGroupCallScreenSharingIsPausedBuilder { inner }
+        ToggleGroupCallScreenSharingIsPausedBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -59,11 +59,15 @@ impl ToggleGroupCallScreenSharingIsPaused {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleGroupCallScreenSharingIsPausedBuilder {
+pub struct ToggleGroupCallScreenSharingIsPausedBuilder {
     inner: ToggleGroupCallScreenSharingIsPaused,
 }
 
-impl RTDToggleGroupCallScreenSharingIsPausedBuilder {
+#[deprecated]
+pub type RTDToggleGroupCallScreenSharingIsPausedBuilder =
+    ToggleGroupCallScreenSharingIsPausedBuilder;
+
+impl ToggleGroupCallScreenSharingIsPausedBuilder {
     pub fn build(&self) -> ToggleGroupCallScreenSharingIsPaused {
         self.inner.clone()
     }
@@ -85,9 +89,7 @@ impl AsRef<ToggleGroupCallScreenSharingIsPaused> for ToggleGroupCallScreenSharin
     }
 }
 
-impl AsRef<ToggleGroupCallScreenSharingIsPaused>
-    for RTDToggleGroupCallScreenSharingIsPausedBuilder
-{
+impl AsRef<ToggleGroupCallScreenSharingIsPaused> for ToggleGroupCallScreenSharingIsPausedBuilder {
     fn as_ref(&self) -> &ToggleGroupCallScreenSharingIsPaused {
         &self.inner
     }

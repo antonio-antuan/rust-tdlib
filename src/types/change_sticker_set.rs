@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -42,16 +42,16 @@ impl RObject for ChangeStickerSet {
 impl RFunction for ChangeStickerSet {}
 
 impl ChangeStickerSet {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChangeStickerSetBuilder {
+    pub fn builder() -> ChangeStickerSetBuilder {
         let mut inner = ChangeStickerSet::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "changeStickerSet".to_string();
 
-        RTDChangeStickerSetBuilder { inner }
+        ChangeStickerSetBuilder { inner }
     }
 
     pub fn set_id(&self) -> i64 {
@@ -68,11 +68,14 @@ impl ChangeStickerSet {
 }
 
 #[doc(hidden)]
-pub struct RTDChangeStickerSetBuilder {
+pub struct ChangeStickerSetBuilder {
     inner: ChangeStickerSet,
 }
 
-impl RTDChangeStickerSetBuilder {
+#[deprecated]
+pub type RTDChangeStickerSetBuilder = ChangeStickerSetBuilder;
+
+impl ChangeStickerSetBuilder {
     pub fn build(&self) -> ChangeStickerSet {
         self.inner.clone()
     }
@@ -99,7 +102,7 @@ impl AsRef<ChangeStickerSet> for ChangeStickerSet {
     }
 }
 
-impl AsRef<ChangeStickerSet> for RTDChangeStickerSetBuilder {
+impl AsRef<ChangeStickerSet> for ChangeStickerSetBuilder {
     fn as_ref(&self) -> &ChangeStickerSet {
         &self.inner
     }

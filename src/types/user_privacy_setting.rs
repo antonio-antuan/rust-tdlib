@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -79,7 +79,7 @@ impl RObject for UserPrivacySetting {
 }
 
 impl UserPrivacySetting {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -118,23 +118,26 @@ impl RObject for UserPrivacySettingAllowCalls {
 impl TDUserPrivacySetting for UserPrivacySettingAllowCalls {}
 
 impl UserPrivacySettingAllowCalls {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingAllowCallsBuilder {
+    pub fn builder() -> UserPrivacySettingAllowCallsBuilder {
         let mut inner = UserPrivacySettingAllowCalls::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingAllowCallsBuilder { inner }
+        UserPrivacySettingAllowCallsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingAllowCallsBuilder {
+pub struct UserPrivacySettingAllowCallsBuilder {
     inner: UserPrivacySettingAllowCalls,
 }
 
-impl RTDUserPrivacySettingAllowCallsBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingAllowCallsBuilder = UserPrivacySettingAllowCallsBuilder;
+
+impl UserPrivacySettingAllowCallsBuilder {
     pub fn build(&self) -> UserPrivacySettingAllowCalls {
         self.inner.clone()
     }
@@ -146,7 +149,7 @@ impl AsRef<UserPrivacySettingAllowCalls> for UserPrivacySettingAllowCalls {
     }
 }
 
-impl AsRef<UserPrivacySettingAllowCalls> for RTDUserPrivacySettingAllowCallsBuilder {
+impl AsRef<UserPrivacySettingAllowCalls> for UserPrivacySettingAllowCallsBuilder {
     fn as_ref(&self) -> &UserPrivacySettingAllowCalls {
         &self.inner
     }
@@ -176,23 +179,26 @@ impl RObject for UserPrivacySettingAllowChatInvites {
 impl TDUserPrivacySetting for UserPrivacySettingAllowChatInvites {}
 
 impl UserPrivacySettingAllowChatInvites {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingAllowChatInvitesBuilder {
+    pub fn builder() -> UserPrivacySettingAllowChatInvitesBuilder {
         let mut inner = UserPrivacySettingAllowChatInvites::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingAllowChatInvitesBuilder { inner }
+        UserPrivacySettingAllowChatInvitesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingAllowChatInvitesBuilder {
+pub struct UserPrivacySettingAllowChatInvitesBuilder {
     inner: UserPrivacySettingAllowChatInvites,
 }
 
-impl RTDUserPrivacySettingAllowChatInvitesBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingAllowChatInvitesBuilder = UserPrivacySettingAllowChatInvitesBuilder;
+
+impl UserPrivacySettingAllowChatInvitesBuilder {
     pub fn build(&self) -> UserPrivacySettingAllowChatInvites {
         self.inner.clone()
     }
@@ -204,7 +210,7 @@ impl AsRef<UserPrivacySettingAllowChatInvites> for UserPrivacySettingAllowChatIn
     }
 }
 
-impl AsRef<UserPrivacySettingAllowChatInvites> for RTDUserPrivacySettingAllowChatInvitesBuilder {
+impl AsRef<UserPrivacySettingAllowChatInvites> for UserPrivacySettingAllowChatInvitesBuilder {
     fn as_ref(&self) -> &UserPrivacySettingAllowChatInvites {
         &self.inner
     }
@@ -234,23 +240,27 @@ impl RObject for UserPrivacySettingAllowFindingByPhoneNumber {
 impl TDUserPrivacySetting for UserPrivacySettingAllowFindingByPhoneNumber {}
 
 impl UserPrivacySettingAllowFindingByPhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingAllowFindingByPhoneNumberBuilder {
+    pub fn builder() -> UserPrivacySettingAllowFindingByPhoneNumberBuilder {
         let mut inner = UserPrivacySettingAllowFindingByPhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingAllowFindingByPhoneNumberBuilder { inner }
+        UserPrivacySettingAllowFindingByPhoneNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingAllowFindingByPhoneNumberBuilder {
+pub struct UserPrivacySettingAllowFindingByPhoneNumberBuilder {
     inner: UserPrivacySettingAllowFindingByPhoneNumber,
 }
 
-impl RTDUserPrivacySettingAllowFindingByPhoneNumberBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingAllowFindingByPhoneNumberBuilder =
+    UserPrivacySettingAllowFindingByPhoneNumberBuilder;
+
+impl UserPrivacySettingAllowFindingByPhoneNumberBuilder {
     pub fn build(&self) -> UserPrivacySettingAllowFindingByPhoneNumber {
         self.inner.clone()
     }
@@ -265,7 +275,7 @@ impl AsRef<UserPrivacySettingAllowFindingByPhoneNumber>
 }
 
 impl AsRef<UserPrivacySettingAllowFindingByPhoneNumber>
-    for RTDUserPrivacySettingAllowFindingByPhoneNumberBuilder
+    for UserPrivacySettingAllowFindingByPhoneNumberBuilder
 {
     fn as_ref(&self) -> &UserPrivacySettingAllowFindingByPhoneNumber {
         &self.inner
@@ -296,23 +306,27 @@ impl RObject for UserPrivacySettingAllowPeerToPeerCalls {
 impl TDUserPrivacySetting for UserPrivacySettingAllowPeerToPeerCalls {}
 
 impl UserPrivacySettingAllowPeerToPeerCalls {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingAllowPeerToPeerCallsBuilder {
+    pub fn builder() -> UserPrivacySettingAllowPeerToPeerCallsBuilder {
         let mut inner = UserPrivacySettingAllowPeerToPeerCalls::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingAllowPeerToPeerCallsBuilder { inner }
+        UserPrivacySettingAllowPeerToPeerCallsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingAllowPeerToPeerCallsBuilder {
+pub struct UserPrivacySettingAllowPeerToPeerCallsBuilder {
     inner: UserPrivacySettingAllowPeerToPeerCalls,
 }
 
-impl RTDUserPrivacySettingAllowPeerToPeerCallsBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingAllowPeerToPeerCallsBuilder =
+    UserPrivacySettingAllowPeerToPeerCallsBuilder;
+
+impl UserPrivacySettingAllowPeerToPeerCallsBuilder {
     pub fn build(&self) -> UserPrivacySettingAllowPeerToPeerCalls {
         self.inner.clone()
     }
@@ -325,7 +339,7 @@ impl AsRef<UserPrivacySettingAllowPeerToPeerCalls> for UserPrivacySettingAllowPe
 }
 
 impl AsRef<UserPrivacySettingAllowPeerToPeerCalls>
-    for RTDUserPrivacySettingAllowPeerToPeerCallsBuilder
+    for UserPrivacySettingAllowPeerToPeerCallsBuilder
 {
     fn as_ref(&self) -> &UserPrivacySettingAllowPeerToPeerCalls {
         &self.inner
@@ -356,23 +370,27 @@ impl RObject for UserPrivacySettingShowLinkInForwardedMessages {
 impl TDUserPrivacySetting for UserPrivacySettingShowLinkInForwardedMessages {}
 
 impl UserPrivacySettingShowLinkInForwardedMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingShowLinkInForwardedMessagesBuilder {
+    pub fn builder() -> UserPrivacySettingShowLinkInForwardedMessagesBuilder {
         let mut inner = UserPrivacySettingShowLinkInForwardedMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingShowLinkInForwardedMessagesBuilder { inner }
+        UserPrivacySettingShowLinkInForwardedMessagesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingShowLinkInForwardedMessagesBuilder {
+pub struct UserPrivacySettingShowLinkInForwardedMessagesBuilder {
     inner: UserPrivacySettingShowLinkInForwardedMessages,
 }
 
-impl RTDUserPrivacySettingShowLinkInForwardedMessagesBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingShowLinkInForwardedMessagesBuilder =
+    UserPrivacySettingShowLinkInForwardedMessagesBuilder;
+
+impl UserPrivacySettingShowLinkInForwardedMessagesBuilder {
     pub fn build(&self) -> UserPrivacySettingShowLinkInForwardedMessages {
         self.inner.clone()
     }
@@ -387,7 +405,7 @@ impl AsRef<UserPrivacySettingShowLinkInForwardedMessages>
 }
 
 impl AsRef<UserPrivacySettingShowLinkInForwardedMessages>
-    for RTDUserPrivacySettingShowLinkInForwardedMessagesBuilder
+    for UserPrivacySettingShowLinkInForwardedMessagesBuilder
 {
     fn as_ref(&self) -> &UserPrivacySettingShowLinkInForwardedMessages {
         &self.inner
@@ -418,23 +436,26 @@ impl RObject for UserPrivacySettingShowPhoneNumber {
 impl TDUserPrivacySetting for UserPrivacySettingShowPhoneNumber {}
 
 impl UserPrivacySettingShowPhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingShowPhoneNumberBuilder {
+    pub fn builder() -> UserPrivacySettingShowPhoneNumberBuilder {
         let mut inner = UserPrivacySettingShowPhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingShowPhoneNumberBuilder { inner }
+        UserPrivacySettingShowPhoneNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingShowPhoneNumberBuilder {
+pub struct UserPrivacySettingShowPhoneNumberBuilder {
     inner: UserPrivacySettingShowPhoneNumber,
 }
 
-impl RTDUserPrivacySettingShowPhoneNumberBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingShowPhoneNumberBuilder = UserPrivacySettingShowPhoneNumberBuilder;
+
+impl UserPrivacySettingShowPhoneNumberBuilder {
     pub fn build(&self) -> UserPrivacySettingShowPhoneNumber {
         self.inner.clone()
     }
@@ -446,7 +467,7 @@ impl AsRef<UserPrivacySettingShowPhoneNumber> for UserPrivacySettingShowPhoneNum
     }
 }
 
-impl AsRef<UserPrivacySettingShowPhoneNumber> for RTDUserPrivacySettingShowPhoneNumberBuilder {
+impl AsRef<UserPrivacySettingShowPhoneNumber> for UserPrivacySettingShowPhoneNumberBuilder {
     fn as_ref(&self) -> &UserPrivacySettingShowPhoneNumber {
         &self.inner
     }
@@ -476,23 +497,26 @@ impl RObject for UserPrivacySettingShowProfilePhoto {
 impl TDUserPrivacySetting for UserPrivacySettingShowProfilePhoto {}
 
 impl UserPrivacySettingShowProfilePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingShowProfilePhotoBuilder {
+    pub fn builder() -> UserPrivacySettingShowProfilePhotoBuilder {
         let mut inner = UserPrivacySettingShowProfilePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingShowProfilePhotoBuilder { inner }
+        UserPrivacySettingShowProfilePhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingShowProfilePhotoBuilder {
+pub struct UserPrivacySettingShowProfilePhotoBuilder {
     inner: UserPrivacySettingShowProfilePhoto,
 }
 
-impl RTDUserPrivacySettingShowProfilePhotoBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingShowProfilePhotoBuilder = UserPrivacySettingShowProfilePhotoBuilder;
+
+impl UserPrivacySettingShowProfilePhotoBuilder {
     pub fn build(&self) -> UserPrivacySettingShowProfilePhoto {
         self.inner.clone()
     }
@@ -504,7 +528,7 @@ impl AsRef<UserPrivacySettingShowProfilePhoto> for UserPrivacySettingShowProfile
     }
 }
 
-impl AsRef<UserPrivacySettingShowProfilePhoto> for RTDUserPrivacySettingShowProfilePhotoBuilder {
+impl AsRef<UserPrivacySettingShowProfilePhoto> for UserPrivacySettingShowProfilePhotoBuilder {
     fn as_ref(&self) -> &UserPrivacySettingShowProfilePhoto {
         &self.inner
     }
@@ -534,23 +558,26 @@ impl RObject for UserPrivacySettingShowStatus {
 impl TDUserPrivacySetting for UserPrivacySettingShowStatus {}
 
 impl UserPrivacySettingShowStatus {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingShowStatusBuilder {
+    pub fn builder() -> UserPrivacySettingShowStatusBuilder {
         let mut inner = UserPrivacySettingShowStatus::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingShowStatusBuilder { inner }
+        UserPrivacySettingShowStatusBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingShowStatusBuilder {
+pub struct UserPrivacySettingShowStatusBuilder {
     inner: UserPrivacySettingShowStatus,
 }
 
-impl RTDUserPrivacySettingShowStatusBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingShowStatusBuilder = UserPrivacySettingShowStatusBuilder;
+
+impl UserPrivacySettingShowStatusBuilder {
     pub fn build(&self) -> UserPrivacySettingShowStatus {
         self.inner.clone()
     }
@@ -562,7 +589,7 @@ impl AsRef<UserPrivacySettingShowStatus> for UserPrivacySettingShowStatus {
     }
 }
 
-impl AsRef<UserPrivacySettingShowStatus> for RTDUserPrivacySettingShowStatusBuilder {
+impl AsRef<UserPrivacySettingShowStatus> for UserPrivacySettingShowStatusBuilder {
     fn as_ref(&self) -> &UserPrivacySettingShowStatus {
         &self.inner
     }

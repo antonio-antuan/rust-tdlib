@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetMessageImportConfirmationText {
 impl RFunction for GetMessageImportConfirmationText {}
 
 impl GetMessageImportConfirmationText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageImportConfirmationTextBuilder {
+    pub fn builder() -> GetMessageImportConfirmationTextBuilder {
         let mut inner = GetMessageImportConfirmationText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageImportConfirmationText".to_string();
 
-        RTDGetMessageImportConfirmationTextBuilder { inner }
+        GetMessageImportConfirmationTextBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -51,11 +51,14 @@ impl GetMessageImportConfirmationText {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageImportConfirmationTextBuilder {
+pub struct GetMessageImportConfirmationTextBuilder {
     inner: GetMessageImportConfirmationText,
 }
 
-impl RTDGetMessageImportConfirmationTextBuilder {
+#[deprecated]
+pub type RTDGetMessageImportConfirmationTextBuilder = GetMessageImportConfirmationTextBuilder;
+
+impl GetMessageImportConfirmationTextBuilder {
     pub fn build(&self) -> GetMessageImportConfirmationText {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetMessageImportConfirmationText> for GetMessageImportConfirmationTex
     }
 }
 
-impl AsRef<GetMessageImportConfirmationText> for RTDGetMessageImportConfirmationTextBuilder {
+impl AsRef<GetMessageImportConfirmationText> for GetMessageImportConfirmationTextBuilder {
     fn as_ref(&self) -> &GetMessageImportConfirmationText {
         &self.inner
     }

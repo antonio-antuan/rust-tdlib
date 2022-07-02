@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for GetLanguagePackStrings {
 impl RFunction for GetLanguagePackStrings {}
 
 impl GetLanguagePackStrings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetLanguagePackStringsBuilder {
+    pub fn builder() -> GetLanguagePackStringsBuilder {
         let mut inner = GetLanguagePackStrings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getLanguagePackStrings".to_string();
 
-        RTDGetLanguagePackStringsBuilder { inner }
+        GetLanguagePackStringsBuilder { inner }
     }
 
     pub fn language_pack_id(&self) -> &String {
@@ -59,11 +59,14 @@ impl GetLanguagePackStrings {
 }
 
 #[doc(hidden)]
-pub struct RTDGetLanguagePackStringsBuilder {
+pub struct GetLanguagePackStringsBuilder {
     inner: GetLanguagePackStrings,
 }
 
-impl RTDGetLanguagePackStringsBuilder {
+#[deprecated]
+pub type RTDGetLanguagePackStringsBuilder = GetLanguagePackStringsBuilder;
+
+impl GetLanguagePackStringsBuilder {
     pub fn build(&self) -> GetLanguagePackStrings {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<GetLanguagePackStrings> for GetLanguagePackStrings {
     }
 }
 
-impl AsRef<GetLanguagePackStrings> for RTDGetLanguagePackStringsBuilder {
+impl AsRef<GetLanguagePackStrings> for GetLanguagePackStringsBuilder {
     fn as_ref(&self) -> &GetLanguagePackStrings {
         &self.inner
     }

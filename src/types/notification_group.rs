@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -45,14 +45,14 @@ impl RObject for NotificationGroup {
 }
 
 impl NotificationGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNotificationGroupBuilder {
+    pub fn builder() -> NotificationGroupBuilder {
         let mut inner = NotificationGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNotificationGroupBuilder { inner }
+        NotificationGroupBuilder { inner }
     }
 
     pub fn id(&self) -> i32 {
@@ -77,11 +77,14 @@ impl NotificationGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDNotificationGroupBuilder {
+pub struct NotificationGroupBuilder {
     inner: NotificationGroup,
 }
 
-impl RTDNotificationGroupBuilder {
+#[deprecated]
+pub type RTDNotificationGroupBuilder = NotificationGroupBuilder;
+
+impl NotificationGroupBuilder {
     pub fn build(&self) -> NotificationGroup {
         self.inner.clone()
     }
@@ -118,7 +121,7 @@ impl AsRef<NotificationGroup> for NotificationGroup {
     }
 }
 
-impl AsRef<NotificationGroup> for RTDNotificationGroupBuilder {
+impl AsRef<NotificationGroup> for NotificationGroupBuilder {
     fn as_ref(&self) -> &NotificationGroup {
         &self.inner
     }

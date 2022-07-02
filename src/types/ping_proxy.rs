@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for PingProxy {
 impl RFunction for PingProxy {}
 
 impl PingProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPingProxyBuilder {
+    pub fn builder() -> PingProxyBuilder {
         let mut inner = PingProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "pingProxy".to_string();
 
-        RTDPingProxyBuilder { inner }
+        PingProxyBuilder { inner }
     }
 
     pub fn proxy_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl PingProxy {
 }
 
 #[doc(hidden)]
-pub struct RTDPingProxyBuilder {
+pub struct PingProxyBuilder {
     inner: PingProxy,
 }
 
-impl RTDPingProxyBuilder {
+#[deprecated]
+pub type RTDPingProxyBuilder = PingProxyBuilder;
+
+impl PingProxyBuilder {
     pub fn build(&self) -> PingProxy {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<PingProxy> for PingProxy {
     }
 }
 
-impl AsRef<PingProxy> for RTDPingProxyBuilder {
+impl AsRef<PingProxy> for PingProxyBuilder {
     fn as_ref(&self) -> &PingProxy {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for SendBotStartMessage {
 impl RFunction for SendBotStartMessage {}
 
 impl SendBotStartMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendBotStartMessageBuilder {
+    pub fn builder() -> SendBotStartMessageBuilder {
         let mut inner = SendBotStartMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendBotStartMessage".to_string();
 
-        RTDSendBotStartMessageBuilder { inner }
+        SendBotStartMessageBuilder { inner }
     }
 
     pub fn bot_user_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl SendBotStartMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDSendBotStartMessageBuilder {
+pub struct SendBotStartMessageBuilder {
     inner: SendBotStartMessage,
 }
 
-impl RTDSendBotStartMessageBuilder {
+#[deprecated]
+pub type RTDSendBotStartMessageBuilder = SendBotStartMessageBuilder;
+
+impl SendBotStartMessageBuilder {
     pub fn build(&self) -> SendBotStartMessage {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<SendBotStartMessage> for SendBotStartMessage {
     }
 }
 
-impl AsRef<SendBotStartMessage> for RTDSendBotStartMessageBuilder {
+impl AsRef<SendBotStartMessage> for SendBotStartMessageBuilder {
     fn as_ref(&self) -> &SendBotStartMessage {
         &self.inner
     }

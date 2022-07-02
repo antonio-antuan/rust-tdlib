@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl RObject for SetChatLocation {
 impl RFunction for SetChatLocation {}
 
 impl SetChatLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatLocationBuilder {
+    pub fn builder() -> SetChatLocationBuilder {
         let mut inner = SetChatLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatLocation".to_string();
 
-        RTDSetChatLocationBuilder { inner }
+        SetChatLocationBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -57,11 +57,14 @@ impl SetChatLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatLocationBuilder {
+pub struct SetChatLocationBuilder {
     inner: SetChatLocation,
 }
 
-impl RTDSetChatLocationBuilder {
+#[deprecated]
+pub type RTDSetChatLocationBuilder = SetChatLocationBuilder;
+
+impl SetChatLocationBuilder {
     pub fn build(&self) -> SetChatLocation {
         self.inner.clone()
     }
@@ -83,7 +86,7 @@ impl AsRef<SetChatLocation> for SetChatLocation {
     }
 }
 
-impl AsRef<SetChatLocation> for RTDSetChatLocationBuilder {
+impl AsRef<SetChatLocation> for SetChatLocationBuilder {
     fn as_ref(&self) -> &SetChatLocation {
         &self.inner
     }

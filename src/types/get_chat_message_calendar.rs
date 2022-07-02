@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for GetChatMessageCalendar {
 impl RFunction for GetChatMessageCalendar {}
 
 impl GetChatMessageCalendar {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatMessageCalendarBuilder {
+    pub fn builder() -> GetChatMessageCalendarBuilder {
         let mut inner = GetChatMessageCalendar::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatMessageCalendar".to_string();
 
-        RTDGetChatMessageCalendarBuilder { inner }
+        GetChatMessageCalendarBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +67,14 @@ impl GetChatMessageCalendar {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatMessageCalendarBuilder {
+pub struct GetChatMessageCalendarBuilder {
     inner: GetChatMessageCalendar,
 }
 
-impl RTDGetChatMessageCalendarBuilder {
+#[deprecated]
+pub type RTDGetChatMessageCalendarBuilder = GetChatMessageCalendarBuilder;
+
+impl GetChatMessageCalendarBuilder {
     pub fn build(&self) -> GetChatMessageCalendar {
         self.inner.clone()
     }
@@ -98,7 +101,7 @@ impl AsRef<GetChatMessageCalendar> for GetChatMessageCalendar {
     }
 }
 
-impl AsRef<GetChatMessageCalendar> for RTDGetChatMessageCalendarBuilder {
+impl AsRef<GetChatMessageCalendar> for GetChatMessageCalendarBuilder {
     fn as_ref(&self) -> &GetChatMessageCalendar {
         &self.inner
     }

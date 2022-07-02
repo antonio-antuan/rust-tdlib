@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -50,16 +50,16 @@ impl RObject for EditProxy {
 impl RFunction for EditProxy {}
 
 impl EditProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditProxyBuilder {
+    pub fn builder() -> EditProxyBuilder {
         let mut inner = EditProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editProxy".to_string();
 
-        RTDEditProxyBuilder { inner }
+        EditProxyBuilder { inner }
     }
 
     pub fn proxy_id(&self) -> i32 {
@@ -84,11 +84,14 @@ impl EditProxy {
 }
 
 #[doc(hidden)]
-pub struct RTDEditProxyBuilder {
+pub struct EditProxyBuilder {
     inner: EditProxy,
 }
 
-impl RTDEditProxyBuilder {
+#[deprecated]
+pub type RTDEditProxyBuilder = EditProxyBuilder;
+
+impl EditProxyBuilder {
     pub fn build(&self) -> EditProxy {
         self.inner.clone()
     }
@@ -125,7 +128,7 @@ impl AsRef<EditProxy> for EditProxy {
     }
 }
 
-impl AsRef<EditProxy> for RTDEditProxyBuilder {
+impl AsRef<EditProxy> for EditProxyBuilder {
     fn as_ref(&self) -> &EditProxy {
         &self.inner
     }

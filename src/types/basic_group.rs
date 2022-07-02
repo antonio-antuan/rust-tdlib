@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -44,14 +44,14 @@ impl RObject for BasicGroup {
 }
 
 impl BasicGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBasicGroupBuilder {
+    pub fn builder() -> BasicGroupBuilder {
         let mut inner = BasicGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBasicGroupBuilder { inner }
+        BasicGroupBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -76,11 +76,14 @@ impl BasicGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDBasicGroupBuilder {
+pub struct BasicGroupBuilder {
     inner: BasicGroup,
 }
 
-impl RTDBasicGroupBuilder {
+#[deprecated]
+pub type RTDBasicGroupBuilder = BasicGroupBuilder;
+
+impl BasicGroupBuilder {
     pub fn build(&self) -> BasicGroup {
         self.inner.clone()
     }
@@ -117,7 +120,7 @@ impl AsRef<BasicGroup> for BasicGroup {
     }
 }
 
-impl AsRef<BasicGroup> for RTDBasicGroupBuilder {
+impl AsRef<BasicGroup> for BasicGroupBuilder {
     fn as_ref(&self) -> &BasicGroup {
         &self.inner
     }

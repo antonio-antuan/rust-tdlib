@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for ParseMarkdown {
 impl RFunction for ParseMarkdown {}
 
 impl ParseMarkdown {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDParseMarkdownBuilder {
+    pub fn builder() -> ParseMarkdownBuilder {
         let mut inner = ParseMarkdown::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "parseMarkdown".to_string();
 
-        RTDParseMarkdownBuilder { inner }
+        ParseMarkdownBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -49,11 +49,14 @@ impl ParseMarkdown {
 }
 
 #[doc(hidden)]
-pub struct RTDParseMarkdownBuilder {
+pub struct ParseMarkdownBuilder {
     inner: ParseMarkdown,
 }
 
-impl RTDParseMarkdownBuilder {
+#[deprecated]
+pub type RTDParseMarkdownBuilder = ParseMarkdownBuilder;
+
+impl ParseMarkdownBuilder {
     pub fn build(&self) -> ParseMarkdown {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<ParseMarkdown> for ParseMarkdown {
     }
 }
 
-impl AsRef<ParseMarkdown> for RTDParseMarkdownBuilder {
+impl AsRef<ParseMarkdown> for ParseMarkdownBuilder {
     fn as_ref(&self) -> &ParseMarkdown {
         &self.inner
     }

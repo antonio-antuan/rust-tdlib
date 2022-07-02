@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for SetLogTagVerbosityLevel {
 impl RFunction for SetLogTagVerbosityLevel {}
 
 impl SetLogTagVerbosityLevel {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetLogTagVerbosityLevelBuilder {
+    pub fn builder() -> SetLogTagVerbosityLevelBuilder {
         let mut inner = SetLogTagVerbosityLevel::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setLogTagVerbosityLevel".to_string();
 
-        RTDSetLogTagVerbosityLevelBuilder { inner }
+        SetLogTagVerbosityLevelBuilder { inner }
     }
 
     pub fn tag(&self) -> &String {
@@ -59,11 +59,14 @@ impl SetLogTagVerbosityLevel {
 }
 
 #[doc(hidden)]
-pub struct RTDSetLogTagVerbosityLevelBuilder {
+pub struct SetLogTagVerbosityLevelBuilder {
     inner: SetLogTagVerbosityLevel,
 }
 
-impl RTDSetLogTagVerbosityLevelBuilder {
+#[deprecated]
+pub type RTDSetLogTagVerbosityLevelBuilder = SetLogTagVerbosityLevelBuilder;
+
+impl SetLogTagVerbosityLevelBuilder {
     pub fn build(&self) -> SetLogTagVerbosityLevel {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<SetLogTagVerbosityLevel> for SetLogTagVerbosityLevel {
     }
 }
 
-impl AsRef<SetLogTagVerbosityLevel> for RTDSetLogTagVerbosityLevelBuilder {
+impl AsRef<SetLogTagVerbosityLevel> for SetLogTagVerbosityLevelBuilder {
     fn as_ref(&self) -> &SetLogTagVerbosityLevel {
         &self.inner
     }

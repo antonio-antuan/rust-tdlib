@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -119,7 +119,7 @@ impl RObject for FileType {
 }
 
 impl FileType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -158,23 +158,26 @@ impl RObject for FileTypeAnimation {
 impl TDFileType for FileTypeAnimation {}
 
 impl FileTypeAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeAnimationBuilder {
+    pub fn builder() -> FileTypeAnimationBuilder {
         let mut inner = FileTypeAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeAnimationBuilder { inner }
+        FileTypeAnimationBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeAnimationBuilder {
+pub struct FileTypeAnimationBuilder {
     inner: FileTypeAnimation,
 }
 
-impl RTDFileTypeAnimationBuilder {
+#[deprecated]
+pub type RTDFileTypeAnimationBuilder = FileTypeAnimationBuilder;
+
+impl FileTypeAnimationBuilder {
     pub fn build(&self) -> FileTypeAnimation {
         self.inner.clone()
     }
@@ -186,7 +189,7 @@ impl AsRef<FileTypeAnimation> for FileTypeAnimation {
     }
 }
 
-impl AsRef<FileTypeAnimation> for RTDFileTypeAnimationBuilder {
+impl AsRef<FileTypeAnimation> for FileTypeAnimationBuilder {
     fn as_ref(&self) -> &FileTypeAnimation {
         &self.inner
     }
@@ -216,23 +219,26 @@ impl RObject for FileTypeAudio {
 impl TDFileType for FileTypeAudio {}
 
 impl FileTypeAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeAudioBuilder {
+    pub fn builder() -> FileTypeAudioBuilder {
         let mut inner = FileTypeAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeAudioBuilder { inner }
+        FileTypeAudioBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeAudioBuilder {
+pub struct FileTypeAudioBuilder {
     inner: FileTypeAudio,
 }
 
-impl RTDFileTypeAudioBuilder {
+#[deprecated]
+pub type RTDFileTypeAudioBuilder = FileTypeAudioBuilder;
+
+impl FileTypeAudioBuilder {
     pub fn build(&self) -> FileTypeAudio {
         self.inner.clone()
     }
@@ -244,7 +250,7 @@ impl AsRef<FileTypeAudio> for FileTypeAudio {
     }
 }
 
-impl AsRef<FileTypeAudio> for RTDFileTypeAudioBuilder {
+impl AsRef<FileTypeAudio> for FileTypeAudioBuilder {
     fn as_ref(&self) -> &FileTypeAudio {
         &self.inner
     }
@@ -274,23 +280,26 @@ impl RObject for FileTypeDocument {
 impl TDFileType for FileTypeDocument {}
 
 impl FileTypeDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeDocumentBuilder {
+    pub fn builder() -> FileTypeDocumentBuilder {
         let mut inner = FileTypeDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeDocumentBuilder { inner }
+        FileTypeDocumentBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeDocumentBuilder {
+pub struct FileTypeDocumentBuilder {
     inner: FileTypeDocument,
 }
 
-impl RTDFileTypeDocumentBuilder {
+#[deprecated]
+pub type RTDFileTypeDocumentBuilder = FileTypeDocumentBuilder;
+
+impl FileTypeDocumentBuilder {
     pub fn build(&self) -> FileTypeDocument {
         self.inner.clone()
     }
@@ -302,7 +311,7 @@ impl AsRef<FileTypeDocument> for FileTypeDocument {
     }
 }
 
-impl AsRef<FileTypeDocument> for RTDFileTypeDocumentBuilder {
+impl AsRef<FileTypeDocument> for FileTypeDocumentBuilder {
     fn as_ref(&self) -> &FileTypeDocument {
         &self.inner
     }
@@ -332,23 +341,26 @@ impl RObject for FileTypeNone {
 impl TDFileType for FileTypeNone {}
 
 impl FileTypeNone {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeNoneBuilder {
+    pub fn builder() -> FileTypeNoneBuilder {
         let mut inner = FileTypeNone::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeNoneBuilder { inner }
+        FileTypeNoneBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeNoneBuilder {
+pub struct FileTypeNoneBuilder {
     inner: FileTypeNone,
 }
 
-impl RTDFileTypeNoneBuilder {
+#[deprecated]
+pub type RTDFileTypeNoneBuilder = FileTypeNoneBuilder;
+
+impl FileTypeNoneBuilder {
     pub fn build(&self) -> FileTypeNone {
         self.inner.clone()
     }
@@ -360,7 +372,7 @@ impl AsRef<FileTypeNone> for FileTypeNone {
     }
 }
 
-impl AsRef<FileTypeNone> for RTDFileTypeNoneBuilder {
+impl AsRef<FileTypeNone> for FileTypeNoneBuilder {
     fn as_ref(&self) -> &FileTypeNone {
         &self.inner
     }
@@ -390,23 +402,26 @@ impl RObject for FileTypePhoto {
 impl TDFileType for FileTypePhoto {}
 
 impl FileTypePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypePhotoBuilder {
+    pub fn builder() -> FileTypePhotoBuilder {
         let mut inner = FileTypePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypePhotoBuilder { inner }
+        FileTypePhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypePhotoBuilder {
+pub struct FileTypePhotoBuilder {
     inner: FileTypePhoto,
 }
 
-impl RTDFileTypePhotoBuilder {
+#[deprecated]
+pub type RTDFileTypePhotoBuilder = FileTypePhotoBuilder;
+
+impl FileTypePhotoBuilder {
     pub fn build(&self) -> FileTypePhoto {
         self.inner.clone()
     }
@@ -418,7 +433,7 @@ impl AsRef<FileTypePhoto> for FileTypePhoto {
     }
 }
 
-impl AsRef<FileTypePhoto> for RTDFileTypePhotoBuilder {
+impl AsRef<FileTypePhoto> for FileTypePhotoBuilder {
     fn as_ref(&self) -> &FileTypePhoto {
         &self.inner
     }
@@ -448,23 +463,26 @@ impl RObject for FileTypeProfilePhoto {
 impl TDFileType for FileTypeProfilePhoto {}
 
 impl FileTypeProfilePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeProfilePhotoBuilder {
+    pub fn builder() -> FileTypeProfilePhotoBuilder {
         let mut inner = FileTypeProfilePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeProfilePhotoBuilder { inner }
+        FileTypeProfilePhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeProfilePhotoBuilder {
+pub struct FileTypeProfilePhotoBuilder {
     inner: FileTypeProfilePhoto,
 }
 
-impl RTDFileTypeProfilePhotoBuilder {
+#[deprecated]
+pub type RTDFileTypeProfilePhotoBuilder = FileTypeProfilePhotoBuilder;
+
+impl FileTypeProfilePhotoBuilder {
     pub fn build(&self) -> FileTypeProfilePhoto {
         self.inner.clone()
     }
@@ -476,7 +494,7 @@ impl AsRef<FileTypeProfilePhoto> for FileTypeProfilePhoto {
     }
 }
 
-impl AsRef<FileTypeProfilePhoto> for RTDFileTypeProfilePhotoBuilder {
+impl AsRef<FileTypeProfilePhoto> for FileTypeProfilePhotoBuilder {
     fn as_ref(&self) -> &FileTypeProfilePhoto {
         &self.inner
     }
@@ -506,23 +524,26 @@ impl RObject for FileTypeSecret {
 impl TDFileType for FileTypeSecret {}
 
 impl FileTypeSecret {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeSecretBuilder {
+    pub fn builder() -> FileTypeSecretBuilder {
         let mut inner = FileTypeSecret::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeSecretBuilder { inner }
+        FileTypeSecretBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeSecretBuilder {
+pub struct FileTypeSecretBuilder {
     inner: FileTypeSecret,
 }
 
-impl RTDFileTypeSecretBuilder {
+#[deprecated]
+pub type RTDFileTypeSecretBuilder = FileTypeSecretBuilder;
+
+impl FileTypeSecretBuilder {
     pub fn build(&self) -> FileTypeSecret {
         self.inner.clone()
     }
@@ -534,7 +555,7 @@ impl AsRef<FileTypeSecret> for FileTypeSecret {
     }
 }
 
-impl AsRef<FileTypeSecret> for RTDFileTypeSecretBuilder {
+impl AsRef<FileTypeSecret> for FileTypeSecretBuilder {
     fn as_ref(&self) -> &FileTypeSecret {
         &self.inner
     }
@@ -564,23 +585,26 @@ impl RObject for FileTypeSecretThumbnail {
 impl TDFileType for FileTypeSecretThumbnail {}
 
 impl FileTypeSecretThumbnail {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeSecretThumbnailBuilder {
+    pub fn builder() -> FileTypeSecretThumbnailBuilder {
         let mut inner = FileTypeSecretThumbnail::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeSecretThumbnailBuilder { inner }
+        FileTypeSecretThumbnailBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeSecretThumbnailBuilder {
+pub struct FileTypeSecretThumbnailBuilder {
     inner: FileTypeSecretThumbnail,
 }
 
-impl RTDFileTypeSecretThumbnailBuilder {
+#[deprecated]
+pub type RTDFileTypeSecretThumbnailBuilder = FileTypeSecretThumbnailBuilder;
+
+impl FileTypeSecretThumbnailBuilder {
     pub fn build(&self) -> FileTypeSecretThumbnail {
         self.inner.clone()
     }
@@ -592,7 +616,7 @@ impl AsRef<FileTypeSecretThumbnail> for FileTypeSecretThumbnail {
     }
 }
 
-impl AsRef<FileTypeSecretThumbnail> for RTDFileTypeSecretThumbnailBuilder {
+impl AsRef<FileTypeSecretThumbnail> for FileTypeSecretThumbnailBuilder {
     fn as_ref(&self) -> &FileTypeSecretThumbnail {
         &self.inner
     }
@@ -622,23 +646,26 @@ impl RObject for FileTypeSecure {
 impl TDFileType for FileTypeSecure {}
 
 impl FileTypeSecure {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeSecureBuilder {
+    pub fn builder() -> FileTypeSecureBuilder {
         let mut inner = FileTypeSecure::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeSecureBuilder { inner }
+        FileTypeSecureBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeSecureBuilder {
+pub struct FileTypeSecureBuilder {
     inner: FileTypeSecure,
 }
 
-impl RTDFileTypeSecureBuilder {
+#[deprecated]
+pub type RTDFileTypeSecureBuilder = FileTypeSecureBuilder;
+
+impl FileTypeSecureBuilder {
     pub fn build(&self) -> FileTypeSecure {
         self.inner.clone()
     }
@@ -650,7 +677,7 @@ impl AsRef<FileTypeSecure> for FileTypeSecure {
     }
 }
 
-impl AsRef<FileTypeSecure> for RTDFileTypeSecureBuilder {
+impl AsRef<FileTypeSecure> for FileTypeSecureBuilder {
     fn as_ref(&self) -> &FileTypeSecure {
         &self.inner
     }
@@ -680,23 +707,26 @@ impl RObject for FileTypeSticker {
 impl TDFileType for FileTypeSticker {}
 
 impl FileTypeSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeStickerBuilder {
+    pub fn builder() -> FileTypeStickerBuilder {
         let mut inner = FileTypeSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeStickerBuilder { inner }
+        FileTypeStickerBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeStickerBuilder {
+pub struct FileTypeStickerBuilder {
     inner: FileTypeSticker,
 }
 
-impl RTDFileTypeStickerBuilder {
+#[deprecated]
+pub type RTDFileTypeStickerBuilder = FileTypeStickerBuilder;
+
+impl FileTypeStickerBuilder {
     pub fn build(&self) -> FileTypeSticker {
         self.inner.clone()
     }
@@ -708,7 +738,7 @@ impl AsRef<FileTypeSticker> for FileTypeSticker {
     }
 }
 
-impl AsRef<FileTypeSticker> for RTDFileTypeStickerBuilder {
+impl AsRef<FileTypeSticker> for FileTypeStickerBuilder {
     fn as_ref(&self) -> &FileTypeSticker {
         &self.inner
     }
@@ -738,23 +768,26 @@ impl RObject for FileTypeThumbnail {
 impl TDFileType for FileTypeThumbnail {}
 
 impl FileTypeThumbnail {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeThumbnailBuilder {
+    pub fn builder() -> FileTypeThumbnailBuilder {
         let mut inner = FileTypeThumbnail::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeThumbnailBuilder { inner }
+        FileTypeThumbnailBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeThumbnailBuilder {
+pub struct FileTypeThumbnailBuilder {
     inner: FileTypeThumbnail,
 }
 
-impl RTDFileTypeThumbnailBuilder {
+#[deprecated]
+pub type RTDFileTypeThumbnailBuilder = FileTypeThumbnailBuilder;
+
+impl FileTypeThumbnailBuilder {
     pub fn build(&self) -> FileTypeThumbnail {
         self.inner.clone()
     }
@@ -766,7 +799,7 @@ impl AsRef<FileTypeThumbnail> for FileTypeThumbnail {
     }
 }
 
-impl AsRef<FileTypeThumbnail> for RTDFileTypeThumbnailBuilder {
+impl AsRef<FileTypeThumbnail> for FileTypeThumbnailBuilder {
     fn as_ref(&self) -> &FileTypeThumbnail {
         &self.inner
     }
@@ -796,23 +829,26 @@ impl RObject for FileTypeUnknown {
 impl TDFileType for FileTypeUnknown {}
 
 impl FileTypeUnknown {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeUnknownBuilder {
+    pub fn builder() -> FileTypeUnknownBuilder {
         let mut inner = FileTypeUnknown::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeUnknownBuilder { inner }
+        FileTypeUnknownBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeUnknownBuilder {
+pub struct FileTypeUnknownBuilder {
     inner: FileTypeUnknown,
 }
 
-impl RTDFileTypeUnknownBuilder {
+#[deprecated]
+pub type RTDFileTypeUnknownBuilder = FileTypeUnknownBuilder;
+
+impl FileTypeUnknownBuilder {
     pub fn build(&self) -> FileTypeUnknown {
         self.inner.clone()
     }
@@ -824,7 +860,7 @@ impl AsRef<FileTypeUnknown> for FileTypeUnknown {
     }
 }
 
-impl AsRef<FileTypeUnknown> for RTDFileTypeUnknownBuilder {
+impl AsRef<FileTypeUnknown> for FileTypeUnknownBuilder {
     fn as_ref(&self) -> &FileTypeUnknown {
         &self.inner
     }
@@ -854,23 +890,26 @@ impl RObject for FileTypeVideo {
 impl TDFileType for FileTypeVideo {}
 
 impl FileTypeVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeVideoBuilder {
+    pub fn builder() -> FileTypeVideoBuilder {
         let mut inner = FileTypeVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeVideoBuilder { inner }
+        FileTypeVideoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeVideoBuilder {
+pub struct FileTypeVideoBuilder {
     inner: FileTypeVideo,
 }
 
-impl RTDFileTypeVideoBuilder {
+#[deprecated]
+pub type RTDFileTypeVideoBuilder = FileTypeVideoBuilder;
+
+impl FileTypeVideoBuilder {
     pub fn build(&self) -> FileTypeVideo {
         self.inner.clone()
     }
@@ -882,7 +921,7 @@ impl AsRef<FileTypeVideo> for FileTypeVideo {
     }
 }
 
-impl AsRef<FileTypeVideo> for RTDFileTypeVideoBuilder {
+impl AsRef<FileTypeVideo> for FileTypeVideoBuilder {
     fn as_ref(&self) -> &FileTypeVideo {
         &self.inner
     }
@@ -912,23 +951,26 @@ impl RObject for FileTypeVideoNote {
 impl TDFileType for FileTypeVideoNote {}
 
 impl FileTypeVideoNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeVideoNoteBuilder {
+    pub fn builder() -> FileTypeVideoNoteBuilder {
         let mut inner = FileTypeVideoNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeVideoNoteBuilder { inner }
+        FileTypeVideoNoteBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeVideoNoteBuilder {
+pub struct FileTypeVideoNoteBuilder {
     inner: FileTypeVideoNote,
 }
 
-impl RTDFileTypeVideoNoteBuilder {
+#[deprecated]
+pub type RTDFileTypeVideoNoteBuilder = FileTypeVideoNoteBuilder;
+
+impl FileTypeVideoNoteBuilder {
     pub fn build(&self) -> FileTypeVideoNote {
         self.inner.clone()
     }
@@ -940,7 +982,7 @@ impl AsRef<FileTypeVideoNote> for FileTypeVideoNote {
     }
 }
 
-impl AsRef<FileTypeVideoNote> for RTDFileTypeVideoNoteBuilder {
+impl AsRef<FileTypeVideoNote> for FileTypeVideoNoteBuilder {
     fn as_ref(&self) -> &FileTypeVideoNote {
         &self.inner
     }
@@ -970,23 +1012,26 @@ impl RObject for FileTypeVoiceNote {
 impl TDFileType for FileTypeVoiceNote {}
 
 impl FileTypeVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeVoiceNoteBuilder {
+    pub fn builder() -> FileTypeVoiceNoteBuilder {
         let mut inner = FileTypeVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeVoiceNoteBuilder { inner }
+        FileTypeVoiceNoteBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeVoiceNoteBuilder {
+pub struct FileTypeVoiceNoteBuilder {
     inner: FileTypeVoiceNote,
 }
 
-impl RTDFileTypeVoiceNoteBuilder {
+#[deprecated]
+pub type RTDFileTypeVoiceNoteBuilder = FileTypeVoiceNoteBuilder;
+
+impl FileTypeVoiceNoteBuilder {
     pub fn build(&self) -> FileTypeVoiceNote {
         self.inner.clone()
     }
@@ -998,7 +1043,7 @@ impl AsRef<FileTypeVoiceNote> for FileTypeVoiceNote {
     }
 }
 
-impl AsRef<FileTypeVoiceNote> for RTDFileTypeVoiceNoteBuilder {
+impl AsRef<FileTypeVoiceNote> for FileTypeVoiceNoteBuilder {
     fn as_ref(&self) -> &FileTypeVoiceNote {
         &self.inner
     }
@@ -1028,23 +1073,26 @@ impl RObject for FileTypeWallpaper {
 impl TDFileType for FileTypeWallpaper {}
 
 impl FileTypeWallpaper {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileTypeWallpaperBuilder {
+    pub fn builder() -> FileTypeWallpaperBuilder {
         let mut inner = FileTypeWallpaper::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileTypeWallpaperBuilder { inner }
+        FileTypeWallpaperBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDFileTypeWallpaperBuilder {
+pub struct FileTypeWallpaperBuilder {
     inner: FileTypeWallpaper,
 }
 
-impl RTDFileTypeWallpaperBuilder {
+#[deprecated]
+pub type RTDFileTypeWallpaperBuilder = FileTypeWallpaperBuilder;
+
+impl FileTypeWallpaperBuilder {
     pub fn build(&self) -> FileTypeWallpaper {
         self.inner.clone()
     }
@@ -1056,7 +1104,7 @@ impl AsRef<FileTypeWallpaper> for FileTypeWallpaper {
     }
 }
 
-impl AsRef<FileTypeWallpaper> for RTDFileTypeWallpaperBuilder {
+impl AsRef<FileTypeWallpaper> for FileTypeWallpaperBuilder {
     fn as_ref(&self) -> &FileTypeWallpaper {
         &self.inner
     }

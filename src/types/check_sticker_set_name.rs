@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl TDCheckStickerSetNameResult for CheckStickerSetName {}
 impl RFunction for CheckStickerSetName {}
 
 impl CheckStickerSetName {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckStickerSetNameBuilder {
+    pub fn builder() -> CheckStickerSetNameBuilder {
         let mut inner = CheckStickerSetName::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkStickerSetName".to_string();
 
-        RTDCheckStickerSetNameBuilder { inner }
+        CheckStickerSetNameBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -53,11 +53,14 @@ impl CheckStickerSetName {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckStickerSetNameBuilder {
+pub struct CheckStickerSetNameBuilder {
     inner: CheckStickerSetName,
 }
 
-impl RTDCheckStickerSetNameBuilder {
+#[deprecated]
+pub type RTDCheckStickerSetNameBuilder = CheckStickerSetNameBuilder;
+
+impl CheckStickerSetNameBuilder {
     pub fn build(&self) -> CheckStickerSetName {
         self.inner.clone()
     }
@@ -74,7 +77,7 @@ impl AsRef<CheckStickerSetName> for CheckStickerSetName {
     }
 }
 
-impl AsRef<CheckStickerSetName> for RTDCheckStickerSetNameBuilder {
+impl AsRef<CheckStickerSetName> for CheckStickerSetNameBuilder {
     fn as_ref(&self) -> &CheckStickerSetName {
         &self.inner
     }

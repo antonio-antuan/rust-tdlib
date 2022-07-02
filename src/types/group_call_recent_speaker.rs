@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for GroupCallRecentSpeaker {
 }
 
 impl GroupCallRecentSpeaker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGroupCallRecentSpeakerBuilder {
+    pub fn builder() -> GroupCallRecentSpeakerBuilder {
         let mut inner = GroupCallRecentSpeaker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGroupCallRecentSpeakerBuilder { inner }
+        GroupCallRecentSpeakerBuilder { inner }
     }
 
     pub fn participant_id(&self) -> &MessageSender {
@@ -52,11 +52,14 @@ impl GroupCallRecentSpeaker {
 }
 
 #[doc(hidden)]
-pub struct RTDGroupCallRecentSpeakerBuilder {
+pub struct GroupCallRecentSpeakerBuilder {
     inner: GroupCallRecentSpeaker,
 }
 
-impl RTDGroupCallRecentSpeakerBuilder {
+#[deprecated]
+pub type RTDGroupCallRecentSpeakerBuilder = GroupCallRecentSpeakerBuilder;
+
+impl GroupCallRecentSpeakerBuilder {
     pub fn build(&self) -> GroupCallRecentSpeaker {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<GroupCallRecentSpeaker> for GroupCallRecentSpeaker {
     }
 }
 
-impl AsRef<GroupCallRecentSpeaker> for RTDGroupCallRecentSpeakerBuilder {
+impl AsRef<GroupCallRecentSpeaker> for GroupCallRecentSpeakerBuilder {
     fn as_ref(&self) -> &GroupCallRecentSpeaker {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -74,7 +74,7 @@ impl RObject for ChatActionBar {
 }
 
 impl ChatActionBar {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -113,23 +113,26 @@ impl RObject for ChatActionBarAddContact {
 impl TDChatActionBar for ChatActionBarAddContact {}
 
 impl ChatActionBarAddContact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatActionBarAddContactBuilder {
+    pub fn builder() -> ChatActionBarAddContactBuilder {
         let mut inner = ChatActionBarAddContact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatActionBarAddContactBuilder { inner }
+        ChatActionBarAddContactBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatActionBarAddContactBuilder {
+pub struct ChatActionBarAddContactBuilder {
     inner: ChatActionBarAddContact,
 }
 
-impl RTDChatActionBarAddContactBuilder {
+#[deprecated]
+pub type RTDChatActionBarAddContactBuilder = ChatActionBarAddContactBuilder;
+
+impl ChatActionBarAddContactBuilder {
     pub fn build(&self) -> ChatActionBarAddContact {
         self.inner.clone()
     }
@@ -141,7 +144,7 @@ impl AsRef<ChatActionBarAddContact> for ChatActionBarAddContact {
     }
 }
 
-impl AsRef<ChatActionBarAddContact> for RTDChatActionBarAddContactBuilder {
+impl AsRef<ChatActionBarAddContact> for ChatActionBarAddContactBuilder {
     fn as_ref(&self) -> &ChatActionBarAddContact {
         &self.inner
     }
@@ -171,23 +174,26 @@ impl RObject for ChatActionBarInviteMembers {
 impl TDChatActionBar for ChatActionBarInviteMembers {}
 
 impl ChatActionBarInviteMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatActionBarInviteMembersBuilder {
+    pub fn builder() -> ChatActionBarInviteMembersBuilder {
         let mut inner = ChatActionBarInviteMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatActionBarInviteMembersBuilder { inner }
+        ChatActionBarInviteMembersBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatActionBarInviteMembersBuilder {
+pub struct ChatActionBarInviteMembersBuilder {
     inner: ChatActionBarInviteMembers,
 }
 
-impl RTDChatActionBarInviteMembersBuilder {
+#[deprecated]
+pub type RTDChatActionBarInviteMembersBuilder = ChatActionBarInviteMembersBuilder;
+
+impl ChatActionBarInviteMembersBuilder {
     pub fn build(&self) -> ChatActionBarInviteMembers {
         self.inner.clone()
     }
@@ -199,7 +205,7 @@ impl AsRef<ChatActionBarInviteMembers> for ChatActionBarInviteMembers {
     }
 }
 
-impl AsRef<ChatActionBarInviteMembers> for RTDChatActionBarInviteMembersBuilder {
+impl AsRef<ChatActionBarInviteMembers> for ChatActionBarInviteMembersBuilder {
     fn as_ref(&self) -> &ChatActionBarInviteMembers {
         &self.inner
     }
@@ -241,14 +247,14 @@ impl RObject for ChatActionBarJoinRequest {
 impl TDChatActionBar for ChatActionBarJoinRequest {}
 
 impl ChatActionBarJoinRequest {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatActionBarJoinRequestBuilder {
+    pub fn builder() -> ChatActionBarJoinRequestBuilder {
         let mut inner = ChatActionBarJoinRequest::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatActionBarJoinRequestBuilder { inner }
+        ChatActionBarJoinRequestBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -265,11 +271,14 @@ impl ChatActionBarJoinRequest {
 }
 
 #[doc(hidden)]
-pub struct RTDChatActionBarJoinRequestBuilder {
+pub struct ChatActionBarJoinRequestBuilder {
     inner: ChatActionBarJoinRequest,
 }
 
-impl RTDChatActionBarJoinRequestBuilder {
+#[deprecated]
+pub type RTDChatActionBarJoinRequestBuilder = ChatActionBarJoinRequestBuilder;
+
+impl ChatActionBarJoinRequestBuilder {
     pub fn build(&self) -> ChatActionBarJoinRequest {
         self.inner.clone()
     }
@@ -296,7 +305,7 @@ impl AsRef<ChatActionBarJoinRequest> for ChatActionBarJoinRequest {
     }
 }
 
-impl AsRef<ChatActionBarJoinRequest> for RTDChatActionBarJoinRequestBuilder {
+impl AsRef<ChatActionBarJoinRequest> for ChatActionBarJoinRequestBuilder {
     fn as_ref(&self) -> &ChatActionBarJoinRequest {
         &self.inner
     }
@@ -334,14 +343,14 @@ impl RObject for ChatActionBarReportAddBlock {
 impl TDChatActionBar for ChatActionBarReportAddBlock {}
 
 impl ChatActionBarReportAddBlock {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatActionBarReportAddBlockBuilder {
+    pub fn builder() -> ChatActionBarReportAddBlockBuilder {
         let mut inner = ChatActionBarReportAddBlock::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatActionBarReportAddBlockBuilder { inner }
+        ChatActionBarReportAddBlockBuilder { inner }
     }
 
     pub fn can_unarchive(&self) -> bool {
@@ -354,11 +363,14 @@ impl ChatActionBarReportAddBlock {
 }
 
 #[doc(hidden)]
-pub struct RTDChatActionBarReportAddBlockBuilder {
+pub struct ChatActionBarReportAddBlockBuilder {
     inner: ChatActionBarReportAddBlock,
 }
 
-impl RTDChatActionBarReportAddBlockBuilder {
+#[deprecated]
+pub type RTDChatActionBarReportAddBlockBuilder = ChatActionBarReportAddBlockBuilder;
+
+impl ChatActionBarReportAddBlockBuilder {
     pub fn build(&self) -> ChatActionBarReportAddBlock {
         self.inner.clone()
     }
@@ -380,7 +392,7 @@ impl AsRef<ChatActionBarReportAddBlock> for ChatActionBarReportAddBlock {
     }
 }
 
-impl AsRef<ChatActionBarReportAddBlock> for RTDChatActionBarReportAddBlockBuilder {
+impl AsRef<ChatActionBarReportAddBlock> for ChatActionBarReportAddBlockBuilder {
     fn as_ref(&self) -> &ChatActionBarReportAddBlock {
         &self.inner
     }
@@ -414,14 +426,14 @@ impl RObject for ChatActionBarReportSpam {
 impl TDChatActionBar for ChatActionBarReportSpam {}
 
 impl ChatActionBarReportSpam {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatActionBarReportSpamBuilder {
+    pub fn builder() -> ChatActionBarReportSpamBuilder {
         let mut inner = ChatActionBarReportSpam::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatActionBarReportSpamBuilder { inner }
+        ChatActionBarReportSpamBuilder { inner }
     }
 
     pub fn can_unarchive(&self) -> bool {
@@ -430,11 +442,14 @@ impl ChatActionBarReportSpam {
 }
 
 #[doc(hidden)]
-pub struct RTDChatActionBarReportSpamBuilder {
+pub struct ChatActionBarReportSpamBuilder {
     inner: ChatActionBarReportSpam,
 }
 
-impl RTDChatActionBarReportSpamBuilder {
+#[deprecated]
+pub type RTDChatActionBarReportSpamBuilder = ChatActionBarReportSpamBuilder;
+
+impl ChatActionBarReportSpamBuilder {
     pub fn build(&self) -> ChatActionBarReportSpam {
         self.inner.clone()
     }
@@ -451,7 +466,7 @@ impl AsRef<ChatActionBarReportSpam> for ChatActionBarReportSpam {
     }
 }
 
-impl AsRef<ChatActionBarReportSpam> for RTDChatActionBarReportSpamBuilder {
+impl AsRef<ChatActionBarReportSpam> for ChatActionBarReportSpamBuilder {
     fn as_ref(&self) -> &ChatActionBarReportSpam {
         &self.inner
     }
@@ -481,23 +496,27 @@ impl RObject for ChatActionBarReportUnrelatedLocation {
 impl TDChatActionBar for ChatActionBarReportUnrelatedLocation {}
 
 impl ChatActionBarReportUnrelatedLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatActionBarReportUnrelatedLocationBuilder {
+    pub fn builder() -> ChatActionBarReportUnrelatedLocationBuilder {
         let mut inner = ChatActionBarReportUnrelatedLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatActionBarReportUnrelatedLocationBuilder { inner }
+        ChatActionBarReportUnrelatedLocationBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatActionBarReportUnrelatedLocationBuilder {
+pub struct ChatActionBarReportUnrelatedLocationBuilder {
     inner: ChatActionBarReportUnrelatedLocation,
 }
 
-impl RTDChatActionBarReportUnrelatedLocationBuilder {
+#[deprecated]
+pub type RTDChatActionBarReportUnrelatedLocationBuilder =
+    ChatActionBarReportUnrelatedLocationBuilder;
+
+impl ChatActionBarReportUnrelatedLocationBuilder {
     pub fn build(&self) -> ChatActionBarReportUnrelatedLocation {
         self.inner.clone()
     }
@@ -509,9 +528,7 @@ impl AsRef<ChatActionBarReportUnrelatedLocation> for ChatActionBarReportUnrelate
     }
 }
 
-impl AsRef<ChatActionBarReportUnrelatedLocation>
-    for RTDChatActionBarReportUnrelatedLocationBuilder
-{
+impl AsRef<ChatActionBarReportUnrelatedLocation> for ChatActionBarReportUnrelatedLocationBuilder {
     fn as_ref(&self) -> &ChatActionBarReportUnrelatedLocation {
         &self.inner
     }
@@ -541,23 +558,26 @@ impl RObject for ChatActionBarSharePhoneNumber {
 impl TDChatActionBar for ChatActionBarSharePhoneNumber {}
 
 impl ChatActionBarSharePhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatActionBarSharePhoneNumberBuilder {
+    pub fn builder() -> ChatActionBarSharePhoneNumberBuilder {
         let mut inner = ChatActionBarSharePhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatActionBarSharePhoneNumberBuilder { inner }
+        ChatActionBarSharePhoneNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatActionBarSharePhoneNumberBuilder {
+pub struct ChatActionBarSharePhoneNumberBuilder {
     inner: ChatActionBarSharePhoneNumber,
 }
 
-impl RTDChatActionBarSharePhoneNumberBuilder {
+#[deprecated]
+pub type RTDChatActionBarSharePhoneNumberBuilder = ChatActionBarSharePhoneNumberBuilder;
+
+impl ChatActionBarSharePhoneNumberBuilder {
     pub fn build(&self) -> ChatActionBarSharePhoneNumber {
         self.inner.clone()
     }
@@ -569,7 +589,7 @@ impl AsRef<ChatActionBarSharePhoneNumber> for ChatActionBarSharePhoneNumber {
     }
 }
 
-impl AsRef<ChatActionBarSharePhoneNumber> for RTDChatActionBarSharePhoneNumberBuilder {
+impl AsRef<ChatActionBarSharePhoneNumber> for ChatActionBarSharePhoneNumberBuilder {
     fn as_ref(&self) -> &ChatActionBarSharePhoneNumber {
         &self.inner
     }

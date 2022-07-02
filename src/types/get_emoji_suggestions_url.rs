@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetEmojiSuggestionsUrl {
 impl RFunction for GetEmojiSuggestionsUrl {}
 
 impl GetEmojiSuggestionsUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetEmojiSuggestionsUrlBuilder {
+    pub fn builder() -> GetEmojiSuggestionsUrlBuilder {
         let mut inner = GetEmojiSuggestionsUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getEmojiSuggestionsUrl".to_string();
 
-        RTDGetEmojiSuggestionsUrlBuilder { inner }
+        GetEmojiSuggestionsUrlBuilder { inner }
     }
 
     pub fn language_code(&self) -> &String {
@@ -51,11 +51,14 @@ impl GetEmojiSuggestionsUrl {
 }
 
 #[doc(hidden)]
-pub struct RTDGetEmojiSuggestionsUrlBuilder {
+pub struct GetEmojiSuggestionsUrlBuilder {
     inner: GetEmojiSuggestionsUrl,
 }
 
-impl RTDGetEmojiSuggestionsUrlBuilder {
+#[deprecated]
+pub type RTDGetEmojiSuggestionsUrlBuilder = GetEmojiSuggestionsUrlBuilder;
+
+impl GetEmojiSuggestionsUrlBuilder {
     pub fn build(&self) -> GetEmojiSuggestionsUrl {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetEmojiSuggestionsUrl> for GetEmojiSuggestionsUrl {
     }
 }
 
-impl AsRef<GetEmojiSuggestionsUrl> for RTDGetEmojiSuggestionsUrlBuilder {
+impl AsRef<GetEmojiSuggestionsUrl> for GetEmojiSuggestionsUrlBuilder {
     fn as_ref(&self) -> &GetEmojiSuggestionsUrl {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for MessageSendOptions {
 }
 
 impl MessageSendOptions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSendOptionsBuilder {
+    pub fn builder() -> MessageSendOptionsBuilder {
         let mut inner = MessageSendOptions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSendOptionsBuilder { inner }
+        MessageSendOptionsBuilder { inner }
     }
 
     pub fn disable_notification(&self) -> bool {
@@ -60,11 +60,14 @@ impl MessageSendOptions {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSendOptionsBuilder {
+pub struct MessageSendOptionsBuilder {
     inner: MessageSendOptions,
 }
 
-impl RTDMessageSendOptionsBuilder {
+#[deprecated]
+pub type RTDMessageSendOptionsBuilder = MessageSendOptionsBuilder;
+
+impl MessageSendOptionsBuilder {
     pub fn build(&self) -> MessageSendOptions {
         self.inner.clone()
     }
@@ -94,7 +97,7 @@ impl AsRef<MessageSendOptions> for MessageSendOptions {
     }
 }
 
-impl AsRef<MessageSendOptions> for RTDMessageSendOptionsBuilder {
+impl AsRef<MessageSendOptions> for MessageSendOptionsBuilder {
     fn as_ref(&self) -> &MessageSendOptions {
         &self.inner
     }

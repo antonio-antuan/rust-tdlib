@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for BankCardInfo {
 }
 
 impl BankCardInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBankCardInfoBuilder {
+    pub fn builder() -> BankCardInfoBuilder {
         let mut inner = BankCardInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBankCardInfoBuilder { inner }
+        BankCardInfoBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -52,11 +52,14 @@ impl BankCardInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDBankCardInfoBuilder {
+pub struct BankCardInfoBuilder {
     inner: BankCardInfo,
 }
 
-impl RTDBankCardInfoBuilder {
+#[deprecated]
+pub type RTDBankCardInfoBuilder = BankCardInfoBuilder;
+
+impl BankCardInfoBuilder {
     pub fn build(&self) -> BankCardInfo {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<BankCardInfo> for BankCardInfo {
     }
 }
 
-impl AsRef<BankCardInfo> for RTDBankCardInfoBuilder {
+impl AsRef<BankCardInfo> for BankCardInfoBuilder {
     fn as_ref(&self) -> &BankCardInfo {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,16 +49,16 @@ impl RObject for AddLocalMessage {
 impl RFunction for AddLocalMessage {}
 
 impl AddLocalMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddLocalMessageBuilder {
+    pub fn builder() -> AddLocalMessageBuilder {
         let mut inner = AddLocalMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "addLocalMessage".to_string();
 
-        RTDAddLocalMessageBuilder { inner }
+        AddLocalMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -83,11 +83,14 @@ impl AddLocalMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDAddLocalMessageBuilder {
+pub struct AddLocalMessageBuilder {
     inner: AddLocalMessage,
 }
 
-impl RTDAddLocalMessageBuilder {
+#[deprecated]
+pub type RTDAddLocalMessageBuilder = AddLocalMessageBuilder;
+
+impl AddLocalMessageBuilder {
     pub fn build(&self) -> AddLocalMessage {
         self.inner.clone()
     }
@@ -127,7 +130,7 @@ impl AsRef<AddLocalMessage> for AddLocalMessage {
     }
 }
 
-impl AsRef<AddLocalMessage> for RTDAddLocalMessageBuilder {
+impl AsRef<AddLocalMessage> for AddLocalMessageBuilder {
     fn as_ref(&self) -> &AddLocalMessage {
         &self.inner
     }

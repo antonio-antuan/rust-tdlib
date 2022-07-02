@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -64,7 +64,7 @@ impl RObject for CallDiscardReason {
 }
 
 impl CallDiscardReason {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -103,23 +103,26 @@ impl RObject for CallDiscardReasonDeclined {
 impl TDCallDiscardReason for CallDiscardReasonDeclined {}
 
 impl CallDiscardReasonDeclined {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallDiscardReasonDeclinedBuilder {
+    pub fn builder() -> CallDiscardReasonDeclinedBuilder {
         let mut inner = CallDiscardReasonDeclined::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallDiscardReasonDeclinedBuilder { inner }
+        CallDiscardReasonDeclinedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallDiscardReasonDeclinedBuilder {
+pub struct CallDiscardReasonDeclinedBuilder {
     inner: CallDiscardReasonDeclined,
 }
 
-impl RTDCallDiscardReasonDeclinedBuilder {
+#[deprecated]
+pub type RTDCallDiscardReasonDeclinedBuilder = CallDiscardReasonDeclinedBuilder;
+
+impl CallDiscardReasonDeclinedBuilder {
     pub fn build(&self) -> CallDiscardReasonDeclined {
         self.inner.clone()
     }
@@ -131,7 +134,7 @@ impl AsRef<CallDiscardReasonDeclined> for CallDiscardReasonDeclined {
     }
 }
 
-impl AsRef<CallDiscardReasonDeclined> for RTDCallDiscardReasonDeclinedBuilder {
+impl AsRef<CallDiscardReasonDeclined> for CallDiscardReasonDeclinedBuilder {
     fn as_ref(&self) -> &CallDiscardReasonDeclined {
         &self.inner
     }
@@ -161,23 +164,26 @@ impl RObject for CallDiscardReasonDisconnected {
 impl TDCallDiscardReason for CallDiscardReasonDisconnected {}
 
 impl CallDiscardReasonDisconnected {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallDiscardReasonDisconnectedBuilder {
+    pub fn builder() -> CallDiscardReasonDisconnectedBuilder {
         let mut inner = CallDiscardReasonDisconnected::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallDiscardReasonDisconnectedBuilder { inner }
+        CallDiscardReasonDisconnectedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallDiscardReasonDisconnectedBuilder {
+pub struct CallDiscardReasonDisconnectedBuilder {
     inner: CallDiscardReasonDisconnected,
 }
 
-impl RTDCallDiscardReasonDisconnectedBuilder {
+#[deprecated]
+pub type RTDCallDiscardReasonDisconnectedBuilder = CallDiscardReasonDisconnectedBuilder;
+
+impl CallDiscardReasonDisconnectedBuilder {
     pub fn build(&self) -> CallDiscardReasonDisconnected {
         self.inner.clone()
     }
@@ -189,7 +195,7 @@ impl AsRef<CallDiscardReasonDisconnected> for CallDiscardReasonDisconnected {
     }
 }
 
-impl AsRef<CallDiscardReasonDisconnected> for RTDCallDiscardReasonDisconnectedBuilder {
+impl AsRef<CallDiscardReasonDisconnected> for CallDiscardReasonDisconnectedBuilder {
     fn as_ref(&self) -> &CallDiscardReasonDisconnected {
         &self.inner
     }
@@ -219,23 +225,26 @@ impl RObject for CallDiscardReasonEmpty {
 impl TDCallDiscardReason for CallDiscardReasonEmpty {}
 
 impl CallDiscardReasonEmpty {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallDiscardReasonEmptyBuilder {
+    pub fn builder() -> CallDiscardReasonEmptyBuilder {
         let mut inner = CallDiscardReasonEmpty::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallDiscardReasonEmptyBuilder { inner }
+        CallDiscardReasonEmptyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallDiscardReasonEmptyBuilder {
+pub struct CallDiscardReasonEmptyBuilder {
     inner: CallDiscardReasonEmpty,
 }
 
-impl RTDCallDiscardReasonEmptyBuilder {
+#[deprecated]
+pub type RTDCallDiscardReasonEmptyBuilder = CallDiscardReasonEmptyBuilder;
+
+impl CallDiscardReasonEmptyBuilder {
     pub fn build(&self) -> CallDiscardReasonEmpty {
         self.inner.clone()
     }
@@ -247,7 +256,7 @@ impl AsRef<CallDiscardReasonEmpty> for CallDiscardReasonEmpty {
     }
 }
 
-impl AsRef<CallDiscardReasonEmpty> for RTDCallDiscardReasonEmptyBuilder {
+impl AsRef<CallDiscardReasonEmpty> for CallDiscardReasonEmptyBuilder {
     fn as_ref(&self) -> &CallDiscardReasonEmpty {
         &self.inner
     }
@@ -277,23 +286,26 @@ impl RObject for CallDiscardReasonHungUp {
 impl TDCallDiscardReason for CallDiscardReasonHungUp {}
 
 impl CallDiscardReasonHungUp {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallDiscardReasonHungUpBuilder {
+    pub fn builder() -> CallDiscardReasonHungUpBuilder {
         let mut inner = CallDiscardReasonHungUp::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallDiscardReasonHungUpBuilder { inner }
+        CallDiscardReasonHungUpBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallDiscardReasonHungUpBuilder {
+pub struct CallDiscardReasonHungUpBuilder {
     inner: CallDiscardReasonHungUp,
 }
 
-impl RTDCallDiscardReasonHungUpBuilder {
+#[deprecated]
+pub type RTDCallDiscardReasonHungUpBuilder = CallDiscardReasonHungUpBuilder;
+
+impl CallDiscardReasonHungUpBuilder {
     pub fn build(&self) -> CallDiscardReasonHungUp {
         self.inner.clone()
     }
@@ -305,7 +317,7 @@ impl AsRef<CallDiscardReasonHungUp> for CallDiscardReasonHungUp {
     }
 }
 
-impl AsRef<CallDiscardReasonHungUp> for RTDCallDiscardReasonHungUpBuilder {
+impl AsRef<CallDiscardReasonHungUp> for CallDiscardReasonHungUpBuilder {
     fn as_ref(&self) -> &CallDiscardReasonHungUp {
         &self.inner
     }
@@ -335,23 +347,26 @@ impl RObject for CallDiscardReasonMissed {
 impl TDCallDiscardReason for CallDiscardReasonMissed {}
 
 impl CallDiscardReasonMissed {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallDiscardReasonMissedBuilder {
+    pub fn builder() -> CallDiscardReasonMissedBuilder {
         let mut inner = CallDiscardReasonMissed::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallDiscardReasonMissedBuilder { inner }
+        CallDiscardReasonMissedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCallDiscardReasonMissedBuilder {
+pub struct CallDiscardReasonMissedBuilder {
     inner: CallDiscardReasonMissed,
 }
 
-impl RTDCallDiscardReasonMissedBuilder {
+#[deprecated]
+pub type RTDCallDiscardReasonMissedBuilder = CallDiscardReasonMissedBuilder;
+
+impl CallDiscardReasonMissedBuilder {
     pub fn build(&self) -> CallDiscardReasonMissed {
         self.inner.clone()
     }
@@ -363,7 +378,7 @@ impl AsRef<CallDiscardReasonMissed> for CallDiscardReasonMissed {
     }
 }
 
-impl AsRef<CallDiscardReasonMissed> for RTDCallDiscardReasonMissedBuilder {
+impl AsRef<CallDiscardReasonMissed> for CallDiscardReasonMissedBuilder {
     fn as_ref(&self) -> &CallDiscardReasonMissed {
         &self.inner
     }

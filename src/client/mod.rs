@@ -19,17 +19,16 @@ use serde::de::DeserializeOwned;
 pub use worker::{Worker, WorkerBuilder};
 
 use crate::{
-    errors::{RTDError, RTDResult},
+    errors::{Error, Result},
     types::*,
 };
 use tdlib_client::{TdJson, TdLibClient};
 use tokio::sync::mpsc;
 
-const CLIENT_NOT_AUTHORIZED: RTDError = RTDError::Internal("client not authorized yet");
-const CLOSED_RECEIVER_ERROR: RTDError = RTDError::Internal("receiver already closed");
-const INVALID_RESPONSE_ERROR: RTDError = RTDError::Internal("receive invalid response");
-const NO_EXTRA: RTDError =
-    RTDError::Internal("invalid tdlib response type, not have `extra` field");
+const CLIENT_NOT_AUTHORIZED: Error = Error::Internal("client not authorized yet");
+const CLOSED_RECEIVER_ERROR: Error = Error::Internal("receiver already closed");
+const INVALID_RESPONSE_ERROR: Error = Error::Internal("receive invalid response");
+const NO_EXTRA: Error = Error::Internal("invalid tdlib response type, not have `extra` field");
 
 /// Represents state of particular client instance.
 #[derive(Debug, Clone, PartialEq)]
@@ -73,23 +72,23 @@ where
         self.tdlib_client.clone()
     }
 
-    pub(crate) fn get_client_id(&self) -> RTDResult<i32> {
+    pub(crate) fn get_client_id(&self) -> Result<i32> {
         match self.client_id {
             Some(client_id) => Ok(client_id),
             None => Err(CLIENT_NOT_AUTHORIZED),
         }
     }
 
-    pub(crate) fn take_client_id(&mut self) -> RTDResult<i32> {
+    pub(crate) fn take_client_id(&mut self) -> Result<i32> {
         match self.client_id.take() {
             Some(client_id) => Ok(client_id),
             None => Err(CLIENT_NOT_AUTHORIZED),
         }
     }
 
-    pub(crate) fn set_client_id(&mut self, client_id: i32) -> RTDResult<()> {
+    pub(crate) fn set_client_id(&mut self, client_id: i32) -> Result<()> {
         match self.client_id {
-            Some(_) => Err(RTDError::BadRequest("client already authorized")),
+            Some(_) => Err(Error::BadRequest("client already authorized")),
             None => {
                 self.client_id = Some(client_id);
                 self.is_started = true;
@@ -160,9 +159,9 @@ where
         }
     }
 
-    pub fn build(self) -> RTDResult<Client<R>> {
+    pub fn build(self) -> Result<Client<R>> {
         if self.tdlib_parameters.is_none() {
-            return Err(RTDError::BadRequest("tdlib_parameters not set"));
+            return Err(Error::BadRequest("tdlib_parameters not set"));
         };
 
         let client = Client::new(
@@ -203,12 +202,9 @@ where
         }
     }
 
-    pub fn set_updates_sender(
-        &mut self,
-        updates_sender: mpsc::Sender<Box<Update>>,
-    ) -> RTDResult<()> {
+    pub fn set_updates_sender(&mut self, updates_sender: mpsc::Sender<Box<Update>>) -> Result<()> {
         match self.is_started {
-            true => Err(RTDError::BadRequest(
+            true => Err(Error::BadRequest(
                 "can't set updates sender when client already started",
             )),
             false => {
@@ -219,14 +215,14 @@ where
     }
 
     /// Just a shortcut for `crate::client::client::Client::close`, allows you to stop the client.
-    pub async fn stop(&self) -> RTDResult<Ok> {
+    pub async fn stop(&self) -> Result<Ok> {
         self.close(Close::builder().build()).await
     }
 
     async fn make_request<T: RFunction, P: AsRef<T>, Q: DeserializeOwned>(
         &self,
         param: P,
-    ) -> RTDResult<Q> {
+    ) -> Result<Q> {
         let extra = param.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(extra);
         self.tdlib_client

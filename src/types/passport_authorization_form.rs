@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -36,14 +36,14 @@ impl RObject for PassportAuthorizationForm {
 }
 
 impl PassportAuthorizationForm {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportAuthorizationFormBuilder {
+    pub fn builder() -> PassportAuthorizationFormBuilder {
         let mut inner = PassportAuthorizationForm::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportAuthorizationFormBuilder { inner }
+        PassportAuthorizationFormBuilder { inner }
     }
 
     pub fn id(&self) -> i32 {
@@ -60,11 +60,14 @@ impl PassportAuthorizationForm {
 }
 
 #[doc(hidden)]
-pub struct RTDPassportAuthorizationFormBuilder {
+pub struct PassportAuthorizationFormBuilder {
     inner: PassportAuthorizationForm,
 }
 
-impl RTDPassportAuthorizationFormBuilder {
+#[deprecated]
+pub type RTDPassportAuthorizationFormBuilder = PassportAuthorizationFormBuilder;
+
+impl PassportAuthorizationFormBuilder {
     pub fn build(&self) -> PassportAuthorizationForm {
         self.inner.clone()
     }
@@ -94,7 +97,7 @@ impl AsRef<PassportAuthorizationForm> for PassportAuthorizationForm {
     }
 }
 
-impl AsRef<PassportAuthorizationForm> for RTDPassportAuthorizationFormBuilder {
+impl AsRef<PassportAuthorizationForm> for PassportAuthorizationFormBuilder {
     fn as_ref(&self) -> &PassportAuthorizationForm {
         &self.inner
     }

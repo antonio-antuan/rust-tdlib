@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -41,16 +41,16 @@ impl RObject for EditInlineMessageMedia {
 impl RFunction for EditInlineMessageMedia {}
 
 impl EditInlineMessageMedia {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditInlineMessageMediaBuilder {
+    pub fn builder() -> EditInlineMessageMediaBuilder {
         let mut inner = EditInlineMessageMedia::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editInlineMessageMedia".to_string();
 
-        RTDEditInlineMessageMediaBuilder { inner }
+        EditInlineMessageMediaBuilder { inner }
     }
 
     pub fn inline_message_id(&self) -> &String {
@@ -67,11 +67,14 @@ impl EditInlineMessageMedia {
 }
 
 #[doc(hidden)]
-pub struct RTDEditInlineMessageMediaBuilder {
+pub struct EditInlineMessageMediaBuilder {
     inner: EditInlineMessageMedia,
 }
 
-impl RTDEditInlineMessageMediaBuilder {
+#[deprecated]
+pub type RTDEditInlineMessageMediaBuilder = EditInlineMessageMediaBuilder;
+
+impl EditInlineMessageMediaBuilder {
     pub fn build(&self) -> EditInlineMessageMedia {
         self.inner.clone()
     }
@@ -101,7 +104,7 @@ impl AsRef<EditInlineMessageMedia> for EditInlineMessageMedia {
     }
 }
 
-impl AsRef<EditInlineMessageMedia> for RTDEditInlineMessageMediaBuilder {
+impl AsRef<EditInlineMessageMedia> for EditInlineMessageMediaBuilder {
     fn as_ref(&self) -> &EditInlineMessageMedia {
         &self.inner
     }

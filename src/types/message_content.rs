@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -284,7 +284,7 @@ impl RObject for MessageContent {
 }
 
 impl MessageContent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -329,14 +329,14 @@ impl RObject for MessageAnimatedEmoji {
 impl TDMessageContent for MessageAnimatedEmoji {}
 
 impl MessageAnimatedEmoji {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageAnimatedEmojiBuilder {
+    pub fn builder() -> MessageAnimatedEmojiBuilder {
         let mut inner = MessageAnimatedEmoji::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageAnimatedEmojiBuilder { inner }
+        MessageAnimatedEmojiBuilder { inner }
     }
 
     pub fn animated_emoji(&self) -> &AnimatedEmoji {
@@ -349,11 +349,14 @@ impl MessageAnimatedEmoji {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageAnimatedEmojiBuilder {
+pub struct MessageAnimatedEmojiBuilder {
     inner: MessageAnimatedEmoji,
 }
 
-impl RTDMessageAnimatedEmojiBuilder {
+#[deprecated]
+pub type RTDMessageAnimatedEmojiBuilder = MessageAnimatedEmojiBuilder;
+
+impl MessageAnimatedEmojiBuilder {
     pub fn build(&self) -> MessageAnimatedEmoji {
         self.inner.clone()
     }
@@ -375,7 +378,7 @@ impl AsRef<MessageAnimatedEmoji> for MessageAnimatedEmoji {
     }
 }
 
-impl AsRef<MessageAnimatedEmoji> for RTDMessageAnimatedEmojiBuilder {
+impl AsRef<MessageAnimatedEmoji> for MessageAnimatedEmojiBuilder {
     fn as_ref(&self) -> &MessageAnimatedEmoji {
         &self.inner
     }
@@ -413,14 +416,14 @@ impl RObject for MessageAnimation {
 impl TDMessageContent for MessageAnimation {}
 
 impl MessageAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageAnimationBuilder {
+    pub fn builder() -> MessageAnimationBuilder {
         let mut inner = MessageAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageAnimationBuilder { inner }
+        MessageAnimationBuilder { inner }
     }
 
     pub fn animation(&self) -> &Animation {
@@ -437,11 +440,14 @@ impl MessageAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageAnimationBuilder {
+pub struct MessageAnimationBuilder {
     inner: MessageAnimation,
 }
 
-impl RTDMessageAnimationBuilder {
+#[deprecated]
+pub type RTDMessageAnimationBuilder = MessageAnimationBuilder;
+
+impl MessageAnimationBuilder {
     pub fn build(&self) -> MessageAnimation {
         self.inner.clone()
     }
@@ -468,7 +474,7 @@ impl AsRef<MessageAnimation> for MessageAnimation {
     }
 }
 
-impl AsRef<MessageAnimation> for RTDMessageAnimationBuilder {
+impl AsRef<MessageAnimation> for MessageAnimationBuilder {
     fn as_ref(&self) -> &MessageAnimation {
         &self.inner
     }
@@ -502,14 +508,14 @@ impl RObject for MessageAudio {
 impl TDMessageContent for MessageAudio {}
 
 impl MessageAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageAudioBuilder {
+    pub fn builder() -> MessageAudioBuilder {
         let mut inner = MessageAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageAudioBuilder { inner }
+        MessageAudioBuilder { inner }
     }
 
     pub fn audio(&self) -> &Audio {
@@ -522,11 +528,14 @@ impl MessageAudio {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageAudioBuilder {
+pub struct MessageAudioBuilder {
     inner: MessageAudio,
 }
 
-impl RTDMessageAudioBuilder {
+#[deprecated]
+pub type RTDMessageAudioBuilder = MessageAudioBuilder;
+
+impl MessageAudioBuilder {
     pub fn build(&self) -> MessageAudio {
         self.inner.clone()
     }
@@ -548,7 +557,7 @@ impl AsRef<MessageAudio> for MessageAudio {
     }
 }
 
-impl AsRef<MessageAudio> for RTDMessageAudioBuilder {
+impl AsRef<MessageAudio> for MessageAudioBuilder {
     fn as_ref(&self) -> &MessageAudio {
         &self.inner
     }
@@ -586,14 +595,14 @@ impl RObject for MessageBasicGroupChatCreate {
 impl TDMessageContent for MessageBasicGroupChatCreate {}
 
 impl MessageBasicGroupChatCreate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageBasicGroupChatCreateBuilder {
+    pub fn builder() -> MessageBasicGroupChatCreateBuilder {
         let mut inner = MessageBasicGroupChatCreate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageBasicGroupChatCreateBuilder { inner }
+        MessageBasicGroupChatCreateBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -606,11 +615,14 @@ impl MessageBasicGroupChatCreate {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageBasicGroupChatCreateBuilder {
+pub struct MessageBasicGroupChatCreateBuilder {
     inner: MessageBasicGroupChatCreate,
 }
 
-impl RTDMessageBasicGroupChatCreateBuilder {
+#[deprecated]
+pub type RTDMessageBasicGroupChatCreateBuilder = MessageBasicGroupChatCreateBuilder;
+
+impl MessageBasicGroupChatCreateBuilder {
     pub fn build(&self) -> MessageBasicGroupChatCreate {
         self.inner.clone()
     }
@@ -632,7 +644,7 @@ impl AsRef<MessageBasicGroupChatCreate> for MessageBasicGroupChatCreate {
     }
 }
 
-impl AsRef<MessageBasicGroupChatCreate> for RTDMessageBasicGroupChatCreateBuilder {
+impl AsRef<MessageBasicGroupChatCreate> for MessageBasicGroupChatCreateBuilder {
     fn as_ref(&self) -> &MessageBasicGroupChatCreate {
         &self.inner
     }
@@ -674,14 +686,14 @@ impl RObject for MessageCall {
 impl TDMessageContent for MessageCall {}
 
 impl MessageCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageCallBuilder {
+    pub fn builder() -> MessageCallBuilder {
         let mut inner = MessageCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageCallBuilder { inner }
+        MessageCallBuilder { inner }
     }
 
     pub fn is_video(&self) -> bool {
@@ -698,11 +710,14 @@ impl MessageCall {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageCallBuilder {
+pub struct MessageCallBuilder {
     inner: MessageCall,
 }
 
-impl RTDMessageCallBuilder {
+#[deprecated]
+pub type RTDMessageCallBuilder = MessageCallBuilder;
+
+impl MessageCallBuilder {
     pub fn build(&self) -> MessageCall {
         self.inner.clone()
     }
@@ -729,7 +744,7 @@ impl AsRef<MessageCall> for MessageCall {
     }
 }
 
-impl AsRef<MessageCall> for RTDMessageCallBuilder {
+impl AsRef<MessageCall> for MessageCallBuilder {
     fn as_ref(&self) -> &MessageCall {
         &self.inner
     }
@@ -763,14 +778,14 @@ impl RObject for MessageChatAddMembers {
 impl TDMessageContent for MessageChatAddMembers {}
 
 impl MessageChatAddMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatAddMembersBuilder {
+    pub fn builder() -> MessageChatAddMembersBuilder {
         let mut inner = MessageChatAddMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatAddMembersBuilder { inner }
+        MessageChatAddMembersBuilder { inner }
     }
 
     pub fn member_user_ids(&self) -> &Vec<i64> {
@@ -779,11 +794,14 @@ impl MessageChatAddMembers {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatAddMembersBuilder {
+pub struct MessageChatAddMembersBuilder {
     inner: MessageChatAddMembers,
 }
 
-impl RTDMessageChatAddMembersBuilder {
+#[deprecated]
+pub type RTDMessageChatAddMembersBuilder = MessageChatAddMembersBuilder;
+
+impl MessageChatAddMembersBuilder {
     pub fn build(&self) -> MessageChatAddMembers {
         self.inner.clone()
     }
@@ -800,7 +818,7 @@ impl AsRef<MessageChatAddMembers> for MessageChatAddMembers {
     }
 }
 
-impl AsRef<MessageChatAddMembers> for RTDMessageChatAddMembersBuilder {
+impl AsRef<MessageChatAddMembers> for MessageChatAddMembersBuilder {
     fn as_ref(&self) -> &MessageChatAddMembers {
         &self.inner
     }
@@ -832,14 +850,14 @@ impl RObject for MessageChatChangePhoto {
 impl TDMessageContent for MessageChatChangePhoto {}
 
 impl MessageChatChangePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatChangePhotoBuilder {
+    pub fn builder() -> MessageChatChangePhotoBuilder {
         let mut inner = MessageChatChangePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatChangePhotoBuilder { inner }
+        MessageChatChangePhotoBuilder { inner }
     }
 
     pub fn photo(&self) -> &ChatPhoto {
@@ -848,11 +866,14 @@ impl MessageChatChangePhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatChangePhotoBuilder {
+pub struct MessageChatChangePhotoBuilder {
     inner: MessageChatChangePhoto,
 }
 
-impl RTDMessageChatChangePhotoBuilder {
+#[deprecated]
+pub type RTDMessageChatChangePhotoBuilder = MessageChatChangePhotoBuilder;
+
+impl MessageChatChangePhotoBuilder {
     pub fn build(&self) -> MessageChatChangePhoto {
         self.inner.clone()
     }
@@ -869,7 +890,7 @@ impl AsRef<MessageChatChangePhoto> for MessageChatChangePhoto {
     }
 }
 
-impl AsRef<MessageChatChangePhoto> for RTDMessageChatChangePhotoBuilder {
+impl AsRef<MessageChatChangePhoto> for MessageChatChangePhotoBuilder {
     fn as_ref(&self) -> &MessageChatChangePhoto {
         &self.inner
     }
@@ -903,14 +924,14 @@ impl RObject for MessageChatChangeTitle {
 impl TDMessageContent for MessageChatChangeTitle {}
 
 impl MessageChatChangeTitle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatChangeTitleBuilder {
+    pub fn builder() -> MessageChatChangeTitleBuilder {
         let mut inner = MessageChatChangeTitle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatChangeTitleBuilder { inner }
+        MessageChatChangeTitleBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -919,11 +940,14 @@ impl MessageChatChangeTitle {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatChangeTitleBuilder {
+pub struct MessageChatChangeTitleBuilder {
     inner: MessageChatChangeTitle,
 }
 
-impl RTDMessageChatChangeTitleBuilder {
+#[deprecated]
+pub type RTDMessageChatChangeTitleBuilder = MessageChatChangeTitleBuilder;
+
+impl MessageChatChangeTitleBuilder {
     pub fn build(&self) -> MessageChatChangeTitle {
         self.inner.clone()
     }
@@ -940,7 +964,7 @@ impl AsRef<MessageChatChangeTitle> for MessageChatChangeTitle {
     }
 }
 
-impl AsRef<MessageChatChangeTitle> for RTDMessageChatChangeTitleBuilder {
+impl AsRef<MessageChatChangeTitle> for MessageChatChangeTitleBuilder {
     fn as_ref(&self) -> &MessageChatChangeTitle {
         &self.inner
     }
@@ -974,14 +998,14 @@ impl RObject for MessageChatDeleteMember {
 impl TDMessageContent for MessageChatDeleteMember {}
 
 impl MessageChatDeleteMember {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatDeleteMemberBuilder {
+    pub fn builder() -> MessageChatDeleteMemberBuilder {
         let mut inner = MessageChatDeleteMember::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatDeleteMemberBuilder { inner }
+        MessageChatDeleteMemberBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -990,11 +1014,14 @@ impl MessageChatDeleteMember {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatDeleteMemberBuilder {
+pub struct MessageChatDeleteMemberBuilder {
     inner: MessageChatDeleteMember,
 }
 
-impl RTDMessageChatDeleteMemberBuilder {
+#[deprecated]
+pub type RTDMessageChatDeleteMemberBuilder = MessageChatDeleteMemberBuilder;
+
+impl MessageChatDeleteMemberBuilder {
     pub fn build(&self) -> MessageChatDeleteMember {
         self.inner.clone()
     }
@@ -1011,7 +1038,7 @@ impl AsRef<MessageChatDeleteMember> for MessageChatDeleteMember {
     }
 }
 
-impl AsRef<MessageChatDeleteMember> for RTDMessageChatDeleteMemberBuilder {
+impl AsRef<MessageChatDeleteMember> for MessageChatDeleteMemberBuilder {
     fn as_ref(&self) -> &MessageChatDeleteMember {
         &self.inner
     }
@@ -1041,23 +1068,26 @@ impl RObject for MessageChatDeletePhoto {
 impl TDMessageContent for MessageChatDeletePhoto {}
 
 impl MessageChatDeletePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatDeletePhotoBuilder {
+    pub fn builder() -> MessageChatDeletePhotoBuilder {
         let mut inner = MessageChatDeletePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatDeletePhotoBuilder { inner }
+        MessageChatDeletePhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatDeletePhotoBuilder {
+pub struct MessageChatDeletePhotoBuilder {
     inner: MessageChatDeletePhoto,
 }
 
-impl RTDMessageChatDeletePhotoBuilder {
+#[deprecated]
+pub type RTDMessageChatDeletePhotoBuilder = MessageChatDeletePhotoBuilder;
+
+impl MessageChatDeletePhotoBuilder {
     pub fn build(&self) -> MessageChatDeletePhoto {
         self.inner.clone()
     }
@@ -1069,7 +1099,7 @@ impl AsRef<MessageChatDeletePhoto> for MessageChatDeletePhoto {
     }
 }
 
-impl AsRef<MessageChatDeletePhoto> for RTDMessageChatDeletePhotoBuilder {
+impl AsRef<MessageChatDeletePhoto> for MessageChatDeletePhotoBuilder {
     fn as_ref(&self) -> &MessageChatDeletePhoto {
         &self.inner
     }
@@ -1099,23 +1129,26 @@ impl RObject for MessageChatJoinByLink {
 impl TDMessageContent for MessageChatJoinByLink {}
 
 impl MessageChatJoinByLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatJoinByLinkBuilder {
+    pub fn builder() -> MessageChatJoinByLinkBuilder {
         let mut inner = MessageChatJoinByLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatJoinByLinkBuilder { inner }
+        MessageChatJoinByLinkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatJoinByLinkBuilder {
+pub struct MessageChatJoinByLinkBuilder {
     inner: MessageChatJoinByLink,
 }
 
-impl RTDMessageChatJoinByLinkBuilder {
+#[deprecated]
+pub type RTDMessageChatJoinByLinkBuilder = MessageChatJoinByLinkBuilder;
+
+impl MessageChatJoinByLinkBuilder {
     pub fn build(&self) -> MessageChatJoinByLink {
         self.inner.clone()
     }
@@ -1127,7 +1160,7 @@ impl AsRef<MessageChatJoinByLink> for MessageChatJoinByLink {
     }
 }
 
-impl AsRef<MessageChatJoinByLink> for RTDMessageChatJoinByLinkBuilder {
+impl AsRef<MessageChatJoinByLink> for MessageChatJoinByLinkBuilder {
     fn as_ref(&self) -> &MessageChatJoinByLink {
         &self.inner
     }
@@ -1157,23 +1190,26 @@ impl RObject for MessageChatJoinByRequest {
 impl TDMessageContent for MessageChatJoinByRequest {}
 
 impl MessageChatJoinByRequest {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatJoinByRequestBuilder {
+    pub fn builder() -> MessageChatJoinByRequestBuilder {
         let mut inner = MessageChatJoinByRequest::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatJoinByRequestBuilder { inner }
+        MessageChatJoinByRequestBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatJoinByRequestBuilder {
+pub struct MessageChatJoinByRequestBuilder {
     inner: MessageChatJoinByRequest,
 }
 
-impl RTDMessageChatJoinByRequestBuilder {
+#[deprecated]
+pub type RTDMessageChatJoinByRequestBuilder = MessageChatJoinByRequestBuilder;
+
+impl MessageChatJoinByRequestBuilder {
     pub fn build(&self) -> MessageChatJoinByRequest {
         self.inner.clone()
     }
@@ -1185,7 +1221,7 @@ impl AsRef<MessageChatJoinByRequest> for MessageChatJoinByRequest {
     }
 }
 
-impl AsRef<MessageChatJoinByRequest> for RTDMessageChatJoinByRequestBuilder {
+impl AsRef<MessageChatJoinByRequest> for MessageChatJoinByRequestBuilder {
     fn as_ref(&self) -> &MessageChatJoinByRequest {
         &self.inner
     }
@@ -1219,14 +1255,14 @@ impl RObject for MessageChatSetTheme {
 impl TDMessageContent for MessageChatSetTheme {}
 
 impl MessageChatSetTheme {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatSetThemeBuilder {
+    pub fn builder() -> MessageChatSetThemeBuilder {
         let mut inner = MessageChatSetTheme::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatSetThemeBuilder { inner }
+        MessageChatSetThemeBuilder { inner }
     }
 
     pub fn theme_name(&self) -> &String {
@@ -1235,11 +1271,14 @@ impl MessageChatSetTheme {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatSetThemeBuilder {
+pub struct MessageChatSetThemeBuilder {
     inner: MessageChatSetTheme,
 }
 
-impl RTDMessageChatSetThemeBuilder {
+#[deprecated]
+pub type RTDMessageChatSetThemeBuilder = MessageChatSetThemeBuilder;
+
+impl MessageChatSetThemeBuilder {
     pub fn build(&self) -> MessageChatSetTheme {
         self.inner.clone()
     }
@@ -1256,7 +1295,7 @@ impl AsRef<MessageChatSetTheme> for MessageChatSetTheme {
     }
 }
 
-impl AsRef<MessageChatSetTheme> for RTDMessageChatSetThemeBuilder {
+impl AsRef<MessageChatSetTheme> for MessageChatSetThemeBuilder {
     fn as_ref(&self) -> &MessageChatSetTheme {
         &self.inner
     }
@@ -1290,14 +1329,14 @@ impl RObject for MessageChatSetTtl {
 impl TDMessageContent for MessageChatSetTtl {}
 
 impl MessageChatSetTtl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatSetTtlBuilder {
+    pub fn builder() -> MessageChatSetTtlBuilder {
         let mut inner = MessageChatSetTtl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatSetTtlBuilder { inner }
+        MessageChatSetTtlBuilder { inner }
     }
 
     pub fn ttl(&self) -> i32 {
@@ -1306,11 +1345,14 @@ impl MessageChatSetTtl {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatSetTtlBuilder {
+pub struct MessageChatSetTtlBuilder {
     inner: MessageChatSetTtl,
 }
 
-impl RTDMessageChatSetTtlBuilder {
+#[deprecated]
+pub type RTDMessageChatSetTtlBuilder = MessageChatSetTtlBuilder;
+
+impl MessageChatSetTtlBuilder {
     pub fn build(&self) -> MessageChatSetTtl {
         self.inner.clone()
     }
@@ -1327,7 +1369,7 @@ impl AsRef<MessageChatSetTtl> for MessageChatSetTtl {
     }
 }
 
-impl AsRef<MessageChatSetTtl> for RTDMessageChatSetTtlBuilder {
+impl AsRef<MessageChatSetTtl> for MessageChatSetTtlBuilder {
     fn as_ref(&self) -> &MessageChatSetTtl {
         &self.inner
     }
@@ -1365,14 +1407,14 @@ impl RObject for MessageChatUpgradeFrom {
 impl TDMessageContent for MessageChatUpgradeFrom {}
 
 impl MessageChatUpgradeFrom {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatUpgradeFromBuilder {
+    pub fn builder() -> MessageChatUpgradeFromBuilder {
         let mut inner = MessageChatUpgradeFrom::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatUpgradeFromBuilder { inner }
+        MessageChatUpgradeFromBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -1385,11 +1427,14 @@ impl MessageChatUpgradeFrom {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatUpgradeFromBuilder {
+pub struct MessageChatUpgradeFromBuilder {
     inner: MessageChatUpgradeFrom,
 }
 
-impl RTDMessageChatUpgradeFromBuilder {
+#[deprecated]
+pub type RTDMessageChatUpgradeFromBuilder = MessageChatUpgradeFromBuilder;
+
+impl MessageChatUpgradeFromBuilder {
     pub fn build(&self) -> MessageChatUpgradeFrom {
         self.inner.clone()
     }
@@ -1411,7 +1456,7 @@ impl AsRef<MessageChatUpgradeFrom> for MessageChatUpgradeFrom {
     }
 }
 
-impl AsRef<MessageChatUpgradeFrom> for RTDMessageChatUpgradeFromBuilder {
+impl AsRef<MessageChatUpgradeFrom> for MessageChatUpgradeFromBuilder {
     fn as_ref(&self) -> &MessageChatUpgradeFrom {
         &self.inner
     }
@@ -1445,14 +1490,14 @@ impl RObject for MessageChatUpgradeTo {
 impl TDMessageContent for MessageChatUpgradeTo {}
 
 impl MessageChatUpgradeTo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatUpgradeToBuilder {
+    pub fn builder() -> MessageChatUpgradeToBuilder {
         let mut inner = MessageChatUpgradeTo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatUpgradeToBuilder { inner }
+        MessageChatUpgradeToBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -1461,11 +1506,14 @@ impl MessageChatUpgradeTo {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatUpgradeToBuilder {
+pub struct MessageChatUpgradeToBuilder {
     inner: MessageChatUpgradeTo,
 }
 
-impl RTDMessageChatUpgradeToBuilder {
+#[deprecated]
+pub type RTDMessageChatUpgradeToBuilder = MessageChatUpgradeToBuilder;
+
+impl MessageChatUpgradeToBuilder {
     pub fn build(&self) -> MessageChatUpgradeTo {
         self.inner.clone()
     }
@@ -1482,7 +1530,7 @@ impl AsRef<MessageChatUpgradeTo> for MessageChatUpgradeTo {
     }
 }
 
-impl AsRef<MessageChatUpgradeTo> for RTDMessageChatUpgradeToBuilder {
+impl AsRef<MessageChatUpgradeTo> for MessageChatUpgradeToBuilder {
     fn as_ref(&self) -> &MessageChatUpgradeTo {
         &self.inner
     }
@@ -1514,14 +1562,14 @@ impl RObject for MessageContact {
 impl TDMessageContent for MessageContact {}
 
 impl MessageContact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageContactBuilder {
+    pub fn builder() -> MessageContactBuilder {
         let mut inner = MessageContact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageContactBuilder { inner }
+        MessageContactBuilder { inner }
     }
 
     pub fn contact(&self) -> &Contact {
@@ -1530,11 +1578,14 @@ impl MessageContact {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageContactBuilder {
+pub struct MessageContactBuilder {
     inner: MessageContact,
 }
 
-impl RTDMessageContactBuilder {
+#[deprecated]
+pub type RTDMessageContactBuilder = MessageContactBuilder;
+
+impl MessageContactBuilder {
     pub fn build(&self) -> MessageContact {
         self.inner.clone()
     }
@@ -1551,7 +1602,7 @@ impl AsRef<MessageContact> for MessageContact {
     }
 }
 
-impl AsRef<MessageContact> for RTDMessageContactBuilder {
+impl AsRef<MessageContact> for MessageContactBuilder {
     fn as_ref(&self) -> &MessageContact {
         &self.inner
     }
@@ -1581,23 +1632,26 @@ impl RObject for MessageContactRegistered {
 impl TDMessageContent for MessageContactRegistered {}
 
 impl MessageContactRegistered {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageContactRegisteredBuilder {
+    pub fn builder() -> MessageContactRegisteredBuilder {
         let mut inner = MessageContactRegistered::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageContactRegisteredBuilder { inner }
+        MessageContactRegisteredBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageContactRegisteredBuilder {
+pub struct MessageContactRegisteredBuilder {
     inner: MessageContactRegistered,
 }
 
-impl RTDMessageContactRegisteredBuilder {
+#[deprecated]
+pub type RTDMessageContactRegisteredBuilder = MessageContactRegisteredBuilder;
+
+impl MessageContactRegisteredBuilder {
     pub fn build(&self) -> MessageContactRegistered {
         self.inner.clone()
     }
@@ -1609,7 +1663,7 @@ impl AsRef<MessageContactRegistered> for MessageContactRegistered {
     }
 }
 
-impl AsRef<MessageContactRegistered> for RTDMessageContactRegisteredBuilder {
+impl AsRef<MessageContactRegistered> for MessageContactRegisteredBuilder {
     fn as_ref(&self) -> &MessageContactRegistered {
         &self.inner
     }
@@ -1643,14 +1697,14 @@ impl RObject for MessageCustomServiceAction {
 impl TDMessageContent for MessageCustomServiceAction {}
 
 impl MessageCustomServiceAction {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageCustomServiceActionBuilder {
+    pub fn builder() -> MessageCustomServiceActionBuilder {
         let mut inner = MessageCustomServiceAction::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageCustomServiceActionBuilder { inner }
+        MessageCustomServiceActionBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -1659,11 +1713,14 @@ impl MessageCustomServiceAction {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageCustomServiceActionBuilder {
+pub struct MessageCustomServiceActionBuilder {
     inner: MessageCustomServiceAction,
 }
 
-impl RTDMessageCustomServiceActionBuilder {
+#[deprecated]
+pub type RTDMessageCustomServiceActionBuilder = MessageCustomServiceActionBuilder;
+
+impl MessageCustomServiceActionBuilder {
     pub fn build(&self) -> MessageCustomServiceAction {
         self.inner.clone()
     }
@@ -1680,7 +1737,7 @@ impl AsRef<MessageCustomServiceAction> for MessageCustomServiceAction {
     }
 }
 
-impl AsRef<MessageCustomServiceAction> for RTDMessageCustomServiceActionBuilder {
+impl AsRef<MessageCustomServiceAction> for MessageCustomServiceActionBuilder {
     fn as_ref(&self) -> &MessageCustomServiceAction {
         &self.inner
     }
@@ -1726,14 +1783,14 @@ impl RObject for MessageDice {
 impl TDMessageContent for MessageDice {}
 
 impl MessageDice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageDiceBuilder {
+    pub fn builder() -> MessageDiceBuilder {
         let mut inner = MessageDice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageDiceBuilder { inner }
+        MessageDiceBuilder { inner }
     }
 
     pub fn initial_state(&self) -> &Option<DiceStickers> {
@@ -1758,11 +1815,14 @@ impl MessageDice {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageDiceBuilder {
+pub struct MessageDiceBuilder {
     inner: MessageDice,
 }
 
-impl RTDMessageDiceBuilder {
+#[deprecated]
+pub type RTDMessageDiceBuilder = MessageDiceBuilder;
+
+impl MessageDiceBuilder {
     pub fn build(&self) -> MessageDice {
         self.inner.clone()
     }
@@ -1802,7 +1862,7 @@ impl AsRef<MessageDice> for MessageDice {
     }
 }
 
-impl AsRef<MessageDice> for RTDMessageDiceBuilder {
+impl AsRef<MessageDice> for MessageDiceBuilder {
     fn as_ref(&self) -> &MessageDice {
         &self.inner
     }
@@ -1836,14 +1896,14 @@ impl RObject for MessageDocument {
 impl TDMessageContent for MessageDocument {}
 
 impl MessageDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageDocumentBuilder {
+    pub fn builder() -> MessageDocumentBuilder {
         let mut inner = MessageDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageDocumentBuilder { inner }
+        MessageDocumentBuilder { inner }
     }
 
     pub fn document(&self) -> &Document {
@@ -1856,11 +1916,14 @@ impl MessageDocument {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageDocumentBuilder {
+pub struct MessageDocumentBuilder {
     inner: MessageDocument,
 }
 
-impl RTDMessageDocumentBuilder {
+#[deprecated]
+pub type RTDMessageDocumentBuilder = MessageDocumentBuilder;
+
+impl MessageDocumentBuilder {
     pub fn build(&self) -> MessageDocument {
         self.inner.clone()
     }
@@ -1882,7 +1945,7 @@ impl AsRef<MessageDocument> for MessageDocument {
     }
 }
 
-impl AsRef<MessageDocument> for RTDMessageDocumentBuilder {
+impl AsRef<MessageDocument> for MessageDocumentBuilder {
     fn as_ref(&self) -> &MessageDocument {
         &self.inner
     }
@@ -1912,23 +1975,26 @@ impl RObject for MessageExpiredPhoto {
 impl TDMessageContent for MessageExpiredPhoto {}
 
 impl MessageExpiredPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageExpiredPhotoBuilder {
+    pub fn builder() -> MessageExpiredPhotoBuilder {
         let mut inner = MessageExpiredPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageExpiredPhotoBuilder { inner }
+        MessageExpiredPhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageExpiredPhotoBuilder {
+pub struct MessageExpiredPhotoBuilder {
     inner: MessageExpiredPhoto,
 }
 
-impl RTDMessageExpiredPhotoBuilder {
+#[deprecated]
+pub type RTDMessageExpiredPhotoBuilder = MessageExpiredPhotoBuilder;
+
+impl MessageExpiredPhotoBuilder {
     pub fn build(&self) -> MessageExpiredPhoto {
         self.inner.clone()
     }
@@ -1940,7 +2006,7 @@ impl AsRef<MessageExpiredPhoto> for MessageExpiredPhoto {
     }
 }
 
-impl AsRef<MessageExpiredPhoto> for RTDMessageExpiredPhotoBuilder {
+impl AsRef<MessageExpiredPhoto> for MessageExpiredPhotoBuilder {
     fn as_ref(&self) -> &MessageExpiredPhoto {
         &self.inner
     }
@@ -1970,23 +2036,26 @@ impl RObject for MessageExpiredVideo {
 impl TDMessageContent for MessageExpiredVideo {}
 
 impl MessageExpiredVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageExpiredVideoBuilder {
+    pub fn builder() -> MessageExpiredVideoBuilder {
         let mut inner = MessageExpiredVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageExpiredVideoBuilder { inner }
+        MessageExpiredVideoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageExpiredVideoBuilder {
+pub struct MessageExpiredVideoBuilder {
     inner: MessageExpiredVideo,
 }
 
-impl RTDMessageExpiredVideoBuilder {
+#[deprecated]
+pub type RTDMessageExpiredVideoBuilder = MessageExpiredVideoBuilder;
+
+impl MessageExpiredVideoBuilder {
     pub fn build(&self) -> MessageExpiredVideo {
         self.inner.clone()
     }
@@ -1998,7 +2067,7 @@ impl AsRef<MessageExpiredVideo> for MessageExpiredVideo {
     }
 }
 
-impl AsRef<MessageExpiredVideo> for RTDMessageExpiredVideoBuilder {
+impl AsRef<MessageExpiredVideo> for MessageExpiredVideoBuilder {
     fn as_ref(&self) -> &MessageExpiredVideo {
         &self.inner
     }
@@ -2030,14 +2099,14 @@ impl RObject for MessageGame {
 impl TDMessageContent for MessageGame {}
 
 impl MessageGame {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageGameBuilder {
+    pub fn builder() -> MessageGameBuilder {
         let mut inner = MessageGame::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageGameBuilder { inner }
+        MessageGameBuilder { inner }
     }
 
     pub fn game(&self) -> &Game {
@@ -2046,11 +2115,14 @@ impl MessageGame {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageGameBuilder {
+pub struct MessageGameBuilder {
     inner: MessageGame,
 }
 
-impl RTDMessageGameBuilder {
+#[deprecated]
+pub type RTDMessageGameBuilder = MessageGameBuilder;
+
+impl MessageGameBuilder {
     pub fn build(&self) -> MessageGame {
         self.inner.clone()
     }
@@ -2067,7 +2139,7 @@ impl AsRef<MessageGame> for MessageGame {
     }
 }
 
-impl AsRef<MessageGame> for RTDMessageGameBuilder {
+impl AsRef<MessageGame> for MessageGameBuilder {
     fn as_ref(&self) -> &MessageGame {
         &self.inner
     }
@@ -2110,14 +2182,14 @@ impl RObject for MessageGameScore {
 impl TDMessageContent for MessageGameScore {}
 
 impl MessageGameScore {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageGameScoreBuilder {
+    pub fn builder() -> MessageGameScoreBuilder {
         let mut inner = MessageGameScore::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageGameScoreBuilder { inner }
+        MessageGameScoreBuilder { inner }
     }
 
     pub fn game_message_id(&self) -> i64 {
@@ -2134,11 +2206,14 @@ impl MessageGameScore {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageGameScoreBuilder {
+pub struct MessageGameScoreBuilder {
     inner: MessageGameScore,
 }
 
-impl RTDMessageGameScoreBuilder {
+#[deprecated]
+pub type RTDMessageGameScoreBuilder = MessageGameScoreBuilder;
+
+impl MessageGameScoreBuilder {
     pub fn build(&self) -> MessageGameScore {
         self.inner.clone()
     }
@@ -2165,7 +2240,7 @@ impl AsRef<MessageGameScore> for MessageGameScore {
     }
 }
 
-impl AsRef<MessageGameScore> for RTDMessageGameScoreBuilder {
+impl AsRef<MessageGameScore> for MessageGameScoreBuilder {
     fn as_ref(&self) -> &MessageGameScore {
         &self.inner
     }
@@ -2203,14 +2278,14 @@ impl RObject for MessageInviteVideoChatParticipants {
 impl TDMessageContent for MessageInviteVideoChatParticipants {}
 
 impl MessageInviteVideoChatParticipants {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageInviteVideoChatParticipantsBuilder {
+    pub fn builder() -> MessageInviteVideoChatParticipantsBuilder {
         let mut inner = MessageInviteVideoChatParticipants::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageInviteVideoChatParticipantsBuilder { inner }
+        MessageInviteVideoChatParticipantsBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -2223,11 +2298,14 @@ impl MessageInviteVideoChatParticipants {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageInviteVideoChatParticipantsBuilder {
+pub struct MessageInviteVideoChatParticipantsBuilder {
     inner: MessageInviteVideoChatParticipants,
 }
 
-impl RTDMessageInviteVideoChatParticipantsBuilder {
+#[deprecated]
+pub type RTDMessageInviteVideoChatParticipantsBuilder = MessageInviteVideoChatParticipantsBuilder;
+
+impl MessageInviteVideoChatParticipantsBuilder {
     pub fn build(&self) -> MessageInviteVideoChatParticipants {
         self.inner.clone()
     }
@@ -2249,7 +2327,7 @@ impl AsRef<MessageInviteVideoChatParticipants> for MessageInviteVideoChatPartici
     }
 }
 
-impl AsRef<MessageInviteVideoChatParticipants> for RTDMessageInviteVideoChatParticipantsBuilder {
+impl AsRef<MessageInviteVideoChatParticipants> for MessageInviteVideoChatParticipantsBuilder {
     fn as_ref(&self) -> &MessageInviteVideoChatParticipants {
         &self.inner
     }
@@ -2313,14 +2391,14 @@ impl RObject for MessageInvoice {
 impl TDMessageContent for MessageInvoice {}
 
 impl MessageInvoice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageInvoiceBuilder {
+    pub fn builder() -> MessageInvoiceBuilder {
         let mut inner = MessageInvoice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageInvoiceBuilder { inner }
+        MessageInvoiceBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -2361,11 +2439,14 @@ impl MessageInvoice {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageInvoiceBuilder {
+pub struct MessageInvoiceBuilder {
     inner: MessageInvoice,
 }
 
-impl RTDMessageInvoiceBuilder {
+#[deprecated]
+pub type RTDMessageInvoiceBuilder = MessageInvoiceBuilder;
+
+impl MessageInvoiceBuilder {
     pub fn build(&self) -> MessageInvoice {
         self.inner.clone()
     }
@@ -2422,7 +2503,7 @@ impl AsRef<MessageInvoice> for MessageInvoice {
     }
 }
 
-impl AsRef<MessageInvoice> for RTDMessageInvoiceBuilder {
+impl AsRef<MessageInvoice> for MessageInvoiceBuilder {
     fn as_ref(&self) -> &MessageInvoice {
         &self.inner
     }
@@ -2470,14 +2551,14 @@ impl RObject for MessageLocation {
 impl TDMessageContent for MessageLocation {}
 
 impl MessageLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageLocationBuilder {
+    pub fn builder() -> MessageLocationBuilder {
         let mut inner = MessageLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageLocationBuilder { inner }
+        MessageLocationBuilder { inner }
     }
 
     pub fn location(&self) -> &Location {
@@ -2502,11 +2583,14 @@ impl MessageLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageLocationBuilder {
+pub struct MessageLocationBuilder {
     inner: MessageLocation,
 }
 
-impl RTDMessageLocationBuilder {
+#[deprecated]
+pub type RTDMessageLocationBuilder = MessageLocationBuilder;
+
+impl MessageLocationBuilder {
     pub fn build(&self) -> MessageLocation {
         self.inner.clone()
     }
@@ -2543,7 +2627,7 @@ impl AsRef<MessageLocation> for MessageLocation {
     }
 }
 
-impl AsRef<MessageLocation> for RTDMessageLocationBuilder {
+impl AsRef<MessageLocation> for MessageLocationBuilder {
     fn as_ref(&self) -> &MessageLocation {
         &self.inner
     }
@@ -2579,14 +2663,14 @@ impl RObject for MessagePassportDataReceived {
 impl TDMessageContent for MessagePassportDataReceived {}
 
 impl MessagePassportDataReceived {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePassportDataReceivedBuilder {
+    pub fn builder() -> MessagePassportDataReceivedBuilder {
         let mut inner = MessagePassportDataReceived::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePassportDataReceivedBuilder { inner }
+        MessagePassportDataReceivedBuilder { inner }
     }
 
     pub fn elements(&self) -> &Vec<EncryptedPassportElement> {
@@ -2599,11 +2683,14 @@ impl MessagePassportDataReceived {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePassportDataReceivedBuilder {
+pub struct MessagePassportDataReceivedBuilder {
     inner: MessagePassportDataReceived,
 }
 
-impl RTDMessagePassportDataReceivedBuilder {
+#[deprecated]
+pub type RTDMessagePassportDataReceivedBuilder = MessagePassportDataReceivedBuilder;
+
+impl MessagePassportDataReceivedBuilder {
     pub fn build(&self) -> MessagePassportDataReceived {
         self.inner.clone()
     }
@@ -2625,7 +2712,7 @@ impl AsRef<MessagePassportDataReceived> for MessagePassportDataReceived {
     }
 }
 
-impl AsRef<MessagePassportDataReceived> for RTDMessagePassportDataReceivedBuilder {
+impl AsRef<MessagePassportDataReceived> for MessagePassportDataReceivedBuilder {
     fn as_ref(&self) -> &MessagePassportDataReceived {
         &self.inner
     }
@@ -2659,14 +2746,14 @@ impl RObject for MessagePassportDataSent {
 impl TDMessageContent for MessagePassportDataSent {}
 
 impl MessagePassportDataSent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePassportDataSentBuilder {
+    pub fn builder() -> MessagePassportDataSentBuilder {
         let mut inner = MessagePassportDataSent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePassportDataSentBuilder { inner }
+        MessagePassportDataSentBuilder { inner }
     }
 
     pub fn types(&self) -> &Vec<PassportElementType> {
@@ -2675,11 +2762,14 @@ impl MessagePassportDataSent {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePassportDataSentBuilder {
+pub struct MessagePassportDataSentBuilder {
     inner: MessagePassportDataSent,
 }
 
-impl RTDMessagePassportDataSentBuilder {
+#[deprecated]
+pub type RTDMessagePassportDataSentBuilder = MessagePassportDataSentBuilder;
+
+impl MessagePassportDataSentBuilder {
     pub fn build(&self) -> MessagePassportDataSent {
         self.inner.clone()
     }
@@ -2696,7 +2786,7 @@ impl AsRef<MessagePassportDataSent> for MessagePassportDataSent {
     }
 }
 
-impl AsRef<MessagePassportDataSent> for RTDMessagePassportDataSentBuilder {
+impl AsRef<MessagePassportDataSent> for MessagePassportDataSentBuilder {
     fn as_ref(&self) -> &MessagePassportDataSent {
         &self.inner
     }
@@ -2742,14 +2832,14 @@ impl RObject for MessagePaymentSuccessful {
 impl TDMessageContent for MessagePaymentSuccessful {}
 
 impl MessagePaymentSuccessful {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePaymentSuccessfulBuilder {
+    pub fn builder() -> MessagePaymentSuccessfulBuilder {
         let mut inner = MessagePaymentSuccessful::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePaymentSuccessfulBuilder { inner }
+        MessagePaymentSuccessfulBuilder { inner }
     }
 
     pub fn invoice_chat_id(&self) -> i64 {
@@ -2770,11 +2860,14 @@ impl MessagePaymentSuccessful {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePaymentSuccessfulBuilder {
+pub struct MessagePaymentSuccessfulBuilder {
     inner: MessagePaymentSuccessful,
 }
 
-impl RTDMessagePaymentSuccessfulBuilder {
+#[deprecated]
+pub type RTDMessagePaymentSuccessfulBuilder = MessagePaymentSuccessfulBuilder;
+
+impl MessagePaymentSuccessfulBuilder {
     pub fn build(&self) -> MessagePaymentSuccessful {
         self.inner.clone()
     }
@@ -2806,7 +2899,7 @@ impl AsRef<MessagePaymentSuccessful> for MessagePaymentSuccessful {
     }
 }
 
-impl AsRef<MessagePaymentSuccessful> for RTDMessagePaymentSuccessfulBuilder {
+impl AsRef<MessagePaymentSuccessful> for MessagePaymentSuccessfulBuilder {
     fn as_ref(&self) -> &MessagePaymentSuccessful {
         &self.inner
     }
@@ -2862,14 +2955,14 @@ impl RObject for MessagePaymentSuccessfulBot {
 impl TDMessageContent for MessagePaymentSuccessfulBot {}
 
 impl MessagePaymentSuccessfulBot {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePaymentSuccessfulBotBuilder {
+    pub fn builder() -> MessagePaymentSuccessfulBotBuilder {
         let mut inner = MessagePaymentSuccessfulBot::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePaymentSuccessfulBotBuilder { inner }
+        MessagePaymentSuccessfulBotBuilder { inner }
     }
 
     pub fn currency(&self) -> &String {
@@ -2902,11 +2995,14 @@ impl MessagePaymentSuccessfulBot {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePaymentSuccessfulBotBuilder {
+pub struct MessagePaymentSuccessfulBotBuilder {
     inner: MessagePaymentSuccessfulBot,
 }
 
-impl RTDMessagePaymentSuccessfulBotBuilder {
+#[deprecated]
+pub type RTDMessagePaymentSuccessfulBotBuilder = MessagePaymentSuccessfulBotBuilder;
+
+impl MessagePaymentSuccessfulBotBuilder {
     pub fn build(&self) -> MessagePaymentSuccessfulBot {
         self.inner.clone()
     }
@@ -2959,7 +3055,7 @@ impl AsRef<MessagePaymentSuccessfulBot> for MessagePaymentSuccessfulBot {
     }
 }
 
-impl AsRef<MessagePaymentSuccessfulBot> for RTDMessagePaymentSuccessfulBotBuilder {
+impl AsRef<MessagePaymentSuccessfulBot> for MessagePaymentSuccessfulBotBuilder {
     fn as_ref(&self) -> &MessagePaymentSuccessfulBot {
         &self.inner
     }
@@ -2997,14 +3093,14 @@ impl RObject for MessagePhoto {
 impl TDMessageContent for MessagePhoto {}
 
 impl MessagePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePhotoBuilder {
+    pub fn builder() -> MessagePhotoBuilder {
         let mut inner = MessagePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePhotoBuilder { inner }
+        MessagePhotoBuilder { inner }
     }
 
     pub fn photo(&self) -> &Photo {
@@ -3021,11 +3117,14 @@ impl MessagePhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePhotoBuilder {
+pub struct MessagePhotoBuilder {
     inner: MessagePhoto,
 }
 
-impl RTDMessagePhotoBuilder {
+#[deprecated]
+pub type RTDMessagePhotoBuilder = MessagePhotoBuilder;
+
+impl MessagePhotoBuilder {
     pub fn build(&self) -> MessagePhoto {
         self.inner.clone()
     }
@@ -3052,7 +3151,7 @@ impl AsRef<MessagePhoto> for MessagePhoto {
     }
 }
 
-impl AsRef<MessagePhoto> for RTDMessagePhotoBuilder {
+impl AsRef<MessagePhoto> for MessagePhotoBuilder {
     fn as_ref(&self) -> &MessagePhoto {
         &self.inner
     }
@@ -3086,14 +3185,14 @@ impl RObject for MessagePinMessage {
 impl TDMessageContent for MessagePinMessage {}
 
 impl MessagePinMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePinMessageBuilder {
+    pub fn builder() -> MessagePinMessageBuilder {
         let mut inner = MessagePinMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePinMessageBuilder { inner }
+        MessagePinMessageBuilder { inner }
     }
 
     pub fn message_id(&self) -> i64 {
@@ -3102,11 +3201,14 @@ impl MessagePinMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePinMessageBuilder {
+pub struct MessagePinMessageBuilder {
     inner: MessagePinMessage,
 }
 
-impl RTDMessagePinMessageBuilder {
+#[deprecated]
+pub type RTDMessagePinMessageBuilder = MessagePinMessageBuilder;
+
+impl MessagePinMessageBuilder {
     pub fn build(&self) -> MessagePinMessage {
         self.inner.clone()
     }
@@ -3123,7 +3225,7 @@ impl AsRef<MessagePinMessage> for MessagePinMessage {
     }
 }
 
-impl AsRef<MessagePinMessage> for RTDMessagePinMessageBuilder {
+impl AsRef<MessagePinMessage> for MessagePinMessageBuilder {
     fn as_ref(&self) -> &MessagePinMessage {
         &self.inner
     }
@@ -3155,14 +3257,14 @@ impl RObject for MessagePoll {
 impl TDMessageContent for MessagePoll {}
 
 impl MessagePoll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePollBuilder {
+    pub fn builder() -> MessagePollBuilder {
         let mut inner = MessagePoll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePollBuilder { inner }
+        MessagePollBuilder { inner }
     }
 
     pub fn poll(&self) -> &Poll {
@@ -3171,11 +3273,14 @@ impl MessagePoll {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePollBuilder {
+pub struct MessagePollBuilder {
     inner: MessagePoll,
 }
 
-impl RTDMessagePollBuilder {
+#[deprecated]
+pub type RTDMessagePollBuilder = MessagePollBuilder;
+
+impl MessagePollBuilder {
     pub fn build(&self) -> MessagePoll {
         self.inner.clone()
     }
@@ -3192,7 +3297,7 @@ impl AsRef<MessagePoll> for MessagePoll {
     }
 }
 
-impl AsRef<MessagePoll> for RTDMessagePollBuilder {
+impl AsRef<MessagePoll> for MessagePollBuilder {
     fn as_ref(&self) -> &MessagePoll {
         &self.inner
     }
@@ -3234,14 +3339,14 @@ impl RObject for MessageProximityAlertTriggered {
 impl TDMessageContent for MessageProximityAlertTriggered {}
 
 impl MessageProximityAlertTriggered {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageProximityAlertTriggeredBuilder {
+    pub fn builder() -> MessageProximityAlertTriggeredBuilder {
         let mut inner = MessageProximityAlertTriggered::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageProximityAlertTriggeredBuilder { inner }
+        MessageProximityAlertTriggeredBuilder { inner }
     }
 
     pub fn traveler_id(&self) -> &MessageSender {
@@ -3258,11 +3363,14 @@ impl MessageProximityAlertTriggered {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageProximityAlertTriggeredBuilder {
+pub struct MessageProximityAlertTriggeredBuilder {
     inner: MessageProximityAlertTriggered,
 }
 
-impl RTDMessageProximityAlertTriggeredBuilder {
+#[deprecated]
+pub type RTDMessageProximityAlertTriggeredBuilder = MessageProximityAlertTriggeredBuilder;
+
+impl MessageProximityAlertTriggeredBuilder {
     pub fn build(&self) -> MessageProximityAlertTriggered {
         self.inner.clone()
     }
@@ -3289,7 +3397,7 @@ impl AsRef<MessageProximityAlertTriggered> for MessageProximityAlertTriggered {
     }
 }
 
-impl AsRef<MessageProximityAlertTriggered> for RTDMessageProximityAlertTriggeredBuilder {
+impl AsRef<MessageProximityAlertTriggered> for MessageProximityAlertTriggeredBuilder {
     fn as_ref(&self) -> &MessageProximityAlertTriggered {
         &self.inner
     }
@@ -3319,23 +3427,26 @@ impl RObject for MessageScreenshotTaken {
 impl TDMessageContent for MessageScreenshotTaken {}
 
 impl MessageScreenshotTaken {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageScreenshotTakenBuilder {
+    pub fn builder() -> MessageScreenshotTakenBuilder {
         let mut inner = MessageScreenshotTaken::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageScreenshotTakenBuilder { inner }
+        MessageScreenshotTakenBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageScreenshotTakenBuilder {
+pub struct MessageScreenshotTakenBuilder {
     inner: MessageScreenshotTaken,
 }
 
-impl RTDMessageScreenshotTakenBuilder {
+#[deprecated]
+pub type RTDMessageScreenshotTakenBuilder = MessageScreenshotTakenBuilder;
+
+impl MessageScreenshotTakenBuilder {
     pub fn build(&self) -> MessageScreenshotTaken {
         self.inner.clone()
     }
@@ -3347,7 +3458,7 @@ impl AsRef<MessageScreenshotTaken> for MessageScreenshotTaken {
     }
 }
 
-impl AsRef<MessageScreenshotTaken> for RTDMessageScreenshotTakenBuilder {
+impl AsRef<MessageScreenshotTaken> for MessageScreenshotTakenBuilder {
     fn as_ref(&self) -> &MessageScreenshotTaken {
         &self.inner
     }
@@ -3379,14 +3490,14 @@ impl RObject for MessageSticker {
 impl TDMessageContent for MessageSticker {}
 
 impl MessageSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageStickerBuilder {
+    pub fn builder() -> MessageStickerBuilder {
         let mut inner = MessageSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageStickerBuilder { inner }
+        MessageStickerBuilder { inner }
     }
 
     pub fn sticker(&self) -> &Sticker {
@@ -3395,11 +3506,14 @@ impl MessageSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageStickerBuilder {
+pub struct MessageStickerBuilder {
     inner: MessageSticker,
 }
 
-impl RTDMessageStickerBuilder {
+#[deprecated]
+pub type RTDMessageStickerBuilder = MessageStickerBuilder;
+
+impl MessageStickerBuilder {
     pub fn build(&self) -> MessageSticker {
         self.inner.clone()
     }
@@ -3416,7 +3530,7 @@ impl AsRef<MessageSticker> for MessageSticker {
     }
 }
 
-impl AsRef<MessageSticker> for RTDMessageStickerBuilder {
+impl AsRef<MessageSticker> for MessageStickerBuilder {
     fn as_ref(&self) -> &MessageSticker {
         &self.inner
     }
@@ -3450,14 +3564,14 @@ impl RObject for MessageSupergroupChatCreate {
 impl TDMessageContent for MessageSupergroupChatCreate {}
 
 impl MessageSupergroupChatCreate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSupergroupChatCreateBuilder {
+    pub fn builder() -> MessageSupergroupChatCreateBuilder {
         let mut inner = MessageSupergroupChatCreate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSupergroupChatCreateBuilder { inner }
+        MessageSupergroupChatCreateBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -3466,11 +3580,14 @@ impl MessageSupergroupChatCreate {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSupergroupChatCreateBuilder {
+pub struct MessageSupergroupChatCreateBuilder {
     inner: MessageSupergroupChatCreate,
 }
 
-impl RTDMessageSupergroupChatCreateBuilder {
+#[deprecated]
+pub type RTDMessageSupergroupChatCreateBuilder = MessageSupergroupChatCreateBuilder;
+
+impl MessageSupergroupChatCreateBuilder {
     pub fn build(&self) -> MessageSupergroupChatCreate {
         self.inner.clone()
     }
@@ -3487,7 +3604,7 @@ impl AsRef<MessageSupergroupChatCreate> for MessageSupergroupChatCreate {
     }
 }
 
-impl AsRef<MessageSupergroupChatCreate> for RTDMessageSupergroupChatCreateBuilder {
+impl AsRef<MessageSupergroupChatCreate> for MessageSupergroupChatCreateBuilder {
     fn as_ref(&self) -> &MessageSupergroupChatCreate {
         &self.inner
     }
@@ -3521,14 +3638,14 @@ impl RObject for MessageText {
 impl TDMessageContent for MessageText {}
 
 impl MessageText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageTextBuilder {
+    pub fn builder() -> MessageTextBuilder {
         let mut inner = MessageText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageTextBuilder { inner }
+        MessageTextBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -3541,11 +3658,14 @@ impl MessageText {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageTextBuilder {
+pub struct MessageTextBuilder {
     inner: MessageText,
 }
 
-impl RTDMessageTextBuilder {
+#[deprecated]
+pub type RTDMessageTextBuilder = MessageTextBuilder;
+
+impl MessageTextBuilder {
     pub fn build(&self) -> MessageText {
         self.inner.clone()
     }
@@ -3567,7 +3687,7 @@ impl AsRef<MessageText> for MessageText {
     }
 }
 
-impl AsRef<MessageText> for RTDMessageTextBuilder {
+impl AsRef<MessageText> for MessageTextBuilder {
     fn as_ref(&self) -> &MessageText {
         &self.inner
     }
@@ -3597,23 +3717,26 @@ impl RObject for MessageUnsupported {
 impl TDMessageContent for MessageUnsupported {}
 
 impl MessageUnsupported {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageUnsupportedBuilder {
+    pub fn builder() -> MessageUnsupportedBuilder {
         let mut inner = MessageUnsupported::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageUnsupportedBuilder { inner }
+        MessageUnsupportedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageUnsupportedBuilder {
+pub struct MessageUnsupportedBuilder {
     inner: MessageUnsupported,
 }
 
-impl RTDMessageUnsupportedBuilder {
+#[deprecated]
+pub type RTDMessageUnsupportedBuilder = MessageUnsupportedBuilder;
+
+impl MessageUnsupportedBuilder {
     pub fn build(&self) -> MessageUnsupported {
         self.inner.clone()
     }
@@ -3625,7 +3748,7 @@ impl AsRef<MessageUnsupported> for MessageUnsupported {
     }
 }
 
-impl AsRef<MessageUnsupported> for RTDMessageUnsupportedBuilder {
+impl AsRef<MessageUnsupported> for MessageUnsupportedBuilder {
     fn as_ref(&self) -> &MessageUnsupported {
         &self.inner
     }
@@ -3657,14 +3780,14 @@ impl RObject for MessageVenue {
 impl TDMessageContent for MessageVenue {}
 
 impl MessageVenue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVenueBuilder {
+    pub fn builder() -> MessageVenueBuilder {
         let mut inner = MessageVenue::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVenueBuilder { inner }
+        MessageVenueBuilder { inner }
     }
 
     pub fn venue(&self) -> &Venue {
@@ -3673,11 +3796,14 @@ impl MessageVenue {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVenueBuilder {
+pub struct MessageVenueBuilder {
     inner: MessageVenue,
 }
 
-impl RTDMessageVenueBuilder {
+#[deprecated]
+pub type RTDMessageVenueBuilder = MessageVenueBuilder;
+
+impl MessageVenueBuilder {
     pub fn build(&self) -> MessageVenue {
         self.inner.clone()
     }
@@ -3694,7 +3820,7 @@ impl AsRef<MessageVenue> for MessageVenue {
     }
 }
 
-impl AsRef<MessageVenue> for RTDMessageVenueBuilder {
+impl AsRef<MessageVenue> for MessageVenueBuilder {
     fn as_ref(&self) -> &MessageVenue {
         &self.inner
     }
@@ -3732,14 +3858,14 @@ impl RObject for MessageVideo {
 impl TDMessageContent for MessageVideo {}
 
 impl MessageVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVideoBuilder {
+    pub fn builder() -> MessageVideoBuilder {
         let mut inner = MessageVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVideoBuilder { inner }
+        MessageVideoBuilder { inner }
     }
 
     pub fn video(&self) -> &Video {
@@ -3756,11 +3882,14 @@ impl MessageVideo {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVideoBuilder {
+pub struct MessageVideoBuilder {
     inner: MessageVideo,
 }
 
-impl RTDMessageVideoBuilder {
+#[deprecated]
+pub type RTDMessageVideoBuilder = MessageVideoBuilder;
+
+impl MessageVideoBuilder {
     pub fn build(&self) -> MessageVideo {
         self.inner.clone()
     }
@@ -3787,7 +3916,7 @@ impl AsRef<MessageVideo> for MessageVideo {
     }
 }
 
-impl AsRef<MessageVideo> for RTDMessageVideoBuilder {
+impl AsRef<MessageVideo> for MessageVideoBuilder {
     fn as_ref(&self) -> &MessageVideo {
         &self.inner
     }
@@ -3821,14 +3950,14 @@ impl RObject for MessageVideoChatEnded {
 impl TDMessageContent for MessageVideoChatEnded {}
 
 impl MessageVideoChatEnded {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVideoChatEndedBuilder {
+    pub fn builder() -> MessageVideoChatEndedBuilder {
         let mut inner = MessageVideoChatEnded::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVideoChatEndedBuilder { inner }
+        MessageVideoChatEndedBuilder { inner }
     }
 
     pub fn duration(&self) -> i32 {
@@ -3837,11 +3966,14 @@ impl MessageVideoChatEnded {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVideoChatEndedBuilder {
+pub struct MessageVideoChatEndedBuilder {
     inner: MessageVideoChatEnded,
 }
 
-impl RTDMessageVideoChatEndedBuilder {
+#[deprecated]
+pub type RTDMessageVideoChatEndedBuilder = MessageVideoChatEndedBuilder;
+
+impl MessageVideoChatEndedBuilder {
     pub fn build(&self) -> MessageVideoChatEnded {
         self.inner.clone()
     }
@@ -3858,7 +3990,7 @@ impl AsRef<MessageVideoChatEnded> for MessageVideoChatEnded {
     }
 }
 
-impl AsRef<MessageVideoChatEnded> for RTDMessageVideoChatEndedBuilder {
+impl AsRef<MessageVideoChatEnded> for MessageVideoChatEndedBuilder {
     fn as_ref(&self) -> &MessageVideoChatEnded {
         &self.inner
     }
@@ -3896,14 +4028,14 @@ impl RObject for MessageVideoChatScheduled {
 impl TDMessageContent for MessageVideoChatScheduled {}
 
 impl MessageVideoChatScheduled {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVideoChatScheduledBuilder {
+    pub fn builder() -> MessageVideoChatScheduledBuilder {
         let mut inner = MessageVideoChatScheduled::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVideoChatScheduledBuilder { inner }
+        MessageVideoChatScheduledBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -3916,11 +4048,14 @@ impl MessageVideoChatScheduled {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVideoChatScheduledBuilder {
+pub struct MessageVideoChatScheduledBuilder {
     inner: MessageVideoChatScheduled,
 }
 
-impl RTDMessageVideoChatScheduledBuilder {
+#[deprecated]
+pub type RTDMessageVideoChatScheduledBuilder = MessageVideoChatScheduledBuilder;
+
+impl MessageVideoChatScheduledBuilder {
     pub fn build(&self) -> MessageVideoChatScheduled {
         self.inner.clone()
     }
@@ -3942,7 +4077,7 @@ impl AsRef<MessageVideoChatScheduled> for MessageVideoChatScheduled {
     }
 }
 
-impl AsRef<MessageVideoChatScheduled> for RTDMessageVideoChatScheduledBuilder {
+impl AsRef<MessageVideoChatScheduled> for MessageVideoChatScheduledBuilder {
     fn as_ref(&self) -> &MessageVideoChatScheduled {
         &self.inner
     }
@@ -3976,14 +4111,14 @@ impl RObject for MessageVideoChatStarted {
 impl TDMessageContent for MessageVideoChatStarted {}
 
 impl MessageVideoChatStarted {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVideoChatStartedBuilder {
+    pub fn builder() -> MessageVideoChatStartedBuilder {
         let mut inner = MessageVideoChatStarted::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVideoChatStartedBuilder { inner }
+        MessageVideoChatStartedBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -3992,11 +4127,14 @@ impl MessageVideoChatStarted {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVideoChatStartedBuilder {
+pub struct MessageVideoChatStartedBuilder {
     inner: MessageVideoChatStarted,
 }
 
-impl RTDMessageVideoChatStartedBuilder {
+#[deprecated]
+pub type RTDMessageVideoChatStartedBuilder = MessageVideoChatStartedBuilder;
+
+impl MessageVideoChatStartedBuilder {
     pub fn build(&self) -> MessageVideoChatStarted {
         self.inner.clone()
     }
@@ -4013,7 +4151,7 @@ impl AsRef<MessageVideoChatStarted> for MessageVideoChatStarted {
     }
 }
 
-impl AsRef<MessageVideoChatStarted> for RTDMessageVideoChatStartedBuilder {
+impl AsRef<MessageVideoChatStarted> for MessageVideoChatStartedBuilder {
     fn as_ref(&self) -> &MessageVideoChatStarted {
         &self.inner
     }
@@ -4053,14 +4191,14 @@ impl RObject for MessageVideoNote {
 impl TDMessageContent for MessageVideoNote {}
 
 impl MessageVideoNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVideoNoteBuilder {
+    pub fn builder() -> MessageVideoNoteBuilder {
         let mut inner = MessageVideoNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVideoNoteBuilder { inner }
+        MessageVideoNoteBuilder { inner }
     }
 
     pub fn video_note(&self) -> &VideoNote {
@@ -4077,11 +4215,14 @@ impl MessageVideoNote {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVideoNoteBuilder {
+pub struct MessageVideoNoteBuilder {
     inner: MessageVideoNote,
 }
 
-impl RTDMessageVideoNoteBuilder {
+#[deprecated]
+pub type RTDMessageVideoNoteBuilder = MessageVideoNoteBuilder;
+
+impl MessageVideoNoteBuilder {
     pub fn build(&self) -> MessageVideoNote {
         self.inner.clone()
     }
@@ -4108,7 +4249,7 @@ impl AsRef<MessageVideoNote> for MessageVideoNote {
     }
 }
 
-impl AsRef<MessageVideoNote> for RTDMessageVideoNoteBuilder {
+impl AsRef<MessageVideoNote> for MessageVideoNoteBuilder {
     fn as_ref(&self) -> &MessageVideoNote {
         &self.inner
     }
@@ -4146,14 +4287,14 @@ impl RObject for MessageVoiceNote {
 impl TDMessageContent for MessageVoiceNote {}
 
 impl MessageVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVoiceNoteBuilder {
+    pub fn builder() -> MessageVoiceNoteBuilder {
         let mut inner = MessageVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVoiceNoteBuilder { inner }
+        MessageVoiceNoteBuilder { inner }
     }
 
     pub fn voice_note(&self) -> &VoiceNote {
@@ -4170,11 +4311,14 @@ impl MessageVoiceNote {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVoiceNoteBuilder {
+pub struct MessageVoiceNoteBuilder {
     inner: MessageVoiceNote,
 }
 
-impl RTDMessageVoiceNoteBuilder {
+#[deprecated]
+pub type RTDMessageVoiceNoteBuilder = MessageVoiceNoteBuilder;
+
+impl MessageVoiceNoteBuilder {
     pub fn build(&self) -> MessageVoiceNote {
         self.inner.clone()
     }
@@ -4201,7 +4345,7 @@ impl AsRef<MessageVoiceNote> for MessageVoiceNote {
     }
 }
 
-impl AsRef<MessageVoiceNote> for RTDMessageVoiceNoteBuilder {
+impl AsRef<MessageVoiceNote> for MessageVoiceNoteBuilder {
     fn as_ref(&self) -> &MessageVoiceNote {
         &self.inner
     }
@@ -4235,14 +4379,14 @@ impl RObject for MessageWebsiteConnected {
 impl TDMessageContent for MessageWebsiteConnected {}
 
 impl MessageWebsiteConnected {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageWebsiteConnectedBuilder {
+    pub fn builder() -> MessageWebsiteConnectedBuilder {
         let mut inner = MessageWebsiteConnected::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageWebsiteConnectedBuilder { inner }
+        MessageWebsiteConnectedBuilder { inner }
     }
 
     pub fn domain_name(&self) -> &String {
@@ -4251,11 +4395,14 @@ impl MessageWebsiteConnected {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageWebsiteConnectedBuilder {
+pub struct MessageWebsiteConnectedBuilder {
     inner: MessageWebsiteConnected,
 }
 
-impl RTDMessageWebsiteConnectedBuilder {
+#[deprecated]
+pub type RTDMessageWebsiteConnectedBuilder = MessageWebsiteConnectedBuilder;
+
+impl MessageWebsiteConnectedBuilder {
     pub fn build(&self) -> MessageWebsiteConnected {
         self.inner.clone()
     }
@@ -4272,7 +4419,7 @@ impl AsRef<MessageWebsiteConnected> for MessageWebsiteConnected {
     }
 }
 
-impl AsRef<MessageWebsiteConnected> for RTDMessageWebsiteConnectedBuilder {
+impl AsRef<MessageWebsiteConnected> for MessageWebsiteConnectedBuilder {
     fn as_ref(&self) -> &MessageWebsiteConnected {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -38,16 +38,16 @@ impl RObject for SetSupergroupStickerSet {
 impl RFunction for SetSupergroupStickerSet {}
 
 impl SetSupergroupStickerSet {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetSupergroupStickerSetBuilder {
+    pub fn builder() -> SetSupergroupStickerSetBuilder {
         let mut inner = SetSupergroupStickerSet::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setSupergroupStickerSet".to_string();
 
-        RTDSetSupergroupStickerSetBuilder { inner }
+        SetSupergroupStickerSetBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -60,11 +60,14 @@ impl SetSupergroupStickerSet {
 }
 
 #[doc(hidden)]
-pub struct RTDSetSupergroupStickerSetBuilder {
+pub struct SetSupergroupStickerSetBuilder {
     inner: SetSupergroupStickerSet,
 }
 
-impl RTDSetSupergroupStickerSetBuilder {
+#[deprecated]
+pub type RTDSetSupergroupStickerSetBuilder = SetSupergroupStickerSetBuilder;
+
+impl SetSupergroupStickerSetBuilder {
     pub fn build(&self) -> SetSupergroupStickerSet {
         self.inner.clone()
     }
@@ -86,7 +89,7 @@ impl AsRef<SetSupergroupStickerSet> for SetSupergroupStickerSet {
     }
 }
 
-impl AsRef<SetSupergroupStickerSet> for RTDSetSupergroupStickerSetBuilder {
+impl AsRef<SetSupergroupStickerSet> for SetSupergroupStickerSetBuilder {
     fn as_ref(&self) -> &SetSupergroupStickerSet {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -54,7 +54,7 @@ impl RObject for BackgroundFill {
 }
 
 impl BackgroundFill {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -97,14 +97,14 @@ impl RObject for BackgroundFillFreeformGradient {
 impl TDBackgroundFill for BackgroundFillFreeformGradient {}
 
 impl BackgroundFillFreeformGradient {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundFillFreeformGradientBuilder {
+    pub fn builder() -> BackgroundFillFreeformGradientBuilder {
         let mut inner = BackgroundFillFreeformGradient::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundFillFreeformGradientBuilder { inner }
+        BackgroundFillFreeformGradientBuilder { inner }
     }
 
     pub fn colors(&self) -> &Vec<i32> {
@@ -113,11 +113,14 @@ impl BackgroundFillFreeformGradient {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundFillFreeformGradientBuilder {
+pub struct BackgroundFillFreeformGradientBuilder {
     inner: BackgroundFillFreeformGradient,
 }
 
-impl RTDBackgroundFillFreeformGradientBuilder {
+#[deprecated]
+pub type RTDBackgroundFillFreeformGradientBuilder = BackgroundFillFreeformGradientBuilder;
+
+impl BackgroundFillFreeformGradientBuilder {
     pub fn build(&self) -> BackgroundFillFreeformGradient {
         self.inner.clone()
     }
@@ -134,7 +137,7 @@ impl AsRef<BackgroundFillFreeformGradient> for BackgroundFillFreeformGradient {
     }
 }
 
-impl AsRef<BackgroundFillFreeformGradient> for RTDBackgroundFillFreeformGradientBuilder {
+impl AsRef<BackgroundFillFreeformGradient> for BackgroundFillFreeformGradientBuilder {
     fn as_ref(&self) -> &BackgroundFillFreeformGradient {
         &self.inner
     }
@@ -176,14 +179,14 @@ impl RObject for BackgroundFillGradient {
 impl TDBackgroundFill for BackgroundFillGradient {}
 
 impl BackgroundFillGradient {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundFillGradientBuilder {
+    pub fn builder() -> BackgroundFillGradientBuilder {
         let mut inner = BackgroundFillGradient::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundFillGradientBuilder { inner }
+        BackgroundFillGradientBuilder { inner }
     }
 
     pub fn top_color(&self) -> i32 {
@@ -200,11 +203,14 @@ impl BackgroundFillGradient {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundFillGradientBuilder {
+pub struct BackgroundFillGradientBuilder {
     inner: BackgroundFillGradient,
 }
 
-impl RTDBackgroundFillGradientBuilder {
+#[deprecated]
+pub type RTDBackgroundFillGradientBuilder = BackgroundFillGradientBuilder;
+
+impl BackgroundFillGradientBuilder {
     pub fn build(&self) -> BackgroundFillGradient {
         self.inner.clone()
     }
@@ -231,7 +237,7 @@ impl AsRef<BackgroundFillGradient> for BackgroundFillGradient {
     }
 }
 
-impl AsRef<BackgroundFillGradient> for RTDBackgroundFillGradientBuilder {
+impl AsRef<BackgroundFillGradient> for BackgroundFillGradientBuilder {
     fn as_ref(&self) -> &BackgroundFillGradient {
         &self.inner
     }
@@ -265,14 +271,14 @@ impl RObject for BackgroundFillSolid {
 impl TDBackgroundFill for BackgroundFillSolid {}
 
 impl BackgroundFillSolid {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundFillSolidBuilder {
+    pub fn builder() -> BackgroundFillSolidBuilder {
         let mut inner = BackgroundFillSolid::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundFillSolidBuilder { inner }
+        BackgroundFillSolidBuilder { inner }
     }
 
     pub fn color(&self) -> i32 {
@@ -281,11 +287,14 @@ impl BackgroundFillSolid {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundFillSolidBuilder {
+pub struct BackgroundFillSolidBuilder {
     inner: BackgroundFillSolid,
 }
 
-impl RTDBackgroundFillSolidBuilder {
+#[deprecated]
+pub type RTDBackgroundFillSolidBuilder = BackgroundFillSolidBuilder;
+
+impl BackgroundFillSolidBuilder {
     pub fn build(&self) -> BackgroundFillSolid {
         self.inner.clone()
     }
@@ -302,7 +311,7 @@ impl AsRef<BackgroundFillSolid> for BackgroundFillSolid {
     }
 }
 
-impl AsRef<BackgroundFillSolid> for RTDBackgroundFillSolidBuilder {
+impl AsRef<BackgroundFillSolid> for BackgroundFillSolidBuilder {
     fn as_ref(&self) -> &BackgroundFillSolid {
         &self.inner
     }

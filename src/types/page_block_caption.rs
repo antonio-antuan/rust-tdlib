@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -32,14 +32,14 @@ impl RObject for PageBlockCaption {
 }
 
 impl PageBlockCaption {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockCaptionBuilder {
+    pub fn builder() -> PageBlockCaptionBuilder {
         let mut inner = PageBlockCaption::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockCaptionBuilder { inner }
+        PageBlockCaptionBuilder { inner }
     }
 
     pub fn text(&self) -> &RichText {
@@ -52,11 +52,14 @@ impl PageBlockCaption {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockCaptionBuilder {
+pub struct PageBlockCaptionBuilder {
     inner: PageBlockCaption,
 }
 
-impl RTDPageBlockCaptionBuilder {
+#[deprecated]
+pub type RTDPageBlockCaptionBuilder = PageBlockCaptionBuilder;
+
+impl PageBlockCaptionBuilder {
     pub fn build(&self) -> PageBlockCaption {
         self.inner.clone()
     }
@@ -78,7 +81,7 @@ impl AsRef<PageBlockCaption> for PageBlockCaption {
     }
 }
 
-impl AsRef<PageBlockCaption> for RTDPageBlockCaptionBuilder {
+impl AsRef<PageBlockCaption> for PageBlockCaptionBuilder {
     fn as_ref(&self) -> &PageBlockCaption {
         &self.inner
     }

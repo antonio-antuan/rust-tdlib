@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -79,7 +79,7 @@ impl RObject for JsonValue {
 }
 
 impl JsonValue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -122,14 +122,14 @@ impl RObject for JsonValueArray {
 impl TDJsonValue for JsonValueArray {}
 
 impl JsonValueArray {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDJsonValueArrayBuilder {
+    pub fn builder() -> JsonValueArrayBuilder {
         let mut inner = JsonValueArray::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDJsonValueArrayBuilder { inner }
+        JsonValueArrayBuilder { inner }
     }
 
     pub fn values(&self) -> &Vec<JsonValue> {
@@ -138,11 +138,14 @@ impl JsonValueArray {
 }
 
 #[doc(hidden)]
-pub struct RTDJsonValueArrayBuilder {
+pub struct JsonValueArrayBuilder {
     inner: JsonValueArray,
 }
 
-impl RTDJsonValueArrayBuilder {
+#[deprecated]
+pub type RTDJsonValueArrayBuilder = JsonValueArrayBuilder;
+
+impl JsonValueArrayBuilder {
     pub fn build(&self) -> JsonValueArray {
         self.inner.clone()
     }
@@ -159,7 +162,7 @@ impl AsRef<JsonValueArray> for JsonValueArray {
     }
 }
 
-impl AsRef<JsonValueArray> for RTDJsonValueArrayBuilder {
+impl AsRef<JsonValueArray> for JsonValueArrayBuilder {
     fn as_ref(&self) -> &JsonValueArray {
         &self.inner
     }
@@ -193,14 +196,14 @@ impl RObject for JsonValueBoolean {
 impl TDJsonValue for JsonValueBoolean {}
 
 impl JsonValueBoolean {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDJsonValueBooleanBuilder {
+    pub fn builder() -> JsonValueBooleanBuilder {
         let mut inner = JsonValueBoolean::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDJsonValueBooleanBuilder { inner }
+        JsonValueBooleanBuilder { inner }
     }
 
     pub fn value(&self) -> bool {
@@ -209,11 +212,14 @@ impl JsonValueBoolean {
 }
 
 #[doc(hidden)]
-pub struct RTDJsonValueBooleanBuilder {
+pub struct JsonValueBooleanBuilder {
     inner: JsonValueBoolean,
 }
 
-impl RTDJsonValueBooleanBuilder {
+#[deprecated]
+pub type RTDJsonValueBooleanBuilder = JsonValueBooleanBuilder;
+
+impl JsonValueBooleanBuilder {
     pub fn build(&self) -> JsonValueBoolean {
         self.inner.clone()
     }
@@ -230,7 +236,7 @@ impl AsRef<JsonValueBoolean> for JsonValueBoolean {
     }
 }
 
-impl AsRef<JsonValueBoolean> for RTDJsonValueBooleanBuilder {
+impl AsRef<JsonValueBoolean> for JsonValueBooleanBuilder {
     fn as_ref(&self) -> &JsonValueBoolean {
         &self.inner
     }
@@ -260,23 +266,26 @@ impl RObject for JsonValueNull {
 impl TDJsonValue for JsonValueNull {}
 
 impl JsonValueNull {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDJsonValueNullBuilder {
+    pub fn builder() -> JsonValueNullBuilder {
         let mut inner = JsonValueNull::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDJsonValueNullBuilder { inner }
+        JsonValueNullBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDJsonValueNullBuilder {
+pub struct JsonValueNullBuilder {
     inner: JsonValueNull,
 }
 
-impl RTDJsonValueNullBuilder {
+#[deprecated]
+pub type RTDJsonValueNullBuilder = JsonValueNullBuilder;
+
+impl JsonValueNullBuilder {
     pub fn build(&self) -> JsonValueNull {
         self.inner.clone()
     }
@@ -288,7 +297,7 @@ impl AsRef<JsonValueNull> for JsonValueNull {
     }
 }
 
-impl AsRef<JsonValueNull> for RTDJsonValueNullBuilder {
+impl AsRef<JsonValueNull> for JsonValueNullBuilder {
     fn as_ref(&self) -> &JsonValueNull {
         &self.inner
     }
@@ -322,14 +331,14 @@ impl RObject for JsonValueNumber {
 impl TDJsonValue for JsonValueNumber {}
 
 impl JsonValueNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDJsonValueNumberBuilder {
+    pub fn builder() -> JsonValueNumberBuilder {
         let mut inner = JsonValueNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDJsonValueNumberBuilder { inner }
+        JsonValueNumberBuilder { inner }
     }
 
     pub fn value(&self) -> f32 {
@@ -338,11 +347,14 @@ impl JsonValueNumber {
 }
 
 #[doc(hidden)]
-pub struct RTDJsonValueNumberBuilder {
+pub struct JsonValueNumberBuilder {
     inner: JsonValueNumber,
 }
 
-impl RTDJsonValueNumberBuilder {
+#[deprecated]
+pub type RTDJsonValueNumberBuilder = JsonValueNumberBuilder;
+
+impl JsonValueNumberBuilder {
     pub fn build(&self) -> JsonValueNumber {
         self.inner.clone()
     }
@@ -359,7 +371,7 @@ impl AsRef<JsonValueNumber> for JsonValueNumber {
     }
 }
 
-impl AsRef<JsonValueNumber> for RTDJsonValueNumberBuilder {
+impl AsRef<JsonValueNumber> for JsonValueNumberBuilder {
     fn as_ref(&self) -> &JsonValueNumber {
         &self.inner
     }
@@ -393,14 +405,14 @@ impl RObject for JsonValueObject {
 impl TDJsonValue for JsonValueObject {}
 
 impl JsonValueObject {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDJsonValueObjectBuilder {
+    pub fn builder() -> JsonValueObjectBuilder {
         let mut inner = JsonValueObject::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDJsonValueObjectBuilder { inner }
+        JsonValueObjectBuilder { inner }
     }
 
     pub fn members(&self) -> &Vec<JsonObjectMember> {
@@ -409,11 +421,14 @@ impl JsonValueObject {
 }
 
 #[doc(hidden)]
-pub struct RTDJsonValueObjectBuilder {
+pub struct JsonValueObjectBuilder {
     inner: JsonValueObject,
 }
 
-impl RTDJsonValueObjectBuilder {
+#[deprecated]
+pub type RTDJsonValueObjectBuilder = JsonValueObjectBuilder;
+
+impl JsonValueObjectBuilder {
     pub fn build(&self) -> JsonValueObject {
         self.inner.clone()
     }
@@ -430,7 +445,7 @@ impl AsRef<JsonValueObject> for JsonValueObject {
     }
 }
 
-impl AsRef<JsonValueObject> for RTDJsonValueObjectBuilder {
+impl AsRef<JsonValueObject> for JsonValueObjectBuilder {
     fn as_ref(&self) -> &JsonValueObject {
         &self.inner
     }
@@ -464,14 +479,14 @@ impl RObject for JsonValueString {
 impl TDJsonValue for JsonValueString {}
 
 impl JsonValueString {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDJsonValueStringBuilder {
+    pub fn builder() -> JsonValueStringBuilder {
         let mut inner = JsonValueString::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDJsonValueStringBuilder { inner }
+        JsonValueStringBuilder { inner }
     }
 
     pub fn value(&self) -> &String {
@@ -480,11 +495,14 @@ impl JsonValueString {
 }
 
 #[doc(hidden)]
-pub struct RTDJsonValueStringBuilder {
+pub struct JsonValueStringBuilder {
     inner: JsonValueString,
 }
 
-impl RTDJsonValueStringBuilder {
+#[deprecated]
+pub type RTDJsonValueStringBuilder = JsonValueStringBuilder;
+
+impl JsonValueStringBuilder {
     pub fn build(&self) -> JsonValueString {
         self.inner.clone()
     }
@@ -501,7 +519,7 @@ impl AsRef<JsonValueString> for JsonValueString {
     }
 }
 
-impl AsRef<JsonValueString> for RTDJsonValueStringBuilder {
+impl AsRef<JsonValueString> for JsonValueStringBuilder {
     fn as_ref(&self) -> &JsonValueString {
         &self.inner
     }

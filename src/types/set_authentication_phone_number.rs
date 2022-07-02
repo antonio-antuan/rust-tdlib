@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl RObject for SetAuthenticationPhoneNumber {
 impl RFunction for SetAuthenticationPhoneNumber {}
 
 impl SetAuthenticationPhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetAuthenticationPhoneNumberBuilder {
+    pub fn builder() -> SetAuthenticationPhoneNumberBuilder {
         let mut inner = SetAuthenticationPhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setAuthenticationPhoneNumber".to_string();
 
-        RTDSetAuthenticationPhoneNumberBuilder { inner }
+        SetAuthenticationPhoneNumberBuilder { inner }
     }
 
     pub fn phone_number(&self) -> &String {
@@ -57,11 +57,14 @@ impl SetAuthenticationPhoneNumber {
 }
 
 #[doc(hidden)]
-pub struct RTDSetAuthenticationPhoneNumberBuilder {
+pub struct SetAuthenticationPhoneNumberBuilder {
     inner: SetAuthenticationPhoneNumber,
 }
 
-impl RTDSetAuthenticationPhoneNumberBuilder {
+#[deprecated]
+pub type RTDSetAuthenticationPhoneNumberBuilder = SetAuthenticationPhoneNumberBuilder;
+
+impl SetAuthenticationPhoneNumberBuilder {
     pub fn build(&self) -> SetAuthenticationPhoneNumber {
         self.inner.clone()
     }
@@ -86,7 +89,7 @@ impl AsRef<SetAuthenticationPhoneNumber> for SetAuthenticationPhoneNumber {
     }
 }
 
-impl AsRef<SetAuthenticationPhoneNumber> for RTDSetAuthenticationPhoneNumberBuilder {
+impl AsRef<SetAuthenticationPhoneNumber> for SetAuthenticationPhoneNumberBuilder {
     fn as_ref(&self) -> &SetAuthenticationPhoneNumber {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -28,14 +28,14 @@ impl RObject for ClosedVectorPath {
 }
 
 impl ClosedVectorPath {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDClosedVectorPathBuilder {
+    pub fn builder() -> ClosedVectorPathBuilder {
         let mut inner = ClosedVectorPath::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDClosedVectorPathBuilder { inner }
+        ClosedVectorPathBuilder { inner }
     }
 
     pub fn commands(&self) -> &Vec<VectorPathCommand> {
@@ -44,11 +44,14 @@ impl ClosedVectorPath {
 }
 
 #[doc(hidden)]
-pub struct RTDClosedVectorPathBuilder {
+pub struct ClosedVectorPathBuilder {
     inner: ClosedVectorPath,
 }
 
-impl RTDClosedVectorPathBuilder {
+#[deprecated]
+pub type RTDClosedVectorPathBuilder = ClosedVectorPathBuilder;
+
+impl ClosedVectorPathBuilder {
     pub fn build(&self) -> ClosedVectorPath {
         self.inner.clone()
     }
@@ -65,7 +68,7 @@ impl AsRef<ClosedVectorPath> for ClosedVectorPath {
     }
 }
 
-impl AsRef<ClosedVectorPath> for RTDClosedVectorPathBuilder {
+impl AsRef<ClosedVectorPath> for ClosedVectorPathBuilder {
     fn as_ref(&self) -> &ClosedVectorPath {
         &self.inner
     }

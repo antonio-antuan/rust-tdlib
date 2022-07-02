@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -79,7 +79,7 @@ impl RObject for InlineKeyboardButtonType {
 }
 
 impl InlineKeyboardButtonType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -118,23 +118,26 @@ impl RObject for InlineKeyboardButtonTypeBuy {
 impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeBuy {}
 
 impl InlineKeyboardButtonTypeBuy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeBuyBuilder {
+    pub fn builder() -> InlineKeyboardButtonTypeBuyBuilder {
         let mut inner = InlineKeyboardButtonTypeBuy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonTypeBuyBuilder { inner }
+        InlineKeyboardButtonTypeBuyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeBuyBuilder {
+pub struct InlineKeyboardButtonTypeBuyBuilder {
     inner: InlineKeyboardButtonTypeBuy,
 }
 
-impl RTDInlineKeyboardButtonTypeBuyBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonTypeBuyBuilder = InlineKeyboardButtonTypeBuyBuilder;
+
+impl InlineKeyboardButtonTypeBuyBuilder {
     pub fn build(&self) -> InlineKeyboardButtonTypeBuy {
         self.inner.clone()
     }
@@ -146,7 +149,7 @@ impl AsRef<InlineKeyboardButtonTypeBuy> for InlineKeyboardButtonTypeBuy {
     }
 }
 
-impl AsRef<InlineKeyboardButtonTypeBuy> for RTDInlineKeyboardButtonTypeBuyBuilder {
+impl AsRef<InlineKeyboardButtonTypeBuy> for InlineKeyboardButtonTypeBuyBuilder {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeBuy {
         &self.inner
     }
@@ -180,14 +183,14 @@ impl RObject for InlineKeyboardButtonTypeCallback {
 impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeCallback {}
 
 impl InlineKeyboardButtonTypeCallback {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeCallbackBuilder {
+    pub fn builder() -> InlineKeyboardButtonTypeCallbackBuilder {
         let mut inner = InlineKeyboardButtonTypeCallback::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonTypeCallbackBuilder { inner }
+        InlineKeyboardButtonTypeCallbackBuilder { inner }
     }
 
     pub fn data(&self) -> &String {
@@ -196,11 +199,14 @@ impl InlineKeyboardButtonTypeCallback {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeCallbackBuilder {
+pub struct InlineKeyboardButtonTypeCallbackBuilder {
     inner: InlineKeyboardButtonTypeCallback,
 }
 
-impl RTDInlineKeyboardButtonTypeCallbackBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonTypeCallbackBuilder = InlineKeyboardButtonTypeCallbackBuilder;
+
+impl InlineKeyboardButtonTypeCallbackBuilder {
     pub fn build(&self) -> InlineKeyboardButtonTypeCallback {
         self.inner.clone()
     }
@@ -217,7 +223,7 @@ impl AsRef<InlineKeyboardButtonTypeCallback> for InlineKeyboardButtonTypeCallbac
     }
 }
 
-impl AsRef<InlineKeyboardButtonTypeCallback> for RTDInlineKeyboardButtonTypeCallbackBuilder {
+impl AsRef<InlineKeyboardButtonTypeCallback> for InlineKeyboardButtonTypeCallbackBuilder {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeCallback {
         &self.inner
     }
@@ -247,23 +253,27 @@ impl RObject for InlineKeyboardButtonTypeCallbackGame {
 impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeCallbackGame {}
 
 impl InlineKeyboardButtonTypeCallbackGame {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeCallbackGameBuilder {
+    pub fn builder() -> InlineKeyboardButtonTypeCallbackGameBuilder {
         let mut inner = InlineKeyboardButtonTypeCallbackGame::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonTypeCallbackGameBuilder { inner }
+        InlineKeyboardButtonTypeCallbackGameBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeCallbackGameBuilder {
+pub struct InlineKeyboardButtonTypeCallbackGameBuilder {
     inner: InlineKeyboardButtonTypeCallbackGame,
 }
 
-impl RTDInlineKeyboardButtonTypeCallbackGameBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonTypeCallbackGameBuilder =
+    InlineKeyboardButtonTypeCallbackGameBuilder;
+
+impl InlineKeyboardButtonTypeCallbackGameBuilder {
     pub fn build(&self) -> InlineKeyboardButtonTypeCallbackGame {
         self.inner.clone()
     }
@@ -275,9 +285,7 @@ impl AsRef<InlineKeyboardButtonTypeCallbackGame> for InlineKeyboardButtonTypeCal
     }
 }
 
-impl AsRef<InlineKeyboardButtonTypeCallbackGame>
-    for RTDInlineKeyboardButtonTypeCallbackGameBuilder
-{
+impl AsRef<InlineKeyboardButtonTypeCallbackGame> for InlineKeyboardButtonTypeCallbackGameBuilder {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeCallbackGame {
         &self.inner
     }
@@ -311,14 +319,14 @@ impl RObject for InlineKeyboardButtonTypeCallbackWithPassword {
 impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeCallbackWithPassword {}
 
 impl InlineKeyboardButtonTypeCallbackWithPassword {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeCallbackWithPasswordBuilder {
+    pub fn builder() -> InlineKeyboardButtonTypeCallbackWithPasswordBuilder {
         let mut inner = InlineKeyboardButtonTypeCallbackWithPassword::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonTypeCallbackWithPasswordBuilder { inner }
+        InlineKeyboardButtonTypeCallbackWithPasswordBuilder { inner }
     }
 
     pub fn data(&self) -> &String {
@@ -327,11 +335,15 @@ impl InlineKeyboardButtonTypeCallbackWithPassword {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeCallbackWithPasswordBuilder {
+pub struct InlineKeyboardButtonTypeCallbackWithPasswordBuilder {
     inner: InlineKeyboardButtonTypeCallbackWithPassword,
 }
 
-impl RTDInlineKeyboardButtonTypeCallbackWithPasswordBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonTypeCallbackWithPasswordBuilder =
+    InlineKeyboardButtonTypeCallbackWithPasswordBuilder;
+
+impl InlineKeyboardButtonTypeCallbackWithPasswordBuilder {
     pub fn build(&self) -> InlineKeyboardButtonTypeCallbackWithPassword {
         self.inner.clone()
     }
@@ -351,7 +363,7 @@ impl AsRef<InlineKeyboardButtonTypeCallbackWithPassword>
 }
 
 impl AsRef<InlineKeyboardButtonTypeCallbackWithPassword>
-    for RTDInlineKeyboardButtonTypeCallbackWithPasswordBuilder
+    for InlineKeyboardButtonTypeCallbackWithPasswordBuilder
 {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeCallbackWithPassword {
         &self.inner
@@ -394,14 +406,14 @@ impl RObject for InlineKeyboardButtonTypeLoginUrl {
 impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeLoginUrl {}
 
 impl InlineKeyboardButtonTypeLoginUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeLoginUrlBuilder {
+    pub fn builder() -> InlineKeyboardButtonTypeLoginUrlBuilder {
         let mut inner = InlineKeyboardButtonTypeLoginUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonTypeLoginUrlBuilder { inner }
+        InlineKeyboardButtonTypeLoginUrlBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -418,11 +430,14 @@ impl InlineKeyboardButtonTypeLoginUrl {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeLoginUrlBuilder {
+pub struct InlineKeyboardButtonTypeLoginUrlBuilder {
     inner: InlineKeyboardButtonTypeLoginUrl,
 }
 
-impl RTDInlineKeyboardButtonTypeLoginUrlBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonTypeLoginUrlBuilder = InlineKeyboardButtonTypeLoginUrlBuilder;
+
+impl InlineKeyboardButtonTypeLoginUrlBuilder {
     pub fn build(&self) -> InlineKeyboardButtonTypeLoginUrl {
         self.inner.clone()
     }
@@ -449,7 +464,7 @@ impl AsRef<InlineKeyboardButtonTypeLoginUrl> for InlineKeyboardButtonTypeLoginUr
     }
 }
 
-impl AsRef<InlineKeyboardButtonTypeLoginUrl> for RTDInlineKeyboardButtonTypeLoginUrlBuilder {
+impl AsRef<InlineKeyboardButtonTypeLoginUrl> for InlineKeyboardButtonTypeLoginUrlBuilder {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeLoginUrl {
         &self.inner
     }
@@ -487,14 +502,14 @@ impl RObject for InlineKeyboardButtonTypeSwitchInline {
 impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeSwitchInline {}
 
 impl InlineKeyboardButtonTypeSwitchInline {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeSwitchInlineBuilder {
+    pub fn builder() -> InlineKeyboardButtonTypeSwitchInlineBuilder {
         let mut inner = InlineKeyboardButtonTypeSwitchInline::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonTypeSwitchInlineBuilder { inner }
+        InlineKeyboardButtonTypeSwitchInlineBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -507,11 +522,15 @@ impl InlineKeyboardButtonTypeSwitchInline {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeSwitchInlineBuilder {
+pub struct InlineKeyboardButtonTypeSwitchInlineBuilder {
     inner: InlineKeyboardButtonTypeSwitchInline,
 }
 
-impl RTDInlineKeyboardButtonTypeSwitchInlineBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonTypeSwitchInlineBuilder =
+    InlineKeyboardButtonTypeSwitchInlineBuilder;
+
+impl InlineKeyboardButtonTypeSwitchInlineBuilder {
     pub fn build(&self) -> InlineKeyboardButtonTypeSwitchInline {
         self.inner.clone()
     }
@@ -533,9 +552,7 @@ impl AsRef<InlineKeyboardButtonTypeSwitchInline> for InlineKeyboardButtonTypeSwi
     }
 }
 
-impl AsRef<InlineKeyboardButtonTypeSwitchInline>
-    for RTDInlineKeyboardButtonTypeSwitchInlineBuilder
-{
+impl AsRef<InlineKeyboardButtonTypeSwitchInline> for InlineKeyboardButtonTypeSwitchInlineBuilder {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeSwitchInline {
         &self.inner
     }
@@ -569,14 +586,14 @@ impl RObject for InlineKeyboardButtonTypeUrl {
 impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeUrl {}
 
 impl InlineKeyboardButtonTypeUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeUrlBuilder {
+    pub fn builder() -> InlineKeyboardButtonTypeUrlBuilder {
         let mut inner = InlineKeyboardButtonTypeUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonTypeUrlBuilder { inner }
+        InlineKeyboardButtonTypeUrlBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -585,11 +602,14 @@ impl InlineKeyboardButtonTypeUrl {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeUrlBuilder {
+pub struct InlineKeyboardButtonTypeUrlBuilder {
     inner: InlineKeyboardButtonTypeUrl,
 }
 
-impl RTDInlineKeyboardButtonTypeUrlBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonTypeUrlBuilder = InlineKeyboardButtonTypeUrlBuilder;
+
+impl InlineKeyboardButtonTypeUrlBuilder {
     pub fn build(&self) -> InlineKeyboardButtonTypeUrl {
         self.inner.clone()
     }
@@ -606,7 +626,7 @@ impl AsRef<InlineKeyboardButtonTypeUrl> for InlineKeyboardButtonTypeUrl {
     }
 }
 
-impl AsRef<InlineKeyboardButtonTypeUrl> for RTDInlineKeyboardButtonTypeUrlBuilder {
+impl AsRef<InlineKeyboardButtonTypeUrl> for InlineKeyboardButtonTypeUrlBuilder {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeUrl {
         &self.inner
     }
@@ -640,14 +660,14 @@ impl RObject for InlineKeyboardButtonTypeUser {
 impl TDInlineKeyboardButtonType for InlineKeyboardButtonTypeUser {}
 
 impl InlineKeyboardButtonTypeUser {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonTypeUserBuilder {
+    pub fn builder() -> InlineKeyboardButtonTypeUserBuilder {
         let mut inner = InlineKeyboardButtonTypeUser::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonTypeUserBuilder { inner }
+        InlineKeyboardButtonTypeUserBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -656,11 +676,14 @@ impl InlineKeyboardButtonTypeUser {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonTypeUserBuilder {
+pub struct InlineKeyboardButtonTypeUserBuilder {
     inner: InlineKeyboardButtonTypeUser,
 }
 
-impl RTDInlineKeyboardButtonTypeUserBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonTypeUserBuilder = InlineKeyboardButtonTypeUserBuilder;
+
+impl InlineKeyboardButtonTypeUserBuilder {
     pub fn build(&self) -> InlineKeyboardButtonTypeUser {
         self.inner.clone()
     }
@@ -677,7 +700,7 @@ impl AsRef<InlineKeyboardButtonTypeUser> for InlineKeyboardButtonTypeUser {
     }
 }
 
-impl AsRef<InlineKeyboardButtonTypeUser> for RTDInlineKeyboardButtonTypeUserBuilder {
+impl AsRef<InlineKeyboardButtonTypeUser> for InlineKeyboardButtonTypeUserBuilder {
     fn as_ref(&self) -> &InlineKeyboardButtonTypeUser {
         &self.inner
     }

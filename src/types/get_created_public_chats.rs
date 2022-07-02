@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -34,16 +34,16 @@ impl RObject for GetCreatedPublicChats {
 impl RFunction for GetCreatedPublicChats {}
 
 impl GetCreatedPublicChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetCreatedPublicChatsBuilder {
+    pub fn builder() -> GetCreatedPublicChatsBuilder {
         let mut inner = GetCreatedPublicChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getCreatedPublicChats".to_string();
 
-        RTDGetCreatedPublicChatsBuilder { inner }
+        GetCreatedPublicChatsBuilder { inner }
     }
 
     pub fn type_(&self) -> &PublicChatType {
@@ -52,11 +52,14 @@ impl GetCreatedPublicChats {
 }
 
 #[doc(hidden)]
-pub struct RTDGetCreatedPublicChatsBuilder {
+pub struct GetCreatedPublicChatsBuilder {
     inner: GetCreatedPublicChats,
 }
 
-impl RTDGetCreatedPublicChatsBuilder {
+#[deprecated]
+pub type RTDGetCreatedPublicChatsBuilder = GetCreatedPublicChatsBuilder;
+
+impl GetCreatedPublicChatsBuilder {
     pub fn build(&self) -> GetCreatedPublicChats {
         self.inner.clone()
     }
@@ -73,7 +76,7 @@ impl AsRef<GetCreatedPublicChats> for GetCreatedPublicChats {
     }
 }
 
-impl AsRef<GetCreatedPublicChats> for RTDGetCreatedPublicChatsBuilder {
+impl AsRef<GetCreatedPublicChats> for GetCreatedPublicChatsBuilder {
     fn as_ref(&self) -> &GetCreatedPublicChats {
         &self.inner
     }

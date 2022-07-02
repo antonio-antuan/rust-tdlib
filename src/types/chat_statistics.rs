@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -54,7 +54,7 @@ impl RObject for ChatStatistics {
 }
 
 impl ChatStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -145,14 +145,14 @@ impl RObject for ChatStatisticsChannel {
 impl TDChatStatistics for ChatStatisticsChannel {}
 
 impl ChatStatisticsChannel {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatStatisticsChannelBuilder {
+    pub fn builder() -> ChatStatisticsChannelBuilder {
         let mut inner = ChatStatisticsChannel::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatStatisticsChannelBuilder { inner }
+        ChatStatisticsChannelBuilder { inner }
     }
 
     pub fn period(&self) -> &DateRange {
@@ -217,11 +217,14 @@ impl ChatStatisticsChannel {
 }
 
 #[doc(hidden)]
-pub struct RTDChatStatisticsChannelBuilder {
+pub struct ChatStatisticsChannelBuilder {
     inner: ChatStatisticsChannel,
 }
 
-impl RTDChatStatisticsChannelBuilder {
+#[deprecated]
+pub type RTDChatStatisticsChannelBuilder = ChatStatisticsChannelBuilder;
+
+impl ChatStatisticsChannelBuilder {
     pub fn build(&self) -> ChatStatisticsChannel {
         self.inner.clone()
     }
@@ -335,7 +338,7 @@ impl AsRef<ChatStatisticsChannel> for ChatStatisticsChannel {
     }
 }
 
-impl AsRef<ChatStatisticsChannel> for RTDChatStatisticsChannelBuilder {
+impl AsRef<ChatStatisticsChannel> for ChatStatisticsChannelBuilder {
     fn as_ref(&self) -> &ChatStatisticsChannel {
         &self.inner
     }
@@ -419,14 +422,14 @@ impl RObject for ChatStatisticsSupergroup {
 impl TDChatStatistics for ChatStatisticsSupergroup {}
 
 impl ChatStatisticsSupergroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatStatisticsSupergroupBuilder {
+    pub fn builder() -> ChatStatisticsSupergroupBuilder {
         let mut inner = ChatStatisticsSupergroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatStatisticsSupergroupBuilder { inner }
+        ChatStatisticsSupergroupBuilder { inner }
     }
 
     pub fn period(&self) -> &DateRange {
@@ -495,11 +498,14 @@ impl ChatStatisticsSupergroup {
 }
 
 #[doc(hidden)]
-pub struct RTDChatStatisticsSupergroupBuilder {
+pub struct ChatStatisticsSupergroupBuilder {
     inner: ChatStatisticsSupergroup,
 }
 
-impl RTDChatStatisticsSupergroupBuilder {
+#[deprecated]
+pub type RTDChatStatisticsSupergroupBuilder = ChatStatisticsSupergroupBuilder;
+
+impl ChatStatisticsSupergroupBuilder {
     pub fn build(&self) -> ChatStatisticsSupergroup {
         self.inner.clone()
     }
@@ -603,7 +609,7 @@ impl AsRef<ChatStatisticsSupergroup> for ChatStatisticsSupergroup {
     }
 }
 
-impl AsRef<ChatStatisticsSupergroup> for RTDChatStatisticsSupergroupBuilder {
+impl AsRef<ChatStatisticsSupergroup> for ChatStatisticsSupergroupBuilder {
     fn as_ref(&self) -> &ChatStatisticsSupergroup {
         &self.inner
     }

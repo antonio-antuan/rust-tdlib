@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ToggleSupergroupIsAllHistoryAvailable {
 impl RFunction for ToggleSupergroupIsAllHistoryAvailable {}
 
 impl ToggleSupergroupIsAllHistoryAvailable {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleSupergroupIsAllHistoryAvailableBuilder {
+    pub fn builder() -> ToggleSupergroupIsAllHistoryAvailableBuilder {
         let mut inner = ToggleSupergroupIsAllHistoryAvailable::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleSupergroupIsAllHistoryAvailable".to_string();
 
-        RTDToggleSupergroupIsAllHistoryAvailableBuilder { inner }
+        ToggleSupergroupIsAllHistoryAvailableBuilder { inner }
     }
 
     pub fn supergroup_id(&self) -> i64 {
@@ -59,11 +59,15 @@ impl ToggleSupergroupIsAllHistoryAvailable {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleSupergroupIsAllHistoryAvailableBuilder {
+pub struct ToggleSupergroupIsAllHistoryAvailableBuilder {
     inner: ToggleSupergroupIsAllHistoryAvailable,
 }
 
-impl RTDToggleSupergroupIsAllHistoryAvailableBuilder {
+#[deprecated]
+pub type RTDToggleSupergroupIsAllHistoryAvailableBuilder =
+    ToggleSupergroupIsAllHistoryAvailableBuilder;
+
+impl ToggleSupergroupIsAllHistoryAvailableBuilder {
     pub fn build(&self) -> ToggleSupergroupIsAllHistoryAvailable {
         self.inner.clone()
     }
@@ -85,9 +89,7 @@ impl AsRef<ToggleSupergroupIsAllHistoryAvailable> for ToggleSupergroupIsAllHisto
     }
 }
 
-impl AsRef<ToggleSupergroupIsAllHistoryAvailable>
-    for RTDToggleSupergroupIsAllHistoryAvailableBuilder
-{
+impl AsRef<ToggleSupergroupIsAllHistoryAvailable> for ToggleSupergroupIsAllHistoryAvailableBuilder {
     fn as_ref(&self) -> &ToggleSupergroupIsAllHistoryAvailable {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -42,16 +42,16 @@ impl RObject for SetBackground {
 impl RFunction for SetBackground {}
 
 impl SetBackground {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetBackgroundBuilder {
+    pub fn builder() -> SetBackgroundBuilder {
         let mut inner = SetBackground::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setBackground".to_string();
 
-        RTDSetBackgroundBuilder { inner }
+        SetBackgroundBuilder { inner }
     }
 
     pub fn background(&self) -> &InputBackground {
@@ -68,11 +68,14 @@ impl SetBackground {
 }
 
 #[doc(hidden)]
-pub struct RTDSetBackgroundBuilder {
+pub struct SetBackgroundBuilder {
     inner: SetBackground,
 }
 
-impl RTDSetBackgroundBuilder {
+#[deprecated]
+pub type RTDSetBackgroundBuilder = SetBackgroundBuilder;
+
+impl SetBackgroundBuilder {
     pub fn build(&self) -> SetBackground {
         self.inner.clone()
     }
@@ -99,7 +102,7 @@ impl AsRef<SetBackground> for SetBackground {
     }
 }
 
-impl AsRef<SetBackground> for RTDSetBackgroundBuilder {
+impl AsRef<SetBackground> for SetBackgroundBuilder {
     fn as_ref(&self) -> &SetBackground {
         &self.inner
     }

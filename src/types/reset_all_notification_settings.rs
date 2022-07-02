@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for ResetAllNotificationSettings {
 impl RFunction for ResetAllNotificationSettings {}
 
 impl ResetAllNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResetAllNotificationSettingsBuilder {
+    pub fn builder() -> ResetAllNotificationSettingsBuilder {
         let mut inner = ResetAllNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "resetAllNotificationSettings".to_string();
 
-        RTDResetAllNotificationSettingsBuilder { inner }
+        ResetAllNotificationSettingsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDResetAllNotificationSettingsBuilder {
+pub struct ResetAllNotificationSettingsBuilder {
     inner: ResetAllNotificationSettings,
 }
 
-impl RTDResetAllNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDResetAllNotificationSettingsBuilder = ResetAllNotificationSettingsBuilder;
+
+impl ResetAllNotificationSettingsBuilder {
     pub fn build(&self) -> ResetAllNotificationSettings {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ResetAllNotificationSettings> for ResetAllNotificationSettings {
     }
 }
 
-impl AsRef<ResetAllNotificationSettings> for RTDResetAllNotificationSettingsBuilder {
+impl AsRef<ResetAllNotificationSettings> for ResetAllNotificationSettingsBuilder {
     fn as_ref(&self) -> &ResetAllNotificationSettings {
         &self.inner
     }

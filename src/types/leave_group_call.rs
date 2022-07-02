@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for LeaveGroupCall {
 impl RFunction for LeaveGroupCall {}
 
 impl LeaveGroupCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLeaveGroupCallBuilder {
+    pub fn builder() -> LeaveGroupCallBuilder {
         let mut inner = LeaveGroupCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "leaveGroupCall".to_string();
 
-        RTDLeaveGroupCallBuilder { inner }
+        LeaveGroupCallBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -51,11 +51,14 @@ impl LeaveGroupCall {
 }
 
 #[doc(hidden)]
-pub struct RTDLeaveGroupCallBuilder {
+pub struct LeaveGroupCallBuilder {
     inner: LeaveGroupCall,
 }
 
-impl RTDLeaveGroupCallBuilder {
+#[deprecated]
+pub type RTDLeaveGroupCallBuilder = LeaveGroupCallBuilder;
+
+impl LeaveGroupCallBuilder {
     pub fn build(&self) -> LeaveGroupCall {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<LeaveGroupCall> for LeaveGroupCall {
     }
 }
 
-impl AsRef<LeaveGroupCall> for RTDLeaveGroupCallBuilder {
+impl AsRef<LeaveGroupCall> for LeaveGroupCallBuilder {
     fn as_ref(&self) -> &LeaveGroupCall {
         &self.inner
     }

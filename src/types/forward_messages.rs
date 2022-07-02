@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -55,16 +55,16 @@ impl RObject for ForwardMessages {
 impl RFunction for ForwardMessages {}
 
 impl ForwardMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDForwardMessagesBuilder {
+    pub fn builder() -> ForwardMessagesBuilder {
         let mut inner = ForwardMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "forwardMessages".to_string();
 
-        RTDForwardMessagesBuilder { inner }
+        ForwardMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -97,11 +97,14 @@ impl ForwardMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDForwardMessagesBuilder {
+pub struct ForwardMessagesBuilder {
     inner: ForwardMessages,
 }
 
-impl RTDForwardMessagesBuilder {
+#[deprecated]
+pub type RTDForwardMessagesBuilder = ForwardMessagesBuilder;
+
+impl ForwardMessagesBuilder {
     pub fn build(&self) -> ForwardMessages {
         self.inner.clone()
     }
@@ -148,7 +151,7 @@ impl AsRef<ForwardMessages> for ForwardMessages {
     }
 }
 
-impl AsRef<ForwardMessages> for RTDForwardMessagesBuilder {
+impl AsRef<ForwardMessages> for ForwardMessagesBuilder {
     fn as_ref(&self) -> &ForwardMessages {
         &self.inner
     }

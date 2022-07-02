@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for InviteGroupCallParticipants {
 impl RFunction for InviteGroupCallParticipants {}
 
 impl InviteGroupCallParticipants {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInviteGroupCallParticipantsBuilder {
+    pub fn builder() -> InviteGroupCallParticipantsBuilder {
         let mut inner = InviteGroupCallParticipants::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "inviteGroupCallParticipants".to_string();
 
-        RTDInviteGroupCallParticipantsBuilder { inner }
+        InviteGroupCallParticipantsBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -59,11 +59,14 @@ impl InviteGroupCallParticipants {
 }
 
 #[doc(hidden)]
-pub struct RTDInviteGroupCallParticipantsBuilder {
+pub struct InviteGroupCallParticipantsBuilder {
     inner: InviteGroupCallParticipants,
 }
 
-impl RTDInviteGroupCallParticipantsBuilder {
+#[deprecated]
+pub type RTDInviteGroupCallParticipantsBuilder = InviteGroupCallParticipantsBuilder;
+
+impl InviteGroupCallParticipantsBuilder {
     pub fn build(&self) -> InviteGroupCallParticipants {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<InviteGroupCallParticipants> for InviteGroupCallParticipants {
     }
 }
 
-impl AsRef<InviteGroupCallParticipants> for RTDInviteGroupCallParticipantsBuilder {
+impl AsRef<InviteGroupCallParticipants> for InviteGroupCallParticipantsBuilder {
     fn as_ref(&self) -> &InviteGroupCallParticipants {
         &self.inner
     }

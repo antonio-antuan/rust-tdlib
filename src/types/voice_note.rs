@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -38,14 +38,14 @@ impl RObject for VoiceNote {
 }
 
 impl VoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDVoiceNoteBuilder {
+    pub fn builder() -> VoiceNoteBuilder {
         let mut inner = VoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDVoiceNoteBuilder { inner }
+        VoiceNoteBuilder { inner }
     }
 
     pub fn duration(&self) -> i32 {
@@ -66,11 +66,14 @@ impl VoiceNote {
 }
 
 #[doc(hidden)]
-pub struct RTDVoiceNoteBuilder {
+pub struct VoiceNoteBuilder {
     inner: VoiceNote,
 }
 
-impl RTDVoiceNoteBuilder {
+#[deprecated]
+pub type RTDVoiceNoteBuilder = VoiceNoteBuilder;
+
+impl VoiceNoteBuilder {
     pub fn build(&self) -> VoiceNote {
         self.inner.clone()
     }
@@ -102,7 +105,7 @@ impl AsRef<VoiceNote> for VoiceNote {
     }
 }
 
-impl AsRef<VoiceNote> for RTDVoiceNoteBuilder {
+impl AsRef<VoiceNote> for VoiceNoteBuilder {
     fn as_ref(&self) -> &VoiceNote {
         &self.inner
     }

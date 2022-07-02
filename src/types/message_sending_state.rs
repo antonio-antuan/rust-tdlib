@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -49,7 +49,7 @@ impl RObject for MessageSendingState {
 }
 
 impl MessageSendingState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -108,14 +108,14 @@ impl RObject for MessageSendingStateFailed {
 impl TDMessageSendingState for MessageSendingStateFailed {}
 
 impl MessageSendingStateFailed {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSendingStateFailedBuilder {
+    pub fn builder() -> MessageSendingStateFailedBuilder {
         let mut inner = MessageSendingStateFailed::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSendingStateFailedBuilder { inner }
+        MessageSendingStateFailedBuilder { inner }
     }
 
     pub fn error_code(&self) -> i32 {
@@ -140,11 +140,14 @@ impl MessageSendingStateFailed {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSendingStateFailedBuilder {
+pub struct MessageSendingStateFailedBuilder {
     inner: MessageSendingStateFailed,
 }
 
-impl RTDMessageSendingStateFailedBuilder {
+#[deprecated]
+pub type RTDMessageSendingStateFailedBuilder = MessageSendingStateFailedBuilder;
+
+impl MessageSendingStateFailedBuilder {
     pub fn build(&self) -> MessageSendingStateFailed {
         self.inner.clone()
     }
@@ -181,7 +184,7 @@ impl AsRef<MessageSendingStateFailed> for MessageSendingStateFailed {
     }
 }
 
-impl AsRef<MessageSendingStateFailed> for RTDMessageSendingStateFailedBuilder {
+impl AsRef<MessageSendingStateFailed> for MessageSendingStateFailedBuilder {
     fn as_ref(&self) -> &MessageSendingStateFailed {
         &self.inner
     }
@@ -211,23 +214,26 @@ impl RObject for MessageSendingStatePending {
 impl TDMessageSendingState for MessageSendingStatePending {}
 
 impl MessageSendingStatePending {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSendingStatePendingBuilder {
+    pub fn builder() -> MessageSendingStatePendingBuilder {
         let mut inner = MessageSendingStatePending::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSendingStatePendingBuilder { inner }
+        MessageSendingStatePendingBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSendingStatePendingBuilder {
+pub struct MessageSendingStatePendingBuilder {
     inner: MessageSendingStatePending,
 }
 
-impl RTDMessageSendingStatePendingBuilder {
+#[deprecated]
+pub type RTDMessageSendingStatePendingBuilder = MessageSendingStatePendingBuilder;
+
+impl MessageSendingStatePendingBuilder {
     pub fn build(&self) -> MessageSendingStatePending {
         self.inner.clone()
     }
@@ -239,7 +245,7 @@ impl AsRef<MessageSendingStatePending> for MessageSendingStatePending {
     }
 }
 
-impl AsRef<MessageSendingStatePending> for RTDMessageSendingStatePendingBuilder {
+impl AsRef<MessageSendingStatePending> for MessageSendingStatePendingBuilder {
     fn as_ref(&self) -> &MessageSendingStatePending {
         &self.inner
     }

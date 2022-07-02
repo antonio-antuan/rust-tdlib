@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for CheckPasswordRecoveryCode {
 impl RFunction for CheckPasswordRecoveryCode {}
 
 impl CheckPasswordRecoveryCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckPasswordRecoveryCodeBuilder {
+    pub fn builder() -> CheckPasswordRecoveryCodeBuilder {
         let mut inner = CheckPasswordRecoveryCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkPasswordRecoveryCode".to_string();
 
-        RTDCheckPasswordRecoveryCodeBuilder { inner }
+        CheckPasswordRecoveryCodeBuilder { inner }
     }
 
     pub fn recovery_code(&self) -> &String {
@@ -51,11 +51,14 @@ impl CheckPasswordRecoveryCode {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckPasswordRecoveryCodeBuilder {
+pub struct CheckPasswordRecoveryCodeBuilder {
     inner: CheckPasswordRecoveryCode,
 }
 
-impl RTDCheckPasswordRecoveryCodeBuilder {
+#[deprecated]
+pub type RTDCheckPasswordRecoveryCodeBuilder = CheckPasswordRecoveryCodeBuilder;
+
+impl CheckPasswordRecoveryCodeBuilder {
     pub fn build(&self) -> CheckPasswordRecoveryCode {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<CheckPasswordRecoveryCode> for CheckPasswordRecoveryCode {
     }
 }
 
-impl AsRef<CheckPasswordRecoveryCode> for RTDCheckPasswordRecoveryCodeBuilder {
+impl AsRef<CheckPasswordRecoveryCode> for CheckPasswordRecoveryCodeBuilder {
     fn as_ref(&self) -> &CheckPasswordRecoveryCode {
         &self.inner
     }

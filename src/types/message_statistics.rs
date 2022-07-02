@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -28,14 +28,14 @@ impl RObject for MessageStatistics {
 }
 
 impl MessageStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageStatisticsBuilder {
+    pub fn builder() -> MessageStatisticsBuilder {
         let mut inner = MessageStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageStatisticsBuilder { inner }
+        MessageStatisticsBuilder { inner }
     }
 
     pub fn message_interaction_graph(&self) -> &StatisticalGraph {
@@ -44,11 +44,14 @@ impl MessageStatistics {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageStatisticsBuilder {
+pub struct MessageStatisticsBuilder {
     inner: MessageStatistics,
 }
 
-impl RTDMessageStatisticsBuilder {
+#[deprecated]
+pub type RTDMessageStatisticsBuilder = MessageStatisticsBuilder;
+
+impl MessageStatisticsBuilder {
     pub fn build(&self) -> MessageStatistics {
         self.inner.clone()
     }
@@ -68,7 +71,7 @@ impl AsRef<MessageStatistics> for MessageStatistics {
     }
 }
 
-impl AsRef<MessageStatistics> for RTDMessageStatisticsBuilder {
+impl AsRef<MessageStatistics> for MessageStatisticsBuilder {
     fn as_ref(&self) -> &MessageStatistics {
         &self.inner
     }

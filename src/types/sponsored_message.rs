@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -38,14 +38,14 @@ impl RObject for SponsoredMessage {
 }
 
 impl SponsoredMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSponsoredMessageBuilder {
+    pub fn builder() -> SponsoredMessageBuilder {
         let mut inner = SponsoredMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSponsoredMessageBuilder { inner }
+        SponsoredMessageBuilder { inner }
     }
 
     pub fn message_id(&self) -> i64 {
@@ -66,11 +66,14 @@ impl SponsoredMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDSponsoredMessageBuilder {
+pub struct SponsoredMessageBuilder {
     inner: SponsoredMessage,
 }
 
-impl RTDSponsoredMessageBuilder {
+#[deprecated]
+pub type RTDSponsoredMessageBuilder = SponsoredMessageBuilder;
+
+impl SponsoredMessageBuilder {
     pub fn build(&self) -> SponsoredMessage {
         self.inner.clone()
     }
@@ -102,7 +105,7 @@ impl AsRef<SponsoredMessage> for SponsoredMessage {
     }
 }
 
-impl AsRef<SponsoredMessage> for RTDSponsoredMessageBuilder {
+impl AsRef<SponsoredMessage> for SponsoredMessageBuilder {
     fn as_ref(&self) -> &SponsoredMessage {
         &self.inner
     }

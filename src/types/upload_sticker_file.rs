@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for UploadStickerFile {
 impl RFunction for UploadStickerFile {}
 
 impl UploadStickerFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUploadStickerFileBuilder {
+    pub fn builder() -> UploadStickerFileBuilder {
         let mut inner = UploadStickerFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "uploadStickerFile".to_string();
 
-        RTDUploadStickerFileBuilder { inner }
+        UploadStickerFileBuilder { inner }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -59,11 +59,14 @@ impl UploadStickerFile {
 }
 
 #[doc(hidden)]
-pub struct RTDUploadStickerFileBuilder {
+pub struct UploadStickerFileBuilder {
     inner: UploadStickerFile,
 }
 
-impl RTDUploadStickerFileBuilder {
+#[deprecated]
+pub type RTDUploadStickerFileBuilder = UploadStickerFileBuilder;
+
+impl UploadStickerFileBuilder {
     pub fn build(&self) -> UploadStickerFile {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<UploadStickerFile> for UploadStickerFile {
     }
 }
 
-impl AsRef<UploadStickerFile> for RTDUploadStickerFileBuilder {
+impl AsRef<UploadStickerFile> for UploadStickerFileBuilder {
     fn as_ref(&self) -> &UploadStickerFile {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -56,16 +56,16 @@ impl RObject for SendInlineQueryResultMessage {
 impl RFunction for SendInlineQueryResultMessage {}
 
 impl SendInlineQueryResultMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendInlineQueryResultMessageBuilder {
+    pub fn builder() -> SendInlineQueryResultMessageBuilder {
         let mut inner = SendInlineQueryResultMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendInlineQueryResultMessage".to_string();
 
-        RTDSendInlineQueryResultMessageBuilder { inner }
+        SendInlineQueryResultMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -98,11 +98,14 @@ impl SendInlineQueryResultMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDSendInlineQueryResultMessageBuilder {
+pub struct SendInlineQueryResultMessageBuilder {
     inner: SendInlineQueryResultMessage,
 }
 
-impl RTDSendInlineQueryResultMessageBuilder {
+#[deprecated]
+pub type RTDSendInlineQueryResultMessageBuilder = SendInlineQueryResultMessageBuilder;
+
+impl SendInlineQueryResultMessageBuilder {
     pub fn build(&self) -> SendInlineQueryResultMessage {
         self.inner.clone()
     }
@@ -149,7 +152,7 @@ impl AsRef<SendInlineQueryResultMessage> for SendInlineQueryResultMessage {
     }
 }
 
-impl AsRef<SendInlineQueryResultMessage> for RTDSendInlineQueryResultMessageBuilder {
+impl AsRef<SendInlineQueryResultMessage> for SendInlineQueryResultMessageBuilder {
     fn as_ref(&self) -> &SendInlineQueryResultMessage {
         &self.inner
     }

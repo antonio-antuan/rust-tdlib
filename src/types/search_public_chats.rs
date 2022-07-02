@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for SearchPublicChats {
 impl RFunction for SearchPublicChats {}
 
 impl SearchPublicChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchPublicChatsBuilder {
+    pub fn builder() -> SearchPublicChatsBuilder {
         let mut inner = SearchPublicChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchPublicChats".to_string();
 
-        RTDSearchPublicChatsBuilder { inner }
+        SearchPublicChatsBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -51,11 +51,14 @@ impl SearchPublicChats {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchPublicChatsBuilder {
+pub struct SearchPublicChatsBuilder {
     inner: SearchPublicChats,
 }
 
-impl RTDSearchPublicChatsBuilder {
+#[deprecated]
+pub type RTDSearchPublicChatsBuilder = SearchPublicChatsBuilder;
+
+impl SearchPublicChatsBuilder {
     pub fn build(&self) -> SearchPublicChats {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<SearchPublicChats> for SearchPublicChats {
     }
 }
 
-impl AsRef<SearchPublicChats> for RTDSearchPublicChatsBuilder {
+impl AsRef<SearchPublicChats> for SearchPublicChatsBuilder {
     fn as_ref(&self) -> &SearchPublicChats {
         &self.inner
     }

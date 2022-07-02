@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -39,16 +39,16 @@ impl RObject for GetPaymentForm {
 impl RFunction for GetPaymentForm {}
 
 impl GetPaymentForm {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPaymentFormBuilder {
+    pub fn builder() -> GetPaymentFormBuilder {
         let mut inner = GetPaymentForm::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPaymentForm".to_string();
 
-        RTDGetPaymentFormBuilder { inner }
+        GetPaymentFormBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -65,11 +65,14 @@ impl GetPaymentForm {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPaymentFormBuilder {
+pub struct GetPaymentFormBuilder {
     inner: GetPaymentForm,
 }
 
-impl RTDGetPaymentFormBuilder {
+#[deprecated]
+pub type RTDGetPaymentFormBuilder = GetPaymentFormBuilder;
+
+impl GetPaymentFormBuilder {
     pub fn build(&self) -> GetPaymentForm {
         self.inner.clone()
     }
@@ -96,7 +99,7 @@ impl AsRef<GetPaymentForm> for GetPaymentForm {
     }
 }
 
-impl AsRef<GetPaymentForm> for RTDGetPaymentFormBuilder {
+impl AsRef<GetPaymentForm> for GetPaymentFormBuilder {
     fn as_ref(&self) -> &GetPaymentForm {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for Destroy {
 impl RFunction for Destroy {}
 
 impl Destroy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDestroyBuilder {
+    pub fn builder() -> DestroyBuilder {
         let mut inner = Destroy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "destroy".to_string();
 
-        RTDDestroyBuilder { inner }
+        DestroyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDDestroyBuilder {
+pub struct DestroyBuilder {
     inner: Destroy,
 }
 
-impl RTDDestroyBuilder {
+#[deprecated]
+pub type RTDDestroyBuilder = DestroyBuilder;
+
+impl DestroyBuilder {
     pub fn build(&self) -> Destroy {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<Destroy> for Destroy {
     }
 }
 
-impl AsRef<Destroy> for RTDDestroyBuilder {
+impl AsRef<Destroy> for DestroyBuilder {
     fn as_ref(&self) -> &Destroy {
         &self.inner
     }

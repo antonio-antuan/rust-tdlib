@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,14 +29,14 @@ impl RObject for PushReceiverId {
 }
 
 impl PushReceiverId {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPushReceiverIdBuilder {
+    pub fn builder() -> PushReceiverIdBuilder {
         let mut inner = PushReceiverId::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPushReceiverIdBuilder { inner }
+        PushReceiverIdBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -45,11 +45,14 @@ impl PushReceiverId {
 }
 
 #[doc(hidden)]
-pub struct RTDPushReceiverIdBuilder {
+pub struct PushReceiverIdBuilder {
     inner: PushReceiverId,
 }
 
-impl RTDPushReceiverIdBuilder {
+#[deprecated]
+pub type RTDPushReceiverIdBuilder = PushReceiverIdBuilder;
+
+impl PushReceiverIdBuilder {
     pub fn build(&self) -> PushReceiverId {
         self.inner.clone()
     }
@@ -66,7 +69,7 @@ impl AsRef<PushReceiverId> for PushReceiverId {
     }
 }
 
-impl AsRef<PushReceiverId> for RTDPushReceiverIdBuilder {
+impl AsRef<PushReceiverId> for PushReceiverIdBuilder {
     fn as_ref(&self) -> &PushReceiverId {
         &self.inner
     }

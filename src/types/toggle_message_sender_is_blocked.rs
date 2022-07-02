@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ToggleMessageSenderIsBlocked {
 impl RFunction for ToggleMessageSenderIsBlocked {}
 
 impl ToggleMessageSenderIsBlocked {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleMessageSenderIsBlockedBuilder {
+    pub fn builder() -> ToggleMessageSenderIsBlockedBuilder {
         let mut inner = ToggleMessageSenderIsBlocked::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleMessageSenderIsBlocked".to_string();
 
-        RTDToggleMessageSenderIsBlockedBuilder { inner }
+        ToggleMessageSenderIsBlockedBuilder { inner }
     }
 
     pub fn sender_id(&self) -> &MessageSender {
@@ -59,11 +59,14 @@ impl ToggleMessageSenderIsBlocked {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleMessageSenderIsBlockedBuilder {
+pub struct ToggleMessageSenderIsBlockedBuilder {
     inner: ToggleMessageSenderIsBlocked,
 }
 
-impl RTDToggleMessageSenderIsBlockedBuilder {
+#[deprecated]
+pub type RTDToggleMessageSenderIsBlockedBuilder = ToggleMessageSenderIsBlockedBuilder;
+
+impl ToggleMessageSenderIsBlockedBuilder {
     pub fn build(&self) -> ToggleMessageSenderIsBlocked {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<ToggleMessageSenderIsBlocked> for ToggleMessageSenderIsBlocked {
     }
 }
 
-impl AsRef<ToggleMessageSenderIsBlocked> for RTDToggleMessageSenderIsBlockedBuilder {
+impl AsRef<ToggleMessageSenderIsBlocked> for ToggleMessageSenderIsBlockedBuilder {
     fn as_ref(&self) -> &ToggleMessageSenderIsBlocked {
         &self.inner
     }

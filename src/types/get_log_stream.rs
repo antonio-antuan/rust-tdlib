@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,25 +31,28 @@ impl TDLogStream for GetLogStream {}
 impl RFunction for GetLogStream {}
 
 impl GetLogStream {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetLogStreamBuilder {
+    pub fn builder() -> GetLogStreamBuilder {
         let mut inner = GetLogStream::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getLogStream".to_string();
 
-        RTDGetLogStreamBuilder { inner }
+        GetLogStreamBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetLogStreamBuilder {
+pub struct GetLogStreamBuilder {
     inner: GetLogStream,
 }
 
-impl RTDGetLogStreamBuilder {
+#[deprecated]
+pub type RTDGetLogStreamBuilder = GetLogStreamBuilder;
+
+impl GetLogStreamBuilder {
     pub fn build(&self) -> GetLogStream {
         self.inner.clone()
     }
@@ -61,7 +64,7 @@ impl AsRef<GetLogStream> for GetLogStream {
     }
 }
 
-impl AsRef<GetLogStream> for RTDGetLogStreamBuilder {
+impl AsRef<GetLogStream> for GetLogStreamBuilder {
     fn as_ref(&self) -> &GetLogStream {
         &self.inner
     }

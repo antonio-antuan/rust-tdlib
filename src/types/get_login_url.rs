@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -45,16 +45,16 @@ impl RObject for GetLoginUrl {
 impl RFunction for GetLoginUrl {}
 
 impl GetLoginUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetLoginUrlBuilder {
+    pub fn builder() -> GetLoginUrlBuilder {
         let mut inner = GetLoginUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getLoginUrl".to_string();
 
-        RTDGetLoginUrlBuilder { inner }
+        GetLoginUrlBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -75,11 +75,14 @@ impl GetLoginUrl {
 }
 
 #[doc(hidden)]
-pub struct RTDGetLoginUrlBuilder {
+pub struct GetLoginUrlBuilder {
     inner: GetLoginUrl,
 }
 
-impl RTDGetLoginUrlBuilder {
+#[deprecated]
+pub type RTDGetLoginUrlBuilder = GetLoginUrlBuilder;
+
+impl GetLoginUrlBuilder {
     pub fn build(&self) -> GetLoginUrl {
         self.inner.clone()
     }
@@ -111,7 +114,7 @@ impl AsRef<GetLoginUrl> for GetLoginUrl {
     }
 }
 
-impl AsRef<GetLoginUrl> for RTDGetLoginUrlBuilder {
+impl AsRef<GetLoginUrl> for GetLoginUrlBuilder {
     fn as_ref(&self) -> &GetLoginUrl {
         &self.inner
     }

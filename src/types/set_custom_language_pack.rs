@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl RObject for SetCustomLanguagePack {
 impl RFunction for SetCustomLanguagePack {}
 
 impl SetCustomLanguagePack {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetCustomLanguagePackBuilder {
+    pub fn builder() -> SetCustomLanguagePackBuilder {
         let mut inner = SetCustomLanguagePack::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setCustomLanguagePack".to_string();
 
-        RTDSetCustomLanguagePackBuilder { inner }
+        SetCustomLanguagePackBuilder { inner }
     }
 
     pub fn info(&self) -> &LanguagePackInfo {
@@ -57,11 +57,14 @@ impl SetCustomLanguagePack {
 }
 
 #[doc(hidden)]
-pub struct RTDSetCustomLanguagePackBuilder {
+pub struct SetCustomLanguagePackBuilder {
     inner: SetCustomLanguagePack,
 }
 
-impl RTDSetCustomLanguagePackBuilder {
+#[deprecated]
+pub type RTDSetCustomLanguagePackBuilder = SetCustomLanguagePackBuilder;
+
+impl SetCustomLanguagePackBuilder {
     pub fn build(&self) -> SetCustomLanguagePack {
         self.inner.clone()
     }
@@ -83,7 +86,7 @@ impl AsRef<SetCustomLanguagePack> for SetCustomLanguagePack {
     }
 }
 
-impl AsRef<SetCustomLanguagePack> for RTDSetCustomLanguagePackBuilder {
+impl AsRef<SetCustomLanguagePack> for SetCustomLanguagePackBuilder {
     fn as_ref(&self) -> &SetCustomLanguagePack {
         &self.inner
     }

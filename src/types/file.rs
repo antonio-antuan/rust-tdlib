@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -40,14 +40,14 @@ impl RObject for File {
 }
 
 impl File {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFileBuilder {
+    pub fn builder() -> FileBuilder {
         let mut inner = File::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFileBuilder { inner }
+        FileBuilder { inner }
     }
 
     pub fn id(&self) -> i32 {
@@ -72,11 +72,14 @@ impl File {
 }
 
 #[doc(hidden)]
-pub struct RTDFileBuilder {
+pub struct FileBuilder {
     inner: File,
 }
 
-impl RTDFileBuilder {
+#[deprecated]
+pub type RTDFileBuilder = FileBuilder;
+
+impl FileBuilder {
     pub fn build(&self) -> File {
         self.inner.clone()
     }
@@ -113,7 +116,7 @@ impl AsRef<File> for File {
     }
 }
 
-impl AsRef<File> for RTDFileBuilder {
+impl AsRef<File> for FileBuilder {
     fn as_ref(&self) -> &File {
         &self.inner
     }

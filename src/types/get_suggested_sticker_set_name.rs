@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetSuggestedStickerSetName {
 impl RFunction for GetSuggestedStickerSetName {}
 
 impl GetSuggestedStickerSetName {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetSuggestedStickerSetNameBuilder {
+    pub fn builder() -> GetSuggestedStickerSetNameBuilder {
         let mut inner = GetSuggestedStickerSetName::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getSuggestedStickerSetName".to_string();
 
-        RTDGetSuggestedStickerSetNameBuilder { inner }
+        GetSuggestedStickerSetNameBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -51,11 +51,14 @@ impl GetSuggestedStickerSetName {
 }
 
 #[doc(hidden)]
-pub struct RTDGetSuggestedStickerSetNameBuilder {
+pub struct GetSuggestedStickerSetNameBuilder {
     inner: GetSuggestedStickerSetName,
 }
 
-impl RTDGetSuggestedStickerSetNameBuilder {
+#[deprecated]
+pub type RTDGetSuggestedStickerSetNameBuilder = GetSuggestedStickerSetNameBuilder;
+
+impl GetSuggestedStickerSetNameBuilder {
     pub fn build(&self) -> GetSuggestedStickerSetName {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetSuggestedStickerSetName> for GetSuggestedStickerSetName {
     }
 }
 
-impl AsRef<GetSuggestedStickerSetName> for RTDGetSuggestedStickerSetNameBuilder {
+impl AsRef<GetSuggestedStickerSetName> for GetSuggestedStickerSetNameBuilder {
     fn as_ref(&self) -> &GetSuggestedStickerSetName {
         &self.inner
     }

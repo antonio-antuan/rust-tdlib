@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -37,16 +37,16 @@ impl RObject for ToggleGroupCallIsMyVideoPaused {
 impl RFunction for ToggleGroupCallIsMyVideoPaused {}
 
 impl ToggleGroupCallIsMyVideoPaused {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleGroupCallIsMyVideoPausedBuilder {
+    pub fn builder() -> ToggleGroupCallIsMyVideoPausedBuilder {
         let mut inner = ToggleGroupCallIsMyVideoPaused::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleGroupCallIsMyVideoPaused".to_string();
 
-        RTDToggleGroupCallIsMyVideoPausedBuilder { inner }
+        ToggleGroupCallIsMyVideoPausedBuilder { inner }
     }
 
     pub fn group_call_id(&self) -> i32 {
@@ -59,11 +59,14 @@ impl ToggleGroupCallIsMyVideoPaused {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleGroupCallIsMyVideoPausedBuilder {
+pub struct ToggleGroupCallIsMyVideoPausedBuilder {
     inner: ToggleGroupCallIsMyVideoPaused,
 }
 
-impl RTDToggleGroupCallIsMyVideoPausedBuilder {
+#[deprecated]
+pub type RTDToggleGroupCallIsMyVideoPausedBuilder = ToggleGroupCallIsMyVideoPausedBuilder;
+
+impl ToggleGroupCallIsMyVideoPausedBuilder {
     pub fn build(&self) -> ToggleGroupCallIsMyVideoPaused {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<ToggleGroupCallIsMyVideoPaused> for ToggleGroupCallIsMyVideoPaused {
     }
 }
 
-impl AsRef<ToggleGroupCallIsMyVideoPaused> for RTDToggleGroupCallIsMyVideoPausedBuilder {
+impl AsRef<ToggleGroupCallIsMyVideoPaused> for ToggleGroupCallIsMyVideoPausedBuilder {
     fn as_ref(&self) -> &ToggleGroupCallIsMyVideoPaused {
         &self.inner
     }

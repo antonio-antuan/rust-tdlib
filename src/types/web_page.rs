@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -91,14 +91,14 @@ impl RObject for WebPage {
 }
 
 impl WebPage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDWebPageBuilder {
+    pub fn builder() -> WebPageBuilder {
         let mut inner = WebPage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDWebPageBuilder { inner }
+        WebPageBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -187,11 +187,14 @@ impl WebPage {
 }
 
 #[doc(hidden)]
-pub struct RTDWebPageBuilder {
+pub struct WebPageBuilder {
     inner: WebPage,
 }
 
-impl RTDWebPageBuilder {
+#[deprecated]
+pub type RTDWebPageBuilder = WebPageBuilder;
+
+impl WebPageBuilder {
     pub fn build(&self) -> WebPage {
         self.inner.clone()
     }
@@ -308,7 +311,7 @@ impl AsRef<WebPage> for WebPage {
     }
 }
 
-impl AsRef<WebPage> for RTDWebPageBuilder {
+impl AsRef<WebPage> for WebPageBuilder {
     fn as_ref(&self) -> &WebPage {
         &self.inner
     }

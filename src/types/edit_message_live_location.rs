@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -51,16 +51,16 @@ impl RObject for EditMessageLiveLocation {
 impl RFunction for EditMessageLiveLocation {}
 
 impl EditMessageLiveLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditMessageLiveLocationBuilder {
+    pub fn builder() -> EditMessageLiveLocationBuilder {
         let mut inner = EditMessageLiveLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editMessageLiveLocation".to_string();
 
-        RTDEditMessageLiveLocationBuilder { inner }
+        EditMessageLiveLocationBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -89,11 +89,14 @@ impl EditMessageLiveLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDEditMessageLiveLocationBuilder {
+pub struct EditMessageLiveLocationBuilder {
     inner: EditMessageLiveLocation,
 }
 
-impl RTDEditMessageLiveLocationBuilder {
+#[deprecated]
+pub type RTDEditMessageLiveLocationBuilder = EditMessageLiveLocationBuilder;
+
+impl EditMessageLiveLocationBuilder {
     pub fn build(&self) -> EditMessageLiveLocation {
         self.inner.clone()
     }
@@ -135,7 +138,7 @@ impl AsRef<EditMessageLiveLocation> for EditMessageLiveLocation {
     }
 }
 
-impl AsRef<EditMessageLiveLocation> for RTDEditMessageLiveLocationBuilder {
+impl AsRef<EditMessageLiveLocation> for EditMessageLiveLocationBuilder {
     fn as_ref(&self) -> &EditMessageLiveLocation {
         &self.inner
     }

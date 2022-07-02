@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -104,7 +104,7 @@ impl RObject for PassportElementType {
 }
 
 impl PassportElementType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -143,23 +143,26 @@ impl RObject for PassportElementTypeAddress {
 impl TDPassportElementType for PassportElementTypeAddress {}
 
 impl PassportElementTypeAddress {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeAddressBuilder {
+    pub fn builder() -> PassportElementTypeAddressBuilder {
         let mut inner = PassportElementTypeAddress::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeAddressBuilder { inner }
+        PassportElementTypeAddressBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeAddressBuilder {
+pub struct PassportElementTypeAddressBuilder {
     inner: PassportElementTypeAddress,
 }
 
-impl RTDPassportElementTypeAddressBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeAddressBuilder = PassportElementTypeAddressBuilder;
+
+impl PassportElementTypeAddressBuilder {
     pub fn build(&self) -> PassportElementTypeAddress {
         self.inner.clone()
     }
@@ -171,7 +174,7 @@ impl AsRef<PassportElementTypeAddress> for PassportElementTypeAddress {
     }
 }
 
-impl AsRef<PassportElementTypeAddress> for RTDPassportElementTypeAddressBuilder {
+impl AsRef<PassportElementTypeAddress> for PassportElementTypeAddressBuilder {
     fn as_ref(&self) -> &PassportElementTypeAddress {
         &self.inner
     }
@@ -201,23 +204,26 @@ impl RObject for PassportElementTypeBankStatement {
 impl TDPassportElementType for PassportElementTypeBankStatement {}
 
 impl PassportElementTypeBankStatement {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeBankStatementBuilder {
+    pub fn builder() -> PassportElementTypeBankStatementBuilder {
         let mut inner = PassportElementTypeBankStatement::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeBankStatementBuilder { inner }
+        PassportElementTypeBankStatementBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeBankStatementBuilder {
+pub struct PassportElementTypeBankStatementBuilder {
     inner: PassportElementTypeBankStatement,
 }
 
-impl RTDPassportElementTypeBankStatementBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeBankStatementBuilder = PassportElementTypeBankStatementBuilder;
+
+impl PassportElementTypeBankStatementBuilder {
     pub fn build(&self) -> PassportElementTypeBankStatement {
         self.inner.clone()
     }
@@ -229,7 +235,7 @@ impl AsRef<PassportElementTypeBankStatement> for PassportElementTypeBankStatemen
     }
 }
 
-impl AsRef<PassportElementTypeBankStatement> for RTDPassportElementTypeBankStatementBuilder {
+impl AsRef<PassportElementTypeBankStatement> for PassportElementTypeBankStatementBuilder {
     fn as_ref(&self) -> &PassportElementTypeBankStatement {
         &self.inner
     }
@@ -259,23 +265,26 @@ impl RObject for PassportElementTypeDriverLicense {
 impl TDPassportElementType for PassportElementTypeDriverLicense {}
 
 impl PassportElementTypeDriverLicense {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeDriverLicenseBuilder {
+    pub fn builder() -> PassportElementTypeDriverLicenseBuilder {
         let mut inner = PassportElementTypeDriverLicense::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeDriverLicenseBuilder { inner }
+        PassportElementTypeDriverLicenseBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeDriverLicenseBuilder {
+pub struct PassportElementTypeDriverLicenseBuilder {
     inner: PassportElementTypeDriverLicense,
 }
 
-impl RTDPassportElementTypeDriverLicenseBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeDriverLicenseBuilder = PassportElementTypeDriverLicenseBuilder;
+
+impl PassportElementTypeDriverLicenseBuilder {
     pub fn build(&self) -> PassportElementTypeDriverLicense {
         self.inner.clone()
     }
@@ -287,7 +296,7 @@ impl AsRef<PassportElementTypeDriverLicense> for PassportElementTypeDriverLicens
     }
 }
 
-impl AsRef<PassportElementTypeDriverLicense> for RTDPassportElementTypeDriverLicenseBuilder {
+impl AsRef<PassportElementTypeDriverLicense> for PassportElementTypeDriverLicenseBuilder {
     fn as_ref(&self) -> &PassportElementTypeDriverLicense {
         &self.inner
     }
@@ -317,23 +326,26 @@ impl RObject for PassportElementTypeEmailAddress {
 impl TDPassportElementType for PassportElementTypeEmailAddress {}
 
 impl PassportElementTypeEmailAddress {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeEmailAddressBuilder {
+    pub fn builder() -> PassportElementTypeEmailAddressBuilder {
         let mut inner = PassportElementTypeEmailAddress::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeEmailAddressBuilder { inner }
+        PassportElementTypeEmailAddressBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeEmailAddressBuilder {
+pub struct PassportElementTypeEmailAddressBuilder {
     inner: PassportElementTypeEmailAddress,
 }
 
-impl RTDPassportElementTypeEmailAddressBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeEmailAddressBuilder = PassportElementTypeEmailAddressBuilder;
+
+impl PassportElementTypeEmailAddressBuilder {
     pub fn build(&self) -> PassportElementTypeEmailAddress {
         self.inner.clone()
     }
@@ -345,7 +357,7 @@ impl AsRef<PassportElementTypeEmailAddress> for PassportElementTypeEmailAddress 
     }
 }
 
-impl AsRef<PassportElementTypeEmailAddress> for RTDPassportElementTypeEmailAddressBuilder {
+impl AsRef<PassportElementTypeEmailAddress> for PassportElementTypeEmailAddressBuilder {
     fn as_ref(&self) -> &PassportElementTypeEmailAddress {
         &self.inner
     }
@@ -375,23 +387,26 @@ impl RObject for PassportElementTypeIdentityCard {
 impl TDPassportElementType for PassportElementTypeIdentityCard {}
 
 impl PassportElementTypeIdentityCard {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeIdentityCardBuilder {
+    pub fn builder() -> PassportElementTypeIdentityCardBuilder {
         let mut inner = PassportElementTypeIdentityCard::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeIdentityCardBuilder { inner }
+        PassportElementTypeIdentityCardBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeIdentityCardBuilder {
+pub struct PassportElementTypeIdentityCardBuilder {
     inner: PassportElementTypeIdentityCard,
 }
 
-impl RTDPassportElementTypeIdentityCardBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeIdentityCardBuilder = PassportElementTypeIdentityCardBuilder;
+
+impl PassportElementTypeIdentityCardBuilder {
     pub fn build(&self) -> PassportElementTypeIdentityCard {
         self.inner.clone()
     }
@@ -403,7 +418,7 @@ impl AsRef<PassportElementTypeIdentityCard> for PassportElementTypeIdentityCard 
     }
 }
 
-impl AsRef<PassportElementTypeIdentityCard> for RTDPassportElementTypeIdentityCardBuilder {
+impl AsRef<PassportElementTypeIdentityCard> for PassportElementTypeIdentityCardBuilder {
     fn as_ref(&self) -> &PassportElementTypeIdentityCard {
         &self.inner
     }
@@ -433,23 +448,26 @@ impl RObject for PassportElementTypeInternalPassport {
 impl TDPassportElementType for PassportElementTypeInternalPassport {}
 
 impl PassportElementTypeInternalPassport {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeInternalPassportBuilder {
+    pub fn builder() -> PassportElementTypeInternalPassportBuilder {
         let mut inner = PassportElementTypeInternalPassport::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeInternalPassportBuilder { inner }
+        PassportElementTypeInternalPassportBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeInternalPassportBuilder {
+pub struct PassportElementTypeInternalPassportBuilder {
     inner: PassportElementTypeInternalPassport,
 }
 
-impl RTDPassportElementTypeInternalPassportBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeInternalPassportBuilder = PassportElementTypeInternalPassportBuilder;
+
+impl PassportElementTypeInternalPassportBuilder {
     pub fn build(&self) -> PassportElementTypeInternalPassport {
         self.inner.clone()
     }
@@ -461,7 +479,7 @@ impl AsRef<PassportElementTypeInternalPassport> for PassportElementTypeInternalP
     }
 }
 
-impl AsRef<PassportElementTypeInternalPassport> for RTDPassportElementTypeInternalPassportBuilder {
+impl AsRef<PassportElementTypeInternalPassport> for PassportElementTypeInternalPassportBuilder {
     fn as_ref(&self) -> &PassportElementTypeInternalPassport {
         &self.inner
     }
@@ -491,23 +509,26 @@ impl RObject for PassportElementTypePassport {
 impl TDPassportElementType for PassportElementTypePassport {}
 
 impl PassportElementTypePassport {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypePassportBuilder {
+    pub fn builder() -> PassportElementTypePassportBuilder {
         let mut inner = PassportElementTypePassport::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypePassportBuilder { inner }
+        PassportElementTypePassportBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypePassportBuilder {
+pub struct PassportElementTypePassportBuilder {
     inner: PassportElementTypePassport,
 }
 
-impl RTDPassportElementTypePassportBuilder {
+#[deprecated]
+pub type RTDPassportElementTypePassportBuilder = PassportElementTypePassportBuilder;
+
+impl PassportElementTypePassportBuilder {
     pub fn build(&self) -> PassportElementTypePassport {
         self.inner.clone()
     }
@@ -519,7 +540,7 @@ impl AsRef<PassportElementTypePassport> for PassportElementTypePassport {
     }
 }
 
-impl AsRef<PassportElementTypePassport> for RTDPassportElementTypePassportBuilder {
+impl AsRef<PassportElementTypePassport> for PassportElementTypePassportBuilder {
     fn as_ref(&self) -> &PassportElementTypePassport {
         &self.inner
     }
@@ -549,23 +570,27 @@ impl RObject for PassportElementTypePassportRegistration {
 impl TDPassportElementType for PassportElementTypePassportRegistration {}
 
 impl PassportElementTypePassportRegistration {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypePassportRegistrationBuilder {
+    pub fn builder() -> PassportElementTypePassportRegistrationBuilder {
         let mut inner = PassportElementTypePassportRegistration::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypePassportRegistrationBuilder { inner }
+        PassportElementTypePassportRegistrationBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypePassportRegistrationBuilder {
+pub struct PassportElementTypePassportRegistrationBuilder {
     inner: PassportElementTypePassportRegistration,
 }
 
-impl RTDPassportElementTypePassportRegistrationBuilder {
+#[deprecated]
+pub type RTDPassportElementTypePassportRegistrationBuilder =
+    PassportElementTypePassportRegistrationBuilder;
+
+impl PassportElementTypePassportRegistrationBuilder {
     pub fn build(&self) -> PassportElementTypePassportRegistration {
         self.inner.clone()
     }
@@ -578,7 +603,7 @@ impl AsRef<PassportElementTypePassportRegistration> for PassportElementTypePassp
 }
 
 impl AsRef<PassportElementTypePassportRegistration>
-    for RTDPassportElementTypePassportRegistrationBuilder
+    for PassportElementTypePassportRegistrationBuilder
 {
     fn as_ref(&self) -> &PassportElementTypePassportRegistration {
         &self.inner
@@ -609,23 +634,26 @@ impl RObject for PassportElementTypePersonalDetails {
 impl TDPassportElementType for PassportElementTypePersonalDetails {}
 
 impl PassportElementTypePersonalDetails {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypePersonalDetailsBuilder {
+    pub fn builder() -> PassportElementTypePersonalDetailsBuilder {
         let mut inner = PassportElementTypePersonalDetails::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypePersonalDetailsBuilder { inner }
+        PassportElementTypePersonalDetailsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypePersonalDetailsBuilder {
+pub struct PassportElementTypePersonalDetailsBuilder {
     inner: PassportElementTypePersonalDetails,
 }
 
-impl RTDPassportElementTypePersonalDetailsBuilder {
+#[deprecated]
+pub type RTDPassportElementTypePersonalDetailsBuilder = PassportElementTypePersonalDetailsBuilder;
+
+impl PassportElementTypePersonalDetailsBuilder {
     pub fn build(&self) -> PassportElementTypePersonalDetails {
         self.inner.clone()
     }
@@ -637,7 +665,7 @@ impl AsRef<PassportElementTypePersonalDetails> for PassportElementTypePersonalDe
     }
 }
 
-impl AsRef<PassportElementTypePersonalDetails> for RTDPassportElementTypePersonalDetailsBuilder {
+impl AsRef<PassportElementTypePersonalDetails> for PassportElementTypePersonalDetailsBuilder {
     fn as_ref(&self) -> &PassportElementTypePersonalDetails {
         &self.inner
     }
@@ -667,23 +695,26 @@ impl RObject for PassportElementTypePhoneNumber {
 impl TDPassportElementType for PassportElementTypePhoneNumber {}
 
 impl PassportElementTypePhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypePhoneNumberBuilder {
+    pub fn builder() -> PassportElementTypePhoneNumberBuilder {
         let mut inner = PassportElementTypePhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypePhoneNumberBuilder { inner }
+        PassportElementTypePhoneNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypePhoneNumberBuilder {
+pub struct PassportElementTypePhoneNumberBuilder {
     inner: PassportElementTypePhoneNumber,
 }
 
-impl RTDPassportElementTypePhoneNumberBuilder {
+#[deprecated]
+pub type RTDPassportElementTypePhoneNumberBuilder = PassportElementTypePhoneNumberBuilder;
+
+impl PassportElementTypePhoneNumberBuilder {
     pub fn build(&self) -> PassportElementTypePhoneNumber {
         self.inner.clone()
     }
@@ -695,7 +726,7 @@ impl AsRef<PassportElementTypePhoneNumber> for PassportElementTypePhoneNumber {
     }
 }
 
-impl AsRef<PassportElementTypePhoneNumber> for RTDPassportElementTypePhoneNumberBuilder {
+impl AsRef<PassportElementTypePhoneNumber> for PassportElementTypePhoneNumberBuilder {
     fn as_ref(&self) -> &PassportElementTypePhoneNumber {
         &self.inner
     }
@@ -725,23 +756,26 @@ impl RObject for PassportElementTypeRentalAgreement {
 impl TDPassportElementType for PassportElementTypeRentalAgreement {}
 
 impl PassportElementTypeRentalAgreement {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeRentalAgreementBuilder {
+    pub fn builder() -> PassportElementTypeRentalAgreementBuilder {
         let mut inner = PassportElementTypeRentalAgreement::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeRentalAgreementBuilder { inner }
+        PassportElementTypeRentalAgreementBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeRentalAgreementBuilder {
+pub struct PassportElementTypeRentalAgreementBuilder {
     inner: PassportElementTypeRentalAgreement,
 }
 
-impl RTDPassportElementTypeRentalAgreementBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeRentalAgreementBuilder = PassportElementTypeRentalAgreementBuilder;
+
+impl PassportElementTypeRentalAgreementBuilder {
     pub fn build(&self) -> PassportElementTypeRentalAgreement {
         self.inner.clone()
     }
@@ -753,7 +787,7 @@ impl AsRef<PassportElementTypeRentalAgreement> for PassportElementTypeRentalAgre
     }
 }
 
-impl AsRef<PassportElementTypeRentalAgreement> for RTDPassportElementTypeRentalAgreementBuilder {
+impl AsRef<PassportElementTypeRentalAgreement> for PassportElementTypeRentalAgreementBuilder {
     fn as_ref(&self) -> &PassportElementTypeRentalAgreement {
         &self.inner
     }
@@ -783,23 +817,27 @@ impl RObject for PassportElementTypeTemporaryRegistration {
 impl TDPassportElementType for PassportElementTypeTemporaryRegistration {}
 
 impl PassportElementTypeTemporaryRegistration {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeTemporaryRegistrationBuilder {
+    pub fn builder() -> PassportElementTypeTemporaryRegistrationBuilder {
         let mut inner = PassportElementTypeTemporaryRegistration::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeTemporaryRegistrationBuilder { inner }
+        PassportElementTypeTemporaryRegistrationBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeTemporaryRegistrationBuilder {
+pub struct PassportElementTypeTemporaryRegistrationBuilder {
     inner: PassportElementTypeTemporaryRegistration,
 }
 
-impl RTDPassportElementTypeTemporaryRegistrationBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeTemporaryRegistrationBuilder =
+    PassportElementTypeTemporaryRegistrationBuilder;
+
+impl PassportElementTypeTemporaryRegistrationBuilder {
     pub fn build(&self) -> PassportElementTypeTemporaryRegistration {
         self.inner.clone()
     }
@@ -812,7 +850,7 @@ impl AsRef<PassportElementTypeTemporaryRegistration> for PassportElementTypeTemp
 }
 
 impl AsRef<PassportElementTypeTemporaryRegistration>
-    for RTDPassportElementTypeTemporaryRegistrationBuilder
+    for PassportElementTypeTemporaryRegistrationBuilder
 {
     fn as_ref(&self) -> &PassportElementTypeTemporaryRegistration {
         &self.inner
@@ -843,23 +881,26 @@ impl RObject for PassportElementTypeUtilityBill {
 impl TDPassportElementType for PassportElementTypeUtilityBill {}
 
 impl PassportElementTypeUtilityBill {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementTypeUtilityBillBuilder {
+    pub fn builder() -> PassportElementTypeUtilityBillBuilder {
         let mut inner = PassportElementTypeUtilityBill::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementTypeUtilityBillBuilder { inner }
+        PassportElementTypeUtilityBillBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementTypeUtilityBillBuilder {
+pub struct PassportElementTypeUtilityBillBuilder {
     inner: PassportElementTypeUtilityBill,
 }
 
-impl RTDPassportElementTypeUtilityBillBuilder {
+#[deprecated]
+pub type RTDPassportElementTypeUtilityBillBuilder = PassportElementTypeUtilityBillBuilder;
+
+impl PassportElementTypeUtilityBillBuilder {
     pub fn build(&self) -> PassportElementTypeUtilityBill {
         self.inner.clone()
     }
@@ -871,7 +912,7 @@ impl AsRef<PassportElementTypeUtilityBill> for PassportElementTypeUtilityBill {
     }
 }
 
-impl AsRef<PassportElementTypeUtilityBill> for RTDPassportElementTypeUtilityBillBuilder {
+impl AsRef<PassportElementTypeUtilityBill> for PassportElementTypeUtilityBillBuilder {
     fn as_ref(&self) -> &PassportElementTypeUtilityBill {
         &self.inner
     }

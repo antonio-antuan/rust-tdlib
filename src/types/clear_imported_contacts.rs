@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for ClearImportedContacts {
 impl RFunction for ClearImportedContacts {}
 
 impl ClearImportedContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDClearImportedContactsBuilder {
+    pub fn builder() -> ClearImportedContactsBuilder {
         let mut inner = ClearImportedContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "clearImportedContacts".to_string();
 
-        RTDClearImportedContactsBuilder { inner }
+        ClearImportedContactsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDClearImportedContactsBuilder {
+pub struct ClearImportedContactsBuilder {
     inner: ClearImportedContacts,
 }
 
-impl RTDClearImportedContactsBuilder {
+#[deprecated]
+pub type RTDClearImportedContactsBuilder = ClearImportedContactsBuilder;
+
+impl ClearImportedContactsBuilder {
     pub fn build(&self) -> ClearImportedContacts {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ClearImportedContacts> for ClearImportedContacts {
     }
 }
 
-impl AsRef<ClearImportedContacts> for RTDClearImportedContactsBuilder {
+impl AsRef<ClearImportedContacts> for ClearImportedContactsBuilder {
     fn as_ref(&self) -> &ClearImportedContacts {
         &self.inner
     }
