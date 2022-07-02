@@ -192,7 +192,7 @@ pub enum Update {
     NewCallbackQuery(UpdateNewCallbackQuery),
     /// A new chat has been loaded/created. This update is guaranteed to come before the chat identifier is returned to the application. The chat field changes will be reported through separate updates
     #[serde(rename(deserialize = "updateNewChat"))]
-    NewChat(UpdateNewChat),
+    NewChat(Box<UpdateNewChat>),
     /// A user sent a join request to a chat; for bots only
     #[serde(rename(deserialize = "updateNewChatJoinRequest"))]
     NewChatJoinRequest(UpdateNewChatJoinRequest),

@@ -30,7 +30,7 @@ pub enum InlineQueryResult {
     Document(InlineQueryResultDocument),
     /// Represents information about a game
     #[serde(rename(deserialize = "inlineQueryResultGame"))]
-    Game(InlineQueryResultGame),
+    Game(Box<InlineQueryResultGame>),
     /// Represents a point on the map
     #[serde(rename(deserialize = "inlineQueryResultLocation"))]
     Location(InlineQueryResultLocation),
@@ -45,7 +45,7 @@ pub enum InlineQueryResult {
     Venue(InlineQueryResultVenue),
     /// Represents a video
     #[serde(rename(deserialize = "inlineQueryResultVideo"))]
-    Video(InlineQueryResultVideo),
+    Video(Box<InlineQueryResultVideo>),
     /// Represents a voice note
     #[serde(rename(deserialize = "inlineQueryResultVoiceNote"))]
     VoiceNote(InlineQueryResultVoiceNote),
