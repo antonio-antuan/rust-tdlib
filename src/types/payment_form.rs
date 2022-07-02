@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,19 +10,38 @@ pub struct PaymentForm {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
+    /// The payment form identifier
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
+    id: i64,
     /// Full information of the invoice
     invoice: Invoice,
     /// Payment form URL
+
+    #[serde(default)]
     url: String,
-    /// Contains information about the payment provider, if available, to support it natively without the need for opening the URL; may be null
+    /// User identifier of the seller bot
+
+    #[serde(default)]
+    seller_bot_user_id: i64,
+    /// User identifier of the payment provider bot
+
+    #[serde(default)]
+    payments_provider_user_id: i64,
+    /// Information about the payment provider, if available, to support it natively without the need for opening the URL; may be null
     payments_provider: Option<PaymentsProviderStripe>,
     /// Saved server-side order information; may be null
     saved_order_info: Option<OrderInfo>,
-    /// Contains information about saved card credentials; may be null
+    /// Information about saved card credentials; may be null
     saved_credentials: Option<SavedCredentials>,
     /// True, if the user can choose to save credentials
+
+    #[serde(default)]
     can_save_credentials: bool,
     /// True, if the user will be able to save credentials protected by a password they set up
+
+    #[serde(default)]
     need_password: bool,
 }
 
@@ -38,14 +57,18 @@ impl RObject for PaymentForm {
 }
 
 impl PaymentForm {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPaymentFormBuilder {
+    pub fn builder() -> PaymentFormBuilder {
         let mut inner = PaymentForm::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPaymentFormBuilder { inner }
+        PaymentFormBuilder { inner }
+    }
+
+    pub fn id(&self) -> i64 {
+        self.id
     }
 
     pub fn invoice(&self) -> &Invoice {
@@ -54,6 +77,14 @@ impl PaymentForm {
 
     pub fn url(&self) -> &String {
         &self.url
+    }
+
+    pub fn seller_bot_user_id(&self) -> i64 {
+        self.seller_bot_user_id
+    }
+
+    pub fn payments_provider_user_id(&self) -> i64 {
+        self.payments_provider_user_id
     }
 
     pub fn payments_provider(&self) -> &Option<PaymentsProviderStripe> {
@@ -78,13 +109,21 @@ impl PaymentForm {
 }
 
 #[doc(hidden)]
-pub struct RTDPaymentFormBuilder {
+pub struct PaymentFormBuilder {
     inner: PaymentForm,
 }
 
-impl RTDPaymentFormBuilder {
+#[deprecated]
+pub type RTDPaymentFormBuilder = PaymentFormBuilder;
+
+impl PaymentFormBuilder {
     pub fn build(&self) -> PaymentForm {
         self.inner.clone()
+    }
+
+    pub fn id(&mut self, id: i64) -> &mut Self {
+        self.inner.id = id;
+        self
     }
 
     pub fn invoice<T: AsRef<Invoice>>(&mut self, invoice: T) -> &mut Self {
@@ -94,6 +133,16 @@ impl RTDPaymentFormBuilder {
 
     pub fn url<T: AsRef<str>>(&mut self, url: T) -> &mut Self {
         self.inner.url = url.as_ref().to_string();
+        self
+    }
+
+    pub fn seller_bot_user_id(&mut self, seller_bot_user_id: i64) -> &mut Self {
+        self.inner.seller_bot_user_id = seller_bot_user_id;
+        self
+    }
+
+    pub fn payments_provider_user_id(&mut self, payments_provider_user_id: i64) -> &mut Self {
+        self.inner.payments_provider_user_id = payments_provider_user_id;
         self
     }
 
@@ -135,7 +184,7 @@ impl AsRef<PaymentForm> for PaymentForm {
     }
 }
 
-impl AsRef<PaymentForm> for RTDPaymentFormBuilder {
+impl AsRef<PaymentForm> for PaymentFormBuilder {
     fn as_ref(&self) -> &PaymentForm {
         &self.inner
     }

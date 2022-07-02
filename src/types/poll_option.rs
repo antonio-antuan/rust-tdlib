@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,15 +10,25 @@ pub struct PollOption {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Option text, 1-100 characters
+    /// Option text; 1-100 characters
+
+    #[serde(default)]
     text: String,
     /// Number of voters for this option, available only for closed or voted polls
+
+    #[serde(default)]
     voter_count: i32,
-    /// The percentage of votes for this option, 0-100
+    /// The percentage of votes for this option; 0-100
+
+    #[serde(default)]
     vote_percentage: i32,
     /// True, if the option was chosen by the user
+
+    #[serde(default)]
     is_chosen: bool,
     /// True, if the option is being chosen by a pending setPollAnswer request
+
+    #[serde(default)]
     is_being_chosen: bool,
 }
 
@@ -34,14 +44,14 @@ impl RObject for PollOption {
 }
 
 impl PollOption {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPollOptionBuilder {
+    pub fn builder() -> PollOptionBuilder {
         let mut inner = PollOption::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPollOptionBuilder { inner }
+        PollOptionBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -66,11 +76,14 @@ impl PollOption {
 }
 
 #[doc(hidden)]
-pub struct RTDPollOptionBuilder {
+pub struct PollOptionBuilder {
     inner: PollOption,
 }
 
-impl RTDPollOptionBuilder {
+#[deprecated]
+pub type RTDPollOptionBuilder = PollOptionBuilder;
+
+impl PollOptionBuilder {
     pub fn build(&self) -> PollOption {
         self.inner.clone()
     }
@@ -107,7 +120,7 @@ impl AsRef<PollOption> for PollOption {
     }
 }
 
-impl AsRef<PollOption> for RTDPollOptionBuilder {
+impl AsRef<PollOption> for PollOptionBuilder {
     fn as_ref(&self) -> &PollOption {
         &self.inner
     }

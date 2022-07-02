@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,18 +11,32 @@ pub struct Video {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Duration of the video, in seconds; as defined by the sender
+
+    #[serde(default)]
     duration: i32,
     /// Video width; as defined by the sender
+
+    #[serde(default)]
     width: i32,
     /// Video height; as defined by the sender
+
+    #[serde(default)]
     height: i32,
     /// Original name of the file; as defined by the sender
+
+    #[serde(default)]
     file_name: String,
     /// MIME type of the file; as defined by the sender
+
+    #[serde(default)]
     mime_type: String,
     /// True, if stickers were added to the video. The list of corresponding sticker sets can be received using getAttachedStickerSets
+
+    #[serde(default)]
     has_stickers: bool,
-    /// True, if the video should be tried to be streamed
+    /// True, if the video is supposed to be streamed
+
+    #[serde(default)]
     supports_streaming: bool,
     /// Video minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
@@ -44,14 +58,14 @@ impl RObject for Video {
 }
 
 impl Video {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDVideoBuilder {
+    pub fn builder() -> VideoBuilder {
         let mut inner = Video::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDVideoBuilder { inner }
+        VideoBuilder { inner }
     }
 
     pub fn duration(&self) -> i32 {
@@ -96,11 +110,14 @@ impl Video {
 }
 
 #[doc(hidden)]
-pub struct RTDVideoBuilder {
+pub struct VideoBuilder {
     inner: Video,
 }
 
-impl RTDVideoBuilder {
+#[deprecated]
+pub type RTDVideoBuilder = VideoBuilder;
+
+impl VideoBuilder {
     pub fn build(&self) -> Video {
         self.inner.clone()
     }
@@ -162,7 +179,7 @@ impl AsRef<Video> for Video {
     }
 }
 
-impl AsRef<Video> for RTDVideoBuilder {
+impl AsRef<Video> for VideoBuilder {
     fn as_ref(&self) -> &Video {
         &self.inner
     }

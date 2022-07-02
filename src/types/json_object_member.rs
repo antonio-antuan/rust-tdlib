@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct JsonObjectMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Member's key
+
+    #[serde(default)]
     key: String,
     /// Member's value
 
@@ -30,14 +32,14 @@ impl RObject for JsonObjectMember {
 }
 
 impl JsonObjectMember {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDJsonObjectMemberBuilder {
+    pub fn builder() -> JsonObjectMemberBuilder {
         let mut inner = JsonObjectMember::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDJsonObjectMemberBuilder { inner }
+        JsonObjectMemberBuilder { inner }
     }
 
     pub fn key(&self) -> &String {
@@ -50,11 +52,14 @@ impl JsonObjectMember {
 }
 
 #[doc(hidden)]
-pub struct RTDJsonObjectMemberBuilder {
+pub struct JsonObjectMemberBuilder {
     inner: JsonObjectMember,
 }
 
-impl RTDJsonObjectMemberBuilder {
+#[deprecated]
+pub type RTDJsonObjectMemberBuilder = JsonObjectMemberBuilder;
+
+impl JsonObjectMemberBuilder {
     pub fn build(&self) -> JsonObjectMember {
         self.inner.clone()
     }
@@ -76,7 +81,7 @@ impl AsRef<JsonObjectMember> for JsonObjectMember {
     }
 }
 
-impl AsRef<JsonObjectMember> for RTDJsonObjectMemberBuilder {
+impl AsRef<JsonObjectMember> for JsonObjectMemberBuilder {
     fn as_ref(&self) -> &JsonObjectMember {
         &self.inner
     }

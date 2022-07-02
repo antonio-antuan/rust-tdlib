@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,16 +11,25 @@ pub struct DiscardCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
     /// True, if the user was disconnected
+
+    #[serde(default)]
     is_disconnected: bool,
     /// The call duration, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// True, if the call was a video call
+
+    #[serde(default)]
     is_video: bool,
     /// Identifier of the connection used during the call
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     connection_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -41,16 +50,16 @@ impl RObject for DiscardCall {
 impl RFunction for DiscardCall {}
 
 impl DiscardCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDiscardCallBuilder {
+    pub fn builder() -> DiscardCallBuilder {
         let mut inner = DiscardCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "discardCall".to_string();
 
-        RTDDiscardCallBuilder { inner }
+        DiscardCallBuilder { inner }
     }
 
     pub fn call_id(&self) -> i32 {
@@ -75,11 +84,14 @@ impl DiscardCall {
 }
 
 #[doc(hidden)]
-pub struct RTDDiscardCallBuilder {
+pub struct DiscardCallBuilder {
     inner: DiscardCall,
 }
 
-impl RTDDiscardCallBuilder {
+#[deprecated]
+pub type RTDDiscardCallBuilder = DiscardCallBuilder;
+
+impl DiscardCallBuilder {
     pub fn build(&self) -> DiscardCall {
         self.inner.clone()
     }
@@ -116,7 +128,7 @@ impl AsRef<DiscardCall> for DiscardCall {
     }
 }
 
-impl AsRef<DiscardCall> for RTDDiscardCallBuilder {
+impl AsRef<DiscardCall> for DiscardCallBuilder {
     fn as_ref(&self) -> &DiscardCall {
         &self.inner
     }

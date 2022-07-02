@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct VideoNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Duration of the video, in seconds; as defined by the sender
+
+    #[serde(default)]
     duration: i32,
     /// Video width and height; as defined by the sender
+
+    #[serde(default)]
     length: i32,
     /// Video minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
@@ -34,14 +38,14 @@ impl RObject for VideoNote {
 }
 
 impl VideoNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDVideoNoteBuilder {
+    pub fn builder() -> VideoNoteBuilder {
         let mut inner = VideoNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDVideoNoteBuilder { inner }
+        VideoNoteBuilder { inner }
     }
 
     pub fn duration(&self) -> i32 {
@@ -66,11 +70,14 @@ impl VideoNote {
 }
 
 #[doc(hidden)]
-pub struct RTDVideoNoteBuilder {
+pub struct VideoNoteBuilder {
     inner: VideoNote,
 }
 
-impl RTDVideoNoteBuilder {
+#[deprecated]
+pub type RTDVideoNoteBuilder = VideoNoteBuilder;
+
+impl VideoNoteBuilder {
     pub fn build(&self) -> VideoNote {
         self.inner.clone()
     }
@@ -107,7 +114,7 @@ impl AsRef<VideoNote> for VideoNote {
     }
 }
 
-impl AsRef<VideoNote> for RTDVideoNoteBuilder {
+impl AsRef<VideoNote> for VideoNoteBuilder {
     fn as_ref(&self) -> &VideoNote {
         &self.inner
     }

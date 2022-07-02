@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct DeleteMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifiers of the messages to be deleted
+
+    #[serde(default)]
     message_ids: Vec<i64>,
-    /// Pass true to try to delete messages for all chat members. Always true for supergroups, channels and secret chats
+    /// Pass true to delete messages for all chat members. Always true for supergroups, channels and secret chats
+
+    #[serde(default)]
     revoke: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +41,16 @@ impl RObject for DeleteMessages {
 impl RFunction for DeleteMessages {}
 
 impl DeleteMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteMessagesBuilder {
+    pub fn builder() -> DeleteMessagesBuilder {
         let mut inner = DeleteMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteMessages".to_string();
 
-        RTDDeleteMessagesBuilder { inner }
+        DeleteMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -61,11 +67,14 @@ impl DeleteMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteMessagesBuilder {
+pub struct DeleteMessagesBuilder {
     inner: DeleteMessages,
 }
 
-impl RTDDeleteMessagesBuilder {
+#[deprecated]
+pub type RTDDeleteMessagesBuilder = DeleteMessagesBuilder;
+
+impl DeleteMessagesBuilder {
     pub fn build(&self) -> DeleteMessages {
         self.inner.clone()
     }
@@ -92,7 +101,7 @@ impl AsRef<DeleteMessages> for DeleteMessages {
     }
 }
 
-impl AsRef<DeleteMessages> for RTDDeleteMessagesBuilder {
+impl AsRef<DeleteMessages> for DeleteMessagesBuilder {
     fn as_ref(&self) -> &DeleteMessages {
         &self.inner
     }

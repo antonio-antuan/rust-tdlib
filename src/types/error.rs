@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct Error {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Error code; subject to future changes. If the error code is 406, the error message must not be processed in any way and must not be displayed to the user
+
+    #[serde(default)]
     code: i32,
     /// Error message; subject to future changes
+
+    #[serde(default)]
     message: String,
 }
 
@@ -28,14 +32,14 @@ impl RObject for Error {
 }
 
 impl Error {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDErrorBuilder {
+    pub fn builder() -> ErrorBuilder {
         let mut inner = Error::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDErrorBuilder { inner }
+        ErrorBuilder { inner }
     }
 
     pub fn code(&self) -> i32 {
@@ -48,11 +52,14 @@ impl Error {
 }
 
 #[doc(hidden)]
-pub struct RTDErrorBuilder {
+pub struct ErrorBuilder {
     inner: Error,
 }
 
-impl RTDErrorBuilder {
+#[deprecated]
+pub type RTDErrorBuilder = ErrorBuilder;
+
+impl ErrorBuilder {
     pub fn build(&self) -> Error {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<Error> for Error {
     }
 }
 
-impl AsRef<Error> for RTDErrorBuilder {
+impl AsRef<Error> for ErrorBuilder {
     fn as_ref(&self) -> &Error {
         &self.inner
     }

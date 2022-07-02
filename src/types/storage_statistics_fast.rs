@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,15 +10,25 @@ pub struct StorageStatisticsFast {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Approximate total size of files
+    /// Approximate total size of files, in bytes
+
+    #[serde(default)]
     files_size: i64,
     /// Approximate number of files
+
+    #[serde(default)]
     file_count: i32,
     /// Size of the database
+
+    #[serde(default)]
     database_size: i64,
     /// Size of the language pack database
+
+    #[serde(default)]
     language_pack_database_size: i64,
     /// Size of the TDLib internal log
+
+    #[serde(default)]
     log_size: i64,
 }
 
@@ -34,14 +44,14 @@ impl RObject for StorageStatisticsFast {
 }
 
 impl StorageStatisticsFast {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStorageStatisticsFastBuilder {
+    pub fn builder() -> StorageStatisticsFastBuilder {
         let mut inner = StorageStatisticsFast::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStorageStatisticsFastBuilder { inner }
+        StorageStatisticsFastBuilder { inner }
     }
 
     pub fn files_size(&self) -> i64 {
@@ -66,11 +76,14 @@ impl StorageStatisticsFast {
 }
 
 #[doc(hidden)]
-pub struct RTDStorageStatisticsFastBuilder {
+pub struct StorageStatisticsFastBuilder {
     inner: StorageStatisticsFast,
 }
 
-impl RTDStorageStatisticsFastBuilder {
+#[deprecated]
+pub type RTDStorageStatisticsFastBuilder = StorageStatisticsFastBuilder;
+
+impl StorageStatisticsFastBuilder {
     pub fn build(&self) -> StorageStatisticsFast {
         self.inner.clone()
     }
@@ -107,7 +120,7 @@ impl AsRef<StorageStatisticsFast> for StorageStatisticsFast {
     }
 }
 
-impl AsRef<StorageStatisticsFast> for RTDStorageStatisticsFastBuilder {
+impl AsRef<StorageStatisticsFast> for StorageStatisticsFastBuilder {
     fn as_ref(&self) -> &StorageStatisticsFast {
         &self.inner
     }

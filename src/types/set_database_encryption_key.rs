@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct SetDatabaseEncryptionKey {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New encryption key
+
+    #[serde(default)]
     new_encryption_key: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for SetDatabaseEncryptionKey {
 impl RFunction for SetDatabaseEncryptionKey {}
 
 impl SetDatabaseEncryptionKey {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetDatabaseEncryptionKeyBuilder {
+    pub fn builder() -> SetDatabaseEncryptionKeyBuilder {
         let mut inner = SetDatabaseEncryptionKey::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setDatabaseEncryptionKey".to_string();
 
-        RTDSetDatabaseEncryptionKeyBuilder { inner }
+        SetDatabaseEncryptionKeyBuilder { inner }
     }
 
     pub fn new_encryption_key(&self) -> &String {
@@ -49,11 +51,14 @@ impl SetDatabaseEncryptionKey {
 }
 
 #[doc(hidden)]
-pub struct RTDSetDatabaseEncryptionKeyBuilder {
+pub struct SetDatabaseEncryptionKeyBuilder {
     inner: SetDatabaseEncryptionKey,
 }
 
-impl RTDSetDatabaseEncryptionKeyBuilder {
+#[deprecated]
+pub type RTDSetDatabaseEncryptionKeyBuilder = SetDatabaseEncryptionKeyBuilder;
+
+impl SetDatabaseEncryptionKeyBuilder {
     pub fn build(&self) -> SetDatabaseEncryptionKey {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<SetDatabaseEncryptionKey> for SetDatabaseEncryptionKey {
     }
 }
 
-impl AsRef<SetDatabaseEncryptionKey> for RTDSetDatabaseEncryptionKeyBuilder {
+impl AsRef<SetDatabaseEncryptionKey> for SetDatabaseEncryptionKeyBuilder {
     fn as_ref(&self) -> &SetDatabaseEncryptionKey {
         &self.inner
     }

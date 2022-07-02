@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetJsonValue {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The JSON-serialized string
+
+    #[serde(default)]
     json: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +35,16 @@ impl TDJsonValue for GetJsonValue {}
 impl RFunction for GetJsonValue {}
 
 impl GetJsonValue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetJsonValueBuilder {
+    pub fn builder() -> GetJsonValueBuilder {
         let mut inner = GetJsonValue::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getJsonValue".to_string();
 
-        RTDGetJsonValueBuilder { inner }
+        GetJsonValueBuilder { inner }
     }
 
     pub fn json(&self) -> &String {
@@ -51,11 +53,14 @@ impl GetJsonValue {
 }
 
 #[doc(hidden)]
-pub struct RTDGetJsonValueBuilder {
+pub struct GetJsonValueBuilder {
     inner: GetJsonValue,
 }
 
-impl RTDGetJsonValueBuilder {
+#[deprecated]
+pub type RTDGetJsonValueBuilder = GetJsonValueBuilder;
+
+impl GetJsonValueBuilder {
     pub fn build(&self) -> GetJsonValue {
         self.inner.clone()
     }
@@ -72,7 +77,7 @@ impl AsRef<GetJsonValue> for GetJsonValue {
     }
 }
 
-impl AsRef<GetJsonValue> for RTDGetJsonValueBuilder {
+impl AsRef<GetJsonValue> for GetJsonValueBuilder {
     fn as_ref(&self) -> &GetJsonValue {
         &self.inner
     }

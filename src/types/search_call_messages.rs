@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for call messages. Returns the results in reverse chronological order (i. e., in order of decreasing message_id). For optimal performance the number of returned messages is chosen by the library
+/// Searches for call messages. Returns the results in reverse chronological order (i. e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchCallMessages {
     #[doc(hidden)]
@@ -11,10 +11,16 @@ pub struct SearchCallMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the message from which to search; use 0 to get results from the last message
+
+    #[serde(default)]
     from_message_id: i64,
-    /// The maximum number of messages to be returned; up to 100. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
+    /// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
-    /// If true, returns only messages with missed calls
+    /// If true, returns only messages with missed/declined calls
+
+    #[serde(default)]
     only_missed: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +41,16 @@ impl RObject for SearchCallMessages {
 impl RFunction for SearchCallMessages {}
 
 impl SearchCallMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchCallMessagesBuilder {
+    pub fn builder() -> SearchCallMessagesBuilder {
         let mut inner = SearchCallMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchCallMessages".to_string();
 
-        RTDSearchCallMessagesBuilder { inner }
+        SearchCallMessagesBuilder { inner }
     }
 
     pub fn from_message_id(&self) -> i64 {
@@ -61,11 +67,14 @@ impl SearchCallMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchCallMessagesBuilder {
+pub struct SearchCallMessagesBuilder {
     inner: SearchCallMessages,
 }
 
-impl RTDSearchCallMessagesBuilder {
+#[deprecated]
+pub type RTDSearchCallMessagesBuilder = SearchCallMessagesBuilder;
+
+impl SearchCallMessagesBuilder {
     pub fn build(&self) -> SearchCallMessages {
         self.inner.clone()
     }
@@ -92,7 +101,7 @@ impl AsRef<SearchCallMessages> for SearchCallMessages {
     }
 }
 
-impl AsRef<SearchCallMessages> for RTDSearchCallMessagesBuilder {
+impl AsRef<SearchCallMessages> for SearchCallMessagesBuilder {
     fn as_ref(&self) -> &SearchCallMessages {
         &self.inner
     }

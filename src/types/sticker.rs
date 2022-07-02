@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,19 +13,34 @@ pub struct Sticker {
     /// The identifier of the sticker set to which the sticker belongs; 0 if none
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     set_id: i64,
     /// Sticker width; as defined by the sender
+
+    #[serde(default)]
     width: i32,
     /// Sticker height; as defined by the sender
+
+    #[serde(default)]
     height: i32,
     /// Emoji corresponding to the sticker
+
+    #[serde(default)]
     emoji: String,
     /// True, if the sticker is an animated sticker in TGS format
+
+    #[serde(default)]
     is_animated: bool,
     /// True, if the sticker is a mask
+
+    #[serde(default)]
     is_mask: bool,
-    /// Position where the mask should be placed; may be null
+    /// Position where the mask is placed; may be null
     mask_position: Option<MaskPosition>,
+    /// Sticker's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
+
+    #[serde(default)]
+    outline: Vec<ClosedVectorPath>,
     /// Sticker thumbnail in WEBP or JPEG format; may be null
     thumbnail: Option<Thumbnail>,
     /// File containing the sticker
@@ -44,14 +59,14 @@ impl RObject for Sticker {
 }
 
 impl Sticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStickerBuilder {
+    pub fn builder() -> StickerBuilder {
         let mut inner = Sticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStickerBuilder { inner }
+        StickerBuilder { inner }
     }
 
     pub fn set_id(&self) -> i64 {
@@ -82,6 +97,10 @@ impl Sticker {
         &self.mask_position
     }
 
+    pub fn outline(&self) -> &Vec<ClosedVectorPath> {
+        &self.outline
+    }
+
     pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
     }
@@ -92,11 +111,14 @@ impl Sticker {
 }
 
 #[doc(hidden)]
-pub struct RTDStickerBuilder {
+pub struct StickerBuilder {
     inner: Sticker,
 }
 
-impl RTDStickerBuilder {
+#[deprecated]
+pub type RTDStickerBuilder = StickerBuilder;
+
+impl StickerBuilder {
     pub fn build(&self) -> Sticker {
         self.inner.clone()
     }
@@ -136,6 +158,11 @@ impl RTDStickerBuilder {
         self
     }
 
+    pub fn outline(&mut self, outline: Vec<ClosedVectorPath>) -> &mut Self {
+        self.inner.outline = outline;
+        self
+    }
+
     pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
         self
@@ -153,7 +180,7 @@ impl AsRef<Sticker> for Sticker {
     }
 }
 
-impl AsRef<Sticker> for RTDStickerBuilder {
+impl AsRef<Sticker> for StickerBuilder {
     fn as_ref(&self) -> &Sticker {
         &self.inner
     }

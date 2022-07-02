@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct AddRecentSticker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to add the sticker to the list of stickers recently attached to photo or video files; pass false to add the sticker to the list of recently sent stickers
+
+    #[serde(default)]
     is_attached: bool,
     /// Sticker file to add
 
@@ -35,16 +37,16 @@ impl RObject for AddRecentSticker {
 impl RFunction for AddRecentSticker {}
 
 impl AddRecentSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddRecentStickerBuilder {
+    pub fn builder() -> AddRecentStickerBuilder {
         let mut inner = AddRecentSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "addRecentSticker".to_string();
 
-        RTDAddRecentStickerBuilder { inner }
+        AddRecentStickerBuilder { inner }
     }
 
     pub fn is_attached(&self) -> bool {
@@ -57,11 +59,14 @@ impl AddRecentSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDAddRecentStickerBuilder {
+pub struct AddRecentStickerBuilder {
     inner: AddRecentSticker,
 }
 
-impl RTDAddRecentStickerBuilder {
+#[deprecated]
+pub type RTDAddRecentStickerBuilder = AddRecentStickerBuilder;
+
+impl AddRecentStickerBuilder {
     pub fn build(&self) -> AddRecentSticker {
         self.inner.clone()
     }
@@ -83,7 +88,7 @@ impl AsRef<AddRecentSticker> for AddRecentSticker {
     }
 }
 
-impl AsRef<AddRecentSticker> for RTDAddRecentStickerBuilder {
+impl AsRef<AddRecentSticker> for AddRecentStickerBuilder {
     fn as_ref(&self) -> &AddRecentSticker {
         &self.inner
     }

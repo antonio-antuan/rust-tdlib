@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,7 +11,9 @@ pub struct GetBasicGroupFullInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Basic group identifier
-    basic_group_id: i32,
+
+    #[serde(default)]
+    basic_group_id: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -31,34 +33,37 @@ impl RObject for GetBasicGroupFullInfo {
 impl RFunction for GetBasicGroupFullInfo {}
 
 impl GetBasicGroupFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetBasicGroupFullInfoBuilder {
+    pub fn builder() -> GetBasicGroupFullInfoBuilder {
         let mut inner = GetBasicGroupFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getBasicGroupFullInfo".to_string();
 
-        RTDGetBasicGroupFullInfoBuilder { inner }
+        GetBasicGroupFullInfoBuilder { inner }
     }
 
-    pub fn basic_group_id(&self) -> i32 {
+    pub fn basic_group_id(&self) -> i64 {
         self.basic_group_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetBasicGroupFullInfoBuilder {
+pub struct GetBasicGroupFullInfoBuilder {
     inner: GetBasicGroupFullInfo,
 }
 
-impl RTDGetBasicGroupFullInfoBuilder {
+#[deprecated]
+pub type RTDGetBasicGroupFullInfoBuilder = GetBasicGroupFullInfoBuilder;
+
+impl GetBasicGroupFullInfoBuilder {
     pub fn build(&self) -> GetBasicGroupFullInfo {
         self.inner.clone()
     }
 
-    pub fn basic_group_id(&mut self, basic_group_id: i32) -> &mut Self {
+    pub fn basic_group_id(&mut self, basic_group_id: i64) -> &mut Self {
         self.inner.basic_group_id = basic_group_id;
         self
     }
@@ -70,7 +75,7 @@ impl AsRef<GetBasicGroupFullInfo> for GetBasicGroupFullInfo {
     }
 }
 
-impl AsRef<GetBasicGroupFullInfo> for RTDGetBasicGroupFullInfoBuilder {
+impl AsRef<GetBasicGroupFullInfo> for GetBasicGroupFullInfoBuilder {
     fn as_ref(&self) -> &GetBasicGroupFullInfo {
         &self.inner
     }

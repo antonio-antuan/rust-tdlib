@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct ToggleChatDefaultDisableNotification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New value of default_disable_notification
+
+    #[serde(default)]
     default_disable_notification: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for ToggleChatDefaultDisableNotification {
 impl RFunction for ToggleChatDefaultDisableNotification {}
 
 impl ToggleChatDefaultDisableNotification {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleChatDefaultDisableNotificationBuilder {
+    pub fn builder() -> ToggleChatDefaultDisableNotificationBuilder {
         let mut inner = ToggleChatDefaultDisableNotification::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleChatDefaultDisableNotification".to_string();
 
-        RTDToggleChatDefaultDisableNotificationBuilder { inner }
+        ToggleChatDefaultDisableNotificationBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +59,15 @@ impl ToggleChatDefaultDisableNotification {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleChatDefaultDisableNotificationBuilder {
+pub struct ToggleChatDefaultDisableNotificationBuilder {
     inner: ToggleChatDefaultDisableNotification,
 }
 
-impl RTDToggleChatDefaultDisableNotificationBuilder {
+#[deprecated]
+pub type RTDToggleChatDefaultDisableNotificationBuilder =
+    ToggleChatDefaultDisableNotificationBuilder;
+
+impl ToggleChatDefaultDisableNotificationBuilder {
     pub fn build(&self) -> ToggleChatDefaultDisableNotification {
         self.inner.clone()
     }
@@ -84,9 +92,7 @@ impl AsRef<ToggleChatDefaultDisableNotification> for ToggleChatDefaultDisableNot
     }
 }
 
-impl AsRef<ToggleChatDefaultDisableNotification>
-    for RTDToggleChatDefaultDisableNotificationBuilder
-{
+impl AsRef<ToggleChatDefaultDisableNotification> for ToggleChatDefaultDisableNotificationBuilder {
     fn as_ref(&self) -> &ToggleChatDefaultDisableNotification {
         &self.inner
     }

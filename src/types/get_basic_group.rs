@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,7 +11,9 @@ pub struct GetBasicGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Basic group identifier
-    basic_group_id: i32,
+
+    #[serde(default)]
+    basic_group_id: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -31,34 +33,37 @@ impl RObject for GetBasicGroup {
 impl RFunction for GetBasicGroup {}
 
 impl GetBasicGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetBasicGroupBuilder {
+    pub fn builder() -> GetBasicGroupBuilder {
         let mut inner = GetBasicGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getBasicGroup".to_string();
 
-        RTDGetBasicGroupBuilder { inner }
+        GetBasicGroupBuilder { inner }
     }
 
-    pub fn basic_group_id(&self) -> i32 {
+    pub fn basic_group_id(&self) -> i64 {
         self.basic_group_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetBasicGroupBuilder {
+pub struct GetBasicGroupBuilder {
     inner: GetBasicGroup,
 }
 
-impl RTDGetBasicGroupBuilder {
+#[deprecated]
+pub type RTDGetBasicGroupBuilder = GetBasicGroupBuilder;
+
+impl GetBasicGroupBuilder {
     pub fn build(&self) -> GetBasicGroup {
         self.inner.clone()
     }
 
-    pub fn basic_group_id(&mut self, basic_group_id: i32) -> &mut Self {
+    pub fn basic_group_id(&mut self, basic_group_id: i64) -> &mut Self {
         self.inner.basic_group_id = basic_group_id;
         self
     }
@@ -70,7 +75,7 @@ impl AsRef<GetBasicGroup> for GetBasicGroup {
     }
 }
 
-impl AsRef<GetBasicGroup> for RTDGetBasicGroupBuilder {
+impl AsRef<GetBasicGroup> for GetBasicGroupBuilder {
     fn as_ref(&self) -> &GetBasicGroup {
         &self.inner
     }

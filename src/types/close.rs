@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for Close {
 impl RFunction for Close {}
 
 impl Close {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCloseBuilder {
+    pub fn builder() -> CloseBuilder {
         let mut inner = Close::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "close".to_string();
 
-        RTDCloseBuilder { inner }
+        CloseBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCloseBuilder {
+pub struct CloseBuilder {
     inner: Close,
 }
 
-impl RTDCloseBuilder {
+#[deprecated]
+pub type RTDCloseBuilder = CloseBuilder;
+
+impl CloseBuilder {
     pub fn build(&self) -> Close {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<Close> for Close {
     }
 }
 
-impl AsRef<Close> for RTDCloseBuilder {
+impl AsRef<Close> for CloseBuilder {
     fn as_ref(&self) -> &Close {
         &self.inner
     }

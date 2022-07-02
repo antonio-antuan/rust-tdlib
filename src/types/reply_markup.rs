@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,28 +14,16 @@ pub enum ReplyMarkup {
     #[doc(hidden)]
     _Default,
     /// Instructs application to force a reply to this message
-    #[serde(rename(
-        serialize = "replyMarkupForceReply",
-        deserialize = "replyMarkupForceReply"
-    ))]
+    #[serde(rename(deserialize = "replyMarkupForceReply"))]
     ForceReply(ReplyMarkupForceReply),
     /// Contains an inline keyboard layout
-    #[serde(rename(
-        serialize = "replyMarkupInlineKeyboard",
-        deserialize = "replyMarkupInlineKeyboard"
-    ))]
+    #[serde(rename(deserialize = "replyMarkupInlineKeyboard"))]
     InlineKeyboard(ReplyMarkupInlineKeyboard),
     /// Instructs application to remove the keyboard once this message has been received. This kind of keyboard can't be received in an incoming message; instead, UpdateChatReplyMarkup with message_id == 0 will be sent
-    #[serde(rename(
-        serialize = "replyMarkupRemoveKeyboard",
-        deserialize = "replyMarkupRemoveKeyboard"
-    ))]
+    #[serde(rename(deserialize = "replyMarkupRemoveKeyboard"))]
     RemoveKeyboard(ReplyMarkupRemoveKeyboard),
     /// Contains a custom keyboard layout to quickly reply to bots
-    #[serde(rename(
-        serialize = "replyMarkupShowKeyboard",
-        deserialize = "replyMarkupShowKeyboard"
-    ))]
+    #[serde(rename(deserialize = "replyMarkupShowKeyboard"))]
     ShowKeyboard(ReplyMarkupShowKeyboard),
 }
 
@@ -71,7 +59,7 @@ impl RObject for ReplyMarkup {
 }
 
 impl ReplyMarkup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -95,7 +83,13 @@ pub struct ReplyMarkupForceReply {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if a forced reply must automatically be shown to the current user. For outgoing messages, specify true to show the forced reply only for the mentioned users and for the target user of a reply
+
+    #[serde(default)]
     is_personal: bool,
+    /// If non-empty, the placeholder to be shown in the input field when the reply is active; 0-64 characters
+
+    #[serde(default)]
+    input_field_placeholder: String,
 }
 
 impl RObject for ReplyMarkupForceReply {
@@ -112,33 +106,48 @@ impl RObject for ReplyMarkupForceReply {
 impl TDReplyMarkup for ReplyMarkupForceReply {}
 
 impl ReplyMarkupForceReply {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReplyMarkupForceReplyBuilder {
+    pub fn builder() -> ReplyMarkupForceReplyBuilder {
         let mut inner = ReplyMarkupForceReply::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDReplyMarkupForceReplyBuilder { inner }
+        ReplyMarkupForceReplyBuilder { inner }
     }
 
     pub fn is_personal(&self) -> bool {
         self.is_personal
     }
+
+    pub fn input_field_placeholder(&self) -> &String {
+        &self.input_field_placeholder
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDReplyMarkupForceReplyBuilder {
+pub struct ReplyMarkupForceReplyBuilder {
     inner: ReplyMarkupForceReply,
 }
 
-impl RTDReplyMarkupForceReplyBuilder {
+#[deprecated]
+pub type RTDReplyMarkupForceReplyBuilder = ReplyMarkupForceReplyBuilder;
+
+impl ReplyMarkupForceReplyBuilder {
     pub fn build(&self) -> ReplyMarkupForceReply {
         self.inner.clone()
     }
 
     pub fn is_personal(&mut self, is_personal: bool) -> &mut Self {
         self.inner.is_personal = is_personal;
+        self
+    }
+
+    pub fn input_field_placeholder<T: AsRef<str>>(
+        &mut self,
+        input_field_placeholder: T,
+    ) -> &mut Self {
+        self.inner.input_field_placeholder = input_field_placeholder.as_ref().to_string();
         self
     }
 }
@@ -149,7 +158,7 @@ impl AsRef<ReplyMarkupForceReply> for ReplyMarkupForceReply {
     }
 }
 
-impl AsRef<ReplyMarkupForceReply> for RTDReplyMarkupForceReplyBuilder {
+impl AsRef<ReplyMarkupForceReply> for ReplyMarkupForceReplyBuilder {
     fn as_ref(&self) -> &ReplyMarkupForceReply {
         &self.inner
     }
@@ -164,6 +173,8 @@ pub struct ReplyMarkupInlineKeyboard {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of rows of inline keyboard buttons
+
+    #[serde(default)]
     rows: Vec<Vec<InlineKeyboardButton>>,
 }
 
@@ -181,14 +192,14 @@ impl RObject for ReplyMarkupInlineKeyboard {
 impl TDReplyMarkup for ReplyMarkupInlineKeyboard {}
 
 impl ReplyMarkupInlineKeyboard {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReplyMarkupInlineKeyboardBuilder {
+    pub fn builder() -> ReplyMarkupInlineKeyboardBuilder {
         let mut inner = ReplyMarkupInlineKeyboard::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDReplyMarkupInlineKeyboardBuilder { inner }
+        ReplyMarkupInlineKeyboardBuilder { inner }
     }
 
     pub fn rows(&self) -> &Vec<Vec<InlineKeyboardButton>> {
@@ -197,11 +208,14 @@ impl ReplyMarkupInlineKeyboard {
 }
 
 #[doc(hidden)]
-pub struct RTDReplyMarkupInlineKeyboardBuilder {
+pub struct ReplyMarkupInlineKeyboardBuilder {
     inner: ReplyMarkupInlineKeyboard,
 }
 
-impl RTDReplyMarkupInlineKeyboardBuilder {
+#[deprecated]
+pub type RTDReplyMarkupInlineKeyboardBuilder = ReplyMarkupInlineKeyboardBuilder;
+
+impl ReplyMarkupInlineKeyboardBuilder {
     pub fn build(&self) -> ReplyMarkupInlineKeyboard {
         self.inner.clone()
     }
@@ -218,7 +232,7 @@ impl AsRef<ReplyMarkupInlineKeyboard> for ReplyMarkupInlineKeyboard {
     }
 }
 
-impl AsRef<ReplyMarkupInlineKeyboard> for RTDReplyMarkupInlineKeyboardBuilder {
+impl AsRef<ReplyMarkupInlineKeyboard> for ReplyMarkupInlineKeyboardBuilder {
     fn as_ref(&self) -> &ReplyMarkupInlineKeyboard {
         &self.inner
     }
@@ -233,6 +247,8 @@ pub struct ReplyMarkupRemoveKeyboard {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the keyboard is removed only for the mentioned users or the target user of a reply
+
+    #[serde(default)]
     is_personal: bool,
 }
 
@@ -250,14 +266,14 @@ impl RObject for ReplyMarkupRemoveKeyboard {
 impl TDReplyMarkup for ReplyMarkupRemoveKeyboard {}
 
 impl ReplyMarkupRemoveKeyboard {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReplyMarkupRemoveKeyboardBuilder {
+    pub fn builder() -> ReplyMarkupRemoveKeyboardBuilder {
         let mut inner = ReplyMarkupRemoveKeyboard::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDReplyMarkupRemoveKeyboardBuilder { inner }
+        ReplyMarkupRemoveKeyboardBuilder { inner }
     }
 
     pub fn is_personal(&self) -> bool {
@@ -266,11 +282,14 @@ impl ReplyMarkupRemoveKeyboard {
 }
 
 #[doc(hidden)]
-pub struct RTDReplyMarkupRemoveKeyboardBuilder {
+pub struct ReplyMarkupRemoveKeyboardBuilder {
     inner: ReplyMarkupRemoveKeyboard,
 }
 
-impl RTDReplyMarkupRemoveKeyboardBuilder {
+#[deprecated]
+pub type RTDReplyMarkupRemoveKeyboardBuilder = ReplyMarkupRemoveKeyboardBuilder;
+
+impl ReplyMarkupRemoveKeyboardBuilder {
     pub fn build(&self) -> ReplyMarkupRemoveKeyboard {
         self.inner.clone()
     }
@@ -287,7 +306,7 @@ impl AsRef<ReplyMarkupRemoveKeyboard> for ReplyMarkupRemoveKeyboard {
     }
 }
 
-impl AsRef<ReplyMarkupRemoveKeyboard> for RTDReplyMarkupRemoveKeyboardBuilder {
+impl AsRef<ReplyMarkupRemoveKeyboard> for ReplyMarkupRemoveKeyboardBuilder {
     fn as_ref(&self) -> &ReplyMarkupRemoveKeyboard {
         &self.inner
     }
@@ -302,13 +321,25 @@ pub struct ReplyMarkupShowKeyboard {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of rows of bot keyboard buttons
+
+    #[serde(default)]
     rows: Vec<Vec<KeyboardButton>>,
     /// True, if the application needs to resize the keyboard vertically
+
+    #[serde(default)]
     resize_keyboard: bool,
     /// True, if the application needs to hide the keyboard after use
+
+    #[serde(default)]
     one_time: bool,
     /// True, if the keyboard must automatically be shown to the current user. For outgoing messages, specify true to show the keyboard only for the mentioned users and for the target user of a reply
+
+    #[serde(default)]
     is_personal: bool,
+    /// If non-empty, the placeholder to be shown in the input field when the keyboard is active; 0-64 characters
+
+    #[serde(default)]
+    input_field_placeholder: String,
 }
 
 impl RObject for ReplyMarkupShowKeyboard {
@@ -325,14 +356,14 @@ impl RObject for ReplyMarkupShowKeyboard {
 impl TDReplyMarkup for ReplyMarkupShowKeyboard {}
 
 impl ReplyMarkupShowKeyboard {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReplyMarkupShowKeyboardBuilder {
+    pub fn builder() -> ReplyMarkupShowKeyboardBuilder {
         let mut inner = ReplyMarkupShowKeyboard::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDReplyMarkupShowKeyboardBuilder { inner }
+        ReplyMarkupShowKeyboardBuilder { inner }
     }
 
     pub fn rows(&self) -> &Vec<Vec<KeyboardButton>> {
@@ -350,14 +381,21 @@ impl ReplyMarkupShowKeyboard {
     pub fn is_personal(&self) -> bool {
         self.is_personal
     }
+
+    pub fn input_field_placeholder(&self) -> &String {
+        &self.input_field_placeholder
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDReplyMarkupShowKeyboardBuilder {
+pub struct ReplyMarkupShowKeyboardBuilder {
     inner: ReplyMarkupShowKeyboard,
 }
 
-impl RTDReplyMarkupShowKeyboardBuilder {
+#[deprecated]
+pub type RTDReplyMarkupShowKeyboardBuilder = ReplyMarkupShowKeyboardBuilder;
+
+impl ReplyMarkupShowKeyboardBuilder {
     pub fn build(&self) -> ReplyMarkupShowKeyboard {
         self.inner.clone()
     }
@@ -381,6 +419,14 @@ impl RTDReplyMarkupShowKeyboardBuilder {
         self.inner.is_personal = is_personal;
         self
     }
+
+    pub fn input_field_placeholder<T: AsRef<str>>(
+        &mut self,
+        input_field_placeholder: T,
+    ) -> &mut Self {
+        self.inner.input_field_placeholder = input_field_placeholder.as_ref().to_string();
+        self
+    }
 }
 
 impl AsRef<ReplyMarkupShowKeyboard> for ReplyMarkupShowKeyboard {
@@ -389,7 +435,7 @@ impl AsRef<ReplyMarkupShowKeyboard> for ReplyMarkupShowKeyboard {
     }
 }
 
-impl AsRef<ReplyMarkupShowKeyboard> for RTDReplyMarkupShowKeyboardBuilder {
+impl AsRef<ReplyMarkupShowKeyboard> for ReplyMarkupShowKeyboardBuilder {
     fn as_ref(&self) -> &ReplyMarkupShowKeyboard {
         &self.inner
     }

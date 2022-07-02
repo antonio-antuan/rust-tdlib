@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Re-sends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode and the next_code_type of the result is not null
+/// Re-sends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode, the next_code_type of the result is not null and the server-specified timeout has passed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ResendAuthenticationCode {
     #[doc(hidden)]
@@ -29,25 +29,28 @@ impl RObject for ResendAuthenticationCode {
 impl RFunction for ResendAuthenticationCode {}
 
 impl ResendAuthenticationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResendAuthenticationCodeBuilder {
+    pub fn builder() -> ResendAuthenticationCodeBuilder {
         let mut inner = ResendAuthenticationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "resendAuthenticationCode".to_string();
 
-        RTDResendAuthenticationCodeBuilder { inner }
+        ResendAuthenticationCodeBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDResendAuthenticationCodeBuilder {
+pub struct ResendAuthenticationCodeBuilder {
     inner: ResendAuthenticationCode,
 }
 
-impl RTDResendAuthenticationCodeBuilder {
+#[deprecated]
+pub type RTDResendAuthenticationCodeBuilder = ResendAuthenticationCodeBuilder;
+
+impl ResendAuthenticationCodeBuilder {
     pub fn build(&self) -> ResendAuthenticationCode {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ResendAuthenticationCode> for ResendAuthenticationCode {
     }
 }
 
-impl AsRef<ResendAuthenticationCode> for RTDResendAuthenticationCodeBuilder {
+impl AsRef<ResendAuthenticationCode> for ResendAuthenticationCodeBuilder {
     fn as_ref(&self) -> &ResendAuthenticationCode {
         &self.inner
     }

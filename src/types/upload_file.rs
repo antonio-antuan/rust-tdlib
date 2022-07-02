@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,11 +14,13 @@ pub struct UploadFile {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     file: InputFile,
-    /// File type
+    /// File type; pass null if unknown
 
     #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,
     /// Priority of the upload (1-32). The higher the priority, the earlier the file will be uploaded. If the priorities of two files are equal, then the first one for which uploadFile was called will be uploaded first
+
+    #[serde(default)]
     priority: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -39,16 +41,16 @@ impl RObject for UploadFile {
 impl RFunction for UploadFile {}
 
 impl UploadFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUploadFileBuilder {
+    pub fn builder() -> UploadFileBuilder {
         let mut inner = UploadFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "uploadFile".to_string();
 
-        RTDUploadFileBuilder { inner }
+        UploadFileBuilder { inner }
     }
 
     pub fn file(&self) -> &InputFile {
@@ -65,11 +67,14 @@ impl UploadFile {
 }
 
 #[doc(hidden)]
-pub struct RTDUploadFileBuilder {
+pub struct UploadFileBuilder {
     inner: UploadFile,
 }
 
-impl RTDUploadFileBuilder {
+#[deprecated]
+pub type RTDUploadFileBuilder = UploadFileBuilder;
+
+impl UploadFileBuilder {
     pub fn build(&self) -> UploadFile {
         self.inner.clone()
     }
@@ -96,7 +101,7 @@ impl AsRef<UploadFile> for UploadFile {
     }
 }
 
-impl AsRef<UploadFile> for RTDUploadFileBuilder {
+impl AsRef<UploadFile> for UploadFileBuilder {
     fn as_ref(&self) -> &UploadFile {
         &self.inner
     }

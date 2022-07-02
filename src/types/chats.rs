@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct Chats {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total count of chats found
+
+    #[serde(default)]
     total_count: i32,
     /// List of chat identifiers
+
+    #[serde(default)]
     chat_ids: Vec<i64>,
 }
 
@@ -28,14 +32,14 @@ impl RObject for Chats {
 }
 
 impl Chats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatsBuilder {
+    pub fn builder() -> ChatsBuilder {
         let mut inner = Chats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatsBuilder { inner }
+        ChatsBuilder { inner }
     }
 
     pub fn total_count(&self) -> i32 {
@@ -48,11 +52,14 @@ impl Chats {
 }
 
 #[doc(hidden)]
-pub struct RTDChatsBuilder {
+pub struct ChatsBuilder {
     inner: Chats,
 }
 
-impl RTDChatsBuilder {
+#[deprecated]
+pub type RTDChatsBuilder = ChatsBuilder;
+
+impl ChatsBuilder {
     pub fn build(&self) -> Chats {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<Chats> for Chats {
     }
 }
 
-impl AsRef<Chats> for RTDChatsBuilder {
+impl AsRef<Chats> for ChatsBuilder {
     fn as_ref(&self) -> &Chats {
         &self.inner
     }

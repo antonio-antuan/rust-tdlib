@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,73 +14,55 @@ pub enum InputMessageContent {
     #[doc(hidden)]
     _Default,
     /// An animation message (GIF-style).
-    #[serde(rename(
-        serialize = "inputMessageAnimation",
-        deserialize = "inputMessageAnimation"
-    ))]
+    #[serde(rename(deserialize = "inputMessageAnimation"))]
     InputMessageAnimation(InputMessageAnimation),
     /// An audio message
-    #[serde(rename(serialize = "inputMessageAudio", deserialize = "inputMessageAudio"))]
+    #[serde(rename(deserialize = "inputMessageAudio"))]
     InputMessageAudio(InputMessageAudio),
     /// A message containing a user contact
-    #[serde(rename(serialize = "inputMessageContact", deserialize = "inputMessageContact"))]
+    #[serde(rename(deserialize = "inputMessageContact"))]
     InputMessageContact(InputMessageContact),
     /// A dice message
-    #[serde(rename(serialize = "inputMessageDice", deserialize = "inputMessageDice"))]
+    #[serde(rename(deserialize = "inputMessageDice"))]
     InputMessageDice(InputMessageDice),
     /// A document message (general file)
-    #[serde(rename(
-        serialize = "inputMessageDocument",
-        deserialize = "inputMessageDocument"
-    ))]
+    #[serde(rename(deserialize = "inputMessageDocument"))]
     InputMessageDocument(InputMessageDocument),
     /// A forwarded message
-    #[serde(rename(
-        serialize = "inputMessageForwarded",
-        deserialize = "inputMessageForwarded"
-    ))]
+    #[serde(rename(deserialize = "inputMessageForwarded"))]
     InputMessageForwarded(InputMessageForwarded),
     /// A message with a game; not supported for channels or secret chats
-    #[serde(rename(serialize = "inputMessageGame", deserialize = "inputMessageGame"))]
+    #[serde(rename(deserialize = "inputMessageGame"))]
     InputMessageGame(InputMessageGame),
-    /// A message with an invoice; can be used only by bots and only in private chats
-    #[serde(rename(serialize = "inputMessageInvoice", deserialize = "inputMessageInvoice"))]
+    /// A message with an invoice; can be used only by bots
+    #[serde(rename(deserialize = "inputMessageInvoice"))]
     InputMessageInvoice(InputMessageInvoice),
     /// A message with a location
-    #[serde(rename(
-        serialize = "inputMessageLocation",
-        deserialize = "inputMessageLocation"
-    ))]
+    #[serde(rename(deserialize = "inputMessageLocation"))]
     InputMessageLocation(InputMessageLocation),
     /// A photo message
-    #[serde(rename(serialize = "inputMessagePhoto", deserialize = "inputMessagePhoto"))]
+    #[serde(rename(deserialize = "inputMessagePhoto"))]
     InputMessagePhoto(InputMessagePhoto),
     /// A message with a poll. Polls can't be sent to secret chats. Polls can be sent only to a private chat with a bot
-    #[serde(rename(serialize = "inputMessagePoll", deserialize = "inputMessagePoll"))]
+    #[serde(rename(deserialize = "inputMessagePoll"))]
     InputMessagePoll(InputMessagePoll),
     /// A sticker message
-    #[serde(rename(serialize = "inputMessageSticker", deserialize = "inputMessageSticker"))]
+    #[serde(rename(deserialize = "inputMessageSticker"))]
     InputMessageSticker(InputMessageSticker),
     /// A text message
-    #[serde(rename(serialize = "inputMessageText", deserialize = "inputMessageText"))]
+    #[serde(rename(deserialize = "inputMessageText"))]
     InputMessageText(InputMessageText),
     /// A message with information about a venue
-    #[serde(rename(serialize = "inputMessageVenue", deserialize = "inputMessageVenue"))]
+    #[serde(rename(deserialize = "inputMessageVenue"))]
     InputMessageVenue(InputMessageVenue),
     /// A video message
-    #[serde(rename(serialize = "inputMessageVideo", deserialize = "inputMessageVideo"))]
+    #[serde(rename(deserialize = "inputMessageVideo"))]
     InputMessageVideo(InputMessageVideo),
     /// A video note message
-    #[serde(rename(
-        serialize = "inputMessageVideoNote",
-        deserialize = "inputMessageVideoNote"
-    ))]
+    #[serde(rename(deserialize = "inputMessageVideoNote"))]
     InputMessageVideoNote(InputMessageVideoNote),
     /// A voice note message
-    #[serde(rename(
-        serialize = "inputMessageVoiceNote",
-        deserialize = "inputMessageVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "inputMessageVoiceNote"))]
     InputMessageVoiceNote(InputMessageVoiceNote),
 }
 
@@ -142,7 +124,7 @@ impl RObject for InputMessageContent {
 }
 
 impl InputMessageContent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -169,17 +151,25 @@ pub struct InputMessageAnimation {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     animation: InputFile,
-    /// Animation thumbnail, if available
+    /// Animation thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the animation, if applicable
+
+    #[serde(default)]
     added_sticker_file_ids: Vec<i32>,
     /// Duration of the animation, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Width of the animation; may be replaced by the server
+
+    #[serde(default)]
     width: i32,
     /// Height of the animation; may be replaced by the server
+
+    #[serde(default)]
     height: i32,
-    /// Animation caption; 0-GetOption("message_caption_length_max") characters
+    /// Animation caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -197,14 +187,14 @@ impl RObject for InputMessageAnimation {
 impl TDInputMessageContent for InputMessageAnimation {}
 
 impl InputMessageAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageAnimationBuilder {
+    pub fn builder() -> InputMessageAnimationBuilder {
         let mut inner = InputMessageAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageAnimationBuilder { inner }
+        InputMessageAnimationBuilder { inner }
     }
 
     pub fn animation(&self) -> &InputFile {
@@ -237,11 +227,14 @@ impl InputMessageAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageAnimationBuilder {
+pub struct InputMessageAnimationBuilder {
     inner: InputMessageAnimation,
 }
 
-impl RTDInputMessageAnimationBuilder {
+#[deprecated]
+pub type RTDInputMessageAnimationBuilder = InputMessageAnimationBuilder;
+
+impl InputMessageAnimationBuilder {
     pub fn build(&self) -> InputMessageAnimation {
         self.inner.clone()
     }
@@ -288,7 +281,7 @@ impl AsRef<InputMessageAnimation> for InputMessageAnimation {
     }
 }
 
-impl AsRef<InputMessageAnimation> for RTDInputMessageAnimationBuilder {
+impl AsRef<InputMessageAnimation> for InputMessageAnimationBuilder {
     fn as_ref(&self) -> &InputMessageAnimation {
         &self.inner
     }
@@ -306,15 +299,21 @@ pub struct InputMessageAudio {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     audio: InputFile,
-    /// Thumbnail of the cover for the album, if available
+    /// Thumbnail of the cover for the album; pass null to skip thumbnail uploading
     album_cover_thumbnail: InputThumbnail,
     /// Duration of the audio, in seconds; may be replaced by the server
+
+    #[serde(default)]
     duration: i32,
     /// Title of the audio; 0-64 characters; may be replaced by the server
+
+    #[serde(default)]
     title: String,
     /// Performer of the audio; 0-64 characters, may be replaced by the server
+
+    #[serde(default)]
     performer: String,
-    /// Audio caption; 0-GetOption("message_caption_length_max") characters
+    /// Audio caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -332,14 +331,14 @@ impl RObject for InputMessageAudio {
 impl TDInputMessageContent for InputMessageAudio {}
 
 impl InputMessageAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageAudioBuilder {
+    pub fn builder() -> InputMessageAudioBuilder {
         let mut inner = InputMessageAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageAudioBuilder { inner }
+        InputMessageAudioBuilder { inner }
     }
 
     pub fn audio(&self) -> &InputFile {
@@ -368,11 +367,14 @@ impl InputMessageAudio {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageAudioBuilder {
+pub struct InputMessageAudioBuilder {
     inner: InputMessageAudio,
 }
 
-impl RTDInputMessageAudioBuilder {
+#[deprecated]
+pub type RTDInputMessageAudioBuilder = InputMessageAudioBuilder;
+
+impl InputMessageAudioBuilder {
     pub fn build(&self) -> InputMessageAudio {
         self.inner.clone()
     }
@@ -417,7 +419,7 @@ impl AsRef<InputMessageAudio> for InputMessageAudio {
     }
 }
 
-impl AsRef<InputMessageAudio> for RTDInputMessageAudioBuilder {
+impl AsRef<InputMessageAudio> for InputMessageAudioBuilder {
     fn as_ref(&self) -> &InputMessageAudio {
         &self.inner
     }
@@ -449,14 +451,14 @@ impl RObject for InputMessageContact {
 impl TDInputMessageContent for InputMessageContact {}
 
 impl InputMessageContact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageContactBuilder {
+    pub fn builder() -> InputMessageContactBuilder {
         let mut inner = InputMessageContact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageContactBuilder { inner }
+        InputMessageContactBuilder { inner }
     }
 
     pub fn contact(&self) -> &Contact {
@@ -465,11 +467,14 @@ impl InputMessageContact {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageContactBuilder {
+pub struct InputMessageContactBuilder {
     inner: InputMessageContact,
 }
 
-impl RTDInputMessageContactBuilder {
+#[deprecated]
+pub type RTDInputMessageContactBuilder = InputMessageContactBuilder;
+
+impl InputMessageContactBuilder {
     pub fn build(&self) -> InputMessageContact {
         self.inner.clone()
     }
@@ -486,7 +491,7 @@ impl AsRef<InputMessageContact> for InputMessageContact {
     }
 }
 
-impl AsRef<InputMessageContact> for RTDInputMessageContactBuilder {
+impl AsRef<InputMessageContact> for InputMessageContactBuilder {
     fn as_ref(&self) -> &InputMessageContact {
         &self.inner
     }
@@ -501,8 +506,12 @@ pub struct InputMessageDice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Emoji on which the dice throw animation is based
+
+    #[serde(default)]
     emoji: String,
-    /// True, if a chat message draft should be deleted
+    /// True, if the chat message draft must be deleted
+
+    #[serde(default)]
     clear_draft: bool,
 }
 
@@ -520,14 +529,14 @@ impl RObject for InputMessageDice {
 impl TDInputMessageContent for InputMessageDice {}
 
 impl InputMessageDice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageDiceBuilder {
+    pub fn builder() -> InputMessageDiceBuilder {
         let mut inner = InputMessageDice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageDiceBuilder { inner }
+        InputMessageDiceBuilder { inner }
     }
 
     pub fn emoji(&self) -> &String {
@@ -540,11 +549,14 @@ impl InputMessageDice {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageDiceBuilder {
+pub struct InputMessageDiceBuilder {
     inner: InputMessageDice,
 }
 
-impl RTDInputMessageDiceBuilder {
+#[deprecated]
+pub type RTDInputMessageDiceBuilder = InputMessageDiceBuilder;
+
+impl InputMessageDiceBuilder {
     pub fn build(&self) -> InputMessageDice {
         self.inner.clone()
     }
@@ -566,7 +578,7 @@ impl AsRef<InputMessageDice> for InputMessageDice {
     }
 }
 
-impl AsRef<InputMessageDice> for RTDInputMessageDiceBuilder {
+impl AsRef<InputMessageDice> for InputMessageDiceBuilder {
     fn as_ref(&self) -> &InputMessageDice {
         &self.inner
     }
@@ -584,11 +596,13 @@ pub struct InputMessageDocument {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     document: InputFile,
-    /// Document thumbnail, if available
+    /// Document thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// If true, automatic file type detection will be disabled and the document will be always sent as file. Always true for files sent to secret chats
+
+    #[serde(default)]
     disable_content_type_detection: bool,
-    /// Document caption; 0-GetOption("message_caption_length_max") characters
+    /// Document caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -606,14 +620,14 @@ impl RObject for InputMessageDocument {
 impl TDInputMessageContent for InputMessageDocument {}
 
 impl InputMessageDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageDocumentBuilder {
+    pub fn builder() -> InputMessageDocumentBuilder {
         let mut inner = InputMessageDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageDocumentBuilder { inner }
+        InputMessageDocumentBuilder { inner }
     }
 
     pub fn document(&self) -> &InputFile {
@@ -634,11 +648,14 @@ impl InputMessageDocument {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageDocumentBuilder {
+pub struct InputMessageDocumentBuilder {
     inner: InputMessageDocument,
 }
 
-impl RTDInputMessageDocumentBuilder {
+#[deprecated]
+pub type RTDInputMessageDocumentBuilder = InputMessageDocumentBuilder;
+
+impl InputMessageDocumentBuilder {
     pub fn build(&self) -> InputMessageDocument {
         self.inner.clone()
     }
@@ -673,7 +690,7 @@ impl AsRef<InputMessageDocument> for InputMessageDocument {
     }
 }
 
-impl AsRef<InputMessageDocument> for RTDInputMessageDocumentBuilder {
+impl AsRef<InputMessageDocument> for InputMessageDocumentBuilder {
     fn as_ref(&self) -> &InputMessageDocument {
         &self.inner
     }
@@ -688,12 +705,18 @@ pub struct InputMessageForwarded {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier for the chat this forwarded message came from
+
+    #[serde(default)]
     from_chat_id: i64,
     /// Identifier of the message to forward
+
+    #[serde(default)]
     message_id: i64,
-    /// True, if a game message should be shared within a launched game; applies only to game messages
+    /// True, if a game message is being shared from a launched game; applies only to game messages
+
+    #[serde(default)]
     in_game_share: bool,
-    /// Options to be used to copy content of the message without a link to the original message
+    /// Options to be used to copy content of the message without reference to the original sender; pass null to forward the message as usual
     copy_options: MessageCopyOptions,
 }
 
@@ -711,14 +734,14 @@ impl RObject for InputMessageForwarded {
 impl TDInputMessageContent for InputMessageForwarded {}
 
 impl InputMessageForwarded {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageForwardedBuilder {
+    pub fn builder() -> InputMessageForwardedBuilder {
         let mut inner = InputMessageForwarded::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageForwardedBuilder { inner }
+        InputMessageForwardedBuilder { inner }
     }
 
     pub fn from_chat_id(&self) -> i64 {
@@ -739,11 +762,14 @@ impl InputMessageForwarded {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageForwardedBuilder {
+pub struct InputMessageForwardedBuilder {
     inner: InputMessageForwarded,
 }
 
-impl RTDInputMessageForwardedBuilder {
+#[deprecated]
+pub type RTDInputMessageForwardedBuilder = InputMessageForwardedBuilder;
+
+impl InputMessageForwardedBuilder {
     pub fn build(&self) -> InputMessageForwarded {
         self.inner.clone()
     }
@@ -775,7 +801,7 @@ impl AsRef<InputMessageForwarded> for InputMessageForwarded {
     }
 }
 
-impl AsRef<InputMessageForwarded> for RTDInputMessageForwardedBuilder {
+impl AsRef<InputMessageForwarded> for InputMessageForwardedBuilder {
     fn as_ref(&self) -> &InputMessageForwarded {
         &self.inner
     }
@@ -790,8 +816,12 @@ pub struct InputMessageGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the bot that owns the game
-    bot_user_id: i32,
+
+    #[serde(default)]
+    bot_user_id: i64,
     /// Short name of the game
+
+    #[serde(default)]
     game_short_name: String,
 }
 
@@ -809,17 +839,17 @@ impl RObject for InputMessageGame {
 impl TDInputMessageContent for InputMessageGame {}
 
 impl InputMessageGame {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageGameBuilder {
+    pub fn builder() -> InputMessageGameBuilder {
         let mut inner = InputMessageGame::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageGameBuilder { inner }
+        InputMessageGameBuilder { inner }
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -829,16 +859,19 @@ impl InputMessageGame {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageGameBuilder {
+pub struct InputMessageGameBuilder {
     inner: InputMessageGame,
 }
 
-impl RTDInputMessageGameBuilder {
+#[deprecated]
+pub type RTDInputMessageGameBuilder = InputMessageGameBuilder;
+
+impl InputMessageGameBuilder {
     pub fn build(&self) -> InputMessageGame {
         self.inner.clone()
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }
@@ -855,13 +888,13 @@ impl AsRef<InputMessageGame> for InputMessageGame {
     }
 }
 
-impl AsRef<InputMessageGame> for RTDInputMessageGameBuilder {
+impl AsRef<InputMessageGame> for InputMessageGameBuilder {
     fn as_ref(&self) -> &InputMessageGame {
         &self.inner
     }
 }
 
-/// A message with an invoice; can be used only by bots and only in private chats
+/// A message with an invoice; can be used only by bots
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageInvoice {
     #[doc(hidden)]
@@ -872,24 +905,44 @@ pub struct InputMessageInvoice {
     /// Invoice
     invoice: Invoice,
     /// Product title; 1-32 characters
+
+    #[serde(default)]
     title: String,
-    /// A message with an invoice; can be used only by bots and only in private chats
+    /// A message with an invoice; can be used only by bots
+
+    #[serde(default)]
     description: String,
     /// Product photo URL; optional
+
+    #[serde(default)]
     photo_url: String,
     /// Product photo size
+
+    #[serde(default)]
     photo_size: i32,
     /// Product photo width
+
+    #[serde(default)]
     photo_width: i32,
     /// Product photo height
+
+    #[serde(default)]
     photo_height: i32,
     /// The invoice payload
+
+    #[serde(default)]
     payload: String,
     /// Payment provider token
+
+    #[serde(default)]
     provider_token: String,
     /// JSON-encoded data about the invoice, which will be shared with the payment provider
+
+    #[serde(default)]
     provider_data: String,
-    /// Unique invoice bot start_parameter for the generation of this invoice
+    /// Unique invoice bot deep link parameter for the generation of this invoice. If empty, it would be possible to pay directly from forwards of the invoice message
+
+    #[serde(default)]
     start_parameter: String,
 }
 
@@ -907,14 +960,14 @@ impl RObject for InputMessageInvoice {
 impl TDInputMessageContent for InputMessageInvoice {}
 
 impl InputMessageInvoice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageInvoiceBuilder {
+    pub fn builder() -> InputMessageInvoiceBuilder {
         let mut inner = InputMessageInvoice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageInvoiceBuilder { inner }
+        InputMessageInvoiceBuilder { inner }
     }
 
     pub fn invoice(&self) -> &Invoice {
@@ -963,11 +1016,14 @@ impl InputMessageInvoice {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageInvoiceBuilder {
+pub struct InputMessageInvoiceBuilder {
     inner: InputMessageInvoice,
 }
 
-impl RTDInputMessageInvoiceBuilder {
+#[deprecated]
+pub type RTDInputMessageInvoiceBuilder = InputMessageInvoiceBuilder;
+
+impl InputMessageInvoiceBuilder {
     pub fn build(&self) -> InputMessageInvoice {
         self.inner.clone()
     }
@@ -1034,7 +1090,7 @@ impl AsRef<InputMessageInvoice> for InputMessageInvoice {
     }
 }
 
-impl AsRef<InputMessageInvoice> for RTDInputMessageInvoiceBuilder {
+impl AsRef<InputMessageInvoice> for InputMessageInvoiceBuilder {
     fn as_ref(&self) -> &InputMessageInvoice {
         &self.inner
     }
@@ -1050,11 +1106,17 @@ pub struct InputMessageLocation {
     client_id: Option<i32>,
     /// Location to be sent
     location: Location,
-    /// Period for which the location can be updated, in seconds; should be between 60 and 86400 for a live location and 0 otherwise
+    /// Period for which the location can be updated, in seconds; must be between 60 and 86400 for a live location and 0 otherwise
+
+    #[serde(default)]
     live_period: i32,
     /// For live locations, a direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
+
+    #[serde(default)]
     heading: i32,
     /// For live locations, a maximum distance to another chat member for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled. Can't be enabled in channels and Saved Messages
+
+    #[serde(default)]
     proximity_alert_radius: i32,
 }
 
@@ -1072,14 +1134,14 @@ impl RObject for InputMessageLocation {
 impl TDInputMessageContent for InputMessageLocation {}
 
 impl InputMessageLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageLocationBuilder {
+    pub fn builder() -> InputMessageLocationBuilder {
         let mut inner = InputMessageLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageLocationBuilder { inner }
+        InputMessageLocationBuilder { inner }
     }
 
     pub fn location(&self) -> &Location {
@@ -1100,11 +1162,14 @@ impl InputMessageLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageLocationBuilder {
+pub struct InputMessageLocationBuilder {
     inner: InputMessageLocation,
 }
 
-impl RTDInputMessageLocationBuilder {
+#[deprecated]
+pub type RTDInputMessageLocationBuilder = InputMessageLocationBuilder;
+
+impl InputMessageLocationBuilder {
     pub fn build(&self) -> InputMessageLocation {
         self.inner.clone()
     }
@@ -1136,7 +1201,7 @@ impl AsRef<InputMessageLocation> for InputMessageLocation {
     }
 }
 
-impl AsRef<InputMessageLocation> for RTDInputMessageLocationBuilder {
+impl AsRef<InputMessageLocation> for InputMessageLocationBuilder {
     fn as_ref(&self) -> &InputMessageLocation {
         &self.inner
     }
@@ -1154,17 +1219,25 @@ pub struct InputMessagePhoto {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     photo: InputFile,
-    /// Photo thumbnail to be sent, this is sent to the other party in secret chats only
+    /// Photo thumbnail to be sent; pass null to skip thumbnail uploading. The thumbnail is sent to the other party only in secret chats
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the photo, if applicable
+
+    #[serde(default)]
     added_sticker_file_ids: Vec<i32>,
     /// Photo width
+
+    #[serde(default)]
     width: i32,
     /// Photo height
+
+    #[serde(default)]
     height: i32,
-    /// Photo caption; 0-GetOption("message_caption_length_max") characters
+    /// Photo caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
     /// Photo TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
+
+    #[serde(default)]
     ttl: i32,
 }
 
@@ -1182,14 +1255,14 @@ impl RObject for InputMessagePhoto {
 impl TDInputMessageContent for InputMessagePhoto {}
 
 impl InputMessagePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessagePhotoBuilder {
+    pub fn builder() -> InputMessagePhotoBuilder {
         let mut inner = InputMessagePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessagePhotoBuilder { inner }
+        InputMessagePhotoBuilder { inner }
     }
 
     pub fn photo(&self) -> &InputFile {
@@ -1222,11 +1295,14 @@ impl InputMessagePhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessagePhotoBuilder {
+pub struct InputMessagePhotoBuilder {
     inner: InputMessagePhoto,
 }
 
-impl RTDInputMessagePhotoBuilder {
+#[deprecated]
+pub type RTDInputMessagePhotoBuilder = InputMessagePhotoBuilder;
+
+impl InputMessagePhotoBuilder {
     pub fn build(&self) -> InputMessagePhoto {
         self.inner.clone()
     }
@@ -1273,7 +1349,7 @@ impl AsRef<InputMessagePhoto> for InputMessagePhoto {
     }
 }
 
-impl AsRef<InputMessagePhoto> for RTDInputMessagePhotoBuilder {
+impl AsRef<InputMessagePhoto> for InputMessagePhotoBuilder {
     fn as_ref(&self) -> &InputMessagePhoto {
         &self.inner
     }
@@ -1287,11 +1363,17 @@ pub struct InputMessagePoll {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Poll question, 1-255 characters (up to 300 characters for bots)
+    /// Poll question; 1-255 characters (up to 300 characters for bots)
+
+    #[serde(default)]
     question: String,
     /// List of poll answer options, 2-10 strings 1-100 characters each
+
+    #[serde(default)]
     options: Vec<String>,
     /// True, if the poll voters are anonymous. Non-anonymous polls can't be sent or forwarded to channels
+
+    #[serde(default)]
     is_anonymous: bool,
     /// Type of the poll
 
@@ -1299,10 +1381,16 @@ pub struct InputMessagePoll {
     #[serde(skip_serializing_if = "PollType::_is_default")]
     type_: PollType,
     /// Amount of time the poll will be active after creation, in seconds; for bots only
+
+    #[serde(default)]
     open_period: i32,
-    /// Point in time (Unix timestamp) when the poll will be automatically closed; for bots only
+    /// Point in time (Unix timestamp) when the poll will automatically be closed; for bots only
+
+    #[serde(default)]
     close_date: i32,
     /// True, if the poll needs to be sent already closed; for bots only
+
+    #[serde(default)]
     is_closed: bool,
 }
 
@@ -1320,14 +1408,14 @@ impl RObject for InputMessagePoll {
 impl TDInputMessageContent for InputMessagePoll {}
 
 impl InputMessagePoll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessagePollBuilder {
+    pub fn builder() -> InputMessagePollBuilder {
         let mut inner = InputMessagePoll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessagePollBuilder { inner }
+        InputMessagePollBuilder { inner }
     }
 
     pub fn question(&self) -> &String {
@@ -1360,11 +1448,14 @@ impl InputMessagePoll {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessagePollBuilder {
+pub struct InputMessagePollBuilder {
     inner: InputMessagePoll,
 }
 
-impl RTDInputMessagePollBuilder {
+#[deprecated]
+pub type RTDInputMessagePollBuilder = InputMessagePollBuilder;
+
+impl InputMessagePollBuilder {
     pub fn build(&self) -> InputMessagePoll {
         self.inner.clone()
     }
@@ -1411,7 +1502,7 @@ impl AsRef<InputMessagePoll> for InputMessagePoll {
     }
 }
 
-impl AsRef<InputMessagePoll> for RTDInputMessagePollBuilder {
+impl AsRef<InputMessagePoll> for InputMessagePollBuilder {
     fn as_ref(&self) -> &InputMessagePoll {
         &self.inner
     }
@@ -1429,12 +1520,20 @@ pub struct InputMessageSticker {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
-    /// Sticker thumbnail, if available
+    /// Sticker thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// Sticker width
+
+    #[serde(default)]
     width: i32,
     /// Sticker height
+
+    #[serde(default)]
     height: i32,
+    /// Emoji used to choose the sticker
+
+    #[serde(default)]
+    emoji: String,
 }
 
 impl RObject for InputMessageSticker {
@@ -1451,14 +1550,14 @@ impl RObject for InputMessageSticker {
 impl TDInputMessageContent for InputMessageSticker {}
 
 impl InputMessageSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageStickerBuilder {
+    pub fn builder() -> InputMessageStickerBuilder {
         let mut inner = InputMessageSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageStickerBuilder { inner }
+        InputMessageStickerBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -1476,14 +1575,21 @@ impl InputMessageSticker {
     pub fn height(&self) -> i32 {
         self.height
     }
+
+    pub fn emoji(&self) -> &String {
+        &self.emoji
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageStickerBuilder {
+pub struct InputMessageStickerBuilder {
     inner: InputMessageSticker,
 }
 
-impl RTDInputMessageStickerBuilder {
+#[deprecated]
+pub type RTDInputMessageStickerBuilder = InputMessageStickerBuilder;
+
+impl InputMessageStickerBuilder {
     pub fn build(&self) -> InputMessageSticker {
         self.inner.clone()
     }
@@ -1507,6 +1613,11 @@ impl RTDInputMessageStickerBuilder {
         self.inner.height = height;
         self
     }
+
+    pub fn emoji<T: AsRef<str>>(&mut self, emoji: T) -> &mut Self {
+        self.inner.emoji = emoji.as_ref().to_string();
+        self
+    }
 }
 
 impl AsRef<InputMessageSticker> for InputMessageSticker {
@@ -1515,7 +1626,7 @@ impl AsRef<InputMessageSticker> for InputMessageSticker {
     }
 }
 
-impl AsRef<InputMessageSticker> for RTDInputMessageStickerBuilder {
+impl AsRef<InputMessageSticker> for InputMessageStickerBuilder {
     fn as_ref(&self) -> &InputMessageSticker {
         &self.inner
     }
@@ -1531,9 +1642,13 @@ pub struct InputMessageText {
     client_id: Option<i32>,
     /// Formatted text to be sent; 1-GetOption("message_text_length_max") characters. Only Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities are allowed to be specified manually
     text: FormattedText,
-    /// True, if rich web page previews for URLs in the message text should be disabled
+    /// True, if rich web page previews for URLs in the message text must be disabled
+
+    #[serde(default)]
     disable_web_page_preview: bool,
-    /// True, if a chat message draft should be deleted
+    /// True, if a chat message draft must be deleted
+
+    #[serde(default)]
     clear_draft: bool,
 }
 
@@ -1551,14 +1666,14 @@ impl RObject for InputMessageText {
 impl TDInputMessageContent for InputMessageText {}
 
 impl InputMessageText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageTextBuilder {
+    pub fn builder() -> InputMessageTextBuilder {
         let mut inner = InputMessageText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageTextBuilder { inner }
+        InputMessageTextBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -1575,11 +1690,14 @@ impl InputMessageText {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageTextBuilder {
+pub struct InputMessageTextBuilder {
     inner: InputMessageText,
 }
 
-impl RTDInputMessageTextBuilder {
+#[deprecated]
+pub type RTDInputMessageTextBuilder = InputMessageTextBuilder;
+
+impl InputMessageTextBuilder {
     pub fn build(&self) -> InputMessageText {
         self.inner.clone()
     }
@@ -1606,7 +1724,7 @@ impl AsRef<InputMessageText> for InputMessageText {
     }
 }
 
-impl AsRef<InputMessageText> for RTDInputMessageTextBuilder {
+impl AsRef<InputMessageText> for InputMessageTextBuilder {
     fn as_ref(&self) -> &InputMessageText {
         &self.inner
     }
@@ -1638,14 +1756,14 @@ impl RObject for InputMessageVenue {
 impl TDInputMessageContent for InputMessageVenue {}
 
 impl InputMessageVenue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageVenueBuilder {
+    pub fn builder() -> InputMessageVenueBuilder {
         let mut inner = InputMessageVenue::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageVenueBuilder { inner }
+        InputMessageVenueBuilder { inner }
     }
 
     pub fn venue(&self) -> &Venue {
@@ -1654,11 +1772,14 @@ impl InputMessageVenue {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageVenueBuilder {
+pub struct InputMessageVenueBuilder {
     inner: InputMessageVenue,
 }
 
-impl RTDInputMessageVenueBuilder {
+#[deprecated]
+pub type RTDInputMessageVenueBuilder = InputMessageVenueBuilder;
+
+impl InputMessageVenueBuilder {
     pub fn build(&self) -> InputMessageVenue {
         self.inner.clone()
     }
@@ -1675,7 +1796,7 @@ impl AsRef<InputMessageVenue> for InputMessageVenue {
     }
 }
 
-impl AsRef<InputMessageVenue> for RTDInputMessageVenueBuilder {
+impl AsRef<InputMessageVenue> for InputMessageVenueBuilder {
     fn as_ref(&self) -> &InputMessageVenue {
         &self.inner
     }
@@ -1693,21 +1814,33 @@ pub struct InputMessageVideo {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     video: InputFile,
-    /// Video thumbnail, if available
+    /// Video thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// File identifiers of the stickers added to the video, if applicable
+
+    #[serde(default)]
     added_sticker_file_ids: Vec<i32>,
     /// Duration of the video, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Video width
+
+    #[serde(default)]
     width: i32,
     /// Video height
+
+    #[serde(default)]
     height: i32,
-    /// True, if the video should be tried to be streamed
+    /// True, if the video is supposed to be streamed
+
+    #[serde(default)]
     supports_streaming: bool,
-    /// Video caption; 0-GetOption("message_caption_length_max") characters
+    /// Video caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
     /// Video TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
+
+    #[serde(default)]
     ttl: i32,
 }
 
@@ -1725,14 +1858,14 @@ impl RObject for InputMessageVideo {
 impl TDInputMessageContent for InputMessageVideo {}
 
 impl InputMessageVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageVideoBuilder {
+    pub fn builder() -> InputMessageVideoBuilder {
         let mut inner = InputMessageVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageVideoBuilder { inner }
+        InputMessageVideoBuilder { inner }
     }
 
     pub fn video(&self) -> &InputFile {
@@ -1773,11 +1906,14 @@ impl InputMessageVideo {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageVideoBuilder {
+pub struct InputMessageVideoBuilder {
     inner: InputMessageVideo,
 }
 
-impl RTDInputMessageVideoBuilder {
+#[deprecated]
+pub type RTDInputMessageVideoBuilder = InputMessageVideoBuilder;
+
+impl InputMessageVideoBuilder {
     pub fn build(&self) -> InputMessageVideo {
         self.inner.clone()
     }
@@ -1834,7 +1970,7 @@ impl AsRef<InputMessageVideo> for InputMessageVideo {
     }
 }
 
-impl AsRef<InputMessageVideo> for RTDInputMessageVideoBuilder {
+impl AsRef<InputMessageVideo> for InputMessageVideoBuilder {
     fn as_ref(&self) -> &InputMessageVideo {
         &self.inner
     }
@@ -1852,11 +1988,15 @@ pub struct InputMessageVideoNote {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     video_note: InputFile,
-    /// Video thumbnail, if available
+    /// Video thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
     /// Duration of the video, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Video width and height; must be positive and not greater than 640
+
+    #[serde(default)]
     length: i32,
 }
 
@@ -1874,14 +2014,14 @@ impl RObject for InputMessageVideoNote {
 impl TDInputMessageContent for InputMessageVideoNote {}
 
 impl InputMessageVideoNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageVideoNoteBuilder {
+    pub fn builder() -> InputMessageVideoNoteBuilder {
         let mut inner = InputMessageVideoNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageVideoNoteBuilder { inner }
+        InputMessageVideoNoteBuilder { inner }
     }
 
     pub fn video_note(&self) -> &InputFile {
@@ -1902,11 +2042,14 @@ impl InputMessageVideoNote {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageVideoNoteBuilder {
+pub struct InputMessageVideoNoteBuilder {
     inner: InputMessageVideoNote,
 }
 
-impl RTDInputMessageVideoNoteBuilder {
+#[deprecated]
+pub type RTDInputMessageVideoNoteBuilder = InputMessageVideoNoteBuilder;
+
+impl InputMessageVideoNoteBuilder {
     pub fn build(&self) -> InputMessageVideoNote {
         self.inner.clone()
     }
@@ -1938,7 +2081,7 @@ impl AsRef<InputMessageVideoNote> for InputMessageVideoNote {
     }
 }
 
-impl AsRef<InputMessageVideoNote> for RTDInputMessageVideoNoteBuilder {
+impl AsRef<InputMessageVideoNote> for InputMessageVideoNoteBuilder {
     fn as_ref(&self) -> &InputMessageVideoNote {
         &self.inner
     }
@@ -1957,10 +2100,14 @@ pub struct InputMessageVoiceNote {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     voice_note: InputFile,
     /// Duration of the voice note, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Waveform representation of the voice note, in 5-bit format
+
+    #[serde(default)]
     waveform: String,
-    /// Voice note caption; 0-GetOption("message_caption_length_max") characters
+    /// Voice note caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -1978,14 +2125,14 @@ impl RObject for InputMessageVoiceNote {
 impl TDInputMessageContent for InputMessageVoiceNote {}
 
 impl InputMessageVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputMessageVoiceNoteBuilder {
+    pub fn builder() -> InputMessageVoiceNoteBuilder {
         let mut inner = InputMessageVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputMessageVoiceNoteBuilder { inner }
+        InputMessageVoiceNoteBuilder { inner }
     }
 
     pub fn voice_note(&self) -> &InputFile {
@@ -2006,11 +2153,14 @@ impl InputMessageVoiceNote {
 }
 
 #[doc(hidden)]
-pub struct RTDInputMessageVoiceNoteBuilder {
+pub struct InputMessageVoiceNoteBuilder {
     inner: InputMessageVoiceNote,
 }
 
-impl RTDInputMessageVoiceNoteBuilder {
+#[deprecated]
+pub type RTDInputMessageVoiceNoteBuilder = InputMessageVoiceNoteBuilder;
+
+impl InputMessageVoiceNoteBuilder {
     pub fn build(&self) -> InputMessageVoiceNote {
         self.inner.clone()
     }
@@ -2042,7 +2192,7 @@ impl AsRef<InputMessageVoiceNote> for InputMessageVoiceNote {
     }
 }
 
-impl AsRef<InputMessageVoiceNote> for RTDInputMessageVoiceNoteBuilder {
+impl AsRef<InputMessageVoiceNote> for InputMessageVoiceNoteBuilder {
     fn as_ref(&self) -> &InputMessageVoiceNote {
         &self.inner
     }

@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info rights
+/// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetChatDescription {
     #[doc(hidden)]
@@ -11,8 +11,12 @@ pub struct SetChatDescription {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat
+
+    #[serde(default)]
     chat_id: i64,
-    /// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info rights
+    /// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
+
+    #[serde(default)]
     description: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SetChatDescription {
 impl RFunction for SetChatDescription {}
 
 impl SetChatDescription {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatDescriptionBuilder {
+    pub fn builder() -> SetChatDescriptionBuilder {
         let mut inner = SetChatDescription::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatDescription".to_string();
 
-        RTDSetChatDescriptionBuilder { inner }
+        SetChatDescriptionBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +59,14 @@ impl SetChatDescription {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatDescriptionBuilder {
+pub struct SetChatDescriptionBuilder {
     inner: SetChatDescription,
 }
 
-impl RTDSetChatDescriptionBuilder {
+#[deprecated]
+pub type RTDSetChatDescriptionBuilder = SetChatDescriptionBuilder;
+
+impl SetChatDescriptionBuilder {
     pub fn build(&self) -> SetChatDescription {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SetChatDescription> for SetChatDescription {
     }
 }
 
-impl AsRef<SetChatDescription> for RTDSetChatDescriptionBuilder {
+impl AsRef<SetChatDescription> for SetChatDescriptionBuilder {
     fn as_ref(&self) -> &SetChatDescription {
         &self.inner
     }

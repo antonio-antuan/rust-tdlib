@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct OpenMessageContent {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the message
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message with the opened content
+
+    #[serde(default)]
     message_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for OpenMessageContent {
 impl RFunction for OpenMessageContent {}
 
 impl OpenMessageContent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDOpenMessageContentBuilder {
+    pub fn builder() -> OpenMessageContentBuilder {
         let mut inner = OpenMessageContent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "openMessageContent".to_string();
 
-        RTDOpenMessageContentBuilder { inner }
+        OpenMessageContentBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +59,14 @@ impl OpenMessageContent {
 }
 
 #[doc(hidden)]
-pub struct RTDOpenMessageContentBuilder {
+pub struct OpenMessageContentBuilder {
     inner: OpenMessageContent,
 }
 
-impl RTDOpenMessageContentBuilder {
+#[deprecated]
+pub type RTDOpenMessageContentBuilder = OpenMessageContentBuilder;
+
+impl OpenMessageContentBuilder {
     pub fn build(&self) -> OpenMessageContent {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<OpenMessageContent> for OpenMessageContent {
     }
 }
 
-impl AsRef<OpenMessageContent> for RTDOpenMessageContentBuilder {
+impl AsRef<OpenMessageContent> for OpenMessageContentBuilder {
     fn as_ref(&self) -> &OpenMessageContent {
         &self.inner
     }

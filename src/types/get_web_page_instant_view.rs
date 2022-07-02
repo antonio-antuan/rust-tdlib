@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct GetWebPageInstantView {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The web page URL
+
+    #[serde(default)]
     url: String,
     /// If true, the full instant view for the web page will be returned
+
+    #[serde(default)]
     force_full: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for GetWebPageInstantView {
 impl RFunction for GetWebPageInstantView {}
 
 impl GetWebPageInstantView {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetWebPageInstantViewBuilder {
+    pub fn builder() -> GetWebPageInstantViewBuilder {
         let mut inner = GetWebPageInstantView::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getWebPageInstantView".to_string();
 
-        RTDGetWebPageInstantViewBuilder { inner }
+        GetWebPageInstantViewBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -55,11 +59,14 @@ impl GetWebPageInstantView {
 }
 
 #[doc(hidden)]
-pub struct RTDGetWebPageInstantViewBuilder {
+pub struct GetWebPageInstantViewBuilder {
     inner: GetWebPageInstantView,
 }
 
-impl RTDGetWebPageInstantViewBuilder {
+#[deprecated]
+pub type RTDGetWebPageInstantViewBuilder = GetWebPageInstantViewBuilder;
+
+impl GetWebPageInstantViewBuilder {
     pub fn build(&self) -> GetWebPageInstantView {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<GetWebPageInstantView> for GetWebPageInstantView {
     }
 }
 
-impl AsRef<GetWebPageInstantView> for RTDGetWebPageInstantViewBuilder {
+impl AsRef<GetWebPageInstantView> for GetWebPageInstantViewBuilder {
     fn as_ref(&self) -> &GetWebPageInstantView {
         &self.inner
     }

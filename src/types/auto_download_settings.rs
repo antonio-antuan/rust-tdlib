@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,20 +11,36 @@ pub struct AutoDownloadSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the auto-download is enabled
+
+    #[serde(default)]
     is_auto_download_enabled: bool,
-    /// The maximum size of a photo file to be auto-downloaded
+    /// The maximum size of a photo file to be auto-downloaded, in bytes
+
+    #[serde(default)]
     max_photo_file_size: i32,
-    /// The maximum size of a video file to be auto-downloaded
+    /// The maximum size of a video file to be auto-downloaded, in bytes
+
+    #[serde(default)]
     max_video_file_size: i32,
-    /// The maximum size of other file types to be auto-downloaded
+    /// The maximum size of other file types to be auto-downloaded, in bytes
+
+    #[serde(default)]
     max_other_file_size: i32,
-    /// The maximum suggested bitrate for uploaded videos
+    /// The maximum suggested bitrate for uploaded videos, in kbit/s
+
+    #[serde(default)]
     video_upload_bitrate: i32,
     /// True, if the beginning of video files needs to be preloaded for instant playback
+
+    #[serde(default)]
     preload_large_videos: bool,
     /// True, if the next audio track needs to be preloaded while the user is listening to an audio file
+
+    #[serde(default)]
     preload_next_audio: bool,
     /// True, if "use less data for calls" option needs to be enabled
+
+    #[serde(default)]
     use_less_data_for_calls: bool,
 }
 
@@ -40,14 +56,14 @@ impl RObject for AutoDownloadSettings {
 }
 
 impl AutoDownloadSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAutoDownloadSettingsBuilder {
+    pub fn builder() -> AutoDownloadSettingsBuilder {
         let mut inner = AutoDownloadSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAutoDownloadSettingsBuilder { inner }
+        AutoDownloadSettingsBuilder { inner }
     }
 
     pub fn is_auto_download_enabled(&self) -> bool {
@@ -84,11 +100,14 @@ impl AutoDownloadSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDAutoDownloadSettingsBuilder {
+pub struct AutoDownloadSettingsBuilder {
     inner: AutoDownloadSettings,
 }
 
-impl RTDAutoDownloadSettingsBuilder {
+#[deprecated]
+pub type RTDAutoDownloadSettingsBuilder = AutoDownloadSettingsBuilder;
+
+impl AutoDownloadSettingsBuilder {
     pub fn build(&self) -> AutoDownloadSettings {
         self.inner.clone()
     }
@@ -140,7 +159,7 @@ impl AsRef<AutoDownloadSettings> for AutoDownloadSettings {
     }
 }
 
-impl AsRef<AutoDownloadSettings> for RTDAutoDownloadSettingsBuilder {
+impl AsRef<AutoDownloadSettings> for AutoDownloadSettingsBuilder {
     fn as_ref(&self) -> &AutoDownloadSettings {
         &self.inner
     }

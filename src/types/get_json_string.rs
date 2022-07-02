@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetJsonString {
 impl RFunction for GetJsonString {}
 
 impl GetJsonString {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetJsonStringBuilder {
+    pub fn builder() -> GetJsonStringBuilder {
         let mut inner = GetJsonString::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getJsonString".to_string();
 
-        RTDGetJsonStringBuilder { inner }
+        GetJsonStringBuilder { inner }
     }
 
     pub fn json_value(&self) -> &JsonValue {
@@ -51,11 +51,14 @@ impl GetJsonString {
 }
 
 #[doc(hidden)]
-pub struct RTDGetJsonStringBuilder {
+pub struct GetJsonStringBuilder {
     inner: GetJsonString,
 }
 
-impl RTDGetJsonStringBuilder {
+#[deprecated]
+pub type RTDGetJsonStringBuilder = GetJsonStringBuilder;
+
+impl GetJsonStringBuilder {
     pub fn build(&self) -> GetJsonString {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetJsonString> for GetJsonString {
     }
 }
 
-impl AsRef<GetJsonString> for RTDGetJsonStringBuilder {
+impl AsRef<GetJsonString> for GetJsonStringBuilder {
     fn as_ref(&self) -> &GetJsonString {
         &self.inner
     }

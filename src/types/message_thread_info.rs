@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,22 @@ pub struct MessageThreadInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the message thread belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Message thread identifier, unique within the chat
+
+    #[serde(default)]
     message_thread_id: i64,
-    /// Contains information about the message thread
+    /// Information about the message thread
     reply_info: MessageReplyInfo,
+    /// Approximate number of unread messages in the message thread
+
+    #[serde(default)]
+    unread_message_count: i32,
     /// The messages from which the thread starts. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id)
+
+    #[serde(default)]
     messages: Vec<Message>,
     /// A draft of a message in the message thread; may be null
     draft_message: Option<DraftMessage>,
@@ -34,14 +44,14 @@ impl RObject for MessageThreadInfo {
 }
 
 impl MessageThreadInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageThreadInfoBuilder {
+    pub fn builder() -> MessageThreadInfoBuilder {
         let mut inner = MessageThreadInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageThreadInfoBuilder { inner }
+        MessageThreadInfoBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -56,6 +66,10 @@ impl MessageThreadInfo {
         &self.reply_info
     }
 
+    pub fn unread_message_count(&self) -> i32 {
+        self.unread_message_count
+    }
+
     pub fn messages(&self) -> &Vec<Message> {
         &self.messages
     }
@@ -66,11 +80,14 @@ impl MessageThreadInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageThreadInfoBuilder {
+pub struct MessageThreadInfoBuilder {
     inner: MessageThreadInfo,
 }
 
-impl RTDMessageThreadInfoBuilder {
+#[deprecated]
+pub type RTDMessageThreadInfoBuilder = MessageThreadInfoBuilder;
+
+impl MessageThreadInfoBuilder {
     pub fn build(&self) -> MessageThreadInfo {
         self.inner.clone()
     }
@@ -87,6 +104,11 @@ impl RTDMessageThreadInfoBuilder {
 
     pub fn reply_info<T: AsRef<MessageReplyInfo>>(&mut self, reply_info: T) -> &mut Self {
         self.inner.reply_info = reply_info.as_ref().clone();
+        self
+    }
+
+    pub fn unread_message_count(&mut self, unread_message_count: i32) -> &mut Self {
+        self.inner.unread_message_count = unread_message_count;
         self
     }
 
@@ -107,7 +129,7 @@ impl AsRef<MessageThreadInfo> for MessageThreadInfo {
     }
 }
 
-impl AsRef<MessageThreadInfo> for RTDMessageThreadInfoBuilder {
+impl AsRef<MessageThreadInfo> for MessageThreadInfoBuilder {
     fn as_ref(&self) -> &MessageThreadInfo {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for RemoveStickerFromSet {
 impl RFunction for RemoveStickerFromSet {}
 
 impl RemoveStickerFromSet {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveStickerFromSetBuilder {
+    pub fn builder() -> RemoveStickerFromSetBuilder {
         let mut inner = RemoveStickerFromSet::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeStickerFromSet".to_string();
 
-        RTDRemoveStickerFromSetBuilder { inner }
+        RemoveStickerFromSetBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -51,11 +51,14 @@ impl RemoveStickerFromSet {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveStickerFromSetBuilder {
+pub struct RemoveStickerFromSetBuilder {
     inner: RemoveStickerFromSet,
 }
 
-impl RTDRemoveStickerFromSetBuilder {
+#[deprecated]
+pub type RTDRemoveStickerFromSetBuilder = RemoveStickerFromSetBuilder;
+
+impl RemoveStickerFromSetBuilder {
     pub fn build(&self) -> RemoveStickerFromSet {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<RemoveStickerFromSet> for RemoveStickerFromSet {
     }
 }
 
-impl AsRef<RemoveStickerFromSet> for RTDRemoveStickerFromSetBuilder {
+impl AsRef<RemoveStickerFromSet> for RemoveStickerFromSetBuilder {
     fn as_ref(&self) -> &RemoveStickerFromSet {
         &self.inner
     }

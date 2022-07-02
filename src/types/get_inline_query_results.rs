@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,22 @@ pub struct GetInlineQueryResults {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The identifier of the target bot
-    bot_user_id: i32,
+
+    #[serde(default)]
+    bot_user_id: i64,
     /// Identifier of the chat where the query was sent
+
+    #[serde(default)]
     chat_id: i64,
-    /// Location of the user, only if needed
+    /// Location of the user; pass null if unknown or the bot doesn't need user's location
     user_location: Location,
     /// Text of the query
+
+    #[serde(default)]
     query: String,
     /// Offset of the first entry to return
+
+    #[serde(default)]
     offset: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -39,19 +47,19 @@ impl RObject for GetInlineQueryResults {
 impl RFunction for GetInlineQueryResults {}
 
 impl GetInlineQueryResults {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetInlineQueryResultsBuilder {
+    pub fn builder() -> GetInlineQueryResultsBuilder {
         let mut inner = GetInlineQueryResults::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getInlineQueryResults".to_string();
 
-        RTDGetInlineQueryResultsBuilder { inner }
+        GetInlineQueryResultsBuilder { inner }
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -73,16 +81,19 @@ impl GetInlineQueryResults {
 }
 
 #[doc(hidden)]
-pub struct RTDGetInlineQueryResultsBuilder {
+pub struct GetInlineQueryResultsBuilder {
     inner: GetInlineQueryResults,
 }
 
-impl RTDGetInlineQueryResultsBuilder {
+#[deprecated]
+pub type RTDGetInlineQueryResultsBuilder = GetInlineQueryResultsBuilder;
+
+impl GetInlineQueryResultsBuilder {
     pub fn build(&self) -> GetInlineQueryResults {
         self.inner.clone()
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }
@@ -114,7 +125,7 @@ impl AsRef<GetInlineQueryResults> for GetInlineQueryResults {
     }
 }
 
-impl AsRef<GetInlineQueryResults> for RTDGetInlineQueryResultsBuilder {
+impl AsRef<GetInlineQueryResults> for GetInlineQueryResultsBuilder {
     fn as_ref(&self) -> &GetInlineQueryResults {
         &self.inner
     }

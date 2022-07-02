@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct AddChatToList {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// The chat list. Use getChatListsToAddChat to get suitable chat lists
 
@@ -35,16 +37,16 @@ impl RObject for AddChatToList {
 impl RFunction for AddChatToList {}
 
 impl AddChatToList {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddChatToListBuilder {
+    pub fn builder() -> AddChatToListBuilder {
         let mut inner = AddChatToList::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "addChatToList".to_string();
 
-        RTDAddChatToListBuilder { inner }
+        AddChatToListBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -57,11 +59,14 @@ impl AddChatToList {
 }
 
 #[doc(hidden)]
-pub struct RTDAddChatToListBuilder {
+pub struct AddChatToListBuilder {
     inner: AddChatToList,
 }
 
-impl RTDAddChatToListBuilder {
+#[deprecated]
+pub type RTDAddChatToListBuilder = AddChatToListBuilder;
+
+impl AddChatToListBuilder {
     pub fn build(&self) -> AddChatToList {
         self.inner.clone()
     }
@@ -83,7 +88,7 @@ impl AsRef<AddChatToList> for AddChatToList {
     }
 }
 
-impl AsRef<AddChatToList> for RTDAddChatToListBuilder {
+impl AsRef<AddChatToList> for AddChatToListBuilder {
     fn as_ref(&self) -> &AddChatToList {
         &self.inner
     }

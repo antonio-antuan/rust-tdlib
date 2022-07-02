@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct SetStickerSetThumbnail {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Sticker set owner
-    user_id: i32,
+
+    #[serde(default)]
+    user_id: i64,
     /// Sticker set name
+
+    #[serde(default)]
     name: String,
-    /// Thumbnail to set in PNG or TGS format. Animated thumbnail must be set for animated sticker sets and only for them. Pass a zero InputFileId to delete the thumbnail
+    /// Thumbnail to set in PNG or TGS format; pass null to remove the sticker set thumbnail. Animated thumbnail must be set for animated sticker sets and only for them
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     thumbnail: InputFile,
@@ -37,19 +41,19 @@ impl RObject for SetStickerSetThumbnail {
 impl RFunction for SetStickerSetThumbnail {}
 
 impl SetStickerSetThumbnail {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetStickerSetThumbnailBuilder {
+    pub fn builder() -> SetStickerSetThumbnailBuilder {
         let mut inner = SetStickerSetThumbnail::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setStickerSetThumbnail".to_string();
 
-        RTDSetStickerSetThumbnailBuilder { inner }
+        SetStickerSetThumbnailBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -63,16 +67,19 @@ impl SetStickerSetThumbnail {
 }
 
 #[doc(hidden)]
-pub struct RTDSetStickerSetThumbnailBuilder {
+pub struct SetStickerSetThumbnailBuilder {
     inner: SetStickerSetThumbnail,
 }
 
-impl RTDSetStickerSetThumbnailBuilder {
+#[deprecated]
+pub type RTDSetStickerSetThumbnailBuilder = SetStickerSetThumbnailBuilder;
+
+impl SetStickerSetThumbnailBuilder {
     pub fn build(&self) -> SetStickerSetThumbnail {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -94,7 +101,7 @@ impl AsRef<SetStickerSetThumbnail> for SetStickerSetThumbnail {
     }
 }
 
-impl AsRef<SetStickerSetThumbnail> for RTDSetStickerSetThumbnailBuilder {
+impl AsRef<SetStickerSetThumbnail> for SetStickerSetThumbnailBuilder {
     fn as_ref(&self) -> &SetStickerSetThumbnail {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,11 +11,17 @@ pub struct GetLoginUrlInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the message with the button
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier of the message with the button
+
+    #[serde(default)]
     message_id: i64,
     /// Button identifier
-    button_id: i32,
+
+    #[serde(default)]
+    button_id: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -37,16 +43,16 @@ impl TDLoginUrlInfo for GetLoginUrlInfo {}
 impl RFunction for GetLoginUrlInfo {}
 
 impl GetLoginUrlInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetLoginUrlInfoBuilder {
+    pub fn builder() -> GetLoginUrlInfoBuilder {
         let mut inner = GetLoginUrlInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getLoginUrlInfo".to_string();
 
-        RTDGetLoginUrlInfoBuilder { inner }
+        GetLoginUrlInfoBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -57,17 +63,20 @@ impl GetLoginUrlInfo {
         self.message_id
     }
 
-    pub fn button_id(&self) -> i32 {
+    pub fn button_id(&self) -> i64 {
         self.button_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetLoginUrlInfoBuilder {
+pub struct GetLoginUrlInfoBuilder {
     inner: GetLoginUrlInfo,
 }
 
-impl RTDGetLoginUrlInfoBuilder {
+#[deprecated]
+pub type RTDGetLoginUrlInfoBuilder = GetLoginUrlInfoBuilder;
+
+impl GetLoginUrlInfoBuilder {
     pub fn build(&self) -> GetLoginUrlInfo {
         self.inner.clone()
     }
@@ -82,7 +91,7 @@ impl RTDGetLoginUrlInfoBuilder {
         self
     }
 
-    pub fn button_id(&mut self, button_id: i32) -> &mut Self {
+    pub fn button_id(&mut self, button_id: i64) -> &mut Self {
         self.inner.button_id = button_id;
         self
     }
@@ -94,7 +103,7 @@ impl AsRef<GetLoginUrlInfo> for GetLoginUrlInfo {
     }
 }
 
-impl AsRef<GetLoginUrlInfo> for RTDGetLoginUrlInfoBuilder {
+impl AsRef<GetLoginUrlInfo> for GetLoginUrlInfoBuilder {
     fn as_ref(&self) -> &GetLoginUrlInfo {
         &self.inner
     }

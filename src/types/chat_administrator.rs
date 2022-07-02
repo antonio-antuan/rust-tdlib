@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct ChatAdministrator {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the administrator
-    user_id: i32,
+
+    #[serde(default)]
+    user_id: i64,
     /// Custom title of the administrator
+
+    #[serde(default)]
     custom_title: String,
     /// True, if the user is the owner of the chat
+
+    #[serde(default)]
     is_owner: bool,
 }
 
@@ -30,17 +36,17 @@ impl RObject for ChatAdministrator {
 }
 
 impl ChatAdministrator {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatAdministratorBuilder {
+    pub fn builder() -> ChatAdministratorBuilder {
         let mut inner = ChatAdministrator::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatAdministratorBuilder { inner }
+        ChatAdministratorBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -54,16 +60,19 @@ impl ChatAdministrator {
 }
 
 #[doc(hidden)]
-pub struct RTDChatAdministratorBuilder {
+pub struct ChatAdministratorBuilder {
     inner: ChatAdministrator,
 }
 
-impl RTDChatAdministratorBuilder {
+#[deprecated]
+pub type RTDChatAdministratorBuilder = ChatAdministratorBuilder;
+
+impl ChatAdministratorBuilder {
     pub fn build(&self) -> ChatAdministrator {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -85,7 +94,7 @@ impl AsRef<ChatAdministrator> for ChatAdministrator {
     }
 }
 
-impl AsRef<ChatAdministrator> for RTDChatAdministratorBuilder {
+impl AsRef<ChatAdministrator> for ChatAdministratorBuilder {
     fn as_ref(&self) -> &ChatAdministrator {
         &self.inner
     }

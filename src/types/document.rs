@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct Document {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Original name of the file; as defined by the sender
+
+    #[serde(default)]
     file_name: String,
     /// MIME type of the file; as defined by the sender
+
+    #[serde(default)]
     mime_type: String,
     /// Document minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
@@ -34,14 +38,14 @@ impl RObject for Document {
 }
 
 impl Document {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDocumentBuilder {
+    pub fn builder() -> DocumentBuilder {
         let mut inner = Document::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDocumentBuilder { inner }
+        DocumentBuilder { inner }
     }
 
     pub fn file_name(&self) -> &String {
@@ -66,11 +70,14 @@ impl Document {
 }
 
 #[doc(hidden)]
-pub struct RTDDocumentBuilder {
+pub struct DocumentBuilder {
     inner: Document,
 }
 
-impl RTDDocumentBuilder {
+#[deprecated]
+pub type RTDDocumentBuilder = DocumentBuilder;
+
+impl DocumentBuilder {
     pub fn build(&self) -> Document {
         self.inner.clone()
     }
@@ -107,7 +114,7 @@ impl AsRef<Document> for Document {
     }
 }
 
-impl AsRef<Document> for RTDDocumentBuilder {
+impl AsRef<Document> for DocumentBuilder {
     fn as_ref(&self) -> &Document {
         &self.inner
     }

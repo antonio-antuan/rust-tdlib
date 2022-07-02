@@ -9,7 +9,7 @@ use crate::{errors::*, types::*};
 use serde::{de, Serialize};
 
 #[allow(dead_code)]
-pub fn from_json<'a, T>(json: &'a str) -> RTDResult<T>
+pub fn from_json<'a, T>(json: &'a str) -> Result<T>
 where
     T: serde::de::Deserialize<'a>,
 {
@@ -24,7 +24,7 @@ pub trait RObject: Debug {
 }
 
 pub trait RFunction: Debug + RObject + Serialize {
-    fn to_json(&self) -> RTDResult<String> {
+    fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(self)?)
     }
 }
@@ -70,6 +70,9 @@ impl<'a, BACKGROUNDFILL: TDBackgroundFill> TDBackgroundFill for &'a mut BACKGROU
 
 impl<'a, BACKGROUNDTYPE: TDBackgroundType> TDBackgroundType for &'a BACKGROUNDTYPE {}
 impl<'a, BACKGROUNDTYPE: TDBackgroundType> TDBackgroundType for &'a mut BACKGROUNDTYPE {}
+
+impl<'a, BOTCOMMANDSCOPE: TDBotCommandScope> TDBotCommandScope for &'a BOTCOMMANDSCOPE {}
+impl<'a, BOTCOMMANDSCOPE: TDBotCommandScope> TDBotCommandScope for &'a mut BOTCOMMANDSCOPE {}
 
 impl<'a, CALLDISCARDREASON: TDCallDiscardReason> TDCallDiscardReason for &'a CALLDISCARDREASON {}
 impl<'a, CALLDISCARDREASON: TDCallDiscardReason> TDCallDiscardReason for &'a mut CALLDISCARDREASON {}
@@ -140,6 +143,15 @@ impl<'a, CHECKCHATUSERNAMERESULT: TDCheckChatUsernameResult> TDCheckChatUsername
 {
 }
 
+impl<'a, CHECKSTICKERSETNAMERESULT: TDCheckStickerSetNameResult> TDCheckStickerSetNameResult
+    for &'a CHECKSTICKERSETNAMERESULT
+{
+}
+impl<'a, CHECKSTICKERSETNAMERESULT: TDCheckStickerSetNameResult> TDCheckStickerSetNameResult
+    for &'a mut CHECKSTICKERSETNAMERESULT
+{
+}
+
 impl<'a, CONNECTIONSTATE: TDConnectionState> TDConnectionState for &'a CONNECTIONSTATE {}
 impl<'a, CONNECTIONSTATE: TDConnectionState> TDConnectionState for &'a mut CONNECTIONSTATE {}
 
@@ -151,6 +163,15 @@ impl<'a, DICESTICKERS: TDDiceStickers> TDDiceStickers for &'a mut DICESTICKERS {
 
 impl<'a, FILETYPE: TDFileType> TDFileType for &'a FILETYPE {}
 impl<'a, FILETYPE: TDFileType> TDFileType for &'a mut FILETYPE {}
+
+impl<'a, GROUPCALLVIDEOQUALITY: TDGroupCallVideoQuality> TDGroupCallVideoQuality
+    for &'a GROUPCALLVIDEOQUALITY
+{
+}
+impl<'a, GROUPCALLVIDEOQUALITY: TDGroupCallVideoQuality> TDGroupCallVideoQuality
+    for &'a mut GROUPCALLVIDEOQUALITY
+{
+}
 
 impl<'a, INLINEKEYBOARDBUTTONTYPE: TDInlineKeyboardButtonType> TDInlineKeyboardButtonType
     for &'a INLINEKEYBOARDBUTTONTYPE
@@ -215,6 +236,9 @@ impl<'a, INPUTPASSPORTELEMENTERRORSOURCE: TDInputPassportElementErrorSource>
 impl<'a, INPUTSTICKER: TDInputSticker> TDInputSticker for &'a INPUTSTICKER {}
 impl<'a, INPUTSTICKER: TDInputSticker> TDInputSticker for &'a mut INPUTSTICKER {}
 
+impl<'a, INTERNALLINKTYPE: TDInternalLinkType> TDInternalLinkType for &'a INTERNALLINKTYPE {}
+impl<'a, INTERNALLINKTYPE: TDInternalLinkType> TDInternalLinkType for &'a mut INTERNALLINKTYPE {}
+
 impl<'a, JSONVALUE: TDJsonValue> TDJsonValue for &'a JSONVALUE {}
 impl<'a, JSONVALUE: TDJsonValue> TDJsonValue for &'a mut JSONVALUE {}
 
@@ -244,6 +268,9 @@ impl<'a, MASKPOINT: TDMaskPoint> TDMaskPoint for &'a mut MASKPOINT {}
 
 impl<'a, MESSAGECONTENT: TDMessageContent> TDMessageContent for &'a MESSAGECONTENT {}
 impl<'a, MESSAGECONTENT: TDMessageContent> TDMessageContent for &'a mut MESSAGECONTENT {}
+
+impl<'a, MESSAGEFILETYPE: TDMessageFileType> TDMessageFileType for &'a MESSAGEFILETYPE {}
+impl<'a, MESSAGEFILETYPE: TDMessageFileType> TDMessageFileType for &'a mut MESSAGEFILETYPE {}
 
 impl<'a, MESSAGEFORWARDORIGIN: TDMessageForwardOrigin> TDMessageForwardOrigin
     for &'a MESSAGEFORWARDORIGIN
@@ -371,6 +398,15 @@ impl<'a, PUSHMESSAGECONTENT: TDPushMessageContent> TDPushMessageContent
 impl<'a, REPLYMARKUP: TDReplyMarkup> TDReplyMarkup for &'a REPLYMARKUP {}
 impl<'a, REPLYMARKUP: TDReplyMarkup> TDReplyMarkup for &'a mut REPLYMARKUP {}
 
+impl<'a, RESETPASSWORDRESULT: TDResetPasswordResult> TDResetPasswordResult
+    for &'a RESETPASSWORDRESULT
+{
+}
+impl<'a, RESETPASSWORDRESULT: TDResetPasswordResult> TDResetPasswordResult
+    for &'a mut RESETPASSWORDRESULT
+{
+}
+
 impl<'a, RICHTEXT: TDRichText> TDRichText for &'a RICHTEXT {}
 impl<'a, RICHTEXT: TDRichText> TDRichText for &'a mut RICHTEXT {}
 
@@ -440,1027 +476,8 @@ impl<'a, USERSTATUS: TDUserStatus> TDUserStatus for &'a mut USERSTATUS {}
 impl<'a, USERTYPE: TDUserType> TDUserType for &'a USERTYPE {}
 impl<'a, USERTYPE: TDUserType> TDUserType for &'a mut USERTYPE {}
 
-#[derive(Debug, Clone)]
-pub(crate) enum TdType {
-    AuthorizationState(AuthorizationState),
-    CanTransferOwnershipResult(CanTransferOwnershipResult),
-    ChatStatistics(ChatStatistics),
-    CheckChatUsernameResult(CheckChatUsernameResult),
-    JsonValue(JsonValue),
-    LanguagePackStringValue(LanguagePackStringValue),
-    LogStream(LogStream),
-    LoginUrlInfo(LoginUrlInfo),
-    OptionValue(OptionValue),
-    PassportElement(PassportElement),
-    StatisticalGraph(StatisticalGraph),
-    Update(Update),
-    AccountTtl(AccountTtl),
-    Animations(Animations),
-    AuthenticationCodeInfo(AuthenticationCodeInfo),
-    AutoDownloadSettingsPresets(AutoDownloadSettingsPresets),
-    Background(Background),
-    Backgrounds(Backgrounds),
-    BankCardInfo(BankCardInfo),
-    BasicGroup(BasicGroup),
-    BasicGroupFullInfo(BasicGroupFullInfo),
-    CallId(CallId),
-    CallbackQueryAnswer(CallbackQueryAnswer),
-    Chat(Chat),
-    ChatAdministrators(ChatAdministrators),
-    ChatEvents(ChatEvents),
-    ChatFilter(ChatFilter),
-    ChatFilterInfo(ChatFilterInfo),
-    ChatInviteLink(ChatInviteLink),
-    ChatInviteLinkInfo(ChatInviteLinkInfo),
-    ChatLists(ChatLists),
-    ChatMember(ChatMember),
-    ChatMembers(ChatMembers),
-    ChatPhotos(ChatPhotos),
-    Chats(Chats),
-    ChatsNearby(ChatsNearby),
-    ConnectedWebsites(ConnectedWebsites),
-    Count(Count),
-    Countries(Countries),
-    CustomRequestResult(CustomRequestResult),
-    DatabaseStatistics(DatabaseStatistics),
-    DeepLinkInfo(DeepLinkInfo),
-    EmailAddressAuthenticationCodeInfo(EmailAddressAuthenticationCodeInfo),
-    Emojis(Emojis),
-    Error(Error),
-    File(File),
-    FilePart(FilePart),
-    FormattedText(FormattedText),
-    FoundMessages(FoundMessages),
-    GameHighScores(GameHighScores),
-    Hashtags(Hashtags),
-    HttpUrl(HttpUrl),
-    ImportedContacts(ImportedContacts),
-    InlineQueryResults(InlineQueryResults),
-    LanguagePackInfo(LanguagePackInfo),
-    LanguagePackStrings(LanguagePackStrings),
-    LocalizationTargetInfo(LocalizationTargetInfo),
-    LogTags(LogTags),
-    LogVerbosityLevel(LogVerbosityLevel),
-    Message(Message),
-    MessageLink(MessageLink),
-    MessageLinkInfo(MessageLinkInfo),
-    MessageSenders(MessageSenders),
-    MessageStatistics(MessageStatistics),
-    MessageThreadInfo(MessageThreadInfo),
-    Messages(Messages),
-    NetworkStatistics(NetworkStatistics),
-    Ok(Ok),
-    OrderInfo(OrderInfo),
-    PassportAuthorizationForm(PassportAuthorizationForm),
-    PassportElements(PassportElements),
-    PassportElementsWithErrors(PassportElementsWithErrors),
-    PasswordState(PasswordState),
-    PaymentForm(PaymentForm),
-    PaymentReceipt(PaymentReceipt),
-    PaymentResult(PaymentResult),
-    PhoneNumberInfo(PhoneNumberInfo),
-    Proxies(Proxies),
-    Proxy(Proxy),
-    PushReceiverId(PushReceiverId),
-    RecommendedChatFilters(RecommendedChatFilters),
-    RecoveryEmailAddress(RecoveryEmailAddress),
-    ScopeNotificationSettings(ScopeNotificationSettings),
-    Seconds(Seconds),
-    SecretChat(SecretChat),
-    Session(Session),
-    Sessions(Sessions),
-    StickerSet(StickerSet),
-    StickerSets(StickerSets),
-    Stickers(Stickers),
-    StorageStatistics(StorageStatistics),
-    StorageStatisticsFast(StorageStatisticsFast),
-    Supergroup(Supergroup),
-    SupergroupFullInfo(SupergroupFullInfo),
-    TMeUrls(TMeUrls),
-    TemporaryPasswordState(TemporaryPasswordState),
-    TestBytes(TestBytes),
-    TestInt(TestInt),
-    TestString(TestString),
-    TestVectorInt(TestVectorInt),
-    TestVectorIntObject(TestVectorIntObject),
-    TestVectorString(TestVectorString),
-    TestVectorStringObject(TestVectorStringObject),
-    Text(Text),
-    TextEntities(TextEntities),
-    Updates(Updates),
-    User(User),
-    UserFullInfo(UserFullInfo),
-    UserPrivacySettingRules(UserPrivacySettingRules),
-    Users(Users),
-    ValidatedOrderInfo(ValidatedOrderInfo),
-    WebPage(WebPage),
-    WebPageInstantView(WebPageInstantView),
-}
-impl<'de> Deserialize<'de> for TdType {
-    fn deserialize<D>(deserializer: D) -> Result<TdType, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        use serde::de::Error;
-        let rtd_trait_value: serde_json::Value = Deserialize::deserialize(deserializer)?;
-
-        let rtd_trait_map = match rtd_trait_value.as_object() {
-            Some(map) => map,
-            None => {
-                return Err(D::Error::unknown_field(
-                    stringify!(TdType),
-                    &[stringify!("{} is not the correct type", TdType)],
-                ))
-            }
-        };
-
-        let rtd_trait_type = match rtd_trait_map.get("@type") {
-            Some(t) => match t.as_str() {
-                Some(s) => s,
-                None => {
-                    return Err(D::Error::unknown_field(
-                        stringify!( "{} -> @type" , $field ),
-                        &[stringify!("{} -> @type is not the correct type", TdType)],
-                    ))
-                }
-            },
-            None => return Err(D::Error::custom("@type is empty")),
-        };
-        if let Some(t) =
-            deserialize_traits(rtd_trait_type, rtd_trait_value.clone()).map_err(|err| {
-                D::Error::custom(format!(
-                    "can't deserialize for {} with error: {}",
-                    rtd_trait_type, err
-                ))
-            })?
-        {
-            return Ok(t);
-        };
-        if let Some(t) =
-            deserialize_direct_types(rtd_trait_type, rtd_trait_value.clone()).map_err(|err| {
-                D::Error::custom(format!(
-                    "can't deserialize for {} with error: {}",
-                    rtd_trait_type, err
-                ))
-            })?
-        {
-            return Ok(t);
-        }
-        Err(D::Error::custom(format!(
-            "got {} @type with unavailable variant",
-            rtd_trait_type
-        )))
-    }
-}
-
-fn deserialize_traits(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    if let Some(td_type) = deserialize_update(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_json_value(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_option_value(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-    if let Some(td_type) = deserialize_authorization_state(rtd_trait_type, rtd_trait_value.clone())?
-    {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) =
-        deserialize_can_transfer_ownership_result(rtd_trait_type, rtd_trait_value.clone())?
-    {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_chat_statistics(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) =
-        deserialize_check_chat_username_result(rtd_trait_type, rtd_trait_value.clone())?
-    {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) =
-        deserialize_language_pack_string_value(rtd_trait_type, rtd_trait_value.clone())?
-    {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_log_stream(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_login_url_info(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_passport_element(rtd_trait_type, rtd_trait_value.clone())? {
-        return Ok(Some(td_type));
-    };
-
-    if let Some(td_type) = deserialize_statistical_graph(rtd_trait_type, rtd_trait_value)? {
-        return Ok(Some(td_type));
-    };
-
-    Ok(None)
-}
-
-fn deserialize_direct_types(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match rtd_trait_type {
-        "accountTtl" => Some(TdType::AccountTtl(serde_json::from_value(rtd_trait_value)?)),
-        "animations" => Some(TdType::Animations(serde_json::from_value(rtd_trait_value)?)),
-        "authenticationCodeInfo" => Some(TdType::AuthenticationCodeInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "autoDownloadSettingsPresets" => Some(TdType::AutoDownloadSettingsPresets(
-            serde_json::from_value(rtd_trait_value)?,
-        )),
-        "background" => Some(TdType::Background(serde_json::from_value(rtd_trait_value)?)),
-        "backgrounds" => Some(TdType::Backgrounds(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "bankCardInfo" => Some(TdType::BankCardInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "basicGroup" => Some(TdType::BasicGroup(serde_json::from_value(rtd_trait_value)?)),
-        "basicGroupFullInfo" => Some(TdType::BasicGroupFullInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "callId" => Some(TdType::CallId(serde_json::from_value(rtd_trait_value)?)),
-        "callbackQueryAnswer" => Some(TdType::CallbackQueryAnswer(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "chat" => Some(TdType::Chat(serde_json::from_value(rtd_trait_value)?)),
-        "chatAdministrators" => Some(TdType::ChatAdministrators(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "chatEvents" => Some(TdType::ChatEvents(serde_json::from_value(rtd_trait_value)?)),
-        "chatFilter" => Some(TdType::ChatFilter(serde_json::from_value(rtd_trait_value)?)),
-        "chatFilterInfo" => Some(TdType::ChatFilterInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "chatInviteLink" => Some(TdType::ChatInviteLink(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "chatInviteLinkInfo" => Some(TdType::ChatInviteLinkInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "chatLists" => Some(TdType::ChatLists(serde_json::from_value(rtd_trait_value)?)),
-        "chatMember" => Some(TdType::ChatMember(serde_json::from_value(rtd_trait_value)?)),
-        "chatMembers" => Some(TdType::ChatMembers(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "chatPhotos" => Some(TdType::ChatPhotos(serde_json::from_value(rtd_trait_value)?)),
-        "chats" => Some(TdType::Chats(serde_json::from_value(rtd_trait_value)?)),
-        "chatsNearby" => Some(TdType::ChatsNearby(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "connectedWebsites" => Some(TdType::ConnectedWebsites(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "count" => Some(TdType::Count(serde_json::from_value(rtd_trait_value)?)),
-        "countries" => Some(TdType::Countries(serde_json::from_value(rtd_trait_value)?)),
-        "customRequestResult" => Some(TdType::CustomRequestResult(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "databaseStatistics" => Some(TdType::DatabaseStatistics(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "deepLinkInfo" => Some(TdType::DeepLinkInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "emailAddressAuthenticationCodeInfo" => Some(TdType::EmailAddressAuthenticationCodeInfo(
-            serde_json::from_value(rtd_trait_value)?,
-        )),
-        "emojis" => Some(TdType::Emojis(serde_json::from_value(rtd_trait_value)?)),
-        "error" => Some(TdType::Error(serde_json::from_value(rtd_trait_value)?)),
-        "file" => Some(TdType::File(serde_json::from_value(rtd_trait_value)?)),
-        "filePart" => Some(TdType::FilePart(serde_json::from_value(rtd_trait_value)?)),
-        "formattedText" => Some(TdType::FormattedText(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "foundMessages" => Some(TdType::FoundMessages(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "gameHighScores" => Some(TdType::GameHighScores(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "hashtags" => Some(TdType::Hashtags(serde_json::from_value(rtd_trait_value)?)),
-        "httpUrl" => Some(TdType::HttpUrl(serde_json::from_value(rtd_trait_value)?)),
-        "importedContacts" => Some(TdType::ImportedContacts(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "inlineQueryResults" => Some(TdType::InlineQueryResults(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "languagePackInfo" => Some(TdType::LanguagePackInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "languagePackStrings" => Some(TdType::LanguagePackStrings(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "localizationTargetInfo" => Some(TdType::LocalizationTargetInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "logTags" => Some(TdType::LogTags(serde_json::from_value(rtd_trait_value)?)),
-        "logVerbosityLevel" => Some(TdType::LogVerbosityLevel(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "message" => Some(TdType::Message(serde_json::from_value(rtd_trait_value)?)),
-        "messageLink" => Some(TdType::MessageLink(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "messageLinkInfo" => Some(TdType::MessageLinkInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "messageSenders" => Some(TdType::MessageSenders(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "messageStatistics" => Some(TdType::MessageStatistics(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "messageThreadInfo" => Some(TdType::MessageThreadInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "messages" => Some(TdType::Messages(serde_json::from_value(rtd_trait_value)?)),
-        "networkStatistics" => Some(TdType::NetworkStatistics(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "ok" => Some(TdType::Ok(serde_json::from_value(rtd_trait_value)?)),
-        "orderInfo" => Some(TdType::OrderInfo(serde_json::from_value(rtd_trait_value)?)),
-        "passportAuthorizationForm" => Some(TdType::PassportAuthorizationForm(
-            serde_json::from_value(rtd_trait_value)?,
-        )),
-        "passportElements" => Some(TdType::PassportElements(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "passportElementsWithErrors" => Some(TdType::PassportElementsWithErrors(
-            serde_json::from_value(rtd_trait_value)?,
-        )),
-        "passwordState" => Some(TdType::PasswordState(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "paymentForm" => Some(TdType::PaymentForm(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "paymentReceipt" => Some(TdType::PaymentReceipt(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "paymentResult" => Some(TdType::PaymentResult(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "phoneNumberInfo" => Some(TdType::PhoneNumberInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "proxies" => Some(TdType::Proxies(serde_json::from_value(rtd_trait_value)?)),
-        "proxy" => Some(TdType::Proxy(serde_json::from_value(rtd_trait_value)?)),
-        "pushReceiverId" => Some(TdType::PushReceiverId(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "recommendedChatFilters" => Some(TdType::RecommendedChatFilters(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "recoveryEmailAddress" => Some(TdType::RecoveryEmailAddress(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "scopeNotificationSettings" => Some(TdType::ScopeNotificationSettings(
-            serde_json::from_value(rtd_trait_value)?,
-        )),
-        "seconds" => Some(TdType::Seconds(serde_json::from_value(rtd_trait_value)?)),
-        "secretChat" => Some(TdType::SecretChat(serde_json::from_value(rtd_trait_value)?)),
-        "session" => Some(TdType::Session(serde_json::from_value(rtd_trait_value)?)),
-        "sessions" => Some(TdType::Sessions(serde_json::from_value(rtd_trait_value)?)),
-        "stickerSet" => Some(TdType::StickerSet(serde_json::from_value(rtd_trait_value)?)),
-        "stickerSets" => Some(TdType::StickerSets(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "stickers" => Some(TdType::Stickers(serde_json::from_value(rtd_trait_value)?)),
-        "storageStatistics" => Some(TdType::StorageStatistics(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "storageStatisticsFast" => Some(TdType::StorageStatisticsFast(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "supergroup" => Some(TdType::Supergroup(serde_json::from_value(rtd_trait_value)?)),
-        "supergroupFullInfo" => Some(TdType::SupergroupFullInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "tMeUrls" => Some(TdType::TMeUrls(serde_json::from_value(rtd_trait_value)?)),
-        "temporaryPasswordState" => Some(TdType::TemporaryPasswordState(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "testBytes" => Some(TdType::TestBytes(serde_json::from_value(rtd_trait_value)?)),
-        "testInt" => Some(TdType::TestInt(serde_json::from_value(rtd_trait_value)?)),
-        "testString" => Some(TdType::TestString(serde_json::from_value(rtd_trait_value)?)),
-        "testVectorInt" => Some(TdType::TestVectorInt(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "testVectorIntObject" => Some(TdType::TestVectorIntObject(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "testVectorString" => Some(TdType::TestVectorString(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "testVectorStringObject" => Some(TdType::TestVectorStringObject(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "text" => Some(TdType::Text(serde_json::from_value(rtd_trait_value)?)),
-        "textEntities" => Some(TdType::TextEntities(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "updates" => Some(TdType::Updates(serde_json::from_value(rtd_trait_value)?)),
-        "user" => Some(TdType::User(serde_json::from_value(rtd_trait_value)?)),
-        "userFullInfo" => Some(TdType::UserFullInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "userPrivacySettingRules" => Some(TdType::UserPrivacySettingRules(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "users" => Some(TdType::Users(serde_json::from_value(rtd_trait_value)?)),
-        "validatedOrderInfo" => Some(TdType::ValidatedOrderInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        "webPage" => Some(TdType::WebPage(serde_json::from_value(rtd_trait_value)?)),
-        "webPageInstantView" => Some(TdType::WebPageInstantView(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        _ => None,
-    })
-}
-
-const AUTHORIZATIONSTATE_MEMBERS: &[&str] = &[
-    "authorizationStateClosed",
-    "authorizationStateClosing",
-    "authorizationStateLoggingOut",
-    "authorizationStateReady",
-    "authorizationStateWaitCode",
-    "authorizationStateWaitEncryptionKey",
-    "authorizationStateWaitOtherDeviceConfirmation",
-    "authorizationStateWaitPassword",
-    "authorizationStateWaitPhoneNumber",
-    "authorizationStateWaitRegistration",
-    "authorizationStateWaitTdlibParameters",
-    "getAuthorizationState",
-];
-
-fn deserialize_authorization_state(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match AUTHORIZATIONSTATE_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::AuthorizationState(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        false => None,
-    })
-}
-
-const CANTRANSFEROWNERSHIPRESULT_MEMBERS: &[&str] = &[
-    "canTransferOwnership",
-    "canTransferOwnershipResultOk",
-    "canTransferOwnershipResultPasswordNeeded",
-    "canTransferOwnershipResultPasswordTooFresh",
-    "canTransferOwnershipResultSessionTooFresh",
-];
-
-fn deserialize_can_transfer_ownership_result(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(
-        match CANTRANSFEROWNERSHIPRESULT_MEMBERS.contains(&rtd_trait_type) {
-            true => Some(TdType::CanTransferOwnershipResult(serde_json::from_value(
-                rtd_trait_value,
-            )?)),
-            false => None,
-        },
-    )
-}
-
-const CHATSTATISTICS_MEMBERS: &[&str] = &[
-    "chatStatisticsChannel",
-    "chatStatisticsSupergroup",
-    "getChatStatistics",
-];
-
-fn deserialize_chat_statistics(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match CHATSTATISTICS_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::ChatStatistics(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        false => None,
-    })
-}
-
-const CHECKCHATUSERNAMERESULT_MEMBERS: &[&str] = &[
-    "checkChatUsername",
-    "checkChatUsernameResultOk",
-    "checkChatUsernameResultPublicChatsTooMuch",
-    "checkChatUsernameResultPublicGroupsUnavailable",
-    "checkChatUsernameResultUsernameInvalid",
-    "checkChatUsernameResultUsernameOccupied",
-];
-
-fn deserialize_check_chat_username_result(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(
-        match CHECKCHATUSERNAMERESULT_MEMBERS.contains(&rtd_trait_type) {
-            true => Some(TdType::CheckChatUsernameResult(serde_json::from_value(
-                rtd_trait_value,
-            )?)),
-            false => None,
-        },
-    )
-}
-
-const JSONVALUE_MEMBERS: &[&str] = &[
-    "getApplicationConfig",
-    "getJsonValue",
-    "jsonValueArray",
-    "jsonValueBoolean",
-    "jsonValueNull",
-    "jsonValueNumber",
-    "jsonValueObject",
-    "jsonValueString",
-];
-
-fn deserialize_json_value(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match JSONVALUE_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::JsonValue(serde_json::from_value(rtd_trait_value)?)),
-        false => None,
-    })
-}
-
-const LANGUAGEPACKSTRINGVALUE_MEMBERS: &[&str] = &[
-    "getLanguagePackString",
-    "languagePackStringValueDeleted",
-    "languagePackStringValueOrdinary",
-    "languagePackStringValuePluralized",
-];
-
-fn deserialize_language_pack_string_value(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(
-        match LANGUAGEPACKSTRINGVALUE_MEMBERS.contains(&rtd_trait_type) {
-            true => Some(TdType::LanguagePackStringValue(serde_json::from_value(
-                rtd_trait_value,
-            )?)),
-            false => None,
-        },
-    )
-}
-
-const LOGSTREAM_MEMBERS: &[&str] = &[
-    "getLogStream",
-    "logStreamDefault",
-    "logStreamEmpty",
-    "logStreamFile",
-];
-
-fn deserialize_log_stream(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match LOGSTREAM_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::LogStream(serde_json::from_value(rtd_trait_value)?)),
-        false => None,
-    })
-}
-
-const LOGINURLINFO_MEMBERS: &[&str] = &[
-    "getLoginUrlInfo",
-    "loginUrlInfoOpen",
-    "loginUrlInfoRequestConfirmation",
-];
-
-fn deserialize_login_url_info(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match LOGINURLINFO_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::LoginUrlInfo(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        false => None,
-    })
-}
-
-const OPTIONVALUE_MEMBERS: &[&str] = &[
-    "getOption",
-    "optionValueBoolean",
-    "optionValueEmpty",
-    "optionValueInteger",
-    "optionValueString",
-];
-
-fn deserialize_option_value(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match OPTIONVALUE_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::OptionValue(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        false => None,
-    })
-}
-
-const PASSPORTELEMENT_MEMBERS: &[&str] = &[
-    "getPassportElement",
-    "passportElementAddress",
-    "passportElementBankStatement",
-    "passportElementDriverLicense",
-    "passportElementEmailAddress",
-    "passportElementIdentityCard",
-    "passportElementInternalPassport",
-    "passportElementPassport",
-    "passportElementPassportRegistration",
-    "passportElementPersonalDetails",
-    "passportElementPhoneNumber",
-    "passportElementRentalAgreement",
-    "passportElementTemporaryRegistration",
-    "passportElementUtilityBill",
-    "setPassportElement",
-];
-
-fn deserialize_passport_element(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match PASSPORTELEMENT_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::PassportElement(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        false => None,
-    })
-}
-
-const STATISTICALGRAPH_MEMBERS: &[&str] = &[
-    "getStatisticalGraph",
-    "statisticalGraphAsync",
-    "statisticalGraphData",
-    "statisticalGraphError",
-];
-
-fn deserialize_statistical_graph(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match STATISTICALGRAPH_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::StatisticalGraph(serde_json::from_value(
-            rtd_trait_value,
-        )?)),
-        false => None,
-    })
-}
-
-const UPDATE_MEMBERS: &[&str] = &[
-    "testUseUpdate",
-    "updateActiveNotifications",
-    "updateAnimationSearchParameters",
-    "updateAuthorizationState",
-    "updateBasicGroup",
-    "updateBasicGroupFullInfo",
-    "updateCall",
-    "updateChatActionBar",
-    "updateChatDefaultDisableNotification",
-    "updateChatDraftMessage",
-    "updateChatFilters",
-    "updateChatHasScheduledMessages",
-    "updateChatIsBlocked",
-    "updateChatIsMarkedAsUnread",
-    "updateChatLastMessage",
-    "updateChatNotificationSettings",
-    "updateChatOnlineMemberCount",
-    "updateChatPermissions",
-    "updateChatPhoto",
-    "updateChatPosition",
-    "updateChatReadInbox",
-    "updateChatReadOutbox",
-    "updateChatReplyMarkup",
-    "updateChatTitle",
-    "updateChatUnreadMentionCount",
-    "updateConnectionState",
-    "updateDeleteMessages",
-    "updateDiceEmojis",
-    "updateFavoriteStickers",
-    "updateFile",
-    "updateFileGenerationStart",
-    "updateFileGenerationStop",
-    "updateHavePendingNotifications",
-    "updateInstalledStickerSets",
-    "updateLanguagePackStrings",
-    "updateMessageContent",
-    "updateMessageContentOpened",
-    "updateMessageEdited",
-    "updateMessageInteractionInfo",
-    "updateMessageIsPinned",
-    "updateMessageLiveLocationViewed",
-    "updateMessageMentionRead",
-    "updateMessageSendAcknowledged",
-    "updateMessageSendFailed",
-    "updateMessageSendSucceeded",
-    "updateNewCallSignalingData",
-    "updateNewCallbackQuery",
-    "updateNewChat",
-    "updateNewChosenInlineResult",
-    "updateNewCustomEvent",
-    "updateNewCustomQuery",
-    "updateNewInlineCallbackQuery",
-    "updateNewInlineQuery",
-    "updateNewMessage",
-    "updateNewPreCheckoutQuery",
-    "updateNewShippingQuery",
-    "updateNotification",
-    "updateNotificationGroup",
-    "updateOption",
-    "updatePoll",
-    "updatePollAnswer",
-    "updateRecentStickers",
-    "updateSavedAnimations",
-    "updateScopeNotificationSettings",
-    "updateSecretChat",
-    "updateSelectedBackground",
-    "updateServiceNotification",
-    "updateStickerSet",
-    "updateSuggestedActions",
-    "updateSupergroup",
-    "updateSupergroupFullInfo",
-    "updateTermsOfService",
-    "updateTrendingStickerSets",
-    "updateUnreadChatCount",
-    "updateUnreadMessageCount",
-    "updateUser",
-    "updateUserChatAction",
-    "updateUserFullInfo",
-    "updateUserPrivacySettingRules",
-    "updateUserStatus",
-    "updateUsersNearby",
-];
-
-fn deserialize_update(
-    rtd_trait_type: &str,
-    rtd_trait_value: serde_json::Value,
-) -> Result<Option<TdType>, serde_json::Error> {
-    Ok(match UPDATE_MEMBERS.contains(&rtd_trait_type) {
-        true => Some(TdType::Update(serde_json::from_value(rtd_trait_value)?)),
-        false => None,
-    })
-}
-
-impl TdType {
-    pub fn extra(&self) -> Option<&str> {
-        match self {
-            TdType::AuthorizationState(value) => value.extra(),
-
-            TdType::CanTransferOwnershipResult(value) => value.extra(),
-
-            TdType::ChatStatistics(value) => value.extra(),
-
-            TdType::CheckChatUsernameResult(value) => value.extra(),
-
-            TdType::JsonValue(value) => value.extra(),
-
-            TdType::LanguagePackStringValue(value) => value.extra(),
-
-            TdType::LogStream(value) => value.extra(),
-
-            TdType::LoginUrlInfo(value) => value.extra(),
-
-            TdType::OptionValue(value) => value.extra(),
-
-            TdType::PassportElement(value) => value.extra(),
-
-            TdType::StatisticalGraph(value) => value.extra(),
-
-            TdType::Update(value) => value.extra(),
-
-            TdType::AccountTtl(value) => value.extra(),
-
-            TdType::Animations(value) => value.extra(),
-
-            TdType::AuthenticationCodeInfo(value) => value.extra(),
-
-            TdType::AutoDownloadSettingsPresets(value) => value.extra(),
-
-            TdType::Background(value) => value.extra(),
-
-            TdType::Backgrounds(value) => value.extra(),
-
-            TdType::BankCardInfo(value) => value.extra(),
-
-            TdType::BasicGroup(value) => value.extra(),
-
-            TdType::BasicGroupFullInfo(value) => value.extra(),
-
-            TdType::CallId(value) => value.extra(),
-
-            TdType::CallbackQueryAnswer(value) => value.extra(),
-
-            TdType::Chat(value) => value.extra(),
-
-            TdType::ChatAdministrators(value) => value.extra(),
-
-            TdType::ChatEvents(value) => value.extra(),
-
-            TdType::ChatFilter(value) => value.extra(),
-
-            TdType::ChatFilterInfo(value) => value.extra(),
-
-            TdType::ChatInviteLink(value) => value.extra(),
-
-            TdType::ChatInviteLinkInfo(value) => value.extra(),
-
-            TdType::ChatLists(value) => value.extra(),
-
-            TdType::ChatMember(value) => value.extra(),
-
-            TdType::ChatMembers(value) => value.extra(),
-
-            TdType::ChatPhotos(value) => value.extra(),
-
-            TdType::Chats(value) => value.extra(),
-
-            TdType::ChatsNearby(value) => value.extra(),
-
-            TdType::ConnectedWebsites(value) => value.extra(),
-
-            TdType::Count(value) => value.extra(),
-
-            TdType::Countries(value) => value.extra(),
-
-            TdType::CustomRequestResult(value) => value.extra(),
-
-            TdType::DatabaseStatistics(value) => value.extra(),
-
-            TdType::DeepLinkInfo(value) => value.extra(),
-
-            TdType::EmailAddressAuthenticationCodeInfo(value) => value.extra(),
-
-            TdType::Emojis(value) => value.extra(),
-
-            TdType::Error(value) => value.extra(),
-
-            TdType::File(value) => value.extra(),
-
-            TdType::FilePart(value) => value.extra(),
-
-            TdType::FormattedText(value) => value.extra(),
-
-            TdType::FoundMessages(value) => value.extra(),
-
-            TdType::GameHighScores(value) => value.extra(),
-
-            TdType::Hashtags(value) => value.extra(),
-
-            TdType::HttpUrl(value) => value.extra(),
-
-            TdType::ImportedContacts(value) => value.extra(),
-
-            TdType::InlineQueryResults(value) => value.extra(),
-
-            TdType::LanguagePackInfo(value) => value.extra(),
-
-            TdType::LanguagePackStrings(value) => value.extra(),
-
-            TdType::LocalizationTargetInfo(value) => value.extra(),
-
-            TdType::LogTags(value) => value.extra(),
-
-            TdType::LogVerbosityLevel(value) => value.extra(),
-
-            TdType::Message(value) => value.extra(),
-
-            TdType::MessageLink(value) => value.extra(),
-
-            TdType::MessageLinkInfo(value) => value.extra(),
-
-            TdType::MessageSenders(value) => value.extra(),
-
-            TdType::MessageStatistics(value) => value.extra(),
-
-            TdType::MessageThreadInfo(value) => value.extra(),
-
-            TdType::Messages(value) => value.extra(),
-
-            TdType::NetworkStatistics(value) => value.extra(),
-
-            TdType::Ok(value) => value.extra(),
-
-            TdType::OrderInfo(value) => value.extra(),
-
-            TdType::PassportAuthorizationForm(value) => value.extra(),
-
-            TdType::PassportElements(value) => value.extra(),
-
-            TdType::PassportElementsWithErrors(value) => value.extra(),
-
-            TdType::PasswordState(value) => value.extra(),
-
-            TdType::PaymentForm(value) => value.extra(),
-
-            TdType::PaymentReceipt(value) => value.extra(),
-
-            TdType::PaymentResult(value) => value.extra(),
-
-            TdType::PhoneNumberInfo(value) => value.extra(),
-
-            TdType::Proxies(value) => value.extra(),
-
-            TdType::Proxy(value) => value.extra(),
-
-            TdType::PushReceiverId(value) => value.extra(),
-
-            TdType::RecommendedChatFilters(value) => value.extra(),
-
-            TdType::RecoveryEmailAddress(value) => value.extra(),
-
-            TdType::ScopeNotificationSettings(value) => value.extra(),
-
-            TdType::Seconds(value) => value.extra(),
-
-            TdType::SecretChat(value) => value.extra(),
-
-            TdType::Session(value) => value.extra(),
-
-            TdType::Sessions(value) => value.extra(),
-
-            TdType::StickerSet(value) => value.extra(),
-
-            TdType::StickerSets(value) => value.extra(),
-
-            TdType::Stickers(value) => value.extra(),
-
-            TdType::StorageStatistics(value) => value.extra(),
-
-            TdType::StorageStatisticsFast(value) => value.extra(),
-
-            TdType::Supergroup(value) => value.extra(),
-
-            TdType::SupergroupFullInfo(value) => value.extra(),
-
-            TdType::TMeUrls(value) => value.extra(),
-
-            TdType::TemporaryPasswordState(value) => value.extra(),
-
-            TdType::TestBytes(value) => value.extra(),
-
-            TdType::TestInt(value) => value.extra(),
-
-            TdType::TestString(value) => value.extra(),
-
-            TdType::TestVectorInt(value) => value.extra(),
-
-            TdType::TestVectorIntObject(value) => value.extra(),
-
-            TdType::TestVectorString(value) => value.extra(),
-
-            TdType::TestVectorStringObject(value) => value.extra(),
-
-            TdType::Text(value) => value.extra(),
-
-            TdType::TextEntities(value) => value.extra(),
-
-            TdType::Updates(value) => value.extra(),
-
-            TdType::User(value) => value.extra(),
-
-            TdType::UserFullInfo(value) => value.extra(),
-
-            TdType::UserPrivacySettingRules(value) => value.extra(),
-
-            TdType::Users(value) => value.extra(),
-
-            TdType::ValidatedOrderInfo(value) => value.extra(),
-
-            TdType::WebPage(value) => value.extra(),
-
-            TdType::WebPageInstantView(value) => value.extra(),
-        }
-    }
-}
+impl<'a, VECTORPATHCOMMAND: TDVectorPathCommand> TDVectorPathCommand for &'a VECTORPATHCOMMAND {}
+impl<'a, VECTORPATHCOMMAND: TDVectorPathCommand> TDVectorPathCommand for &'a mut VECTORPATHCOMMAND {}
 
 pub(super) fn number_from_string<'de, T, D>(deserializer: D) -> Result<T, D::Error>
 where
@@ -1489,46 +506,84 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::types::_common::deserialize_update;
-    use crate::types::{from_json, AuthorizationState, TdType, Update};
+    use crate::types::{
+        ClosedVectorPath, File, Message, MessageContent, Sticker, Thumbnail, Update,
+    };
+    use serde::de::DeserializeOwned;
 
     #[test]
-    fn test_deserialize_enums() {
-        match deserialize_update(
-            "updateAuthorizationState", serde_json::from_str::<serde_json::Value>(r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#).unwrap(),
-        ) {
-            Ok(v) => {match v {
-                Some(v) => {
-                    match v {
-                        TdType::Update(_) => {},
+    fn test_deserialize_closed_vector_path() {
+        assert(
+            r#"[{"@type":"closedVectorPath","commands":[{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":196.250000,"y":296.250000},"end_control_point":{"@type":"point","x":175.625000,"y":296.875000},"end_point":{"@type":"point","x":153.750000,"y":295.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":141.250000,"y":294.375000},"end_control_point":{"@type":"point","x":128.125000,"y":291.250000},"end_point":{"@type":"point","x":117.500000,"y":285.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":113.750000,"y":283.750000},"end_control_point":{"@type":"point","x":109.375000,"y":279.375000},"end_point":{"@type":"point","x":105.625000,"y":278.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":96.250000,"y":276.250000},"end_control_point":{"@type":"point","x":84.375000,"y":284.375000},"end_point":{"@type":"point","x":75.000000,"y":283.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":51.875000,"y":280.000000},"end_control_point":{"@type":"point","x":43.125000,"y":251.250000},"end_point":{"@type":"point","x":40.625000,"y":231.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":38.125000,"y":211.250000},"end_control_point":{"@type":"point","x":41.250000,"y":178.125000},"end_point":{"@type":"point","x":59.375000,"y":163.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":69.375000,"y":156.250000},"end_control_point":{"@type":"point","x":84.375000,"y":163.125000},"end_point":{"@type":"point","x":96.250000,"y":156.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":105.000000,"y":150.625000},"end_control_point":{"@type":"point","x":108.750000,"y":138.125000},"end_point":{"@type":"point","x":115.625000,"y":130.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":125.625000,"y":119.375000},"end_control_point":{"@type":"point","x":138.125000,"y":110.625000},"end_point":{"@type":"point","x":147.500000,"y":98.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":160.625000,"y":82.500000},"end_control_point":{"@type":"point","x":135.625000,"y":38.125000},"end_point":{"@type":"point","x":168.750000,"y":38.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":173.750000,"y":38.125000},"end_control_point":{"@type":"point","x":178.750000,"y":40.000000},"end_point":{"@type":"point","x":183.125000,"y":43.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":221.875000,"y":73.125000},"end_control_point":{"@type":"point","x":183.750000,"y":112.500000},"end_point":{"@type":"point","x":188.125000,"y":136.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":189.375000,"y":143.750000},"end_control_point":{"@type":"point","x":203.125000,"y":143.125000},"end_point":{"@type":"point","x":208.125000,"y":143.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":230.625000,"y":141.875000},"end_control_point":{"@type":"point","x":271.250000,"y":141.250000},"end_point":{"@type":"point","x":280.000000,"y":168.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":284.375000,"y":181.875000},"end_control_point":{"@type":"point","x":277.500000,"y":186.875000},"end_point":{"@type":"point","x":277.500000,"y":196.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":277.500000,"y":198.750000},"end_control_point":{"@type":"point","x":287.500000,"y":209.375000},"end_point":{"@type":"point","x":284.375000,"y":221.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":283.125000,"y":225.000000},"end_control_point":{"@type":"point","x":281.250000,"y":228.125000},"end_point":{"@type":"point","x":279.375000,"y":231.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":279.375000,"y":231.250000},"end_control_point":{"@type":"point","x":273.125000,"y":235.625000},"end_point":{"@type":"point","x":273.125000,"y":236.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":276.250000,"y":246.875000},"end_control_point":{"@type":"point","x":276.875000,"y":257.500000},"end_point":{"@type":"point","x":267.500000,"y":265.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":265.625000,"y":267.500000},"end_control_point":{"@type":"point","x":262.500000,"y":267.500000},"end_point":{"@type":"point","x":261.250000,"y":270.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":260.625000,"y":273.125000},"end_control_point":{"@type":"point","x":261.875000,"y":277.500000},"end_point":{"@type":"point","x":260.000000,"y":280.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":255.000000,"y":298.125000},"end_control_point":{"@type":"point","x":233.750000,"y":301.875000},"end_point":{"@type":"point","x":218.125000,"y":301.875000}}]}]"#,
+            |res: &serde_json::Result<Vec<ClosedVectorPath>>| res.is_ok(),
+        )
+    }
 
-                        _ => {panic!("serialization failed")},
-                    }
-                },
-                None => panic!("serialization failed")
-            }}
-            Err(e) => {
-                panic!("{}", e)
-            }
-        };
+    #[test]
+    fn test_deserialize_thumbnail() {
+        assert(
+            r#"{"@type":"thumbnail","format":{"@type":"thumbnailFormatWebp"},"width":101,"height":128,"file":{"@type":"file","id":573,"size":2672,"expected_size":2672,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"AAMCAQADFQABYr34JQdBM97Uqr0NPPmL7BZvomIAAs0BAAJS-jFFL2KLTiLKoDwBAAdtAAMjBA","unique_id":"AQADzQEAAlL6MUVy","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":2672}}}"#,
+            |res: &serde_json::Result<Thumbnail>| res.is_ok(),
+        )
+    }
 
-        match from_json::<TdType>(
-            r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#,
-        ) {
-            Ok(t) => match t {
-                TdType::Update(Update::AuthorizationState(state)) => {
-                    match state.authorization_state() {
-                        AuthorizationState::WaitTdlibParameters(_) => {}
-                        _ => {
-                            panic!("invalid serialized data")
-                        }
-                    }
-                }
-                _ => panic!("from_json failed: {:?}", t),
+    #[test]
+    fn test_deserialize_file() {
+        assert(
+            r#"{"@type":"file","id":572,"size":18100,"expected_size":18100,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"CAACAgEAAxUAAWK9-CUHQTPe1Kq9DTz5i-wWb6JiAALNAQACUvoxRS9ii04iyqA8IwQ","unique_id":"AgADzQEAAlL6MUU","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":18100}}"#,
+            |res: &serde_json::Result<File>| res.is_ok(),
+        )
+    }
+
+    #[test]
+    fn test_deserialize_sticker() {
+        assert(
+            r#"{"@type":"sticker","set_id":"1258816259751983","width":300,"height":380,"emoji":"\ud83d\udc4d","is_animated":true,"is_mask":false,"outline":[{"@type":"closedVectorPath","commands":[{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":196.250000,"y":296.250000},"end_control_point":{"@type":"point","x":175.625000,"y":296.875000},"end_point":{"@type":"point","x":153.750000,"y":295.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":141.250000,"y":294.375000},"end_control_point":{"@type":"point","x":128.125000,"y":291.250000},"end_point":{"@type":"point","x":117.500000,"y":285.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":113.750000,"y":283.750000},"end_control_point":{"@type":"point","x":109.375000,"y":279.375000},"end_point":{"@type":"point","x":105.625000,"y":278.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":96.250000,"y":276.250000},"end_control_point":{"@type":"point","x":84.375000,"y":284.375000},"end_point":{"@type":"point","x":75.000000,"y":283.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":51.875000,"y":280.000000},"end_control_point":{"@type":"point","x":43.125000,"y":251.250000},"end_point":{"@type":"point","x":40.625000,"y":231.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":38.125000,"y":211.250000},"end_control_point":{"@type":"point","x":41.250000,"y":178.125000},"end_point":{"@type":"point","x":59.375000,"y":163.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":69.375000,"y":156.250000},"end_control_point":{"@type":"point","x":84.375000,"y":163.125000},"end_point":{"@type":"point","x":96.250000,"y":156.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":105.000000,"y":150.625000},"end_control_point":{"@type":"point","x":108.750000,"y":138.125000},"end_point":{"@type":"point","x":115.625000,"y":130.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":125.625000,"y":119.375000},"end_control_point":{"@type":"point","x":138.125000,"y":110.625000},"end_point":{"@type":"point","x":147.500000,"y":98.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":160.625000,"y":82.500000},"end_control_point":{"@type":"point","x":135.625000,"y":38.125000},"end_point":{"@type":"point","x":168.750000,"y":38.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":173.750000,"y":38.125000},"end_control_point":{"@type":"point","x":178.750000,"y":40.000000},"end_point":{"@type":"point","x":183.125000,"y":43.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":221.875000,"y":73.125000},"end_control_point":{"@type":"point","x":183.750000,"y":112.500000},"end_point":{"@type":"point","x":188.125000,"y":136.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":189.375000,"y":143.750000},"end_control_point":{"@type":"point","x":203.125000,"y":143.125000},"end_point":{"@type":"point","x":208.125000,"y":143.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":230.625000,"y":141.875000},"end_control_point":{"@type":"point","x":271.250000,"y":141.250000},"end_point":{"@type":"point","x":280.000000,"y":168.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":284.375000,"y":181.875000},"end_control_point":{"@type":"point","x":277.500000,"y":186.875000},"end_point":{"@type":"point","x":277.500000,"y":196.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":277.500000,"y":198.750000},"end_control_point":{"@type":"point","x":287.500000,"y":209.375000},"end_point":{"@type":"point","x":284.375000,"y":221.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":283.125000,"y":225.000000},"end_control_point":{"@type":"point","x":281.250000,"y":228.125000},"end_point":{"@type":"point","x":279.375000,"y":231.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":279.375000,"y":231.250000},"end_control_point":{"@type":"point","x":273.125000,"y":235.625000},"end_point":{"@type":"point","x":273.125000,"y":236.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":276.250000,"y":246.875000},"end_control_point":{"@type":"point","x":276.875000,"y":257.500000},"end_point":{"@type":"point","x":267.500000,"y":265.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":265.625000,"y":267.500000},"end_control_point":{"@type":"point","x":262.500000,"y":267.500000},"end_point":{"@type":"point","x":261.250000,"y":270.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":260.625000,"y":273.125000},"end_control_point":{"@type":"point","x":261.875000,"y":277.500000},"end_point":{"@type":"point","x":260.000000,"y":280.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":255.000000,"y":298.125000},"end_control_point":{"@type":"point","x":233.750000,"y":301.875000},"end_point":{"@type":"point","x":218.125000,"y":301.875000}}]}],"thumbnail":{"@type":"thumbnail","format":{"@type":"thumbnailFormatWebp"},"width":101,"height":128,"file":{"@type":"file","id":573,"size":2672,"expected_size":2672,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"AAMCAQADFQABYr34JQdBM97Uqr0NPPmL7BZvomIAAs0BAAJS-jFFL2KLTiLKoDwBAAdtAAMjBA","unique_id":"AQADzQEAAlL6MUVy","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":2672}}},"sticker":{"@type":"file","id":572,"size":18100,"expected_size":18100,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"CAACAgEAAxUAAWK9-CUHQTPe1Kq9DTz5i-wWb6JiAALNAQACUvoxRS9ii04iyqA8IwQ","unique_id":"AgADzQEAAlL6MUU","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":18100}}}"#,
+            |res: &serde_json::Result<Sticker>| res.is_ok(),
+        )
+    }
+
+    #[test]
+    fn test_deserialize_message_animated_emoji() {
+        assert(
+            r#"{"@type":"messageAnimatedEmoji","animated_emoji":{"@type":"animatedEmoji","sticker":{"@type":"sticker","set_id":"1258816259751983","width":300,"height":380,"emoji":"\ud83d\udc4d","is_animated":true,"is_mask":false,"outline":[{"@type":"closedVectorPath","commands":[{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":196.250000,"y":296.250000},"end_control_point":{"@type":"point","x":175.625000,"y":296.875000},"end_point":{"@type":"point","x":153.750000,"y":295.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":141.250000,"y":294.375000},"end_control_point":{"@type":"point","x":128.125000,"y":291.250000},"end_point":{"@type":"point","x":117.500000,"y":285.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":113.750000,"y":283.750000},"end_control_point":{"@type":"point","x":109.375000,"y":279.375000},"end_point":{"@type":"point","x":105.625000,"y":278.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":96.250000,"y":276.250000},"end_control_point":{"@type":"point","x":84.375000,"y":284.375000},"end_point":{"@type":"point","x":75.000000,"y":283.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":51.875000,"y":280.000000},"end_control_point":{"@type":"point","x":43.125000,"y":251.250000},"end_point":{"@type":"point","x":40.625000,"y":231.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":38.125000,"y":211.250000},"end_control_point":{"@type":"point","x":41.250000,"y":178.125000},"end_point":{"@type":"point","x":59.375000,"y":163.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":69.375000,"y":156.250000},"end_control_point":{"@type":"point","x":84.375000,"y":163.125000},"end_point":{"@type":"point","x":96.250000,"y":156.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":105.000000,"y":150.625000},"end_control_point":{"@type":"point","x":108.750000,"y":138.125000},"end_point":{"@type":"point","x":115.625000,"y":130.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":125.625000,"y":119.375000},"end_control_point":{"@type":"point","x":138.125000,"y":110.625000},"end_point":{"@type":"point","x":147.500000,"y":98.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":160.625000,"y":82.500000},"end_control_point":{"@type":"point","x":135.625000,"y":38.125000},"end_point":{"@type":"point","x":168.750000,"y":38.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":173.750000,"y":38.125000},"end_control_point":{"@type":"point","x":178.750000,"y":40.000000},"end_point":{"@type":"point","x":183.125000,"y":43.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":221.875000,"y":73.125000},"end_control_point":{"@type":"point","x":183.750000,"y":112.500000},"end_point":{"@type":"point","x":188.125000,"y":136.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":189.375000,"y":143.750000},"end_control_point":{"@type":"point","x":203.125000,"y":143.125000},"end_point":{"@type":"point","x":208.125000,"y":143.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":230.625000,"y":141.875000},"end_control_point":{"@type":"point","x":271.250000,"y":141.250000},"end_point":{"@type":"point","x":280.000000,"y":168.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":284.375000,"y":181.875000},"end_control_point":{"@type":"point","x":277.500000,"y":186.875000},"end_point":{"@type":"point","x":277.500000,"y":196.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":277.500000,"y":198.750000},"end_control_point":{"@type":"point","x":287.500000,"y":209.375000},"end_point":{"@type":"point","x":284.375000,"y":221.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":283.125000,"y":225.000000},"end_control_point":{"@type":"point","x":281.250000,"y":228.125000},"end_point":{"@type":"point","x":279.375000,"y":231.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":279.375000,"y":231.250000},"end_control_point":{"@type":"point","x":273.125000,"y":235.625000},"end_point":{"@type":"point","x":273.125000,"y":236.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":276.250000,"y":246.875000},"end_control_point":{"@type":"point","x":276.875000,"y":257.500000},"end_point":{"@type":"point","x":267.500000,"y":265.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":265.625000,"y":267.500000},"end_control_point":{"@type":"point","x":262.500000,"y":267.500000},"end_point":{"@type":"point","x":261.250000,"y":270.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":260.625000,"y":273.125000},"end_control_point":{"@type":"point","x":261.875000,"y":277.500000},"end_point":{"@type":"point","x":260.000000,"y":280.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":255.000000,"y":298.125000},"end_control_point":{"@type":"point","x":233.750000,"y":301.875000},"end_point":{"@type":"point","x":218.125000,"y":301.875000}}]}],"thumbnail":{"@type":"thumbnail","format":{"@type":"thumbnailFormatWebp"},"width":101,"height":128,"file":{"@type":"file","id":573,"size":2672,"expected_size":2672,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"AAMCAQADFQABYr34JQdBM97Uqr0NPPmL7BZvomIAAs0BAAJS-jFFL2KLTiLKoDwBAAdtAAMjBA","unique_id":"AQADzQEAAlL6MUVy","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":2672}}},"sticker":{"@type":"file","id":572,"size":18100,"expected_size":18100,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"CAACAgEAAxUAAWK9-CUHQTPe1Kq9DTz5i-wWb6JiAALNAQACUvoxRS9ii04iyqA8IwQ","unique_id":"AgADzQEAAlL6MUU","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":18100}}},"fitzpatrick_type":0},"emoji":"\ud83d\udc4d"}"#,
+            |res: &serde_json::Result<MessageContent>| {
+                matches!(res, Ok(MessageContent::MessageAnimatedEmoji(_)))
             },
-            Err(e) => {
-                panic!("{}", e)
-            }
-        };
+        )
+    }
+
+    #[test]
+    fn test_deserialize_message() {
+        assert(
+            r#"{"@type":"message","id":179306496,"sender_id":{"@type":"messageSenderUser","user_id":5049844889},"chat_id":5129286886,"is_outgoing":true,"is_pinned":false,"can_be_edited":false,"can_be_forwarded":true,"can_be_saved":true,"can_be_deleted_only_for_self":true,"can_be_deleted_for_all_users":true,"can_get_statistics":false,"can_get_message_thread":false,"can_get_viewers":false,"can_get_media_timestamp_links":false,"has_timestamped_media":true,"is_channel_post":false,"contains_unread_mention":false,"date":1648402824,"edit_date":0,"reply_in_chat_id":0,"reply_to_message_id":0,"message_thread_id":0,"ttl":0,"ttl_expires_in":0.000000,"via_bot_user_id":0,"author_signature":"","media_album_id":"0","restriction_reason":"","content":{"@type":"messageAnimatedEmoji","animated_emoji":{"@type":"animatedEmoji","sticker":{"@type":"sticker","set_id":"1258816259751983","width":300,"height":380,"emoji":"\ud83d\udc4d","is_animated":true,"is_mask":false,"outline":[{"@type":"closedVectorPath","commands":[{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":196.250000,"y":296.250000},"end_control_point":{"@type":"point","x":175.625000,"y":296.875000},"end_point":{"@type":"point","x":153.750000,"y":295.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":141.250000,"y":294.375000},"end_control_point":{"@type":"point","x":128.125000,"y":291.250000},"end_point":{"@type":"point","x":117.500000,"y":285.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":113.750000,"y":283.750000},"end_control_point":{"@type":"point","x":109.375000,"y":279.375000},"end_point":{"@type":"point","x":105.625000,"y":278.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":96.250000,"y":276.250000},"end_control_point":{"@type":"point","x":84.375000,"y":284.375000},"end_point":{"@type":"point","x":75.000000,"y":283.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":51.875000,"y":280.000000},"end_control_point":{"@type":"point","x":43.125000,"y":251.250000},"end_point":{"@type":"point","x":40.625000,"y":231.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":38.125000,"y":211.250000},"end_control_point":{"@type":"point","x":41.250000,"y":178.125000},"end_point":{"@type":"point","x":59.375000,"y":163.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":69.375000,"y":156.250000},"end_control_point":{"@type":"point","x":84.375000,"y":163.125000},"end_point":{"@type":"point","x":96.250000,"y":156.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":105.000000,"y":150.625000},"end_control_point":{"@type":"point","x":108.750000,"y":138.125000},"end_point":{"@type":"point","x":115.625000,"y":130.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":125.625000,"y":119.375000},"end_control_point":{"@type":"point","x":138.125000,"y":110.625000},"end_point":{"@type":"point","x":147.500000,"y":98.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":160.625000,"y":82.500000},"end_control_point":{"@type":"point","x":135.625000,"y":38.125000},"end_point":{"@type":"point","x":168.750000,"y":38.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":173.750000,"y":38.125000},"end_control_point":{"@type":"point","x":178.750000,"y":40.000000},"end_point":{"@type":"point","x":183.125000,"y":43.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":221.875000,"y":73.125000},"end_control_point":{"@type":"point","x":183.750000,"y":112.500000},"end_point":{"@type":"point","x":188.125000,"y":136.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":189.375000,"y":143.750000},"end_control_point":{"@type":"point","x":203.125000,"y":143.125000},"end_point":{"@type":"point","x":208.125000,"y":143.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":230.625000,"y":141.875000},"end_control_point":{"@type":"point","x":271.250000,"y":141.250000},"end_point":{"@type":"point","x":280.000000,"y":168.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":284.375000,"y":181.875000},"end_control_point":{"@type":"point","x":277.500000,"y":186.875000},"end_point":{"@type":"point","x":277.500000,"y":196.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":277.500000,"y":198.750000},"end_control_point":{"@type":"point","x":287.500000,"y":209.375000},"end_point":{"@type":"point","x":284.375000,"y":221.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":283.125000,"y":225.000000},"end_control_point":{"@type":"point","x":281.250000,"y":228.125000},"end_point":{"@type":"point","x":279.375000,"y":231.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":279.375000,"y":231.250000},"end_control_point":{"@type":"point","x":273.125000,"y":235.625000},"end_point":{"@type":"point","x":273.125000,"y":236.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":276.250000,"y":246.875000},"end_control_point":{"@type":"point","x":276.875000,"y":257.500000},"end_point":{"@type":"point","x":267.500000,"y":265.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":265.625000,"y":267.500000},"end_control_point":{"@type":"point","x":262.500000,"y":267.500000},"end_point":{"@type":"point","x":261.250000,"y":270.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":260.625000,"y":273.125000},"end_control_point":{"@type":"point","x":261.875000,"y":277.500000},"end_point":{"@type":"point","x":260.000000,"y":280.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":255.000000,"y":298.125000},"end_control_point":{"@type":"point","x":233.750000,"y":301.875000},"end_point":{"@type":"point","x":218.125000,"y":301.875000}}]}],"thumbnail":{"@type":"thumbnail","format":{"@type":"thumbnailFormatWebp"},"width":101,"height":128,"file":{"@type":"file","id":573,"size":2672,"expected_size":2672,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"AAMCAQADFQABYr34JQdBM97Uqr0NPPmL7BZvomIAAs0BAAJS-jFFL2KLTiLKoDwBAAdtAAMjBA","unique_id":"AQADzQEAAlL6MUVy","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":2672}}},"sticker":{"@type":"file","id":572,"size":18100,"expected_size":18100,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"CAACAgEAAxUAAWK9-CUHQTPe1Kq9DTz5i-wWb6JiAALNAQACUvoxRS9ii04iyqA8IwQ","unique_id":"AgADzQEAAlL6MUU","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":18100}}},"fitzpatrick_type":0},"emoji":"\ud83d\udc4d"}}"#,
+            |res: &serde_json::Result<Message>| res.is_ok(),
+        )
+    }
+
+    #[test]
+    fn test_deserialize_update_chat_last_message() {
+        assert(
+            r#"{"@type":"updateChatLastMessage","chat_id":5129286886,"last_message":{"@type":"message","id":179306496,"sender_id":{"@type":"messageSenderUser","user_id":5049844889},"chat_id":5129286886,"is_outgoing":true,"is_pinned":false,"can_be_edited":false,"can_be_forwarded":true,"can_be_saved":true,"can_be_deleted_only_for_self":true,"can_be_deleted_for_all_users":true,"can_get_statistics":false,"can_get_message_thread":false,"can_get_viewers":false,"can_get_media_timestamp_links":false,"has_timestamped_media":true,"is_channel_post":false,"contains_unread_mention":false,"date":1648402824,"edit_date":0,"reply_in_chat_id":0,"reply_to_message_id":0,"message_thread_id":0,"ttl":0,"ttl_expires_in":0.000000,"via_bot_user_id":0,"author_signature":"","media_album_id":"0","restriction_reason":"","content":{"@type":"messageAnimatedEmoji","animated_emoji":{"@type":"animatedEmoji","sticker":{"@type":"sticker","set_id":"1258816259751983","width":300,"height":380,"emoji":"\ud83d\udc4d","is_animated":true,"is_mask":false,"outline":[{"@type":"closedVectorPath","commands":[{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":196.250000,"y":296.250000},"end_control_point":{"@type":"point","x":175.625000,"y":296.875000},"end_point":{"@type":"point","x":153.750000,"y":295.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":141.250000,"y":294.375000},"end_control_point":{"@type":"point","x":128.125000,"y":291.250000},"end_point":{"@type":"point","x":117.500000,"y":285.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":113.750000,"y":283.750000},"end_control_point":{"@type":"point","x":109.375000,"y":279.375000},"end_point":{"@type":"point","x":105.625000,"y":278.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":96.250000,"y":276.250000},"end_control_point":{"@type":"point","x":84.375000,"y":284.375000},"end_point":{"@type":"point","x":75.000000,"y":283.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":51.875000,"y":280.000000},"end_control_point":{"@type":"point","x":43.125000,"y":251.250000},"end_point":{"@type":"point","x":40.625000,"y":231.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":38.125000,"y":211.250000},"end_control_point":{"@type":"point","x":41.250000,"y":178.125000},"end_point":{"@type":"point","x":59.375000,"y":163.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":69.375000,"y":156.250000},"end_control_point":{"@type":"point","x":84.375000,"y":163.125000},"end_point":{"@type":"point","x":96.250000,"y":156.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":105.000000,"y":150.625000},"end_control_point":{"@type":"point","x":108.750000,"y":138.125000},"end_point":{"@type":"point","x":115.625000,"y":130.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":125.625000,"y":119.375000},"end_control_point":{"@type":"point","x":138.125000,"y":110.625000},"end_point":{"@type":"point","x":147.500000,"y":98.750000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":160.625000,"y":82.500000},"end_control_point":{"@type":"point","x":135.625000,"y":38.125000},"end_point":{"@type":"point","x":168.750000,"y":38.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":173.750000,"y":38.125000},"end_control_point":{"@type":"point","x":178.750000,"y":40.000000},"end_point":{"@type":"point","x":183.125000,"y":43.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":221.875000,"y":73.125000},"end_control_point":{"@type":"point","x":183.750000,"y":112.500000},"end_point":{"@type":"point","x":188.125000,"y":136.875000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":189.375000,"y":143.750000},"end_control_point":{"@type":"point","x":203.125000,"y":143.125000},"end_point":{"@type":"point","x":208.125000,"y":143.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":230.625000,"y":141.875000},"end_control_point":{"@type":"point","x":271.250000,"y":141.250000},"end_point":{"@type":"point","x":280.000000,"y":168.125000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":284.375000,"y":181.875000},"end_control_point":{"@type":"point","x":277.500000,"y":186.875000},"end_point":{"@type":"point","x":277.500000,"y":196.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":277.500000,"y":198.750000},"end_control_point":{"@type":"point","x":287.500000,"y":209.375000},"end_point":{"@type":"point","x":284.375000,"y":221.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":283.125000,"y":225.000000},"end_control_point":{"@type":"point","x":281.250000,"y":228.125000},"end_point":{"@type":"point","x":279.375000,"y":231.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":279.375000,"y":231.250000},"end_control_point":{"@type":"point","x":273.125000,"y":235.625000},"end_point":{"@type":"point","x":273.125000,"y":236.250000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":276.250000,"y":246.875000},"end_control_point":{"@type":"point","x":276.875000,"y":257.500000},"end_point":{"@type":"point","x":267.500000,"y":265.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":265.625000,"y":267.500000},"end_control_point":{"@type":"point","x":262.500000,"y":267.500000},"end_point":{"@type":"point","x":261.250000,"y":270.000000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":260.625000,"y":273.125000},"end_control_point":{"@type":"point","x":261.875000,"y":277.500000},"end_point":{"@type":"point","x":260.000000,"y":280.625000}},{"@type":"vectorPathCommandCubicBezierCurve","start_control_point":{"@type":"point","x":255.000000,"y":298.125000},"end_control_point":{"@type":"point","x":233.750000,"y":301.875000},"end_point":{"@type":"point","x":218.125000,"y":301.875000}}]}],"thumbnail":{"@type":"thumbnail","format":{"@type":"thumbnailFormatWebp"},"width":101,"height":128,"file":{"@type":"file","id":573,"size":2672,"expected_size":2672,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"AAMCAQADFQABYr34JQdBM97Uqr0NPPmL7BZvomIAAs0BAAJS-jFFL2KLTiLKoDwBAAdtAAMjBA","unique_id":"AQADzQEAAlL6MUVy","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":2672}}},"sticker":{"@type":"file","id":572,"size":18100,"expected_size":18100,"local":{"@type":"localFile","path":"","can_be_downloaded":true,"can_be_deleted":false,"is_downloading_active":false,"is_downloading_completed":false,"download_offset":0,"downloaded_prefix_size":0,"downloaded_size":0},"remote":{"@type":"remoteFile","id":"CAACAgEAAxUAAWK9-CUHQTPe1Kq9DTz5i-wWb6JiAALNAQACUvoxRS9ii04iyqA8IwQ","unique_id":"AgADzQEAAlL6MUU","is_uploading_active":false,"is_uploading_completed":true,"uploaded_size":18100}}},"fitzpatrick_type":0},"emoji":"\ud83d\udc4d"}},"positions":[],"@client_id":1}"#,
+            |res: &serde_json::Result<Update>| matches!(res, Ok(Update::ChatLastMessage(_))),
+        )
+    }
+
+    #[test]
+    fn test_deserialize_update_auth_state_wait_tdlib_params() {
+        assert(
+            r#"{"@type":"updateAuthorizationState","authorization_state":{"@type":"authorizationStateWaitTdlibParameters"}}"#,
+            |res: &serde_json::Result<Update>| matches!(res, Ok(Update::AuthorizationState(_))),
+        )
+    }
+
+    fn assert<T: std::fmt::Debug + DeserializeOwned>(
+        data: &'_ str,
+        exp: fn(&serde_json::Result<T>) -> bool,
+    ) {
+        let result = serde_json::from_str(data);
+        if !exp(&result) {
+            panic!("does not match, got: {:?}", result);
+        }
     }
 }

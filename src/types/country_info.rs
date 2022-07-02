@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,24 @@ pub struct CountryInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A two-letter ISO 3166-1 alpha-2 country code
+
+    #[serde(default)]
     country_code: String,
     /// Native name of the country
+
+    #[serde(default)]
     name: String,
     /// English name of the country
+
+    #[serde(default)]
     english_name: String,
-    /// True, if the country should be hidden from the list of all countries
+    /// True, if the country must be hidden from the list of all countries
+
+    #[serde(default)]
     is_hidden: bool,
     /// List of country calling codes
+
+    #[serde(default)]
     calling_codes: Vec<String>,
 }
 
@@ -34,14 +44,14 @@ impl RObject for CountryInfo {
 }
 
 impl CountryInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCountryInfoBuilder {
+    pub fn builder() -> CountryInfoBuilder {
         let mut inner = CountryInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCountryInfoBuilder { inner }
+        CountryInfoBuilder { inner }
     }
 
     pub fn country_code(&self) -> &String {
@@ -66,11 +76,14 @@ impl CountryInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDCountryInfoBuilder {
+pub struct CountryInfoBuilder {
     inner: CountryInfo,
 }
 
-impl RTDCountryInfoBuilder {
+#[deprecated]
+pub type RTDCountryInfoBuilder = CountryInfoBuilder;
+
+impl CountryInfoBuilder {
     pub fn build(&self) -> CountryInfo {
         self.inner.clone()
     }
@@ -107,7 +120,7 @@ impl AsRef<CountryInfo> for CountryInfo {
     }
 }
 
-impl AsRef<CountryInfo> for RTDCountryInfoBuilder {
+impl AsRef<CountryInfo> for CountryInfoBuilder {
     fn as_ref(&self) -> &CountryInfo {
         &self.inner
     }

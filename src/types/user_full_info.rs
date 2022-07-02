@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,23 +13,49 @@ pub struct UserFullInfo {
     /// User profile photo; may be null
     photo: Option<ChatPhoto>,
     /// True, if the user is blocked by the current user
+
+    #[serde(default)]
     is_blocked: bool,
     /// True, if the user can be called
+
+    #[serde(default)]
     can_be_called: bool,
     /// True, if a video call can be created with the user
+
+    #[serde(default)]
     supports_video_calls: bool,
     /// True, if the user can't be called due to their privacy settings
+
+    #[serde(default)]
     has_private_calls: bool,
+    /// True, if the user can't be linked in forwarded messages due to their privacy settings
+
+    #[serde(default)]
+    has_private_forwards: bool,
     /// True, if the current user needs to explicitly allow to share their phone number with the user when the method addContact is used
+
+    #[serde(default)]
     need_phone_number_privacy_exception: bool,
     /// A short user bio
+
+    #[serde(default)]
     bio: String,
-    /// For bots, the text that is included with the link when users share the bot
+    /// For bots, the text that is shown on the bot's profile page and is sent together with the link when users share the bot
+
+    #[serde(default)]
     share_text: String,
+    /// Contains full information about a user
+
+    #[serde(default)]
+    description: String,
     /// Number of group chats where both the other user and the current user are a member; 0 for the current user
+
+    #[serde(default)]
     group_in_common_count: i32,
-    /// If the user is a bot, information about the bot; may be null
-    bot_info: Option<BotInfo>,
+    /// For bots, list of the bot commands
+
+    #[serde(default)]
+    commands: Vec<BotCommand>,
 }
 
 impl RObject for UserFullInfo {
@@ -44,14 +70,14 @@ impl RObject for UserFullInfo {
 }
 
 impl UserFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserFullInfoBuilder {
+    pub fn builder() -> UserFullInfoBuilder {
         let mut inner = UserFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserFullInfoBuilder { inner }
+        UserFullInfoBuilder { inner }
     }
 
     pub fn photo(&self) -> &Option<ChatPhoto> {
@@ -74,6 +100,10 @@ impl UserFullInfo {
         self.has_private_calls
     }
 
+    pub fn has_private_forwards(&self) -> bool {
+        self.has_private_forwards
+    }
+
     pub fn need_phone_number_privacy_exception(&self) -> bool {
         self.need_phone_number_privacy_exception
     }
@@ -86,21 +116,28 @@ impl UserFullInfo {
         &self.share_text
     }
 
+    pub fn description(&self) -> &String {
+        &self.description
+    }
+
     pub fn group_in_common_count(&self) -> i32 {
         self.group_in_common_count
     }
 
-    pub fn bot_info(&self) -> &Option<BotInfo> {
-        &self.bot_info
+    pub fn commands(&self) -> &Vec<BotCommand> {
+        &self.commands
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserFullInfoBuilder {
+pub struct UserFullInfoBuilder {
     inner: UserFullInfo,
 }
 
-impl RTDUserFullInfoBuilder {
+#[deprecated]
+pub type RTDUserFullInfoBuilder = UserFullInfoBuilder;
+
+impl UserFullInfoBuilder {
     pub fn build(&self) -> UserFullInfo {
         self.inner.clone()
     }
@@ -130,6 +167,11 @@ impl RTDUserFullInfoBuilder {
         self
     }
 
+    pub fn has_private_forwards(&mut self, has_private_forwards: bool) -> &mut Self {
+        self.inner.has_private_forwards = has_private_forwards;
+        self
+    }
+
     pub fn need_phone_number_privacy_exception(
         &mut self,
         need_phone_number_privacy_exception: bool,
@@ -148,13 +190,18 @@ impl RTDUserFullInfoBuilder {
         self
     }
 
+    pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
+        self.inner.description = description.as_ref().to_string();
+        self
+    }
+
     pub fn group_in_common_count(&mut self, group_in_common_count: i32) -> &mut Self {
         self.inner.group_in_common_count = group_in_common_count;
         self
     }
 
-    pub fn bot_info<T: AsRef<BotInfo>>(&mut self, bot_info: T) -> &mut Self {
-        self.inner.bot_info = Some(bot_info.as_ref().clone());
+    pub fn commands(&mut self, commands: Vec<BotCommand>) -> &mut Self {
+        self.inner.commands = commands;
         self
     }
 }
@@ -165,7 +212,7 @@ impl AsRef<UserFullInfo> for UserFullInfo {
     }
 }
 
-impl AsRef<UserFullInfo> for RTDUserFullInfoBuilder {
+impl AsRef<UserFullInfo> for UserFullInfoBuilder {
     fn as_ref(&self) -> &UserFullInfo {
         &self.inner
     }

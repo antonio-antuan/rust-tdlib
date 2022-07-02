@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct RemoveRecentSticker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to remove the sticker from the list of stickers recently attached to photo or video files; pass false to remove the sticker from the list of recently sent stickers
+
+    #[serde(default)]
     is_attached: bool,
     /// Sticker file to delete
 
@@ -35,16 +37,16 @@ impl RObject for RemoveRecentSticker {
 impl RFunction for RemoveRecentSticker {}
 
 impl RemoveRecentSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveRecentStickerBuilder {
+    pub fn builder() -> RemoveRecentStickerBuilder {
         let mut inner = RemoveRecentSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeRecentSticker".to_string();
 
-        RTDRemoveRecentStickerBuilder { inner }
+        RemoveRecentStickerBuilder { inner }
     }
 
     pub fn is_attached(&self) -> bool {
@@ -57,11 +59,14 @@ impl RemoveRecentSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveRecentStickerBuilder {
+pub struct RemoveRecentStickerBuilder {
     inner: RemoveRecentSticker,
 }
 
-impl RTDRemoveRecentStickerBuilder {
+#[deprecated]
+pub type RTDRemoveRecentStickerBuilder = RemoveRecentStickerBuilder;
+
+impl RemoveRecentStickerBuilder {
     pub fn build(&self) -> RemoveRecentSticker {
         self.inner.clone()
     }
@@ -83,7 +88,7 @@ impl AsRef<RemoveRecentSticker> for RemoveRecentSticker {
     }
 }
 
-impl AsRef<RemoveRecentSticker> for RTDRemoveRecentStickerBuilder {
+impl AsRef<RemoveRecentSticker> for RemoveRecentStickerBuilder {
     fn as_ref(&self) -> &RemoveRecentSticker {
         &self.inner
     }

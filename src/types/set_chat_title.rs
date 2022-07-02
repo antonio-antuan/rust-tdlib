@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info rights
+/// Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetChatTitle {
     #[doc(hidden)]
@@ -11,8 +11,12 @@ pub struct SetChatTitle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New title of the chat; 1-128 characters
+
+    #[serde(default)]
     title: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SetChatTitle {
 impl RFunction for SetChatTitle {}
 
 impl SetChatTitle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatTitleBuilder {
+    pub fn builder() -> SetChatTitleBuilder {
         let mut inner = SetChatTitle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatTitle".to_string();
 
-        RTDSetChatTitleBuilder { inner }
+        SetChatTitleBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +59,14 @@ impl SetChatTitle {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatTitleBuilder {
+pub struct SetChatTitleBuilder {
     inner: SetChatTitle,
 }
 
-impl RTDSetChatTitleBuilder {
+#[deprecated]
+pub type RTDSetChatTitleBuilder = SetChatTitleBuilder;
+
+impl SetChatTitleBuilder {
     pub fn build(&self) -> SetChatTitle {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SetChatTitle> for SetChatTitle {
     }
 }
 
-impl AsRef<SetChatTitle> for RTDSetChatTitleBuilder {
+impl AsRef<SetChatTitle> for SetChatTitleBuilder {
     fn as_ref(&self) -> &SetChatTitle {
         &self.inner
     }

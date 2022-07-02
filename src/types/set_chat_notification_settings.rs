@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct SetChatNotificationSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// New notification settings for the chat. If the chat is muted for more than 1 week, it is considered to be muted forever
     notification_settings: ChatNotificationSettings,
@@ -33,16 +35,16 @@ impl RObject for SetChatNotificationSettings {
 impl RFunction for SetChatNotificationSettings {}
 
 impl SetChatNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatNotificationSettingsBuilder {
+    pub fn builder() -> SetChatNotificationSettingsBuilder {
         let mut inner = SetChatNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatNotificationSettings".to_string();
 
-        RTDSetChatNotificationSettingsBuilder { inner }
+        SetChatNotificationSettingsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +57,14 @@ impl SetChatNotificationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatNotificationSettingsBuilder {
+pub struct SetChatNotificationSettingsBuilder {
     inner: SetChatNotificationSettings,
 }
 
-impl RTDSetChatNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDSetChatNotificationSettingsBuilder = SetChatNotificationSettingsBuilder;
+
+impl SetChatNotificationSettingsBuilder {
     pub fn build(&self) -> SetChatNotificationSettings {
         self.inner.clone()
     }
@@ -84,7 +89,7 @@ impl AsRef<SetChatNotificationSettings> for SetChatNotificationSettings {
     }
 }
 
-impl AsRef<SetChatNotificationSettings> for RTDSetChatNotificationSettingsBuilder {
+impl AsRef<SetChatNotificationSettings> for SetChatNotificationSettingsBuilder {
     fn as_ref(&self) -> &SetChatNotificationSettings {
         &self.inner
     }

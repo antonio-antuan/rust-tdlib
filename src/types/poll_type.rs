@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,10 +14,10 @@ pub enum PollType {
     #[doc(hidden)]
     _Default,
     /// A poll in quiz mode, which has exactly one correct answer option and can be answered only once
-    #[serde(rename(serialize = "pollTypeQuiz", deserialize = "pollTypeQuiz"))]
+    #[serde(rename(deserialize = "pollTypeQuiz"))]
     Quiz(PollTypeQuiz),
     /// A regular poll
-    #[serde(rename(serialize = "pollTypeRegular", deserialize = "pollTypeRegular"))]
+    #[serde(rename(deserialize = "pollTypeRegular"))]
     Regular(PollTypeRegular),
 }
 
@@ -49,7 +49,7 @@ impl RObject for PollType {
 }
 
 impl PollType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -73,8 +73,10 @@ pub struct PollTypeQuiz {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// 0-based identifier of the correct answer option; 1 for a yet unanswered poll
+
+    #[serde(default)]
     correct_option_id: i32,
-    /// Text that is shown when the user chooses an incorrect answer or taps on the lamp icon, 0-200 characters with at most 2 line feeds; empty for a yet unanswered poll
+    /// Text that is shown when the user chooses an incorrect answer or taps on the lamp icon; 0-200 characters with at most 2 line feeds; empty for a yet unanswered poll
     explanation: FormattedText,
 }
 
@@ -92,14 +94,14 @@ impl RObject for PollTypeQuiz {
 impl TDPollType for PollTypeQuiz {}
 
 impl PollTypeQuiz {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPollTypeQuizBuilder {
+    pub fn builder() -> PollTypeQuizBuilder {
         let mut inner = PollTypeQuiz::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPollTypeQuizBuilder { inner }
+        PollTypeQuizBuilder { inner }
     }
 
     pub fn correct_option_id(&self) -> i32 {
@@ -112,11 +114,14 @@ impl PollTypeQuiz {
 }
 
 #[doc(hidden)]
-pub struct RTDPollTypeQuizBuilder {
+pub struct PollTypeQuizBuilder {
     inner: PollTypeQuiz,
 }
 
-impl RTDPollTypeQuizBuilder {
+#[deprecated]
+pub type RTDPollTypeQuizBuilder = PollTypeQuizBuilder;
+
+impl PollTypeQuizBuilder {
     pub fn build(&self) -> PollTypeQuiz {
         self.inner.clone()
     }
@@ -138,7 +143,7 @@ impl AsRef<PollTypeQuiz> for PollTypeQuiz {
     }
 }
 
-impl AsRef<PollTypeQuiz> for RTDPollTypeQuizBuilder {
+impl AsRef<PollTypeQuiz> for PollTypeQuizBuilder {
     fn as_ref(&self) -> &PollTypeQuiz {
         &self.inner
     }
@@ -153,6 +158,8 @@ pub struct PollTypeRegular {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if multiple answer options can be chosen simultaneously
+
+    #[serde(default)]
     allow_multiple_answers: bool,
 }
 
@@ -170,14 +177,14 @@ impl RObject for PollTypeRegular {
 impl TDPollType for PollTypeRegular {}
 
 impl PollTypeRegular {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPollTypeRegularBuilder {
+    pub fn builder() -> PollTypeRegularBuilder {
         let mut inner = PollTypeRegular::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPollTypeRegularBuilder { inner }
+        PollTypeRegularBuilder { inner }
     }
 
     pub fn allow_multiple_answers(&self) -> bool {
@@ -186,11 +193,14 @@ impl PollTypeRegular {
 }
 
 #[doc(hidden)]
-pub struct RTDPollTypeRegularBuilder {
+pub struct PollTypeRegularBuilder {
     inner: PollTypeRegular,
 }
 
-impl RTDPollTypeRegularBuilder {
+#[deprecated]
+pub type RTDPollTypeRegularBuilder = PollTypeRegularBuilder;
+
+impl PollTypeRegularBuilder {
     pub fn build(&self) -> PollTypeRegular {
         self.inner.clone()
     }
@@ -207,7 +217,7 @@ impl AsRef<PollTypeRegular> for PollTypeRegular {
     }
 }
 
-impl AsRef<PollTypeRegular> for RTDPollTypeRegularBuilder {
+impl AsRef<PollTypeRegular> for PollTypeRegularBuilder {
     fn as_ref(&self) -> &PollTypeRegular {
         &self.inner
     }

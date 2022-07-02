@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for RemoveFavoriteSticker {
 impl RFunction for RemoveFavoriteSticker {}
 
 impl RemoveFavoriteSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveFavoriteStickerBuilder {
+    pub fn builder() -> RemoveFavoriteStickerBuilder {
         let mut inner = RemoveFavoriteSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeFavoriteSticker".to_string();
 
-        RTDRemoveFavoriteStickerBuilder { inner }
+        RemoveFavoriteStickerBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -51,11 +51,14 @@ impl RemoveFavoriteSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveFavoriteStickerBuilder {
+pub struct RemoveFavoriteStickerBuilder {
     inner: RemoveFavoriteSticker,
 }
 
-impl RTDRemoveFavoriteStickerBuilder {
+#[deprecated]
+pub type RTDRemoveFavoriteStickerBuilder = RemoveFavoriteStickerBuilder;
+
+impl RemoveFavoriteStickerBuilder {
     pub fn build(&self) -> RemoveFavoriteSticker {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<RemoveFavoriteSticker> for RemoveFavoriteSticker {
     }
 }
 
-impl AsRef<RemoveFavoriteSticker> for RTDRemoveFavoriteStickerBuilder {
+impl AsRef<RemoveFavoriteSticker> for RemoveFavoriteStickerBuilder {
     fn as_ref(&self) -> &RemoveFavoriteSticker {
         &self.inner
     }

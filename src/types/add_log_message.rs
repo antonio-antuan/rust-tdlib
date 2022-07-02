@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,9 +10,13 @@ pub struct AddLogMessage {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The minimum verbosity level needed for the message to be logged, 0-1023
+    /// The minimum verbosity level needed for the message to be logged; 0-1023
+
+    #[serde(default)]
     verbosity_level: i32,
     /// Text of a message to log
+
+    #[serde(default)]
     text: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for AddLogMessage {
 impl RFunction for AddLogMessage {}
 
 impl AddLogMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddLogMessageBuilder {
+    pub fn builder() -> AddLogMessageBuilder {
         let mut inner = AddLogMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "addLogMessage".to_string();
 
-        RTDAddLogMessageBuilder { inner }
+        AddLogMessageBuilder { inner }
     }
 
     pub fn verbosity_level(&self) -> i32 {
@@ -55,11 +59,14 @@ impl AddLogMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDAddLogMessageBuilder {
+pub struct AddLogMessageBuilder {
     inner: AddLogMessage,
 }
 
-impl RTDAddLogMessageBuilder {
+#[deprecated]
+pub type RTDAddLogMessageBuilder = AddLogMessageBuilder;
+
+impl AddLogMessageBuilder {
     pub fn build(&self) -> AddLogMessage {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<AddLogMessage> for AddLogMessage {
     }
 }
 
-impl AsRef<AddLogMessage> for RTDAddLogMessageBuilder {
+impl AsRef<AddLogMessage> for AddLogMessageBuilder {
     fn as_ref(&self) -> &AddLogMessage {
         &self.inner
     }

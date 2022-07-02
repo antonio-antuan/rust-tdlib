@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,12 +13,17 @@ pub struct ChatPhoto {
     /// Unique photo identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Point in time (Unix timestamp) when the photo has been added
+
+    #[serde(default)]
     added_date: i32,
     /// Photo minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
     /// Available variants of the photo in JPEG format, in different size
+
+    #[serde(default)]
     sizes: Vec<PhotoSize>,
     /// Animated variant of the photo in MPEG4 format; may be null
     animation: Option<AnimatedChatPhoto>,
@@ -36,14 +41,14 @@ impl RObject for ChatPhoto {
 }
 
 impl ChatPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatPhotoBuilder {
+    pub fn builder() -> ChatPhotoBuilder {
         let mut inner = ChatPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatPhotoBuilder { inner }
+        ChatPhotoBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -68,11 +73,14 @@ impl ChatPhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDChatPhotoBuilder {
+pub struct ChatPhotoBuilder {
     inner: ChatPhoto,
 }
 
-impl RTDChatPhotoBuilder {
+#[deprecated]
+pub type RTDChatPhotoBuilder = ChatPhotoBuilder;
+
+impl ChatPhotoBuilder {
     pub fn build(&self) -> ChatPhoto {
         self.inner.clone()
     }
@@ -109,7 +117,7 @@ impl AsRef<ChatPhoto> for ChatPhoto {
     }
 }
 
-impl AsRef<ChatPhoto> for RTDChatPhotoBuilder {
+impl AsRef<ChatPhoto> for ChatPhotoBuilder {
     fn as_ref(&self) -> &ChatPhoto {
         &self.inner
     }

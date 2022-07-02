@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for DisconnectAllWebsites {
 impl RFunction for DisconnectAllWebsites {}
 
 impl DisconnectAllWebsites {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDisconnectAllWebsitesBuilder {
+    pub fn builder() -> DisconnectAllWebsitesBuilder {
         let mut inner = DisconnectAllWebsites::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "disconnectAllWebsites".to_string();
 
-        RTDDisconnectAllWebsitesBuilder { inner }
+        DisconnectAllWebsitesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDDisconnectAllWebsitesBuilder {
+pub struct DisconnectAllWebsitesBuilder {
     inner: DisconnectAllWebsites,
 }
 
-impl RTDDisconnectAllWebsitesBuilder {
+#[deprecated]
+pub type RTDDisconnectAllWebsitesBuilder = DisconnectAllWebsitesBuilder;
+
+impl DisconnectAllWebsitesBuilder {
     pub fn build(&self) -> DisconnectAllWebsites {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<DisconnectAllWebsites> for DisconnectAllWebsites {
     }
 }
 
-impl AsRef<DisconnectAllWebsites> for RTDDisconnectAllWebsitesBuilder {
+impl AsRef<DisconnectAllWebsites> for DisconnectAllWebsitesBuilder {
     fn as_ref(&self) -> &DisconnectAllWebsites {
         &self.inner
     }

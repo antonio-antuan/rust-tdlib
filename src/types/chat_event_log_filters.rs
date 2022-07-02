@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,26 +10,54 @@ pub struct ChatEventLogFilters {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// True, if message edits should be returned
+    /// True, if message edits need to be returned
+
+    #[serde(default)]
     message_edits: bool,
-    /// True, if message deletions should be returned
+    /// True, if message deletions need to be returned
+
+    #[serde(default)]
     message_deletions: bool,
-    /// True, if pin/unpin events should be returned
+    /// True, if pin/unpin events need to be returned
+
+    #[serde(default)]
     message_pins: bool,
-    /// True, if members joining events should be returned
+    /// True, if members joining events need to be returned
+
+    #[serde(default)]
     member_joins: bool,
-    /// True, if members leaving events should be returned
+    /// True, if members leaving events need to be returned
+
+    #[serde(default)]
     member_leaves: bool,
-    /// True, if invited member events should be returned
+    /// True, if invited member events need to be returned
+
+    #[serde(default)]
     member_invites: bool,
-    /// True, if member promotion/demotion events should be returned
+    /// True, if member promotion/demotion events need to be returned
+
+    #[serde(default)]
     member_promotions: bool,
-    /// True, if member restricted/unrestricted/banned/unbanned events should be returned
+    /// True, if member restricted/unrestricted/banned/unbanned events need to be returned
+
+    #[serde(default)]
     member_restrictions: bool,
-    /// True, if changes in chat information should be returned
+    /// True, if changes in chat information need to be returned
+
+    #[serde(default)]
     info_changes: bool,
-    /// True, if changes in chat settings should be returned
+    /// True, if changes in chat settings need to be returned
+
+    #[serde(default)]
     setting_changes: bool,
+    /// True, if changes to invite links need to be returned
+
+    #[serde(default)]
+    invite_link_changes: bool,
+    /// True, if video chat actions need to be returned
+
+    #[serde(default)]
+    video_chat_changes: bool,
 }
 
 impl RObject for ChatEventLogFilters {
@@ -44,14 +72,14 @@ impl RObject for ChatEventLogFilters {
 }
 
 impl ChatEventLogFilters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatEventLogFiltersBuilder {
+    pub fn builder() -> ChatEventLogFiltersBuilder {
         let mut inner = ChatEventLogFilters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatEventLogFiltersBuilder { inner }
+        ChatEventLogFiltersBuilder { inner }
     }
 
     pub fn message_edits(&self) -> bool {
@@ -93,14 +121,25 @@ impl ChatEventLogFilters {
     pub fn setting_changes(&self) -> bool {
         self.setting_changes
     }
+
+    pub fn invite_link_changes(&self) -> bool {
+        self.invite_link_changes
+    }
+
+    pub fn video_chat_changes(&self) -> bool {
+        self.video_chat_changes
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDChatEventLogFiltersBuilder {
+pub struct ChatEventLogFiltersBuilder {
     inner: ChatEventLogFilters,
 }
 
-impl RTDChatEventLogFiltersBuilder {
+#[deprecated]
+pub type RTDChatEventLogFiltersBuilder = ChatEventLogFiltersBuilder;
+
+impl ChatEventLogFiltersBuilder {
     pub fn build(&self) -> ChatEventLogFilters {
         self.inner.clone()
     }
@@ -154,6 +193,16 @@ impl RTDChatEventLogFiltersBuilder {
         self.inner.setting_changes = setting_changes;
         self
     }
+
+    pub fn invite_link_changes(&mut self, invite_link_changes: bool) -> &mut Self {
+        self.inner.invite_link_changes = invite_link_changes;
+        self
+    }
+
+    pub fn video_chat_changes(&mut self, video_chat_changes: bool) -> &mut Self {
+        self.inner.video_chat_changes = video_chat_changes;
+        self
+    }
 }
 
 impl AsRef<ChatEventLogFilters> for ChatEventLogFilters {
@@ -162,7 +211,7 @@ impl AsRef<ChatEventLogFilters> for ChatEventLogFilters {
     }
 }
 
-impl AsRef<ChatEventLogFilters> for RTDChatEventLogFiltersBuilder {
+impl AsRef<ChatEventLogFilters> for ChatEventLogFiltersBuilder {
     fn as_ref(&self) -> &ChatEventLogFilters {
         &self.inner
     }

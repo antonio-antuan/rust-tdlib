@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -15,8 +15,12 @@ pub struct Thumbnail {
     #[serde(skip_serializing_if = "ThumbnailFormat::_is_default")]
     format: ThumbnailFormat,
     /// Thumbnail width
+
+    #[serde(default)]
     width: i32,
     /// Thumbnail height
+
+    #[serde(default)]
     height: i32,
     /// The thumbnail
     file: File,
@@ -34,14 +38,14 @@ impl RObject for Thumbnail {
 }
 
 impl Thumbnail {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDThumbnailBuilder {
+    pub fn builder() -> ThumbnailBuilder {
         let mut inner = Thumbnail::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDThumbnailBuilder { inner }
+        ThumbnailBuilder { inner }
     }
 
     pub fn format(&self) -> &ThumbnailFormat {
@@ -62,11 +66,14 @@ impl Thumbnail {
 }
 
 #[doc(hidden)]
-pub struct RTDThumbnailBuilder {
+pub struct ThumbnailBuilder {
     inner: Thumbnail,
 }
 
-impl RTDThumbnailBuilder {
+#[deprecated]
+pub type RTDThumbnailBuilder = ThumbnailBuilder;
+
+impl ThumbnailBuilder {
     pub fn build(&self) -> Thumbnail {
         self.inner.clone()
     }
@@ -98,7 +105,7 @@ impl AsRef<Thumbnail> for Thumbnail {
     }
 }
 
-impl AsRef<Thumbnail> for RTDThumbnailBuilder {
+impl AsRef<Thumbnail> for ThumbnailBuilder {
     fn as_ref(&self) -> &Thumbnail {
         &self.inner
     }

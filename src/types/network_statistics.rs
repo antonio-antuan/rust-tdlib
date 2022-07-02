@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct NetworkStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) from which the statistics are collected
+
+    #[serde(default)]
     since_date: i32,
     /// Network statistics entries
+
+    #[serde(default)]
     entries: Vec<NetworkStatisticsEntry>,
 }
 
@@ -28,14 +32,14 @@ impl RObject for NetworkStatistics {
 }
 
 impl NetworkStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDNetworkStatisticsBuilder {
+    pub fn builder() -> NetworkStatisticsBuilder {
         let mut inner = NetworkStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDNetworkStatisticsBuilder { inner }
+        NetworkStatisticsBuilder { inner }
     }
 
     pub fn since_date(&self) -> i32 {
@@ -48,11 +52,14 @@ impl NetworkStatistics {
 }
 
 #[doc(hidden)]
-pub struct RTDNetworkStatisticsBuilder {
+pub struct NetworkStatisticsBuilder {
     inner: NetworkStatistics,
 }
 
-impl RTDNetworkStatisticsBuilder {
+#[deprecated]
+pub type RTDNetworkStatisticsBuilder = NetworkStatisticsBuilder;
+
+impl NetworkStatisticsBuilder {
     pub fn build(&self) -> NetworkStatistics {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<NetworkStatistics> for NetworkStatistics {
     }
 }
 
-impl AsRef<NetworkStatistics> for RTDNetworkStatisticsBuilder {
+impl AsRef<NetworkStatistics> for NetworkStatisticsBuilder {
     fn as_ref(&self) -> &NetworkStatistics {
         &self.inner
     }

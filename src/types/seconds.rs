@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct Seconds {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of seconds
+
+    #[serde(default)]
     seconds: f32,
 }
 
@@ -26,14 +28,14 @@ impl RObject for Seconds {
 }
 
 impl Seconds {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSecondsBuilder {
+    pub fn builder() -> SecondsBuilder {
         let mut inner = Seconds::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSecondsBuilder { inner }
+        SecondsBuilder { inner }
     }
 
     pub fn seconds(&self) -> f32 {
@@ -42,11 +44,14 @@ impl Seconds {
 }
 
 #[doc(hidden)]
-pub struct RTDSecondsBuilder {
+pub struct SecondsBuilder {
     inner: Seconds,
 }
 
-impl RTDSecondsBuilder {
+#[deprecated]
+pub type RTDSecondsBuilder = SecondsBuilder;
+
+impl SecondsBuilder {
     pub fn build(&self) -> Seconds {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<Seconds> for Seconds {
     }
 }
 
-impl AsRef<Seconds> for RTDSecondsBuilder {
+impl AsRef<Seconds> for SecondsBuilder {
     fn as_ref(&self) -> &Seconds {
         &self.inner
     }

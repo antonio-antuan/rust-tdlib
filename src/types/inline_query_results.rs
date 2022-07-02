@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,14 +13,23 @@ pub struct InlineQueryResults {
     /// Unique identifier of the inline query
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     inline_query_id: i64,
     /// The offset for the next request. If empty, there are no more results
+
+    #[serde(default)]
     next_offset: String,
     /// Results of the query
+
+    #[serde(default)]
     results: Vec<InlineQueryResult>,
-    /// If non-empty, this text should be shown on the button, which opens a private chat with the bot and sends the bot a start message with the switch_pm_parameter
+    /// If non-empty, this text must be shown on the button, which opens a private chat with the bot and sends the bot a start message with the switch_pm_parameter
+
+    #[serde(default)]
     switch_pm_text: String,
     /// Parameter for the bot start message
+
+    #[serde(default)]
     switch_pm_parameter: String,
 }
 
@@ -36,14 +45,14 @@ impl RObject for InlineQueryResults {
 }
 
 impl InlineQueryResults {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineQueryResultsBuilder {
+    pub fn builder() -> InlineQueryResultsBuilder {
         let mut inner = InlineQueryResults::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineQueryResultsBuilder { inner }
+        InlineQueryResultsBuilder { inner }
     }
 
     pub fn inline_query_id(&self) -> i64 {
@@ -68,11 +77,14 @@ impl InlineQueryResults {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineQueryResultsBuilder {
+pub struct InlineQueryResultsBuilder {
     inner: InlineQueryResults,
 }
 
-impl RTDInlineQueryResultsBuilder {
+#[deprecated]
+pub type RTDInlineQueryResultsBuilder = InlineQueryResultsBuilder;
+
+impl InlineQueryResultsBuilder {
     pub fn build(&self) -> InlineQueryResults {
         self.inner.clone()
     }
@@ -109,7 +121,7 @@ impl AsRef<InlineQueryResults> for InlineQueryResults {
     }
 }
 
-impl AsRef<InlineQueryResults> for RTDInlineQueryResultsBuilder {
+impl AsRef<InlineQueryResults> for InlineQueryResultsBuilder {
     fn as_ref(&self) -> &InlineQueryResults {
         &self.inner
     }

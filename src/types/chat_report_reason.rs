@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,46 +14,28 @@ pub enum ChatReportReason {
     #[doc(hidden)]
     _Default,
     /// The chat has child abuse related content
-    #[serde(rename(
-        serialize = "chatReportReasonChildAbuse",
-        deserialize = "chatReportReasonChildAbuse"
-    ))]
+    #[serde(rename(deserialize = "chatReportReasonChildAbuse"))]
     ChildAbuse(ChatReportReasonChildAbuse),
     /// The chat contains copyrighted content
-    #[serde(rename(
-        serialize = "chatReportReasonCopyright",
-        deserialize = "chatReportReasonCopyright"
-    ))]
+    #[serde(rename(deserialize = "chatReportReasonCopyright"))]
     Copyright(ChatReportReasonCopyright),
     /// A custom reason provided by the user
-    #[serde(rename(
-        serialize = "chatReportReasonCustom",
-        deserialize = "chatReportReasonCustom"
-    ))]
+    #[serde(rename(deserialize = "chatReportReasonCustom"))]
     Custom(ChatReportReasonCustom),
+    /// The chat represents a fake account
+    #[serde(rename(deserialize = "chatReportReasonFake"))]
+    Fake(ChatReportReasonFake),
     /// The chat contains pornographic messages
-    #[serde(rename(
-        serialize = "chatReportReasonPornography",
-        deserialize = "chatReportReasonPornography"
-    ))]
+    #[serde(rename(deserialize = "chatReportReasonPornography"))]
     Pornography(ChatReportReasonPornography),
     /// The chat contains spam messages
-    #[serde(rename(
-        serialize = "chatReportReasonSpam",
-        deserialize = "chatReportReasonSpam"
-    ))]
+    #[serde(rename(deserialize = "chatReportReasonSpam"))]
     Spam(ChatReportReasonSpam),
     /// The location-based chat is unrelated to its stated location
-    #[serde(rename(
-        serialize = "chatReportReasonUnrelatedLocation",
-        deserialize = "chatReportReasonUnrelatedLocation"
-    ))]
+    #[serde(rename(deserialize = "chatReportReasonUnrelatedLocation"))]
     UnrelatedLocation(ChatReportReasonUnrelatedLocation),
     /// The chat promotes violence
-    #[serde(rename(
-        serialize = "chatReportReasonViolence",
-        deserialize = "chatReportReasonViolence"
-    ))]
+    #[serde(rename(deserialize = "chatReportReasonViolence"))]
     Violence(ChatReportReasonViolence),
 }
 
@@ -70,6 +52,7 @@ impl RObject for ChatReportReason {
             ChatReportReason::ChildAbuse(t) => t.extra(),
             ChatReportReason::Copyright(t) => t.extra(),
             ChatReportReason::Custom(t) => t.extra(),
+            ChatReportReason::Fake(t) => t.extra(),
             ChatReportReason::Pornography(t) => t.extra(),
             ChatReportReason::Spam(t) => t.extra(),
             ChatReportReason::UnrelatedLocation(t) => t.extra(),
@@ -84,6 +67,7 @@ impl RObject for ChatReportReason {
             ChatReportReason::ChildAbuse(t) => t.client_id(),
             ChatReportReason::Copyright(t) => t.client_id(),
             ChatReportReason::Custom(t) => t.client_id(),
+            ChatReportReason::Fake(t) => t.client_id(),
             ChatReportReason::Pornography(t) => t.client_id(),
             ChatReportReason::Spam(t) => t.client_id(),
             ChatReportReason::UnrelatedLocation(t) => t.client_id(),
@@ -95,7 +79,7 @@ impl RObject for ChatReportReason {
 }
 
 impl ChatReportReason {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -134,23 +118,26 @@ impl RObject for ChatReportReasonChildAbuse {
 impl TDChatReportReason for ChatReportReasonChildAbuse {}
 
 impl ChatReportReasonChildAbuse {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatReportReasonChildAbuseBuilder {
+    pub fn builder() -> ChatReportReasonChildAbuseBuilder {
         let mut inner = ChatReportReasonChildAbuse::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatReportReasonChildAbuseBuilder { inner }
+        ChatReportReasonChildAbuseBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatReportReasonChildAbuseBuilder {
+pub struct ChatReportReasonChildAbuseBuilder {
     inner: ChatReportReasonChildAbuse,
 }
 
-impl RTDChatReportReasonChildAbuseBuilder {
+#[deprecated]
+pub type RTDChatReportReasonChildAbuseBuilder = ChatReportReasonChildAbuseBuilder;
+
+impl ChatReportReasonChildAbuseBuilder {
     pub fn build(&self) -> ChatReportReasonChildAbuse {
         self.inner.clone()
     }
@@ -162,7 +149,7 @@ impl AsRef<ChatReportReasonChildAbuse> for ChatReportReasonChildAbuse {
     }
 }
 
-impl AsRef<ChatReportReasonChildAbuse> for RTDChatReportReasonChildAbuseBuilder {
+impl AsRef<ChatReportReasonChildAbuse> for ChatReportReasonChildAbuseBuilder {
     fn as_ref(&self) -> &ChatReportReasonChildAbuse {
         &self.inner
     }
@@ -192,23 +179,26 @@ impl RObject for ChatReportReasonCopyright {
 impl TDChatReportReason for ChatReportReasonCopyright {}
 
 impl ChatReportReasonCopyright {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatReportReasonCopyrightBuilder {
+    pub fn builder() -> ChatReportReasonCopyrightBuilder {
         let mut inner = ChatReportReasonCopyright::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatReportReasonCopyrightBuilder { inner }
+        ChatReportReasonCopyrightBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatReportReasonCopyrightBuilder {
+pub struct ChatReportReasonCopyrightBuilder {
     inner: ChatReportReasonCopyright,
 }
 
-impl RTDChatReportReasonCopyrightBuilder {
+#[deprecated]
+pub type RTDChatReportReasonCopyrightBuilder = ChatReportReasonCopyrightBuilder;
+
+impl ChatReportReasonCopyrightBuilder {
     pub fn build(&self) -> ChatReportReasonCopyright {
         self.inner.clone()
     }
@@ -220,7 +210,7 @@ impl AsRef<ChatReportReasonCopyright> for ChatReportReasonCopyright {
     }
 }
 
-impl AsRef<ChatReportReasonCopyright> for RTDChatReportReasonCopyrightBuilder {
+impl AsRef<ChatReportReasonCopyright> for ChatReportReasonCopyrightBuilder {
     fn as_ref(&self) -> &ChatReportReasonCopyright {
         &self.inner
     }
@@ -234,8 +224,6 @@ pub struct ChatReportReasonCustom {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Report text
-    text: String,
 }
 
 impl RObject for ChatReportReasonCustom {
@@ -252,34 +240,28 @@ impl RObject for ChatReportReasonCustom {
 impl TDChatReportReason for ChatReportReasonCustom {}
 
 impl ChatReportReasonCustom {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatReportReasonCustomBuilder {
+    pub fn builder() -> ChatReportReasonCustomBuilder {
         let mut inner = ChatReportReasonCustom::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatReportReasonCustomBuilder { inner }
-    }
-
-    pub fn text(&self) -> &String {
-        &self.text
+        ChatReportReasonCustomBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatReportReasonCustomBuilder {
+pub struct ChatReportReasonCustomBuilder {
     inner: ChatReportReasonCustom,
 }
 
-impl RTDChatReportReasonCustomBuilder {
+#[deprecated]
+pub type RTDChatReportReasonCustomBuilder = ChatReportReasonCustomBuilder;
+
+impl ChatReportReasonCustomBuilder {
     pub fn build(&self) -> ChatReportReasonCustom {
         self.inner.clone()
-    }
-
-    pub fn text<T: AsRef<str>>(&mut self, text: T) -> &mut Self {
-        self.inner.text = text.as_ref().to_string();
-        self
     }
 }
 
@@ -289,8 +271,69 @@ impl AsRef<ChatReportReasonCustom> for ChatReportReasonCustom {
     }
 }
 
-impl AsRef<ChatReportReasonCustom> for RTDChatReportReasonCustomBuilder {
+impl AsRef<ChatReportReasonCustom> for ChatReportReasonCustomBuilder {
     fn as_ref(&self) -> &ChatReportReasonCustom {
+        &self.inner
+    }
+}
+
+/// The chat represents a fake account
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ChatReportReasonFake {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for ChatReportReasonFake {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDChatReportReason for ChatReportReasonFake {}
+
+impl ChatReportReasonFake {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> ChatReportReasonFakeBuilder {
+        let mut inner = ChatReportReasonFake::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        ChatReportReasonFakeBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct ChatReportReasonFakeBuilder {
+    inner: ChatReportReasonFake,
+}
+
+#[deprecated]
+pub type RTDChatReportReasonFakeBuilder = ChatReportReasonFakeBuilder;
+
+impl ChatReportReasonFakeBuilder {
+    pub fn build(&self) -> ChatReportReasonFake {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<ChatReportReasonFake> for ChatReportReasonFake {
+    fn as_ref(&self) -> &ChatReportReasonFake {
+        self
+    }
+}
+
+impl AsRef<ChatReportReasonFake> for ChatReportReasonFakeBuilder {
+    fn as_ref(&self) -> &ChatReportReasonFake {
         &self.inner
     }
 }
@@ -319,23 +362,26 @@ impl RObject for ChatReportReasonPornography {
 impl TDChatReportReason for ChatReportReasonPornography {}
 
 impl ChatReportReasonPornography {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatReportReasonPornographyBuilder {
+    pub fn builder() -> ChatReportReasonPornographyBuilder {
         let mut inner = ChatReportReasonPornography::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatReportReasonPornographyBuilder { inner }
+        ChatReportReasonPornographyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatReportReasonPornographyBuilder {
+pub struct ChatReportReasonPornographyBuilder {
     inner: ChatReportReasonPornography,
 }
 
-impl RTDChatReportReasonPornographyBuilder {
+#[deprecated]
+pub type RTDChatReportReasonPornographyBuilder = ChatReportReasonPornographyBuilder;
+
+impl ChatReportReasonPornographyBuilder {
     pub fn build(&self) -> ChatReportReasonPornography {
         self.inner.clone()
     }
@@ -347,7 +393,7 @@ impl AsRef<ChatReportReasonPornography> for ChatReportReasonPornography {
     }
 }
 
-impl AsRef<ChatReportReasonPornography> for RTDChatReportReasonPornographyBuilder {
+impl AsRef<ChatReportReasonPornography> for ChatReportReasonPornographyBuilder {
     fn as_ref(&self) -> &ChatReportReasonPornography {
         &self.inner
     }
@@ -377,23 +423,26 @@ impl RObject for ChatReportReasonSpam {
 impl TDChatReportReason for ChatReportReasonSpam {}
 
 impl ChatReportReasonSpam {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatReportReasonSpamBuilder {
+    pub fn builder() -> ChatReportReasonSpamBuilder {
         let mut inner = ChatReportReasonSpam::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatReportReasonSpamBuilder { inner }
+        ChatReportReasonSpamBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatReportReasonSpamBuilder {
+pub struct ChatReportReasonSpamBuilder {
     inner: ChatReportReasonSpam,
 }
 
-impl RTDChatReportReasonSpamBuilder {
+#[deprecated]
+pub type RTDChatReportReasonSpamBuilder = ChatReportReasonSpamBuilder;
+
+impl ChatReportReasonSpamBuilder {
     pub fn build(&self) -> ChatReportReasonSpam {
         self.inner.clone()
     }
@@ -405,7 +454,7 @@ impl AsRef<ChatReportReasonSpam> for ChatReportReasonSpam {
     }
 }
 
-impl AsRef<ChatReportReasonSpam> for RTDChatReportReasonSpamBuilder {
+impl AsRef<ChatReportReasonSpam> for ChatReportReasonSpamBuilder {
     fn as_ref(&self) -> &ChatReportReasonSpam {
         &self.inner
     }
@@ -435,23 +484,26 @@ impl RObject for ChatReportReasonUnrelatedLocation {
 impl TDChatReportReason for ChatReportReasonUnrelatedLocation {}
 
 impl ChatReportReasonUnrelatedLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatReportReasonUnrelatedLocationBuilder {
+    pub fn builder() -> ChatReportReasonUnrelatedLocationBuilder {
         let mut inner = ChatReportReasonUnrelatedLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatReportReasonUnrelatedLocationBuilder { inner }
+        ChatReportReasonUnrelatedLocationBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatReportReasonUnrelatedLocationBuilder {
+pub struct ChatReportReasonUnrelatedLocationBuilder {
     inner: ChatReportReasonUnrelatedLocation,
 }
 
-impl RTDChatReportReasonUnrelatedLocationBuilder {
+#[deprecated]
+pub type RTDChatReportReasonUnrelatedLocationBuilder = ChatReportReasonUnrelatedLocationBuilder;
+
+impl ChatReportReasonUnrelatedLocationBuilder {
     pub fn build(&self) -> ChatReportReasonUnrelatedLocation {
         self.inner.clone()
     }
@@ -463,7 +515,7 @@ impl AsRef<ChatReportReasonUnrelatedLocation> for ChatReportReasonUnrelatedLocat
     }
 }
 
-impl AsRef<ChatReportReasonUnrelatedLocation> for RTDChatReportReasonUnrelatedLocationBuilder {
+impl AsRef<ChatReportReasonUnrelatedLocation> for ChatReportReasonUnrelatedLocationBuilder {
     fn as_ref(&self) -> &ChatReportReasonUnrelatedLocation {
         &self.inner
     }
@@ -493,23 +545,26 @@ impl RObject for ChatReportReasonViolence {
 impl TDChatReportReason for ChatReportReasonViolence {}
 
 impl ChatReportReasonViolence {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatReportReasonViolenceBuilder {
+    pub fn builder() -> ChatReportReasonViolenceBuilder {
         let mut inner = ChatReportReasonViolence::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatReportReasonViolenceBuilder { inner }
+        ChatReportReasonViolenceBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatReportReasonViolenceBuilder {
+pub struct ChatReportReasonViolenceBuilder {
     inner: ChatReportReasonViolence,
 }
 
-impl RTDChatReportReasonViolenceBuilder {
+#[deprecated]
+pub type RTDChatReportReasonViolenceBuilder = ChatReportReasonViolenceBuilder;
+
+impl ChatReportReasonViolenceBuilder {
     pub fn build(&self) -> ChatReportReasonViolence {
         self.inner.clone()
     }
@@ -521,7 +576,7 @@ impl AsRef<ChatReportReasonViolence> for ChatReportReasonViolence {
     }
 }
 
-impl AsRef<ChatReportReasonViolence> for RTDChatReportReasonViolenceBuilder {
+impl AsRef<ChatReportReasonViolence> for ChatReportReasonViolenceBuilder {
     fn as_ref(&self) -> &ChatReportReasonViolence {
         &self.inner
     }

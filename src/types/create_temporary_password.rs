@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct CreateTemporaryPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Persistent user password
+
+    #[serde(default)]
     password: String,
-    /// Time during which the temporary password will be valid, in seconds; should be between 60 and 86400
+    /// Time during which the temporary password will be valid, in seconds; must be between 60 and 86400
+
+    #[serde(default)]
     valid_for: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for CreateTemporaryPassword {
 impl RFunction for CreateTemporaryPassword {}
 
 impl CreateTemporaryPassword {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateTemporaryPasswordBuilder {
+    pub fn builder() -> CreateTemporaryPasswordBuilder {
         let mut inner = CreateTemporaryPassword::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createTemporaryPassword".to_string();
 
-        RTDCreateTemporaryPasswordBuilder { inner }
+        CreateTemporaryPasswordBuilder { inner }
     }
 
     pub fn password(&self) -> &String {
@@ -55,11 +59,14 @@ impl CreateTemporaryPassword {
 }
 
 #[doc(hidden)]
-pub struct RTDCreateTemporaryPasswordBuilder {
+pub struct CreateTemporaryPasswordBuilder {
     inner: CreateTemporaryPassword,
 }
 
-impl RTDCreateTemporaryPasswordBuilder {
+#[deprecated]
+pub type RTDCreateTemporaryPasswordBuilder = CreateTemporaryPasswordBuilder;
+
+impl CreateTemporaryPasswordBuilder {
     pub fn build(&self) -> CreateTemporaryPassword {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<CreateTemporaryPassword> for CreateTemporaryPassword {
     }
 }
 
-impl AsRef<CreateTemporaryPassword> for RTDCreateTemporaryPasswordBuilder {
+impl AsRef<CreateTemporaryPassword> for CreateTemporaryPasswordBuilder {
     fn as_ref(&self) -> &CreateTemporaryPassword {
         &self.inner
     }

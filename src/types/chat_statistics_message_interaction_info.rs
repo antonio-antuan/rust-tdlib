@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct ChatStatisticsMessageInteractionInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
     /// Number of times the message was viewed
+
+    #[serde(default)]
     view_count: i32,
     /// Number of times the message was forwarded
+
+    #[serde(default)]
     forward_count: i32,
 }
 
@@ -30,14 +36,14 @@ impl RObject for ChatStatisticsMessageInteractionInfo {
 }
 
 impl ChatStatisticsMessageInteractionInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatStatisticsMessageInteractionInfoBuilder {
+    pub fn builder() -> ChatStatisticsMessageInteractionInfoBuilder {
         let mut inner = ChatStatisticsMessageInteractionInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatStatisticsMessageInteractionInfoBuilder { inner }
+        ChatStatisticsMessageInteractionInfoBuilder { inner }
     }
 
     pub fn message_id(&self) -> i64 {
@@ -54,11 +60,15 @@ impl ChatStatisticsMessageInteractionInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDChatStatisticsMessageInteractionInfoBuilder {
+pub struct ChatStatisticsMessageInteractionInfoBuilder {
     inner: ChatStatisticsMessageInteractionInfo,
 }
 
-impl RTDChatStatisticsMessageInteractionInfoBuilder {
+#[deprecated]
+pub type RTDChatStatisticsMessageInteractionInfoBuilder =
+    ChatStatisticsMessageInteractionInfoBuilder;
+
+impl ChatStatisticsMessageInteractionInfoBuilder {
     pub fn build(&self) -> ChatStatisticsMessageInteractionInfo {
         self.inner.clone()
     }
@@ -85,9 +95,7 @@ impl AsRef<ChatStatisticsMessageInteractionInfo> for ChatStatisticsMessageIntera
     }
 }
 
-impl AsRef<ChatStatisticsMessageInteractionInfo>
-    for RTDChatStatisticsMessageInteractionInfoBuilder
-{
+impl AsRef<ChatStatisticsMessageInteractionInfo> for ChatStatisticsMessageInteractionInfoBuilder {
     fn as_ref(&self) -> &ChatStatisticsMessageInteractionInfo {
         &self.inner
     }

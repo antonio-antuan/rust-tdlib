@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for SetAccountTtl {
 impl RFunction for SetAccountTtl {}
 
 impl SetAccountTtl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetAccountTtlBuilder {
+    pub fn builder() -> SetAccountTtlBuilder {
         let mut inner = SetAccountTtl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setAccountTtl".to_string();
 
-        RTDSetAccountTtlBuilder { inner }
+        SetAccountTtlBuilder { inner }
     }
 
     pub fn ttl(&self) -> &AccountTtl {
@@ -49,11 +49,14 @@ impl SetAccountTtl {
 }
 
 #[doc(hidden)]
-pub struct RTDSetAccountTtlBuilder {
+pub struct SetAccountTtlBuilder {
     inner: SetAccountTtl,
 }
 
-impl RTDSetAccountTtlBuilder {
+#[deprecated]
+pub type RTDSetAccountTtlBuilder = SetAccountTtlBuilder;
+
+impl SetAccountTtlBuilder {
     pub fn build(&self) -> SetAccountTtl {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<SetAccountTtl> for SetAccountTtl {
     }
 }
 
-impl AsRef<SetAccountTtl> for RTDSetAccountTtlBuilder {
+impl AsRef<SetAccountTtl> for SetAccountTtlBuilder {
     fn as_ref(&self) -> &SetAccountTtl {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,77 +13,41 @@ pub trait TDInputInlineQueryResult: Debug + RObject {}
 pub enum InputInlineQueryResult {
     #[doc(hidden)]
     _Default,
-    /// Represents a link to an animated GIF or an animated (i.e. without sound) H.264/MPEG-4 AVC video
-    #[serde(rename(
-        serialize = "inputInlineQueryResultAnimation",
-        deserialize = "inputInlineQueryResultAnimation"
-    ))]
+    /// Represents a link to an animated GIF or an animated (i.e., without sound) H.264/MPEG-4 AVC video
+    #[serde(rename(deserialize = "inputInlineQueryResultAnimation"))]
     Animation(InputInlineQueryResultAnimation),
     /// Represents a link to an article or web page
-    #[serde(rename(
-        serialize = "inputInlineQueryResultArticle",
-        deserialize = "inputInlineQueryResultArticle"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultArticle"))]
     Article(InputInlineQueryResultArticle),
     /// Represents a link to an MP3 audio file
-    #[serde(rename(
-        serialize = "inputInlineQueryResultAudio",
-        deserialize = "inputInlineQueryResultAudio"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultAudio"))]
     Audio(InputInlineQueryResultAudio),
     /// Represents a user contact
-    #[serde(rename(
-        serialize = "inputInlineQueryResultContact",
-        deserialize = "inputInlineQueryResultContact"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultContact"))]
     Contact(InputInlineQueryResultContact),
     /// Represents a link to a file
-    #[serde(rename(
-        serialize = "inputInlineQueryResultDocument",
-        deserialize = "inputInlineQueryResultDocument"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultDocument"))]
     Document(InputInlineQueryResultDocument),
     /// Represents a game
-    #[serde(rename(
-        serialize = "inputInlineQueryResultGame",
-        deserialize = "inputInlineQueryResultGame"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultGame"))]
     Game(InputInlineQueryResultGame),
     /// Represents a point on the map
-    #[serde(rename(
-        serialize = "inputInlineQueryResultLocation",
-        deserialize = "inputInlineQueryResultLocation"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultLocation"))]
     Location(InputInlineQueryResultLocation),
     /// Represents link to a JPEG image
-    #[serde(rename(
-        serialize = "inputInlineQueryResultPhoto",
-        deserialize = "inputInlineQueryResultPhoto"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultPhoto"))]
     Photo(InputInlineQueryResultPhoto),
     /// Represents a link to a WEBP or TGS sticker
-    #[serde(rename(
-        serialize = "inputInlineQueryResultSticker",
-        deserialize = "inputInlineQueryResultSticker"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultSticker"))]
     Sticker(InputInlineQueryResultSticker),
     /// Represents information about a venue
-    #[serde(rename(
-        serialize = "inputInlineQueryResultVenue",
-        deserialize = "inputInlineQueryResultVenue"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultVenue"))]
     Venue(InputInlineQueryResultVenue),
     /// Represents a link to a page containing an embedded video player or a video file
-    #[serde(rename(
-        serialize = "inputInlineQueryResultVideo",
-        deserialize = "inputInlineQueryResultVideo"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultVideo"))]
     Video(InputInlineQueryResultVideo),
     /// Represents a link to an opus-encoded audio file within an OGG container, single channel audio
-    #[serde(rename(
-        serialize = "inputInlineQueryResultVoiceNote",
-        deserialize = "inputInlineQueryResultVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "inputInlineQueryResultVoiceNote"))]
     VoiceNote(InputInlineQueryResultVoiceNote),
 }
 
@@ -135,7 +99,7 @@ impl RObject for InputInlineQueryResult {
 }
 
 impl InputInlineQueryResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -150,7 +114,7 @@ impl AsRef<InputInlineQueryResult> for InputInlineQueryResult {
     }
 }
 
-/// Represents a link to an animated GIF or an animated (i.e. without sound) H.264/MPEG-4 AVC video
+/// Represents a link to an animated GIF or an animated (i.e., without sound) H.264/MPEG-4 AVC video
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultAnimation {
     #[doc(hidden)]
@@ -159,28 +123,46 @@ pub struct InputInlineQueryResultAnimation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the query result
+
+    #[serde(default)]
     title: String,
     /// URL of the result thumbnail (JPEG, GIF, or MPEG4), if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// MIME type of the video thumbnail. If non-empty, must be one of "image/jpeg", "image/gif" and "video/mp4"
+
+    #[serde(default)]
     thumbnail_mime_type: String,
     /// The URL of the video file (file size must not exceed 1MB)
+
+    #[serde(default)]
     video_url: String,
     /// MIME type of the video file. Must be one of "image/gif" and "video/mp4"
+
+    #[serde(default)]
     video_mime_type: String,
     /// Duration of the video, in seconds
+
+    #[serde(default)]
     video_duration: i32,
     /// Width of the video
+
+    #[serde(default)]
     video_width: i32,
     /// Height of the video
+
+    #[serde(default)]
     video_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAnimation, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageAnimation, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -200,14 +182,14 @@ impl RObject for InputInlineQueryResultAnimation {
 impl TDInputInlineQueryResult for InputInlineQueryResultAnimation {}
 
 impl InputInlineQueryResultAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultAnimationBuilder {
+    pub fn builder() -> InputInlineQueryResultAnimationBuilder {
         let mut inner = InputInlineQueryResultAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultAnimationBuilder { inner }
+        InputInlineQueryResultAnimationBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -256,11 +238,14 @@ impl InputInlineQueryResultAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultAnimationBuilder {
+pub struct InputInlineQueryResultAnimationBuilder {
     inner: InputInlineQueryResultAnimation,
 }
 
-impl RTDInputInlineQueryResultAnimationBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultAnimationBuilder = InputInlineQueryResultAnimationBuilder;
+
+impl InputInlineQueryResultAnimationBuilder {
     pub fn build(&self) -> InputInlineQueryResultAnimation {
         self.inner.clone()
     }
@@ -330,7 +315,7 @@ impl AsRef<InputInlineQueryResultAnimation> for InputInlineQueryResultAnimation 
     }
 }
 
-impl AsRef<InputInlineQueryResultAnimation> for RTDInputInlineQueryResultAnimationBuilder {
+impl AsRef<InputInlineQueryResultAnimation> for InputInlineQueryResultAnimationBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultAnimation {
         &self.inner
     }
@@ -345,26 +330,42 @@ pub struct InputInlineQueryResultArticle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// URL of the result, if it exists
+
+    #[serde(default)]
     url: String,
     /// True, if the URL must be not shown
+
+    #[serde(default)]
     hide_url: bool,
     /// Title of the result
+
+    #[serde(default)]
     title: String,
     /// Represents a link to an article or web page
+
+    #[serde(default)]
     description: String,
     /// URL of the result thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Thumbnail width, if known
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Thumbnail height, if known
+
+    #[serde(default)]
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -384,14 +385,14 @@ impl RObject for InputInlineQueryResultArticle {
 impl TDInputInlineQueryResult for InputInlineQueryResultArticle {}
 
 impl InputInlineQueryResultArticle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultArticleBuilder {
+    pub fn builder() -> InputInlineQueryResultArticleBuilder {
         let mut inner = InputInlineQueryResultArticle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultArticleBuilder { inner }
+        InputInlineQueryResultArticleBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -436,11 +437,14 @@ impl InputInlineQueryResultArticle {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultArticleBuilder {
+pub struct InputInlineQueryResultArticleBuilder {
     inner: InputInlineQueryResultArticle,
 }
 
-impl RTDInputInlineQueryResultArticleBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultArticleBuilder = InputInlineQueryResultArticleBuilder;
+
+impl InputInlineQueryResultArticleBuilder {
     pub fn build(&self) -> InputInlineQueryResultArticle {
         self.inner.clone()
     }
@@ -505,7 +509,7 @@ impl AsRef<InputInlineQueryResultArticle> for InputInlineQueryResultArticle {
     }
 }
 
-impl AsRef<InputInlineQueryResultArticle> for RTDInputInlineQueryResultArticleBuilder {
+impl AsRef<InputInlineQueryResultArticle> for InputInlineQueryResultArticleBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultArticle {
         &self.inner
     }
@@ -520,20 +524,30 @@ pub struct InputInlineQueryResultAudio {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the audio file
+
+    #[serde(default)]
     title: String,
     /// Performer of the audio file
+
+    #[serde(default)]
     performer: String,
     /// The URL of the audio file
+
+    #[serde(default)]
     audio_url: String,
     /// Audio file duration, in seconds
+
+    #[serde(default)]
     audio_duration: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageAudio, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageAudio, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -553,14 +567,14 @@ impl RObject for InputInlineQueryResultAudio {
 impl TDInputInlineQueryResult for InputInlineQueryResultAudio {}
 
 impl InputInlineQueryResultAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultAudioBuilder {
+    pub fn builder() -> InputInlineQueryResultAudioBuilder {
         let mut inner = InputInlineQueryResultAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultAudioBuilder { inner }
+        InputInlineQueryResultAudioBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -593,11 +607,14 @@ impl InputInlineQueryResultAudio {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultAudioBuilder {
+pub struct InputInlineQueryResultAudioBuilder {
     inner: InputInlineQueryResultAudio,
 }
 
-impl RTDInputInlineQueryResultAudioBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultAudioBuilder = InputInlineQueryResultAudioBuilder;
+
+impl InputInlineQueryResultAudioBuilder {
     pub fn build(&self) -> InputInlineQueryResultAudio {
         self.inner.clone()
     }
@@ -647,7 +664,7 @@ impl AsRef<InputInlineQueryResultAudio> for InputInlineQueryResultAudio {
     }
 }
 
-impl AsRef<InputInlineQueryResultAudio> for RTDInputInlineQueryResultAudioBuilder {
+impl AsRef<InputInlineQueryResultAudio> for InputInlineQueryResultAudioBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultAudio {
         &self.inner
     }
@@ -662,20 +679,28 @@ pub struct InputInlineQueryResultContact {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// User contact
     contact: Contact,
     /// URL of the result thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Thumbnail width, if known
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Thumbnail height, if known
+
+    #[serde(default)]
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -695,14 +720,14 @@ impl RObject for InputInlineQueryResultContact {
 impl TDInputInlineQueryResult for InputInlineQueryResultContact {}
 
 impl InputInlineQueryResultContact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultContactBuilder {
+    pub fn builder() -> InputInlineQueryResultContactBuilder {
         let mut inner = InputInlineQueryResultContact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultContactBuilder { inner }
+        InputInlineQueryResultContactBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -735,11 +760,14 @@ impl InputInlineQueryResultContact {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultContactBuilder {
+pub struct InputInlineQueryResultContactBuilder {
     inner: InputInlineQueryResultContact,
 }
 
-impl RTDInputInlineQueryResultContactBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultContactBuilder = InputInlineQueryResultContactBuilder;
+
+impl InputInlineQueryResultContactBuilder {
     pub fn build(&self) -> InputInlineQueryResultContact {
         self.inner.clone()
     }
@@ -789,7 +817,7 @@ impl AsRef<InputInlineQueryResultContact> for InputInlineQueryResultContact {
     }
 }
 
-impl AsRef<InputInlineQueryResultContact> for RTDInputInlineQueryResultContactBuilder {
+impl AsRef<InputInlineQueryResultContact> for InputInlineQueryResultContactBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultContact {
         &self.inner
     }
@@ -804,26 +832,42 @@ pub struct InputInlineQueryResultDocument {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the resulting file
+
+    #[serde(default)]
     title: String,
     /// Represents a link to a file
+
+    #[serde(default)]
     description: String,
     /// URL of the file
+
+    #[serde(default)]
     document_url: String,
     /// MIME type of the file content; only "application/pdf" and "application/zip" are currently allowed
+
+    #[serde(default)]
     mime_type: String,
     /// The URL of the file thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Width of the thumbnail
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Height of the thumbnail
+
+    #[serde(default)]
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageDocument, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageDocument, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -843,14 +887,14 @@ impl RObject for InputInlineQueryResultDocument {
 impl TDInputInlineQueryResult for InputInlineQueryResultDocument {}
 
 impl InputInlineQueryResultDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultDocumentBuilder {
+    pub fn builder() -> InputInlineQueryResultDocumentBuilder {
         let mut inner = InputInlineQueryResultDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultDocumentBuilder { inner }
+        InputInlineQueryResultDocumentBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -895,11 +939,14 @@ impl InputInlineQueryResultDocument {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultDocumentBuilder {
+pub struct InputInlineQueryResultDocumentBuilder {
     inner: InputInlineQueryResultDocument,
 }
 
-impl RTDInputInlineQueryResultDocumentBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultDocumentBuilder = InputInlineQueryResultDocumentBuilder;
+
+impl InputInlineQueryResultDocumentBuilder {
     pub fn build(&self) -> InputInlineQueryResultDocument {
         self.inner.clone()
     }
@@ -964,7 +1011,7 @@ impl AsRef<InputInlineQueryResultDocument> for InputInlineQueryResultDocument {
     }
 }
 
-impl AsRef<InputInlineQueryResultDocument> for RTDInputInlineQueryResultDocumentBuilder {
+impl AsRef<InputInlineQueryResultDocument> for InputInlineQueryResultDocumentBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultDocument {
         &self.inner
     }
@@ -979,10 +1026,14 @@ pub struct InputInlineQueryResultGame {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Short name of the game
+
+    #[serde(default)]
     game_short_name: String,
-    /// Message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
@@ -1002,14 +1053,14 @@ impl RObject for InputInlineQueryResultGame {
 impl TDInputInlineQueryResult for InputInlineQueryResultGame {}
 
 impl InputInlineQueryResultGame {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultGameBuilder {
+    pub fn builder() -> InputInlineQueryResultGameBuilder {
         let mut inner = InputInlineQueryResultGame::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultGameBuilder { inner }
+        InputInlineQueryResultGameBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1026,11 +1077,14 @@ impl InputInlineQueryResultGame {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultGameBuilder {
+pub struct InputInlineQueryResultGameBuilder {
     inner: InputInlineQueryResultGame,
 }
 
-impl RTDInputInlineQueryResultGameBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultGameBuilder = InputInlineQueryResultGameBuilder;
+
+impl InputInlineQueryResultGameBuilder {
     pub fn build(&self) -> InputInlineQueryResultGame {
         self.inner.clone()
     }
@@ -1057,7 +1111,7 @@ impl AsRef<InputInlineQueryResultGame> for InputInlineQueryResultGame {
     }
 }
 
-impl AsRef<InputInlineQueryResultGame> for RTDInputInlineQueryResultGameBuilder {
+impl AsRef<InputInlineQueryResultGame> for InputInlineQueryResultGameBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultGame {
         &self.inner
     }
@@ -1072,24 +1126,36 @@ pub struct InputInlineQueryResultLocation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Location result
     location: Location,
     /// Amount of time relative to the message sent time until the location can be updated, in seconds
+
+    #[serde(default)]
     live_period: i32,
     /// Title of the result
+
+    #[serde(default)]
     title: String,
     /// URL of the result thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Thumbnail width, if known
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Thumbnail height, if known
+
+    #[serde(default)]
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1109,14 +1175,14 @@ impl RObject for InputInlineQueryResultLocation {
 impl TDInputInlineQueryResult for InputInlineQueryResultLocation {}
 
 impl InputInlineQueryResultLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultLocationBuilder {
+    pub fn builder() -> InputInlineQueryResultLocationBuilder {
         let mut inner = InputInlineQueryResultLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultLocationBuilder { inner }
+        InputInlineQueryResultLocationBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1157,11 +1223,14 @@ impl InputInlineQueryResultLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultLocationBuilder {
+pub struct InputInlineQueryResultLocationBuilder {
     inner: InputInlineQueryResultLocation,
 }
 
-impl RTDInputInlineQueryResultLocationBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultLocationBuilder = InputInlineQueryResultLocationBuilder;
+
+impl InputInlineQueryResultLocationBuilder {
     pub fn build(&self) -> InputInlineQueryResultLocation {
         self.inner.clone()
     }
@@ -1221,7 +1290,7 @@ impl AsRef<InputInlineQueryResultLocation> for InputInlineQueryResultLocation {
     }
 }
 
-impl AsRef<InputInlineQueryResultLocation> for RTDInputInlineQueryResultLocationBuilder {
+impl AsRef<InputInlineQueryResultLocation> for InputInlineQueryResultLocationBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultLocation {
         &self.inner
     }
@@ -1236,24 +1305,38 @@ pub struct InputInlineQueryResultPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the result, if known
+
+    #[serde(default)]
     title: String,
     /// Represents link to a JPEG image
+
+    #[serde(default)]
     description: String,
     /// URL of the photo thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// The URL of the JPEG photo (photo size must not exceed 5MB)
+
+    #[serde(default)]
     photo_url: String,
     /// Width of the photo
+
+    #[serde(default)]
     photo_width: i32,
     /// Height of the photo
+
+    #[serde(default)]
     photo_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessagePhoto, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessagePhoto, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1273,14 +1356,14 @@ impl RObject for InputInlineQueryResultPhoto {
 impl TDInputInlineQueryResult for InputInlineQueryResultPhoto {}
 
 impl InputInlineQueryResultPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultPhotoBuilder {
+    pub fn builder() -> InputInlineQueryResultPhotoBuilder {
         let mut inner = InputInlineQueryResultPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultPhotoBuilder { inner }
+        InputInlineQueryResultPhotoBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1321,11 +1404,14 @@ impl InputInlineQueryResultPhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultPhotoBuilder {
+pub struct InputInlineQueryResultPhotoBuilder {
     inner: InputInlineQueryResultPhoto,
 }
 
-impl RTDInputInlineQueryResultPhotoBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultPhotoBuilder = InputInlineQueryResultPhotoBuilder;
+
+impl InputInlineQueryResultPhotoBuilder {
     pub fn build(&self) -> InputInlineQueryResultPhoto {
         self.inner.clone()
     }
@@ -1385,7 +1471,7 @@ impl AsRef<InputInlineQueryResultPhoto> for InputInlineQueryResultPhoto {
     }
 }
 
-impl AsRef<InputInlineQueryResultPhoto> for RTDInputInlineQueryResultPhotoBuilder {
+impl AsRef<InputInlineQueryResultPhoto> for InputInlineQueryResultPhotoBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultPhoto {
         &self.inner
     }
@@ -1400,20 +1486,30 @@ pub struct InputInlineQueryResultSticker {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// URL of the sticker thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// The URL of the WEBP or TGS sticker (sticker file size must not exceed 5MB)
+
+    #[serde(default)]
     sticker_url: String,
     /// Width of the sticker
+
+    #[serde(default)]
     sticker_width: i32,
     /// Height of the sticker
+
+    #[serde(default)]
     sticker_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, inputMessageSticker, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageSticker, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1433,14 +1529,14 @@ impl RObject for InputInlineQueryResultSticker {
 impl TDInputInlineQueryResult for InputInlineQueryResultSticker {}
 
 impl InputInlineQueryResultSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultStickerBuilder {
+    pub fn builder() -> InputInlineQueryResultStickerBuilder {
         let mut inner = InputInlineQueryResultSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultStickerBuilder { inner }
+        InputInlineQueryResultStickerBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1473,11 +1569,14 @@ impl InputInlineQueryResultSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultStickerBuilder {
+pub struct InputInlineQueryResultStickerBuilder {
     inner: InputInlineQueryResultSticker,
 }
 
-impl RTDInputInlineQueryResultStickerBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultStickerBuilder = InputInlineQueryResultStickerBuilder;
+
+impl InputInlineQueryResultStickerBuilder {
     pub fn build(&self) -> InputInlineQueryResultSticker {
         self.inner.clone()
     }
@@ -1527,7 +1626,7 @@ impl AsRef<InputInlineQueryResultSticker> for InputInlineQueryResultSticker {
     }
 }
 
-impl AsRef<InputInlineQueryResultSticker> for RTDInputInlineQueryResultStickerBuilder {
+impl AsRef<InputInlineQueryResultSticker> for InputInlineQueryResultStickerBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultSticker {
         &self.inner
     }
@@ -1542,20 +1641,28 @@ pub struct InputInlineQueryResultVenue {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Venue result
     venue: Venue,
     /// URL of the result thumbnail, if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// Thumbnail width, if known
+
+    #[serde(default)]
     thumbnail_width: i32,
     /// Thumbnail height, if known
+
+    #[serde(default)]
     thumbnail_height: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1575,14 +1682,14 @@ impl RObject for InputInlineQueryResultVenue {
 impl TDInputInlineQueryResult for InputInlineQueryResultVenue {}
 
 impl InputInlineQueryResultVenue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultVenueBuilder {
+    pub fn builder() -> InputInlineQueryResultVenueBuilder {
         let mut inner = InputInlineQueryResultVenue::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultVenueBuilder { inner }
+        InputInlineQueryResultVenueBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1615,11 +1722,14 @@ impl InputInlineQueryResultVenue {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultVenueBuilder {
+pub struct InputInlineQueryResultVenueBuilder {
     inner: InputInlineQueryResultVenue,
 }
 
-impl RTDInputInlineQueryResultVenueBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultVenueBuilder = InputInlineQueryResultVenueBuilder;
+
+impl InputInlineQueryResultVenueBuilder {
     pub fn build(&self) -> InputInlineQueryResultVenue {
         self.inner.clone()
     }
@@ -1669,7 +1779,7 @@ impl AsRef<InputInlineQueryResultVenue> for InputInlineQueryResultVenue {
     }
 }
 
-impl AsRef<InputInlineQueryResultVenue> for RTDInputInlineQueryResultVenueBuilder {
+impl AsRef<InputInlineQueryResultVenue> for InputInlineQueryResultVenueBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultVenue {
         &self.inner
     }
@@ -1684,28 +1794,46 @@ pub struct InputInlineQueryResultVideo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the result
+
+    #[serde(default)]
     title: String,
     /// Represents a link to a page containing an embedded video player or a video file
+
+    #[serde(default)]
     description: String,
     /// The URL of the video thumbnail (JPEG), if it exists
+
+    #[serde(default)]
     thumbnail_url: String,
     /// URL of the embedded video player or video file
+
+    #[serde(default)]
     video_url: String,
     /// MIME type of the content of the video URL, only "text/html" or "video/mp4" are currently supported
+
+    #[serde(default)]
     mime_type: String,
     /// Width of the video
+
+    #[serde(default)]
     video_width: i32,
     /// Height of the video
+
+    #[serde(default)]
     video_height: i32,
     /// Video duration, in seconds
+
+    #[serde(default)]
     video_duration: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageVideo, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageVideo, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1725,14 +1853,14 @@ impl RObject for InputInlineQueryResultVideo {
 impl TDInputInlineQueryResult for InputInlineQueryResultVideo {}
 
 impl InputInlineQueryResultVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultVideoBuilder {
+    pub fn builder() -> InputInlineQueryResultVideoBuilder {
         let mut inner = InputInlineQueryResultVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultVideoBuilder { inner }
+        InputInlineQueryResultVideoBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1781,11 +1909,14 @@ impl InputInlineQueryResultVideo {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultVideoBuilder {
+pub struct InputInlineQueryResultVideoBuilder {
     inner: InputInlineQueryResultVideo,
 }
 
-impl RTDInputInlineQueryResultVideoBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultVideoBuilder = InputInlineQueryResultVideoBuilder;
+
+impl InputInlineQueryResultVideoBuilder {
     pub fn build(&self) -> InputInlineQueryResultVideo {
         self.inner.clone()
     }
@@ -1855,7 +1986,7 @@ impl AsRef<InputInlineQueryResultVideo> for InputInlineQueryResultVideo {
     }
 }
 
-impl AsRef<InputInlineQueryResultVideo> for RTDInputInlineQueryResultVideoBuilder {
+impl AsRef<InputInlineQueryResultVideo> for InputInlineQueryResultVideoBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultVideo {
         &self.inner
     }
@@ -1870,18 +2001,26 @@ pub struct InputInlineQueryResultVoiceNote {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the query result
+
+    #[serde(default)]
     id: String,
     /// Title of the voice note
+
+    #[serde(default)]
     title: String,
     /// The URL of the voice note file
+
+    #[serde(default)]
     voice_note_url: String,
     /// Duration of the voice note, in seconds
+
+    #[serde(default)]
     voice_note_duration: i32,
-    /// The message reply markup. Must be of type replyMarkupInlineKeyboard or null
+    /// The message reply markup; pass null if none. Must be of type replyMarkupInlineKeyboard or null
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// The content of the message to be sent. Must be one of the following types: InputMessageText, InputMessageVoiceNote, InputMessageLocation, InputMessageVenue or InputMessageContact
+    /// The content of the message to be sent. Must be one of the following types: inputMessageText, inputMessageVoiceNote, inputMessageInvoice, inputMessageLocation, inputMessageVenue or inputMessageContact
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -1901,14 +2040,14 @@ impl RObject for InputInlineQueryResultVoiceNote {
 impl TDInputInlineQueryResult for InputInlineQueryResultVoiceNote {}
 
 impl InputInlineQueryResultVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputInlineQueryResultVoiceNoteBuilder {
+    pub fn builder() -> InputInlineQueryResultVoiceNoteBuilder {
         let mut inner = InputInlineQueryResultVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputInlineQueryResultVoiceNoteBuilder { inner }
+        InputInlineQueryResultVoiceNoteBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -1937,11 +2076,14 @@ impl InputInlineQueryResultVoiceNote {
 }
 
 #[doc(hidden)]
-pub struct RTDInputInlineQueryResultVoiceNoteBuilder {
+pub struct InputInlineQueryResultVoiceNoteBuilder {
     inner: InputInlineQueryResultVoiceNote,
 }
 
-impl RTDInputInlineQueryResultVoiceNoteBuilder {
+#[deprecated]
+pub type RTDInputInlineQueryResultVoiceNoteBuilder = InputInlineQueryResultVoiceNoteBuilder;
+
+impl InputInlineQueryResultVoiceNoteBuilder {
     pub fn build(&self) -> InputInlineQueryResultVoiceNote {
         self.inner.clone()
     }
@@ -1986,7 +2128,7 @@ impl AsRef<InputInlineQueryResultVoiceNote> for InputInlineQueryResultVoiceNote 
     }
 }
 
-impl AsRef<InputInlineQueryResultVoiceNote> for RTDInputInlineQueryResultVoiceNoteBuilder {
+impl AsRef<InputInlineQueryResultVoiceNote> for InputInlineQueryResultVoiceNoteBuilder {
     fn as_ref(&self) -> &InputInlineQueryResultVoiceNote {
         &self.inner
     }

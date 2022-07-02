@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,28 +14,16 @@ pub enum KeyboardButtonType {
     #[doc(hidden)]
     _Default,
     /// A button that sends the user's location when pressed; available only in private chats
-    #[serde(rename(
-        serialize = "keyboardButtonTypeRequestLocation",
-        deserialize = "keyboardButtonTypeRequestLocation"
-    ))]
+    #[serde(rename(deserialize = "keyboardButtonTypeRequestLocation"))]
     RequestLocation(KeyboardButtonTypeRequestLocation),
     /// A button that sends the user's phone number when pressed; available only in private chats
-    #[serde(rename(
-        serialize = "keyboardButtonTypeRequestPhoneNumber",
-        deserialize = "keyboardButtonTypeRequestPhoneNumber"
-    ))]
+    #[serde(rename(deserialize = "keyboardButtonTypeRequestPhoneNumber"))]
     RequestPhoneNumber(KeyboardButtonTypeRequestPhoneNumber),
     /// A button that allows the user to create and send a poll when pressed; available only in private chats
-    #[serde(rename(
-        serialize = "keyboardButtonTypeRequestPoll",
-        deserialize = "keyboardButtonTypeRequestPoll"
-    ))]
+    #[serde(rename(deserialize = "keyboardButtonTypeRequestPoll"))]
     RequestPoll(KeyboardButtonTypeRequestPoll),
-    /// A simple button, with text that should be sent when the button is pressed
-    #[serde(rename(
-        serialize = "keyboardButtonTypeText",
-        deserialize = "keyboardButtonTypeText"
-    ))]
+    /// A simple button, with text that must be sent when the button is pressed
+    #[serde(rename(deserialize = "keyboardButtonTypeText"))]
     Text(KeyboardButtonTypeText),
 }
 
@@ -71,7 +59,7 @@ impl RObject for KeyboardButtonType {
 }
 
 impl KeyboardButtonType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -110,23 +98,26 @@ impl RObject for KeyboardButtonTypeRequestLocation {
 impl TDKeyboardButtonType for KeyboardButtonTypeRequestLocation {}
 
 impl KeyboardButtonTypeRequestLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDKeyboardButtonTypeRequestLocationBuilder {
+    pub fn builder() -> KeyboardButtonTypeRequestLocationBuilder {
         let mut inner = KeyboardButtonTypeRequestLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDKeyboardButtonTypeRequestLocationBuilder { inner }
+        KeyboardButtonTypeRequestLocationBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDKeyboardButtonTypeRequestLocationBuilder {
+pub struct KeyboardButtonTypeRequestLocationBuilder {
     inner: KeyboardButtonTypeRequestLocation,
 }
 
-impl RTDKeyboardButtonTypeRequestLocationBuilder {
+#[deprecated]
+pub type RTDKeyboardButtonTypeRequestLocationBuilder = KeyboardButtonTypeRequestLocationBuilder;
+
+impl KeyboardButtonTypeRequestLocationBuilder {
     pub fn build(&self) -> KeyboardButtonTypeRequestLocation {
         self.inner.clone()
     }
@@ -138,7 +129,7 @@ impl AsRef<KeyboardButtonTypeRequestLocation> for KeyboardButtonTypeRequestLocat
     }
 }
 
-impl AsRef<KeyboardButtonTypeRequestLocation> for RTDKeyboardButtonTypeRequestLocationBuilder {
+impl AsRef<KeyboardButtonTypeRequestLocation> for KeyboardButtonTypeRequestLocationBuilder {
     fn as_ref(&self) -> &KeyboardButtonTypeRequestLocation {
         &self.inner
     }
@@ -168,23 +159,27 @@ impl RObject for KeyboardButtonTypeRequestPhoneNumber {
 impl TDKeyboardButtonType for KeyboardButtonTypeRequestPhoneNumber {}
 
 impl KeyboardButtonTypeRequestPhoneNumber {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDKeyboardButtonTypeRequestPhoneNumberBuilder {
+    pub fn builder() -> KeyboardButtonTypeRequestPhoneNumberBuilder {
         let mut inner = KeyboardButtonTypeRequestPhoneNumber::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDKeyboardButtonTypeRequestPhoneNumberBuilder { inner }
+        KeyboardButtonTypeRequestPhoneNumberBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDKeyboardButtonTypeRequestPhoneNumberBuilder {
+pub struct KeyboardButtonTypeRequestPhoneNumberBuilder {
     inner: KeyboardButtonTypeRequestPhoneNumber,
 }
 
-impl RTDKeyboardButtonTypeRequestPhoneNumberBuilder {
+#[deprecated]
+pub type RTDKeyboardButtonTypeRequestPhoneNumberBuilder =
+    KeyboardButtonTypeRequestPhoneNumberBuilder;
+
+impl KeyboardButtonTypeRequestPhoneNumberBuilder {
     pub fn build(&self) -> KeyboardButtonTypeRequestPhoneNumber {
         self.inner.clone()
     }
@@ -196,9 +191,7 @@ impl AsRef<KeyboardButtonTypeRequestPhoneNumber> for KeyboardButtonTypeRequestPh
     }
 }
 
-impl AsRef<KeyboardButtonTypeRequestPhoneNumber>
-    for RTDKeyboardButtonTypeRequestPhoneNumberBuilder
-{
+impl AsRef<KeyboardButtonTypeRequestPhoneNumber> for KeyboardButtonTypeRequestPhoneNumberBuilder {
     fn as_ref(&self) -> &KeyboardButtonTypeRequestPhoneNumber {
         &self.inner
     }
@@ -213,8 +206,12 @@ pub struct KeyboardButtonTypeRequestPoll {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If true, only regular polls must be allowed to create
+
+    #[serde(default)]
     force_regular: bool,
     /// If true, only polls in quiz mode must be allowed to create
+
+    #[serde(default)]
     force_quiz: bool,
 }
 
@@ -232,14 +229,14 @@ impl RObject for KeyboardButtonTypeRequestPoll {
 impl TDKeyboardButtonType for KeyboardButtonTypeRequestPoll {}
 
 impl KeyboardButtonTypeRequestPoll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDKeyboardButtonTypeRequestPollBuilder {
+    pub fn builder() -> KeyboardButtonTypeRequestPollBuilder {
         let mut inner = KeyboardButtonTypeRequestPoll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDKeyboardButtonTypeRequestPollBuilder { inner }
+        KeyboardButtonTypeRequestPollBuilder { inner }
     }
 
     pub fn force_regular(&self) -> bool {
@@ -252,11 +249,14 @@ impl KeyboardButtonTypeRequestPoll {
 }
 
 #[doc(hidden)]
-pub struct RTDKeyboardButtonTypeRequestPollBuilder {
+pub struct KeyboardButtonTypeRequestPollBuilder {
     inner: KeyboardButtonTypeRequestPoll,
 }
 
-impl RTDKeyboardButtonTypeRequestPollBuilder {
+#[deprecated]
+pub type RTDKeyboardButtonTypeRequestPollBuilder = KeyboardButtonTypeRequestPollBuilder;
+
+impl KeyboardButtonTypeRequestPollBuilder {
     pub fn build(&self) -> KeyboardButtonTypeRequestPoll {
         self.inner.clone()
     }
@@ -278,13 +278,13 @@ impl AsRef<KeyboardButtonTypeRequestPoll> for KeyboardButtonTypeRequestPoll {
     }
 }
 
-impl AsRef<KeyboardButtonTypeRequestPoll> for RTDKeyboardButtonTypeRequestPollBuilder {
+impl AsRef<KeyboardButtonTypeRequestPoll> for KeyboardButtonTypeRequestPollBuilder {
     fn as_ref(&self) -> &KeyboardButtonTypeRequestPoll {
         &self.inner
     }
 }
 
-/// A simple button, with text that should be sent when the button is pressed
+/// A simple button, with text that must be sent when the button is pressed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct KeyboardButtonTypeText {
     #[doc(hidden)]
@@ -308,23 +308,26 @@ impl RObject for KeyboardButtonTypeText {
 impl TDKeyboardButtonType for KeyboardButtonTypeText {}
 
 impl KeyboardButtonTypeText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDKeyboardButtonTypeTextBuilder {
+    pub fn builder() -> KeyboardButtonTypeTextBuilder {
         let mut inner = KeyboardButtonTypeText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDKeyboardButtonTypeTextBuilder { inner }
+        KeyboardButtonTypeTextBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDKeyboardButtonTypeTextBuilder {
+pub struct KeyboardButtonTypeTextBuilder {
     inner: KeyboardButtonTypeText,
 }
 
-impl RTDKeyboardButtonTypeTextBuilder {
+#[deprecated]
+pub type RTDKeyboardButtonTypeTextBuilder = KeyboardButtonTypeTextBuilder;
+
+impl KeyboardButtonTypeTextBuilder {
     pub fn build(&self) -> KeyboardButtonTypeText {
         self.inner.clone()
     }
@@ -336,7 +339,7 @@ impl AsRef<KeyboardButtonTypeText> for KeyboardButtonTypeText {
     }
 }
 
-impl AsRef<KeyboardButtonTypeText> for RTDKeyboardButtonTypeTextBuilder {
+impl AsRef<KeyboardButtonTypeText> for KeyboardButtonTypeTextBuilder {
     fn as_ref(&self) -> &KeyboardButtonTypeText {
         &self.inner
     }

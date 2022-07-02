@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,20 @@ pub struct GetPassportAuthorizationForm {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the service's bot
-    bot_user_id: i32,
+
+    #[serde(default)]
+    bot_user_id: i64,
     /// Telegram Passport element types requested by the service
+
+    #[serde(default)]
     scope: String,
-    /// Service's public_key
+    /// Service's public key
+
+    #[serde(default)]
     public_key: String,
-    /// Authorization form nonce provided by the service
+    /// Unique request identifier provided by the service
+
+    #[serde(default)]
     nonce: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,19 +45,19 @@ impl RObject for GetPassportAuthorizationForm {
 impl RFunction for GetPassportAuthorizationForm {}
 
 impl GetPassportAuthorizationForm {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPassportAuthorizationFormBuilder {
+    pub fn builder() -> GetPassportAuthorizationFormBuilder {
         let mut inner = GetPassportAuthorizationForm::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPassportAuthorizationForm".to_string();
 
-        RTDGetPassportAuthorizationFormBuilder { inner }
+        GetPassportAuthorizationFormBuilder { inner }
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -67,16 +75,19 @@ impl GetPassportAuthorizationForm {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPassportAuthorizationFormBuilder {
+pub struct GetPassportAuthorizationFormBuilder {
     inner: GetPassportAuthorizationForm,
 }
 
-impl RTDGetPassportAuthorizationFormBuilder {
+#[deprecated]
+pub type RTDGetPassportAuthorizationFormBuilder = GetPassportAuthorizationFormBuilder;
+
+impl GetPassportAuthorizationFormBuilder {
     pub fn build(&self) -> GetPassportAuthorizationForm {
         self.inner.clone()
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }
@@ -103,7 +114,7 @@ impl AsRef<GetPassportAuthorizationForm> for GetPassportAuthorizationForm {
     }
 }
 
-impl AsRef<GetPassportAuthorizationForm> for RTDGetPassportAuthorizationFormBuilder {
+impl AsRef<GetPassportAuthorizationForm> for GetPassportAuthorizationFormBuilder {
     fn as_ref(&self) -> &GetPassportAuthorizationForm {
         &self.inner
     }

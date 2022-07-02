@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct Countries {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The list of countries
+
+    #[serde(default)]
     countries: Vec<CountryInfo>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for Countries {
 }
 
 impl Countries {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCountriesBuilder {
+    pub fn builder() -> CountriesBuilder {
         let mut inner = Countries::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCountriesBuilder { inner }
+        CountriesBuilder { inner }
     }
 
     pub fn countries(&self) -> &Vec<CountryInfo> {
@@ -42,11 +44,14 @@ impl Countries {
 }
 
 #[doc(hidden)]
-pub struct RTDCountriesBuilder {
+pub struct CountriesBuilder {
     inner: Countries,
 }
 
-impl RTDCountriesBuilder {
+#[deprecated]
+pub type RTDCountriesBuilder = CountriesBuilder;
+
+impl CountriesBuilder {
     pub fn build(&self) -> Countries {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<Countries> for Countries {
     }
 }
 
-impl AsRef<Countries> for RTDCountriesBuilder {
+impl AsRef<Countries> for CountriesBuilder {
     fn as_ref(&self) -> &Countries {
         &self.inner
     }

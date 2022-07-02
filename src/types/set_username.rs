@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct SetUsername {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The new value of the username. Use an empty string to remove the username
+
+    #[serde(default)]
     username: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for SetUsername {
 impl RFunction for SetUsername {}
 
 impl SetUsername {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetUsernameBuilder {
+    pub fn builder() -> SetUsernameBuilder {
         let mut inner = SetUsername::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setUsername".to_string();
 
-        RTDSetUsernameBuilder { inner }
+        SetUsernameBuilder { inner }
     }
 
     pub fn username(&self) -> &String {
@@ -49,11 +51,14 @@ impl SetUsername {
 }
 
 #[doc(hidden)]
-pub struct RTDSetUsernameBuilder {
+pub struct SetUsernameBuilder {
     inner: SetUsername,
 }
 
-impl RTDSetUsernameBuilder {
+#[deprecated]
+pub type RTDSetUsernameBuilder = SetUsernameBuilder;
+
+impl SetUsernameBuilder {
     pub fn build(&self) -> SetUsername {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<SetUsername> for SetUsername {
     }
 }
 
-impl AsRef<SetUsername> for RTDSetUsernameBuilder {
+impl AsRef<SetUsername> for SetUsernameBuilder {
     fn as_ref(&self) -> &SetUsername {
         &self.inner
     }

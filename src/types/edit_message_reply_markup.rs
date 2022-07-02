@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct EditMessageReplyMarkup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat the message belongs to
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
-    /// The new message reply markup
+    /// The new message reply markup; pass null if none
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
@@ -37,16 +41,16 @@ impl RObject for EditMessageReplyMarkup {
 impl RFunction for EditMessageReplyMarkup {}
 
 impl EditMessageReplyMarkup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditMessageReplyMarkupBuilder {
+    pub fn builder() -> EditMessageReplyMarkupBuilder {
         let mut inner = EditMessageReplyMarkup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editMessageReplyMarkup".to_string();
 
-        RTDEditMessageReplyMarkupBuilder { inner }
+        EditMessageReplyMarkupBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -63,11 +67,14 @@ impl EditMessageReplyMarkup {
 }
 
 #[doc(hidden)]
-pub struct RTDEditMessageReplyMarkupBuilder {
+pub struct EditMessageReplyMarkupBuilder {
     inner: EditMessageReplyMarkup,
 }
 
-impl RTDEditMessageReplyMarkupBuilder {
+#[deprecated]
+pub type RTDEditMessageReplyMarkupBuilder = EditMessageReplyMarkupBuilder;
+
+impl EditMessageReplyMarkupBuilder {
     pub fn build(&self) -> EditMessageReplyMarkup {
         self.inner.clone()
     }
@@ -94,7 +101,7 @@ impl AsRef<EditMessageReplyMarkup> for EditMessageReplyMarkup {
     }
 }
 
-impl AsRef<EditMessageReplyMarkup> for RTDEditMessageReplyMarkupBuilder {
+impl AsRef<EditMessageReplyMarkup> for EditMessageReplyMarkupBuilder {
     fn as_ref(&self) -> &EditMessageReplyMarkup {
         &self.inner
     }

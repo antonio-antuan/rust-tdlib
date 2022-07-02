@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns a list of trending sticker sets. For the optimal performance the number of returned sticker sets is chosen by the library
+/// Returns a list of trending sticker sets. For optimal performance, the number of returned sticker sets is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetTrendingStickerSets {
     #[doc(hidden)]
@@ -11,8 +11,12 @@ pub struct GetTrendingStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The offset from which to return the sticker sets; must be non-negative
+
+    #[serde(default)]
     offset: i32,
-    /// The maximum number of sticker sets to be returned; must be non-negative. Fewer sticker sets may be returned than specified by the limit, even if the end of the list has not been reached
+    /// The maximum number of sticker sets to be returned; up to 100. For optimal performance, the number of returned sticker sets is chosen by TDLib and can be smaller than the specified limit, even if the end of the list has not been reached
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for GetTrendingStickerSets {
 impl RFunction for GetTrendingStickerSets {}
 
 impl GetTrendingStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetTrendingStickerSetsBuilder {
+    pub fn builder() -> GetTrendingStickerSetsBuilder {
         let mut inner = GetTrendingStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getTrendingStickerSets".to_string();
 
-        RTDGetTrendingStickerSetsBuilder { inner }
+        GetTrendingStickerSetsBuilder { inner }
     }
 
     pub fn offset(&self) -> i32 {
@@ -55,11 +59,14 @@ impl GetTrendingStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDGetTrendingStickerSetsBuilder {
+pub struct GetTrendingStickerSetsBuilder {
     inner: GetTrendingStickerSets,
 }
 
-impl RTDGetTrendingStickerSetsBuilder {
+#[deprecated]
+pub type RTDGetTrendingStickerSetsBuilder = GetTrendingStickerSetsBuilder;
+
+impl GetTrendingStickerSetsBuilder {
     pub fn build(&self) -> GetTrendingStickerSets {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<GetTrendingStickerSets> for GetTrendingStickerSets {
     }
 }
 
-impl AsRef<GetTrendingStickerSets> for RTDGetTrendingStickerSetsBuilder {
+impl AsRef<GetTrendingStickerSets> for GetTrendingStickerSetsBuilder {
     fn as_ref(&self) -> &GetTrendingStickerSets {
         &self.inner
     }

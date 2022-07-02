@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,25 +14,16 @@ pub enum StatisticalGraph {
     #[doc(hidden)]
     _Default,
     /// Loads an asynchronous or a zoomed in statistical graph
-    #[serde(rename(serialize = "getStatisticalGraph", deserialize = "getStatisticalGraph"))]
+    #[serde(rename(deserialize = "getStatisticalGraph"))]
     GetStatisticalGraph(GetStatisticalGraph),
     /// The graph data to be asynchronously loaded through getStatisticalGraph
-    #[serde(rename(
-        serialize = "statisticalGraphAsync",
-        deserialize = "statisticalGraphAsync"
-    ))]
+    #[serde(rename(deserialize = "statisticalGraphAsync"))]
     Async(StatisticalGraphAsync),
     /// A graph data
-    #[serde(rename(
-        serialize = "statisticalGraphData",
-        deserialize = "statisticalGraphData"
-    ))]
+    #[serde(rename(deserialize = "statisticalGraphData"))]
     Data(StatisticalGraphData),
     /// An error message to be shown to the user instead of the graph
-    #[serde(rename(
-        serialize = "statisticalGraphError",
-        deserialize = "statisticalGraphError"
-    ))]
+    #[serde(rename(deserialize = "statisticalGraphError"))]
     Error(StatisticalGraphError),
 }
 
@@ -68,7 +59,7 @@ impl RObject for StatisticalGraph {
 }
 
 impl StatisticalGraph {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -92,6 +83,8 @@ pub struct StatisticalGraphAsync {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The token to use for data loading
+
+    #[serde(default)]
     token: String,
 }
 
@@ -109,14 +102,14 @@ impl RObject for StatisticalGraphAsync {
 impl TDStatisticalGraph for StatisticalGraphAsync {}
 
 impl StatisticalGraphAsync {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStatisticalGraphAsyncBuilder {
+    pub fn builder() -> StatisticalGraphAsyncBuilder {
         let mut inner = StatisticalGraphAsync::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStatisticalGraphAsyncBuilder { inner }
+        StatisticalGraphAsyncBuilder { inner }
     }
 
     pub fn token(&self) -> &String {
@@ -125,11 +118,14 @@ impl StatisticalGraphAsync {
 }
 
 #[doc(hidden)]
-pub struct RTDStatisticalGraphAsyncBuilder {
+pub struct StatisticalGraphAsyncBuilder {
     inner: StatisticalGraphAsync,
 }
 
-impl RTDStatisticalGraphAsyncBuilder {
+#[deprecated]
+pub type RTDStatisticalGraphAsyncBuilder = StatisticalGraphAsyncBuilder;
+
+impl StatisticalGraphAsyncBuilder {
     pub fn build(&self) -> StatisticalGraphAsync {
         self.inner.clone()
     }
@@ -146,7 +142,7 @@ impl AsRef<StatisticalGraphAsync> for StatisticalGraphAsync {
     }
 }
 
-impl AsRef<StatisticalGraphAsync> for RTDStatisticalGraphAsyncBuilder {
+impl AsRef<StatisticalGraphAsync> for StatisticalGraphAsyncBuilder {
     fn as_ref(&self) -> &StatisticalGraphAsync {
         &self.inner
     }
@@ -161,8 +157,12 @@ pub struct StatisticalGraphData {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Graph data in JSON format
+
+    #[serde(default)]
     json_data: String,
     /// If non-empty, a token which can be used to receive a zoomed in graph
+
+    #[serde(default)]
     zoom_token: String,
 }
 
@@ -180,14 +180,14 @@ impl RObject for StatisticalGraphData {
 impl TDStatisticalGraph for StatisticalGraphData {}
 
 impl StatisticalGraphData {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStatisticalGraphDataBuilder {
+    pub fn builder() -> StatisticalGraphDataBuilder {
         let mut inner = StatisticalGraphData::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStatisticalGraphDataBuilder { inner }
+        StatisticalGraphDataBuilder { inner }
     }
 
     pub fn json_data(&self) -> &String {
@@ -200,11 +200,14 @@ impl StatisticalGraphData {
 }
 
 #[doc(hidden)]
-pub struct RTDStatisticalGraphDataBuilder {
+pub struct StatisticalGraphDataBuilder {
     inner: StatisticalGraphData,
 }
 
-impl RTDStatisticalGraphDataBuilder {
+#[deprecated]
+pub type RTDStatisticalGraphDataBuilder = StatisticalGraphDataBuilder;
+
+impl StatisticalGraphDataBuilder {
     pub fn build(&self) -> StatisticalGraphData {
         self.inner.clone()
     }
@@ -226,7 +229,7 @@ impl AsRef<StatisticalGraphData> for StatisticalGraphData {
     }
 }
 
-impl AsRef<StatisticalGraphData> for RTDStatisticalGraphDataBuilder {
+impl AsRef<StatisticalGraphData> for StatisticalGraphDataBuilder {
     fn as_ref(&self) -> &StatisticalGraphData {
         &self.inner
     }
@@ -241,6 +244,8 @@ pub struct StatisticalGraphError {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The error message
+
+    #[serde(default)]
     error_message: String,
 }
 
@@ -258,14 +263,14 @@ impl RObject for StatisticalGraphError {
 impl TDStatisticalGraph for StatisticalGraphError {}
 
 impl StatisticalGraphError {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStatisticalGraphErrorBuilder {
+    pub fn builder() -> StatisticalGraphErrorBuilder {
         let mut inner = StatisticalGraphError::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStatisticalGraphErrorBuilder { inner }
+        StatisticalGraphErrorBuilder { inner }
     }
 
     pub fn error_message(&self) -> &String {
@@ -274,11 +279,14 @@ impl StatisticalGraphError {
 }
 
 #[doc(hidden)]
-pub struct RTDStatisticalGraphErrorBuilder {
+pub struct StatisticalGraphErrorBuilder {
     inner: StatisticalGraphError,
 }
 
-impl RTDStatisticalGraphErrorBuilder {
+#[deprecated]
+pub type RTDStatisticalGraphErrorBuilder = StatisticalGraphErrorBuilder;
+
+impl StatisticalGraphErrorBuilder {
     pub fn build(&self) -> StatisticalGraphError {
         self.inner.clone()
     }
@@ -295,7 +303,7 @@ impl AsRef<StatisticalGraphError> for StatisticalGraphError {
     }
 }
 
-impl AsRef<StatisticalGraphError> for RTDStatisticalGraphErrorBuilder {
+impl AsRef<StatisticalGraphError> for StatisticalGraphErrorBuilder {
     fn as_ref(&self) -> &StatisticalGraphError {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,11 +10,17 @@ pub struct Date {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Day of the month, 1-31
+    /// Day of the month; 1-31
+
+    #[serde(default)]
     day: i32,
-    /// Month, 1-12
+    /// Month; 1-12
+
+    #[serde(default)]
     month: i32,
-    /// Year, 1-9999
+    /// Year; 1-9999
+
+    #[serde(default)]
     year: i32,
 }
 
@@ -30,14 +36,14 @@ impl RObject for Date {
 }
 
 impl Date {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDateBuilder {
+    pub fn builder() -> DateBuilder {
         let mut inner = Date::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDateBuilder { inner }
+        DateBuilder { inner }
     }
 
     pub fn day(&self) -> i32 {
@@ -54,11 +60,14 @@ impl Date {
 }
 
 #[doc(hidden)]
-pub struct RTDDateBuilder {
+pub struct DateBuilder {
     inner: Date,
 }
 
-impl RTDDateBuilder {
+#[deprecated]
+pub type RTDDateBuilder = DateBuilder;
+
+impl DateBuilder {
     pub fn build(&self) -> Date {
         self.inner.clone()
     }
@@ -85,7 +94,7 @@ impl AsRef<Date> for Date {
     }
 }
 
-impl AsRef<Date> for RTDDateBuilder {
+impl AsRef<Date> for DateBuilder {
     fn as_ref(&self) -> &Date {
         &self.inner
     }

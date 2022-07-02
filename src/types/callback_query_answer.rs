@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct CallbackQueryAnswer {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text of the answer
+
+    #[serde(default)]
     text: String,
-    /// True, if an alert should be shown to the user instead of a toast notification
+    /// True, if an alert must be shown to the user instead of a toast notification
+
+    #[serde(default)]
     show_alert: bool,
     /// URL to be opened
+
+    #[serde(default)]
     url: String,
 }
 
@@ -30,14 +36,14 @@ impl RObject for CallbackQueryAnswer {
 }
 
 impl CallbackQueryAnswer {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallbackQueryAnswerBuilder {
+    pub fn builder() -> CallbackQueryAnswerBuilder {
         let mut inner = CallbackQueryAnswer::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallbackQueryAnswerBuilder { inner }
+        CallbackQueryAnswerBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -54,11 +60,14 @@ impl CallbackQueryAnswer {
 }
 
 #[doc(hidden)]
-pub struct RTDCallbackQueryAnswerBuilder {
+pub struct CallbackQueryAnswerBuilder {
     inner: CallbackQueryAnswer,
 }
 
-impl RTDCallbackQueryAnswerBuilder {
+#[deprecated]
+pub type RTDCallbackQueryAnswerBuilder = CallbackQueryAnswerBuilder;
+
+impl CallbackQueryAnswerBuilder {
     pub fn build(&self) -> CallbackQueryAnswer {
         self.inner.clone()
     }
@@ -85,7 +94,7 @@ impl AsRef<CallbackQueryAnswer> for CallbackQueryAnswer {
     }
 }
 
-impl AsRef<CallbackQueryAnswer> for RTDCallbackQueryAnswerBuilder {
+impl AsRef<CallbackQueryAnswer> for CallbackQueryAnswerBuilder {
     fn as_ref(&self) -> &CallbackQueryAnswer {
         &self.inner
     }

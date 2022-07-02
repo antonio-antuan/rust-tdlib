@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,24 @@ pub struct DownloadFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file to download
+
+    #[serde(default)]
     file_id: i32,
     /// Priority of the download (1-32). The higher the priority, the earlier the file will be downloaded. If the priorities of two files are equal, then the last one for which downloadFile was called will be downloaded first
+
+    #[serde(default)]
     priority: i32,
-    /// The starting position from which the file should be downloaded
+    /// The starting position from which the file needs to be downloaded
+
+    #[serde(default)]
     offset: i32,
-    /// Number of bytes which should be downloaded starting from the "offset" position before the download will be automatically cancelled; use 0 to download without a limit
+    /// Number of bytes which need to be downloaded starting from the "offset" position before the download will automatically be canceled; use 0 to download without a limit
+
+    #[serde(default)]
     limit: i32,
-    /// If false, this request returns file state just after the download has been started. If true, this request returns file state only after the download has succeeded, has failed, has been cancelled or a new downloadFile request with different offset/limit parameters was sent
+    /// If false, this request returns file state just after the download has been started. If true, this request returns file state only after the download has succeeded, has failed, has been canceled or a new downloadFile request with different offset/limit parameters was sent
+
+    #[serde(default)]
     synchronous: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -39,16 +49,16 @@ impl RObject for DownloadFile {
 impl RFunction for DownloadFile {}
 
 impl DownloadFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDownloadFileBuilder {
+    pub fn builder() -> DownloadFileBuilder {
         let mut inner = DownloadFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "downloadFile".to_string();
 
-        RTDDownloadFileBuilder { inner }
+        DownloadFileBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -73,11 +83,14 @@ impl DownloadFile {
 }
 
 #[doc(hidden)]
-pub struct RTDDownloadFileBuilder {
+pub struct DownloadFileBuilder {
     inner: DownloadFile,
 }
 
-impl RTDDownloadFileBuilder {
+#[deprecated]
+pub type RTDDownloadFileBuilder = DownloadFileBuilder;
+
+impl DownloadFileBuilder {
     pub fn build(&self) -> DownloadFile {
         self.inner.clone()
     }
@@ -114,7 +127,7 @@ impl AsRef<DownloadFile> for DownloadFile {
     }
 }
 
-impl AsRef<DownloadFile> for RTDDownloadFileBuilder {
+impl AsRef<DownloadFile> for DownloadFileBuilder {
     fn as_ref(&self) -> &DownloadFile {
         &self.inner
     }

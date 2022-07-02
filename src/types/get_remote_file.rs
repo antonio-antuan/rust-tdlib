@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,10 @@ pub struct GetRemoteFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Remote identifier of the file to get
+
+    #[serde(default)]
     remote_file_id: String,
-    /// File type, if known
+    /// File type; pass null if unknown
 
     #[serde(skip_serializing_if = "FileType::_is_default")]
     file_type: FileType,
@@ -35,16 +37,16 @@ impl RObject for GetRemoteFile {
 impl RFunction for GetRemoteFile {}
 
 impl GetRemoteFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetRemoteFileBuilder {
+    pub fn builder() -> GetRemoteFileBuilder {
         let mut inner = GetRemoteFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getRemoteFile".to_string();
 
-        RTDGetRemoteFileBuilder { inner }
+        GetRemoteFileBuilder { inner }
     }
 
     pub fn remote_file_id(&self) -> &String {
@@ -57,11 +59,14 @@ impl GetRemoteFile {
 }
 
 #[doc(hidden)]
-pub struct RTDGetRemoteFileBuilder {
+pub struct GetRemoteFileBuilder {
     inner: GetRemoteFile,
 }
 
-impl RTDGetRemoteFileBuilder {
+#[deprecated]
+pub type RTDGetRemoteFileBuilder = GetRemoteFileBuilder;
+
+impl GetRemoteFileBuilder {
     pub fn build(&self) -> GetRemoteFile {
         self.inner.clone()
     }
@@ -83,7 +88,7 @@ impl AsRef<GetRemoteFile> for GetRemoteFile {
     }
 }
 
-impl AsRef<GetRemoteFile> for RTDGetRemoteFileBuilder {
+impl AsRef<GetRemoteFile> for GetRemoteFileBuilder {
     fn as_ref(&self) -> &GetRemoteFile {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetRecentlyVisitedTMeUrls {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Google Play referrer to identify the user
+
+    #[serde(default)]
     referrer: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetRecentlyVisitedTMeUrls {
 impl RFunction for GetRecentlyVisitedTMeUrls {}
 
 impl GetRecentlyVisitedTMeUrls {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetRecentlyVisitedTMeUrlsBuilder {
+    pub fn builder() -> GetRecentlyVisitedTMeUrlsBuilder {
         let mut inner = GetRecentlyVisitedTMeUrls::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getRecentlyVisitedTMeUrls".to_string();
 
-        RTDGetRecentlyVisitedTMeUrlsBuilder { inner }
+        GetRecentlyVisitedTMeUrlsBuilder { inner }
     }
 
     pub fn referrer(&self) -> &String {
@@ -49,11 +51,14 @@ impl GetRecentlyVisitedTMeUrls {
 }
 
 #[doc(hidden)]
-pub struct RTDGetRecentlyVisitedTMeUrlsBuilder {
+pub struct GetRecentlyVisitedTMeUrlsBuilder {
     inner: GetRecentlyVisitedTMeUrls,
 }
 
-impl RTDGetRecentlyVisitedTMeUrlsBuilder {
+#[deprecated]
+pub type RTDGetRecentlyVisitedTMeUrlsBuilder = GetRecentlyVisitedTMeUrlsBuilder;
+
+impl GetRecentlyVisitedTMeUrlsBuilder {
     pub fn build(&self) -> GetRecentlyVisitedTMeUrls {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetRecentlyVisitedTMeUrls> for GetRecentlyVisitedTMeUrls {
     }
 }
 
-impl AsRef<GetRecentlyVisitedTMeUrls> for RTDGetRecentlyVisitedTMeUrlsBuilder {
+impl AsRef<GetRecentlyVisitedTMeUrls> for GetRecentlyVisitedTMeUrlsBuilder {
     fn as_ref(&self) -> &GetRecentlyVisitedTMeUrls {
         &self.inner
     }

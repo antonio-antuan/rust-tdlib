@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,8 +13,11 @@ pub struct SaveApplicationLogEvent {
     /// Event type
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(default)]
     type_: String,
     /// Optional chat identifier, associated with the event
+
+    #[serde(default)]
     chat_id: i64,
     /// The log event data
 
@@ -39,16 +42,16 @@ impl RObject for SaveApplicationLogEvent {
 impl RFunction for SaveApplicationLogEvent {}
 
 impl SaveApplicationLogEvent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSaveApplicationLogEventBuilder {
+    pub fn builder() -> SaveApplicationLogEventBuilder {
         let mut inner = SaveApplicationLogEvent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "saveApplicationLogEvent".to_string();
 
-        RTDSaveApplicationLogEventBuilder { inner }
+        SaveApplicationLogEventBuilder { inner }
     }
 
     pub fn type_(&self) -> &String {
@@ -65,11 +68,14 @@ impl SaveApplicationLogEvent {
 }
 
 #[doc(hidden)]
-pub struct RTDSaveApplicationLogEventBuilder {
+pub struct SaveApplicationLogEventBuilder {
     inner: SaveApplicationLogEvent,
 }
 
-impl RTDSaveApplicationLogEventBuilder {
+#[deprecated]
+pub type RTDSaveApplicationLogEventBuilder = SaveApplicationLogEventBuilder;
+
+impl SaveApplicationLogEventBuilder {
     pub fn build(&self) -> SaveApplicationLogEvent {
         self.inner.clone()
     }
@@ -96,7 +102,7 @@ impl AsRef<SaveApplicationLogEvent> for SaveApplicationLogEvent {
     }
 }
 
-impl AsRef<SaveApplicationLogEvent> for RTDSaveApplicationLogEventBuilder {
+impl AsRef<SaveApplicationLogEvent> for SaveApplicationLogEventBuilder {
     fn as_ref(&self) -> &SaveApplicationLogEvent {
         &self.inner
     }

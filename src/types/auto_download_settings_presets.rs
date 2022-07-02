@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains auto-download settings presets for the user
+/// Contains auto-download settings presets for the current user
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AutoDownloadSettingsPresets {
     #[doc(hidden)]
@@ -30,14 +30,14 @@ impl RObject for AutoDownloadSettingsPresets {
 }
 
 impl AutoDownloadSettingsPresets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAutoDownloadSettingsPresetsBuilder {
+    pub fn builder() -> AutoDownloadSettingsPresetsBuilder {
         let mut inner = AutoDownloadSettingsPresets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAutoDownloadSettingsPresetsBuilder { inner }
+        AutoDownloadSettingsPresetsBuilder { inner }
     }
 
     pub fn low(&self) -> &AutoDownloadSettings {
@@ -54,11 +54,14 @@ impl AutoDownloadSettingsPresets {
 }
 
 #[doc(hidden)]
-pub struct RTDAutoDownloadSettingsPresetsBuilder {
+pub struct AutoDownloadSettingsPresetsBuilder {
     inner: AutoDownloadSettingsPresets,
 }
 
-impl RTDAutoDownloadSettingsPresetsBuilder {
+#[deprecated]
+pub type RTDAutoDownloadSettingsPresetsBuilder = AutoDownloadSettingsPresetsBuilder;
+
+impl AutoDownloadSettingsPresetsBuilder {
     pub fn build(&self) -> AutoDownloadSettingsPresets {
         self.inner.clone()
     }
@@ -85,7 +88,7 @@ impl AsRef<AutoDownloadSettingsPresets> for AutoDownloadSettingsPresets {
     }
 }
 
-impl AsRef<AutoDownloadSettingsPresets> for RTDAutoDownloadSettingsPresetsBuilder {
+impl AsRef<AutoDownloadSettingsPresets> for AutoDownloadSettingsPresetsBuilder {
     fn as_ref(&self) -> &AutoDownloadSettingsPresets {
         &self.inner
     }

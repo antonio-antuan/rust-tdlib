@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SendCallSignalingData {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
     /// The data
+
+    #[serde(default)]
     data: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SendCallSignalingData {
 impl RFunction for SendCallSignalingData {}
 
 impl SendCallSignalingData {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendCallSignalingDataBuilder {
+    pub fn builder() -> SendCallSignalingDataBuilder {
         let mut inner = SendCallSignalingData::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendCallSignalingData".to_string();
 
-        RTDSendCallSignalingDataBuilder { inner }
+        SendCallSignalingDataBuilder { inner }
     }
 
     pub fn call_id(&self) -> i32 {
@@ -55,11 +59,14 @@ impl SendCallSignalingData {
 }
 
 #[doc(hidden)]
-pub struct RTDSendCallSignalingDataBuilder {
+pub struct SendCallSignalingDataBuilder {
     inner: SendCallSignalingData,
 }
 
-impl RTDSendCallSignalingDataBuilder {
+#[deprecated]
+pub type RTDSendCallSignalingDataBuilder = SendCallSignalingDataBuilder;
+
+impl SendCallSignalingDataBuilder {
     pub fn build(&self) -> SendCallSignalingData {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SendCallSignalingData> for SendCallSignalingData {
     }
 }
 
-impl AsRef<SendCallSignalingData> for RTDSendCallSignalingDataBuilder {
+impl AsRef<SendCallSignalingData> for SendCallSignalingDataBuilder {
     fn as_ref(&self) -> &SendCallSignalingData {
         &self.inner
     }

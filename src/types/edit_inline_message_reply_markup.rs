@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,10 @@ pub struct EditInlineMessageReplyMarkup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Inline message identifier
+
+    #[serde(default)]
     inline_message_id: String,
-    /// The new message reply markup
+    /// The new message reply markup; pass null if none
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
@@ -35,16 +37,16 @@ impl RObject for EditInlineMessageReplyMarkup {
 impl RFunction for EditInlineMessageReplyMarkup {}
 
 impl EditInlineMessageReplyMarkup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditInlineMessageReplyMarkupBuilder {
+    pub fn builder() -> EditInlineMessageReplyMarkupBuilder {
         let mut inner = EditInlineMessageReplyMarkup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editInlineMessageReplyMarkup".to_string();
 
-        RTDEditInlineMessageReplyMarkupBuilder { inner }
+        EditInlineMessageReplyMarkupBuilder { inner }
     }
 
     pub fn inline_message_id(&self) -> &String {
@@ -57,11 +59,14 @@ impl EditInlineMessageReplyMarkup {
 }
 
 #[doc(hidden)]
-pub struct RTDEditInlineMessageReplyMarkupBuilder {
+pub struct EditInlineMessageReplyMarkupBuilder {
     inner: EditInlineMessageReplyMarkup,
 }
 
-impl RTDEditInlineMessageReplyMarkupBuilder {
+#[deprecated]
+pub type RTDEditInlineMessageReplyMarkupBuilder = EditInlineMessageReplyMarkupBuilder;
+
+impl EditInlineMessageReplyMarkupBuilder {
     pub fn build(&self) -> EditInlineMessageReplyMarkup {
         self.inner.clone()
     }
@@ -83,7 +88,7 @@ impl AsRef<EditInlineMessageReplyMarkup> for EditInlineMessageReplyMarkup {
     }
 }
 
-impl AsRef<EditInlineMessageReplyMarkup> for RTDEditInlineMessageReplyMarkupBuilder {
+impl AsRef<EditInlineMessageReplyMarkup> for EditInlineMessageReplyMarkupBuilder {
     fn as_ref(&self) -> &EditInlineMessageReplyMarkup {
         &self.inner
     }

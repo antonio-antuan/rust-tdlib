@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,16 +14,10 @@ pub enum MessageSchedulingState {
     #[doc(hidden)]
     _Default,
     /// The message will be sent at the specified date
-    #[serde(rename(
-        serialize = "messageSchedulingStateSendAtDate",
-        deserialize = "messageSchedulingStateSendAtDate"
-    ))]
+    #[serde(rename(deserialize = "messageSchedulingStateSendAtDate"))]
     SendAtDate(MessageSchedulingStateSendAtDate),
     /// The message will be sent when the peer will be online. Applicable to private chats only and when the exact online status of the peer is known
-    #[serde(rename(
-        serialize = "messageSchedulingStateSendWhenOnline",
-        deserialize = "messageSchedulingStateSendWhenOnline"
-    ))]
+    #[serde(rename(deserialize = "messageSchedulingStateSendWhenOnline"))]
     SendWhenOnline(MessageSchedulingStateSendWhenOnline),
 }
 
@@ -55,7 +49,7 @@ impl RObject for MessageSchedulingState {
 }
 
 impl MessageSchedulingState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -79,6 +73,8 @@ pub struct MessageSchedulingStateSendAtDate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Date the message will be sent. The date must be within 367 days in the future
+
+    #[serde(default)]
     send_date: i32,
 }
 
@@ -96,14 +92,14 @@ impl RObject for MessageSchedulingStateSendAtDate {
 impl TDMessageSchedulingState for MessageSchedulingStateSendAtDate {}
 
 impl MessageSchedulingStateSendAtDate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSchedulingStateSendAtDateBuilder {
+    pub fn builder() -> MessageSchedulingStateSendAtDateBuilder {
         let mut inner = MessageSchedulingStateSendAtDate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSchedulingStateSendAtDateBuilder { inner }
+        MessageSchedulingStateSendAtDateBuilder { inner }
     }
 
     pub fn send_date(&self) -> i32 {
@@ -112,11 +108,14 @@ impl MessageSchedulingStateSendAtDate {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSchedulingStateSendAtDateBuilder {
+pub struct MessageSchedulingStateSendAtDateBuilder {
     inner: MessageSchedulingStateSendAtDate,
 }
 
-impl RTDMessageSchedulingStateSendAtDateBuilder {
+#[deprecated]
+pub type RTDMessageSchedulingStateSendAtDateBuilder = MessageSchedulingStateSendAtDateBuilder;
+
+impl MessageSchedulingStateSendAtDateBuilder {
     pub fn build(&self) -> MessageSchedulingStateSendAtDate {
         self.inner.clone()
     }
@@ -133,7 +132,7 @@ impl AsRef<MessageSchedulingStateSendAtDate> for MessageSchedulingStateSendAtDat
     }
 }
 
-impl AsRef<MessageSchedulingStateSendAtDate> for RTDMessageSchedulingStateSendAtDateBuilder {
+impl AsRef<MessageSchedulingStateSendAtDate> for MessageSchedulingStateSendAtDateBuilder {
     fn as_ref(&self) -> &MessageSchedulingStateSendAtDate {
         &self.inner
     }
@@ -163,23 +162,27 @@ impl RObject for MessageSchedulingStateSendWhenOnline {
 impl TDMessageSchedulingState for MessageSchedulingStateSendWhenOnline {}
 
 impl MessageSchedulingStateSendWhenOnline {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSchedulingStateSendWhenOnlineBuilder {
+    pub fn builder() -> MessageSchedulingStateSendWhenOnlineBuilder {
         let mut inner = MessageSchedulingStateSendWhenOnline::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSchedulingStateSendWhenOnlineBuilder { inner }
+        MessageSchedulingStateSendWhenOnlineBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSchedulingStateSendWhenOnlineBuilder {
+pub struct MessageSchedulingStateSendWhenOnlineBuilder {
     inner: MessageSchedulingStateSendWhenOnline,
 }
 
-impl RTDMessageSchedulingStateSendWhenOnlineBuilder {
+#[deprecated]
+pub type RTDMessageSchedulingStateSendWhenOnlineBuilder =
+    MessageSchedulingStateSendWhenOnlineBuilder;
+
+impl MessageSchedulingStateSendWhenOnlineBuilder {
     pub fn build(&self) -> MessageSchedulingStateSendWhenOnline {
         self.inner.clone()
     }
@@ -191,9 +194,7 @@ impl AsRef<MessageSchedulingStateSendWhenOnline> for MessageSchedulingStateSendW
     }
 }
 
-impl AsRef<MessageSchedulingStateSendWhenOnline>
-    for RTDMessageSchedulingStateSendWhenOnlineBuilder
-{
+impl AsRef<MessageSchedulingStateSendWhenOnline> for MessageSchedulingStateSendWhenOnlineBuilder {
     fn as_ref(&self) -> &MessageSchedulingStateSendWhenOnline {
         &self.inner
     }

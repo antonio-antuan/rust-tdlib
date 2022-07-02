@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,16 +11,26 @@ pub struct PageBlockRelatedArticle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Related article URL
+
+    #[serde(default)]
     url: String,
     /// Article title; may be empty
+
+    #[serde(default)]
     title: String,
     /// Contains information about a related article
+
+    #[serde(default)]
     description: String,
     /// Article photo; may be null
     photo: Option<Photo>,
     /// Article author; may be empty
+
+    #[serde(default)]
     author: String,
     /// Point in time (Unix timestamp) when the article was published; 0 if unknown
+
+    #[serde(default)]
     publish_date: i32,
 }
 
@@ -36,14 +46,14 @@ impl RObject for PageBlockRelatedArticle {
 }
 
 impl PageBlockRelatedArticle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockRelatedArticleBuilder {
+    pub fn builder() -> PageBlockRelatedArticleBuilder {
         let mut inner = PageBlockRelatedArticle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockRelatedArticleBuilder { inner }
+        PageBlockRelatedArticleBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -72,11 +82,14 @@ impl PageBlockRelatedArticle {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockRelatedArticleBuilder {
+pub struct PageBlockRelatedArticleBuilder {
     inner: PageBlockRelatedArticle,
 }
 
-impl RTDPageBlockRelatedArticleBuilder {
+#[deprecated]
+pub type RTDPageBlockRelatedArticleBuilder = PageBlockRelatedArticleBuilder;
+
+impl PageBlockRelatedArticleBuilder {
     pub fn build(&self) -> PageBlockRelatedArticle {
         self.inner.clone()
     }
@@ -118,7 +131,7 @@ impl AsRef<PageBlockRelatedArticle> for PageBlockRelatedArticle {
     }
 }
 
-impl AsRef<PageBlockRelatedArticle> for RTDPageBlockRelatedArticleBuilder {
+impl AsRef<PageBlockRelatedArticle> for PageBlockRelatedArticleBuilder {
     fn as_ref(&self) -> &PageBlockRelatedArticle {
         &self.inner
     }

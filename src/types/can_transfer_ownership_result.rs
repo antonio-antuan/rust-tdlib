@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,34 +14,19 @@ pub enum CanTransferOwnershipResult {
     #[doc(hidden)]
     _Default,
     /// Checks whether the current session can be used to transfer a chat ownership to another user
-    #[serde(rename(
-        serialize = "canTransferOwnership",
-        deserialize = "canTransferOwnership"
-    ))]
+    #[serde(rename(deserialize = "canTransferOwnership"))]
     CanTransferOwnership(CanTransferOwnership),
     /// The session can be used
-    #[serde(rename(
-        serialize = "canTransferOwnershipResultOk",
-        deserialize = "canTransferOwnershipResultOk"
-    ))]
+    #[serde(rename(deserialize = "canTransferOwnershipResultOk"))]
     Ok(CanTransferOwnershipResultOk),
     /// The 2-step verification needs to be enabled first
-    #[serde(rename(
-        serialize = "canTransferOwnershipResultPasswordNeeded",
-        deserialize = "canTransferOwnershipResultPasswordNeeded"
-    ))]
+    #[serde(rename(deserialize = "canTransferOwnershipResultPasswordNeeded"))]
     PasswordNeeded(CanTransferOwnershipResultPasswordNeeded),
     /// The 2-step verification was enabled recently, user needs to wait
-    #[serde(rename(
-        serialize = "canTransferOwnershipResultPasswordTooFresh",
-        deserialize = "canTransferOwnershipResultPasswordTooFresh"
-    ))]
+    #[serde(rename(deserialize = "canTransferOwnershipResultPasswordTooFresh"))]
     PasswordTooFresh(CanTransferOwnershipResultPasswordTooFresh),
     /// The session was created recently, user needs to wait
-    #[serde(rename(
-        serialize = "canTransferOwnershipResultSessionTooFresh",
-        deserialize = "canTransferOwnershipResultSessionTooFresh"
-    ))]
+    #[serde(rename(deserialize = "canTransferOwnershipResultSessionTooFresh"))]
     SessionTooFresh(CanTransferOwnershipResultSessionTooFresh),
 }
 
@@ -79,7 +64,7 @@ impl RObject for CanTransferOwnershipResult {
 }
 
 impl CanTransferOwnershipResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -118,23 +103,26 @@ impl RObject for CanTransferOwnershipResultOk {
 impl TDCanTransferOwnershipResult for CanTransferOwnershipResultOk {}
 
 impl CanTransferOwnershipResultOk {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCanTransferOwnershipResultOkBuilder {
+    pub fn builder() -> CanTransferOwnershipResultOkBuilder {
         let mut inner = CanTransferOwnershipResultOk::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCanTransferOwnershipResultOkBuilder { inner }
+        CanTransferOwnershipResultOkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCanTransferOwnershipResultOkBuilder {
+pub struct CanTransferOwnershipResultOkBuilder {
     inner: CanTransferOwnershipResultOk,
 }
 
-impl RTDCanTransferOwnershipResultOkBuilder {
+#[deprecated]
+pub type RTDCanTransferOwnershipResultOkBuilder = CanTransferOwnershipResultOkBuilder;
+
+impl CanTransferOwnershipResultOkBuilder {
     pub fn build(&self) -> CanTransferOwnershipResultOk {
         self.inner.clone()
     }
@@ -146,7 +134,7 @@ impl AsRef<CanTransferOwnershipResultOk> for CanTransferOwnershipResultOk {
     }
 }
 
-impl AsRef<CanTransferOwnershipResultOk> for RTDCanTransferOwnershipResultOkBuilder {
+impl AsRef<CanTransferOwnershipResultOk> for CanTransferOwnershipResultOkBuilder {
     fn as_ref(&self) -> &CanTransferOwnershipResultOk {
         &self.inner
     }
@@ -176,23 +164,27 @@ impl RObject for CanTransferOwnershipResultPasswordNeeded {
 impl TDCanTransferOwnershipResult for CanTransferOwnershipResultPasswordNeeded {}
 
 impl CanTransferOwnershipResultPasswordNeeded {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCanTransferOwnershipResultPasswordNeededBuilder {
+    pub fn builder() -> CanTransferOwnershipResultPasswordNeededBuilder {
         let mut inner = CanTransferOwnershipResultPasswordNeeded::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCanTransferOwnershipResultPasswordNeededBuilder { inner }
+        CanTransferOwnershipResultPasswordNeededBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCanTransferOwnershipResultPasswordNeededBuilder {
+pub struct CanTransferOwnershipResultPasswordNeededBuilder {
     inner: CanTransferOwnershipResultPasswordNeeded,
 }
 
-impl RTDCanTransferOwnershipResultPasswordNeededBuilder {
+#[deprecated]
+pub type RTDCanTransferOwnershipResultPasswordNeededBuilder =
+    CanTransferOwnershipResultPasswordNeededBuilder;
+
+impl CanTransferOwnershipResultPasswordNeededBuilder {
     pub fn build(&self) -> CanTransferOwnershipResultPasswordNeeded {
         self.inner.clone()
     }
@@ -205,7 +197,7 @@ impl AsRef<CanTransferOwnershipResultPasswordNeeded> for CanTransferOwnershipRes
 }
 
 impl AsRef<CanTransferOwnershipResultPasswordNeeded>
-    for RTDCanTransferOwnershipResultPasswordNeededBuilder
+    for CanTransferOwnershipResultPasswordNeededBuilder
 {
     fn as_ref(&self) -> &CanTransferOwnershipResultPasswordNeeded {
         &self.inner
@@ -221,6 +213,8 @@ pub struct CanTransferOwnershipResultPasswordTooFresh {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Time left before the session can be used to transfer ownership of a chat, in seconds
+
+    #[serde(default)]
     retry_after: i32,
 }
 
@@ -238,14 +232,14 @@ impl RObject for CanTransferOwnershipResultPasswordTooFresh {
 impl TDCanTransferOwnershipResult for CanTransferOwnershipResultPasswordTooFresh {}
 
 impl CanTransferOwnershipResultPasswordTooFresh {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCanTransferOwnershipResultPasswordTooFreshBuilder {
+    pub fn builder() -> CanTransferOwnershipResultPasswordTooFreshBuilder {
         let mut inner = CanTransferOwnershipResultPasswordTooFresh::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCanTransferOwnershipResultPasswordTooFreshBuilder { inner }
+        CanTransferOwnershipResultPasswordTooFreshBuilder { inner }
     }
 
     pub fn retry_after(&self) -> i32 {
@@ -254,11 +248,15 @@ impl CanTransferOwnershipResultPasswordTooFresh {
 }
 
 #[doc(hidden)]
-pub struct RTDCanTransferOwnershipResultPasswordTooFreshBuilder {
+pub struct CanTransferOwnershipResultPasswordTooFreshBuilder {
     inner: CanTransferOwnershipResultPasswordTooFresh,
 }
 
-impl RTDCanTransferOwnershipResultPasswordTooFreshBuilder {
+#[deprecated]
+pub type RTDCanTransferOwnershipResultPasswordTooFreshBuilder =
+    CanTransferOwnershipResultPasswordTooFreshBuilder;
+
+impl CanTransferOwnershipResultPasswordTooFreshBuilder {
     pub fn build(&self) -> CanTransferOwnershipResultPasswordTooFresh {
         self.inner.clone()
     }
@@ -278,7 +276,7 @@ impl AsRef<CanTransferOwnershipResultPasswordTooFresh>
 }
 
 impl AsRef<CanTransferOwnershipResultPasswordTooFresh>
-    for RTDCanTransferOwnershipResultPasswordTooFreshBuilder
+    for CanTransferOwnershipResultPasswordTooFreshBuilder
 {
     fn as_ref(&self) -> &CanTransferOwnershipResultPasswordTooFresh {
         &self.inner
@@ -294,6 +292,8 @@ pub struct CanTransferOwnershipResultSessionTooFresh {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Time left before the session can be used to transfer ownership of a chat, in seconds
+
+    #[serde(default)]
     retry_after: i32,
 }
 
@@ -311,14 +311,14 @@ impl RObject for CanTransferOwnershipResultSessionTooFresh {
 impl TDCanTransferOwnershipResult for CanTransferOwnershipResultSessionTooFresh {}
 
 impl CanTransferOwnershipResultSessionTooFresh {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCanTransferOwnershipResultSessionTooFreshBuilder {
+    pub fn builder() -> CanTransferOwnershipResultSessionTooFreshBuilder {
         let mut inner = CanTransferOwnershipResultSessionTooFresh::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCanTransferOwnershipResultSessionTooFreshBuilder { inner }
+        CanTransferOwnershipResultSessionTooFreshBuilder { inner }
     }
 
     pub fn retry_after(&self) -> i32 {
@@ -327,11 +327,15 @@ impl CanTransferOwnershipResultSessionTooFresh {
 }
 
 #[doc(hidden)]
-pub struct RTDCanTransferOwnershipResultSessionTooFreshBuilder {
+pub struct CanTransferOwnershipResultSessionTooFreshBuilder {
     inner: CanTransferOwnershipResultSessionTooFresh,
 }
 
-impl RTDCanTransferOwnershipResultSessionTooFreshBuilder {
+#[deprecated]
+pub type RTDCanTransferOwnershipResultSessionTooFreshBuilder =
+    CanTransferOwnershipResultSessionTooFreshBuilder;
+
+impl CanTransferOwnershipResultSessionTooFreshBuilder {
     pub fn build(&self) -> CanTransferOwnershipResultSessionTooFresh {
         self.inner.clone()
     }
@@ -351,7 +355,7 @@ impl AsRef<CanTransferOwnershipResultSessionTooFresh>
 }
 
 impl AsRef<CanTransferOwnershipResultSessionTooFresh>
-    for RTDCanTransferOwnershipResultSessionTooFreshBuilder
+    for CanTransferOwnershipResultSessionTooFreshBuilder
 {
     fn as_ref(&self) -> &CanTransferOwnershipResultSessionTooFresh {
         &self.inner

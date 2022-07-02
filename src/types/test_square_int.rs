@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct TestSquareInt {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number to square
+
+    #[serde(default)]
     x: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for TestSquareInt {
 impl RFunction for TestSquareInt {}
 
 impl TestSquareInt {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestSquareIntBuilder {
+    pub fn builder() -> TestSquareIntBuilder {
         let mut inner = TestSquareInt::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "testSquareInt".to_string();
 
-        RTDTestSquareIntBuilder { inner }
+        TestSquareIntBuilder { inner }
     }
 
     pub fn x(&self) -> i32 {
@@ -49,11 +51,14 @@ impl TestSquareInt {
 }
 
 #[doc(hidden)]
-pub struct RTDTestSquareIntBuilder {
+pub struct TestSquareIntBuilder {
     inner: TestSquareInt,
 }
 
-impl RTDTestSquareIntBuilder {
+#[deprecated]
+pub type RTDTestSquareIntBuilder = TestSquareIntBuilder;
+
+impl TestSquareIntBuilder {
     pub fn build(&self) -> TestSquareInt {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<TestSquareInt> for TestSquareInt {
     }
 }
 
-impl AsRef<TestSquareInt> for RTDTestSquareIntBuilder {
+impl AsRef<TestSquareInt> for TestSquareIntBuilder {
     fn as_ref(&self) -> &TestSquareInt {
         &self.inner
     }

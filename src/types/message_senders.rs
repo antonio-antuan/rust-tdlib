@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct MessageSenders {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total count of messages senders found
+
+    #[serde(default)]
     total_count: i32,
     /// List of message senders
+
+    #[serde(default)]
     senders: Vec<MessageSender>,
 }
 
@@ -28,14 +32,14 @@ impl RObject for MessageSenders {
 }
 
 impl MessageSenders {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSendersBuilder {
+    pub fn builder() -> MessageSendersBuilder {
         let mut inner = MessageSenders::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSendersBuilder { inner }
+        MessageSendersBuilder { inner }
     }
 
     pub fn total_count(&self) -> i32 {
@@ -48,11 +52,14 @@ impl MessageSenders {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSendersBuilder {
+pub struct MessageSendersBuilder {
     inner: MessageSenders,
 }
 
-impl RTDMessageSendersBuilder {
+#[deprecated]
+pub type RTDMessageSendersBuilder = MessageSendersBuilder;
+
+impl MessageSendersBuilder {
     pub fn build(&self) -> MessageSenders {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<MessageSenders> for MessageSenders {
     }
 }
 
-impl AsRef<MessageSenders> for RTDMessageSendersBuilder {
+impl AsRef<MessageSenders> for MessageSendersBuilder {
     fn as_ref(&self) -> &MessageSenders {
         &self.inner
     }

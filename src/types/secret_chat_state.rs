@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,22 +14,13 @@ pub enum SecretChatState {
     #[doc(hidden)]
     _Default,
     /// The secret chat is closed
-    #[serde(rename(
-        serialize = "secretChatStateClosed",
-        deserialize = "secretChatStateClosed"
-    ))]
+    #[serde(rename(deserialize = "secretChatStateClosed"))]
     Closed(SecretChatStateClosed),
     /// The secret chat is not yet created; waiting for the other user to get online
-    #[serde(rename(
-        serialize = "secretChatStatePending",
-        deserialize = "secretChatStatePending"
-    ))]
+    #[serde(rename(deserialize = "secretChatStatePending"))]
     Pending(SecretChatStatePending),
     /// The secret chat is ready to use
-    #[serde(rename(
-        serialize = "secretChatStateReady",
-        deserialize = "secretChatStateReady"
-    ))]
+    #[serde(rename(deserialize = "secretChatStateReady"))]
     Ready(SecretChatStateReady),
 }
 
@@ -63,7 +54,7 @@ impl RObject for SecretChatState {
 }
 
 impl SecretChatState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -102,23 +93,26 @@ impl RObject for SecretChatStateClosed {
 impl TDSecretChatState for SecretChatStateClosed {}
 
 impl SecretChatStateClosed {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSecretChatStateClosedBuilder {
+    pub fn builder() -> SecretChatStateClosedBuilder {
         let mut inner = SecretChatStateClosed::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSecretChatStateClosedBuilder { inner }
+        SecretChatStateClosedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSecretChatStateClosedBuilder {
+pub struct SecretChatStateClosedBuilder {
     inner: SecretChatStateClosed,
 }
 
-impl RTDSecretChatStateClosedBuilder {
+#[deprecated]
+pub type RTDSecretChatStateClosedBuilder = SecretChatStateClosedBuilder;
+
+impl SecretChatStateClosedBuilder {
     pub fn build(&self) -> SecretChatStateClosed {
         self.inner.clone()
     }
@@ -130,7 +124,7 @@ impl AsRef<SecretChatStateClosed> for SecretChatStateClosed {
     }
 }
 
-impl AsRef<SecretChatStateClosed> for RTDSecretChatStateClosedBuilder {
+impl AsRef<SecretChatStateClosed> for SecretChatStateClosedBuilder {
     fn as_ref(&self) -> &SecretChatStateClosed {
         &self.inner
     }
@@ -160,23 +154,26 @@ impl RObject for SecretChatStatePending {
 impl TDSecretChatState for SecretChatStatePending {}
 
 impl SecretChatStatePending {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSecretChatStatePendingBuilder {
+    pub fn builder() -> SecretChatStatePendingBuilder {
         let mut inner = SecretChatStatePending::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSecretChatStatePendingBuilder { inner }
+        SecretChatStatePendingBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSecretChatStatePendingBuilder {
+pub struct SecretChatStatePendingBuilder {
     inner: SecretChatStatePending,
 }
 
-impl RTDSecretChatStatePendingBuilder {
+#[deprecated]
+pub type RTDSecretChatStatePendingBuilder = SecretChatStatePendingBuilder;
+
+impl SecretChatStatePendingBuilder {
     pub fn build(&self) -> SecretChatStatePending {
         self.inner.clone()
     }
@@ -188,7 +185,7 @@ impl AsRef<SecretChatStatePending> for SecretChatStatePending {
     }
 }
 
-impl AsRef<SecretChatStatePending> for RTDSecretChatStatePendingBuilder {
+impl AsRef<SecretChatStatePending> for SecretChatStatePendingBuilder {
     fn as_ref(&self) -> &SecretChatStatePending {
         &self.inner
     }
@@ -218,23 +215,26 @@ impl RObject for SecretChatStateReady {
 impl TDSecretChatState for SecretChatStateReady {}
 
 impl SecretChatStateReady {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSecretChatStateReadyBuilder {
+    pub fn builder() -> SecretChatStateReadyBuilder {
         let mut inner = SecretChatStateReady::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSecretChatStateReadyBuilder { inner }
+        SecretChatStateReadyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSecretChatStateReadyBuilder {
+pub struct SecretChatStateReadyBuilder {
     inner: SecretChatStateReady,
 }
 
-impl RTDSecretChatStateReadyBuilder {
+#[deprecated]
+pub type RTDSecretChatStateReadyBuilder = SecretChatStateReadyBuilder;
+
+impl SecretChatStateReadyBuilder {
     pub fn build(&self) -> SecretChatStateReady {
         self.inner.clone()
     }
@@ -246,7 +246,7 @@ impl AsRef<SecretChatStateReady> for SecretChatStateReady {
     }
 }
 
-impl AsRef<SecretChatStateReady> for RTDSecretChatStateReadyBuilder {
+impl AsRef<SecretChatStateReady> for SecretChatStateReadyBuilder {
     fn as_ref(&self) -> &SecretChatStateReady {
         &self.inner
     }

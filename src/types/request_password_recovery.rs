@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Requests to send a password recovery code to an email address that was previously set up
+/// Requests to send a 2-step verification password recovery code to an email address that was previously set up
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct RequestPasswordRecovery {
     #[doc(hidden)]
@@ -29,25 +29,28 @@ impl RObject for RequestPasswordRecovery {
 impl RFunction for RequestPasswordRecovery {}
 
 impl RequestPasswordRecovery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRequestPasswordRecoveryBuilder {
+    pub fn builder() -> RequestPasswordRecoveryBuilder {
         let mut inner = RequestPasswordRecovery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "requestPasswordRecovery".to_string();
 
-        RTDRequestPasswordRecoveryBuilder { inner }
+        RequestPasswordRecoveryBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDRequestPasswordRecoveryBuilder {
+pub struct RequestPasswordRecoveryBuilder {
     inner: RequestPasswordRecovery,
 }
 
-impl RTDRequestPasswordRecoveryBuilder {
+#[deprecated]
+pub type RTDRequestPasswordRecoveryBuilder = RequestPasswordRecoveryBuilder;
+
+impl RequestPasswordRecoveryBuilder {
     pub fn build(&self) -> RequestPasswordRecovery {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<RequestPasswordRecovery> for RequestPasswordRecovery {
     }
 }
 
-impl AsRef<RequestPasswordRecovery> for RTDRequestPasswordRecoveryBuilder {
+impl AsRef<RequestPasswordRecovery> for RequestPasswordRecoveryBuilder {
     fn as_ref(&self) -> &RequestPasswordRecovery {
         &self.inner
     }

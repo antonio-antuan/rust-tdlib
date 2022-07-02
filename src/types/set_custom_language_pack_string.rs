@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct SetCustomLanguagePackString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of a previously added custom local language pack in the current localization target
+
+    #[serde(default)]
     language_pack_id: String,
     /// New language pack string
     new_string: LanguagePackString,
@@ -33,16 +35,16 @@ impl RObject for SetCustomLanguagePackString {
 impl RFunction for SetCustomLanguagePackString {}
 
 impl SetCustomLanguagePackString {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetCustomLanguagePackStringBuilder {
+    pub fn builder() -> SetCustomLanguagePackStringBuilder {
         let mut inner = SetCustomLanguagePackString::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setCustomLanguagePackString".to_string();
 
-        RTDSetCustomLanguagePackStringBuilder { inner }
+        SetCustomLanguagePackStringBuilder { inner }
     }
 
     pub fn language_pack_id(&self) -> &String {
@@ -55,11 +57,14 @@ impl SetCustomLanguagePackString {
 }
 
 #[doc(hidden)]
-pub struct RTDSetCustomLanguagePackStringBuilder {
+pub struct SetCustomLanguagePackStringBuilder {
     inner: SetCustomLanguagePackString,
 }
 
-impl RTDSetCustomLanguagePackStringBuilder {
+#[deprecated]
+pub type RTDSetCustomLanguagePackStringBuilder = SetCustomLanguagePackStringBuilder;
+
+impl SetCustomLanguagePackStringBuilder {
     pub fn build(&self) -> SetCustomLanguagePackString {
         self.inner.clone()
     }
@@ -81,7 +86,7 @@ impl AsRef<SetCustomLanguagePackString> for SetCustomLanguagePackString {
     }
 }
 
-impl AsRef<SetCustomLanguagePackString> for RTDSetCustomLanguagePackStringBuilder {
+impl AsRef<SetCustomLanguagePackString> for SetCustomLanguagePackStringBuilder {
     fn as_ref(&self) -> &SetCustomLanguagePackString {
         &self.inner
     }

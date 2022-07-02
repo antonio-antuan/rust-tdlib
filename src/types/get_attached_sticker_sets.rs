@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns a list of sticker sets attached to a file. Currently only photos and videos can have attached sticker sets
+/// Returns a list of sticker sets attached to a file. Currently, only photos and videos can have attached sticker sets
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetAttachedStickerSets {
     #[doc(hidden)]
@@ -11,6 +11,8 @@ pub struct GetAttachedStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// File identifier
+
+    #[serde(default)]
     file_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetAttachedStickerSets {
 impl RFunction for GetAttachedStickerSets {}
 
 impl GetAttachedStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetAttachedStickerSetsBuilder {
+    pub fn builder() -> GetAttachedStickerSetsBuilder {
         let mut inner = GetAttachedStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getAttachedStickerSets".to_string();
 
-        RTDGetAttachedStickerSetsBuilder { inner }
+        GetAttachedStickerSetsBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -49,11 +51,14 @@ impl GetAttachedStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDGetAttachedStickerSetsBuilder {
+pub struct GetAttachedStickerSetsBuilder {
     inner: GetAttachedStickerSets,
 }
 
-impl RTDGetAttachedStickerSetsBuilder {
+#[deprecated]
+pub type RTDGetAttachedStickerSetsBuilder = GetAttachedStickerSetsBuilder;
+
+impl GetAttachedStickerSetsBuilder {
     pub fn build(&self) -> GetAttachedStickerSets {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetAttachedStickerSets> for GetAttachedStickerSets {
     }
 }
 
-impl AsRef<GetAttachedStickerSets> for RTDGetAttachedStickerSetsBuilder {
+impl AsRef<GetAttachedStickerSets> for GetAttachedStickerSetsBuilder {
     fn as_ref(&self) -> &GetAttachedStickerSets {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,18 +11,28 @@ pub struct Audio {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Duration of the audio, in seconds; as defined by the sender
+
+    #[serde(default)]
     duration: i32,
     /// Title of the audio; as defined by the sender
+
+    #[serde(default)]
     title: String,
     /// Performer of the audio; as defined by the sender
+
+    #[serde(default)]
     performer: String,
     /// Original name of the file; as defined by the sender
+
+    #[serde(default)]
     file_name: String,
     /// The MIME type of the file; as defined by the sender
+
+    #[serde(default)]
     mime_type: String,
     /// The minithumbnail of the album cover; may be null
     album_cover_minithumbnail: Option<Minithumbnail>,
-    /// The thumbnail of the album cover in JPEG format; as defined by the sender. The full size thumbnail should be extracted from the downloaded file; may be null
+    /// The thumbnail of the album cover in JPEG format; as defined by the sender. The full size thumbnail is supposed to be extracted from the downloaded file; may be null
     album_cover_thumbnail: Option<Thumbnail>,
     /// File containing the audio
     audio: File,
@@ -40,14 +50,14 @@ impl RObject for Audio {
 }
 
 impl Audio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAudioBuilder {
+    pub fn builder() -> AudioBuilder {
         let mut inner = Audio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAudioBuilder { inner }
+        AudioBuilder { inner }
     }
 
     pub fn duration(&self) -> i32 {
@@ -84,11 +94,14 @@ impl Audio {
 }
 
 #[doc(hidden)]
-pub struct RTDAudioBuilder {
+pub struct AudioBuilder {
     inner: Audio,
 }
 
-impl RTDAudioBuilder {
+#[deprecated]
+pub type RTDAudioBuilder = AudioBuilder;
+
+impl AudioBuilder {
     pub fn build(&self) -> Audio {
         self.inner.clone()
     }
@@ -146,7 +159,7 @@ impl AsRef<Audio> for Audio {
     }
 }
 
-impl AsRef<Audio> for RTDAudioBuilder {
+impl AsRef<Audio> for AudioBuilder {
     fn as_ref(&self) -> &Audio {
         &self.inner
     }

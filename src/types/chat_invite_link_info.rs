@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,23 +11,43 @@ pub struct ChatInviteLinkInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the invite link; 0 if the user has no access to the chat before joining
+
+    #[serde(default)]
     chat_id: i64,
     /// If non-zero, the amount of time for which read access to the chat will remain available, in seconds
+
+    #[serde(default)]
     accessible_for: i32,
-    /// Contains information about the type of the chat
+    /// Type of the chat
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "ChatType::_is_default")]
     type_: ChatType,
     /// Title of the chat
+
+    #[serde(default)]
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
+    /// Contains information about a chat invite link
+
+    #[serde(default)]
+    description: String,
     /// Number of members in the chat
+
+    #[serde(default)]
     member_count: i32,
     /// User identifiers of some chat members that may be known to the current user
-    member_user_ids: Vec<i32>,
+
+    #[serde(default)]
+    member_user_ids: Vec<i64>,
+    /// True, if the link only creates join request
+
+    #[serde(default)]
+    creates_join_request: bool,
     /// True, if the chat is a public supergroup or channel, i.e. it has a username or it is a location-based supergroup
+
+    #[serde(default)]
     is_public: bool,
 }
 
@@ -43,14 +63,14 @@ impl RObject for ChatInviteLinkInfo {
 }
 
 impl ChatInviteLinkInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatInviteLinkInfoBuilder {
+    pub fn builder() -> ChatInviteLinkInfoBuilder {
         let mut inner = ChatInviteLinkInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatInviteLinkInfoBuilder { inner }
+        ChatInviteLinkInfoBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -73,12 +93,20 @@ impl ChatInviteLinkInfo {
         &self.photo
     }
 
+    pub fn description(&self) -> &String {
+        &self.description
+    }
+
     pub fn member_count(&self) -> i32 {
         self.member_count
     }
 
-    pub fn member_user_ids(&self) -> &Vec<i32> {
+    pub fn member_user_ids(&self) -> &Vec<i64> {
         &self.member_user_ids
+    }
+
+    pub fn creates_join_request(&self) -> bool {
+        self.creates_join_request
     }
 
     pub fn is_public(&self) -> bool {
@@ -87,11 +115,14 @@ impl ChatInviteLinkInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDChatInviteLinkInfoBuilder {
+pub struct ChatInviteLinkInfoBuilder {
     inner: ChatInviteLinkInfo,
 }
 
-impl RTDChatInviteLinkInfoBuilder {
+#[deprecated]
+pub type RTDChatInviteLinkInfoBuilder = ChatInviteLinkInfoBuilder;
+
+impl ChatInviteLinkInfoBuilder {
     pub fn build(&self) -> ChatInviteLinkInfo {
         self.inner.clone()
     }
@@ -121,13 +152,23 @@ impl RTDChatInviteLinkInfoBuilder {
         self
     }
 
+    pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
+        self.inner.description = description.as_ref().to_string();
+        self
+    }
+
     pub fn member_count(&mut self, member_count: i32) -> &mut Self {
         self.inner.member_count = member_count;
         self
     }
 
-    pub fn member_user_ids(&mut self, member_user_ids: Vec<i32>) -> &mut Self {
+    pub fn member_user_ids(&mut self, member_user_ids: Vec<i64>) -> &mut Self {
         self.inner.member_user_ids = member_user_ids;
+        self
+    }
+
+    pub fn creates_join_request(&mut self, creates_join_request: bool) -> &mut Self {
+        self.inner.creates_join_request = creates_join_request;
         self
     }
 
@@ -143,7 +184,7 @@ impl AsRef<ChatInviteLinkInfo> for ChatInviteLinkInfo {
     }
 }
 
-impl AsRef<ChatInviteLinkInfo> for RTDChatInviteLinkInfoBuilder {
+impl AsRef<ChatInviteLinkInfo> for ChatInviteLinkInfoBuilder {
     fn as_ref(&self) -> &ChatInviteLinkInfo {
         &self.inner
     }

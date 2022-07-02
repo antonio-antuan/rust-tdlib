@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct MessageLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message link
+
+    #[serde(default)]
     link: String,
     /// True, if the link will work for non-members of the chat
+
+    #[serde(default)]
     is_public: bool,
 }
 
@@ -28,14 +32,14 @@ impl RObject for MessageLink {
 }
 
 impl MessageLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageLinkBuilder {
+    pub fn builder() -> MessageLinkBuilder {
         let mut inner = MessageLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageLinkBuilder { inner }
+        MessageLinkBuilder { inner }
     }
 
     pub fn link(&self) -> &String {
@@ -48,11 +52,14 @@ impl MessageLink {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageLinkBuilder {
+pub struct MessageLinkBuilder {
     inner: MessageLink,
 }
 
-impl RTDMessageLinkBuilder {
+#[deprecated]
+pub type RTDMessageLinkBuilder = MessageLinkBuilder;
+
+impl MessageLinkBuilder {
     pub fn build(&self) -> MessageLink {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<MessageLink> for MessageLink {
     }
 }
 
-impl AsRef<MessageLink> for RTDMessageLinkBuilder {
+impl AsRef<MessageLink> for MessageLinkBuilder {
     fn as_ref(&self) -> &MessageLink {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,52 +14,28 @@ pub enum SupergroupMembersFilter {
     #[doc(hidden)]
     _Default,
     /// Returns the owner and administrators
-    #[serde(rename(
-        serialize = "supergroupMembersFilterAdministrators",
-        deserialize = "supergroupMembersFilterAdministrators"
-    ))]
+    #[serde(rename(deserialize = "supergroupMembersFilterAdministrators"))]
     Administrators(SupergroupMembersFilterAdministrators),
     /// Returns users banned from the supergroup or channel; can be used only by administrators
-    #[serde(rename(
-        serialize = "supergroupMembersFilterBanned",
-        deserialize = "supergroupMembersFilterBanned"
-    ))]
+    #[serde(rename(deserialize = "supergroupMembersFilterBanned"))]
     Banned(SupergroupMembersFilterBanned),
     /// Returns bot members of the supergroup or channel
-    #[serde(rename(
-        serialize = "supergroupMembersFilterBots",
-        deserialize = "supergroupMembersFilterBots"
-    ))]
+    #[serde(rename(deserialize = "supergroupMembersFilterBots"))]
     Bots(SupergroupMembersFilterBots),
     /// Returns contacts of the user, which are members of the supergroup or channel
-    #[serde(rename(
-        serialize = "supergroupMembersFilterContacts",
-        deserialize = "supergroupMembersFilterContacts"
-    ))]
+    #[serde(rename(deserialize = "supergroupMembersFilterContacts"))]
     Contacts(SupergroupMembersFilterContacts),
     /// Returns users which can be mentioned in the supergroup
-    #[serde(rename(
-        serialize = "supergroupMembersFilterMention",
-        deserialize = "supergroupMembersFilterMention"
-    ))]
+    #[serde(rename(deserialize = "supergroupMembersFilterMention"))]
     Mention(SupergroupMembersFilterMention),
     /// Returns recently active users in reverse chronological order
-    #[serde(rename(
-        serialize = "supergroupMembersFilterRecent",
-        deserialize = "supergroupMembersFilterRecent"
-    ))]
+    #[serde(rename(deserialize = "supergroupMembersFilterRecent"))]
     Recent(SupergroupMembersFilterRecent),
     /// Returns restricted supergroup members; can be used only by administrators
-    #[serde(rename(
-        serialize = "supergroupMembersFilterRestricted",
-        deserialize = "supergroupMembersFilterRestricted"
-    ))]
+    #[serde(rename(deserialize = "supergroupMembersFilterRestricted"))]
     Restricted(SupergroupMembersFilterRestricted),
     /// Used to search for supergroup or channel members via a (string) query
-    #[serde(rename(
-        serialize = "supergroupMembersFilterSearch",
-        deserialize = "supergroupMembersFilterSearch"
-    ))]
+    #[serde(rename(deserialize = "supergroupMembersFilterSearch"))]
     Search(SupergroupMembersFilterSearch),
 }
 
@@ -103,7 +79,7 @@ impl RObject for SupergroupMembersFilter {
 }
 
 impl SupergroupMembersFilter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -142,23 +118,27 @@ impl RObject for SupergroupMembersFilterAdministrators {
 impl TDSupergroupMembersFilter for SupergroupMembersFilterAdministrators {}
 
 impl SupergroupMembersFilterAdministrators {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupMembersFilterAdministratorsBuilder {
+    pub fn builder() -> SupergroupMembersFilterAdministratorsBuilder {
         let mut inner = SupergroupMembersFilterAdministrators::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupMembersFilterAdministratorsBuilder { inner }
+        SupergroupMembersFilterAdministratorsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupMembersFilterAdministratorsBuilder {
+pub struct SupergroupMembersFilterAdministratorsBuilder {
     inner: SupergroupMembersFilterAdministrators,
 }
 
-impl RTDSupergroupMembersFilterAdministratorsBuilder {
+#[deprecated]
+pub type RTDSupergroupMembersFilterAdministratorsBuilder =
+    SupergroupMembersFilterAdministratorsBuilder;
+
+impl SupergroupMembersFilterAdministratorsBuilder {
     pub fn build(&self) -> SupergroupMembersFilterAdministrators {
         self.inner.clone()
     }
@@ -170,9 +150,7 @@ impl AsRef<SupergroupMembersFilterAdministrators> for SupergroupMembersFilterAdm
     }
 }
 
-impl AsRef<SupergroupMembersFilterAdministrators>
-    for RTDSupergroupMembersFilterAdministratorsBuilder
-{
+impl AsRef<SupergroupMembersFilterAdministrators> for SupergroupMembersFilterAdministratorsBuilder {
     fn as_ref(&self) -> &SupergroupMembersFilterAdministrators {
         &self.inner
     }
@@ -187,6 +165,8 @@ pub struct SupergroupMembersFilterBanned {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 }
 
@@ -204,14 +184,14 @@ impl RObject for SupergroupMembersFilterBanned {
 impl TDSupergroupMembersFilter for SupergroupMembersFilterBanned {}
 
 impl SupergroupMembersFilterBanned {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupMembersFilterBannedBuilder {
+    pub fn builder() -> SupergroupMembersFilterBannedBuilder {
         let mut inner = SupergroupMembersFilterBanned::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupMembersFilterBannedBuilder { inner }
+        SupergroupMembersFilterBannedBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -220,11 +200,14 @@ impl SupergroupMembersFilterBanned {
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupMembersFilterBannedBuilder {
+pub struct SupergroupMembersFilterBannedBuilder {
     inner: SupergroupMembersFilterBanned,
 }
 
-impl RTDSupergroupMembersFilterBannedBuilder {
+#[deprecated]
+pub type RTDSupergroupMembersFilterBannedBuilder = SupergroupMembersFilterBannedBuilder;
+
+impl SupergroupMembersFilterBannedBuilder {
     pub fn build(&self) -> SupergroupMembersFilterBanned {
         self.inner.clone()
     }
@@ -241,7 +224,7 @@ impl AsRef<SupergroupMembersFilterBanned> for SupergroupMembersFilterBanned {
     }
 }
 
-impl AsRef<SupergroupMembersFilterBanned> for RTDSupergroupMembersFilterBannedBuilder {
+impl AsRef<SupergroupMembersFilterBanned> for SupergroupMembersFilterBannedBuilder {
     fn as_ref(&self) -> &SupergroupMembersFilterBanned {
         &self.inner
     }
@@ -271,23 +254,26 @@ impl RObject for SupergroupMembersFilterBots {
 impl TDSupergroupMembersFilter for SupergroupMembersFilterBots {}
 
 impl SupergroupMembersFilterBots {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupMembersFilterBotsBuilder {
+    pub fn builder() -> SupergroupMembersFilterBotsBuilder {
         let mut inner = SupergroupMembersFilterBots::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupMembersFilterBotsBuilder { inner }
+        SupergroupMembersFilterBotsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupMembersFilterBotsBuilder {
+pub struct SupergroupMembersFilterBotsBuilder {
     inner: SupergroupMembersFilterBots,
 }
 
-impl RTDSupergroupMembersFilterBotsBuilder {
+#[deprecated]
+pub type RTDSupergroupMembersFilterBotsBuilder = SupergroupMembersFilterBotsBuilder;
+
+impl SupergroupMembersFilterBotsBuilder {
     pub fn build(&self) -> SupergroupMembersFilterBots {
         self.inner.clone()
     }
@@ -299,7 +285,7 @@ impl AsRef<SupergroupMembersFilterBots> for SupergroupMembersFilterBots {
     }
 }
 
-impl AsRef<SupergroupMembersFilterBots> for RTDSupergroupMembersFilterBotsBuilder {
+impl AsRef<SupergroupMembersFilterBots> for SupergroupMembersFilterBotsBuilder {
     fn as_ref(&self) -> &SupergroupMembersFilterBots {
         &self.inner
     }
@@ -314,6 +300,8 @@ pub struct SupergroupMembersFilterContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 }
 
@@ -331,14 +319,14 @@ impl RObject for SupergroupMembersFilterContacts {
 impl TDSupergroupMembersFilter for SupergroupMembersFilterContacts {}
 
 impl SupergroupMembersFilterContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupMembersFilterContactsBuilder {
+    pub fn builder() -> SupergroupMembersFilterContactsBuilder {
         let mut inner = SupergroupMembersFilterContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupMembersFilterContactsBuilder { inner }
+        SupergroupMembersFilterContactsBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -347,11 +335,14 @@ impl SupergroupMembersFilterContacts {
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupMembersFilterContactsBuilder {
+pub struct SupergroupMembersFilterContactsBuilder {
     inner: SupergroupMembersFilterContacts,
 }
 
-impl RTDSupergroupMembersFilterContactsBuilder {
+#[deprecated]
+pub type RTDSupergroupMembersFilterContactsBuilder = SupergroupMembersFilterContactsBuilder;
+
+impl SupergroupMembersFilterContactsBuilder {
     pub fn build(&self) -> SupergroupMembersFilterContacts {
         self.inner.clone()
     }
@@ -368,7 +359,7 @@ impl AsRef<SupergroupMembersFilterContacts> for SupergroupMembersFilterContacts 
     }
 }
 
-impl AsRef<SupergroupMembersFilterContacts> for RTDSupergroupMembersFilterContactsBuilder {
+impl AsRef<SupergroupMembersFilterContacts> for SupergroupMembersFilterContactsBuilder {
     fn as_ref(&self) -> &SupergroupMembersFilterContacts {
         &self.inner
     }
@@ -383,8 +374,12 @@ pub struct SupergroupMembersFilterMention {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
     /// If non-zero, the identifier of the current message thread
+
+    #[serde(default)]
     message_thread_id: i64,
 }
 
@@ -402,14 +397,14 @@ impl RObject for SupergroupMembersFilterMention {
 impl TDSupergroupMembersFilter for SupergroupMembersFilterMention {}
 
 impl SupergroupMembersFilterMention {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupMembersFilterMentionBuilder {
+    pub fn builder() -> SupergroupMembersFilterMentionBuilder {
         let mut inner = SupergroupMembersFilterMention::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupMembersFilterMentionBuilder { inner }
+        SupergroupMembersFilterMentionBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -422,11 +417,14 @@ impl SupergroupMembersFilterMention {
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupMembersFilterMentionBuilder {
+pub struct SupergroupMembersFilterMentionBuilder {
     inner: SupergroupMembersFilterMention,
 }
 
-impl RTDSupergroupMembersFilterMentionBuilder {
+#[deprecated]
+pub type RTDSupergroupMembersFilterMentionBuilder = SupergroupMembersFilterMentionBuilder;
+
+impl SupergroupMembersFilterMentionBuilder {
     pub fn build(&self) -> SupergroupMembersFilterMention {
         self.inner.clone()
     }
@@ -448,7 +446,7 @@ impl AsRef<SupergroupMembersFilterMention> for SupergroupMembersFilterMention {
     }
 }
 
-impl AsRef<SupergroupMembersFilterMention> for RTDSupergroupMembersFilterMentionBuilder {
+impl AsRef<SupergroupMembersFilterMention> for SupergroupMembersFilterMentionBuilder {
     fn as_ref(&self) -> &SupergroupMembersFilterMention {
         &self.inner
     }
@@ -478,23 +476,26 @@ impl RObject for SupergroupMembersFilterRecent {
 impl TDSupergroupMembersFilter for SupergroupMembersFilterRecent {}
 
 impl SupergroupMembersFilterRecent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupMembersFilterRecentBuilder {
+    pub fn builder() -> SupergroupMembersFilterRecentBuilder {
         let mut inner = SupergroupMembersFilterRecent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupMembersFilterRecentBuilder { inner }
+        SupergroupMembersFilterRecentBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupMembersFilterRecentBuilder {
+pub struct SupergroupMembersFilterRecentBuilder {
     inner: SupergroupMembersFilterRecent,
 }
 
-impl RTDSupergroupMembersFilterRecentBuilder {
+#[deprecated]
+pub type RTDSupergroupMembersFilterRecentBuilder = SupergroupMembersFilterRecentBuilder;
+
+impl SupergroupMembersFilterRecentBuilder {
     pub fn build(&self) -> SupergroupMembersFilterRecent {
         self.inner.clone()
     }
@@ -506,7 +507,7 @@ impl AsRef<SupergroupMembersFilterRecent> for SupergroupMembersFilterRecent {
     }
 }
 
-impl AsRef<SupergroupMembersFilterRecent> for RTDSupergroupMembersFilterRecentBuilder {
+impl AsRef<SupergroupMembersFilterRecent> for SupergroupMembersFilterRecentBuilder {
     fn as_ref(&self) -> &SupergroupMembersFilterRecent {
         &self.inner
     }
@@ -521,6 +522,8 @@ pub struct SupergroupMembersFilterRestricted {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 }
 
@@ -538,14 +541,14 @@ impl RObject for SupergroupMembersFilterRestricted {
 impl TDSupergroupMembersFilter for SupergroupMembersFilterRestricted {}
 
 impl SupergroupMembersFilterRestricted {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupMembersFilterRestrictedBuilder {
+    pub fn builder() -> SupergroupMembersFilterRestrictedBuilder {
         let mut inner = SupergroupMembersFilterRestricted::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupMembersFilterRestrictedBuilder { inner }
+        SupergroupMembersFilterRestrictedBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -554,11 +557,14 @@ impl SupergroupMembersFilterRestricted {
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupMembersFilterRestrictedBuilder {
+pub struct SupergroupMembersFilterRestrictedBuilder {
     inner: SupergroupMembersFilterRestricted,
 }
 
-impl RTDSupergroupMembersFilterRestrictedBuilder {
+#[deprecated]
+pub type RTDSupergroupMembersFilterRestrictedBuilder = SupergroupMembersFilterRestrictedBuilder;
+
+impl SupergroupMembersFilterRestrictedBuilder {
     pub fn build(&self) -> SupergroupMembersFilterRestricted {
         self.inner.clone()
     }
@@ -575,7 +581,7 @@ impl AsRef<SupergroupMembersFilterRestricted> for SupergroupMembersFilterRestric
     }
 }
 
-impl AsRef<SupergroupMembersFilterRestricted> for RTDSupergroupMembersFilterRestrictedBuilder {
+impl AsRef<SupergroupMembersFilterRestricted> for SupergroupMembersFilterRestrictedBuilder {
     fn as_ref(&self) -> &SupergroupMembersFilterRestricted {
         &self.inner
     }
@@ -590,6 +596,8 @@ pub struct SupergroupMembersFilterSearch {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 }
 
@@ -607,14 +615,14 @@ impl RObject for SupergroupMembersFilterSearch {
 impl TDSupergroupMembersFilter for SupergroupMembersFilterSearch {}
 
 impl SupergroupMembersFilterSearch {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupMembersFilterSearchBuilder {
+    pub fn builder() -> SupergroupMembersFilterSearchBuilder {
         let mut inner = SupergroupMembersFilterSearch::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupMembersFilterSearchBuilder { inner }
+        SupergroupMembersFilterSearchBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -623,11 +631,14 @@ impl SupergroupMembersFilterSearch {
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupMembersFilterSearchBuilder {
+pub struct SupergroupMembersFilterSearchBuilder {
     inner: SupergroupMembersFilterSearch,
 }
 
-impl RTDSupergroupMembersFilterSearchBuilder {
+#[deprecated]
+pub type RTDSupergroupMembersFilterSearchBuilder = SupergroupMembersFilterSearchBuilder;
+
+impl SupergroupMembersFilterSearchBuilder {
     pub fn build(&self) -> SupergroupMembersFilterSearch {
         self.inner.clone()
     }
@@ -644,7 +655,7 @@ impl AsRef<SupergroupMembersFilterSearch> for SupergroupMembersFilterSearch {
     }
 }
 
-impl AsRef<SupergroupMembersFilterSearch> for RTDSupergroupMembersFilterSearchBuilder {
+impl AsRef<SupergroupMembersFilterSearch> for SupergroupMembersFilterSearchBuilder {
     fn as_ref(&self) -> &SupergroupMembersFilterSearch {
         &self.inner
     }

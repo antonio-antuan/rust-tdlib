@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetLanguagePackInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Language pack identifier
+
+    #[serde(default)]
     language_pack_id: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetLanguagePackInfo {
 impl RFunction for GetLanguagePackInfo {}
 
 impl GetLanguagePackInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetLanguagePackInfoBuilder {
+    pub fn builder() -> GetLanguagePackInfoBuilder {
         let mut inner = GetLanguagePackInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getLanguagePackInfo".to_string();
 
-        RTDGetLanguagePackInfoBuilder { inner }
+        GetLanguagePackInfoBuilder { inner }
     }
 
     pub fn language_pack_id(&self) -> &String {
@@ -49,11 +51,14 @@ impl GetLanguagePackInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDGetLanguagePackInfoBuilder {
+pub struct GetLanguagePackInfoBuilder {
     inner: GetLanguagePackInfo,
 }
 
-impl RTDGetLanguagePackInfoBuilder {
+#[deprecated]
+pub type RTDGetLanguagePackInfoBuilder = GetLanguagePackInfoBuilder;
+
+impl GetLanguagePackInfoBuilder {
     pub fn build(&self) -> GetLanguagePackInfo {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetLanguagePackInfo> for GetLanguagePackInfo {
     }
 }
 
-impl AsRef<GetLanguagePackInfo> for RTDGetLanguagePackInfoBuilder {
+impl AsRef<GetLanguagePackInfo> for GetLanguagePackInfoBuilder {
     fn as_ref(&self) -> &GetLanguagePackInfo {
         &self.inner
     }

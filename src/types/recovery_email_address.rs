@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct RecoveryEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Recovery email address
+
+    #[serde(default)]
     recovery_email_address: String,
 }
 
@@ -26,14 +28,14 @@ impl RObject for RecoveryEmailAddress {
 }
 
 impl RecoveryEmailAddress {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRecoveryEmailAddressBuilder {
+    pub fn builder() -> RecoveryEmailAddressBuilder {
         let mut inner = RecoveryEmailAddress::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDRecoveryEmailAddressBuilder { inner }
+        RecoveryEmailAddressBuilder { inner }
     }
 
     pub fn recovery_email_address(&self) -> &String {
@@ -42,11 +44,14 @@ impl RecoveryEmailAddress {
 }
 
 #[doc(hidden)]
-pub struct RTDRecoveryEmailAddressBuilder {
+pub struct RecoveryEmailAddressBuilder {
     inner: RecoveryEmailAddress,
 }
 
-impl RTDRecoveryEmailAddressBuilder {
+#[deprecated]
+pub type RTDRecoveryEmailAddressBuilder = RecoveryEmailAddressBuilder;
+
+impl RecoveryEmailAddressBuilder {
     pub fn build(&self) -> RecoveryEmailAddress {
         self.inner.clone()
     }
@@ -66,7 +71,7 @@ impl AsRef<RecoveryEmailAddress> for RecoveryEmailAddress {
     }
 }
 
-impl AsRef<RecoveryEmailAddress> for RTDRecoveryEmailAddressBuilder {
+impl AsRef<RecoveryEmailAddress> for RecoveryEmailAddressBuilder {
     fn as_ref(&self) -> &RecoveryEmailAddress {
         &self.inner
     }

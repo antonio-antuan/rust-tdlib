@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetFileExtension {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The MIME type of the file
+
+    #[serde(default)]
     mime_type: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetFileExtension {
 impl RFunction for GetFileExtension {}
 
 impl GetFileExtension {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetFileExtensionBuilder {
+    pub fn builder() -> GetFileExtensionBuilder {
         let mut inner = GetFileExtension::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getFileExtension".to_string();
 
-        RTDGetFileExtensionBuilder { inner }
+        GetFileExtensionBuilder { inner }
     }
 
     pub fn mime_type(&self) -> &String {
@@ -49,11 +51,14 @@ impl GetFileExtension {
 }
 
 #[doc(hidden)]
-pub struct RTDGetFileExtensionBuilder {
+pub struct GetFileExtensionBuilder {
     inner: GetFileExtension,
 }
 
-impl RTDGetFileExtensionBuilder {
+#[deprecated]
+pub type RTDGetFileExtensionBuilder = GetFileExtensionBuilder;
+
+impl GetFileExtensionBuilder {
     pub fn build(&self) -> GetFileExtension {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetFileExtension> for GetFileExtension {
     }
 }
 
-impl AsRef<GetFileExtension> for RTDGetFileExtensionBuilder {
+impl AsRef<GetFileExtension> for GetFileExtensionBuilder {
     fn as_ref(&self) -> &GetFileExtension {
         &self.inner
     }

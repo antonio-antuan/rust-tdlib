@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct CheckDatabaseEncryptionKey {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Encryption key to check or set up
+
+    #[serde(default)]
     encryption_key: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for CheckDatabaseEncryptionKey {
 impl RFunction for CheckDatabaseEncryptionKey {}
 
 impl CheckDatabaseEncryptionKey {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckDatabaseEncryptionKeyBuilder {
+    pub fn builder() -> CheckDatabaseEncryptionKeyBuilder {
         let mut inner = CheckDatabaseEncryptionKey::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkDatabaseEncryptionKey".to_string();
 
-        RTDCheckDatabaseEncryptionKeyBuilder { inner }
+        CheckDatabaseEncryptionKeyBuilder { inner }
     }
 
     pub fn encryption_key(&self) -> &String {
@@ -49,11 +51,14 @@ impl CheckDatabaseEncryptionKey {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckDatabaseEncryptionKeyBuilder {
+pub struct CheckDatabaseEncryptionKeyBuilder {
     inner: CheckDatabaseEncryptionKey,
 }
 
-impl RTDCheckDatabaseEncryptionKeyBuilder {
+#[deprecated]
+pub type RTDCheckDatabaseEncryptionKeyBuilder = CheckDatabaseEncryptionKeyBuilder;
+
+impl CheckDatabaseEncryptionKeyBuilder {
     pub fn build(&self) -> CheckDatabaseEncryptionKey {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<CheckDatabaseEncryptionKey> for CheckDatabaseEncryptionKey {
     }
 }
 
-impl AsRef<CheckDatabaseEncryptionKey> for RTDCheckDatabaseEncryptionKeyBuilder {
+impl AsRef<CheckDatabaseEncryptionKey> for CheckDatabaseEncryptionKeyBuilder {
     fn as_ref(&self) -> &CheckDatabaseEncryptionKey {
         &self.inner
     }

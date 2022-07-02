@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,7 +10,9 @@ pub struct CheckChangePhoneNumberCode {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Verification code received by SMS, phone call or flash call
+    /// Authentication code to check
+
+    #[serde(default)]
     code: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for CheckChangePhoneNumberCode {
 impl RFunction for CheckChangePhoneNumberCode {}
 
 impl CheckChangePhoneNumberCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckChangePhoneNumberCodeBuilder {
+    pub fn builder() -> CheckChangePhoneNumberCodeBuilder {
         let mut inner = CheckChangePhoneNumberCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkChangePhoneNumberCode".to_string();
 
-        RTDCheckChangePhoneNumberCodeBuilder { inner }
+        CheckChangePhoneNumberCodeBuilder { inner }
     }
 
     pub fn code(&self) -> &String {
@@ -49,11 +51,14 @@ impl CheckChangePhoneNumberCode {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckChangePhoneNumberCodeBuilder {
+pub struct CheckChangePhoneNumberCodeBuilder {
     inner: CheckChangePhoneNumberCode,
 }
 
-impl RTDCheckChangePhoneNumberCodeBuilder {
+#[deprecated]
+pub type RTDCheckChangePhoneNumberCodeBuilder = CheckChangePhoneNumberCodeBuilder;
+
+impl CheckChangePhoneNumberCodeBuilder {
     pub fn build(&self) -> CheckChangePhoneNumberCode {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<CheckChangePhoneNumberCode> for CheckChangePhoneNumberCode {
     }
 }
 
-impl AsRef<CheckChangePhoneNumberCode> for RTDCheckChangePhoneNumberCodeBuilder {
+impl AsRef<CheckChangePhoneNumberCode> for CheckChangePhoneNumberCodeBuilder {
     fn as_ref(&self) -> &CheckChangePhoneNumberCode {
         &self.inner
     }

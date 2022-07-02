@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Deletes all messages in the chat. Use Chat.can_be_deleted_only_for_self and Chat.can_be_deleted_for_all_users fields to find whether and how the method can be applied to the chat
+/// Deletes all messages in the chat. Use chat.can_be_deleted_only_for_self and chat.can_be_deleted_for_all_users fields to find whether and how the method can be applied to the chat
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeleteChatHistory {
     #[doc(hidden)]
@@ -11,10 +11,16 @@ pub struct DeleteChatHistory {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
-    /// Pass true if the chat should be removed from the chat list
+    /// Pass true if the chat needs to be removed from the chat list
+
+    #[serde(default)]
     remove_from_chat_list: bool,
-    /// Pass true to try to delete chat history for all users
+    /// Pass true to delete chat history for all users
+
+    #[serde(default)]
     revoke: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +41,16 @@ impl RObject for DeleteChatHistory {
 impl RFunction for DeleteChatHistory {}
 
 impl DeleteChatHistory {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteChatHistoryBuilder {
+    pub fn builder() -> DeleteChatHistoryBuilder {
         let mut inner = DeleteChatHistory::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteChatHistory".to_string();
 
-        RTDDeleteChatHistoryBuilder { inner }
+        DeleteChatHistoryBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -61,11 +67,14 @@ impl DeleteChatHistory {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteChatHistoryBuilder {
+pub struct DeleteChatHistoryBuilder {
     inner: DeleteChatHistory,
 }
 
-impl RTDDeleteChatHistoryBuilder {
+#[deprecated]
+pub type RTDDeleteChatHistoryBuilder = DeleteChatHistoryBuilder;
+
+impl DeleteChatHistoryBuilder {
     pub fn build(&self) -> DeleteChatHistory {
         self.inner.clone()
     }
@@ -92,7 +101,7 @@ impl AsRef<DeleteChatHistory> for DeleteChatHistory {
     }
 }
 
-impl AsRef<DeleteChatHistory> for RTDDeleteChatHistoryBuilder {
+impl AsRef<DeleteChatHistory> for DeleteChatHistoryBuilder {
     fn as_ref(&self) -> &DeleteChatHistory {
         &self.inner
     }

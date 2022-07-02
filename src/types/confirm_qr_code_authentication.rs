@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct ConfirmQrCodeAuthentication {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A link from a QR code. The link must be scanned by the in-app camera
+
+    #[serde(default)]
     link: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for ConfirmQrCodeAuthentication {
 impl RFunction for ConfirmQrCodeAuthentication {}
 
 impl ConfirmQrCodeAuthentication {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDConfirmQrCodeAuthenticationBuilder {
+    pub fn builder() -> ConfirmQrCodeAuthenticationBuilder {
         let mut inner = ConfirmQrCodeAuthentication::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "confirmQrCodeAuthentication".to_string();
 
-        RTDConfirmQrCodeAuthenticationBuilder { inner }
+        ConfirmQrCodeAuthenticationBuilder { inner }
     }
 
     pub fn link(&self) -> &String {
@@ -49,11 +51,14 @@ impl ConfirmQrCodeAuthentication {
 }
 
 #[doc(hidden)]
-pub struct RTDConfirmQrCodeAuthenticationBuilder {
+pub struct ConfirmQrCodeAuthenticationBuilder {
     inner: ConfirmQrCodeAuthentication,
 }
 
-impl RTDConfirmQrCodeAuthenticationBuilder {
+#[deprecated]
+pub type RTDConfirmQrCodeAuthenticationBuilder = ConfirmQrCodeAuthenticationBuilder;
+
+impl ConfirmQrCodeAuthenticationBuilder {
     pub fn build(&self) -> ConfirmQrCodeAuthentication {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<ConfirmQrCodeAuthentication> for ConfirmQrCodeAuthentication {
     }
 }
 
-impl AsRef<ConfirmQrCodeAuthentication> for RTDConfirmQrCodeAuthenticationBuilder {
+impl AsRef<ConfirmQrCodeAuthentication> for ConfirmQrCodeAuthenticationBuilder {
     fn as_ref(&self) -> &ConfirmQrCodeAuthentication {
         &self.inner
     }

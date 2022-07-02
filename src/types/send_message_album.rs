@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Sends messages grouped together into an album. Currently only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
+/// Sends 2-10 messages grouped together into an album. Currently, only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SendMessageAlbum {
     #[doc(hidden)]
@@ -11,14 +11,22 @@ pub struct SendMessageAlbum {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Target chat
+
+    #[serde(default)]
     chat_id: i64,
     /// If not 0, a message thread identifier in which the messages will be sent
+
+    #[serde(default)]
     message_thread_id: i64,
     /// Identifier of a message to reply to or 0
+
+    #[serde(default)]
     reply_to_message_id: i64,
-    /// Options to be used to send the messages
+    /// Options to be used to send the messages; pass null to use default options
     options: MessageSendOptions,
-    /// Contents of messages to be sent
+    /// Contents of messages to be sent. At most 10 messages can be added to an album
+
+    #[serde(default)]
     input_message_contents: Vec<InputMessageContent>,
 
     #[serde(rename(serialize = "@type"))]
@@ -39,16 +47,16 @@ impl RObject for SendMessageAlbum {
 impl RFunction for SendMessageAlbum {}
 
 impl SendMessageAlbum {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendMessageAlbumBuilder {
+    pub fn builder() -> SendMessageAlbumBuilder {
         let mut inner = SendMessageAlbum::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendMessageAlbum".to_string();
 
-        RTDSendMessageAlbumBuilder { inner }
+        SendMessageAlbumBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -73,11 +81,14 @@ impl SendMessageAlbum {
 }
 
 #[doc(hidden)]
-pub struct RTDSendMessageAlbumBuilder {
+pub struct SendMessageAlbumBuilder {
     inner: SendMessageAlbum,
 }
 
-impl RTDSendMessageAlbumBuilder {
+#[deprecated]
+pub type RTDSendMessageAlbumBuilder = SendMessageAlbumBuilder;
+
+impl SendMessageAlbumBuilder {
     pub fn build(&self) -> SendMessageAlbum {
         self.inner.clone()
     }
@@ -117,7 +128,7 @@ impl AsRef<SendMessageAlbum> for SendMessageAlbum {
     }
 }
 
-impl AsRef<SendMessageAlbum> for RTDSendMessageAlbumBuilder {
+impl AsRef<SendMessageAlbum> for SendMessageAlbumBuilder {
     fn as_ref(&self) -> &SendMessageAlbum {
         &self.inner
     }

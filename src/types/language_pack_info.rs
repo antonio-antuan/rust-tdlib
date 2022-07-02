@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,30 +11,56 @@ pub struct LanguagePackInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique language pack identifier
+
+    #[serde(default)]
     id: String,
-    /// Identifier of a base language pack; may be empty. If a string is missed in the language pack, then it should be fetched from base language pack. Unsupported in custom language packs
+    /// Identifier of a base language pack; may be empty. If a string is missed in the language pack, then it must be fetched from base language pack. Unsupported in custom language packs
+
+    #[serde(default)]
     base_language_pack_id: String,
     /// Language name
+
+    #[serde(default)]
     name: String,
     /// Name of the language in that language
+
+    #[serde(default)]
     native_name: String,
     /// A language code to be used to apply plural forms. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
+
+    #[serde(default)]
     plural_code: String,
     /// True, if the language pack is official
+
+    #[serde(default)]
     is_official: bool,
     /// True, if the language pack strings are RTL
+
+    #[serde(default)]
     is_rtl: bool,
     /// True, if the language pack is a beta language pack
+
+    #[serde(default)]
     is_beta: bool,
     /// True, if the language pack is installed by the current user
+
+    #[serde(default)]
     is_installed: bool,
     /// Total number of non-deleted strings from the language pack
+
+    #[serde(default)]
     total_string_count: i32,
     /// Total number of translated strings from the language pack
+
+    #[serde(default)]
     translated_string_count: i32,
     /// Total number of non-deleted strings from the language pack available locally
+
+    #[serde(default)]
     local_string_count: i32,
     /// Link to language translation interface; empty for custom local language packs
+
+    #[serde(default)]
     translation_url: String,
 }
 
@@ -50,14 +76,14 @@ impl RObject for LanguagePackInfo {
 }
 
 impl LanguagePackInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLanguagePackInfoBuilder {
+    pub fn builder() -> LanguagePackInfoBuilder {
         let mut inner = LanguagePackInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLanguagePackInfoBuilder { inner }
+        LanguagePackInfoBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -114,11 +140,14 @@ impl LanguagePackInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDLanguagePackInfoBuilder {
+pub struct LanguagePackInfoBuilder {
     inner: LanguagePackInfo,
 }
 
-impl RTDLanguagePackInfoBuilder {
+#[deprecated]
+pub type RTDLanguagePackInfoBuilder = LanguagePackInfoBuilder;
+
+impl LanguagePackInfoBuilder {
     pub fn build(&self) -> LanguagePackInfo {
         self.inner.clone()
     }
@@ -195,7 +224,7 @@ impl AsRef<LanguagePackInfo> for LanguagePackInfo {
     }
 }
 
-impl AsRef<LanguagePackInfo> for RTDLanguagePackInfoBuilder {
+impl AsRef<LanguagePackInfo> for LanguagePackInfoBuilder {
     fn as_ref(&self) -> &LanguagePackInfo {
         &self.inner
     }

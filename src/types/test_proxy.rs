@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct TestProxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Proxy server IP address
+
+    #[serde(default)]
     server: String,
     /// Proxy server port
+
+    #[serde(default)]
     port: i32,
     /// Proxy type
 
@@ -20,8 +24,12 @@ pub struct TestProxy {
     #[serde(skip_serializing_if = "ProxyType::_is_default")]
     type_: ProxyType,
     /// Identifier of a datacenter, with which to test connection
+
+    #[serde(default)]
     dc_id: i32,
     /// The maximum overall timeout for the request
+
+    #[serde(default)]
     timeout: f32,
 
     #[serde(rename(serialize = "@type"))]
@@ -42,16 +50,16 @@ impl RObject for TestProxy {
 impl RFunction for TestProxy {}
 
 impl TestProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestProxyBuilder {
+    pub fn builder() -> TestProxyBuilder {
         let mut inner = TestProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "testProxy".to_string();
 
-        RTDTestProxyBuilder { inner }
+        TestProxyBuilder { inner }
     }
 
     pub fn server(&self) -> &String {
@@ -76,11 +84,14 @@ impl TestProxy {
 }
 
 #[doc(hidden)]
-pub struct RTDTestProxyBuilder {
+pub struct TestProxyBuilder {
     inner: TestProxy,
 }
 
-impl RTDTestProxyBuilder {
+#[deprecated]
+pub type RTDTestProxyBuilder = TestProxyBuilder;
+
+impl TestProxyBuilder {
     pub fn build(&self) -> TestProxy {
         self.inner.clone()
     }
@@ -117,7 +128,7 @@ impl AsRef<TestProxy> for TestProxy {
     }
 }
 
-impl AsRef<TestProxy> for RTDTestProxyBuilder {
+impl AsRef<TestProxy> for TestProxyBuilder {
     fn as_ref(&self) -> &TestProxy {
         &self.inner
     }

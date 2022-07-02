@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -15,8 +15,12 @@ pub struct ToggleChatIsPinned {
     #[serde(skip_serializing_if = "ChatList::_is_default")]
     chat_list: ChatList,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// True, if the chat is pinned
+
+    #[serde(default)]
     is_pinned: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +41,16 @@ impl RObject for ToggleChatIsPinned {
 impl RFunction for ToggleChatIsPinned {}
 
 impl ToggleChatIsPinned {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleChatIsPinnedBuilder {
+    pub fn builder() -> ToggleChatIsPinnedBuilder {
         let mut inner = ToggleChatIsPinned::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleChatIsPinned".to_string();
 
-        RTDToggleChatIsPinnedBuilder { inner }
+        ToggleChatIsPinnedBuilder { inner }
     }
 
     pub fn chat_list(&self) -> &ChatList {
@@ -63,11 +67,14 @@ impl ToggleChatIsPinned {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleChatIsPinnedBuilder {
+pub struct ToggleChatIsPinnedBuilder {
     inner: ToggleChatIsPinned,
 }
 
-impl RTDToggleChatIsPinnedBuilder {
+#[deprecated]
+pub type RTDToggleChatIsPinnedBuilder = ToggleChatIsPinnedBuilder;
+
+impl ToggleChatIsPinnedBuilder {
     pub fn build(&self) -> ToggleChatIsPinned {
         self.inner.clone()
     }
@@ -94,7 +101,7 @@ impl AsRef<ToggleChatIsPinned> for ToggleChatIsPinned {
     }
 }
 
-impl AsRef<ToggleChatIsPinned> for RTDToggleChatIsPinnedBuilder {
+impl AsRef<ToggleChatIsPinned> for ToggleChatIsPinnedBuilder {
     fn as_ref(&self) -> &ToggleChatIsPinned {
         &self.inner
     }

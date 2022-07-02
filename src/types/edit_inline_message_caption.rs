@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,14 @@ pub struct EditInlineMessageCaption {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Inline message identifier
+
+    #[serde(default)]
     inline_message_id: String,
-    /// The new message reply markup
+    /// The new message reply markup; pass null if none
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New message content caption; 0-GetOption("message_caption_length_max") characters
+    /// New message content caption; pass null to remove caption; 0-GetOption("message_caption_length_max") characters
     caption: FormattedText,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +39,16 @@ impl RObject for EditInlineMessageCaption {
 impl RFunction for EditInlineMessageCaption {}
 
 impl EditInlineMessageCaption {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditInlineMessageCaptionBuilder {
+    pub fn builder() -> EditInlineMessageCaptionBuilder {
         let mut inner = EditInlineMessageCaption::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editInlineMessageCaption".to_string();
 
-        RTDEditInlineMessageCaptionBuilder { inner }
+        EditInlineMessageCaptionBuilder { inner }
     }
 
     pub fn inline_message_id(&self) -> &String {
@@ -63,11 +65,14 @@ impl EditInlineMessageCaption {
 }
 
 #[doc(hidden)]
-pub struct RTDEditInlineMessageCaptionBuilder {
+pub struct EditInlineMessageCaptionBuilder {
     inner: EditInlineMessageCaption,
 }
 
-impl RTDEditInlineMessageCaptionBuilder {
+#[deprecated]
+pub type RTDEditInlineMessageCaptionBuilder = EditInlineMessageCaptionBuilder;
+
+impl EditInlineMessageCaptionBuilder {
     pub fn build(&self) -> EditInlineMessageCaption {
         self.inner.clone()
     }
@@ -94,7 +99,7 @@ impl AsRef<EditInlineMessageCaption> for EditInlineMessageCaption {
     }
 }
 
-impl AsRef<EditInlineMessageCaption> for RTDEditInlineMessageCaptionBuilder {
+impl AsRef<EditInlineMessageCaption> for EditInlineMessageCaptionBuilder {
     fn as_ref(&self) -> &EditInlineMessageCaption {
         &self.inner
     }

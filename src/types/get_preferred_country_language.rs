@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns an IETF language tag of the language preferred in the country, which should be used to fill native fields in Telegram Passport personal details. Returns a 404 error if unknown
+/// Returns an IETF language tag of the language preferred in the country, which must be used to fill native fields in Telegram Passport personal details. Returns a 404 error if unknown
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetPreferredCountryLanguage {
     #[doc(hidden)]
@@ -11,6 +11,8 @@ pub struct GetPreferredCountryLanguage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A two-letter ISO 3166-1 alpha-2 country code
+
+    #[serde(default)]
     country_code: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetPreferredCountryLanguage {
 impl RFunction for GetPreferredCountryLanguage {}
 
 impl GetPreferredCountryLanguage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPreferredCountryLanguageBuilder {
+    pub fn builder() -> GetPreferredCountryLanguageBuilder {
         let mut inner = GetPreferredCountryLanguage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPreferredCountryLanguage".to_string();
 
-        RTDGetPreferredCountryLanguageBuilder { inner }
+        GetPreferredCountryLanguageBuilder { inner }
     }
 
     pub fn country_code(&self) -> &String {
@@ -49,11 +51,14 @@ impl GetPreferredCountryLanguage {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPreferredCountryLanguageBuilder {
+pub struct GetPreferredCountryLanguageBuilder {
     inner: GetPreferredCountryLanguage,
 }
 
-impl RTDGetPreferredCountryLanguageBuilder {
+#[deprecated]
+pub type RTDGetPreferredCountryLanguageBuilder = GetPreferredCountryLanguageBuilder;
+
+impl GetPreferredCountryLanguageBuilder {
     pub fn build(&self) -> GetPreferredCountryLanguage {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetPreferredCountryLanguage> for GetPreferredCountryLanguage {
     }
 }
 
-impl AsRef<GetPreferredCountryLanguage> for RTDGetPreferredCountryLanguageBuilder {
+impl AsRef<GetPreferredCountryLanguage> for GetPreferredCountryLanguageBuilder {
     fn as_ref(&self) -> &GetPreferredCountryLanguage {
         &self.inner
     }

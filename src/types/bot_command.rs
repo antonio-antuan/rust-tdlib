@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct BotCommand {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text of the bot command
+
+    #[serde(default)]
     command: String,
     /// Represents a command supported by a bot
+
+    #[serde(default)]
     description: String,
 }
 
@@ -28,14 +32,14 @@ impl RObject for BotCommand {
 }
 
 impl BotCommand {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBotCommandBuilder {
+    pub fn builder() -> BotCommandBuilder {
         let mut inner = BotCommand::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBotCommandBuilder { inner }
+        BotCommandBuilder { inner }
     }
 
     pub fn command(&self) -> &String {
@@ -48,11 +52,14 @@ impl BotCommand {
 }
 
 #[doc(hidden)]
-pub struct RTDBotCommandBuilder {
+pub struct BotCommandBuilder {
     inner: BotCommand,
 }
 
-impl RTDBotCommandBuilder {
+#[deprecated]
+pub type RTDBotCommandBuilder = BotCommandBuilder;
+
+impl BotCommandBuilder {
     pub fn build(&self) -> BotCommand {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<BotCommand> for BotCommand {
     }
 }
 
-impl AsRef<BotCommand> for RTDBotCommandBuilder {
+impl AsRef<BotCommand> for BotCommandBuilder {
     fn as_ref(&self) -> &BotCommand {
         &self.inner
     }

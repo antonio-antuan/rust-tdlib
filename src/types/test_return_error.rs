@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for TestReturnError {
 impl RFunction for TestReturnError {}
 
 impl TestReturnError {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestReturnErrorBuilder {
+    pub fn builder() -> TestReturnErrorBuilder {
         let mut inner = TestReturnError::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "testReturnError".to_string();
 
-        RTDTestReturnErrorBuilder { inner }
+        TestReturnErrorBuilder { inner }
     }
 
     pub fn error(&self) -> &Error {
@@ -49,11 +49,14 @@ impl TestReturnError {
 }
 
 #[doc(hidden)]
-pub struct RTDTestReturnErrorBuilder {
+pub struct TestReturnErrorBuilder {
     inner: TestReturnError,
 }
 
-impl RTDTestReturnErrorBuilder {
+#[deprecated]
+pub type RTDTestReturnErrorBuilder = TestReturnErrorBuilder;
+
+impl TestReturnErrorBuilder {
     pub fn build(&self) -> TestReturnError {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<TestReturnError> for TestReturnError {
     }
 }
 
-impl AsRef<TestReturnError> for RTDTestReturnErrorBuilder {
+impl AsRef<TestReturnError> for TestReturnErrorBuilder {
     fn as_ref(&self) -> &TestReturnError {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for SetLocation {
 impl RFunction for SetLocation {}
 
 impl SetLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetLocationBuilder {
+    pub fn builder() -> SetLocationBuilder {
         let mut inner = SetLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setLocation".to_string();
 
-        RTDSetLocationBuilder { inner }
+        SetLocationBuilder { inner }
     }
 
     pub fn location(&self) -> &Location {
@@ -49,11 +49,14 @@ impl SetLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDSetLocationBuilder {
+pub struct SetLocationBuilder {
     inner: SetLocation,
 }
 
-impl RTDSetLocationBuilder {
+#[deprecated]
+pub type RTDSetLocationBuilder = SetLocationBuilder;
+
+impl SetLocationBuilder {
     pub fn build(&self) -> SetLocation {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<SetLocation> for SetLocation {
     }
 }
 
-impl AsRef<SetLocation> for RTDSetLocationBuilder {
+impl AsRef<SetLocation> for SetLocationBuilder {
     fn as_ref(&self) -> &SetLocation {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct LocalizationTargetInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of available language packs for this application
+
+    #[serde(default)]
     language_packs: Vec<LanguagePackInfo>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for LocalizationTargetInfo {
 }
 
 impl LocalizationTargetInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLocalizationTargetInfoBuilder {
+    pub fn builder() -> LocalizationTargetInfoBuilder {
         let mut inner = LocalizationTargetInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLocalizationTargetInfoBuilder { inner }
+        LocalizationTargetInfoBuilder { inner }
     }
 
     pub fn language_packs(&self) -> &Vec<LanguagePackInfo> {
@@ -42,11 +44,14 @@ impl LocalizationTargetInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDLocalizationTargetInfoBuilder {
+pub struct LocalizationTargetInfoBuilder {
     inner: LocalizationTargetInfo,
 }
 
-impl RTDLocalizationTargetInfoBuilder {
+#[deprecated]
+pub type RTDLocalizationTargetInfoBuilder = LocalizationTargetInfoBuilder;
+
+impl LocalizationTargetInfoBuilder {
     pub fn build(&self) -> LocalizationTargetInfo {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<LocalizationTargetInfo> for LocalizationTargetInfo {
     }
 }
 
-impl AsRef<LocalizationTargetInfo> for RTDLocalizationTargetInfoBuilder {
+impl AsRef<LocalizationTargetInfo> for LocalizationTargetInfoBuilder {
     fn as_ref(&self) -> &LocalizationTargetInfo {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct TMeUrls {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of URLs
+
+    #[serde(default)]
     urls: Vec<TMeUrl>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for TMeUrls {
 }
 
 impl TMeUrls {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTMeUrlsBuilder {
+    pub fn builder() -> TMeUrlsBuilder {
         let mut inner = TMeUrls::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTMeUrlsBuilder { inner }
+        TMeUrlsBuilder { inner }
     }
 
     pub fn urls(&self) -> &Vec<TMeUrl> {
@@ -42,11 +44,14 @@ impl TMeUrls {
 }
 
 #[doc(hidden)]
-pub struct RTDTMeUrlsBuilder {
+pub struct TMeUrlsBuilder {
     inner: TMeUrls,
 }
 
-impl RTDTMeUrlsBuilder {
+#[deprecated]
+pub type RTDTMeUrlsBuilder = TMeUrlsBuilder;
+
+impl TMeUrlsBuilder {
     pub fn build(&self) -> TMeUrls {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<TMeUrls> for TMeUrls {
     }
 }
 
-impl AsRef<TMeUrls> for RTDTMeUrlsBuilder {
+impl AsRef<TMeUrls> for TMeUrlsBuilder {
     fn as_ref(&self) -> &TMeUrls {
         &self.inner
     }

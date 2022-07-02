@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetInstalledStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to return mask sticker sets; pass false to return ordinary sticker sets
+
+    #[serde(default)]
     is_masks: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetInstalledStickerSets {
 impl RFunction for GetInstalledStickerSets {}
 
 impl GetInstalledStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetInstalledStickerSetsBuilder {
+    pub fn builder() -> GetInstalledStickerSetsBuilder {
         let mut inner = GetInstalledStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getInstalledStickerSets".to_string();
 
-        RTDGetInstalledStickerSetsBuilder { inner }
+        GetInstalledStickerSetsBuilder { inner }
     }
 
     pub fn is_masks(&self) -> bool {
@@ -49,11 +51,14 @@ impl GetInstalledStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDGetInstalledStickerSetsBuilder {
+pub struct GetInstalledStickerSetsBuilder {
     inner: GetInstalledStickerSets,
 }
 
-impl RTDGetInstalledStickerSetsBuilder {
+#[deprecated]
+pub type RTDGetInstalledStickerSetsBuilder = GetInstalledStickerSetsBuilder;
+
+impl GetInstalledStickerSetsBuilder {
     pub fn build(&self) -> GetInstalledStickerSets {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetInstalledStickerSets> for GetInstalledStickerSets {
     }
 }
 
-impl AsRef<GetInstalledStickerSets> for RTDGetInstalledStickerSetsBuilder {
+impl AsRef<GetInstalledStickerSets> for GetInstalledStickerSetsBuilder {
     fn as_ref(&self) -> &GetInstalledStickerSets {
         &self.inner
     }

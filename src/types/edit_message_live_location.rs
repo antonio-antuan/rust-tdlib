@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,18 +11,26 @@ pub struct EditMessageLiveLocation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat the message belongs to
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
-    /// The new message reply markup; for bots only
+    /// The new message reply markup; pass null if none; for bots only
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New location content of the message; may be null. Pass null to stop sharing the live location
-    location: Option<Location>,
+    /// New location content of the message; pass null to stop sharing the live location
+    location: Location,
     /// The new direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
+
+    #[serde(default)]
     heading: i32,
     /// The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled
+
+    #[serde(default)]
     proximity_alert_radius: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -43,16 +51,16 @@ impl RObject for EditMessageLiveLocation {
 impl RFunction for EditMessageLiveLocation {}
 
 impl EditMessageLiveLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditMessageLiveLocationBuilder {
+    pub fn builder() -> EditMessageLiveLocationBuilder {
         let mut inner = EditMessageLiveLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editMessageLiveLocation".to_string();
 
-        RTDEditMessageLiveLocationBuilder { inner }
+        EditMessageLiveLocationBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,7 +75,7 @@ impl EditMessageLiveLocation {
         &self.reply_markup
     }
 
-    pub fn location(&self) -> &Option<Location> {
+    pub fn location(&self) -> &Location {
         &self.location
     }
 
@@ -81,11 +89,14 @@ impl EditMessageLiveLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDEditMessageLiveLocationBuilder {
+pub struct EditMessageLiveLocationBuilder {
     inner: EditMessageLiveLocation,
 }
 
-impl RTDEditMessageLiveLocationBuilder {
+#[deprecated]
+pub type RTDEditMessageLiveLocationBuilder = EditMessageLiveLocationBuilder;
+
+impl EditMessageLiveLocationBuilder {
     pub fn build(&self) -> EditMessageLiveLocation {
         self.inner.clone()
     }
@@ -106,7 +117,7 @@ impl RTDEditMessageLiveLocationBuilder {
     }
 
     pub fn location<T: AsRef<Location>>(&mut self, location: T) -> &mut Self {
-        self.inner.location = Some(location.as_ref().clone());
+        self.inner.location = location.as_ref().clone();
         self
     }
 
@@ -127,7 +138,7 @@ impl AsRef<EditMessageLiveLocation> for EditMessageLiveLocation {
     }
 }
 
-impl AsRef<EditMessageLiveLocation> for RTDEditMessageLiveLocationBuilder {
+impl AsRef<EditMessageLiveLocation> for EditMessageLiveLocationBuilder {
     fn as_ref(&self) -> &EditMessageLiveLocation {
         &self.inner
     }

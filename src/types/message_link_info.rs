@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,26 @@ pub struct MessageLinkInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the link is a public link for a message in a chat
+
+    #[serde(default)]
     is_public: bool,
     /// If found, identifier of the chat to which the message belongs, 0 otherwise
+
+    #[serde(default)]
     chat_id: i64,
     /// If found, the linked message; may be null
     message: Option<Message>,
+    /// Timestamp from which the video/audio/video note/voice note playing must start, in seconds; 0 if not specified. The media can be in the message content or in its web page preview
+
+    #[serde(default)]
+    media_timestamp: i32,
     /// True, if the whole media album to which the message belongs is linked
+
+    #[serde(default)]
     for_album: bool,
     /// True, if the message is linked as a channel post comment or from a message thread
+
+    #[serde(default)]
     for_comment: bool,
 }
 
@@ -34,14 +46,14 @@ impl RObject for MessageLinkInfo {
 }
 
 impl MessageLinkInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageLinkInfoBuilder {
+    pub fn builder() -> MessageLinkInfoBuilder {
         let mut inner = MessageLinkInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageLinkInfoBuilder { inner }
+        MessageLinkInfoBuilder { inner }
     }
 
     pub fn is_public(&self) -> bool {
@@ -56,6 +68,10 @@ impl MessageLinkInfo {
         &self.message
     }
 
+    pub fn media_timestamp(&self) -> i32 {
+        self.media_timestamp
+    }
+
     pub fn for_album(&self) -> bool {
         self.for_album
     }
@@ -66,11 +82,14 @@ impl MessageLinkInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageLinkInfoBuilder {
+pub struct MessageLinkInfoBuilder {
     inner: MessageLinkInfo,
 }
 
-impl RTDMessageLinkInfoBuilder {
+#[deprecated]
+pub type RTDMessageLinkInfoBuilder = MessageLinkInfoBuilder;
+
+impl MessageLinkInfoBuilder {
     pub fn build(&self) -> MessageLinkInfo {
         self.inner.clone()
     }
@@ -87,6 +106,11 @@ impl RTDMessageLinkInfoBuilder {
 
     pub fn message<T: AsRef<Message>>(&mut self, message: T) -> &mut Self {
         self.inner.message = Some(message.as_ref().clone());
+        self
+    }
+
+    pub fn media_timestamp(&mut self, media_timestamp: i32) -> &mut Self {
+        self.inner.media_timestamp = media_timestamp;
         self
     }
 
@@ -107,7 +131,7 @@ impl AsRef<MessageLinkInfo> for MessageLinkInfo {
     }
 }
 
-impl AsRef<MessageLinkInfo> for RTDMessageLinkInfoBuilder {
+impl AsRef<MessageLinkInfo> for MessageLinkInfoBuilder {
     fn as_ref(&self) -> &MessageLinkInfo {
         &self.inner
     }

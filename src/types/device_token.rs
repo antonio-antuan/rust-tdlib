@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,67 +14,37 @@ pub enum DeviceToken {
     #[doc(hidden)]
     _Default,
     /// A token for Apple Push Notification service
-    #[serde(rename(
-        serialize = "deviceTokenApplePush",
-        deserialize = "deviceTokenApplePush"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenApplePush"))]
     ApplePush(DeviceTokenApplePush),
     /// A token for Apple Push Notification service VoIP notifications
-    #[serde(rename(
-        serialize = "deviceTokenApplePushVoIP",
-        deserialize = "deviceTokenApplePushVoIP"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenApplePushVoIP"))]
     ApplePushVoIP(DeviceTokenApplePushVoIP),
     /// A token for BlackBerry Push Service
-    #[serde(rename(
-        serialize = "deviceTokenBlackBerryPush",
-        deserialize = "deviceTokenBlackBerryPush"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenBlackBerryPush"))]
     BlackBerryPush(DeviceTokenBlackBerryPush),
     /// A token for Firebase Cloud Messaging
-    #[serde(rename(
-        serialize = "deviceTokenFirebaseCloudMessaging",
-        deserialize = "deviceTokenFirebaseCloudMessaging"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenFirebaseCloudMessaging"))]
     FirebaseCloudMessaging(DeviceTokenFirebaseCloudMessaging),
     /// A token for Microsoft Push Notification Service
-    #[serde(rename(
-        serialize = "deviceTokenMicrosoftPush",
-        deserialize = "deviceTokenMicrosoftPush"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenMicrosoftPush"))]
     MicrosoftPush(DeviceTokenMicrosoftPush),
     /// A token for Microsoft Push Notification Service VoIP channel
-    #[serde(rename(
-        serialize = "deviceTokenMicrosoftPushVoIP",
-        deserialize = "deviceTokenMicrosoftPushVoIP"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenMicrosoftPushVoIP"))]
     MicrosoftPushVoIP(DeviceTokenMicrosoftPushVoIP),
     /// A token for Simple Push API for Firefox OS
-    #[serde(rename(
-        serialize = "deviceTokenSimplePush",
-        deserialize = "deviceTokenSimplePush"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenSimplePush"))]
     SimplePush(DeviceTokenSimplePush),
     /// A token for Tizen Push Service
-    #[serde(rename(
-        serialize = "deviceTokenTizenPush",
-        deserialize = "deviceTokenTizenPush"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenTizenPush"))]
     TizenPush(DeviceTokenTizenPush),
     /// A token for Ubuntu Push Client service
-    #[serde(rename(
-        serialize = "deviceTokenUbuntuPush",
-        deserialize = "deviceTokenUbuntuPush"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenUbuntuPush"))]
     UbuntuPush(DeviceTokenUbuntuPush),
     /// A token for web Push API
-    #[serde(rename(serialize = "deviceTokenWebPush", deserialize = "deviceTokenWebPush"))]
+    #[serde(rename(deserialize = "deviceTokenWebPush"))]
     WebPush(DeviceTokenWebPush),
     /// A token for Windows Push Notification Services
-    #[serde(rename(
-        serialize = "deviceTokenWindowsPush",
-        deserialize = "deviceTokenWindowsPush"
-    ))]
+    #[serde(rename(deserialize = "deviceTokenWindowsPush"))]
     WindowsPush(DeviceTokenWindowsPush),
 }
 
@@ -124,7 +94,7 @@ impl RObject for DeviceToken {
 }
 
 impl DeviceToken {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -147,9 +117,13 @@ pub struct DeviceTokenApplePush {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Device token; may be empty to de-register a device
+    /// Device token; may be empty to deregister a device
+
+    #[serde(default)]
     device_token: String,
     /// True, if App Sandbox is enabled
+
+    #[serde(default)]
     is_app_sandbox: bool,
 }
 
@@ -167,14 +141,14 @@ impl RObject for DeviceTokenApplePush {
 impl TDDeviceToken for DeviceTokenApplePush {}
 
 impl DeviceTokenApplePush {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenApplePushBuilder {
+    pub fn builder() -> DeviceTokenApplePushBuilder {
         let mut inner = DeviceTokenApplePush::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenApplePushBuilder { inner }
+        DeviceTokenApplePushBuilder { inner }
     }
 
     pub fn device_token(&self) -> &String {
@@ -187,11 +161,14 @@ impl DeviceTokenApplePush {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenApplePushBuilder {
+pub struct DeviceTokenApplePushBuilder {
     inner: DeviceTokenApplePush,
 }
 
-impl RTDDeviceTokenApplePushBuilder {
+#[deprecated]
+pub type RTDDeviceTokenApplePushBuilder = DeviceTokenApplePushBuilder;
+
+impl DeviceTokenApplePushBuilder {
     pub fn build(&self) -> DeviceTokenApplePush {
         self.inner.clone()
     }
@@ -213,7 +190,7 @@ impl AsRef<DeviceTokenApplePush> for DeviceTokenApplePush {
     }
 }
 
-impl AsRef<DeviceTokenApplePush> for RTDDeviceTokenApplePushBuilder {
+impl AsRef<DeviceTokenApplePush> for DeviceTokenApplePushBuilder {
     fn as_ref(&self) -> &DeviceTokenApplePush {
         &self.inner
     }
@@ -227,11 +204,17 @@ pub struct DeviceTokenApplePushVoIP {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Device token; may be empty to de-register a device
+    /// Device token; may be empty to deregister a device
+
+    #[serde(default)]
     device_token: String,
     /// True, if App Sandbox is enabled
+
+    #[serde(default)]
     is_app_sandbox: bool,
-    /// True, if push notifications should be additionally encrypted
+    /// True, if push notifications must be additionally encrypted
+
+    #[serde(default)]
     encrypt: bool,
 }
 
@@ -249,14 +232,14 @@ impl RObject for DeviceTokenApplePushVoIP {
 impl TDDeviceToken for DeviceTokenApplePushVoIP {}
 
 impl DeviceTokenApplePushVoIP {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenApplePushVoIPBuilder {
+    pub fn builder() -> DeviceTokenApplePushVoIPBuilder {
         let mut inner = DeviceTokenApplePushVoIP::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenApplePushVoIPBuilder { inner }
+        DeviceTokenApplePushVoIPBuilder { inner }
     }
 
     pub fn device_token(&self) -> &String {
@@ -273,11 +256,14 @@ impl DeviceTokenApplePushVoIP {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenApplePushVoIPBuilder {
+pub struct DeviceTokenApplePushVoIPBuilder {
     inner: DeviceTokenApplePushVoIP,
 }
 
-impl RTDDeviceTokenApplePushVoIPBuilder {
+#[deprecated]
+pub type RTDDeviceTokenApplePushVoIPBuilder = DeviceTokenApplePushVoIPBuilder;
+
+impl DeviceTokenApplePushVoIPBuilder {
     pub fn build(&self) -> DeviceTokenApplePushVoIP {
         self.inner.clone()
     }
@@ -304,7 +290,7 @@ impl AsRef<DeviceTokenApplePushVoIP> for DeviceTokenApplePushVoIP {
     }
 }
 
-impl AsRef<DeviceTokenApplePushVoIP> for RTDDeviceTokenApplePushVoIPBuilder {
+impl AsRef<DeviceTokenApplePushVoIP> for DeviceTokenApplePushVoIPBuilder {
     fn as_ref(&self) -> &DeviceTokenApplePushVoIP {
         &self.inner
     }
@@ -318,7 +304,9 @@ pub struct DeviceTokenBlackBerryPush {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Token; may be empty to de-register a device
+    /// Token; may be empty to deregister a device
+
+    #[serde(default)]
     token: String,
 }
 
@@ -336,14 +324,14 @@ impl RObject for DeviceTokenBlackBerryPush {
 impl TDDeviceToken for DeviceTokenBlackBerryPush {}
 
 impl DeviceTokenBlackBerryPush {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenBlackBerryPushBuilder {
+    pub fn builder() -> DeviceTokenBlackBerryPushBuilder {
         let mut inner = DeviceTokenBlackBerryPush::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenBlackBerryPushBuilder { inner }
+        DeviceTokenBlackBerryPushBuilder { inner }
     }
 
     pub fn token(&self) -> &String {
@@ -352,11 +340,14 @@ impl DeviceTokenBlackBerryPush {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenBlackBerryPushBuilder {
+pub struct DeviceTokenBlackBerryPushBuilder {
     inner: DeviceTokenBlackBerryPush,
 }
 
-impl RTDDeviceTokenBlackBerryPushBuilder {
+#[deprecated]
+pub type RTDDeviceTokenBlackBerryPushBuilder = DeviceTokenBlackBerryPushBuilder;
+
+impl DeviceTokenBlackBerryPushBuilder {
     pub fn build(&self) -> DeviceTokenBlackBerryPush {
         self.inner.clone()
     }
@@ -373,7 +364,7 @@ impl AsRef<DeviceTokenBlackBerryPush> for DeviceTokenBlackBerryPush {
     }
 }
 
-impl AsRef<DeviceTokenBlackBerryPush> for RTDDeviceTokenBlackBerryPushBuilder {
+impl AsRef<DeviceTokenBlackBerryPush> for DeviceTokenBlackBerryPushBuilder {
     fn as_ref(&self) -> &DeviceTokenBlackBerryPush {
         &self.inner
     }
@@ -387,9 +378,13 @@ pub struct DeviceTokenFirebaseCloudMessaging {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Device registration token; may be empty to de-register a device
+    /// Device registration token; may be empty to deregister a device
+
+    #[serde(default)]
     token: String,
-    /// True, if push notifications should be additionally encrypted
+    /// True, if push notifications must be additionally encrypted
+
+    #[serde(default)]
     encrypt: bool,
 }
 
@@ -407,14 +402,14 @@ impl RObject for DeviceTokenFirebaseCloudMessaging {
 impl TDDeviceToken for DeviceTokenFirebaseCloudMessaging {}
 
 impl DeviceTokenFirebaseCloudMessaging {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenFirebaseCloudMessagingBuilder {
+    pub fn builder() -> DeviceTokenFirebaseCloudMessagingBuilder {
         let mut inner = DeviceTokenFirebaseCloudMessaging::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenFirebaseCloudMessagingBuilder { inner }
+        DeviceTokenFirebaseCloudMessagingBuilder { inner }
     }
 
     pub fn token(&self) -> &String {
@@ -427,11 +422,14 @@ impl DeviceTokenFirebaseCloudMessaging {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenFirebaseCloudMessagingBuilder {
+pub struct DeviceTokenFirebaseCloudMessagingBuilder {
     inner: DeviceTokenFirebaseCloudMessaging,
 }
 
-impl RTDDeviceTokenFirebaseCloudMessagingBuilder {
+#[deprecated]
+pub type RTDDeviceTokenFirebaseCloudMessagingBuilder = DeviceTokenFirebaseCloudMessagingBuilder;
+
+impl DeviceTokenFirebaseCloudMessagingBuilder {
     pub fn build(&self) -> DeviceTokenFirebaseCloudMessaging {
         self.inner.clone()
     }
@@ -453,7 +451,7 @@ impl AsRef<DeviceTokenFirebaseCloudMessaging> for DeviceTokenFirebaseCloudMessag
     }
 }
 
-impl AsRef<DeviceTokenFirebaseCloudMessaging> for RTDDeviceTokenFirebaseCloudMessagingBuilder {
+impl AsRef<DeviceTokenFirebaseCloudMessaging> for DeviceTokenFirebaseCloudMessagingBuilder {
     fn as_ref(&self) -> &DeviceTokenFirebaseCloudMessaging {
         &self.inner
     }
@@ -467,7 +465,9 @@ pub struct DeviceTokenMicrosoftPush {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Push notification channel URI; may be empty to de-register a device
+    /// Push notification channel URI; may be empty to deregister a device
+
+    #[serde(default)]
     channel_uri: String,
 }
 
@@ -485,14 +485,14 @@ impl RObject for DeviceTokenMicrosoftPush {
 impl TDDeviceToken for DeviceTokenMicrosoftPush {}
 
 impl DeviceTokenMicrosoftPush {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenMicrosoftPushBuilder {
+    pub fn builder() -> DeviceTokenMicrosoftPushBuilder {
         let mut inner = DeviceTokenMicrosoftPush::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenMicrosoftPushBuilder { inner }
+        DeviceTokenMicrosoftPushBuilder { inner }
     }
 
     pub fn channel_uri(&self) -> &String {
@@ -501,11 +501,14 @@ impl DeviceTokenMicrosoftPush {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenMicrosoftPushBuilder {
+pub struct DeviceTokenMicrosoftPushBuilder {
     inner: DeviceTokenMicrosoftPush,
 }
 
-impl RTDDeviceTokenMicrosoftPushBuilder {
+#[deprecated]
+pub type RTDDeviceTokenMicrosoftPushBuilder = DeviceTokenMicrosoftPushBuilder;
+
+impl DeviceTokenMicrosoftPushBuilder {
     pub fn build(&self) -> DeviceTokenMicrosoftPush {
         self.inner.clone()
     }
@@ -522,7 +525,7 @@ impl AsRef<DeviceTokenMicrosoftPush> for DeviceTokenMicrosoftPush {
     }
 }
 
-impl AsRef<DeviceTokenMicrosoftPush> for RTDDeviceTokenMicrosoftPushBuilder {
+impl AsRef<DeviceTokenMicrosoftPush> for DeviceTokenMicrosoftPushBuilder {
     fn as_ref(&self) -> &DeviceTokenMicrosoftPush {
         &self.inner
     }
@@ -536,7 +539,9 @@ pub struct DeviceTokenMicrosoftPushVoIP {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Push notification channel URI; may be empty to de-register a device
+    /// Push notification channel URI; may be empty to deregister a device
+
+    #[serde(default)]
     channel_uri: String,
 }
 
@@ -554,14 +559,14 @@ impl RObject for DeviceTokenMicrosoftPushVoIP {
 impl TDDeviceToken for DeviceTokenMicrosoftPushVoIP {}
 
 impl DeviceTokenMicrosoftPushVoIP {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenMicrosoftPushVoIPBuilder {
+    pub fn builder() -> DeviceTokenMicrosoftPushVoIPBuilder {
         let mut inner = DeviceTokenMicrosoftPushVoIP::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenMicrosoftPushVoIPBuilder { inner }
+        DeviceTokenMicrosoftPushVoIPBuilder { inner }
     }
 
     pub fn channel_uri(&self) -> &String {
@@ -570,11 +575,14 @@ impl DeviceTokenMicrosoftPushVoIP {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenMicrosoftPushVoIPBuilder {
+pub struct DeviceTokenMicrosoftPushVoIPBuilder {
     inner: DeviceTokenMicrosoftPushVoIP,
 }
 
-impl RTDDeviceTokenMicrosoftPushVoIPBuilder {
+#[deprecated]
+pub type RTDDeviceTokenMicrosoftPushVoIPBuilder = DeviceTokenMicrosoftPushVoIPBuilder;
+
+impl DeviceTokenMicrosoftPushVoIPBuilder {
     pub fn build(&self) -> DeviceTokenMicrosoftPushVoIP {
         self.inner.clone()
     }
@@ -591,7 +599,7 @@ impl AsRef<DeviceTokenMicrosoftPushVoIP> for DeviceTokenMicrosoftPushVoIP {
     }
 }
 
-impl AsRef<DeviceTokenMicrosoftPushVoIP> for RTDDeviceTokenMicrosoftPushVoIPBuilder {
+impl AsRef<DeviceTokenMicrosoftPushVoIP> for DeviceTokenMicrosoftPushVoIPBuilder {
     fn as_ref(&self) -> &DeviceTokenMicrosoftPushVoIP {
         &self.inner
     }
@@ -605,7 +613,9 @@ pub struct DeviceTokenSimplePush {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Absolute URL exposed by the push service where the application server can send push messages; may be empty to de-register a device
+    /// Absolute URL exposed by the push service where the application server can send push messages; may be empty to deregister a device
+
+    #[serde(default)]
     endpoint: String,
 }
 
@@ -623,14 +633,14 @@ impl RObject for DeviceTokenSimplePush {
 impl TDDeviceToken for DeviceTokenSimplePush {}
 
 impl DeviceTokenSimplePush {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenSimplePushBuilder {
+    pub fn builder() -> DeviceTokenSimplePushBuilder {
         let mut inner = DeviceTokenSimplePush::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenSimplePushBuilder { inner }
+        DeviceTokenSimplePushBuilder { inner }
     }
 
     pub fn endpoint(&self) -> &String {
@@ -639,11 +649,14 @@ impl DeviceTokenSimplePush {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenSimplePushBuilder {
+pub struct DeviceTokenSimplePushBuilder {
     inner: DeviceTokenSimplePush,
 }
 
-impl RTDDeviceTokenSimplePushBuilder {
+#[deprecated]
+pub type RTDDeviceTokenSimplePushBuilder = DeviceTokenSimplePushBuilder;
+
+impl DeviceTokenSimplePushBuilder {
     pub fn build(&self) -> DeviceTokenSimplePush {
         self.inner.clone()
     }
@@ -660,7 +673,7 @@ impl AsRef<DeviceTokenSimplePush> for DeviceTokenSimplePush {
     }
 }
 
-impl AsRef<DeviceTokenSimplePush> for RTDDeviceTokenSimplePushBuilder {
+impl AsRef<DeviceTokenSimplePush> for DeviceTokenSimplePushBuilder {
     fn as_ref(&self) -> &DeviceTokenSimplePush {
         &self.inner
     }
@@ -674,7 +687,9 @@ pub struct DeviceTokenTizenPush {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Push service registration identifier; may be empty to de-register a device
+    /// Push service registration identifier; may be empty to deregister a device
+
+    #[serde(default)]
     reg_id: String,
 }
 
@@ -692,14 +707,14 @@ impl RObject for DeviceTokenTizenPush {
 impl TDDeviceToken for DeviceTokenTizenPush {}
 
 impl DeviceTokenTizenPush {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenTizenPushBuilder {
+    pub fn builder() -> DeviceTokenTizenPushBuilder {
         let mut inner = DeviceTokenTizenPush::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenTizenPushBuilder { inner }
+        DeviceTokenTizenPushBuilder { inner }
     }
 
     pub fn reg_id(&self) -> &String {
@@ -708,11 +723,14 @@ impl DeviceTokenTizenPush {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenTizenPushBuilder {
+pub struct DeviceTokenTizenPushBuilder {
     inner: DeviceTokenTizenPush,
 }
 
-impl RTDDeviceTokenTizenPushBuilder {
+#[deprecated]
+pub type RTDDeviceTokenTizenPushBuilder = DeviceTokenTizenPushBuilder;
+
+impl DeviceTokenTizenPushBuilder {
     pub fn build(&self) -> DeviceTokenTizenPush {
         self.inner.clone()
     }
@@ -729,7 +747,7 @@ impl AsRef<DeviceTokenTizenPush> for DeviceTokenTizenPush {
     }
 }
 
-impl AsRef<DeviceTokenTizenPush> for RTDDeviceTokenTizenPushBuilder {
+impl AsRef<DeviceTokenTizenPush> for DeviceTokenTizenPushBuilder {
     fn as_ref(&self) -> &DeviceTokenTizenPush {
         &self.inner
     }
@@ -743,7 +761,9 @@ pub struct DeviceTokenUbuntuPush {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Token; may be empty to de-register a device
+    /// Token; may be empty to deregister a device
+
+    #[serde(default)]
     token: String,
 }
 
@@ -761,14 +781,14 @@ impl RObject for DeviceTokenUbuntuPush {
 impl TDDeviceToken for DeviceTokenUbuntuPush {}
 
 impl DeviceTokenUbuntuPush {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenUbuntuPushBuilder {
+    pub fn builder() -> DeviceTokenUbuntuPushBuilder {
         let mut inner = DeviceTokenUbuntuPush::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenUbuntuPushBuilder { inner }
+        DeviceTokenUbuntuPushBuilder { inner }
     }
 
     pub fn token(&self) -> &String {
@@ -777,11 +797,14 @@ impl DeviceTokenUbuntuPush {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenUbuntuPushBuilder {
+pub struct DeviceTokenUbuntuPushBuilder {
     inner: DeviceTokenUbuntuPush,
 }
 
-impl RTDDeviceTokenUbuntuPushBuilder {
+#[deprecated]
+pub type RTDDeviceTokenUbuntuPushBuilder = DeviceTokenUbuntuPushBuilder;
+
+impl DeviceTokenUbuntuPushBuilder {
     pub fn build(&self) -> DeviceTokenUbuntuPush {
         self.inner.clone()
     }
@@ -798,7 +821,7 @@ impl AsRef<DeviceTokenUbuntuPush> for DeviceTokenUbuntuPush {
     }
 }
 
-impl AsRef<DeviceTokenUbuntuPush> for RTDDeviceTokenUbuntuPushBuilder {
+impl AsRef<DeviceTokenUbuntuPush> for DeviceTokenUbuntuPushBuilder {
     fn as_ref(&self) -> &DeviceTokenUbuntuPush {
         &self.inner
     }
@@ -812,11 +835,17 @@ pub struct DeviceTokenWebPush {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Absolute URL exposed by the push service where the application server can send push messages; may be empty to de-register a device
+    /// Absolute URL exposed by the push service where the application server can send push messages; may be empty to deregister a device
+
+    #[serde(default)]
     endpoint: String,
     /// Base64url-encoded P-256 elliptic curve Diffie-Hellman public key
+
+    #[serde(default)]
     p256dh_base64url: String,
     /// Base64url-encoded authentication secret
+
+    #[serde(default)]
     auth_base64url: String,
 }
 
@@ -834,14 +863,14 @@ impl RObject for DeviceTokenWebPush {
 impl TDDeviceToken for DeviceTokenWebPush {}
 
 impl DeviceTokenWebPush {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenWebPushBuilder {
+    pub fn builder() -> DeviceTokenWebPushBuilder {
         let mut inner = DeviceTokenWebPush::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenWebPushBuilder { inner }
+        DeviceTokenWebPushBuilder { inner }
     }
 
     pub fn endpoint(&self) -> &String {
@@ -858,11 +887,14 @@ impl DeviceTokenWebPush {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenWebPushBuilder {
+pub struct DeviceTokenWebPushBuilder {
     inner: DeviceTokenWebPush,
 }
 
-impl RTDDeviceTokenWebPushBuilder {
+#[deprecated]
+pub type RTDDeviceTokenWebPushBuilder = DeviceTokenWebPushBuilder;
+
+impl DeviceTokenWebPushBuilder {
     pub fn build(&self) -> DeviceTokenWebPush {
         self.inner.clone()
     }
@@ -889,7 +921,7 @@ impl AsRef<DeviceTokenWebPush> for DeviceTokenWebPush {
     }
 }
 
-impl AsRef<DeviceTokenWebPush> for RTDDeviceTokenWebPushBuilder {
+impl AsRef<DeviceTokenWebPush> for DeviceTokenWebPushBuilder {
     fn as_ref(&self) -> &DeviceTokenWebPush {
         &self.inner
     }
@@ -903,7 +935,9 @@ pub struct DeviceTokenWindowsPush {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The access token that will be used to send notifications; may be empty to de-register a device
+    /// The access token that will be used to send notifications; may be empty to deregister a device
+
+    #[serde(default)]
     access_token: String,
 }
 
@@ -921,14 +955,14 @@ impl RObject for DeviceTokenWindowsPush {
 impl TDDeviceToken for DeviceTokenWindowsPush {}
 
 impl DeviceTokenWindowsPush {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeviceTokenWindowsPushBuilder {
+    pub fn builder() -> DeviceTokenWindowsPushBuilder {
         let mut inner = DeviceTokenWindowsPush::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeviceTokenWindowsPushBuilder { inner }
+        DeviceTokenWindowsPushBuilder { inner }
     }
 
     pub fn access_token(&self) -> &String {
@@ -937,11 +971,14 @@ impl DeviceTokenWindowsPush {
 }
 
 #[doc(hidden)]
-pub struct RTDDeviceTokenWindowsPushBuilder {
+pub struct DeviceTokenWindowsPushBuilder {
     inner: DeviceTokenWindowsPush,
 }
 
-impl RTDDeviceTokenWindowsPushBuilder {
+#[deprecated]
+pub type RTDDeviceTokenWindowsPushBuilder = DeviceTokenWindowsPushBuilder;
+
+impl DeviceTokenWindowsPushBuilder {
     pub fn build(&self) -> DeviceTokenWindowsPush {
         self.inner.clone()
     }
@@ -958,7 +995,7 @@ impl AsRef<DeviceTokenWindowsPush> for DeviceTokenWindowsPush {
     }
 }
 
-impl AsRef<DeviceTokenWindowsPush> for RTDDeviceTokenWindowsPushBuilder {
+impl AsRef<DeviceTokenWindowsPush> for DeviceTokenWindowsPushBuilder {
     fn as_ref(&self) -> &DeviceTokenWindowsPush {
         &self.inner
     }

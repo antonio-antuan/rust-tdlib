@@ -24,7 +24,7 @@
 //!
 //! You can read all updates, received from Telegram server, such as: new messages, chats updates, new chats, user updates and so on. All updates varians declared within [Update](crate::types::Update).
 //! ```
-//! use rust_tdlib::{client::Client, types::{Update, TdlibParameters}};
+//! use rust_tdlib::{client::{Client, Worker}, types::{Update, TdlibParameters}};
 //! #[tokio::main]
 //! async fn main() {
 //!     let (sender, mut receiver) = tokio::sync::mpsc::channel::<Update>(10);
@@ -39,7 +39,6 @@
 //! }
 //! ```
 #![allow(
-    clippy::large_enum_variant,
     clippy::borrowed_box,
     clippy::upper_case_acronyms,
     clippy::field_reassign_with_default,

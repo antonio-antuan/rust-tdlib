@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct AnimatedChatPhoto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Animation width and height
+
+    #[serde(default)]
     length: i32,
     /// Information about the animation file
     file: File,
     /// Timestamp of the frame, used as a static chat photo
+
+    #[serde(default)]
     main_frame_timestamp: f32,
 }
 
@@ -30,14 +34,14 @@ impl RObject for AnimatedChatPhoto {
 }
 
 impl AnimatedChatPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAnimatedChatPhotoBuilder {
+    pub fn builder() -> AnimatedChatPhotoBuilder {
         let mut inner = AnimatedChatPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAnimatedChatPhotoBuilder { inner }
+        AnimatedChatPhotoBuilder { inner }
     }
 
     pub fn length(&self) -> i32 {
@@ -54,11 +58,14 @@ impl AnimatedChatPhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDAnimatedChatPhotoBuilder {
+pub struct AnimatedChatPhotoBuilder {
     inner: AnimatedChatPhoto,
 }
 
-impl RTDAnimatedChatPhotoBuilder {
+#[deprecated]
+pub type RTDAnimatedChatPhotoBuilder = AnimatedChatPhotoBuilder;
+
+impl AnimatedChatPhotoBuilder {
     pub fn build(&self) -> AnimatedChatPhoto {
         self.inner.clone()
     }
@@ -85,7 +92,7 @@ impl AsRef<AnimatedChatPhoto> for AnimatedChatPhoto {
     }
 }
 
-impl AsRef<AnimatedChatPhoto> for RTDAnimatedChatPhotoBuilder {
+impl AsRef<AnimatedChatPhoto> for AnimatedChatPhotoBuilder {
     fn as_ref(&self) -> &AnimatedChatPhoto {
         &self.inner
     }

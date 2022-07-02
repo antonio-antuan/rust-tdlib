@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains information about a tg:// deep link
+/// Contains information about a tg: deep link
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeepLinkInfo {
     #[doc(hidden)]
@@ -12,7 +12,9 @@ pub struct DeepLinkInfo {
     client_id: Option<i32>,
     /// Text to be shown to the user
     text: FormattedText,
-    /// True, if user should be asked to update the application
+    /// True, if the user must be asked to update the application
+
+    #[serde(default)]
     need_update_application: bool,
 }
 
@@ -28,14 +30,14 @@ impl RObject for DeepLinkInfo {
 }
 
 impl DeepLinkInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeepLinkInfoBuilder {
+    pub fn builder() -> DeepLinkInfoBuilder {
         let mut inner = DeepLinkInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDeepLinkInfoBuilder { inner }
+        DeepLinkInfoBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -48,11 +50,14 @@ impl DeepLinkInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDDeepLinkInfoBuilder {
+pub struct DeepLinkInfoBuilder {
     inner: DeepLinkInfo,
 }
 
-impl RTDDeepLinkInfoBuilder {
+#[deprecated]
+pub type RTDDeepLinkInfoBuilder = DeepLinkInfoBuilder;
+
+impl DeepLinkInfoBuilder {
     pub fn build(&self) -> DeepLinkInfo {
         self.inner.clone()
     }
@@ -74,7 +79,7 @@ impl AsRef<DeepLinkInfo> for DeepLinkInfo {
     }
 }
 
-impl AsRef<DeepLinkInfo> for RTDDeepLinkInfoBuilder {
+impl AsRef<DeepLinkInfo> for DeepLinkInfoBuilder {
     fn as_ref(&self) -> &DeepLinkInfo {
         &self.inner
     }

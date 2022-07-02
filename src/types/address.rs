@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,16 +11,28 @@ pub struct Address {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A two-letter ISO 3166-1 alpha-2 country code
+
+    #[serde(default)]
     country_code: String,
     /// State, if applicable
+
+    #[serde(default)]
     state: String,
     /// City
+
+    #[serde(default)]
     city: String,
     /// First line of the address
+
+    #[serde(default)]
     street_line1: String,
     /// Second line of the address
+
+    #[serde(default)]
     street_line2: String,
     /// Address postal code
+
+    #[serde(default)]
     postal_code: String,
 }
 
@@ -36,14 +48,14 @@ impl RObject for Address {
 }
 
 impl Address {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddressBuilder {
+    pub fn builder() -> AddressBuilder {
         let mut inner = Address::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAddressBuilder { inner }
+        AddressBuilder { inner }
     }
 
     pub fn country_code(&self) -> &String {
@@ -72,11 +84,14 @@ impl Address {
 }
 
 #[doc(hidden)]
-pub struct RTDAddressBuilder {
+pub struct AddressBuilder {
     inner: Address,
 }
 
-impl RTDAddressBuilder {
+#[deprecated]
+pub type RTDAddressBuilder = AddressBuilder;
+
+impl AddressBuilder {
     pub fn build(&self) -> Address {
         self.inner.clone()
     }
@@ -118,7 +133,7 @@ impl AsRef<Address> for Address {
     }
 }
 
-impl AsRef<Address> for RTDAddressBuilder {
+impl AsRef<Address> for AddressBuilder {
     fn as_ref(&self) -> &Address {
         &self.inner
     }

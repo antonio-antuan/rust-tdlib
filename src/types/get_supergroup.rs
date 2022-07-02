@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,7 +11,9 @@ pub struct GetSupergroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup or channel identifier
-    supergroup_id: i32,
+
+    #[serde(default)]
+    supergroup_id: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -31,34 +33,37 @@ impl RObject for GetSupergroup {
 impl RFunction for GetSupergroup {}
 
 impl GetSupergroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetSupergroupBuilder {
+    pub fn builder() -> GetSupergroupBuilder {
         let mut inner = GetSupergroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getSupergroup".to_string();
 
-        RTDGetSupergroupBuilder { inner }
+        GetSupergroupBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetSupergroupBuilder {
+pub struct GetSupergroupBuilder {
     inner: GetSupergroup,
 }
 
-impl RTDGetSupergroupBuilder {
+#[deprecated]
+pub type RTDGetSupergroupBuilder = GetSupergroupBuilder;
+
+impl GetSupergroupBuilder {
     pub fn build(&self) -> GetSupergroup {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }
@@ -70,7 +75,7 @@ impl AsRef<GetSupergroup> for GetSupergroup {
     }
 }
 
-impl AsRef<GetSupergroup> for RTDGetSupergroupBuilder {
+impl AsRef<GetSupergroup> for GetSupergroupBuilder {
     fn as_ref(&self) -> &GetSupergroup {
         &self.inner
     }

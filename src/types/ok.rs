@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -24,23 +24,26 @@ impl RObject for Ok {
 }
 
 impl Ok {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDOkBuilder {
+    pub fn builder() -> OkBuilder {
         let mut inner = Ok::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDOkBuilder { inner }
+        OkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDOkBuilder {
+pub struct OkBuilder {
     inner: Ok,
 }
 
-impl RTDOkBuilder {
+#[deprecated]
+pub type RTDOkBuilder = OkBuilder;
+
+impl OkBuilder {
     pub fn build(&self) -> Ok {
         self.inner.clone()
     }
@@ -52,7 +55,7 @@ impl AsRef<Ok> for Ok {
     }
 }
 
-impl AsRef<Ok> for RTDOkBuilder {
+impl AsRef<Ok> for OkBuilder {
     fn as_ref(&self) -> &Ok {
         &self.inner
     }

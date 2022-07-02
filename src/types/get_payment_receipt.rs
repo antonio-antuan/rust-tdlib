@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct GetPaymentReceipt {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the PaymentSuccessful message
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for GetPaymentReceipt {
 impl RFunction for GetPaymentReceipt {}
 
 impl GetPaymentReceipt {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPaymentReceiptBuilder {
+    pub fn builder() -> GetPaymentReceiptBuilder {
         let mut inner = GetPaymentReceipt::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPaymentReceipt".to_string();
 
-        RTDGetPaymentReceiptBuilder { inner }
+        GetPaymentReceiptBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +59,14 @@ impl GetPaymentReceipt {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPaymentReceiptBuilder {
+pub struct GetPaymentReceiptBuilder {
     inner: GetPaymentReceipt,
 }
 
-impl RTDGetPaymentReceiptBuilder {
+#[deprecated]
+pub type RTDGetPaymentReceiptBuilder = GetPaymentReceiptBuilder;
+
+impl GetPaymentReceiptBuilder {
     pub fn build(&self) -> GetPaymentReceipt {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<GetPaymentReceipt> for GetPaymentReceipt {
     }
 }
 
-impl AsRef<GetPaymentReceipt> for RTDGetPaymentReceiptBuilder {
+impl AsRef<GetPaymentReceipt> for GetPaymentReceiptBuilder {
     fn as_ref(&self) -> &GetPaymentReceipt {
         &self.inner
     }

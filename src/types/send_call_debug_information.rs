@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SendCallDebugInformation {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
     /// Debug information in application-specific format
+
+    #[serde(default)]
     debug_information: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SendCallDebugInformation {
 impl RFunction for SendCallDebugInformation {}
 
 impl SendCallDebugInformation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendCallDebugInformationBuilder {
+    pub fn builder() -> SendCallDebugInformationBuilder {
         let mut inner = SendCallDebugInformation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendCallDebugInformation".to_string();
 
-        RTDSendCallDebugInformationBuilder { inner }
+        SendCallDebugInformationBuilder { inner }
     }
 
     pub fn call_id(&self) -> i32 {
@@ -55,11 +59,14 @@ impl SendCallDebugInformation {
 }
 
 #[doc(hidden)]
-pub struct RTDSendCallDebugInformationBuilder {
+pub struct SendCallDebugInformationBuilder {
     inner: SendCallDebugInformation,
 }
 
-impl RTDSendCallDebugInformationBuilder {
+#[deprecated]
+pub type RTDSendCallDebugInformationBuilder = SendCallDebugInformationBuilder;
+
+impl SendCallDebugInformationBuilder {
     pub fn build(&self) -> SendCallDebugInformation {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SendCallDebugInformation> for SendCallDebugInformation {
     }
 }
 
-impl AsRef<SendCallDebugInformation> for RTDSendCallDebugInformationBuilder {
+impl AsRef<SendCallDebugInformation> for SendCallDebugInformationBuilder {
     fn as_ref(&self) -> &SendCallDebugInformation {
         &self.inner
     }

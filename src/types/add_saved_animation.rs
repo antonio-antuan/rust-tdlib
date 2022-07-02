@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,7 +10,7 @@ pub struct AddSavedAnimation {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The animation file to be added. Only animations known to the server (i.e. successfully sent via a message) can be added to the list
+    /// The animation file to be added. Only animations known to the server (i.e., successfully sent via a message) can be added to the list
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     animation: InputFile,
@@ -33,16 +33,16 @@ impl RObject for AddSavedAnimation {
 impl RFunction for AddSavedAnimation {}
 
 impl AddSavedAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddSavedAnimationBuilder {
+    pub fn builder() -> AddSavedAnimationBuilder {
         let mut inner = AddSavedAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "addSavedAnimation".to_string();
 
-        RTDAddSavedAnimationBuilder { inner }
+        AddSavedAnimationBuilder { inner }
     }
 
     pub fn animation(&self) -> &InputFile {
@@ -51,11 +51,14 @@ impl AddSavedAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDAddSavedAnimationBuilder {
+pub struct AddSavedAnimationBuilder {
     inner: AddSavedAnimation,
 }
 
-impl RTDAddSavedAnimationBuilder {
+#[deprecated]
+pub type RTDAddSavedAnimationBuilder = AddSavedAnimationBuilder;
+
+impl AddSavedAnimationBuilder {
     pub fn build(&self) -> AddSavedAnimation {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<AddSavedAnimation> for AddSavedAnimation {
     }
 }
 
-impl AsRef<AddSavedAnimation> for RTDAddSavedAnimationBuilder {
+impl AsRef<AddSavedAnimation> for AddSavedAnimationBuilder {
     fn as_ref(&self) -> &AddSavedAnimation {
         &self.inner
     }

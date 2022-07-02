@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,30 +11,56 @@ pub struct ChatFilter {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The title of the filter; 1-12 characters without line feeds
+
+    #[serde(default)]
     title: String,
-    /// The icon name for short filter representation. If non-empty, must be one of "All", "Unread", "Unmuted", "Bots", "Channels", "Groups", "Private", "Custom", "Setup", "Cat", "Crown", "Favorite", "Flower", "Game", "Home", "Love", "Mask", "Party", "Sport", "Study", "Trade", "Travel", "Work". If empty, use getChatFilterDefaultIconName to get default icon name for the filter
+    /// The chosen icon name for short filter representation. If non-empty, must be one of "All", "Unread", "Unmuted", "Bots", "Channels", "Groups", "Private", "Custom", "Setup", "Cat", "Crown", "Favorite", "Flower", "Game", "Home", "Love", "Mask", "Party", "Sport", "Study", "Trade", "Travel", "Work". If empty, use getChatFilterDefaultIconName to get default icon name for the filter
+
+    #[serde(default)]
     icon_name: String,
     /// The chat identifiers of pinned chats in the filtered chat list
+
+    #[serde(default)]
     pinned_chat_ids: Vec<i64>,
     /// The chat identifiers of always included chats in the filtered chat list
+
+    #[serde(default)]
     included_chat_ids: Vec<i64>,
     /// The chat identifiers of always excluded chats in the filtered chat list
+
+    #[serde(default)]
     excluded_chat_ids: Vec<i64>,
     /// True, if muted chats need to be excluded
+
+    #[serde(default)]
     exclude_muted: bool,
     /// True, if read chats need to be excluded
+
+    #[serde(default)]
     exclude_read: bool,
     /// True, if archived chats need to be excluded
+
+    #[serde(default)]
     exclude_archived: bool,
     /// True, if contacts need to be included
+
+    #[serde(default)]
     include_contacts: bool,
     /// True, if non-contact users need to be included
+
+    #[serde(default)]
     include_non_contacts: bool,
     /// True, if bots need to be included
+
+    #[serde(default)]
     include_bots: bool,
     /// True, if basic groups and supergroups need to be included
+
+    #[serde(default)]
     include_groups: bool,
     /// True, if channels need to be included
+
+    #[serde(default)]
     include_channels: bool,
 }
 
@@ -50,14 +76,14 @@ impl RObject for ChatFilter {
 }
 
 impl ChatFilter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatFilterBuilder {
+    pub fn builder() -> ChatFilterBuilder {
         let mut inner = ChatFilter::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatFilterBuilder { inner }
+        ChatFilterBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -114,11 +140,14 @@ impl ChatFilter {
 }
 
 #[doc(hidden)]
-pub struct RTDChatFilterBuilder {
+pub struct ChatFilterBuilder {
     inner: ChatFilter,
 }
 
-impl RTDChatFilterBuilder {
+#[deprecated]
+pub type RTDChatFilterBuilder = ChatFilterBuilder;
+
+impl ChatFilterBuilder {
     pub fn build(&self) -> ChatFilter {
         self.inner.clone()
     }
@@ -195,7 +224,7 @@ impl AsRef<ChatFilter> for ChatFilter {
     }
 }
 
-impl AsRef<ChatFilter> for RTDChatFilterBuilder {
+impl AsRef<ChatFilter> for ChatFilterBuilder {
     fn as_ref(&self) -> &ChatFilter {
         &self.inner
     }

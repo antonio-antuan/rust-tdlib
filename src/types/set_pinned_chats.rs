@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -15,6 +15,8 @@ pub struct SetPinnedChats {
     #[serde(skip_serializing_if = "ChatList::_is_default")]
     chat_list: ChatList,
     /// The new list of pinned chats
+
+    #[serde(default)]
     chat_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +37,16 @@ impl RObject for SetPinnedChats {
 impl RFunction for SetPinnedChats {}
 
 impl SetPinnedChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetPinnedChatsBuilder {
+    pub fn builder() -> SetPinnedChatsBuilder {
         let mut inner = SetPinnedChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setPinnedChats".to_string();
 
-        RTDSetPinnedChatsBuilder { inner }
+        SetPinnedChatsBuilder { inner }
     }
 
     pub fn chat_list(&self) -> &ChatList {
@@ -57,11 +59,14 @@ impl SetPinnedChats {
 }
 
 #[doc(hidden)]
-pub struct RTDSetPinnedChatsBuilder {
+pub struct SetPinnedChatsBuilder {
     inner: SetPinnedChats,
 }
 
-impl RTDSetPinnedChatsBuilder {
+#[deprecated]
+pub type RTDSetPinnedChatsBuilder = SetPinnedChatsBuilder;
+
+impl SetPinnedChatsBuilder {
     pub fn build(&self) -> SetPinnedChats {
         self.inner.clone()
     }
@@ -83,7 +88,7 @@ impl AsRef<SetPinnedChats> for SetPinnedChats {
     }
 }
 
-impl AsRef<SetPinnedChats> for RTDSetPinnedChatsBuilder {
+impl AsRef<SetPinnedChats> for SetPinnedChatsBuilder {
     fn as_ref(&self) -> &SetPinnedChats {
         &self.inner
     }

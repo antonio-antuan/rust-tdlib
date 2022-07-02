@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct RemoveRecentHashtag {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Hashtag to delete
+
+    #[serde(default)]
     hashtag: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for RemoveRecentHashtag {
 impl RFunction for RemoveRecentHashtag {}
 
 impl RemoveRecentHashtag {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveRecentHashtagBuilder {
+    pub fn builder() -> RemoveRecentHashtagBuilder {
         let mut inner = RemoveRecentHashtag::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeRecentHashtag".to_string();
 
-        RTDRemoveRecentHashtagBuilder { inner }
+        RemoveRecentHashtagBuilder { inner }
     }
 
     pub fn hashtag(&self) -> &String {
@@ -49,11 +51,14 @@ impl RemoveRecentHashtag {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveRecentHashtagBuilder {
+pub struct RemoveRecentHashtagBuilder {
     inner: RemoveRecentHashtag,
 }
 
-impl RTDRemoveRecentHashtagBuilder {
+#[deprecated]
+pub type RTDRemoveRecentHashtagBuilder = RemoveRecentHashtagBuilder;
+
+impl RemoveRecentHashtagBuilder {
     pub fn build(&self) -> RemoveRecentHashtag {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<RemoveRecentHashtag> for RemoveRecentHashtag {
     }
 }
 
-impl AsRef<RemoveRecentHashtag> for RTDRemoveRecentHashtagBuilder {
+impl AsRef<RemoveRecentHashtag> for RemoveRecentHashtagBuilder {
     fn as_ref(&self) -> &RemoveRecentHashtag {
         &self.inner
     }

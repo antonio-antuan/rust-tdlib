@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,24 @@ pub struct User {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
-    id: i32,
+
+    #[serde(default)]
+    id: i64,
     /// First name of the user
+
+    #[serde(default)]
     first_name: String,
     /// Last name of the user
+
+    #[serde(default)]
     last_name: String,
     /// Username of the user
+
+    #[serde(default)]
     username: String,
     /// Phone number of the user
+
+    #[serde(default)]
     phone_number: String,
     /// Current online status of the user
 
@@ -27,18 +37,36 @@ pub struct User {
     /// Profile photo of the user; may be null
     profile_photo: Option<ProfilePhoto>,
     /// The user is a contact of the current user
+
+    #[serde(default)]
     is_contact: bool,
     /// The user is a contact of the current user and the current user is a contact of the user
+
+    #[serde(default)]
     is_mutual_contact: bool,
     /// True, if the user is verified
+
+    #[serde(default)]
     is_verified: bool,
     /// True, if the user is Telegram support account
+
+    #[serde(default)]
     is_support: bool,
     /// If non-empty, it contains a human-readable description of the reason why access to this user must be restricted
+
+    #[serde(default)]
     restriction_reason: String,
     /// True, if many users reported this user as a scam
+
+    #[serde(default)]
     is_scam: bool,
+    /// True, if many users reported this user as a fake account
+
+    #[serde(default)]
+    is_fake: bool,
     /// If false, the user is inaccessible, and the only information known about the user is inside this class. It can't be passed to any method except GetUser
+
+    #[serde(default)]
     have_access: bool,
     /// Type of the user
 
@@ -46,6 +74,8 @@ pub struct User {
     #[serde(skip_serializing_if = "UserType::_is_default")]
     type_: UserType,
     /// IETF language tag of the user's language; only available to bots
+
+    #[serde(default)]
     language_code: String,
 }
 
@@ -61,17 +91,17 @@ impl RObject for User {
 }
 
 impl User {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserBuilder {
+    pub fn builder() -> UserBuilder {
         let mut inner = User::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserBuilder { inner }
+        UserBuilder { inner }
     }
 
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -123,6 +153,10 @@ impl User {
         self.is_scam
     }
 
+    pub fn is_fake(&self) -> bool {
+        self.is_fake
+    }
+
     pub fn have_access(&self) -> bool {
         self.have_access
     }
@@ -137,16 +171,19 @@ impl User {
 }
 
 #[doc(hidden)]
-pub struct RTDUserBuilder {
+pub struct UserBuilder {
     inner: User,
 }
 
-impl RTDUserBuilder {
+#[deprecated]
+pub type RTDUserBuilder = UserBuilder;
+
+impl UserBuilder {
     pub fn build(&self) -> User {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i32) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -211,6 +248,11 @@ impl RTDUserBuilder {
         self
     }
 
+    pub fn is_fake(&mut self, is_fake: bool) -> &mut Self {
+        self.inner.is_fake = is_fake;
+        self
+    }
+
     pub fn have_access(&mut self, have_access: bool) -> &mut Self {
         self.inner.have_access = have_access;
         self
@@ -233,7 +275,7 @@ impl AsRef<User> for User {
     }
 }
 
-impl AsRef<User> for RTDUserBuilder {
+impl AsRef<User> for UserBuilder {
     fn as_ref(&self) -> &User {
         &self.inner
     }

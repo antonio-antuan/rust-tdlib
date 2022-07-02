@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct Minithumbnail {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Thumbnail width, usually doesn't exceed 40
+
+    #[serde(default)]
     width: i32,
     /// Thumbnail height, usually doesn't exceed 40
+
+    #[serde(default)]
     height: i32,
     /// The thumbnail in JPEG format
+
+    #[serde(default)]
     data: String,
 }
 
@@ -30,14 +36,14 @@ impl RObject for Minithumbnail {
 }
 
 impl Minithumbnail {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMinithumbnailBuilder {
+    pub fn builder() -> MinithumbnailBuilder {
         let mut inner = Minithumbnail::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMinithumbnailBuilder { inner }
+        MinithumbnailBuilder { inner }
     }
 
     pub fn width(&self) -> i32 {
@@ -54,11 +60,14 @@ impl Minithumbnail {
 }
 
 #[doc(hidden)]
-pub struct RTDMinithumbnailBuilder {
+pub struct MinithumbnailBuilder {
     inner: Minithumbnail,
 }
 
-impl RTDMinithumbnailBuilder {
+#[deprecated]
+pub type RTDMinithumbnailBuilder = MinithumbnailBuilder;
+
+impl MinithumbnailBuilder {
     pub fn build(&self) -> Minithumbnail {
         self.inner.clone()
     }
@@ -85,7 +94,7 @@ impl AsRef<Minithumbnail> for Minithumbnail {
     }
 }
 
-impl AsRef<Minithumbnail> for RTDMinithumbnailBuilder {
+impl AsRef<Minithumbnail> for MinithumbnailBuilder {
     fn as_ref(&self) -> &Minithumbnail {
         &self.inner
     }

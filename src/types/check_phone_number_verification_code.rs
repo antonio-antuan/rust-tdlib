@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,7 +10,9 @@ pub struct CheckPhoneNumberVerificationCode {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Verification code
+    /// Verification code to check
+
+    #[serde(default)]
     code: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for CheckPhoneNumberVerificationCode {
 impl RFunction for CheckPhoneNumberVerificationCode {}
 
 impl CheckPhoneNumberVerificationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckPhoneNumberVerificationCodeBuilder {
+    pub fn builder() -> CheckPhoneNumberVerificationCodeBuilder {
         let mut inner = CheckPhoneNumberVerificationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkPhoneNumberVerificationCode".to_string();
 
-        RTDCheckPhoneNumberVerificationCodeBuilder { inner }
+        CheckPhoneNumberVerificationCodeBuilder { inner }
     }
 
     pub fn code(&self) -> &String {
@@ -49,11 +51,14 @@ impl CheckPhoneNumberVerificationCode {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckPhoneNumberVerificationCodeBuilder {
+pub struct CheckPhoneNumberVerificationCodeBuilder {
     inner: CheckPhoneNumberVerificationCode,
 }
 
-impl RTDCheckPhoneNumberVerificationCodeBuilder {
+#[deprecated]
+pub type RTDCheckPhoneNumberVerificationCodeBuilder = CheckPhoneNumberVerificationCodeBuilder;
+
+impl CheckPhoneNumberVerificationCodeBuilder {
     pub fn build(&self) -> CheckPhoneNumberVerificationCode {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<CheckPhoneNumberVerificationCode> for CheckPhoneNumberVerificationCod
     }
 }
 
-impl AsRef<CheckPhoneNumberVerificationCode> for RTDCheckPhoneNumberVerificationCodeBuilder {
+impl AsRef<CheckPhoneNumberVerificationCode> for CheckPhoneNumberVerificationCodeBuilder {
     fn as_ref(&self) -> &CheckPhoneNumberVerificationCode {
         &self.inner
     }

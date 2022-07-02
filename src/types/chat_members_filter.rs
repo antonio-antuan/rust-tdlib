@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,46 +14,25 @@ pub enum ChatMembersFilter {
     #[doc(hidden)]
     _Default,
     /// Returns the owner and administrators
-    #[serde(rename(
-        serialize = "chatMembersFilterAdministrators",
-        deserialize = "chatMembersFilterAdministrators"
-    ))]
+    #[serde(rename(deserialize = "chatMembersFilterAdministrators"))]
     Administrators(ChatMembersFilterAdministrators),
     /// Returns users banned from the chat; can be used only by administrators in a supergroup or in a channel
-    #[serde(rename(
-        serialize = "chatMembersFilterBanned",
-        deserialize = "chatMembersFilterBanned"
-    ))]
+    #[serde(rename(deserialize = "chatMembersFilterBanned"))]
     Banned(ChatMembersFilterBanned),
     /// Returns bot members of the chat
-    #[serde(rename(
-        serialize = "chatMembersFilterBots",
-        deserialize = "chatMembersFilterBots"
-    ))]
+    #[serde(rename(deserialize = "chatMembersFilterBots"))]
     Bots(ChatMembersFilterBots),
     /// Returns contacts of the user
-    #[serde(rename(
-        serialize = "chatMembersFilterContacts",
-        deserialize = "chatMembersFilterContacts"
-    ))]
+    #[serde(rename(deserialize = "chatMembersFilterContacts"))]
     Contacts(ChatMembersFilterContacts),
     /// Returns all chat members, including restricted chat members
-    #[serde(rename(
-        serialize = "chatMembersFilterMembers",
-        deserialize = "chatMembersFilterMembers"
-    ))]
+    #[serde(rename(deserialize = "chatMembersFilterMembers"))]
     Members(ChatMembersFilterMembers),
     /// Returns users which can be mentioned in the chat
-    #[serde(rename(
-        serialize = "chatMembersFilterMention",
-        deserialize = "chatMembersFilterMention"
-    ))]
+    #[serde(rename(deserialize = "chatMembersFilterMention"))]
     Mention(ChatMembersFilterMention),
     /// Returns users under certain restrictions in the chat; can be used only by administrators in a supergroup
-    #[serde(rename(
-        serialize = "chatMembersFilterRestricted",
-        deserialize = "chatMembersFilterRestricted"
-    ))]
+    #[serde(rename(deserialize = "chatMembersFilterRestricted"))]
     Restricted(ChatMembersFilterRestricted),
 }
 
@@ -95,7 +74,7 @@ impl RObject for ChatMembersFilter {
 }
 
 impl ChatMembersFilter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -134,23 +113,26 @@ impl RObject for ChatMembersFilterAdministrators {
 impl TDChatMembersFilter for ChatMembersFilterAdministrators {}
 
 impl ChatMembersFilterAdministrators {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMembersFilterAdministratorsBuilder {
+    pub fn builder() -> ChatMembersFilterAdministratorsBuilder {
         let mut inner = ChatMembersFilterAdministrators::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMembersFilterAdministratorsBuilder { inner }
+        ChatMembersFilterAdministratorsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatMembersFilterAdministratorsBuilder {
+pub struct ChatMembersFilterAdministratorsBuilder {
     inner: ChatMembersFilterAdministrators,
 }
 
-impl RTDChatMembersFilterAdministratorsBuilder {
+#[deprecated]
+pub type RTDChatMembersFilterAdministratorsBuilder = ChatMembersFilterAdministratorsBuilder;
+
+impl ChatMembersFilterAdministratorsBuilder {
     pub fn build(&self) -> ChatMembersFilterAdministrators {
         self.inner.clone()
     }
@@ -162,7 +144,7 @@ impl AsRef<ChatMembersFilterAdministrators> for ChatMembersFilterAdministrators 
     }
 }
 
-impl AsRef<ChatMembersFilterAdministrators> for RTDChatMembersFilterAdministratorsBuilder {
+impl AsRef<ChatMembersFilterAdministrators> for ChatMembersFilterAdministratorsBuilder {
     fn as_ref(&self) -> &ChatMembersFilterAdministrators {
         &self.inner
     }
@@ -192,23 +174,26 @@ impl RObject for ChatMembersFilterBanned {
 impl TDChatMembersFilter for ChatMembersFilterBanned {}
 
 impl ChatMembersFilterBanned {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMembersFilterBannedBuilder {
+    pub fn builder() -> ChatMembersFilterBannedBuilder {
         let mut inner = ChatMembersFilterBanned::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMembersFilterBannedBuilder { inner }
+        ChatMembersFilterBannedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatMembersFilterBannedBuilder {
+pub struct ChatMembersFilterBannedBuilder {
     inner: ChatMembersFilterBanned,
 }
 
-impl RTDChatMembersFilterBannedBuilder {
+#[deprecated]
+pub type RTDChatMembersFilterBannedBuilder = ChatMembersFilterBannedBuilder;
+
+impl ChatMembersFilterBannedBuilder {
     pub fn build(&self) -> ChatMembersFilterBanned {
         self.inner.clone()
     }
@@ -220,7 +205,7 @@ impl AsRef<ChatMembersFilterBanned> for ChatMembersFilterBanned {
     }
 }
 
-impl AsRef<ChatMembersFilterBanned> for RTDChatMembersFilterBannedBuilder {
+impl AsRef<ChatMembersFilterBanned> for ChatMembersFilterBannedBuilder {
     fn as_ref(&self) -> &ChatMembersFilterBanned {
         &self.inner
     }
@@ -250,23 +235,26 @@ impl RObject for ChatMembersFilterBots {
 impl TDChatMembersFilter for ChatMembersFilterBots {}
 
 impl ChatMembersFilterBots {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMembersFilterBotsBuilder {
+    pub fn builder() -> ChatMembersFilterBotsBuilder {
         let mut inner = ChatMembersFilterBots::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMembersFilterBotsBuilder { inner }
+        ChatMembersFilterBotsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatMembersFilterBotsBuilder {
+pub struct ChatMembersFilterBotsBuilder {
     inner: ChatMembersFilterBots,
 }
 
-impl RTDChatMembersFilterBotsBuilder {
+#[deprecated]
+pub type RTDChatMembersFilterBotsBuilder = ChatMembersFilterBotsBuilder;
+
+impl ChatMembersFilterBotsBuilder {
     pub fn build(&self) -> ChatMembersFilterBots {
         self.inner.clone()
     }
@@ -278,7 +266,7 @@ impl AsRef<ChatMembersFilterBots> for ChatMembersFilterBots {
     }
 }
 
-impl AsRef<ChatMembersFilterBots> for RTDChatMembersFilterBotsBuilder {
+impl AsRef<ChatMembersFilterBots> for ChatMembersFilterBotsBuilder {
     fn as_ref(&self) -> &ChatMembersFilterBots {
         &self.inner
     }
@@ -308,23 +296,26 @@ impl RObject for ChatMembersFilterContacts {
 impl TDChatMembersFilter for ChatMembersFilterContacts {}
 
 impl ChatMembersFilterContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMembersFilterContactsBuilder {
+    pub fn builder() -> ChatMembersFilterContactsBuilder {
         let mut inner = ChatMembersFilterContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMembersFilterContactsBuilder { inner }
+        ChatMembersFilterContactsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatMembersFilterContactsBuilder {
+pub struct ChatMembersFilterContactsBuilder {
     inner: ChatMembersFilterContacts,
 }
 
-impl RTDChatMembersFilterContactsBuilder {
+#[deprecated]
+pub type RTDChatMembersFilterContactsBuilder = ChatMembersFilterContactsBuilder;
+
+impl ChatMembersFilterContactsBuilder {
     pub fn build(&self) -> ChatMembersFilterContacts {
         self.inner.clone()
     }
@@ -336,7 +327,7 @@ impl AsRef<ChatMembersFilterContacts> for ChatMembersFilterContacts {
     }
 }
 
-impl AsRef<ChatMembersFilterContacts> for RTDChatMembersFilterContactsBuilder {
+impl AsRef<ChatMembersFilterContacts> for ChatMembersFilterContactsBuilder {
     fn as_ref(&self) -> &ChatMembersFilterContacts {
         &self.inner
     }
@@ -366,23 +357,26 @@ impl RObject for ChatMembersFilterMembers {
 impl TDChatMembersFilter for ChatMembersFilterMembers {}
 
 impl ChatMembersFilterMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMembersFilterMembersBuilder {
+    pub fn builder() -> ChatMembersFilterMembersBuilder {
         let mut inner = ChatMembersFilterMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMembersFilterMembersBuilder { inner }
+        ChatMembersFilterMembersBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatMembersFilterMembersBuilder {
+pub struct ChatMembersFilterMembersBuilder {
     inner: ChatMembersFilterMembers,
 }
 
-impl RTDChatMembersFilterMembersBuilder {
+#[deprecated]
+pub type RTDChatMembersFilterMembersBuilder = ChatMembersFilterMembersBuilder;
+
+impl ChatMembersFilterMembersBuilder {
     pub fn build(&self) -> ChatMembersFilterMembers {
         self.inner.clone()
     }
@@ -394,7 +388,7 @@ impl AsRef<ChatMembersFilterMembers> for ChatMembersFilterMembers {
     }
 }
 
-impl AsRef<ChatMembersFilterMembers> for RTDChatMembersFilterMembersBuilder {
+impl AsRef<ChatMembersFilterMembers> for ChatMembersFilterMembersBuilder {
     fn as_ref(&self) -> &ChatMembersFilterMembers {
         &self.inner
     }
@@ -409,6 +403,8 @@ pub struct ChatMembersFilterMention {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If non-zero, the identifier of the current message thread
+
+    #[serde(default)]
     message_thread_id: i64,
 }
 
@@ -426,14 +422,14 @@ impl RObject for ChatMembersFilterMention {
 impl TDChatMembersFilter for ChatMembersFilterMention {}
 
 impl ChatMembersFilterMention {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMembersFilterMentionBuilder {
+    pub fn builder() -> ChatMembersFilterMentionBuilder {
         let mut inner = ChatMembersFilterMention::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMembersFilterMentionBuilder { inner }
+        ChatMembersFilterMentionBuilder { inner }
     }
 
     pub fn message_thread_id(&self) -> i64 {
@@ -442,11 +438,14 @@ impl ChatMembersFilterMention {
 }
 
 #[doc(hidden)]
-pub struct RTDChatMembersFilterMentionBuilder {
+pub struct ChatMembersFilterMentionBuilder {
     inner: ChatMembersFilterMention,
 }
 
-impl RTDChatMembersFilterMentionBuilder {
+#[deprecated]
+pub type RTDChatMembersFilterMentionBuilder = ChatMembersFilterMentionBuilder;
+
+impl ChatMembersFilterMentionBuilder {
     pub fn build(&self) -> ChatMembersFilterMention {
         self.inner.clone()
     }
@@ -463,7 +462,7 @@ impl AsRef<ChatMembersFilterMention> for ChatMembersFilterMention {
     }
 }
 
-impl AsRef<ChatMembersFilterMention> for RTDChatMembersFilterMentionBuilder {
+impl AsRef<ChatMembersFilterMention> for ChatMembersFilterMentionBuilder {
     fn as_ref(&self) -> &ChatMembersFilterMention {
         &self.inner
     }
@@ -493,23 +492,26 @@ impl RObject for ChatMembersFilterRestricted {
 impl TDChatMembersFilter for ChatMembersFilterRestricted {}
 
 impl ChatMembersFilterRestricted {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatMembersFilterRestrictedBuilder {
+    pub fn builder() -> ChatMembersFilterRestrictedBuilder {
         let mut inner = ChatMembersFilterRestricted::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatMembersFilterRestrictedBuilder { inner }
+        ChatMembersFilterRestrictedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatMembersFilterRestrictedBuilder {
+pub struct ChatMembersFilterRestrictedBuilder {
     inner: ChatMembersFilterRestricted,
 }
 
-impl RTDChatMembersFilterRestrictedBuilder {
+#[deprecated]
+pub type RTDChatMembersFilterRestrictedBuilder = ChatMembersFilterRestrictedBuilder;
+
+impl ChatMembersFilterRestrictedBuilder {
     pub fn build(&self) -> ChatMembersFilterRestricted {
         self.inner.clone()
     }
@@ -521,7 +523,7 @@ impl AsRef<ChatMembersFilterRestricted> for ChatMembersFilterRestricted {
     }
 }
 
-impl AsRef<ChatMembersFilterRestricted> for RTDChatMembersFilterRestrictedBuilder {
+impl AsRef<ChatMembersFilterRestricted> for ChatMembersFilterRestrictedBuilder {
     fn as_ref(&self) -> &ChatMembersFilterRestricted {
         &self.inner
     }

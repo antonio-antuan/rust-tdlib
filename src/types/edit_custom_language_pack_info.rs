@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for EditCustomLanguagePackInfo {
 impl RFunction for EditCustomLanguagePackInfo {}
 
 impl EditCustomLanguagePackInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditCustomLanguagePackInfoBuilder {
+    pub fn builder() -> EditCustomLanguagePackInfoBuilder {
         let mut inner = EditCustomLanguagePackInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editCustomLanguagePackInfo".to_string();
 
-        RTDEditCustomLanguagePackInfoBuilder { inner }
+        EditCustomLanguagePackInfoBuilder { inner }
     }
 
     pub fn info(&self) -> &LanguagePackInfo {
@@ -49,11 +49,14 @@ impl EditCustomLanguagePackInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDEditCustomLanguagePackInfoBuilder {
+pub struct EditCustomLanguagePackInfoBuilder {
     inner: EditCustomLanguagePackInfo,
 }
 
-impl RTDEditCustomLanguagePackInfoBuilder {
+#[deprecated]
+pub type RTDEditCustomLanguagePackInfoBuilder = EditCustomLanguagePackInfoBuilder;
+
+impl EditCustomLanguagePackInfoBuilder {
     pub fn build(&self) -> EditCustomLanguagePackInfo {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<EditCustomLanguagePackInfo> for EditCustomLanguagePackInfo {
     }
 }
 
-impl AsRef<EditCustomLanguagePackInfo> for RTDEditCustomLanguagePackInfoBuilder {
+impl AsRef<EditCustomLanguagePackInfo> for EditCustomLanguagePackInfoBuilder {
     fn as_ref(&self) -> &EditCustomLanguagePackInfo {
         &self.inner
     }

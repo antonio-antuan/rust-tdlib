@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,15 +11,27 @@ pub struct PasswordState {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if a 2-step verification password is set
+
+    #[serde(default)]
     has_password: bool,
     /// Hint for the password; may be empty
+
+    #[serde(default)]
     password_hint: String,
     /// True, if a recovery email is set
+
+    #[serde(default)]
     has_recovery_email_address: bool,
     /// True, if some Telegram Passport elements were saved
+
+    #[serde(default)]
     has_passport_data: bool,
     /// Information about the recovery email address to which the confirmation email was sent; may be null
     recovery_email_address_code_info: Option<EmailAddressAuthenticationCodeInfo>,
+    /// If not 0, point in time (Unix timestamp) after which the password can be reset immediately using resetPassword
+
+    #[serde(default)]
+    pending_reset_date: i32,
 }
 
 impl RObject for PasswordState {
@@ -34,14 +46,14 @@ impl RObject for PasswordState {
 }
 
 impl PasswordState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPasswordStateBuilder {
+    pub fn builder() -> PasswordStateBuilder {
         let mut inner = PasswordState::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPasswordStateBuilder { inner }
+        PasswordStateBuilder { inner }
     }
 
     pub fn has_password(&self) -> bool {
@@ -63,14 +75,21 @@ impl PasswordState {
     pub fn recovery_email_address_code_info(&self) -> &Option<EmailAddressAuthenticationCodeInfo> {
         &self.recovery_email_address_code_info
     }
+
+    pub fn pending_reset_date(&self) -> i32 {
+        self.pending_reset_date
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDPasswordStateBuilder {
+pub struct PasswordStateBuilder {
     inner: PasswordState,
 }
 
-impl RTDPasswordStateBuilder {
+#[deprecated]
+pub type RTDPasswordStateBuilder = PasswordStateBuilder;
+
+impl PasswordStateBuilder {
     pub fn build(&self) -> PasswordState {
         self.inner.clone()
     }
@@ -103,6 +122,11 @@ impl RTDPasswordStateBuilder {
             Some(recovery_email_address_code_info.as_ref().clone());
         self
     }
+
+    pub fn pending_reset_date(&mut self, pending_reset_date: i32) -> &mut Self {
+        self.inner.pending_reset_date = pending_reset_date;
+        self
+    }
 }
 
 impl AsRef<PasswordState> for PasswordState {
@@ -111,7 +135,7 @@ impl AsRef<PasswordState> for PasswordState {
     }
 }
 
-impl AsRef<PasswordState> for RTDPasswordStateBuilder {
+impl AsRef<PasswordState> for PasswordStateBuilder {
     fn as_ref(&self) -> &PasswordState {
         &self.inner
     }

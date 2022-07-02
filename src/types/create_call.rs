@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct CreateCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user to be called
-    user_id: i32,
-    /// Description of the call protocols supported by the application
+
+    #[serde(default)]
+    user_id: i64,
+    /// The call protocols supported by the application
     protocol: CallProtocol,
     /// True, if a video call needs to be created
+
+    #[serde(default)]
     is_video: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,19 +39,19 @@ impl RObject for CreateCall {
 impl RFunction for CreateCall {}
 
 impl CreateCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateCallBuilder {
+    pub fn builder() -> CreateCallBuilder {
         let mut inner = CreateCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createCall".to_string();
 
-        RTDCreateCallBuilder { inner }
+        CreateCallBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -61,16 +65,19 @@ impl CreateCall {
 }
 
 #[doc(hidden)]
-pub struct RTDCreateCallBuilder {
+pub struct CreateCallBuilder {
     inner: CreateCall,
 }
 
-impl RTDCreateCallBuilder {
+#[deprecated]
+pub type RTDCreateCallBuilder = CreateCallBuilder;
+
+impl CreateCallBuilder {
     pub fn build(&self) -> CreateCall {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -92,7 +99,7 @@ impl AsRef<CreateCall> for CreateCall {
     }
 }
 
-impl AsRef<CreateCall> for RTDCreateCallBuilder {
+impl AsRef<CreateCall> for CreateCallBuilder {
     fn as_ref(&self) -> &CreateCall {
         &self.inner
     }

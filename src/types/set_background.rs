@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,16 +10,18 @@ pub struct SetBackground {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The input background to use, null for filled backgrounds
+    /// The input background to use; pass null to create a new filled backgrounds or to remove the current background
 
     #[serde(skip_serializing_if = "InputBackground::_is_default")]
     background: InputBackground,
-    /// Background type; null for default background. The method will return error 404 if type is null
+    /// Background type; pass null to use the default type of the remote background or to remove the current background
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "BackgroundType::_is_default")]
     type_: BackgroundType,
     /// True, if the background is chosen for dark theme
+
+    #[serde(default)]
     for_dark_theme: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -40,16 +42,16 @@ impl RObject for SetBackground {
 impl RFunction for SetBackground {}
 
 impl SetBackground {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetBackgroundBuilder {
+    pub fn builder() -> SetBackgroundBuilder {
         let mut inner = SetBackground::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setBackground".to_string();
 
-        RTDSetBackgroundBuilder { inner }
+        SetBackgroundBuilder { inner }
     }
 
     pub fn background(&self) -> &InputBackground {
@@ -66,11 +68,14 @@ impl SetBackground {
 }
 
 #[doc(hidden)]
-pub struct RTDSetBackgroundBuilder {
+pub struct SetBackgroundBuilder {
     inner: SetBackground,
 }
 
-impl RTDSetBackgroundBuilder {
+#[deprecated]
+pub type RTDSetBackgroundBuilder = SetBackgroundBuilder;
+
+impl SetBackgroundBuilder {
     pub fn build(&self) -> SetBackground {
         self.inner.clone()
     }
@@ -97,7 +102,7 @@ impl AsRef<SetBackground> for SetBackground {
     }
 }
 
-impl AsRef<SetBackground> for RTDSetBackgroundBuilder {
+impl AsRef<SetBackground> for SetBackgroundBuilder {
     fn as_ref(&self) -> &SetBackground {
         &self.inner
     }

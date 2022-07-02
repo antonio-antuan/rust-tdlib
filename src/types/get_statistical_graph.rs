@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct GetStatisticalGraph {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// The token for graph loading
+
+    #[serde(default)]
     token: String,
     /// X-value for zoomed in graph or 0 otherwise
+
+    #[serde(default)]
     x: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +43,16 @@ impl TDStatisticalGraph for GetStatisticalGraph {}
 impl RFunction for GetStatisticalGraph {}
 
 impl GetStatisticalGraph {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetStatisticalGraphBuilder {
+    pub fn builder() -> GetStatisticalGraphBuilder {
         let mut inner = GetStatisticalGraph::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getStatisticalGraph".to_string();
 
-        RTDGetStatisticalGraphBuilder { inner }
+        GetStatisticalGraphBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -63,11 +69,14 @@ impl GetStatisticalGraph {
 }
 
 #[doc(hidden)]
-pub struct RTDGetStatisticalGraphBuilder {
+pub struct GetStatisticalGraphBuilder {
     inner: GetStatisticalGraph,
 }
 
-impl RTDGetStatisticalGraphBuilder {
+#[deprecated]
+pub type RTDGetStatisticalGraphBuilder = GetStatisticalGraphBuilder;
+
+impl GetStatisticalGraphBuilder {
     pub fn build(&self) -> GetStatisticalGraph {
         self.inner.clone()
     }
@@ -94,7 +103,7 @@ impl AsRef<GetStatisticalGraph> for GetStatisticalGraph {
     }
 }
 
-impl AsRef<GetStatisticalGraph> for RTDGetStatisticalGraphBuilder {
+impl AsRef<GetStatisticalGraph> for GetStatisticalGraphBuilder {
     fn as_ref(&self) -> &GetStatisticalGraph {
         &self.inner
     }

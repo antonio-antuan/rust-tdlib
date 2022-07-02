@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,7 +14,11 @@ pub struct ChatPhotoInfo {
     small: File,
     /// A big (640x640) chat photo variant in JPEG format. The file can be downloaded only before the photo is changed
     big: File,
+    /// Chat photo minithumbnail; may be null
+    minithumbnail: Option<Minithumbnail>,
     /// True, if the photo has animated variant
+
+    #[serde(default)]
     has_animation: Option<bool>,
 }
 
@@ -30,14 +34,14 @@ impl RObject for ChatPhotoInfo {
 }
 
 impl ChatPhotoInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatPhotoInfoBuilder {
+    pub fn builder() -> ChatPhotoInfoBuilder {
         let mut inner = ChatPhotoInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatPhotoInfoBuilder { inner }
+        ChatPhotoInfoBuilder { inner }
     }
 
     pub fn small(&self) -> &File {
@@ -48,17 +52,24 @@ impl ChatPhotoInfo {
         &self.big
     }
 
+    pub fn minithumbnail(&self) -> &Option<Minithumbnail> {
+        &self.minithumbnail
+    }
+
     pub fn has_animation(&self) -> &Option<bool> {
         &self.has_animation
     }
 }
 
 #[doc(hidden)]
-pub struct RTDChatPhotoInfoBuilder {
+pub struct ChatPhotoInfoBuilder {
     inner: ChatPhotoInfo,
 }
 
-impl RTDChatPhotoInfoBuilder {
+#[deprecated]
+pub type RTDChatPhotoInfoBuilder = ChatPhotoInfoBuilder;
+
+impl ChatPhotoInfoBuilder {
     pub fn build(&self) -> ChatPhotoInfo {
         self.inner.clone()
     }
@@ -70,6 +81,11 @@ impl RTDChatPhotoInfoBuilder {
 
     pub fn big<T: AsRef<File>>(&mut self, big: T) -> &mut Self {
         self.inner.big = big.as_ref().clone();
+        self
+    }
+
+    pub fn minithumbnail<T: AsRef<Minithumbnail>>(&mut self, minithumbnail: T) -> &mut Self {
+        self.inner.minithumbnail = Some(minithumbnail.as_ref().clone());
         self
     }
 
@@ -85,7 +101,7 @@ impl AsRef<ChatPhotoInfo> for ChatPhotoInfo {
     }
 }
 
-impl AsRef<ChatPhotoInfo> for RTDChatPhotoInfoBuilder {
+impl AsRef<ChatPhotoInfo> for ChatPhotoInfoBuilder {
     fn as_ref(&self) -> &ChatPhotoInfo {
         &self.inner
     }

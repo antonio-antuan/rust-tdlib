@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for HideSuggestedAction {
 impl RFunction for HideSuggestedAction {}
 
 impl HideSuggestedAction {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDHideSuggestedActionBuilder {
+    pub fn builder() -> HideSuggestedActionBuilder {
         let mut inner = HideSuggestedAction::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "hideSuggestedAction".to_string();
 
-        RTDHideSuggestedActionBuilder { inner }
+        HideSuggestedActionBuilder { inner }
     }
 
     pub fn action(&self) -> &SuggestedAction {
@@ -51,11 +51,14 @@ impl HideSuggestedAction {
 }
 
 #[doc(hidden)]
-pub struct RTDHideSuggestedActionBuilder {
+pub struct HideSuggestedActionBuilder {
     inner: HideSuggestedAction,
 }
 
-impl RTDHideSuggestedActionBuilder {
+#[deprecated]
+pub type RTDHideSuggestedActionBuilder = HideSuggestedActionBuilder;
+
+impl HideSuggestedActionBuilder {
     pub fn build(&self) -> HideSuggestedAction {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<HideSuggestedAction> for HideSuggestedAction {
     }
 }
 
-impl AsRef<HideSuggestedAction> for RTDHideSuggestedActionBuilder {
+impl AsRef<HideSuggestedAction> for HideSuggestedActionBuilder {
     fn as_ref(&self) -> &HideSuggestedAction {
         &self.inner
     }

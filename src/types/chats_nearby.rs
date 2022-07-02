@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct ChatsNearby {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of users nearby
+
+    #[serde(default)]
     users_nearby: Vec<ChatNearby>,
     /// List of location-based supergroups nearby
+
+    #[serde(default)]
     supergroups_nearby: Vec<ChatNearby>,
 }
 
@@ -28,14 +32,14 @@ impl RObject for ChatsNearby {
 }
 
 impl ChatsNearby {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatsNearbyBuilder {
+    pub fn builder() -> ChatsNearbyBuilder {
         let mut inner = ChatsNearby::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatsNearbyBuilder { inner }
+        ChatsNearbyBuilder { inner }
     }
 
     pub fn users_nearby(&self) -> &Vec<ChatNearby> {
@@ -48,11 +52,14 @@ impl ChatsNearby {
 }
 
 #[doc(hidden)]
-pub struct RTDChatsNearbyBuilder {
+pub struct ChatsNearbyBuilder {
     inner: ChatsNearby,
 }
 
-impl RTDChatsNearbyBuilder {
+#[deprecated]
+pub type RTDChatsNearbyBuilder = ChatsNearbyBuilder;
+
+impl ChatsNearbyBuilder {
     pub fn build(&self) -> ChatsNearby {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<ChatsNearby> for ChatsNearby {
     }
 }
 
-impl AsRef<ChatsNearby> for RTDChatsNearbyBuilder {
+impl AsRef<ChatsNearby> for ChatsNearbyBuilder {
     fn as_ref(&self) -> &ChatsNearby {
         &self.inner
     }

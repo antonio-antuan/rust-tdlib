@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns information about members or banned users in a supergroup or channel. Can be used only if SupergroupFullInfo.can_get_members == true; additionally, administrator privileges may be required for some filters
+/// Returns information about members or banned users in a supergroup or channel. Can be used only if supergroupFullInfo.can_get_members == true; additionally, administrator privileges may be required for some filters
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetSupergroupMembers {
     #[doc(hidden)]
@@ -11,14 +11,20 @@ pub struct GetSupergroupMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup or channel
-    supergroup_id: i32,
-    /// The type of users to return. By default, supergroupMembersFilterRecent
+
+    #[serde(default)]
+    supergroup_id: i64,
+    /// The type of users to return; pass null to use supergroupMembersFilterRecent
 
     #[serde(skip_serializing_if = "SupergroupMembersFilter::_is_default")]
     filter: SupergroupMembersFilter,
     /// Number of users to skip
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of users be returned; up to 200
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -39,19 +45,19 @@ impl RObject for GetSupergroupMembers {
 impl RFunction for GetSupergroupMembers {}
 
 impl GetSupergroupMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetSupergroupMembersBuilder {
+    pub fn builder() -> GetSupergroupMembersBuilder {
         let mut inner = GetSupergroupMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getSupergroupMembers".to_string();
 
-        RTDGetSupergroupMembersBuilder { inner }
+        GetSupergroupMembersBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 
@@ -69,16 +75,19 @@ impl GetSupergroupMembers {
 }
 
 #[doc(hidden)]
-pub struct RTDGetSupergroupMembersBuilder {
+pub struct GetSupergroupMembersBuilder {
     inner: GetSupergroupMembers,
 }
 
-impl RTDGetSupergroupMembersBuilder {
+#[deprecated]
+pub type RTDGetSupergroupMembersBuilder = GetSupergroupMembersBuilder;
+
+impl GetSupergroupMembersBuilder {
     pub fn build(&self) -> GetSupergroupMembers {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }
@@ -105,7 +114,7 @@ impl AsRef<GetSupergroupMembers> for GetSupergroupMembers {
     }
 }
 
-impl AsRef<GetSupergroupMembers> for RTDGetSupergroupMembersBuilder {
+impl AsRef<GetSupergroupMembers> for GetSupergroupMembersBuilder {
     fn as_ref(&self) -> &GetSupergroupMembers {
         &self.inner
     }

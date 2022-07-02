@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,17 +11,31 @@ pub struct ForwardMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which to forward messages
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the chat from which to forward messages
+
+    #[serde(default)]
     from_chat_id: i64,
-    /// Identifiers of the messages to forward. Message identifiers must be in a strictly increasing order
+    /// Identifiers of the messages to forward. Message identifiers must be in a strictly increasing order. At most 100 messages can be forwarded simultaneously
+
+    #[serde(default)]
     message_ids: Vec<i64>,
-    /// Options to be used to send the messages
+    /// Options to be used to send the messages; pass null to use default options
     options: MessageSendOptions,
-    /// True, if content of the messages needs to be copied without links to the original messages. Always true if the messages are forwarded to a secret chat
+    /// If true, content of the messages will be copied without reference to the original sender. Always true if the messages are forwarded to a secret chat or are local
+
+    #[serde(default)]
     send_copy: bool,
-    /// True, if media caption of message copies needs to be removed. Ignored if send_copy is false
+    /// If true, media caption of message copies will be removed. Ignored if send_copy is false
+
+    #[serde(default)]
     remove_caption: bool,
+    /// If true, messages will not be forwarded and instead fake messages will be returned
+
+    #[serde(default)]
+    only_preview: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -41,16 +55,16 @@ impl RObject for ForwardMessages {
 impl RFunction for ForwardMessages {}
 
 impl ForwardMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDForwardMessagesBuilder {
+    pub fn builder() -> ForwardMessagesBuilder {
         let mut inner = ForwardMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "forwardMessages".to_string();
 
-        RTDForwardMessagesBuilder { inner }
+        ForwardMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -76,14 +90,21 @@ impl ForwardMessages {
     pub fn remove_caption(&self) -> bool {
         self.remove_caption
     }
+
+    pub fn only_preview(&self) -> bool {
+        self.only_preview
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDForwardMessagesBuilder {
+pub struct ForwardMessagesBuilder {
     inner: ForwardMessages,
 }
 
-impl RTDForwardMessagesBuilder {
+#[deprecated]
+pub type RTDForwardMessagesBuilder = ForwardMessagesBuilder;
+
+impl ForwardMessagesBuilder {
     pub fn build(&self) -> ForwardMessages {
         self.inner.clone()
     }
@@ -117,6 +138,11 @@ impl RTDForwardMessagesBuilder {
         self.inner.remove_caption = remove_caption;
         self
     }
+
+    pub fn only_preview(&mut self, only_preview: bool) -> &mut Self {
+        self.inner.only_preview = only_preview;
+        self
+    }
 }
 
 impl AsRef<ForwardMessages> for ForwardMessages {
@@ -125,7 +151,7 @@ impl AsRef<ForwardMessages> for ForwardMessages {
     }
 }
 
-impl AsRef<ForwardMessages> for RTDForwardMessagesBuilder {
+impl AsRef<ForwardMessages> for ForwardMessagesBuilder {
     fn as_ref(&self) -> &ForwardMessages {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SearchStickers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// String representation of emoji; must be non-empty
+
+    #[serde(default)]
     emoji: String,
     /// The maximum number of stickers to be returned
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SearchStickers {
 impl RFunction for SearchStickers {}
 
 impl SearchStickers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchStickersBuilder {
+    pub fn builder() -> SearchStickersBuilder {
         let mut inner = SearchStickers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchStickers".to_string();
 
-        RTDSearchStickersBuilder { inner }
+        SearchStickersBuilder { inner }
     }
 
     pub fn emoji(&self) -> &String {
@@ -55,11 +59,14 @@ impl SearchStickers {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchStickersBuilder {
+pub struct SearchStickersBuilder {
     inner: SearchStickers,
 }
 
-impl RTDSearchStickersBuilder {
+#[deprecated]
+pub type RTDSearchStickersBuilder = SearchStickersBuilder;
+
+impl SearchStickersBuilder {
     pub fn build(&self) -> SearchStickers {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SearchStickers> for SearchStickers {
     }
 }
 
-impl AsRef<SearchStickers> for RTDSearchStickersBuilder {
+impl AsRef<SearchStickers> for SearchStickersBuilder {
     fn as_ref(&self) -> &SearchStickers {
         &self.inner
     }

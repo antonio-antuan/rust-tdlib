@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct Text {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text
+
+    #[serde(default)]
     text: String,
 }
 
@@ -26,14 +28,14 @@ impl RObject for Text {
 }
 
 impl Text {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextBuilder {
+    pub fn builder() -> TextBuilder {
         let mut inner = Text::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextBuilder { inner }
+        TextBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -42,11 +44,14 @@ impl Text {
 }
 
 #[doc(hidden)]
-pub struct RTDTextBuilder {
+pub struct TextBuilder {
     inner: Text,
 }
 
-impl RTDTextBuilder {
+#[deprecated]
+pub type RTDTextBuilder = TextBuilder;
+
+impl TextBuilder {
     pub fn build(&self) -> Text {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<Text> for Text {
     }
 }
 
-impl AsRef<Text> for RTDTextBuilder {
+impl AsRef<Text> for TextBuilder {
     fn as_ref(&self) -> &Text {
         &self.inner
     }

@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for messages in secret chats. Returns the results in reverse chronological order. For optimal performance the number of returned messages is chosen by the library
+/// Searches for messages in secret chats. Returns the results in reverse chronological order. For optimal performance, the number of returned messages is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchSecretMessages {
     #[doc(hidden)]
@@ -11,14 +11,22 @@ pub struct SearchSecretMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which to search. Specify 0 to search in all secret chats
+
+    #[serde(default)]
     chat_id: i64,
-    /// Query to search for. If empty, searchChatMessages should be used instead
+    /// Query to search for. If empty, searchChatMessages must be used instead
+
+    #[serde(default)]
     query: String,
     /// Offset of the first entry to return as received from the previous request; use empty string to get first chunk of results
+
+    #[serde(default)]
     offset: String,
-    /// The maximum number of messages to be returned; up to 100. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
+    /// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
-    /// A filter for message content in the search results
+    /// Additional filter for messages to search; pass null to search for all messages
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
@@ -41,16 +49,16 @@ impl RObject for SearchSecretMessages {
 impl RFunction for SearchSecretMessages {}
 
 impl SearchSecretMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchSecretMessagesBuilder {
+    pub fn builder() -> SearchSecretMessagesBuilder {
         let mut inner = SearchSecretMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchSecretMessages".to_string();
 
-        RTDSearchSecretMessagesBuilder { inner }
+        SearchSecretMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -75,11 +83,14 @@ impl SearchSecretMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchSecretMessagesBuilder {
+pub struct SearchSecretMessagesBuilder {
     inner: SearchSecretMessages,
 }
 
-impl RTDSearchSecretMessagesBuilder {
+#[deprecated]
+pub type RTDSearchSecretMessagesBuilder = SearchSecretMessagesBuilder;
+
+impl SearchSecretMessagesBuilder {
     pub fn build(&self) -> SearchSecretMessages {
         self.inner.clone()
     }
@@ -116,7 +127,7 @@ impl AsRef<SearchSecretMessages> for SearchSecretMessages {
     }
 }
 
-impl AsRef<SearchSecretMessages> for RTDSearchSecretMessagesBuilder {
+impl AsRef<SearchSecretMessages> for SearchSecretMessagesBuilder {
     fn as_ref(&self) -> &SearchSecretMessages {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct GetPassportAuthorizationFormAvailableElements {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Authorization form identifier
+
+    #[serde(default)]
     autorization_form_id: i32,
     /// Password of the current user
+
+    #[serde(default)]
     password: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for GetPassportAuthorizationFormAvailableElements {
 impl RFunction for GetPassportAuthorizationFormAvailableElements {}
 
 impl GetPassportAuthorizationFormAvailableElements {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPassportAuthorizationFormAvailableElementsBuilder {
+    pub fn builder() -> GetPassportAuthorizationFormAvailableElementsBuilder {
         let mut inner = GetPassportAuthorizationFormAvailableElements::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPassportAuthorizationFormAvailableElements".to_string();
 
-        RTDGetPassportAuthorizationFormAvailableElementsBuilder { inner }
+        GetPassportAuthorizationFormAvailableElementsBuilder { inner }
     }
 
     pub fn autorization_form_id(&self) -> i32 {
@@ -55,11 +59,15 @@ impl GetPassportAuthorizationFormAvailableElements {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPassportAuthorizationFormAvailableElementsBuilder {
+pub struct GetPassportAuthorizationFormAvailableElementsBuilder {
     inner: GetPassportAuthorizationFormAvailableElements,
 }
 
-impl RTDGetPassportAuthorizationFormAvailableElementsBuilder {
+#[deprecated]
+pub type RTDGetPassportAuthorizationFormAvailableElementsBuilder =
+    GetPassportAuthorizationFormAvailableElementsBuilder;
+
+impl GetPassportAuthorizationFormAvailableElementsBuilder {
     pub fn build(&self) -> GetPassportAuthorizationFormAvailableElements {
         self.inner.clone()
     }
@@ -84,7 +92,7 @@ impl AsRef<GetPassportAuthorizationFormAvailableElements>
 }
 
 impl AsRef<GetPassportAuthorizationFormAvailableElements>
-    for RTDGetPassportAuthorizationFormAvailableElementsBuilder
+    for GetPassportAuthorizationFormAvailableElementsBuilder
 {
     fn as_ref(&self) -> &GetPassportAuthorizationFormAvailableElements {
         &self.inner

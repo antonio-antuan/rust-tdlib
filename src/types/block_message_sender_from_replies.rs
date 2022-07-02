@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,20 @@ pub struct BlockMessageSenderFromReplies {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The identifier of an incoming message in the Replies chat
+
+    #[serde(default)]
     message_id: i64,
     /// Pass true if the message must be deleted
+
+    #[serde(default)]
     delete_message: bool,
     /// Pass true if all messages from the same sender must be deleted
+
+    #[serde(default)]
     delete_all_messages: bool,
     /// Pass true if the sender must be reported to the Telegram moderators
+
+    #[serde(default)]
     report_spam: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +45,16 @@ impl RObject for BlockMessageSenderFromReplies {
 impl RFunction for BlockMessageSenderFromReplies {}
 
 impl BlockMessageSenderFromReplies {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBlockMessageSenderFromRepliesBuilder {
+    pub fn builder() -> BlockMessageSenderFromRepliesBuilder {
         let mut inner = BlockMessageSenderFromReplies::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "blockMessageSenderFromReplies".to_string();
 
-        RTDBlockMessageSenderFromRepliesBuilder { inner }
+        BlockMessageSenderFromRepliesBuilder { inner }
     }
 
     pub fn message_id(&self) -> i64 {
@@ -67,11 +75,14 @@ impl BlockMessageSenderFromReplies {
 }
 
 #[doc(hidden)]
-pub struct RTDBlockMessageSenderFromRepliesBuilder {
+pub struct BlockMessageSenderFromRepliesBuilder {
     inner: BlockMessageSenderFromReplies,
 }
 
-impl RTDBlockMessageSenderFromRepliesBuilder {
+#[deprecated]
+pub type RTDBlockMessageSenderFromRepliesBuilder = BlockMessageSenderFromRepliesBuilder;
+
+impl BlockMessageSenderFromRepliesBuilder {
     pub fn build(&self) -> BlockMessageSenderFromReplies {
         self.inner.clone()
     }
@@ -103,7 +114,7 @@ impl AsRef<BlockMessageSenderFromReplies> for BlockMessageSenderFromReplies {
     }
 }
 
-impl AsRef<BlockMessageSenderFromReplies> for RTDBlockMessageSenderFromRepliesBuilder {
+impl AsRef<BlockMessageSenderFromReplies> for BlockMessageSenderFromRepliesBuilder {
     fn as_ref(&self) -> &BlockMessageSenderFromReplies {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct PassportElements {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Telegram Passport elements
+
+    #[serde(default)]
     elements: Vec<PassportElement>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for PassportElements {
 }
 
 impl PassportElements {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementsBuilder {
+    pub fn builder() -> PassportElementsBuilder {
         let mut inner = PassportElements::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementsBuilder { inner }
+        PassportElementsBuilder { inner }
     }
 
     pub fn elements(&self) -> &Vec<PassportElement> {
@@ -42,11 +44,14 @@ impl PassportElements {
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementsBuilder {
+pub struct PassportElementsBuilder {
     inner: PassportElements,
 }
 
-impl RTDPassportElementsBuilder {
+#[deprecated]
+pub type RTDPassportElementsBuilder = PassportElementsBuilder;
+
+impl PassportElementsBuilder {
     pub fn build(&self) -> PassportElements {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<PassportElements> for PassportElements {
     }
 }
 
-impl AsRef<PassportElements> for RTDPassportElementsBuilder {
+impl AsRef<PassportElements> for PassportElementsBuilder {
     fn as_ref(&self) -> &PassportElements {
         &self.inner
     }

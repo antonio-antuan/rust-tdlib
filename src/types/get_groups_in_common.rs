@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct GetGroupsInCommon {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier
-    user_id: i32,
+
+    #[serde(default)]
+    user_id: i64,
     /// Chat identifier starting from which to return chats; use 0 for the first request
+
+    #[serde(default)]
     offset_chat_id: i64,
     /// The maximum number of chats to be returned; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,19 +41,19 @@ impl RObject for GetGroupsInCommon {
 impl RFunction for GetGroupsInCommon {}
 
 impl GetGroupsInCommon {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetGroupsInCommonBuilder {
+    pub fn builder() -> GetGroupsInCommonBuilder {
         let mut inner = GetGroupsInCommon::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getGroupsInCommon".to_string();
 
-        RTDGetGroupsInCommonBuilder { inner }
+        GetGroupsInCommonBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 
@@ -61,16 +67,19 @@ impl GetGroupsInCommon {
 }
 
 #[doc(hidden)]
-pub struct RTDGetGroupsInCommonBuilder {
+pub struct GetGroupsInCommonBuilder {
     inner: GetGroupsInCommon,
 }
 
-impl RTDGetGroupsInCommonBuilder {
+#[deprecated]
+pub type RTDGetGroupsInCommonBuilder = GetGroupsInCommonBuilder;
+
+impl GetGroupsInCommonBuilder {
     pub fn build(&self) -> GetGroupsInCommon {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -92,7 +101,7 @@ impl AsRef<GetGroupsInCommon> for GetGroupsInCommon {
     }
 }
 
-impl AsRef<GetGroupsInCommon> for RTDGetGroupsInCommonBuilder {
+impl AsRef<GetGroupsInCommon> for GetGroupsInCommonBuilder {
     fn as_ref(&self) -> &GetGroupsInCommon {
         &self.inner
     }

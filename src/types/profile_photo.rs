@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,12 +13,17 @@ pub struct ProfilePhoto {
     /// Photo identifier; 0 for an empty photo. Can be used to find a photo in a list of user profile photos
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// A small (160x160) user profile photo. The file can be downloaded only before the photo is changed
     small: File,
     /// A big (640x640) user profile photo. The file can be downloaded only before the photo is changed
     big: File,
+    /// User profile photo minithumbnail; may be null
+    minithumbnail: Option<Minithumbnail>,
     /// True, if the photo has animated variant
+
+    #[serde(default)]
     has_animation: Option<bool>,
 }
 
@@ -34,14 +39,14 @@ impl RObject for ProfilePhoto {
 }
 
 impl ProfilePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDProfilePhotoBuilder {
+    pub fn builder() -> ProfilePhotoBuilder {
         let mut inner = ProfilePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDProfilePhotoBuilder { inner }
+        ProfilePhotoBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -56,17 +61,24 @@ impl ProfilePhoto {
         &self.big
     }
 
+    pub fn minithumbnail(&self) -> &Option<Minithumbnail> {
+        &self.minithumbnail
+    }
+
     pub fn has_animation(&self) -> &Option<bool> {
         &self.has_animation
     }
 }
 
 #[doc(hidden)]
-pub struct RTDProfilePhotoBuilder {
+pub struct ProfilePhotoBuilder {
     inner: ProfilePhoto,
 }
 
-impl RTDProfilePhotoBuilder {
+#[deprecated]
+pub type RTDProfilePhotoBuilder = ProfilePhotoBuilder;
+
+impl ProfilePhotoBuilder {
     pub fn build(&self) -> ProfilePhoto {
         self.inner.clone()
     }
@@ -86,6 +98,11 @@ impl RTDProfilePhotoBuilder {
         self
     }
 
+    pub fn minithumbnail<T: AsRef<Minithumbnail>>(&mut self, minithumbnail: T) -> &mut Self {
+        self.inner.minithumbnail = Some(minithumbnail.as_ref().clone());
+        self
+    }
+
     pub fn has_animation(&mut self, has_animation: bool) -> &mut Self {
         self.inner.has_animation = Some(has_animation);
         self
@@ -98,7 +115,7 @@ impl AsRef<ProfilePhoto> for ProfilePhoto {
     }
 }
 
-impl AsRef<ProfilePhoto> for RTDProfilePhotoBuilder {
+impl AsRef<ProfilePhoto> for ProfilePhotoBuilder {
     fn as_ref(&self) -> &ProfilePhoto {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,20 +11,36 @@ pub struct ChatPermissions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the user can send text messages, contacts, locations, and venues
+
+    #[serde(default)]
     can_send_messages: bool,
     /// True, if the user can send audio files, documents, photos, videos, video notes, and voice notes. Implies can_send_messages permissions
+
+    #[serde(default)]
     can_send_media_messages: bool,
     /// True, if the user can send polls. Implies can_send_messages permissions
+
+    #[serde(default)]
     can_send_polls: bool,
     /// True, if the user can send animations, games, stickers, and dice and use inline bots. Implies can_send_messages permissions
+
+    #[serde(default)]
     can_send_other_messages: bool,
     /// True, if the user may add a web page preview to their messages. Implies can_send_messages permissions
+
+    #[serde(default)]
     can_add_web_page_previews: bool,
     /// True, if the user can change the chat title, photo, and other settings
+
+    #[serde(default)]
     can_change_info: bool,
     /// True, if the user can invite new users to the chat
+
+    #[serde(default)]
     can_invite_users: bool,
     /// True, if the user can pin messages
+
+    #[serde(default)]
     can_pin_messages: bool,
 }
 
@@ -40,14 +56,14 @@ impl RObject for ChatPermissions {
 }
 
 impl ChatPermissions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatPermissionsBuilder {
+    pub fn builder() -> ChatPermissionsBuilder {
         let mut inner = ChatPermissions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatPermissionsBuilder { inner }
+        ChatPermissionsBuilder { inner }
     }
 
     pub fn can_send_messages(&self) -> bool {
@@ -84,11 +100,14 @@ impl ChatPermissions {
 }
 
 #[doc(hidden)]
-pub struct RTDChatPermissionsBuilder {
+pub struct ChatPermissionsBuilder {
     inner: ChatPermissions,
 }
 
-impl RTDChatPermissionsBuilder {
+#[deprecated]
+pub type RTDChatPermissionsBuilder = ChatPermissionsBuilder;
+
+impl ChatPermissionsBuilder {
     pub fn build(&self) -> ChatPermissions {
         self.inner.clone()
     }
@@ -140,7 +159,7 @@ impl AsRef<ChatPermissions> for ChatPermissions {
     }
 }
 
-impl AsRef<ChatPermissions> for RTDChatPermissionsBuilder {
+impl AsRef<ChatPermissions> for ChatPermissionsBuilder {
     fn as_ref(&self) -> &ChatPermissions {
         &self.inner
     }

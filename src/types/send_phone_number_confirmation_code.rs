@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Sends phone number confirmation code. Should be called when user presses "https://t.me/confirmphone?phone=*******&hash=**********" or "tg://confirmphone?phone=*******&hash=**********" link
+/// Sends phone number confirmation code to handle links of the type internalLinkTypePhoneNumberConfirmation
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SendPhoneNumberConfirmationCode {
     #[doc(hidden)]
@@ -10,11 +10,15 @@ pub struct SendPhoneNumberConfirmationCode {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Value of the "hash" parameter from the link
+    /// Hash value from the link
+
+    #[serde(default)]
     hash: String,
-    /// Value of the "phone" parameter from the link
+    /// Phone number value from the link
+
+    #[serde(default)]
     phone_number: String,
-    /// Settings for the authentication of the user's phone number
+    /// Settings for the authentication of the user's phone number; pass null to use default settings
     settings: PhoneNumberAuthenticationSettings,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +39,16 @@ impl RObject for SendPhoneNumberConfirmationCode {
 impl RFunction for SendPhoneNumberConfirmationCode {}
 
 impl SendPhoneNumberConfirmationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendPhoneNumberConfirmationCodeBuilder {
+    pub fn builder() -> SendPhoneNumberConfirmationCodeBuilder {
         let mut inner = SendPhoneNumberConfirmationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendPhoneNumberConfirmationCode".to_string();
 
-        RTDSendPhoneNumberConfirmationCodeBuilder { inner }
+        SendPhoneNumberConfirmationCodeBuilder { inner }
     }
 
     pub fn hash(&self) -> &String {
@@ -61,11 +65,14 @@ impl SendPhoneNumberConfirmationCode {
 }
 
 #[doc(hidden)]
-pub struct RTDSendPhoneNumberConfirmationCodeBuilder {
+pub struct SendPhoneNumberConfirmationCodeBuilder {
     inner: SendPhoneNumberConfirmationCode,
 }
 
-impl RTDSendPhoneNumberConfirmationCodeBuilder {
+#[deprecated]
+pub type RTDSendPhoneNumberConfirmationCodeBuilder = SendPhoneNumberConfirmationCodeBuilder;
+
+impl SendPhoneNumberConfirmationCodeBuilder {
     pub fn build(&self) -> SendPhoneNumberConfirmationCode {
         self.inner.clone()
     }
@@ -95,7 +102,7 @@ impl AsRef<SendPhoneNumberConfirmationCode> for SendPhoneNumberConfirmationCode 
     }
 }
 
-impl AsRef<SendPhoneNumberConfirmationCode> for RTDSendPhoneNumberConfirmationCodeBuilder {
+impl AsRef<SendPhoneNumberConfirmationCode> for SendPhoneNumberConfirmationCodeBuilder {
     fn as_ref(&self) -> &SendPhoneNumberConfirmationCode {
         &self.inner
     }

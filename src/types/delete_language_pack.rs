@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct DeleteLanguagePack {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the language pack to delete
+
+    #[serde(default)]
     language_pack_id: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for DeleteLanguagePack {
 impl RFunction for DeleteLanguagePack {}
 
 impl DeleteLanguagePack {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteLanguagePackBuilder {
+    pub fn builder() -> DeleteLanguagePackBuilder {
         let mut inner = DeleteLanguagePack::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteLanguagePack".to_string();
 
-        RTDDeleteLanguagePackBuilder { inner }
+        DeleteLanguagePackBuilder { inner }
     }
 
     pub fn language_pack_id(&self) -> &String {
@@ -49,11 +51,14 @@ impl DeleteLanguagePack {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteLanguagePackBuilder {
+pub struct DeleteLanguagePackBuilder {
     inner: DeleteLanguagePack,
 }
 
-impl RTDDeleteLanguagePackBuilder {
+#[deprecated]
+pub type RTDDeleteLanguagePackBuilder = DeleteLanguagePackBuilder;
+
+impl DeleteLanguagePackBuilder {
     pub fn build(&self) -> DeleteLanguagePack {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<DeleteLanguagePack> for DeleteLanguagePack {
     }
 }
 
-impl AsRef<DeleteLanguagePack> for RTDDeleteLanguagePackBuilder {
+impl AsRef<DeleteLanguagePack> for DeleteLanguagePackBuilder {
     fn as_ref(&self) -> &DeleteLanguagePack {
         &self.inner
     }

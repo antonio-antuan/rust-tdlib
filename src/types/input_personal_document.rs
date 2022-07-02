@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct InputPersonalDocument {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of files containing the pages of the document
+
+    #[serde(default)]
     files: Vec<InputFile>,
     /// List of files containing a certified English translation of the document
+
+    #[serde(default)]
     translation: Vec<InputFile>,
 }
 
@@ -28,14 +32,14 @@ impl RObject for InputPersonalDocument {
 }
 
 impl InputPersonalDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputPersonalDocumentBuilder {
+    pub fn builder() -> InputPersonalDocumentBuilder {
         let mut inner = InputPersonalDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputPersonalDocumentBuilder { inner }
+        InputPersonalDocumentBuilder { inner }
     }
 
     pub fn files(&self) -> &Vec<InputFile> {
@@ -48,11 +52,14 @@ impl InputPersonalDocument {
 }
 
 #[doc(hidden)]
-pub struct RTDInputPersonalDocumentBuilder {
+pub struct InputPersonalDocumentBuilder {
     inner: InputPersonalDocument,
 }
 
-impl RTDInputPersonalDocumentBuilder {
+#[deprecated]
+pub type RTDInputPersonalDocumentBuilder = InputPersonalDocumentBuilder;
+
+impl InputPersonalDocumentBuilder {
     pub fn build(&self) -> InputPersonalDocument {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<InputPersonalDocument> for InputPersonalDocument {
     }
 }
 
-impl AsRef<InputPersonalDocument> for RTDInputPersonalDocumentBuilder {
+impl AsRef<InputPersonalDocument> for InputPersonalDocumentBuilder {
     fn as_ref(&self) -> &InputPersonalDocument {
         &self.inner
     }

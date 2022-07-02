@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SetSupergroupUsername {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup or channel
-    supergroup_id: i32,
+
+    #[serde(default)]
+    supergroup_id: i64,
     /// New value of the username. Use an empty string to remove the username
+
+    #[serde(default)]
     username: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,19 +37,19 @@ impl RObject for SetSupergroupUsername {
 impl RFunction for SetSupergroupUsername {}
 
 impl SetSupergroupUsername {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetSupergroupUsernameBuilder {
+    pub fn builder() -> SetSupergroupUsernameBuilder {
         let mut inner = SetSupergroupUsername::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setSupergroupUsername".to_string();
 
-        RTDSetSupergroupUsernameBuilder { inner }
+        SetSupergroupUsernameBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 
@@ -55,16 +59,19 @@ impl SetSupergroupUsername {
 }
 
 #[doc(hidden)]
-pub struct RTDSetSupergroupUsernameBuilder {
+pub struct SetSupergroupUsernameBuilder {
     inner: SetSupergroupUsername,
 }
 
-impl RTDSetSupergroupUsernameBuilder {
+#[deprecated]
+pub type RTDSetSupergroupUsernameBuilder = SetSupergroupUsernameBuilder;
+
+impl SetSupergroupUsernameBuilder {
     pub fn build(&self) -> SetSupergroupUsername {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }
@@ -81,7 +88,7 @@ impl AsRef<SetSupergroupUsername> for SetSupergroupUsername {
     }
 }
 
-impl AsRef<SetSupergroupUsername> for RTDSetSupergroupUsernameBuilder {
+impl AsRef<SetSupergroupUsername> for SetSupergroupUsernameBuilder {
     fn as_ref(&self) -> &SetSupergroupUsername {
         &self.inner
     }

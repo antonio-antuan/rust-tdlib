@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,10 @@ pub struct SendPhoneNumberVerificationCode {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The phone number of the user, in international format
+
+    #[serde(default)]
     phone_number: String,
-    /// Settings for the authentication of the user's phone number
+    /// Settings for the authentication of the user's phone number; pass null to use default settings
     settings: PhoneNumberAuthenticationSettings,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +35,16 @@ impl RObject for SendPhoneNumberVerificationCode {
 impl RFunction for SendPhoneNumberVerificationCode {}
 
 impl SendPhoneNumberVerificationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendPhoneNumberVerificationCodeBuilder {
+    pub fn builder() -> SendPhoneNumberVerificationCodeBuilder {
         let mut inner = SendPhoneNumberVerificationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendPhoneNumberVerificationCode".to_string();
 
-        RTDSendPhoneNumberVerificationCodeBuilder { inner }
+        SendPhoneNumberVerificationCodeBuilder { inner }
     }
 
     pub fn phone_number(&self) -> &String {
@@ -55,11 +57,14 @@ impl SendPhoneNumberVerificationCode {
 }
 
 #[doc(hidden)]
-pub struct RTDSendPhoneNumberVerificationCodeBuilder {
+pub struct SendPhoneNumberVerificationCodeBuilder {
     inner: SendPhoneNumberVerificationCode,
 }
 
-impl RTDSendPhoneNumberVerificationCodeBuilder {
+#[deprecated]
+pub type RTDSendPhoneNumberVerificationCodeBuilder = SendPhoneNumberVerificationCodeBuilder;
+
+impl SendPhoneNumberVerificationCodeBuilder {
     pub fn build(&self) -> SendPhoneNumberVerificationCode {
         self.inner.clone()
     }
@@ -84,7 +89,7 @@ impl AsRef<SendPhoneNumberVerificationCode> for SendPhoneNumberVerificationCode 
     }
 }
 
-impl AsRef<SendPhoneNumberVerificationCode> for RTDSendPhoneNumberVerificationCodeBuilder {
+impl AsRef<SendPhoneNumberVerificationCode> for SendPhoneNumberVerificationCodeBuilder {
     fn as_ref(&self) -> &SendPhoneNumberVerificationCode {
         &self.inner
     }

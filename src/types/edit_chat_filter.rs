@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct EditChatFilter {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat filter identifier
+
+    #[serde(default)]
     chat_filter_id: i32,
     /// The edited chat filter
     filter: ChatFilter,
@@ -33,16 +35,16 @@ impl RObject for EditChatFilter {
 impl RFunction for EditChatFilter {}
 
 impl EditChatFilter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditChatFilterBuilder {
+    pub fn builder() -> EditChatFilterBuilder {
         let mut inner = EditChatFilter::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editChatFilter".to_string();
 
-        RTDEditChatFilterBuilder { inner }
+        EditChatFilterBuilder { inner }
     }
 
     pub fn chat_filter_id(&self) -> i32 {
@@ -55,11 +57,14 @@ impl EditChatFilter {
 }
 
 #[doc(hidden)]
-pub struct RTDEditChatFilterBuilder {
+pub struct EditChatFilterBuilder {
     inner: EditChatFilter,
 }
 
-impl RTDEditChatFilterBuilder {
+#[deprecated]
+pub type RTDEditChatFilterBuilder = EditChatFilterBuilder;
+
+impl EditChatFilterBuilder {
     pub fn build(&self) -> EditChatFilter {
         self.inner.clone()
     }
@@ -81,7 +86,7 @@ impl AsRef<EditChatFilter> for EditChatFilter {
     }
 }
 
-impl AsRef<EditChatFilter> for RTDEditChatFilterBuilder {
+impl AsRef<EditChatFilter> for EditChatFilterBuilder {
     fn as_ref(&self) -> &EditChatFilter {
         &self.inner
     }

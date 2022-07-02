@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct GetMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat the message belongs to
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message to get
+
+    #[serde(default)]
     message_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for GetMessage {
 impl RFunction for GetMessage {}
 
 impl GetMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageBuilder {
+    pub fn builder() -> GetMessageBuilder {
         let mut inner = GetMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessage".to_string();
 
-        RTDGetMessageBuilder { inner }
+        GetMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +59,14 @@ impl GetMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageBuilder {
+pub struct GetMessageBuilder {
     inner: GetMessage,
 }
 
-impl RTDGetMessageBuilder {
+#[deprecated]
+pub type RTDGetMessageBuilder = GetMessageBuilder;
+
+impl GetMessageBuilder {
     pub fn build(&self) -> GetMessage {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<GetMessage> for GetMessage {
     }
 }
 
-impl AsRef<GetMessage> for RTDGetMessageBuilder {
+impl AsRef<GetMessage> for GetMessageBuilder {
     fn as_ref(&self) -> &GetMessage {
         &self.inner
     }

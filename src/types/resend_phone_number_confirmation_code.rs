@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for ResendPhoneNumberConfirmationCode {
 impl RFunction for ResendPhoneNumberConfirmationCode {}
 
 impl ResendPhoneNumberConfirmationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResendPhoneNumberConfirmationCodeBuilder {
+    pub fn builder() -> ResendPhoneNumberConfirmationCodeBuilder {
         let mut inner = ResendPhoneNumberConfirmationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "resendPhoneNumberConfirmationCode".to_string();
 
-        RTDResendPhoneNumberConfirmationCodeBuilder { inner }
+        ResendPhoneNumberConfirmationCodeBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDResendPhoneNumberConfirmationCodeBuilder {
+pub struct ResendPhoneNumberConfirmationCodeBuilder {
     inner: ResendPhoneNumberConfirmationCode,
 }
 
-impl RTDResendPhoneNumberConfirmationCodeBuilder {
+#[deprecated]
+pub type RTDResendPhoneNumberConfirmationCodeBuilder = ResendPhoneNumberConfirmationCodeBuilder;
+
+impl ResendPhoneNumberConfirmationCodeBuilder {
     pub fn build(&self) -> ResendPhoneNumberConfirmationCode {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ResendPhoneNumberConfirmationCode> for ResendPhoneNumberConfirmationC
     }
 }
 
-impl AsRef<ResendPhoneNumberConfirmationCode> for RTDResendPhoneNumberConfirmationCodeBuilder {
+impl AsRef<ResendPhoneNumberConfirmationCode> for ResendPhoneNumberConfirmationCodeBuilder {
     fn as_ref(&self) -> &ResendPhoneNumberConfirmationCode {
         &self.inner
     }

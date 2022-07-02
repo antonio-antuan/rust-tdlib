@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,28 +14,16 @@ pub enum LanguagePackStringValue {
     #[doc(hidden)]
     _Default,
     /// Returns a string stored in the local database from the specified localization target and language pack by its key. Returns a 404 error if the string is not found. Can be called synchronously
-    #[serde(rename(
-        serialize = "getLanguagePackString",
-        deserialize = "getLanguagePackString"
-    ))]
+    #[serde(rename(deserialize = "getLanguagePackString"))]
     GetLanguagePackString(GetLanguagePackString),
-    /// A deleted language pack string, the value should be taken from the built-in english language pack
-    #[serde(rename(
-        serialize = "languagePackStringValueDeleted",
-        deserialize = "languagePackStringValueDeleted"
-    ))]
+    /// A deleted language pack string, the value must be taken from the built-in English language pack
+    #[serde(rename(deserialize = "languagePackStringValueDeleted"))]
     Deleted(LanguagePackStringValueDeleted),
     /// An ordinary language pack string
-    #[serde(rename(
-        serialize = "languagePackStringValueOrdinary",
-        deserialize = "languagePackStringValueOrdinary"
-    ))]
+    #[serde(rename(deserialize = "languagePackStringValueOrdinary"))]
     Ordinary(LanguagePackStringValueOrdinary),
     /// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
-    #[serde(rename(
-        serialize = "languagePackStringValuePluralized",
-        deserialize = "languagePackStringValuePluralized"
-    ))]
+    #[serde(rename(deserialize = "languagePackStringValuePluralized"))]
     Pluralized(LanguagePackStringValuePluralized),
 }
 
@@ -71,7 +59,7 @@ impl RObject for LanguagePackStringValue {
 }
 
 impl LanguagePackStringValue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -86,7 +74,7 @@ impl AsRef<LanguagePackStringValue> for LanguagePackStringValue {
     }
 }
 
-/// A deleted language pack string, the value should be taken from the built-in english language pack
+/// A deleted language pack string, the value must be taken from the built-in English language pack
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LanguagePackStringValueDeleted {
     #[doc(hidden)]
@@ -110,23 +98,26 @@ impl RObject for LanguagePackStringValueDeleted {
 impl TDLanguagePackStringValue for LanguagePackStringValueDeleted {}
 
 impl LanguagePackStringValueDeleted {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLanguagePackStringValueDeletedBuilder {
+    pub fn builder() -> LanguagePackStringValueDeletedBuilder {
         let mut inner = LanguagePackStringValueDeleted::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLanguagePackStringValueDeletedBuilder { inner }
+        LanguagePackStringValueDeletedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDLanguagePackStringValueDeletedBuilder {
+pub struct LanguagePackStringValueDeletedBuilder {
     inner: LanguagePackStringValueDeleted,
 }
 
-impl RTDLanguagePackStringValueDeletedBuilder {
+#[deprecated]
+pub type RTDLanguagePackStringValueDeletedBuilder = LanguagePackStringValueDeletedBuilder;
+
+impl LanguagePackStringValueDeletedBuilder {
     pub fn build(&self) -> LanguagePackStringValueDeleted {
         self.inner.clone()
     }
@@ -138,7 +129,7 @@ impl AsRef<LanguagePackStringValueDeleted> for LanguagePackStringValueDeleted {
     }
 }
 
-impl AsRef<LanguagePackStringValueDeleted> for RTDLanguagePackStringValueDeletedBuilder {
+impl AsRef<LanguagePackStringValueDeleted> for LanguagePackStringValueDeletedBuilder {
     fn as_ref(&self) -> &LanguagePackStringValueDeleted {
         &self.inner
     }
@@ -153,6 +144,8 @@ pub struct LanguagePackStringValueOrdinary {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// String value
+
+    #[serde(default)]
     value: String,
 }
 
@@ -170,14 +163,14 @@ impl RObject for LanguagePackStringValueOrdinary {
 impl TDLanguagePackStringValue for LanguagePackStringValueOrdinary {}
 
 impl LanguagePackStringValueOrdinary {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLanguagePackStringValueOrdinaryBuilder {
+    pub fn builder() -> LanguagePackStringValueOrdinaryBuilder {
         let mut inner = LanguagePackStringValueOrdinary::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLanguagePackStringValueOrdinaryBuilder { inner }
+        LanguagePackStringValueOrdinaryBuilder { inner }
     }
 
     pub fn value(&self) -> &String {
@@ -186,11 +179,14 @@ impl LanguagePackStringValueOrdinary {
 }
 
 #[doc(hidden)]
-pub struct RTDLanguagePackStringValueOrdinaryBuilder {
+pub struct LanguagePackStringValueOrdinaryBuilder {
     inner: LanguagePackStringValueOrdinary,
 }
 
-impl RTDLanguagePackStringValueOrdinaryBuilder {
+#[deprecated]
+pub type RTDLanguagePackStringValueOrdinaryBuilder = LanguagePackStringValueOrdinaryBuilder;
+
+impl LanguagePackStringValueOrdinaryBuilder {
     pub fn build(&self) -> LanguagePackStringValueOrdinary {
         self.inner.clone()
     }
@@ -207,7 +203,7 @@ impl AsRef<LanguagePackStringValueOrdinary> for LanguagePackStringValueOrdinary 
     }
 }
 
-impl AsRef<LanguagePackStringValueOrdinary> for RTDLanguagePackStringValueOrdinaryBuilder {
+impl AsRef<LanguagePackStringValueOrdinary> for LanguagePackStringValueOrdinaryBuilder {
     fn as_ref(&self) -> &LanguagePackStringValueOrdinary {
         &self.inner
     }
@@ -222,16 +218,28 @@ pub struct LanguagePackStringValuePluralized {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Value for zero objects
+
+    #[serde(default)]
     zero_value: String,
     /// Value for one object
+
+    #[serde(default)]
     one_value: String,
     /// Value for two objects
+
+    #[serde(default)]
     two_value: String,
     /// Value for few objects
+
+    #[serde(default)]
     few_value: String,
     /// Value for many objects
+
+    #[serde(default)]
     many_value: String,
     /// Default value
+
+    #[serde(default)]
     other_value: String,
 }
 
@@ -249,14 +257,14 @@ impl RObject for LanguagePackStringValuePluralized {
 impl TDLanguagePackStringValue for LanguagePackStringValuePluralized {}
 
 impl LanguagePackStringValuePluralized {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLanguagePackStringValuePluralizedBuilder {
+    pub fn builder() -> LanguagePackStringValuePluralizedBuilder {
         let mut inner = LanguagePackStringValuePluralized::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLanguagePackStringValuePluralizedBuilder { inner }
+        LanguagePackStringValuePluralizedBuilder { inner }
     }
 
     pub fn zero_value(&self) -> &String {
@@ -285,11 +293,14 @@ impl LanguagePackStringValuePluralized {
 }
 
 #[doc(hidden)]
-pub struct RTDLanguagePackStringValuePluralizedBuilder {
+pub struct LanguagePackStringValuePluralizedBuilder {
     inner: LanguagePackStringValuePluralized,
 }
 
-impl RTDLanguagePackStringValuePluralizedBuilder {
+#[deprecated]
+pub type RTDLanguagePackStringValuePluralizedBuilder = LanguagePackStringValuePluralizedBuilder;
+
+impl LanguagePackStringValuePluralizedBuilder {
     pub fn build(&self) -> LanguagePackStringValuePluralized {
         self.inner.clone()
     }
@@ -331,7 +342,7 @@ impl AsRef<LanguagePackStringValuePluralized> for LanguagePackStringValuePlurali
     }
 }
 
-impl AsRef<LanguagePackStringValuePluralized> for RTDLanguagePackStringValuePluralizedBuilder {
+impl AsRef<LanguagePackStringValuePluralized> for LanguagePackStringValuePluralizedBuilder {
     fn as_ref(&self) -> &LanguagePackStringValuePluralized {
         &self.inner
     }

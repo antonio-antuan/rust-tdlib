@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct RemoveNotification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of notification group to which the notification belongs
+
+    #[serde(default)]
     notification_group_id: i32,
     /// Identifier of removed notification
+
+    #[serde(default)]
     notification_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for RemoveNotification {
 impl RFunction for RemoveNotification {}
 
 impl RemoveNotification {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveNotificationBuilder {
+    pub fn builder() -> RemoveNotificationBuilder {
         let mut inner = RemoveNotification::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeNotification".to_string();
 
-        RTDRemoveNotificationBuilder { inner }
+        RemoveNotificationBuilder { inner }
     }
 
     pub fn notification_group_id(&self) -> i32 {
@@ -55,11 +59,14 @@ impl RemoveNotification {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveNotificationBuilder {
+pub struct RemoveNotificationBuilder {
     inner: RemoveNotification,
 }
 
-impl RTDRemoveNotificationBuilder {
+#[deprecated]
+pub type RTDRemoveNotificationBuilder = RemoveNotificationBuilder;
+
+impl RemoveNotificationBuilder {
     pub fn build(&self) -> RemoveNotification {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<RemoveNotification> for RemoveNotification {
     }
 }
 
-impl AsRef<RemoveNotification> for RTDRemoveNotificationBuilder {
+impl AsRef<RemoveNotification> for RemoveNotificationBuilder {
     fn as_ref(&self) -> &RemoveNotification {
         &self.inner
     }

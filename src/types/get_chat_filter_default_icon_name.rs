@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,16 +31,16 @@ impl RObject for GetChatFilterDefaultIconName {
 impl RFunction for GetChatFilterDefaultIconName {}
 
 impl GetChatFilterDefaultIconName {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatFilterDefaultIconNameBuilder {
+    pub fn builder() -> GetChatFilterDefaultIconNameBuilder {
         let mut inner = GetChatFilterDefaultIconName::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatFilterDefaultIconName".to_string();
 
-        RTDGetChatFilterDefaultIconNameBuilder { inner }
+        GetChatFilterDefaultIconNameBuilder { inner }
     }
 
     pub fn filter(&self) -> &ChatFilter {
@@ -49,11 +49,14 @@ impl GetChatFilterDefaultIconName {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatFilterDefaultIconNameBuilder {
+pub struct GetChatFilterDefaultIconNameBuilder {
     inner: GetChatFilterDefaultIconName,
 }
 
-impl RTDGetChatFilterDefaultIconNameBuilder {
+#[deprecated]
+pub type RTDGetChatFilterDefaultIconNameBuilder = GetChatFilterDefaultIconNameBuilder;
+
+impl GetChatFilterDefaultIconNameBuilder {
     pub fn build(&self) -> GetChatFilterDefaultIconName {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<GetChatFilterDefaultIconName> for GetChatFilterDefaultIconName {
     }
 }
 
-impl AsRef<GetChatFilterDefaultIconName> for RTDGetChatFilterDefaultIconNameBuilder {
+impl AsRef<GetChatFilterDefaultIconName> for GetChatFilterDefaultIconNameBuilder {
     fn as_ref(&self) -> &GetChatFilterDefaultIconName {
         &self.inner
     }

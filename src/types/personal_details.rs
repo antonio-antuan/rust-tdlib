@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,24 +11,42 @@ pub struct PersonalDetails {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// First name of the user written in English; 1-255 characters
+
+    #[serde(default)]
     first_name: String,
     /// Middle name of the user written in English; 0-255 characters
+
+    #[serde(default)]
     middle_name: String,
     /// Last name of the user written in English; 1-255 characters
+
+    #[serde(default)]
     last_name: String,
     /// Native first name of the user; 1-255 characters
+
+    #[serde(default)]
     native_first_name: String,
     /// Native middle name of the user; 0-255 characters
+
+    #[serde(default)]
     native_middle_name: String,
     /// Native last name of the user; 1-255 characters
+
+    #[serde(default)]
     native_last_name: String,
     /// Birthdate of the user
     birthdate: Date,
     /// Gender of the user, "male" or "female"
+
+    #[serde(default)]
     gender: String,
     /// A two-letter ISO 3166-1 alpha-2 country code of the user's country
+
+    #[serde(default)]
     country_code: String,
     /// A two-letter ISO 3166-1 alpha-2 country code of the user's residence country
+
+    #[serde(default)]
     residence_country_code: String,
 }
 
@@ -44,14 +62,14 @@ impl RObject for PersonalDetails {
 }
 
 impl PersonalDetails {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPersonalDetailsBuilder {
+    pub fn builder() -> PersonalDetailsBuilder {
         let mut inner = PersonalDetails::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPersonalDetailsBuilder { inner }
+        PersonalDetailsBuilder { inner }
     }
 
     pub fn first_name(&self) -> &String {
@@ -96,11 +114,14 @@ impl PersonalDetails {
 }
 
 #[doc(hidden)]
-pub struct RTDPersonalDetailsBuilder {
+pub struct PersonalDetailsBuilder {
     inner: PersonalDetails,
 }
 
-impl RTDPersonalDetailsBuilder {
+#[deprecated]
+pub type RTDPersonalDetailsBuilder = PersonalDetailsBuilder;
+
+impl PersonalDetailsBuilder {
     pub fn build(&self) -> PersonalDetails {
         self.inner.clone()
     }
@@ -165,7 +186,7 @@ impl AsRef<PersonalDetails> for PersonalDetails {
     }
 }
 
-impl AsRef<PersonalDetails> for RTDPersonalDetailsBuilder {
+impl AsRef<PersonalDetails> for PersonalDetailsBuilder {
     fn as_ref(&self) -> &PersonalDetails {
         &self.inner
     }

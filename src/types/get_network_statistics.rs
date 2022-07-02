@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetNetworkStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If true, returns only data for the current library launch
+
+    #[serde(default)]
     only_current: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetNetworkStatistics {
 impl RFunction for GetNetworkStatistics {}
 
 impl GetNetworkStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetNetworkStatisticsBuilder {
+    pub fn builder() -> GetNetworkStatisticsBuilder {
         let mut inner = GetNetworkStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getNetworkStatistics".to_string();
 
-        RTDGetNetworkStatisticsBuilder { inner }
+        GetNetworkStatisticsBuilder { inner }
     }
 
     pub fn only_current(&self) -> bool {
@@ -49,11 +51,14 @@ impl GetNetworkStatistics {
 }
 
 #[doc(hidden)]
-pub struct RTDGetNetworkStatisticsBuilder {
+pub struct GetNetworkStatisticsBuilder {
     inner: GetNetworkStatistics,
 }
 
-impl RTDGetNetworkStatisticsBuilder {
+#[deprecated]
+pub type RTDGetNetworkStatisticsBuilder = GetNetworkStatisticsBuilder;
+
+impl GetNetworkStatisticsBuilder {
     pub fn build(&self) -> GetNetworkStatistics {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetNetworkStatistics> for GetNetworkStatistics {
     }
 }
 
-impl AsRef<GetNetworkStatistics> for RTDGetNetworkStatisticsBuilder {
+impl AsRef<GetNetworkStatistics> for GetNetworkStatisticsBuilder {
     fn as_ref(&self) -> &GetNetworkStatistics {
         &self.inner
     }

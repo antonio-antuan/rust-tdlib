@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct SendChatAction {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// If not 0, a message thread identifier in which the action was performed
+
+    #[serde(default)]
     message_thread_id: i64,
-    /// The action description
+    /// The action description; pass null to cancel the currently active action
 
     #[serde(skip_serializing_if = "ChatAction::_is_default")]
     action: ChatAction,
@@ -37,16 +41,16 @@ impl RObject for SendChatAction {
 impl RFunction for SendChatAction {}
 
 impl SendChatAction {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendChatActionBuilder {
+    pub fn builder() -> SendChatActionBuilder {
         let mut inner = SendChatAction::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendChatAction".to_string();
 
-        RTDSendChatActionBuilder { inner }
+        SendChatActionBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -63,11 +67,14 @@ impl SendChatAction {
 }
 
 #[doc(hidden)]
-pub struct RTDSendChatActionBuilder {
+pub struct SendChatActionBuilder {
     inner: SendChatAction,
 }
 
-impl RTDSendChatActionBuilder {
+#[deprecated]
+pub type RTDSendChatActionBuilder = SendChatActionBuilder;
+
+impl SendChatActionBuilder {
     pub fn build(&self) -> SendChatAction {
         self.inner.clone()
     }
@@ -94,7 +101,7 @@ impl AsRef<SendChatAction> for SendChatAction {
     }
 }
 
-impl AsRef<SendChatAction> for RTDSendChatActionBuilder {
+impl AsRef<SendChatAction> for SendChatActionBuilder {
     fn as_ref(&self) -> &SendChatAction {
         &self.inner
     }

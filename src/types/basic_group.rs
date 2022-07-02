@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,17 +11,25 @@ pub struct BasicGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Group identifier
-    id: i32,
+
+    #[serde(default)]
+    id: i64,
     /// Number of members in the group
+
+    #[serde(default)]
     member_count: i32,
     /// Status of the current user in the group
 
     #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
     /// True, if the group is active
+
+    #[serde(default)]
     is_active: bool,
     /// Identifier of the supergroup to which this group was upgraded; 0 if none
-    upgraded_to_supergroup_id: i32,
+
+    #[serde(default)]
+    upgraded_to_supergroup_id: i64,
 }
 
 impl RObject for BasicGroup {
@@ -36,17 +44,17 @@ impl RObject for BasicGroup {
 }
 
 impl BasicGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBasicGroupBuilder {
+    pub fn builder() -> BasicGroupBuilder {
         let mut inner = BasicGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBasicGroupBuilder { inner }
+        BasicGroupBuilder { inner }
     }
 
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> i64 {
         self.id
     }
 
@@ -62,22 +70,25 @@ impl BasicGroup {
         self.is_active
     }
 
-    pub fn upgraded_to_supergroup_id(&self) -> i32 {
+    pub fn upgraded_to_supergroup_id(&self) -> i64 {
         self.upgraded_to_supergroup_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDBasicGroupBuilder {
+pub struct BasicGroupBuilder {
     inner: BasicGroup,
 }
 
-impl RTDBasicGroupBuilder {
+#[deprecated]
+pub type RTDBasicGroupBuilder = BasicGroupBuilder;
+
+impl BasicGroupBuilder {
     pub fn build(&self) -> BasicGroup {
         self.inner.clone()
     }
 
-    pub fn id(&mut self, id: i32) -> &mut Self {
+    pub fn id(&mut self, id: i64) -> &mut Self {
         self.inner.id = id;
         self
     }
@@ -97,7 +108,7 @@ impl RTDBasicGroupBuilder {
         self
     }
 
-    pub fn upgraded_to_supergroup_id(&mut self, upgraded_to_supergroup_id: i32) -> &mut Self {
+    pub fn upgraded_to_supergroup_id(&mut self, upgraded_to_supergroup_id: i64) -> &mut Self {
         self.inner.upgraded_to_supergroup_id = upgraded_to_supergroup_id;
         self
     }
@@ -109,7 +120,7 @@ impl AsRef<BasicGroup> for BasicGroup {
     }
 }
 
-impl AsRef<BasicGroup> for RTDBasicGroupBuilder {
+impl AsRef<BasicGroup> for BasicGroupBuilder {
     fn as_ref(&self) -> &BasicGroup {
         &self.inner
     }

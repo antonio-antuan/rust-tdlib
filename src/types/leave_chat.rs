@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Removes current user from chat members. Private and secret chats can't be left using this method
+/// Removes the current user from chat members. Private and secret chats can't be left using this method
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LeaveChat {
     #[doc(hidden)]
@@ -11,6 +11,8 @@ pub struct LeaveChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for LeaveChat {
 impl RFunction for LeaveChat {}
 
 impl LeaveChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLeaveChatBuilder {
+    pub fn builder() -> LeaveChatBuilder {
         let mut inner = LeaveChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "leaveChat".to_string();
 
-        RTDLeaveChatBuilder { inner }
+        LeaveChatBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -49,11 +51,14 @@ impl LeaveChat {
 }
 
 #[doc(hidden)]
-pub struct RTDLeaveChatBuilder {
+pub struct LeaveChatBuilder {
     inner: LeaveChat,
 }
 
-impl RTDLeaveChatBuilder {
+#[deprecated]
+pub type RTDLeaveChatBuilder = LeaveChatBuilder;
+
+impl LeaveChatBuilder {
     pub fn build(&self) -> LeaveChat {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<LeaveChat> for LeaveChat {
     }
 }
 
-impl AsRef<LeaveChat> for RTDLeaveChatBuilder {
+impl AsRef<LeaveChat> for LeaveChatBuilder {
     fn as_ref(&self) -> &LeaveChat {
         &self.inner
     }

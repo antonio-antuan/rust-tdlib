@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct LanguagePackStrings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of language pack strings
+
+    #[serde(default)]
     strings: Vec<LanguagePackString>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for LanguagePackStrings {
 }
 
 impl LanguagePackStrings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLanguagePackStringsBuilder {
+    pub fn builder() -> LanguagePackStringsBuilder {
         let mut inner = LanguagePackStrings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLanguagePackStringsBuilder { inner }
+        LanguagePackStringsBuilder { inner }
     }
 
     pub fn strings(&self) -> &Vec<LanguagePackString> {
@@ -42,11 +44,14 @@ impl LanguagePackStrings {
 }
 
 #[doc(hidden)]
-pub struct RTDLanguagePackStringsBuilder {
+pub struct LanguagePackStringsBuilder {
     inner: LanguagePackStrings,
 }
 
-impl RTDLanguagePackStringsBuilder {
+#[deprecated]
+pub type RTDLanguagePackStringsBuilder = LanguagePackStringsBuilder;
+
+impl LanguagePackStringsBuilder {
     pub fn build(&self) -> LanguagePackStrings {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<LanguagePackStrings> for LanguagePackStrings {
     }
 }
 
-impl AsRef<LanguagePackStrings> for RTDLanguagePackStringsBuilder {
+impl AsRef<LanguagePackStrings> for LanguagePackStringsBuilder {
     fn as_ref(&self) -> &LanguagePackStrings {
         &self.inner
     }

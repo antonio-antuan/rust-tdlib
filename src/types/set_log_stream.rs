@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for SetLogStream {
 impl RFunction for SetLogStream {}
 
 impl SetLogStream {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetLogStreamBuilder {
+    pub fn builder() -> SetLogStreamBuilder {
         let mut inner = SetLogStream::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setLogStream".to_string();
 
-        RTDSetLogStreamBuilder { inner }
+        SetLogStreamBuilder { inner }
     }
 
     pub fn log_stream(&self) -> &LogStream {
@@ -51,11 +51,14 @@ impl SetLogStream {
 }
 
 #[doc(hidden)]
-pub struct RTDSetLogStreamBuilder {
+pub struct SetLogStreamBuilder {
     inner: SetLogStream,
 }
 
-impl RTDSetLogStreamBuilder {
+#[deprecated]
+pub type RTDSetLogStreamBuilder = SetLogStreamBuilder;
+
+impl SetLogStreamBuilder {
     pub fn build(&self) -> SetLogStream {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<SetLogStream> for SetLogStream {
     }
 }
 
-impl AsRef<SetLogStream> for RTDSetLogStreamBuilder {
+impl AsRef<SetLogStream> for SetLogStreamBuilder {
     fn as_ref(&self) -> &SetLogStream {
         &self.inner
     }

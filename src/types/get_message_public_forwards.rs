@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns forwarded copies of a channel message to different public channels. For optimal performance the number of returned messages is chosen by the library
+/// Returns forwarded copies of a channel message to different public channels. For optimal performance, the number of returned messages is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetMessagePublicForwards {
     #[doc(hidden)]
@@ -11,12 +11,20 @@ pub struct GetMessagePublicForwards {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the message
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
     /// Offset of the first entry to return as received from the previous request; use empty string to get first chunk of results
+
+    #[serde(default)]
     offset: String,
-    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. Fewer messages may be returned than specified by the limit, even if the end of the list has not been reached
+    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +45,16 @@ impl RObject for GetMessagePublicForwards {
 impl RFunction for GetMessagePublicForwards {}
 
 impl GetMessagePublicForwards {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessagePublicForwardsBuilder {
+    pub fn builder() -> GetMessagePublicForwardsBuilder {
         let mut inner = GetMessagePublicForwards::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessagePublicForwards".to_string();
 
-        RTDGetMessagePublicForwardsBuilder { inner }
+        GetMessagePublicForwardsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +75,14 @@ impl GetMessagePublicForwards {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessagePublicForwardsBuilder {
+pub struct GetMessagePublicForwardsBuilder {
     inner: GetMessagePublicForwards,
 }
 
-impl RTDGetMessagePublicForwardsBuilder {
+#[deprecated]
+pub type RTDGetMessagePublicForwardsBuilder = GetMessagePublicForwardsBuilder;
+
+impl GetMessagePublicForwardsBuilder {
     pub fn build(&self) -> GetMessagePublicForwards {
         self.inner.clone()
     }
@@ -103,7 +114,7 @@ impl AsRef<GetMessagePublicForwards> for GetMessagePublicForwards {
     }
 }
 
-impl AsRef<GetMessagePublicForwards> for RTDGetMessagePublicForwardsBuilder {
+impl AsRef<GetMessagePublicForwards> for GetMessagePublicForwardsBuilder {
     fn as_ref(&self) -> &GetMessagePublicForwards {
         &self.inner
     }

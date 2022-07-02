@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,44 +13,81 @@ pub struct SupergroupFullInfo {
     /// Chat photo; may be null
     photo: Option<ChatPhoto>,
     /// Contains full information about a supergroup or channel
+
+    #[serde(default)]
     description: String,
     /// Number of members in the supergroup or channel; 0 if unknown
+
+    #[serde(default)]
     member_count: i32,
     /// Number of privileged users in the supergroup or channel; 0 if unknown
+
+    #[serde(default)]
     administrator_count: i32,
     /// Number of restricted users in the supergroup; 0 if unknown
+
+    #[serde(default)]
     restricted_count: i32,
     /// Number of users banned from chat; 0 if unknown
+
+    #[serde(default)]
     banned_count: i32,
     /// Chat identifier of a discussion group for the channel, or a channel, for which the supergroup is the designated discussion group; 0 if none or unknown
+
+    #[serde(default)]
     linked_chat_id: i64,
     /// Delay between consecutive sent messages for non-administrator supergroup members, in seconds
+
+    #[serde(default)]
     slow_mode_delay: i32,
     /// Time left before next message can be sent in the supergroup, in seconds. An updateSupergroupFullInfo update is not triggered when value of this field changes, but both new and old values are non-zero
+
+    #[serde(default)]
     slow_mode_delay_expires_in: f32,
     /// True, if members of the chat can be retrieved
+
+    #[serde(default)]
     can_get_members: bool,
     /// True, if the chat username can be changed
+
+    #[serde(default)]
     can_set_username: bool,
     /// True, if the supergroup sticker set can be changed
+
+    #[serde(default)]
     can_set_sticker_set: bool,
     /// True, if the supergroup location can be changed
+
+    #[serde(default)]
     can_set_location: bool,
     /// True, if the supergroup or channel statistics are available
+
+    #[serde(default)]
     can_get_statistics: bool,
     /// True, if new chat members will have access to old messages. In public or discussion groups and both public and private channels, old messages are always available, so this option affects only private supergroups without a linked chat. The value of this field is only available for chat administrators
+
+    #[serde(default)]
     is_all_history_available: bool,
     /// Identifier of the supergroup sticker set; 0 if none
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     sticker_set_id: i64,
     /// Location to which the supergroup is connected; may be null
     location: Option<ChatLocation>,
-    /// Invite link for this chat
-    invite_link: String,
+    /// Primary invite link for this chat; may be null. For chat administrators with can_invite_users right only
+    invite_link: Option<ChatInviteLink>,
+    /// List of commands of bots in the group
+
+    #[serde(default)]
+    bot_commands: Vec<BotCommands>,
     /// Identifier of the basic group from which supergroup was upgraded; 0 if none
-    upgraded_from_basic_group_id: i32,
+
+    #[serde(default)]
+    upgraded_from_basic_group_id: i64,
     /// Identifier of the last message in the basic group from which supergroup was upgraded; 0 if none
+
+    #[serde(default)]
     upgraded_from_max_message_id: i64,
 }
 
@@ -66,14 +103,14 @@ impl RObject for SupergroupFullInfo {
 }
 
 impl SupergroupFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSupergroupFullInfoBuilder {
+    pub fn builder() -> SupergroupFullInfoBuilder {
         let mut inner = SupergroupFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSupergroupFullInfoBuilder { inner }
+        SupergroupFullInfoBuilder { inner }
     }
 
     pub fn photo(&self) -> &Option<ChatPhoto> {
@@ -144,11 +181,15 @@ impl SupergroupFullInfo {
         &self.location
     }
 
-    pub fn invite_link(&self) -> &String {
+    pub fn invite_link(&self) -> &Option<ChatInviteLink> {
         &self.invite_link
     }
 
-    pub fn upgraded_from_basic_group_id(&self) -> i32 {
+    pub fn bot_commands(&self) -> &Vec<BotCommands> {
+        &self.bot_commands
+    }
+
+    pub fn upgraded_from_basic_group_id(&self) -> i64 {
         self.upgraded_from_basic_group_id
     }
 
@@ -158,11 +199,14 @@ impl SupergroupFullInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDSupergroupFullInfoBuilder {
+pub struct SupergroupFullInfoBuilder {
     inner: SupergroupFullInfo,
 }
 
-impl RTDSupergroupFullInfoBuilder {
+#[deprecated]
+pub type RTDSupergroupFullInfoBuilder = SupergroupFullInfoBuilder;
+
+impl SupergroupFullInfoBuilder {
     pub fn build(&self) -> SupergroupFullInfo {
         self.inner.clone()
     }
@@ -252,12 +296,17 @@ impl RTDSupergroupFullInfoBuilder {
         self
     }
 
-    pub fn invite_link<T: AsRef<str>>(&mut self, invite_link: T) -> &mut Self {
-        self.inner.invite_link = invite_link.as_ref().to_string();
+    pub fn invite_link<T: AsRef<ChatInviteLink>>(&mut self, invite_link: T) -> &mut Self {
+        self.inner.invite_link = Some(invite_link.as_ref().clone());
         self
     }
 
-    pub fn upgraded_from_basic_group_id(&mut self, upgraded_from_basic_group_id: i32) -> &mut Self {
+    pub fn bot_commands(&mut self, bot_commands: Vec<BotCommands>) -> &mut Self {
+        self.inner.bot_commands = bot_commands;
+        self
+    }
+
+    pub fn upgraded_from_basic_group_id(&mut self, upgraded_from_basic_group_id: i64) -> &mut Self {
         self.inner.upgraded_from_basic_group_id = upgraded_from_basic_group_id;
         self
     }
@@ -274,7 +323,7 @@ impl AsRef<SupergroupFullInfo> for SupergroupFullInfo {
     }
 }
 
-impl AsRef<SupergroupFullInfo> for RTDSupergroupFullInfoBuilder {
+impl AsRef<SupergroupFullInfo> for SupergroupFullInfoBuilder {
     fn as_ref(&self) -> &SupergroupFullInfo {
         &self.inner
     }

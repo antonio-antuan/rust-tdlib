@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,7 +10,9 @@ pub struct CheckRecoveryEmailAddressCode {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Verification code
+    /// Verification code to check
+
+    #[serde(default)]
     code: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for CheckRecoveryEmailAddressCode {
 impl RFunction for CheckRecoveryEmailAddressCode {}
 
 impl CheckRecoveryEmailAddressCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckRecoveryEmailAddressCodeBuilder {
+    pub fn builder() -> CheckRecoveryEmailAddressCodeBuilder {
         let mut inner = CheckRecoveryEmailAddressCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkRecoveryEmailAddressCode".to_string();
 
-        RTDCheckRecoveryEmailAddressCodeBuilder { inner }
+        CheckRecoveryEmailAddressCodeBuilder { inner }
     }
 
     pub fn code(&self) -> &String {
@@ -49,11 +51,14 @@ impl CheckRecoveryEmailAddressCode {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckRecoveryEmailAddressCodeBuilder {
+pub struct CheckRecoveryEmailAddressCodeBuilder {
     inner: CheckRecoveryEmailAddressCode,
 }
 
-impl RTDCheckRecoveryEmailAddressCodeBuilder {
+#[deprecated]
+pub type RTDCheckRecoveryEmailAddressCodeBuilder = CheckRecoveryEmailAddressCodeBuilder;
+
+impl CheckRecoveryEmailAddressCodeBuilder {
     pub fn build(&self) -> CheckRecoveryEmailAddressCode {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<CheckRecoveryEmailAddressCode> for CheckRecoveryEmailAddressCode {
     }
 }
 
-impl AsRef<CheckRecoveryEmailAddressCode> for RTDCheckRecoveryEmailAddressCodeBuilder {
+impl AsRef<CheckRecoveryEmailAddressCode> for CheckRecoveryEmailAddressCodeBuilder {
     fn as_ref(&self) -> &CheckRecoveryEmailAddressCode {
         &self.inner
     }

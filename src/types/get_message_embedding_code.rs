@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct GetMessageEmbeddingCode {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the message belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
     /// Pass true to return an HTML code for embedding of the whole media album
+
+    #[serde(default)]
     for_album: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +41,16 @@ impl RObject for GetMessageEmbeddingCode {
 impl RFunction for GetMessageEmbeddingCode {}
 
 impl GetMessageEmbeddingCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageEmbeddingCodeBuilder {
+    pub fn builder() -> GetMessageEmbeddingCodeBuilder {
         let mut inner = GetMessageEmbeddingCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageEmbeddingCode".to_string();
 
-        RTDGetMessageEmbeddingCodeBuilder { inner }
+        GetMessageEmbeddingCodeBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -61,11 +67,14 @@ impl GetMessageEmbeddingCode {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageEmbeddingCodeBuilder {
+pub struct GetMessageEmbeddingCodeBuilder {
     inner: GetMessageEmbeddingCode,
 }
 
-impl RTDGetMessageEmbeddingCodeBuilder {
+#[deprecated]
+pub type RTDGetMessageEmbeddingCodeBuilder = GetMessageEmbeddingCodeBuilder;
+
+impl GetMessageEmbeddingCodeBuilder {
     pub fn build(&self) -> GetMessageEmbeddingCode {
         self.inner.clone()
     }
@@ -92,7 +101,7 @@ impl AsRef<GetMessageEmbeddingCode> for GetMessageEmbeddingCode {
     }
 }
 
-impl AsRef<GetMessageEmbeddingCode> for RTDGetMessageEmbeddingCodeBuilder {
+impl AsRef<GetMessageEmbeddingCode> for GetMessageEmbeddingCodeBuilder {
     fn as_ref(&self) -> &GetMessageEmbeddingCode {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct EnableProxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Proxy identifier
+
+    #[serde(default)]
     proxy_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for EnableProxy {
 impl RFunction for EnableProxy {}
 
 impl EnableProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEnableProxyBuilder {
+    pub fn builder() -> EnableProxyBuilder {
         let mut inner = EnableProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "enableProxy".to_string();
 
-        RTDEnableProxyBuilder { inner }
+        EnableProxyBuilder { inner }
     }
 
     pub fn proxy_id(&self) -> i32 {
@@ -49,11 +51,14 @@ impl EnableProxy {
 }
 
 #[doc(hidden)]
-pub struct RTDEnableProxyBuilder {
+pub struct EnableProxyBuilder {
     inner: EnableProxy,
 }
 
-impl RTDEnableProxyBuilder {
+#[deprecated]
+pub type RTDEnableProxyBuilder = EnableProxyBuilder;
+
+impl EnableProxyBuilder {
     pub fn build(&self) -> EnableProxy {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<EnableProxy> for EnableProxy {
     }
 }
 
-impl AsRef<EnableProxy> for RTDEnableProxyBuilder {
+impl AsRef<EnableProxy> for EnableProxyBuilder {
     fn as_ref(&self) -> &EnableProxy {
         &self.inner
     }

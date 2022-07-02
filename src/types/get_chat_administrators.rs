@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetChatAdministrators {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetChatAdministrators {
 impl RFunction for GetChatAdministrators {}
 
 impl GetChatAdministrators {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatAdministratorsBuilder {
+    pub fn builder() -> GetChatAdministratorsBuilder {
         let mut inner = GetChatAdministrators::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatAdministrators".to_string();
 
-        RTDGetChatAdministratorsBuilder { inner }
+        GetChatAdministratorsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -49,11 +51,14 @@ impl GetChatAdministrators {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatAdministratorsBuilder {
+pub struct GetChatAdministratorsBuilder {
     inner: GetChatAdministrators,
 }
 
-impl RTDGetChatAdministratorsBuilder {
+#[deprecated]
+pub type RTDGetChatAdministratorsBuilder = GetChatAdministratorsBuilder;
+
+impl GetChatAdministratorsBuilder {
     pub fn build(&self) -> GetChatAdministrators {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetChatAdministrators> for GetChatAdministrators {
     }
 }
 
-impl AsRef<GetChatAdministrators> for RTDGetChatAdministratorsBuilder {
+impl AsRef<GetChatAdministrators> for GetChatAdministratorsBuilder {
     fn as_ref(&self) -> &GetChatAdministrators {
         &self.inner
     }

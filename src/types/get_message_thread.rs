@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct GetMessageThread {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for GetMessageThread {
 impl RFunction for GetMessageThread {}
 
 impl GetMessageThread {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageThreadBuilder {
+    pub fn builder() -> GetMessageThreadBuilder {
         let mut inner = GetMessageThread::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageThread".to_string();
 
-        RTDGetMessageThreadBuilder { inner }
+        GetMessageThreadBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +59,14 @@ impl GetMessageThread {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageThreadBuilder {
+pub struct GetMessageThreadBuilder {
     inner: GetMessageThread,
 }
 
-impl RTDGetMessageThreadBuilder {
+#[deprecated]
+pub type RTDGetMessageThreadBuilder = GetMessageThreadBuilder;
+
+impl GetMessageThreadBuilder {
     pub fn build(&self) -> GetMessageThread {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<GetMessageThread> for GetMessageThread {
     }
 }
 
-impl AsRef<GetMessageThread> for RTDGetMessageThreadBuilder {
+impl AsRef<GetMessageThread> for GetMessageThreadBuilder {
     fn as_ref(&self) -> &GetMessageThread {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct TestVectorString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Vector of strings
+
+    #[serde(default)]
     value: Vec<String>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for TestVectorString {
 }
 
 impl TestVectorString {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestVectorStringBuilder {
+    pub fn builder() -> TestVectorStringBuilder {
         let mut inner = TestVectorString::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTestVectorStringBuilder { inner }
+        TestVectorStringBuilder { inner }
     }
 
     pub fn value(&self) -> &Vec<String> {
@@ -42,11 +44,14 @@ impl TestVectorString {
 }
 
 #[doc(hidden)]
-pub struct RTDTestVectorStringBuilder {
+pub struct TestVectorStringBuilder {
     inner: TestVectorString,
 }
 
-impl RTDTestVectorStringBuilder {
+#[deprecated]
+pub type RTDTestVectorStringBuilder = TestVectorStringBuilder;
+
+impl TestVectorStringBuilder {
     pub fn build(&self) -> TestVectorString {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<TestVectorString> for TestVectorString {
     }
 }
 
-impl AsRef<TestVectorString> for RTDTestVectorStringBuilder {
+impl AsRef<TestVectorString> for TestVectorStringBuilder {
     fn as_ref(&self) -> &TestVectorString {
         &self.inner
     }

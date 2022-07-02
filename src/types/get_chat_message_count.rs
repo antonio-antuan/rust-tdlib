@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,16 @@ pub struct GetChatMessageCount {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which to count messages
+
+    #[serde(default)]
     chat_id: i64,
     /// Filter for message content; searchMessagesFilterEmpty is unsupported in this function
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
     /// If true, returns count that is available locally without sending network requests, returning 1 if the number of messages is unknown
+
+    #[serde(default)]
     return_local: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +41,16 @@ impl RObject for GetChatMessageCount {
 impl RFunction for GetChatMessageCount {}
 
 impl GetChatMessageCount {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatMessageCountBuilder {
+    pub fn builder() -> GetChatMessageCountBuilder {
         let mut inner = GetChatMessageCount::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatMessageCount".to_string();
 
-        RTDGetChatMessageCountBuilder { inner }
+        GetChatMessageCountBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -63,11 +67,14 @@ impl GetChatMessageCount {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatMessageCountBuilder {
+pub struct GetChatMessageCountBuilder {
     inner: GetChatMessageCount,
 }
 
-impl RTDGetChatMessageCountBuilder {
+#[deprecated]
+pub type RTDGetChatMessageCountBuilder = GetChatMessageCountBuilder;
+
+impl GetChatMessageCountBuilder {
     pub fn build(&self) -> GetChatMessageCount {
         self.inner.clone()
     }
@@ -94,7 +101,7 @@ impl AsRef<GetChatMessageCount> for GetChatMessageCount {
     }
 }
 
-impl AsRef<GetChatMessageCount> for RTDGetChatMessageCountBuilder {
+impl AsRef<GetChatMessageCount> for GetChatMessageCountBuilder {
     fn as_ref(&self) -> &GetChatMessageCount {
         &self.inner
     }

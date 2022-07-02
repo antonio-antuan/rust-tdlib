@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetDeepLinkInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The link
+
+    #[serde(default)]
     link: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetDeepLinkInfo {
 impl RFunction for GetDeepLinkInfo {}
 
 impl GetDeepLinkInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetDeepLinkInfoBuilder {
+    pub fn builder() -> GetDeepLinkInfoBuilder {
         let mut inner = GetDeepLinkInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getDeepLinkInfo".to_string();
 
-        RTDGetDeepLinkInfoBuilder { inner }
+        GetDeepLinkInfoBuilder { inner }
     }
 
     pub fn link(&self) -> &String {
@@ -49,11 +51,14 @@ impl GetDeepLinkInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDGetDeepLinkInfoBuilder {
+pub struct GetDeepLinkInfoBuilder {
     inner: GetDeepLinkInfo,
 }
 
-impl RTDGetDeepLinkInfoBuilder {
+#[deprecated]
+pub type RTDGetDeepLinkInfoBuilder = GetDeepLinkInfoBuilder;
+
+impl GetDeepLinkInfoBuilder {
     pub fn build(&self) -> GetDeepLinkInfo {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetDeepLinkInfo> for GetDeepLinkInfo {
     }
 }
 
-impl AsRef<GetDeepLinkInfo> for RTDGetDeepLinkInfoBuilder {
+impl AsRef<GetDeepLinkInfo> for GetDeepLinkInfoBuilder {
     fn as_ref(&self) -> &GetDeepLinkInfo {
         &self.inner
     }

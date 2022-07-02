@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct FoundMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Approximate total count of messages found; 1 if unknown
+
+    #[serde(default)]
     total_count: i32,
     /// List of messages
+
+    #[serde(default)]
     messages: Vec<Message>,
     /// The offset for the next request. If empty, there are no more results
+
+    #[serde(default)]
     next_offset: String,
 }
 
@@ -30,14 +36,14 @@ impl RObject for FoundMessages {
 }
 
 impl FoundMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFoundMessagesBuilder {
+    pub fn builder() -> FoundMessagesBuilder {
         let mut inner = FoundMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFoundMessagesBuilder { inner }
+        FoundMessagesBuilder { inner }
     }
 
     pub fn total_count(&self) -> i32 {
@@ -54,11 +60,14 @@ impl FoundMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDFoundMessagesBuilder {
+pub struct FoundMessagesBuilder {
     inner: FoundMessages,
 }
 
-impl RTDFoundMessagesBuilder {
+#[deprecated]
+pub type RTDFoundMessagesBuilder = FoundMessagesBuilder;
+
+impl FoundMessagesBuilder {
     pub fn build(&self) -> FoundMessages {
         self.inner.clone()
     }
@@ -85,7 +94,7 @@ impl AsRef<FoundMessages> for FoundMessages {
     }
 }
 
-impl AsRef<FoundMessages> for RTDFoundMessagesBuilder {
+impl AsRef<FoundMessages> for FoundMessagesBuilder {
     fn as_ref(&self) -> &FoundMessages {
         &self.inner
     }

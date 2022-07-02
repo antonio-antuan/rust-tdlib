@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns detailed statistics about a chat. Currently this method can be used only for supergroups and channels. Can be used only if SupergroupFullInfo.can_get_statistics == true
+/// Returns detailed statistics about a chat. Currently, this method can be used only for supergroups and channels. Can be used only if supergroupFullInfo.can_get_statistics == true
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetChatStatistics {
     #[doc(hidden)]
@@ -11,8 +11,12 @@ pub struct GetChatStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Pass true if a dark theme is used by the application
+
+    #[serde(default)]
     is_dark: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +39,16 @@ impl TDChatStatistics for GetChatStatistics {}
 impl RFunction for GetChatStatistics {}
 
 impl GetChatStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatStatisticsBuilder {
+    pub fn builder() -> GetChatStatisticsBuilder {
         let mut inner = GetChatStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatStatistics".to_string();
 
-        RTDGetChatStatisticsBuilder { inner }
+        GetChatStatisticsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -57,11 +61,14 @@ impl GetChatStatistics {
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatStatisticsBuilder {
+pub struct GetChatStatisticsBuilder {
     inner: GetChatStatistics,
 }
 
-impl RTDGetChatStatisticsBuilder {
+#[deprecated]
+pub type RTDGetChatStatisticsBuilder = GetChatStatisticsBuilder;
+
+impl GetChatStatisticsBuilder {
     pub fn build(&self) -> GetChatStatistics {
         self.inner.clone()
     }
@@ -83,7 +90,7 @@ impl AsRef<GetChatStatistics> for GetChatStatistics {
     }
 }
 
-impl AsRef<GetChatStatistics> for RTDGetChatStatisticsBuilder {
+impl AsRef<GetChatStatistics> for GetChatStatisticsBuilder {
     fn as_ref(&self) -> &GetChatStatistics {
         &self.inner
     }

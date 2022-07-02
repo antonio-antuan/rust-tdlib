@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,14 @@ pub struct EditInlineMessageText {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Inline message identifier
+
+    #[serde(default)]
     inline_message_id: String,
-    /// The new message reply markup
+    /// The new message reply markup; pass null if none
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New text content of the message. Should be of type InputMessageText
+    /// New text content of the message. Must be of type inputMessageText
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -39,16 +41,16 @@ impl RObject for EditInlineMessageText {
 impl RFunction for EditInlineMessageText {}
 
 impl EditInlineMessageText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditInlineMessageTextBuilder {
+    pub fn builder() -> EditInlineMessageTextBuilder {
         let mut inner = EditInlineMessageText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editInlineMessageText".to_string();
 
-        RTDEditInlineMessageTextBuilder { inner }
+        EditInlineMessageTextBuilder { inner }
     }
 
     pub fn inline_message_id(&self) -> &String {
@@ -65,11 +67,14 @@ impl EditInlineMessageText {
 }
 
 #[doc(hidden)]
-pub struct RTDEditInlineMessageTextBuilder {
+pub struct EditInlineMessageTextBuilder {
     inner: EditInlineMessageText,
 }
 
-impl RTDEditInlineMessageTextBuilder {
+#[deprecated]
+pub type RTDEditInlineMessageTextBuilder = EditInlineMessageTextBuilder;
+
+impl EditInlineMessageTextBuilder {
     pub fn build(&self) -> EditInlineMessageText {
         self.inner.clone()
     }
@@ -99,7 +104,7 @@ impl AsRef<EditInlineMessageText> for EditInlineMessageText {
     }
 }
 
-impl AsRef<EditInlineMessageText> for RTDEditInlineMessageTextBuilder {
+impl AsRef<EditInlineMessageText> for EditInlineMessageTextBuilder {
     fn as_ref(&self) -> &EditInlineMessageText {
         &self.inner
     }

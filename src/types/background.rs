@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,12 +13,19 @@ pub struct Background {
     /// Unique background identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// True, if this is one of default backgrounds
+
+    #[serde(default)]
     is_default: bool,
     /// True, if the background is dark and is recommended to be used with dark theme
+
+    #[serde(default)]
     is_dark: bool,
     /// Unique background name
+
+    #[serde(default)]
     name: String,
     /// Document with the background; may be null. Null only for filled backgrounds
     document: Option<Document>,
@@ -41,14 +48,14 @@ impl RObject for Background {
 }
 
 impl Background {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundBuilder {
+    pub fn builder() -> BackgroundBuilder {
         let mut inner = Background::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundBuilder { inner }
+        BackgroundBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -77,11 +84,14 @@ impl Background {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundBuilder {
+pub struct BackgroundBuilder {
     inner: Background,
 }
 
-impl RTDBackgroundBuilder {
+#[deprecated]
+pub type RTDBackgroundBuilder = BackgroundBuilder;
+
+impl BackgroundBuilder {
     pub fn build(&self) -> Background {
         self.inner.clone()
     }
@@ -123,7 +133,7 @@ impl AsRef<Background> for Background {
     }
 }
 
-impl AsRef<Background> for RTDBackgroundBuilder {
+impl AsRef<Background> for BackgroundBuilder {
     fn as_ref(&self) -> &Background {
         &self.inner
     }

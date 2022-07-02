@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file to get
+
+    #[serde(default)]
     file_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetFile {
 impl RFunction for GetFile {}
 
 impl GetFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetFileBuilder {
+    pub fn builder() -> GetFileBuilder {
         let mut inner = GetFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getFile".to_string();
 
-        RTDGetFileBuilder { inner }
+        GetFileBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -49,11 +51,14 @@ impl GetFile {
 }
 
 #[doc(hidden)]
-pub struct RTDGetFileBuilder {
+pub struct GetFileBuilder {
     inner: GetFile,
 }
 
-impl RTDGetFileBuilder {
+#[deprecated]
+pub type RTDGetFileBuilder = GetFileBuilder;
+
+impl GetFileBuilder {
     pub fn build(&self) -> GetFile {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetFile> for GetFile {
     }
 }
 
-impl AsRef<GetFile> for RTDGetFileBuilder {
+impl AsRef<GetFile> for GetFileBuilder {
     fn as_ref(&self) -> &GetFile {
         &self.inner
     }

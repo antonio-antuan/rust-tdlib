@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct SetLogVerbosityLevel {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New value of the verbosity level for logging. Value 0 corresponds to fatal errors, value 1 corresponds to errors, value 2 corresponds to warnings and debug warnings, value 3 corresponds to informational, value 4 corresponds to debug, value 5 corresponds to verbose debug, value greater than 5 and up to 1023 can be used to enable even more logging
+
+    #[serde(default)]
     new_verbosity_level: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for SetLogVerbosityLevel {
 impl RFunction for SetLogVerbosityLevel {}
 
 impl SetLogVerbosityLevel {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetLogVerbosityLevelBuilder {
+    pub fn builder() -> SetLogVerbosityLevelBuilder {
         let mut inner = SetLogVerbosityLevel::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setLogVerbosityLevel".to_string();
 
-        RTDSetLogVerbosityLevelBuilder { inner }
+        SetLogVerbosityLevelBuilder { inner }
     }
 
     pub fn new_verbosity_level(&self) -> i32 {
@@ -49,11 +51,14 @@ impl SetLogVerbosityLevel {
 }
 
 #[doc(hidden)]
-pub struct RTDSetLogVerbosityLevelBuilder {
+pub struct SetLogVerbosityLevelBuilder {
     inner: SetLogVerbosityLevel,
 }
 
-impl RTDSetLogVerbosityLevelBuilder {
+#[deprecated]
+pub type RTDSetLogVerbosityLevelBuilder = SetLogVerbosityLevelBuilder;
+
+impl SetLogVerbosityLevelBuilder {
     pub fn build(&self) -> SetLogVerbosityLevel {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<SetLogVerbosityLevel> for SetLogVerbosityLevel {
     }
 }
 
-impl AsRef<SetLogVerbosityLevel> for RTDSetLogVerbosityLevelBuilder {
+impl AsRef<SetLogVerbosityLevel> for SetLogVerbosityLevelBuilder {
     fn as_ref(&self) -> &SetLogVerbosityLevel {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct StatisticalValue {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The current value
+
+    #[serde(default)]
     value: f32,
     /// The value for the previous day
+
+    #[serde(default)]
     previous_value: f32,
     /// The growth rate of the value, as a percentage
+
+    #[serde(default)]
     growth_rate_percentage: f32,
 }
 
@@ -30,14 +36,14 @@ impl RObject for StatisticalValue {
 }
 
 impl StatisticalValue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStatisticalValueBuilder {
+    pub fn builder() -> StatisticalValueBuilder {
         let mut inner = StatisticalValue::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStatisticalValueBuilder { inner }
+        StatisticalValueBuilder { inner }
     }
 
     pub fn value(&self) -> f32 {
@@ -54,11 +60,14 @@ impl StatisticalValue {
 }
 
 #[doc(hidden)]
-pub struct RTDStatisticalValueBuilder {
+pub struct StatisticalValueBuilder {
     inner: StatisticalValue,
 }
 
-impl RTDStatisticalValueBuilder {
+#[deprecated]
+pub type RTDStatisticalValueBuilder = StatisticalValueBuilder;
+
+impl StatisticalValueBuilder {
     pub fn build(&self) -> StatisticalValue {
         self.inner.clone()
     }
@@ -85,7 +94,7 @@ impl AsRef<StatisticalValue> for StatisticalValue {
     }
 }
 
-impl AsRef<StatisticalValue> for RTDStatisticalValueBuilder {
+impl AsRef<StatisticalValue> for StatisticalValueBuilder {
     fn as_ref(&self) -> &StatisticalValue {
         &self.inner
     }

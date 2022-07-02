@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct GetCallbackQueryAnswer {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat with the message
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message from which the query originated
+
+    #[serde(default)]
     message_id: i64,
     /// Query payload
 
@@ -37,16 +41,16 @@ impl RObject for GetCallbackQueryAnswer {
 impl RFunction for GetCallbackQueryAnswer {}
 
 impl GetCallbackQueryAnswer {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetCallbackQueryAnswerBuilder {
+    pub fn builder() -> GetCallbackQueryAnswerBuilder {
         let mut inner = GetCallbackQueryAnswer::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getCallbackQueryAnswer".to_string();
 
-        RTDGetCallbackQueryAnswerBuilder { inner }
+        GetCallbackQueryAnswerBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -63,11 +67,14 @@ impl GetCallbackQueryAnswer {
 }
 
 #[doc(hidden)]
-pub struct RTDGetCallbackQueryAnswerBuilder {
+pub struct GetCallbackQueryAnswerBuilder {
     inner: GetCallbackQueryAnswer,
 }
 
-impl RTDGetCallbackQueryAnswerBuilder {
+#[deprecated]
+pub type RTDGetCallbackQueryAnswerBuilder = GetCallbackQueryAnswerBuilder;
+
+impl GetCallbackQueryAnswerBuilder {
     pub fn build(&self) -> GetCallbackQueryAnswer {
         self.inner.clone()
     }
@@ -94,7 +101,7 @@ impl AsRef<GetCallbackQueryAnswer> for GetCallbackQueryAnswer {
     }
 }
 
-impl AsRef<GetCallbackQueryAnswer> for RTDGetCallbackQueryAnswerBuilder {
+impl AsRef<GetCallbackQueryAnswer> for GetCallbackQueryAnswerBuilder {
     fn as_ref(&self) -> &GetCallbackQueryAnswer {
         &self.inner
     }

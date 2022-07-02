@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,13 +10,19 @@ pub struct PageBlockTableCell {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Cell text; may be null. If the text is null, then the cell should be invisible
+    /// Cell text; may be null. If the text is null, then the cell must be invisible
     text: Option<RichText>,
     /// True, if it is a header cell
+
+    #[serde(default)]
     is_header: bool,
-    /// The number of columns the cell should span
+    /// The number of columns the cell spans
+
+    #[serde(default)]
     colspan: i32,
-    /// The number of rows the cell should span
+    /// The number of rows the cell spans
+
+    #[serde(default)]
     rowspan: i32,
     /// Horizontal cell content alignment
 
@@ -40,14 +46,14 @@ impl RObject for PageBlockTableCell {
 }
 
 impl PageBlockTableCell {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockTableCellBuilder {
+    pub fn builder() -> PageBlockTableCellBuilder {
         let mut inner = PageBlockTableCell::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockTableCellBuilder { inner }
+        PageBlockTableCellBuilder { inner }
     }
 
     pub fn text(&self) -> &Option<RichText> {
@@ -76,11 +82,14 @@ impl PageBlockTableCell {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockTableCellBuilder {
+pub struct PageBlockTableCellBuilder {
     inner: PageBlockTableCell,
 }
 
-impl RTDPageBlockTableCellBuilder {
+#[deprecated]
+pub type RTDPageBlockTableCellBuilder = PageBlockTableCellBuilder;
+
+impl PageBlockTableCellBuilder {
     pub fn build(&self) -> PageBlockTableCell {
         self.inner.clone()
     }
@@ -122,7 +131,7 @@ impl AsRef<PageBlockTableCell> for PageBlockTableCell {
     }
 }
 
-impl AsRef<PageBlockTableCell> for RTDPageBlockTableCellBuilder {
+impl AsRef<PageBlockTableCell> for PageBlockTableCellBuilder {
     fn as_ref(&self) -> &PageBlockTableCell {
         &self.inner
     }

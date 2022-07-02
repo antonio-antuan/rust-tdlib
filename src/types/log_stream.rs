@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,16 +14,16 @@ pub enum LogStream {
     #[doc(hidden)]
     _Default,
     /// Returns information about currently used log stream for internal logging of TDLib. Can be called synchronously
-    #[serde(rename(serialize = "getLogStream", deserialize = "getLogStream"))]
+    #[serde(rename(deserialize = "getLogStream"))]
     GetLogStream(GetLogStream),
     /// The log is written to stderr or an OS specific log
-    #[serde(rename(serialize = "logStreamDefault", deserialize = "logStreamDefault"))]
+    #[serde(rename(deserialize = "logStreamDefault"))]
     Default(LogStreamDefault),
     /// The log is written nowhere
-    #[serde(rename(serialize = "logStreamEmpty", deserialize = "logStreamEmpty"))]
+    #[serde(rename(deserialize = "logStreamEmpty"))]
     Empty(LogStreamEmpty),
     /// The log is written to a file
-    #[serde(rename(serialize = "logStreamFile", deserialize = "logStreamFile"))]
+    #[serde(rename(deserialize = "logStreamFile"))]
     File(LogStreamFile),
 }
 
@@ -59,7 +59,7 @@ impl RObject for LogStream {
 }
 
 impl LogStream {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -98,23 +98,26 @@ impl RObject for LogStreamDefault {
 impl TDLogStream for LogStreamDefault {}
 
 impl LogStreamDefault {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLogStreamDefaultBuilder {
+    pub fn builder() -> LogStreamDefaultBuilder {
         let mut inner = LogStreamDefault::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLogStreamDefaultBuilder { inner }
+        LogStreamDefaultBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDLogStreamDefaultBuilder {
+pub struct LogStreamDefaultBuilder {
     inner: LogStreamDefault,
 }
 
-impl RTDLogStreamDefaultBuilder {
+#[deprecated]
+pub type RTDLogStreamDefaultBuilder = LogStreamDefaultBuilder;
+
+impl LogStreamDefaultBuilder {
     pub fn build(&self) -> LogStreamDefault {
         self.inner.clone()
     }
@@ -126,7 +129,7 @@ impl AsRef<LogStreamDefault> for LogStreamDefault {
     }
 }
 
-impl AsRef<LogStreamDefault> for RTDLogStreamDefaultBuilder {
+impl AsRef<LogStreamDefault> for LogStreamDefaultBuilder {
     fn as_ref(&self) -> &LogStreamDefault {
         &self.inner
     }
@@ -156,23 +159,26 @@ impl RObject for LogStreamEmpty {
 impl TDLogStream for LogStreamEmpty {}
 
 impl LogStreamEmpty {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLogStreamEmptyBuilder {
+    pub fn builder() -> LogStreamEmptyBuilder {
         let mut inner = LogStreamEmpty::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLogStreamEmptyBuilder { inner }
+        LogStreamEmptyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDLogStreamEmptyBuilder {
+pub struct LogStreamEmptyBuilder {
     inner: LogStreamEmpty,
 }
 
-impl RTDLogStreamEmptyBuilder {
+#[deprecated]
+pub type RTDLogStreamEmptyBuilder = LogStreamEmptyBuilder;
+
+impl LogStreamEmptyBuilder {
     pub fn build(&self) -> LogStreamEmpty {
         self.inner.clone()
     }
@@ -184,7 +190,7 @@ impl AsRef<LogStreamEmpty> for LogStreamEmpty {
     }
 }
 
-impl AsRef<LogStreamEmpty> for RTDLogStreamEmptyBuilder {
+impl AsRef<LogStreamEmpty> for LogStreamEmptyBuilder {
     fn as_ref(&self) -> &LogStreamEmpty {
         &self.inner
     }
@@ -199,10 +205,16 @@ pub struct LogStreamFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Path to the file to where the internal TDLib log will be written
+
+    #[serde(default)]
     path: String,
-    /// The maximum size of the file to where the internal TDLib log is written before the file will be auto-rotated
+    /// The maximum size of the file to where the internal TDLib log is written before the file will automatically be rotated, in bytes
+
+    #[serde(default)]
     max_file_size: i64,
     /// Pass true to additionally redirect stderr to the log file. Ignored on Windows
+
+    #[serde(default)]
     redirect_stderr: bool,
 }
 
@@ -220,14 +232,14 @@ impl RObject for LogStreamFile {
 impl TDLogStream for LogStreamFile {}
 
 impl LogStreamFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLogStreamFileBuilder {
+    pub fn builder() -> LogStreamFileBuilder {
         let mut inner = LogStreamFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLogStreamFileBuilder { inner }
+        LogStreamFileBuilder { inner }
     }
 
     pub fn path(&self) -> &String {
@@ -244,11 +256,14 @@ impl LogStreamFile {
 }
 
 #[doc(hidden)]
-pub struct RTDLogStreamFileBuilder {
+pub struct LogStreamFileBuilder {
     inner: LogStreamFile,
 }
 
-impl RTDLogStreamFileBuilder {
+#[deprecated]
+pub type RTDLogStreamFileBuilder = LogStreamFileBuilder;
+
+impl LogStreamFileBuilder {
     pub fn build(&self) -> LogStreamFile {
         self.inner.clone()
     }
@@ -275,7 +290,7 @@ impl AsRef<LogStreamFile> for LogStreamFile {
     }
 }
 
-impl AsRef<LogStreamFile> for RTDLogStreamFileBuilder {
+impl AsRef<LogStreamFile> for LogStreamFileBuilder {
     fn as_ref(&self) -> &LogStreamFile {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,17 @@ pub struct GetArchivedStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to return mask stickers sets; pass false to return ordinary sticker sets
+
+    #[serde(default)]
     is_masks: bool,
     /// Identifier of the sticker set from which to return the result
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     offset_sticker_set_id: i64,
-    /// The maximum number of sticker sets to return
+    /// The maximum number of sticker sets to return; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +42,16 @@ impl RObject for GetArchivedStickerSets {
 impl RFunction for GetArchivedStickerSets {}
 
 impl GetArchivedStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetArchivedStickerSetsBuilder {
+    pub fn builder() -> GetArchivedStickerSetsBuilder {
         let mut inner = GetArchivedStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getArchivedStickerSets".to_string();
 
-        RTDGetArchivedStickerSetsBuilder { inner }
+        GetArchivedStickerSetsBuilder { inner }
     }
 
     pub fn is_masks(&self) -> bool {
@@ -63,11 +68,14 @@ impl GetArchivedStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDGetArchivedStickerSetsBuilder {
+pub struct GetArchivedStickerSetsBuilder {
     inner: GetArchivedStickerSets,
 }
 
-impl RTDGetArchivedStickerSetsBuilder {
+#[deprecated]
+pub type RTDGetArchivedStickerSetsBuilder = GetArchivedStickerSetsBuilder;
+
+impl GetArchivedStickerSetsBuilder {
     pub fn build(&self) -> GetArchivedStickerSets {
         self.inner.clone()
     }
@@ -94,7 +102,7 @@ impl AsRef<GetArchivedStickerSets> for GetArchivedStickerSets {
     }
 }
 
-impl AsRef<GetArchivedStickerSets> for RTDGetArchivedStickerSetsBuilder {
+impl AsRef<GetArchivedStickerSets> for GetArchivedStickerSetsBuilder {
     fn as_ref(&self) -> &GetArchivedStickerSets {
         &self.inner
     }

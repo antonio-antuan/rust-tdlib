@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches public chats by looking for specified query in their username and title. Currently only private chats, supergroups and channels can be public. Returns a meaningful number of results. Returns nothing if the length of the searched username prefix is less than 5. Excludes private chats with contacts and chats from the chat list from the results
+/// Searches public chats by looking for specified query in their username and title. Currently, only private chats, supergroups and channels can be public. Returns a meaningful number of results. Excludes private chats with contacts and chats from the chat list from the results
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchPublicChats {
     #[doc(hidden)]
@@ -11,6 +11,8 @@ pub struct SearchPublicChats {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for SearchPublicChats {
 impl RFunction for SearchPublicChats {}
 
 impl SearchPublicChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchPublicChatsBuilder {
+    pub fn builder() -> SearchPublicChatsBuilder {
         let mut inner = SearchPublicChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchPublicChats".to_string();
 
-        RTDSearchPublicChatsBuilder { inner }
+        SearchPublicChatsBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -49,11 +51,14 @@ impl SearchPublicChats {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchPublicChatsBuilder {
+pub struct SearchPublicChatsBuilder {
     inner: SearchPublicChats,
 }
 
-impl RTDSearchPublicChatsBuilder {
+#[deprecated]
+pub type RTDSearchPublicChatsBuilder = SearchPublicChatsBuilder;
+
+impl SearchPublicChatsBuilder {
     pub fn build(&self) -> SearchPublicChats {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<SearchPublicChats> for SearchPublicChats {
     }
 }
 
-impl AsRef<SearchPublicChats> for RTDSearchPublicChatsBuilder {
+impl AsRef<SearchPublicChats> for SearchPublicChatsBuilder {
     fn as_ref(&self) -> &SearchPublicChats {
         &self.inner
     }

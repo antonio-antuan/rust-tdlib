@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,25 +31,28 @@ impl TDAuthorizationState for GetAuthorizationState {}
 impl RFunction for GetAuthorizationState {}
 
 impl GetAuthorizationState {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetAuthorizationStateBuilder {
+    pub fn builder() -> GetAuthorizationStateBuilder {
         let mut inner = GetAuthorizationState::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getAuthorizationState".to_string();
 
-        RTDGetAuthorizationStateBuilder { inner }
+        GetAuthorizationStateBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetAuthorizationStateBuilder {
+pub struct GetAuthorizationStateBuilder {
     inner: GetAuthorizationState,
 }
 
-impl RTDGetAuthorizationStateBuilder {
+#[deprecated]
+pub type RTDGetAuthorizationStateBuilder = GetAuthorizationStateBuilder;
+
+impl GetAuthorizationStateBuilder {
     pub fn build(&self) -> GetAuthorizationState {
         self.inner.clone()
     }
@@ -61,7 +64,7 @@ impl AsRef<GetAuthorizationState> for GetAuthorizationState {
     }
 }
 
-impl AsRef<GetAuthorizationState> for RTDGetAuthorizationStateBuilder {
+impl AsRef<GetAuthorizationState> for GetAuthorizationStateBuilder {
     fn as_ref(&self) -> &GetAuthorizationState {
         &self.inner
     }

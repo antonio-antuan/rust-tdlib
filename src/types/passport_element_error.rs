@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -16,6 +16,8 @@ pub struct PassportElementError {
     #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
     /// Error message
+
+    #[serde(default)]
     message: String,
     /// Error source
 
@@ -35,14 +37,14 @@ impl RObject for PassportElementError {
 }
 
 impl PassportElementError {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorBuilder {
+    pub fn builder() -> PassportElementErrorBuilder {
         let mut inner = PassportElementError::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorBuilder { inner }
+        PassportElementErrorBuilder { inner }
     }
 
     pub fn type_(&self) -> &PassportElementType {
@@ -59,11 +61,14 @@ impl PassportElementError {
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorBuilder {
+pub struct PassportElementErrorBuilder {
     inner: PassportElementError,
 }
 
-impl RTDPassportElementErrorBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorBuilder = PassportElementErrorBuilder;
+
+impl PassportElementErrorBuilder {
     pub fn build(&self) -> PassportElementError {
         self.inner.clone()
     }
@@ -90,7 +95,7 @@ impl AsRef<PassportElementError> for PassportElementError {
     }
 }
 
-impl AsRef<PassportElementError> for RTDPassportElementErrorBuilder {
+impl AsRef<PassportElementError> for PassportElementErrorBuilder {
     fn as_ref(&self) -> &PassportElementError {
         &self.inner
     }

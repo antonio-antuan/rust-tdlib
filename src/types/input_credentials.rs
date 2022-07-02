@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,26 +13,17 @@ pub trait TDInputCredentials: Debug + RObject {}
 pub enum InputCredentials {
     #[doc(hidden)]
     _Default,
-    /// Applies if a user enters new credentials using Android Pay
-    #[serde(rename(
-        serialize = "inputCredentialsAndroidPay",
-        deserialize = "inputCredentialsAndroidPay"
-    ))]
-    AndroidPay(InputCredentialsAndroidPay),
     /// Applies if a user enters new credentials using Apple Pay
-    #[serde(rename(
-        serialize = "inputCredentialsApplePay",
-        deserialize = "inputCredentialsApplePay"
-    ))]
+    #[serde(rename(deserialize = "inputCredentialsApplePay"))]
     ApplePay(InputCredentialsApplePay),
+    /// Applies if a user enters new credentials using Google Pay
+    #[serde(rename(deserialize = "inputCredentialsGooglePay"))]
+    GooglePay(InputCredentialsGooglePay),
     /// Applies if a user enters new credentials on a payment provider website
-    #[serde(rename(serialize = "inputCredentialsNew", deserialize = "inputCredentialsNew"))]
+    #[serde(rename(deserialize = "inputCredentialsNew"))]
     New(InputCredentialsNew),
     /// Applies if a user chooses some previously saved payment credentials. To use their previously saved credentials, the user must have a valid temporary password
-    #[serde(rename(
-        serialize = "inputCredentialsSaved",
-        deserialize = "inputCredentialsSaved"
-    ))]
+    #[serde(rename(deserialize = "inputCredentialsSaved"))]
     Saved(InputCredentialsSaved),
 }
 
@@ -46,8 +37,8 @@ impl RObject for InputCredentials {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         match self {
-            InputCredentials::AndroidPay(t) => t.extra(),
             InputCredentials::ApplePay(t) => t.extra(),
+            InputCredentials::GooglePay(t) => t.extra(),
             InputCredentials::New(t) => t.extra(),
             InputCredentials::Saved(t) => t.extra(),
 
@@ -57,8 +48,8 @@ impl RObject for InputCredentials {
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         match self {
-            InputCredentials::AndroidPay(t) => t.client_id(),
             InputCredentials::ApplePay(t) => t.client_id(),
+            InputCredentials::GooglePay(t) => t.client_id(),
             InputCredentials::New(t) => t.client_id(),
             InputCredentials::Saved(t) => t.client_id(),
 
@@ -68,7 +59,7 @@ impl RObject for InputCredentials {
 }
 
 impl InputCredentials {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -83,75 +74,6 @@ impl AsRef<InputCredentials> for InputCredentials {
     }
 }
 
-/// Applies if a user enters new credentials using Android Pay
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct InputCredentialsAndroidPay {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-    /// JSON-encoded data with the credential identifier
-    data: String,
-}
-
-impl RObject for InputCredentialsAndroidPay {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDInputCredentials for InputCredentialsAndroidPay {}
-
-impl InputCredentialsAndroidPay {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDInputCredentialsAndroidPayBuilder {
-        let mut inner = InputCredentialsAndroidPay::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDInputCredentialsAndroidPayBuilder { inner }
-    }
-
-    pub fn data(&self) -> &String {
-        &self.data
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDInputCredentialsAndroidPayBuilder {
-    inner: InputCredentialsAndroidPay,
-}
-
-impl RTDInputCredentialsAndroidPayBuilder {
-    pub fn build(&self) -> InputCredentialsAndroidPay {
-        self.inner.clone()
-    }
-
-    pub fn data<T: AsRef<str>>(&mut self, data: T) -> &mut Self {
-        self.inner.data = data.as_ref().to_string();
-        self
-    }
-}
-
-impl AsRef<InputCredentialsAndroidPay> for InputCredentialsAndroidPay {
-    fn as_ref(&self) -> &InputCredentialsAndroidPay {
-        self
-    }
-}
-
-impl AsRef<InputCredentialsAndroidPay> for RTDInputCredentialsAndroidPayBuilder {
-    fn as_ref(&self) -> &InputCredentialsAndroidPay {
-        &self.inner
-    }
-}
-
 /// Applies if a user enters new credentials using Apple Pay
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputCredentialsApplePay {
@@ -161,6 +83,8 @@ pub struct InputCredentialsApplePay {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// JSON-encoded data with the credential identifier
+
+    #[serde(default)]
     data: String,
 }
 
@@ -178,14 +102,14 @@ impl RObject for InputCredentialsApplePay {
 impl TDInputCredentials for InputCredentialsApplePay {}
 
 impl InputCredentialsApplePay {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputCredentialsApplePayBuilder {
+    pub fn builder() -> InputCredentialsApplePayBuilder {
         let mut inner = InputCredentialsApplePay::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputCredentialsApplePayBuilder { inner }
+        InputCredentialsApplePayBuilder { inner }
     }
 
     pub fn data(&self) -> &String {
@@ -194,11 +118,14 @@ impl InputCredentialsApplePay {
 }
 
 #[doc(hidden)]
-pub struct RTDInputCredentialsApplePayBuilder {
+pub struct InputCredentialsApplePayBuilder {
     inner: InputCredentialsApplePay,
 }
 
-impl RTDInputCredentialsApplePayBuilder {
+#[deprecated]
+pub type RTDInputCredentialsApplePayBuilder = InputCredentialsApplePayBuilder;
+
+impl InputCredentialsApplePayBuilder {
     pub fn build(&self) -> InputCredentialsApplePay {
         self.inner.clone()
     }
@@ -215,8 +142,82 @@ impl AsRef<InputCredentialsApplePay> for InputCredentialsApplePay {
     }
 }
 
-impl AsRef<InputCredentialsApplePay> for RTDInputCredentialsApplePayBuilder {
+impl AsRef<InputCredentialsApplePay> for InputCredentialsApplePayBuilder {
     fn as_ref(&self) -> &InputCredentialsApplePay {
+        &self.inner
+    }
+}
+
+/// Applies if a user enters new credentials using Google Pay
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct InputCredentialsGooglePay {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// JSON-encoded data with the credential identifier
+
+    #[serde(default)]
+    data: String,
+}
+
+impl RObject for InputCredentialsGooglePay {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDInputCredentials for InputCredentialsGooglePay {}
+
+impl InputCredentialsGooglePay {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> InputCredentialsGooglePayBuilder {
+        let mut inner = InputCredentialsGooglePay::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        InputCredentialsGooglePayBuilder { inner }
+    }
+
+    pub fn data(&self) -> &String {
+        &self.data
+    }
+}
+
+#[doc(hidden)]
+pub struct InputCredentialsGooglePayBuilder {
+    inner: InputCredentialsGooglePay,
+}
+
+#[deprecated]
+pub type RTDInputCredentialsGooglePayBuilder = InputCredentialsGooglePayBuilder;
+
+impl InputCredentialsGooglePayBuilder {
+    pub fn build(&self) -> InputCredentialsGooglePay {
+        self.inner.clone()
+    }
+
+    pub fn data<T: AsRef<str>>(&mut self, data: T) -> &mut Self {
+        self.inner.data = data.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<InputCredentialsGooglePay> for InputCredentialsGooglePay {
+    fn as_ref(&self) -> &InputCredentialsGooglePay {
+        self
+    }
+}
+
+impl AsRef<InputCredentialsGooglePay> for InputCredentialsGooglePayBuilder {
+    fn as_ref(&self) -> &InputCredentialsGooglePay {
         &self.inner
     }
 }
@@ -229,9 +230,13 @@ pub struct InputCredentialsNew {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Contains JSON-encoded data with a credential identifier from the payment provider
+    /// JSON-encoded data with the credential identifier from the payment provider
+
+    #[serde(default)]
     data: String,
     /// True, if the credential identifier can be saved on the server side
+
+    #[serde(default)]
     allow_save: bool,
 }
 
@@ -249,14 +254,14 @@ impl RObject for InputCredentialsNew {
 impl TDInputCredentials for InputCredentialsNew {}
 
 impl InputCredentialsNew {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputCredentialsNewBuilder {
+    pub fn builder() -> InputCredentialsNewBuilder {
         let mut inner = InputCredentialsNew::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputCredentialsNewBuilder { inner }
+        InputCredentialsNewBuilder { inner }
     }
 
     pub fn data(&self) -> &String {
@@ -269,11 +274,14 @@ impl InputCredentialsNew {
 }
 
 #[doc(hidden)]
-pub struct RTDInputCredentialsNewBuilder {
+pub struct InputCredentialsNewBuilder {
     inner: InputCredentialsNew,
 }
 
-impl RTDInputCredentialsNewBuilder {
+#[deprecated]
+pub type RTDInputCredentialsNewBuilder = InputCredentialsNewBuilder;
+
+impl InputCredentialsNewBuilder {
     pub fn build(&self) -> InputCredentialsNew {
         self.inner.clone()
     }
@@ -295,7 +303,7 @@ impl AsRef<InputCredentialsNew> for InputCredentialsNew {
     }
 }
 
-impl AsRef<InputCredentialsNew> for RTDInputCredentialsNewBuilder {
+impl AsRef<InputCredentialsNew> for InputCredentialsNewBuilder {
     fn as_ref(&self) -> &InputCredentialsNew {
         &self.inner
     }
@@ -310,6 +318,8 @@ pub struct InputCredentialsSaved {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the saved credentials
+
+    #[serde(default)]
     saved_credentials_id: String,
 }
 
@@ -327,14 +337,14 @@ impl RObject for InputCredentialsSaved {
 impl TDInputCredentials for InputCredentialsSaved {}
 
 impl InputCredentialsSaved {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputCredentialsSavedBuilder {
+    pub fn builder() -> InputCredentialsSavedBuilder {
         let mut inner = InputCredentialsSaved::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputCredentialsSavedBuilder { inner }
+        InputCredentialsSavedBuilder { inner }
     }
 
     pub fn saved_credentials_id(&self) -> &String {
@@ -343,11 +353,14 @@ impl InputCredentialsSaved {
 }
 
 #[doc(hidden)]
-pub struct RTDInputCredentialsSavedBuilder {
+pub struct InputCredentialsSavedBuilder {
     inner: InputCredentialsSaved,
 }
 
-impl RTDInputCredentialsSavedBuilder {
+#[deprecated]
+pub type RTDInputCredentialsSavedBuilder = InputCredentialsSavedBuilder;
+
+impl InputCredentialsSavedBuilder {
     pub fn build(&self) -> InputCredentialsSaved {
         self.inner.clone()
     }
@@ -364,7 +377,7 @@ impl AsRef<InputCredentialsSaved> for InputCredentialsSaved {
     }
 }
 
-impl AsRef<InputCredentialsSaved> for RTDInputCredentialsSavedBuilder {
+impl AsRef<InputCredentialsSaved> for InputCredentialsSavedBuilder {
     fn as_ref(&self) -> &InputCredentialsSaved {
         &self.inner
     }

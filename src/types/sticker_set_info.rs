@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,28 +13,53 @@ pub struct StickerSetInfo {
     /// Identifier of the sticker set
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Title of the sticker set
+
+    #[serde(default)]
     title: String,
     /// Name of the sticker set
+
+    #[serde(default)]
     name: String,
     /// Sticker set thumbnail in WEBP or TGS format with width and height 100; may be null
     thumbnail: Option<Thumbnail>,
-    /// True, if the sticker set has been installed by current user
+    /// Sticker set thumbnail's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
+
+    #[serde(default)]
+    thumbnail_outline: Vec<ClosedVectorPath>,
+    /// True, if the sticker set has been installed by the current user
+
+    #[serde(default)]
     is_installed: bool,
     /// True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
+
+    #[serde(default)]
     is_archived: bool,
     /// True, if the sticker set is official
+
+    #[serde(default)]
     is_official: bool,
     /// True, is the stickers in the set are animated
+
+    #[serde(default)]
     is_animated: bool,
     /// True, if the stickers in the set are masks
+
+    #[serde(default)]
     is_masks: bool,
     /// True for already viewed trending sticker sets
+
+    #[serde(default)]
     is_viewed: bool,
     /// Total number of stickers in the set
+
+    #[serde(default)]
     size: i32,
-    /// Contains up to the first 5 stickers from the set, depending on the context. If the application needs more stickers the full set should be requested
+    /// Up to the first 5 stickers from the set, depending on the context. If the application needs more stickers the full sticker set needs to be requested
+
+    #[serde(default)]
     covers: Vec<Sticker>,
 }
 
@@ -50,14 +75,14 @@ impl RObject for StickerSetInfo {
 }
 
 impl StickerSetInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStickerSetInfoBuilder {
+    pub fn builder() -> StickerSetInfoBuilder {
         let mut inner = StickerSetInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDStickerSetInfoBuilder { inner }
+        StickerSetInfoBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -74,6 +99,10 @@ impl StickerSetInfo {
 
     pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
+    }
+
+    pub fn thumbnail_outline(&self) -> &Vec<ClosedVectorPath> {
+        &self.thumbnail_outline
     }
 
     pub fn is_installed(&self) -> bool {
@@ -110,11 +139,14 @@ impl StickerSetInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDStickerSetInfoBuilder {
+pub struct StickerSetInfoBuilder {
     inner: StickerSetInfo,
 }
 
-impl RTDStickerSetInfoBuilder {
+#[deprecated]
+pub type RTDStickerSetInfoBuilder = StickerSetInfoBuilder;
+
+impl StickerSetInfoBuilder {
     pub fn build(&self) -> StickerSetInfo {
         self.inner.clone()
     }
@@ -136,6 +168,11 @@ impl RTDStickerSetInfoBuilder {
 
     pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
+        self
+    }
+
+    pub fn thumbnail_outline(&mut self, thumbnail_outline: Vec<ClosedVectorPath>) -> &mut Self {
+        self.inner.thumbnail_outline = thumbnail_outline;
         self
     }
 
@@ -186,7 +223,7 @@ impl AsRef<StickerSetInfo> for StickerSetInfo {
     }
 }
 
-impl AsRef<StickerSetInfo> for RTDStickerSetInfoBuilder {
+impl AsRef<StickerSetInfo> for StickerSetInfoBuilder {
     fn as_ref(&self) -> &StickerSetInfo {
         &self.inner
     }

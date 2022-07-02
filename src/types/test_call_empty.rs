@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for TestCallEmpty {
 impl RFunction for TestCallEmpty {}
 
 impl TestCallEmpty {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestCallEmptyBuilder {
+    pub fn builder() -> TestCallEmptyBuilder {
         let mut inner = TestCallEmpty::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "testCallEmpty".to_string();
 
-        RTDTestCallEmptyBuilder { inner }
+        TestCallEmptyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTestCallEmptyBuilder {
+pub struct TestCallEmptyBuilder {
     inner: TestCallEmpty,
 }
 
-impl RTDTestCallEmptyBuilder {
+#[deprecated]
+pub type RTDTestCallEmptyBuilder = TestCallEmptyBuilder;
+
+impl TestCallEmptyBuilder {
     pub fn build(&self) -> TestCallEmpty {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<TestCallEmpty> for TestCallEmpty {
     }
 }
 
-impl AsRef<TestCallEmpty> for RTDTestCallEmptyBuilder {
+impl AsRef<TestCallEmpty> for TestCallEmptyBuilder {
     fn as_ref(&self) -> &TestCallEmpty {
         &self.inner
     }

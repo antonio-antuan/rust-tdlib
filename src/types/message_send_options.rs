@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct MessageSendOptions {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to disable notification for the message
+
+    #[serde(default)]
     disable_notification: bool,
     /// Pass true if the message is sent from the background
+
+    #[serde(default)]
     from_background: bool,
-    /// Message scheduling state. Messages sent to a secret chat, live location messages and self-destructing messages can't be scheduled
+    /// Message scheduling state; pass null to send message immediately. Messages sent to a secret chat, live location messages and self-destructing messages can't be scheduled
 
     #[serde(skip_serializing_if = "MessageSchedulingState::_is_default")]
     scheduling_state: MessageSchedulingState,
@@ -32,14 +36,14 @@ impl RObject for MessageSendOptions {
 }
 
 impl MessageSendOptions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSendOptionsBuilder {
+    pub fn builder() -> MessageSendOptionsBuilder {
         let mut inner = MessageSendOptions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSendOptionsBuilder { inner }
+        MessageSendOptionsBuilder { inner }
     }
 
     pub fn disable_notification(&self) -> bool {
@@ -56,11 +60,14 @@ impl MessageSendOptions {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSendOptionsBuilder {
+pub struct MessageSendOptionsBuilder {
     inner: MessageSendOptions,
 }
 
-impl RTDMessageSendOptionsBuilder {
+#[deprecated]
+pub type RTDMessageSendOptionsBuilder = MessageSendOptionsBuilder;
+
+impl MessageSendOptionsBuilder {
     pub fn build(&self) -> MessageSendOptions {
         self.inner.clone()
     }
@@ -90,7 +97,7 @@ impl AsRef<MessageSendOptions> for MessageSendOptions {
     }
 }
 
-impl AsRef<MessageSendOptions> for RTDMessageSendOptionsBuilder {
+impl AsRef<MessageSendOptions> for MessageSendOptionsBuilder {
     fn as_ref(&self) -> &MessageSendOptions {
         &self.inner
     }

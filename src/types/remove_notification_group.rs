@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct RemoveNotificationGroup {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Notification group identifier
+
+    #[serde(default)]
     notification_group_id: i32,
     /// The maximum identifier of removed notifications
+
+    #[serde(default)]
     max_notification_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for RemoveNotificationGroup {
 impl RFunction for RemoveNotificationGroup {}
 
 impl RemoveNotificationGroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveNotificationGroupBuilder {
+    pub fn builder() -> RemoveNotificationGroupBuilder {
         let mut inner = RemoveNotificationGroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeNotificationGroup".to_string();
 
-        RTDRemoveNotificationGroupBuilder { inner }
+        RemoveNotificationGroupBuilder { inner }
     }
 
     pub fn notification_group_id(&self) -> i32 {
@@ -55,11 +59,14 @@ impl RemoveNotificationGroup {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveNotificationGroupBuilder {
+pub struct RemoveNotificationGroupBuilder {
     inner: RemoveNotificationGroup,
 }
 
-impl RTDRemoveNotificationGroupBuilder {
+#[deprecated]
+pub type RTDRemoveNotificationGroupBuilder = RemoveNotificationGroupBuilder;
+
+impl RemoveNotificationGroupBuilder {
     pub fn build(&self) -> RemoveNotificationGroup {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<RemoveNotificationGroup> for RemoveNotificationGroup {
     }
 }
 
-impl AsRef<RemoveNotificationGroup> for RTDRemoveNotificationGroupBuilder {
+impl AsRef<RemoveNotificationGroup> for RemoveNotificationGroupBuilder {
     fn as_ref(&self) -> &RemoveNotificationGroup {
         &self.inner
     }

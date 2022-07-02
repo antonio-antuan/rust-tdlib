@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct Animations {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of animations
+
+    #[serde(default)]
     animations: Vec<Animation>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for Animations {
 }
 
 impl Animations {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAnimationsBuilder {
+    pub fn builder() -> AnimationsBuilder {
         let mut inner = Animations::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDAnimationsBuilder { inner }
+        AnimationsBuilder { inner }
     }
 
     pub fn animations(&self) -> &Vec<Animation> {
@@ -42,11 +44,14 @@ impl Animations {
 }
 
 #[doc(hidden)]
-pub struct RTDAnimationsBuilder {
+pub struct AnimationsBuilder {
     inner: Animations,
 }
 
-impl RTDAnimationsBuilder {
+#[deprecated]
+pub type RTDAnimationsBuilder = AnimationsBuilder;
+
+impl AnimationsBuilder {
     pub fn build(&self) -> Animations {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<Animations> for Animations {
     }
 }
 
-impl AsRef<Animations> for RTDAnimationsBuilder {
+impl AsRef<Animations> for AnimationsBuilder {
     fn as_ref(&self) -> &Animations {
         &self.inner
     }

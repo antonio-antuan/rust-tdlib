@@ -1,26 +1,23 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Describes the way the text should be parsed for TextEntities
+/// Describes the way the text needs to be parsed for TextEntities
 pub trait TDTextParseMode: Debug + RObject {}
 
-/// Describes the way the text should be parsed for TextEntities
+/// Describes the way the text needs to be parsed for TextEntities
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(tag = "@type")]
 pub enum TextParseMode {
     #[doc(hidden)]
     _Default,
     /// The text uses HTML-style formatting. The same as Telegram Bot API "HTML" parse mode
-    #[serde(rename(serialize = "textParseModeHTML", deserialize = "textParseModeHTML"))]
+    #[serde(rename(deserialize = "textParseModeHTML"))]
     HTML(TextParseModeHTML),
     /// The text uses Markdown-style formatting
-    #[serde(rename(
-        serialize = "textParseModeMarkdown",
-        deserialize = "textParseModeMarkdown"
-    ))]
+    #[serde(rename(deserialize = "textParseModeMarkdown"))]
     Markdown(TextParseModeMarkdown),
 }
 
@@ -52,7 +49,7 @@ impl RObject for TextParseMode {
 }
 
 impl TextParseMode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -91,23 +88,26 @@ impl RObject for TextParseModeHTML {
 impl TDTextParseMode for TextParseModeHTML {}
 
 impl TextParseModeHTML {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextParseModeHTMLBuilder {
+    pub fn builder() -> TextParseModeHTMLBuilder {
         let mut inner = TextParseModeHTML::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextParseModeHTMLBuilder { inner }
+        TextParseModeHTMLBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTextParseModeHTMLBuilder {
+pub struct TextParseModeHTMLBuilder {
     inner: TextParseModeHTML,
 }
 
-impl RTDTextParseModeHTMLBuilder {
+#[deprecated]
+pub type RTDTextParseModeHTMLBuilder = TextParseModeHTMLBuilder;
+
+impl TextParseModeHTMLBuilder {
     pub fn build(&self) -> TextParseModeHTML {
         self.inner.clone()
     }
@@ -119,7 +119,7 @@ impl AsRef<TextParseModeHTML> for TextParseModeHTML {
     }
 }
 
-impl AsRef<TextParseModeHTML> for RTDTextParseModeHTMLBuilder {
+impl AsRef<TextParseModeHTML> for TextParseModeHTMLBuilder {
     fn as_ref(&self) -> &TextParseModeHTML {
         &self.inner
     }
@@ -134,6 +134,8 @@ pub struct TextParseModeMarkdown {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Version of the parser: 0 or 1  Telegram Bot API "Markdown" parse mode, 2  Telegram Bot API "MarkdownV2" parse mode
+
+    #[serde(default)]
     version: i32,
 }
 
@@ -151,14 +153,14 @@ impl RObject for TextParseModeMarkdown {
 impl TDTextParseMode for TextParseModeMarkdown {}
 
 impl TextParseModeMarkdown {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTextParseModeMarkdownBuilder {
+    pub fn builder() -> TextParseModeMarkdownBuilder {
         let mut inner = TextParseModeMarkdown::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTextParseModeMarkdownBuilder { inner }
+        TextParseModeMarkdownBuilder { inner }
     }
 
     pub fn version(&self) -> i32 {
@@ -167,11 +169,14 @@ impl TextParseModeMarkdown {
 }
 
 #[doc(hidden)]
-pub struct RTDTextParseModeMarkdownBuilder {
+pub struct TextParseModeMarkdownBuilder {
     inner: TextParseModeMarkdown,
 }
 
-impl RTDTextParseModeMarkdownBuilder {
+#[deprecated]
+pub type RTDTextParseModeMarkdownBuilder = TextParseModeMarkdownBuilder;
+
+impl TextParseModeMarkdownBuilder {
     pub fn build(&self) -> TextParseModeMarkdown {
         self.inner.clone()
     }
@@ -188,7 +193,7 @@ impl AsRef<TextParseModeMarkdown> for TextParseModeMarkdown {
     }
 }
 
-impl AsRef<TextParseModeMarkdown> for RTDTextParseModeMarkdownBuilder {
+impl AsRef<TextParseModeMarkdown> for TextParseModeMarkdownBuilder {
     fn as_ref(&self) -> &TextParseModeMarkdown {
         &self.inner
     }

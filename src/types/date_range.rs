@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct DateRange {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) at which the date range begins
+
+    #[serde(default)]
     start_date: i32,
     /// Point in time (Unix timestamp) at which the date range ends
+
+    #[serde(default)]
     end_date: i32,
 }
 
@@ -28,14 +32,14 @@ impl RObject for DateRange {
 }
 
 impl DateRange {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDateRangeBuilder {
+    pub fn builder() -> DateRangeBuilder {
         let mut inner = DateRange::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDateRangeBuilder { inner }
+        DateRangeBuilder { inner }
     }
 
     pub fn start_date(&self) -> i32 {
@@ -48,11 +52,14 @@ impl DateRange {
 }
 
 #[doc(hidden)]
-pub struct RTDDateRangeBuilder {
+pub struct DateRangeBuilder {
     inner: DateRange,
 }
 
-impl RTDDateRangeBuilder {
+#[deprecated]
+pub type RTDDateRangeBuilder = DateRangeBuilder;
+
+impl DateRangeBuilder {
     pub fn build(&self) -> DateRange {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<DateRange> for DateRange {
     }
 }
 
-impl AsRef<DateRange> for RTDDateRangeBuilder {
+impl AsRef<DateRange> for DateRangeBuilder {
     fn as_ref(&self) -> &DateRange {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,7 +10,9 @@ pub struct GetStorageStatistics {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The maximum number of chats with the largest storage usage for which separate statistics should be returned. All other chats will be grouped in entries with chat_id == 0. If the chat info database is not used, the chat_limit is ignored and is always set to 0
+    /// The maximum number of chats with the largest storage usage for which separate statistics need to be returned. All other chats will be grouped in entries with chat_id == 0. If the chat info database is not used, the chat_limit is ignored and is always set to 0
+
+    #[serde(default)]
     chat_limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetStorageStatistics {
 impl RFunction for GetStorageStatistics {}
 
 impl GetStorageStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetStorageStatisticsBuilder {
+    pub fn builder() -> GetStorageStatisticsBuilder {
         let mut inner = GetStorageStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getStorageStatistics".to_string();
 
-        RTDGetStorageStatisticsBuilder { inner }
+        GetStorageStatisticsBuilder { inner }
     }
 
     pub fn chat_limit(&self) -> i32 {
@@ -49,11 +51,14 @@ impl GetStorageStatistics {
 }
 
 #[doc(hidden)]
-pub struct RTDGetStorageStatisticsBuilder {
+pub struct GetStorageStatisticsBuilder {
     inner: GetStorageStatistics,
 }
 
-impl RTDGetStorageStatisticsBuilder {
+#[deprecated]
+pub type RTDGetStorageStatisticsBuilder = GetStorageStatisticsBuilder;
+
+impl GetStorageStatisticsBuilder {
     pub fn build(&self) -> GetStorageStatistics {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetStorageStatistics> for GetStorageStatistics {
     }
 }
 
-impl AsRef<GetStorageStatistics> for RTDGetStorageStatisticsBuilder {
+impl AsRef<GetStorageStatistics> for GetStorageStatisticsBuilder {
     fn as_ref(&self) -> &GetStorageStatistics {
         &self.inner
     }

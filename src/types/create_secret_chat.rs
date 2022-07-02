@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct CreateSecretChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Secret chat identifier
+
+    #[serde(default)]
     secret_chat_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for CreateSecretChat {
 impl RFunction for CreateSecretChat {}
 
 impl CreateSecretChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateSecretChatBuilder {
+    pub fn builder() -> CreateSecretChatBuilder {
         let mut inner = CreateSecretChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createSecretChat".to_string();
 
-        RTDCreateSecretChatBuilder { inner }
+        CreateSecretChatBuilder { inner }
     }
 
     pub fn secret_chat_id(&self) -> i32 {
@@ -49,11 +51,14 @@ impl CreateSecretChat {
 }
 
 #[doc(hidden)]
-pub struct RTDCreateSecretChatBuilder {
+pub struct CreateSecretChatBuilder {
     inner: CreateSecretChat,
 }
 
-impl RTDCreateSecretChatBuilder {
+#[deprecated]
+pub type RTDCreateSecretChatBuilder = CreateSecretChatBuilder;
+
+impl CreateSecretChatBuilder {
     pub fn build(&self) -> CreateSecretChat {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<CreateSecretChat> for CreateSecretChat {
     }
 }
 
-impl AsRef<CreateSecretChat> for RTDCreateSecretChatBuilder {
+impl AsRef<CreateSecretChat> for CreateSecretChatBuilder {
     fn as_ref(&self) -> &CreateSecretChat {
         &self.inner
     }

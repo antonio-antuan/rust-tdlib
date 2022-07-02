@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct CheckAuthenticationBotToken {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The bot token
+
+    #[serde(default)]
     token: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for CheckAuthenticationBotToken {
 impl RFunction for CheckAuthenticationBotToken {}
 
 impl CheckAuthenticationBotToken {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckAuthenticationBotTokenBuilder {
+    pub fn builder() -> CheckAuthenticationBotTokenBuilder {
         let mut inner = CheckAuthenticationBotToken::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkAuthenticationBotToken".to_string();
 
-        RTDCheckAuthenticationBotTokenBuilder { inner }
+        CheckAuthenticationBotTokenBuilder { inner }
     }
 
     pub fn token(&self) -> &String {
@@ -49,11 +51,14 @@ impl CheckAuthenticationBotToken {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckAuthenticationBotTokenBuilder {
+pub struct CheckAuthenticationBotTokenBuilder {
     inner: CheckAuthenticationBotToken,
 }
 
-impl RTDCheckAuthenticationBotTokenBuilder {
+#[deprecated]
+pub type RTDCheckAuthenticationBotTokenBuilder = CheckAuthenticationBotTokenBuilder;
+
+impl CheckAuthenticationBotTokenBuilder {
     pub fn build(&self) -> CheckAuthenticationBotToken {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<CheckAuthenticationBotToken> for CheckAuthenticationBotToken {
     }
 }
 
-impl AsRef<CheckAuthenticationBotToken> for RTDCheckAuthenticationBotTokenBuilder {
+impl AsRef<CheckAuthenticationBotToken> for CheckAuthenticationBotTokenBuilder {
     fn as_ref(&self) -> &CheckAuthenticationBotToken {
         &self.inner
     }

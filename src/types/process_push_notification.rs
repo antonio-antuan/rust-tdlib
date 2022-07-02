@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct ProcessPushNotification {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// JSON-encoded push notification payload with all fields sent by the server, and "google.sent_time" and "google.notification.sound" fields added
+
+    #[serde(default)]
     payload: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for ProcessPushNotification {
 impl RFunction for ProcessPushNotification {}
 
 impl ProcessPushNotification {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDProcessPushNotificationBuilder {
+    pub fn builder() -> ProcessPushNotificationBuilder {
         let mut inner = ProcessPushNotification::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "processPushNotification".to_string();
 
-        RTDProcessPushNotificationBuilder { inner }
+        ProcessPushNotificationBuilder { inner }
     }
 
     pub fn payload(&self) -> &String {
@@ -49,11 +51,14 @@ impl ProcessPushNotification {
 }
 
 #[doc(hidden)]
-pub struct RTDProcessPushNotificationBuilder {
+pub struct ProcessPushNotificationBuilder {
     inner: ProcessPushNotification,
 }
 
-impl RTDProcessPushNotificationBuilder {
+#[deprecated]
+pub type RTDProcessPushNotificationBuilder = ProcessPushNotificationBuilder;
+
+impl ProcessPushNotificationBuilder {
     pub fn build(&self) -> ProcessPushNotification {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<ProcessPushNotification> for ProcessPushNotification {
     }
 }
 
-impl AsRef<ProcessPushNotification> for RTDProcessPushNotificationBuilder {
+impl AsRef<ProcessPushNotification> for ProcessPushNotificationBuilder {
     fn as_ref(&self) -> &ProcessPushNotification {
         &self.inner
     }

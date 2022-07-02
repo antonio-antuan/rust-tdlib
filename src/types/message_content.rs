@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,188 +13,152 @@ pub trait TDMessageContent: Debug + RObject {}
 pub enum MessageContent {
     #[doc(hidden)]
     _Default,
+    /// A message with an animated emoji
+    #[serde(rename(deserialize = "messageAnimatedEmoji"))]
+    MessageAnimatedEmoji(MessageAnimatedEmoji),
     /// An animation message (GIF-style).
-    #[serde(rename(serialize = "messageAnimation", deserialize = "messageAnimation"))]
+    #[serde(rename(deserialize = "messageAnimation"))]
     MessageAnimation(MessageAnimation),
     /// An audio message
-    #[serde(rename(serialize = "messageAudio", deserialize = "messageAudio"))]
+    #[serde(rename(deserialize = "messageAudio"))]
     MessageAudio(MessageAudio),
     /// A newly created basic group
-    #[serde(rename(
-        serialize = "messageBasicGroupChatCreate",
-        deserialize = "messageBasicGroupChatCreate"
-    ))]
+    #[serde(rename(deserialize = "messageBasicGroupChatCreate"))]
     MessageBasicGroupChatCreate(MessageBasicGroupChatCreate),
     /// A message with information about an ended call
-    #[serde(rename(serialize = "messageCall", deserialize = "messageCall"))]
+    #[serde(rename(deserialize = "messageCall"))]
     MessageCall(MessageCall),
     /// New chat members were added
-    #[serde(rename(
-        serialize = "messageChatAddMembers",
-        deserialize = "messageChatAddMembers"
-    ))]
+    #[serde(rename(deserialize = "messageChatAddMembers"))]
     MessageChatAddMembers(MessageChatAddMembers),
     /// An updated chat photo
-    #[serde(rename(
-        serialize = "messageChatChangePhoto",
-        deserialize = "messageChatChangePhoto"
-    ))]
+    #[serde(rename(deserialize = "messageChatChangePhoto"))]
     MessageChatChangePhoto(MessageChatChangePhoto),
     /// An updated chat title
-    #[serde(rename(
-        serialize = "messageChatChangeTitle",
-        deserialize = "messageChatChangeTitle"
-    ))]
+    #[serde(rename(deserialize = "messageChatChangeTitle"))]
     MessageChatChangeTitle(MessageChatChangeTitle),
     /// A chat member was deleted
-    #[serde(rename(
-        serialize = "messageChatDeleteMember",
-        deserialize = "messageChatDeleteMember"
-    ))]
+    #[serde(rename(deserialize = "messageChatDeleteMember"))]
     MessageChatDeleteMember(MessageChatDeleteMember),
     /// A deleted chat photo
-    #[serde(rename(
-        serialize = "messageChatDeletePhoto",
-        deserialize = "messageChatDeletePhoto"
-    ))]
+    #[serde(rename(deserialize = "messageChatDeletePhoto"))]
     MessageChatDeletePhoto(MessageChatDeletePhoto),
-    /// A new member joined the chat by invite link
-    #[serde(rename(
-        serialize = "messageChatJoinByLink",
-        deserialize = "messageChatJoinByLink"
-    ))]
+    /// A new member joined the chat via an invite link
+    #[serde(rename(deserialize = "messageChatJoinByLink"))]
     MessageChatJoinByLink(MessageChatJoinByLink),
-    /// The TTL (Time To Live) setting messages in a secret chat has been changed
-    #[serde(rename(serialize = "messageChatSetTtl", deserialize = "messageChatSetTtl"))]
+    /// A new member was accepted to the chat by an administrator
+    #[serde(rename(deserialize = "messageChatJoinByRequest"))]
+    MessageChatJoinByRequest(MessageChatJoinByRequest),
+    /// A theme in the chat has been changed
+    #[serde(rename(deserialize = "messageChatSetTheme"))]
+    MessageChatSetTheme(MessageChatSetTheme),
+    /// The TTL (Time To Live) setting for messages in the chat has been changed
+    #[serde(rename(deserialize = "messageChatSetTtl"))]
     MessageChatSetTtl(MessageChatSetTtl),
     /// A supergroup has been created from a basic group
-    #[serde(rename(
-        serialize = "messageChatUpgradeFrom",
-        deserialize = "messageChatUpgradeFrom"
-    ))]
+    #[serde(rename(deserialize = "messageChatUpgradeFrom"))]
     MessageChatUpgradeFrom(MessageChatUpgradeFrom),
     /// A basic group was upgraded to a supergroup and was deactivated as the result
-    #[serde(rename(
-        serialize = "messageChatUpgradeTo",
-        deserialize = "messageChatUpgradeTo"
-    ))]
+    #[serde(rename(deserialize = "messageChatUpgradeTo"))]
     MessageChatUpgradeTo(MessageChatUpgradeTo),
     /// A message with a user contact
-    #[serde(rename(serialize = "messageContact", deserialize = "messageContact"))]
+    #[serde(rename(deserialize = "messageContact"))]
     MessageContact(MessageContact),
     /// A contact has registered with Telegram
-    #[serde(rename(
-        serialize = "messageContactRegistered",
-        deserialize = "messageContactRegistered"
-    ))]
+    #[serde(rename(deserialize = "messageContactRegistered"))]
     MessageContactRegistered(MessageContactRegistered),
     /// A non-standard action has happened in the chat
-    #[serde(rename(
-        serialize = "messageCustomServiceAction",
-        deserialize = "messageCustomServiceAction"
-    ))]
+    #[serde(rename(deserialize = "messageCustomServiceAction"))]
     MessageCustomServiceAction(MessageCustomServiceAction),
     /// A dice message. The dice value is randomly generated by the server
-    #[serde(rename(serialize = "messageDice", deserialize = "messageDice"))]
-    MessageDice(MessageDice),
+    #[serde(rename(deserialize = "messageDice"))]
+    MessageDice(Box<MessageDice>),
     /// A document message (general file)
-    #[serde(rename(serialize = "messageDocument", deserialize = "messageDocument"))]
+    #[serde(rename(deserialize = "messageDocument"))]
     MessageDocument(MessageDocument),
     /// An expired photo message (self-destructed after TTL has elapsed)
-    #[serde(rename(serialize = "messageExpiredPhoto", deserialize = "messageExpiredPhoto"))]
+    #[serde(rename(deserialize = "messageExpiredPhoto"))]
     MessageExpiredPhoto(MessageExpiredPhoto),
     /// An expired video message (self-destructed after TTL has elapsed)
-    #[serde(rename(serialize = "messageExpiredVideo", deserialize = "messageExpiredVideo"))]
+    #[serde(rename(deserialize = "messageExpiredVideo"))]
     MessageExpiredVideo(MessageExpiredVideo),
     /// A message with a game
-    #[serde(rename(serialize = "messageGame", deserialize = "messageGame"))]
+    #[serde(rename(deserialize = "messageGame"))]
     MessageGame(MessageGame),
     /// A new high score was achieved in a game
-    #[serde(rename(serialize = "messageGameScore", deserialize = "messageGameScore"))]
+    #[serde(rename(deserialize = "messageGameScore"))]
     MessageGameScore(MessageGameScore),
+    /// A message with information about an invite to a video chat
+    #[serde(rename(deserialize = "messageInviteVideoChatParticipants"))]
+    MessageInviteVideoChatParticipants(MessageInviteVideoChatParticipants),
     /// A message with an invoice from a bot
-    #[serde(rename(serialize = "messageInvoice", deserialize = "messageInvoice"))]
+    #[serde(rename(deserialize = "messageInvoice"))]
     MessageInvoice(MessageInvoice),
     /// A message with a location
-    #[serde(rename(serialize = "messageLocation", deserialize = "messageLocation"))]
+    #[serde(rename(deserialize = "messageLocation"))]
     MessageLocation(MessageLocation),
     /// Telegram Passport data has been received; for bots only
-    #[serde(rename(
-        serialize = "messagePassportDataReceived",
-        deserialize = "messagePassportDataReceived"
-    ))]
+    #[serde(rename(deserialize = "messagePassportDataReceived"))]
     MessagePassportDataReceived(MessagePassportDataReceived),
     /// Telegram Passport data has been sent
-    #[serde(rename(
-        serialize = "messagePassportDataSent",
-        deserialize = "messagePassportDataSent"
-    ))]
+    #[serde(rename(deserialize = "messagePassportDataSent"))]
     MessagePassportDataSent(MessagePassportDataSent),
     /// A payment has been completed
-    #[serde(rename(
-        serialize = "messagePaymentSuccessful",
-        deserialize = "messagePaymentSuccessful"
-    ))]
+    #[serde(rename(deserialize = "messagePaymentSuccessful"))]
     MessagePaymentSuccessful(MessagePaymentSuccessful),
     /// A payment has been completed; for bots only
-    #[serde(rename(
-        serialize = "messagePaymentSuccessfulBot",
-        deserialize = "messagePaymentSuccessfulBot"
-    ))]
+    #[serde(rename(deserialize = "messagePaymentSuccessfulBot"))]
     MessagePaymentSuccessfulBot(MessagePaymentSuccessfulBot),
     /// A photo message
-    #[serde(rename(serialize = "messagePhoto", deserialize = "messagePhoto"))]
+    #[serde(rename(deserialize = "messagePhoto"))]
     MessagePhoto(MessagePhoto),
     /// A message has been pinned
-    #[serde(rename(serialize = "messagePinMessage", deserialize = "messagePinMessage"))]
+    #[serde(rename(deserialize = "messagePinMessage"))]
     MessagePinMessage(MessagePinMessage),
     /// A message with a poll
-    #[serde(rename(serialize = "messagePoll", deserialize = "messagePoll"))]
+    #[serde(rename(deserialize = "messagePoll"))]
     MessagePoll(MessagePoll),
     /// A user in the chat came within proximity alert range
-    #[serde(rename(
-        serialize = "messageProximityAlertTriggered",
-        deserialize = "messageProximityAlertTriggered"
-    ))]
+    #[serde(rename(deserialize = "messageProximityAlertTriggered"))]
     MessageProximityAlertTriggered(MessageProximityAlertTriggered),
     /// A screenshot of a message in the chat has been taken
-    #[serde(rename(
-        serialize = "messageScreenshotTaken",
-        deserialize = "messageScreenshotTaken"
-    ))]
+    #[serde(rename(deserialize = "messageScreenshotTaken"))]
     MessageScreenshotTaken(MessageScreenshotTaken),
     /// A sticker message
-    #[serde(rename(serialize = "messageSticker", deserialize = "messageSticker"))]
+    #[serde(rename(deserialize = "messageSticker"))]
     MessageSticker(MessageSticker),
     /// A newly created supergroup or channel
-    #[serde(rename(
-        serialize = "messageSupergroupChatCreate",
-        deserialize = "messageSupergroupChatCreate"
-    ))]
+    #[serde(rename(deserialize = "messageSupergroupChatCreate"))]
     MessageSupergroupChatCreate(MessageSupergroupChatCreate),
     /// A text message
-    #[serde(rename(serialize = "messageText", deserialize = "messageText"))]
-    MessageText(MessageText),
+    #[serde(rename(deserialize = "messageText"))]
+    MessageText(Box<MessageText>),
     /// Message content that is not supported in the current TDLib version
-    #[serde(rename(serialize = "messageUnsupported", deserialize = "messageUnsupported"))]
+    #[serde(rename(deserialize = "messageUnsupported"))]
     MessageUnsupported(MessageUnsupported),
     /// A message with information about a venue
-    #[serde(rename(serialize = "messageVenue", deserialize = "messageVenue"))]
+    #[serde(rename(deserialize = "messageVenue"))]
     MessageVenue(MessageVenue),
     /// A video message
-    #[serde(rename(serialize = "messageVideo", deserialize = "messageVideo"))]
+    #[serde(rename(deserialize = "messageVideo"))]
     MessageVideo(MessageVideo),
+    /// A message with information about an ended video chat
+    #[serde(rename(deserialize = "messageVideoChatEnded"))]
+    MessageVideoChatEnded(MessageVideoChatEnded),
+    /// A new video chat was scheduled
+    #[serde(rename(deserialize = "messageVideoChatScheduled"))]
+    MessageVideoChatScheduled(MessageVideoChatScheduled),
+    /// A newly created video chat
+    #[serde(rename(deserialize = "messageVideoChatStarted"))]
+    MessageVideoChatStarted(MessageVideoChatStarted),
     /// A video note message
-    #[serde(rename(serialize = "messageVideoNote", deserialize = "messageVideoNote"))]
+    #[serde(rename(deserialize = "messageVideoNote"))]
     MessageVideoNote(MessageVideoNote),
     /// A voice note message
-    #[serde(rename(serialize = "messageVoiceNote", deserialize = "messageVoiceNote"))]
+    #[serde(rename(deserialize = "messageVoiceNote"))]
     MessageVoiceNote(MessageVoiceNote),
     /// The current user has connected a website by logging in using Telegram Login Widget on it
-    #[serde(rename(
-        serialize = "messageWebsiteConnected",
-        deserialize = "messageWebsiteConnected"
-    ))]
+    #[serde(rename(deserialize = "messageWebsiteConnected"))]
     MessageWebsiteConnected(MessageWebsiteConnected),
 }
 
@@ -208,6 +172,7 @@ impl RObject for MessageContent {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         match self {
+            MessageContent::MessageAnimatedEmoji(t) => t.extra(),
             MessageContent::MessageAnimation(t) => t.extra(),
             MessageContent::MessageAudio(t) => t.extra(),
             MessageContent::MessageBasicGroupChatCreate(t) => t.extra(),
@@ -218,6 +183,8 @@ impl RObject for MessageContent {
             MessageContent::MessageChatDeleteMember(t) => t.extra(),
             MessageContent::MessageChatDeletePhoto(t) => t.extra(),
             MessageContent::MessageChatJoinByLink(t) => t.extra(),
+            MessageContent::MessageChatJoinByRequest(t) => t.extra(),
+            MessageContent::MessageChatSetTheme(t) => t.extra(),
             MessageContent::MessageChatSetTtl(t) => t.extra(),
             MessageContent::MessageChatUpgradeFrom(t) => t.extra(),
             MessageContent::MessageChatUpgradeTo(t) => t.extra(),
@@ -230,6 +197,7 @@ impl RObject for MessageContent {
             MessageContent::MessageExpiredVideo(t) => t.extra(),
             MessageContent::MessageGame(t) => t.extra(),
             MessageContent::MessageGameScore(t) => t.extra(),
+            MessageContent::MessageInviteVideoChatParticipants(t) => t.extra(),
             MessageContent::MessageInvoice(t) => t.extra(),
             MessageContent::MessageLocation(t) => t.extra(),
             MessageContent::MessagePassportDataReceived(t) => t.extra(),
@@ -247,6 +215,9 @@ impl RObject for MessageContent {
             MessageContent::MessageUnsupported(t) => t.extra(),
             MessageContent::MessageVenue(t) => t.extra(),
             MessageContent::MessageVideo(t) => t.extra(),
+            MessageContent::MessageVideoChatEnded(t) => t.extra(),
+            MessageContent::MessageVideoChatScheduled(t) => t.extra(),
+            MessageContent::MessageVideoChatStarted(t) => t.extra(),
             MessageContent::MessageVideoNote(t) => t.extra(),
             MessageContent::MessageVoiceNote(t) => t.extra(),
             MessageContent::MessageWebsiteConnected(t) => t.extra(),
@@ -257,6 +228,7 @@ impl RObject for MessageContent {
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         match self {
+            MessageContent::MessageAnimatedEmoji(t) => t.client_id(),
             MessageContent::MessageAnimation(t) => t.client_id(),
             MessageContent::MessageAudio(t) => t.client_id(),
             MessageContent::MessageBasicGroupChatCreate(t) => t.client_id(),
@@ -267,6 +239,8 @@ impl RObject for MessageContent {
             MessageContent::MessageChatDeleteMember(t) => t.client_id(),
             MessageContent::MessageChatDeletePhoto(t) => t.client_id(),
             MessageContent::MessageChatJoinByLink(t) => t.client_id(),
+            MessageContent::MessageChatJoinByRequest(t) => t.client_id(),
+            MessageContent::MessageChatSetTheme(t) => t.client_id(),
             MessageContent::MessageChatSetTtl(t) => t.client_id(),
             MessageContent::MessageChatUpgradeFrom(t) => t.client_id(),
             MessageContent::MessageChatUpgradeTo(t) => t.client_id(),
@@ -279,6 +253,7 @@ impl RObject for MessageContent {
             MessageContent::MessageExpiredVideo(t) => t.client_id(),
             MessageContent::MessageGame(t) => t.client_id(),
             MessageContent::MessageGameScore(t) => t.client_id(),
+            MessageContent::MessageInviteVideoChatParticipants(t) => t.client_id(),
             MessageContent::MessageInvoice(t) => t.client_id(),
             MessageContent::MessageLocation(t) => t.client_id(),
             MessageContent::MessagePassportDataReceived(t) => t.client_id(),
@@ -296,6 +271,9 @@ impl RObject for MessageContent {
             MessageContent::MessageUnsupported(t) => t.client_id(),
             MessageContent::MessageVenue(t) => t.client_id(),
             MessageContent::MessageVideo(t) => t.client_id(),
+            MessageContent::MessageVideoChatEnded(t) => t.client_id(),
+            MessageContent::MessageVideoChatScheduled(t) => t.client_id(),
+            MessageContent::MessageVideoChatStarted(t) => t.client_id(),
             MessageContent::MessageVideoNote(t) => t.client_id(),
             MessageContent::MessageVoiceNote(t) => t.client_id(),
             MessageContent::MessageWebsiteConnected(t) => t.client_id(),
@@ -306,7 +284,7 @@ impl RObject for MessageContent {
 }
 
 impl MessageContent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -318,6 +296,91 @@ impl MessageContent {
 impl AsRef<MessageContent> for MessageContent {
     fn as_ref(&self) -> &MessageContent {
         self
+    }
+}
+
+/// A message with an animated emoji
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageAnimatedEmoji {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// The animated emoji
+    animated_emoji: AnimatedEmoji,
+    /// The corresponding emoji
+
+    #[serde(default)]
+    emoji: String,
+}
+
+impl RObject for MessageAnimatedEmoji {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageAnimatedEmoji {}
+
+impl MessageAnimatedEmoji {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> MessageAnimatedEmojiBuilder {
+        let mut inner = MessageAnimatedEmoji::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        MessageAnimatedEmojiBuilder { inner }
+    }
+
+    pub fn animated_emoji(&self) -> &AnimatedEmoji {
+        &self.animated_emoji
+    }
+
+    pub fn emoji(&self) -> &String {
+        &self.emoji
+    }
+}
+
+#[doc(hidden)]
+pub struct MessageAnimatedEmojiBuilder {
+    inner: MessageAnimatedEmoji,
+}
+
+#[deprecated]
+pub type RTDMessageAnimatedEmojiBuilder = MessageAnimatedEmojiBuilder;
+
+impl MessageAnimatedEmojiBuilder {
+    pub fn build(&self) -> MessageAnimatedEmoji {
+        self.inner.clone()
+    }
+
+    pub fn animated_emoji<T: AsRef<AnimatedEmoji>>(&mut self, animated_emoji: T) -> &mut Self {
+        self.inner.animated_emoji = animated_emoji.as_ref().clone();
+        self
+    }
+
+    pub fn emoji<T: AsRef<str>>(&mut self, emoji: T) -> &mut Self {
+        self.inner.emoji = emoji.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<MessageAnimatedEmoji> for MessageAnimatedEmoji {
+    fn as_ref(&self) -> &MessageAnimatedEmoji {
+        self
+    }
+}
+
+impl AsRef<MessageAnimatedEmoji> for MessageAnimatedEmojiBuilder {
+    fn as_ref(&self) -> &MessageAnimatedEmoji {
+        &self.inner
     }
 }
 
@@ -334,6 +397,8 @@ pub struct MessageAnimation {
     /// Animation caption
     caption: FormattedText,
     /// True, if the animation thumbnail must be blurred and the animation must be shown only while tapped
+
+    #[serde(default)]
     is_secret: bool,
 }
 
@@ -351,14 +416,14 @@ impl RObject for MessageAnimation {
 impl TDMessageContent for MessageAnimation {}
 
 impl MessageAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageAnimationBuilder {
+    pub fn builder() -> MessageAnimationBuilder {
         let mut inner = MessageAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageAnimationBuilder { inner }
+        MessageAnimationBuilder { inner }
     }
 
     pub fn animation(&self) -> &Animation {
@@ -375,11 +440,14 @@ impl MessageAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageAnimationBuilder {
+pub struct MessageAnimationBuilder {
     inner: MessageAnimation,
 }
 
-impl RTDMessageAnimationBuilder {
+#[deprecated]
+pub type RTDMessageAnimationBuilder = MessageAnimationBuilder;
+
+impl MessageAnimationBuilder {
     pub fn build(&self) -> MessageAnimation {
         self.inner.clone()
     }
@@ -406,7 +474,7 @@ impl AsRef<MessageAnimation> for MessageAnimation {
     }
 }
 
-impl AsRef<MessageAnimation> for RTDMessageAnimationBuilder {
+impl AsRef<MessageAnimation> for MessageAnimationBuilder {
     fn as_ref(&self) -> &MessageAnimation {
         &self.inner
     }
@@ -440,14 +508,14 @@ impl RObject for MessageAudio {
 impl TDMessageContent for MessageAudio {}
 
 impl MessageAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageAudioBuilder {
+    pub fn builder() -> MessageAudioBuilder {
         let mut inner = MessageAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageAudioBuilder { inner }
+        MessageAudioBuilder { inner }
     }
 
     pub fn audio(&self) -> &Audio {
@@ -460,11 +528,14 @@ impl MessageAudio {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageAudioBuilder {
+pub struct MessageAudioBuilder {
     inner: MessageAudio,
 }
 
-impl RTDMessageAudioBuilder {
+#[deprecated]
+pub type RTDMessageAudioBuilder = MessageAudioBuilder;
+
+impl MessageAudioBuilder {
     pub fn build(&self) -> MessageAudio {
         self.inner.clone()
     }
@@ -486,7 +557,7 @@ impl AsRef<MessageAudio> for MessageAudio {
     }
 }
 
-impl AsRef<MessageAudio> for RTDMessageAudioBuilder {
+impl AsRef<MessageAudio> for MessageAudioBuilder {
     fn as_ref(&self) -> &MessageAudio {
         &self.inner
     }
@@ -501,9 +572,13 @@ pub struct MessageBasicGroupChatCreate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title of the basic group
+
+    #[serde(default)]
     title: String,
     /// User identifiers of members in the basic group
-    member_user_ids: Vec<i32>,
+
+    #[serde(default)]
+    member_user_ids: Vec<i64>,
 }
 
 impl RObject for MessageBasicGroupChatCreate {
@@ -520,31 +595,34 @@ impl RObject for MessageBasicGroupChatCreate {
 impl TDMessageContent for MessageBasicGroupChatCreate {}
 
 impl MessageBasicGroupChatCreate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageBasicGroupChatCreateBuilder {
+    pub fn builder() -> MessageBasicGroupChatCreateBuilder {
         let mut inner = MessageBasicGroupChatCreate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageBasicGroupChatCreateBuilder { inner }
+        MessageBasicGroupChatCreateBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
         &self.title
     }
 
-    pub fn member_user_ids(&self) -> &Vec<i32> {
+    pub fn member_user_ids(&self) -> &Vec<i64> {
         &self.member_user_ids
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageBasicGroupChatCreateBuilder {
+pub struct MessageBasicGroupChatCreateBuilder {
     inner: MessageBasicGroupChatCreate,
 }
 
-impl RTDMessageBasicGroupChatCreateBuilder {
+#[deprecated]
+pub type RTDMessageBasicGroupChatCreateBuilder = MessageBasicGroupChatCreateBuilder;
+
+impl MessageBasicGroupChatCreateBuilder {
     pub fn build(&self) -> MessageBasicGroupChatCreate {
         self.inner.clone()
     }
@@ -554,7 +632,7 @@ impl RTDMessageBasicGroupChatCreateBuilder {
         self
     }
 
-    pub fn member_user_ids(&mut self, member_user_ids: Vec<i32>) -> &mut Self {
+    pub fn member_user_ids(&mut self, member_user_ids: Vec<i64>) -> &mut Self {
         self.inner.member_user_ids = member_user_ids;
         self
     }
@@ -566,7 +644,7 @@ impl AsRef<MessageBasicGroupChatCreate> for MessageBasicGroupChatCreate {
     }
 }
 
-impl AsRef<MessageBasicGroupChatCreate> for RTDMessageBasicGroupChatCreateBuilder {
+impl AsRef<MessageBasicGroupChatCreate> for MessageBasicGroupChatCreateBuilder {
     fn as_ref(&self) -> &MessageBasicGroupChatCreate {
         &self.inner
     }
@@ -581,12 +659,16 @@ pub struct MessageCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the call was a video call
+
+    #[serde(default)]
     is_video: bool,
     /// Reason why the call was discarded
 
     #[serde(skip_serializing_if = "CallDiscardReason::_is_default")]
     discard_reason: CallDiscardReason,
     /// Call duration, in seconds
+
+    #[serde(default)]
     duration: i32,
 }
 
@@ -604,14 +686,14 @@ impl RObject for MessageCall {
 impl TDMessageContent for MessageCall {}
 
 impl MessageCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageCallBuilder {
+    pub fn builder() -> MessageCallBuilder {
         let mut inner = MessageCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageCallBuilder { inner }
+        MessageCallBuilder { inner }
     }
 
     pub fn is_video(&self) -> bool {
@@ -628,11 +710,14 @@ impl MessageCall {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageCallBuilder {
+pub struct MessageCallBuilder {
     inner: MessageCall,
 }
 
-impl RTDMessageCallBuilder {
+#[deprecated]
+pub type RTDMessageCallBuilder = MessageCallBuilder;
+
+impl MessageCallBuilder {
     pub fn build(&self) -> MessageCall {
         self.inner.clone()
     }
@@ -659,7 +744,7 @@ impl AsRef<MessageCall> for MessageCall {
     }
 }
 
-impl AsRef<MessageCall> for RTDMessageCallBuilder {
+impl AsRef<MessageCall> for MessageCallBuilder {
     fn as_ref(&self) -> &MessageCall {
         &self.inner
     }
@@ -674,7 +759,9 @@ pub struct MessageChatAddMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifiers of the new members
-    member_user_ids: Vec<i32>,
+
+    #[serde(default)]
+    member_user_ids: Vec<i64>,
 }
 
 impl RObject for MessageChatAddMembers {
@@ -691,32 +778,35 @@ impl RObject for MessageChatAddMembers {
 impl TDMessageContent for MessageChatAddMembers {}
 
 impl MessageChatAddMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatAddMembersBuilder {
+    pub fn builder() -> MessageChatAddMembersBuilder {
         let mut inner = MessageChatAddMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatAddMembersBuilder { inner }
+        MessageChatAddMembersBuilder { inner }
     }
 
-    pub fn member_user_ids(&self) -> &Vec<i32> {
+    pub fn member_user_ids(&self) -> &Vec<i64> {
         &self.member_user_ids
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatAddMembersBuilder {
+pub struct MessageChatAddMembersBuilder {
     inner: MessageChatAddMembers,
 }
 
-impl RTDMessageChatAddMembersBuilder {
+#[deprecated]
+pub type RTDMessageChatAddMembersBuilder = MessageChatAddMembersBuilder;
+
+impl MessageChatAddMembersBuilder {
     pub fn build(&self) -> MessageChatAddMembers {
         self.inner.clone()
     }
 
-    pub fn member_user_ids(&mut self, member_user_ids: Vec<i32>) -> &mut Self {
+    pub fn member_user_ids(&mut self, member_user_ids: Vec<i64>) -> &mut Self {
         self.inner.member_user_ids = member_user_ids;
         self
     }
@@ -728,7 +818,7 @@ impl AsRef<MessageChatAddMembers> for MessageChatAddMembers {
     }
 }
 
-impl AsRef<MessageChatAddMembers> for RTDMessageChatAddMembersBuilder {
+impl AsRef<MessageChatAddMembers> for MessageChatAddMembersBuilder {
     fn as_ref(&self) -> &MessageChatAddMembers {
         &self.inner
     }
@@ -760,14 +850,14 @@ impl RObject for MessageChatChangePhoto {
 impl TDMessageContent for MessageChatChangePhoto {}
 
 impl MessageChatChangePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatChangePhotoBuilder {
+    pub fn builder() -> MessageChatChangePhotoBuilder {
         let mut inner = MessageChatChangePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatChangePhotoBuilder { inner }
+        MessageChatChangePhotoBuilder { inner }
     }
 
     pub fn photo(&self) -> &ChatPhoto {
@@ -776,11 +866,14 @@ impl MessageChatChangePhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatChangePhotoBuilder {
+pub struct MessageChatChangePhotoBuilder {
     inner: MessageChatChangePhoto,
 }
 
-impl RTDMessageChatChangePhotoBuilder {
+#[deprecated]
+pub type RTDMessageChatChangePhotoBuilder = MessageChatChangePhotoBuilder;
+
+impl MessageChatChangePhotoBuilder {
     pub fn build(&self) -> MessageChatChangePhoto {
         self.inner.clone()
     }
@@ -797,7 +890,7 @@ impl AsRef<MessageChatChangePhoto> for MessageChatChangePhoto {
     }
 }
 
-impl AsRef<MessageChatChangePhoto> for RTDMessageChatChangePhotoBuilder {
+impl AsRef<MessageChatChangePhoto> for MessageChatChangePhotoBuilder {
     fn as_ref(&self) -> &MessageChatChangePhoto {
         &self.inner
     }
@@ -812,6 +905,8 @@ pub struct MessageChatChangeTitle {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// New chat title
+
+    #[serde(default)]
     title: String,
 }
 
@@ -829,14 +924,14 @@ impl RObject for MessageChatChangeTitle {
 impl TDMessageContent for MessageChatChangeTitle {}
 
 impl MessageChatChangeTitle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatChangeTitleBuilder {
+    pub fn builder() -> MessageChatChangeTitleBuilder {
         let mut inner = MessageChatChangeTitle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatChangeTitleBuilder { inner }
+        MessageChatChangeTitleBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -845,11 +940,14 @@ impl MessageChatChangeTitle {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatChangeTitleBuilder {
+pub struct MessageChatChangeTitleBuilder {
     inner: MessageChatChangeTitle,
 }
 
-impl RTDMessageChatChangeTitleBuilder {
+#[deprecated]
+pub type RTDMessageChatChangeTitleBuilder = MessageChatChangeTitleBuilder;
+
+impl MessageChatChangeTitleBuilder {
     pub fn build(&self) -> MessageChatChangeTitle {
         self.inner.clone()
     }
@@ -866,7 +964,7 @@ impl AsRef<MessageChatChangeTitle> for MessageChatChangeTitle {
     }
 }
 
-impl AsRef<MessageChatChangeTitle> for RTDMessageChatChangeTitleBuilder {
+impl AsRef<MessageChatChangeTitle> for MessageChatChangeTitleBuilder {
     fn as_ref(&self) -> &MessageChatChangeTitle {
         &self.inner
     }
@@ -881,7 +979,9 @@ pub struct MessageChatDeleteMember {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// User identifier of the deleted chat member
-    user_id: i32,
+
+    #[serde(default)]
+    user_id: i64,
 }
 
 impl RObject for MessageChatDeleteMember {
@@ -898,32 +998,35 @@ impl RObject for MessageChatDeleteMember {
 impl TDMessageContent for MessageChatDeleteMember {}
 
 impl MessageChatDeleteMember {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatDeleteMemberBuilder {
+    pub fn builder() -> MessageChatDeleteMemberBuilder {
         let mut inner = MessageChatDeleteMember::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatDeleteMemberBuilder { inner }
+        MessageChatDeleteMemberBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatDeleteMemberBuilder {
+pub struct MessageChatDeleteMemberBuilder {
     inner: MessageChatDeleteMember,
 }
 
-impl RTDMessageChatDeleteMemberBuilder {
+#[deprecated]
+pub type RTDMessageChatDeleteMemberBuilder = MessageChatDeleteMemberBuilder;
+
+impl MessageChatDeleteMemberBuilder {
     pub fn build(&self) -> MessageChatDeleteMember {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -935,7 +1038,7 @@ impl AsRef<MessageChatDeleteMember> for MessageChatDeleteMember {
     }
 }
 
-impl AsRef<MessageChatDeleteMember> for RTDMessageChatDeleteMemberBuilder {
+impl AsRef<MessageChatDeleteMember> for MessageChatDeleteMemberBuilder {
     fn as_ref(&self) -> &MessageChatDeleteMember {
         &self.inner
     }
@@ -965,23 +1068,26 @@ impl RObject for MessageChatDeletePhoto {
 impl TDMessageContent for MessageChatDeletePhoto {}
 
 impl MessageChatDeletePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatDeletePhotoBuilder {
+    pub fn builder() -> MessageChatDeletePhotoBuilder {
         let mut inner = MessageChatDeletePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatDeletePhotoBuilder { inner }
+        MessageChatDeletePhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatDeletePhotoBuilder {
+pub struct MessageChatDeletePhotoBuilder {
     inner: MessageChatDeletePhoto,
 }
 
-impl RTDMessageChatDeletePhotoBuilder {
+#[deprecated]
+pub type RTDMessageChatDeletePhotoBuilder = MessageChatDeletePhotoBuilder;
+
+impl MessageChatDeletePhotoBuilder {
     pub fn build(&self) -> MessageChatDeletePhoto {
         self.inner.clone()
     }
@@ -993,13 +1099,13 @@ impl AsRef<MessageChatDeletePhoto> for MessageChatDeletePhoto {
     }
 }
 
-impl AsRef<MessageChatDeletePhoto> for RTDMessageChatDeletePhotoBuilder {
+impl AsRef<MessageChatDeletePhoto> for MessageChatDeletePhotoBuilder {
     fn as_ref(&self) -> &MessageChatDeletePhoto {
         &self.inner
     }
 }
 
-/// A new member joined the chat by invite link
+/// A new member joined the chat via an invite link
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageChatJoinByLink {
     #[doc(hidden)]
@@ -1023,23 +1129,26 @@ impl RObject for MessageChatJoinByLink {
 impl TDMessageContent for MessageChatJoinByLink {}
 
 impl MessageChatJoinByLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatJoinByLinkBuilder {
+    pub fn builder() -> MessageChatJoinByLinkBuilder {
         let mut inner = MessageChatJoinByLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatJoinByLinkBuilder { inner }
+        MessageChatJoinByLinkBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatJoinByLinkBuilder {
+pub struct MessageChatJoinByLinkBuilder {
     inner: MessageChatJoinByLink,
 }
 
-impl RTDMessageChatJoinByLinkBuilder {
+#[deprecated]
+pub type RTDMessageChatJoinByLinkBuilder = MessageChatJoinByLinkBuilder;
+
+impl MessageChatJoinByLinkBuilder {
     pub fn build(&self) -> MessageChatJoinByLink {
         self.inner.clone()
     }
@@ -1051,13 +1160,148 @@ impl AsRef<MessageChatJoinByLink> for MessageChatJoinByLink {
     }
 }
 
-impl AsRef<MessageChatJoinByLink> for RTDMessageChatJoinByLinkBuilder {
+impl AsRef<MessageChatJoinByLink> for MessageChatJoinByLinkBuilder {
     fn as_ref(&self) -> &MessageChatJoinByLink {
         &self.inner
     }
 }
 
-/// The TTL (Time To Live) setting messages in a secret chat has been changed
+/// A new member was accepted to the chat by an administrator
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageChatJoinByRequest {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for MessageChatJoinByRequest {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageChatJoinByRequest {}
+
+impl MessageChatJoinByRequest {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> MessageChatJoinByRequestBuilder {
+        let mut inner = MessageChatJoinByRequest::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        MessageChatJoinByRequestBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct MessageChatJoinByRequestBuilder {
+    inner: MessageChatJoinByRequest,
+}
+
+#[deprecated]
+pub type RTDMessageChatJoinByRequestBuilder = MessageChatJoinByRequestBuilder;
+
+impl MessageChatJoinByRequestBuilder {
+    pub fn build(&self) -> MessageChatJoinByRequest {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<MessageChatJoinByRequest> for MessageChatJoinByRequest {
+    fn as_ref(&self) -> &MessageChatJoinByRequest {
+        self
+    }
+}
+
+impl AsRef<MessageChatJoinByRequest> for MessageChatJoinByRequestBuilder {
+    fn as_ref(&self) -> &MessageChatJoinByRequest {
+        &self.inner
+    }
+}
+
+/// A theme in the chat has been changed
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageChatSetTheme {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// If non-empty, name of a new theme, set for the chat. Otherwise chat theme was reset to the default one
+
+    #[serde(default)]
+    theme_name: String,
+}
+
+impl RObject for MessageChatSetTheme {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageChatSetTheme {}
+
+impl MessageChatSetTheme {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> MessageChatSetThemeBuilder {
+        let mut inner = MessageChatSetTheme::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        MessageChatSetThemeBuilder { inner }
+    }
+
+    pub fn theme_name(&self) -> &String {
+        &self.theme_name
+    }
+}
+
+#[doc(hidden)]
+pub struct MessageChatSetThemeBuilder {
+    inner: MessageChatSetTheme,
+}
+
+#[deprecated]
+pub type RTDMessageChatSetThemeBuilder = MessageChatSetThemeBuilder;
+
+impl MessageChatSetThemeBuilder {
+    pub fn build(&self) -> MessageChatSetTheme {
+        self.inner.clone()
+    }
+
+    pub fn theme_name<T: AsRef<str>>(&mut self, theme_name: T) -> &mut Self {
+        self.inner.theme_name = theme_name.as_ref().to_string();
+        self
+    }
+}
+
+impl AsRef<MessageChatSetTheme> for MessageChatSetTheme {
+    fn as_ref(&self) -> &MessageChatSetTheme {
+        self
+    }
+}
+
+impl AsRef<MessageChatSetTheme> for MessageChatSetThemeBuilder {
+    fn as_ref(&self) -> &MessageChatSetTheme {
+        &self.inner
+    }
+}
+
+/// The TTL (Time To Live) setting for messages in the chat has been changed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageChatSetTtl {
     #[doc(hidden)]
@@ -1065,7 +1309,9 @@ pub struct MessageChatSetTtl {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// New TTL
+    /// New message TTL
+
+    #[serde(default)]
     ttl: i32,
 }
 
@@ -1083,14 +1329,14 @@ impl RObject for MessageChatSetTtl {
 impl TDMessageContent for MessageChatSetTtl {}
 
 impl MessageChatSetTtl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatSetTtlBuilder {
+    pub fn builder() -> MessageChatSetTtlBuilder {
         let mut inner = MessageChatSetTtl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatSetTtlBuilder { inner }
+        MessageChatSetTtlBuilder { inner }
     }
 
     pub fn ttl(&self) -> i32 {
@@ -1099,11 +1345,14 @@ impl MessageChatSetTtl {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatSetTtlBuilder {
+pub struct MessageChatSetTtlBuilder {
     inner: MessageChatSetTtl,
 }
 
-impl RTDMessageChatSetTtlBuilder {
+#[deprecated]
+pub type RTDMessageChatSetTtlBuilder = MessageChatSetTtlBuilder;
+
+impl MessageChatSetTtlBuilder {
     pub fn build(&self) -> MessageChatSetTtl {
         self.inner.clone()
     }
@@ -1120,7 +1369,7 @@ impl AsRef<MessageChatSetTtl> for MessageChatSetTtl {
     }
 }
 
-impl AsRef<MessageChatSetTtl> for RTDMessageChatSetTtlBuilder {
+impl AsRef<MessageChatSetTtl> for MessageChatSetTtlBuilder {
     fn as_ref(&self) -> &MessageChatSetTtl {
         &self.inner
     }
@@ -1135,9 +1384,13 @@ pub struct MessageChatUpgradeFrom {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title of the newly created supergroup
+
+    #[serde(default)]
     title: String,
     /// The identifier of the original basic group
-    basic_group_id: i32,
+
+    #[serde(default)]
+    basic_group_id: i64,
 }
 
 impl RObject for MessageChatUpgradeFrom {
@@ -1154,31 +1407,34 @@ impl RObject for MessageChatUpgradeFrom {
 impl TDMessageContent for MessageChatUpgradeFrom {}
 
 impl MessageChatUpgradeFrom {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatUpgradeFromBuilder {
+    pub fn builder() -> MessageChatUpgradeFromBuilder {
         let mut inner = MessageChatUpgradeFrom::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatUpgradeFromBuilder { inner }
+        MessageChatUpgradeFromBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
         &self.title
     }
 
-    pub fn basic_group_id(&self) -> i32 {
+    pub fn basic_group_id(&self) -> i64 {
         self.basic_group_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatUpgradeFromBuilder {
+pub struct MessageChatUpgradeFromBuilder {
     inner: MessageChatUpgradeFrom,
 }
 
-impl RTDMessageChatUpgradeFromBuilder {
+#[deprecated]
+pub type RTDMessageChatUpgradeFromBuilder = MessageChatUpgradeFromBuilder;
+
+impl MessageChatUpgradeFromBuilder {
     pub fn build(&self) -> MessageChatUpgradeFrom {
         self.inner.clone()
     }
@@ -1188,7 +1444,7 @@ impl RTDMessageChatUpgradeFromBuilder {
         self
     }
 
-    pub fn basic_group_id(&mut self, basic_group_id: i32) -> &mut Self {
+    pub fn basic_group_id(&mut self, basic_group_id: i64) -> &mut Self {
         self.inner.basic_group_id = basic_group_id;
         self
     }
@@ -1200,7 +1456,7 @@ impl AsRef<MessageChatUpgradeFrom> for MessageChatUpgradeFrom {
     }
 }
 
-impl AsRef<MessageChatUpgradeFrom> for RTDMessageChatUpgradeFromBuilder {
+impl AsRef<MessageChatUpgradeFrom> for MessageChatUpgradeFromBuilder {
     fn as_ref(&self) -> &MessageChatUpgradeFrom {
         &self.inner
     }
@@ -1215,7 +1471,9 @@ pub struct MessageChatUpgradeTo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the supergroup to which the basic group was upgraded
-    supergroup_id: i32,
+
+    #[serde(default)]
+    supergroup_id: i64,
 }
 
 impl RObject for MessageChatUpgradeTo {
@@ -1232,32 +1490,35 @@ impl RObject for MessageChatUpgradeTo {
 impl TDMessageContent for MessageChatUpgradeTo {}
 
 impl MessageChatUpgradeTo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageChatUpgradeToBuilder {
+    pub fn builder() -> MessageChatUpgradeToBuilder {
         let mut inner = MessageChatUpgradeTo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageChatUpgradeToBuilder { inner }
+        MessageChatUpgradeToBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageChatUpgradeToBuilder {
+pub struct MessageChatUpgradeToBuilder {
     inner: MessageChatUpgradeTo,
 }
 
-impl RTDMessageChatUpgradeToBuilder {
+#[deprecated]
+pub type RTDMessageChatUpgradeToBuilder = MessageChatUpgradeToBuilder;
+
+impl MessageChatUpgradeToBuilder {
     pub fn build(&self) -> MessageChatUpgradeTo {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }
@@ -1269,7 +1530,7 @@ impl AsRef<MessageChatUpgradeTo> for MessageChatUpgradeTo {
     }
 }
 
-impl AsRef<MessageChatUpgradeTo> for RTDMessageChatUpgradeToBuilder {
+impl AsRef<MessageChatUpgradeTo> for MessageChatUpgradeToBuilder {
     fn as_ref(&self) -> &MessageChatUpgradeTo {
         &self.inner
     }
@@ -1301,14 +1562,14 @@ impl RObject for MessageContact {
 impl TDMessageContent for MessageContact {}
 
 impl MessageContact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageContactBuilder {
+    pub fn builder() -> MessageContactBuilder {
         let mut inner = MessageContact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageContactBuilder { inner }
+        MessageContactBuilder { inner }
     }
 
     pub fn contact(&self) -> &Contact {
@@ -1317,11 +1578,14 @@ impl MessageContact {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageContactBuilder {
+pub struct MessageContactBuilder {
     inner: MessageContact,
 }
 
-impl RTDMessageContactBuilder {
+#[deprecated]
+pub type RTDMessageContactBuilder = MessageContactBuilder;
+
+impl MessageContactBuilder {
     pub fn build(&self) -> MessageContact {
         self.inner.clone()
     }
@@ -1338,7 +1602,7 @@ impl AsRef<MessageContact> for MessageContact {
     }
 }
 
-impl AsRef<MessageContact> for RTDMessageContactBuilder {
+impl AsRef<MessageContact> for MessageContactBuilder {
     fn as_ref(&self) -> &MessageContact {
         &self.inner
     }
@@ -1368,23 +1632,26 @@ impl RObject for MessageContactRegistered {
 impl TDMessageContent for MessageContactRegistered {}
 
 impl MessageContactRegistered {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageContactRegisteredBuilder {
+    pub fn builder() -> MessageContactRegisteredBuilder {
         let mut inner = MessageContactRegistered::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageContactRegisteredBuilder { inner }
+        MessageContactRegisteredBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageContactRegisteredBuilder {
+pub struct MessageContactRegisteredBuilder {
     inner: MessageContactRegistered,
 }
 
-impl RTDMessageContactRegisteredBuilder {
+#[deprecated]
+pub type RTDMessageContactRegisteredBuilder = MessageContactRegisteredBuilder;
+
+impl MessageContactRegisteredBuilder {
     pub fn build(&self) -> MessageContactRegistered {
         self.inner.clone()
     }
@@ -1396,7 +1663,7 @@ impl AsRef<MessageContactRegistered> for MessageContactRegistered {
     }
 }
 
-impl AsRef<MessageContactRegistered> for RTDMessageContactRegisteredBuilder {
+impl AsRef<MessageContactRegistered> for MessageContactRegisteredBuilder {
     fn as_ref(&self) -> &MessageContactRegistered {
         &self.inner
     }
@@ -1411,6 +1678,8 @@ pub struct MessageCustomServiceAction {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message text to be shown in the chat
+
+    #[serde(default)]
     text: String,
 }
 
@@ -1428,14 +1697,14 @@ impl RObject for MessageCustomServiceAction {
 impl TDMessageContent for MessageCustomServiceAction {}
 
 impl MessageCustomServiceAction {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageCustomServiceActionBuilder {
+    pub fn builder() -> MessageCustomServiceActionBuilder {
         let mut inner = MessageCustomServiceAction::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageCustomServiceActionBuilder { inner }
+        MessageCustomServiceActionBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -1444,11 +1713,14 @@ impl MessageCustomServiceAction {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageCustomServiceActionBuilder {
+pub struct MessageCustomServiceActionBuilder {
     inner: MessageCustomServiceAction,
 }
 
-impl RTDMessageCustomServiceActionBuilder {
+#[deprecated]
+pub type RTDMessageCustomServiceActionBuilder = MessageCustomServiceActionBuilder;
+
+impl MessageCustomServiceActionBuilder {
     pub fn build(&self) -> MessageCustomServiceAction {
         self.inner.clone()
     }
@@ -1465,7 +1737,7 @@ impl AsRef<MessageCustomServiceAction> for MessageCustomServiceAction {
     }
 }
 
-impl AsRef<MessageCustomServiceAction> for RTDMessageCustomServiceActionBuilder {
+impl AsRef<MessageCustomServiceAction> for MessageCustomServiceActionBuilder {
     fn as_ref(&self) -> &MessageCustomServiceAction {
         &self.inner
     }
@@ -1484,10 +1756,16 @@ pub struct MessageDice {
     /// The animated stickers with the final dice animation; may be null if unknown. updateMessageContent will be sent when the sticker became known
     final_state: Option<DiceStickers>,
     /// Emoji on which the dice throw animation is based
+
+    #[serde(default)]
     emoji: String,
     /// The dice value. If the value is 0, the dice don't have final state yet
+
+    #[serde(default)]
     value: i32,
     /// Number of frame after which a success animation like a shower of confetti needs to be shown on updateMessageSendSucceeded
+
+    #[serde(default)]
     success_animation_frame_number: i32,
 }
 
@@ -1505,14 +1783,14 @@ impl RObject for MessageDice {
 impl TDMessageContent for MessageDice {}
 
 impl MessageDice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageDiceBuilder {
+    pub fn builder() -> MessageDiceBuilder {
         let mut inner = MessageDice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageDiceBuilder { inner }
+        MessageDiceBuilder { inner }
     }
 
     pub fn initial_state(&self) -> &Option<DiceStickers> {
@@ -1537,11 +1815,14 @@ impl MessageDice {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageDiceBuilder {
+pub struct MessageDiceBuilder {
     inner: MessageDice,
 }
 
-impl RTDMessageDiceBuilder {
+#[deprecated]
+pub type RTDMessageDiceBuilder = MessageDiceBuilder;
+
+impl MessageDiceBuilder {
     pub fn build(&self) -> MessageDice {
         self.inner.clone()
     }
@@ -1581,7 +1862,7 @@ impl AsRef<MessageDice> for MessageDice {
     }
 }
 
-impl AsRef<MessageDice> for RTDMessageDiceBuilder {
+impl AsRef<MessageDice> for MessageDiceBuilder {
     fn as_ref(&self) -> &MessageDice {
         &self.inner
     }
@@ -1615,14 +1896,14 @@ impl RObject for MessageDocument {
 impl TDMessageContent for MessageDocument {}
 
 impl MessageDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageDocumentBuilder {
+    pub fn builder() -> MessageDocumentBuilder {
         let mut inner = MessageDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageDocumentBuilder { inner }
+        MessageDocumentBuilder { inner }
     }
 
     pub fn document(&self) -> &Document {
@@ -1635,11 +1916,14 @@ impl MessageDocument {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageDocumentBuilder {
+pub struct MessageDocumentBuilder {
     inner: MessageDocument,
 }
 
-impl RTDMessageDocumentBuilder {
+#[deprecated]
+pub type RTDMessageDocumentBuilder = MessageDocumentBuilder;
+
+impl MessageDocumentBuilder {
     pub fn build(&self) -> MessageDocument {
         self.inner.clone()
     }
@@ -1661,7 +1945,7 @@ impl AsRef<MessageDocument> for MessageDocument {
     }
 }
 
-impl AsRef<MessageDocument> for RTDMessageDocumentBuilder {
+impl AsRef<MessageDocument> for MessageDocumentBuilder {
     fn as_ref(&self) -> &MessageDocument {
         &self.inner
     }
@@ -1691,23 +1975,26 @@ impl RObject for MessageExpiredPhoto {
 impl TDMessageContent for MessageExpiredPhoto {}
 
 impl MessageExpiredPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageExpiredPhotoBuilder {
+    pub fn builder() -> MessageExpiredPhotoBuilder {
         let mut inner = MessageExpiredPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageExpiredPhotoBuilder { inner }
+        MessageExpiredPhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageExpiredPhotoBuilder {
+pub struct MessageExpiredPhotoBuilder {
     inner: MessageExpiredPhoto,
 }
 
-impl RTDMessageExpiredPhotoBuilder {
+#[deprecated]
+pub type RTDMessageExpiredPhotoBuilder = MessageExpiredPhotoBuilder;
+
+impl MessageExpiredPhotoBuilder {
     pub fn build(&self) -> MessageExpiredPhoto {
         self.inner.clone()
     }
@@ -1719,7 +2006,7 @@ impl AsRef<MessageExpiredPhoto> for MessageExpiredPhoto {
     }
 }
 
-impl AsRef<MessageExpiredPhoto> for RTDMessageExpiredPhotoBuilder {
+impl AsRef<MessageExpiredPhoto> for MessageExpiredPhotoBuilder {
     fn as_ref(&self) -> &MessageExpiredPhoto {
         &self.inner
     }
@@ -1749,23 +2036,26 @@ impl RObject for MessageExpiredVideo {
 impl TDMessageContent for MessageExpiredVideo {}
 
 impl MessageExpiredVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageExpiredVideoBuilder {
+    pub fn builder() -> MessageExpiredVideoBuilder {
         let mut inner = MessageExpiredVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageExpiredVideoBuilder { inner }
+        MessageExpiredVideoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageExpiredVideoBuilder {
+pub struct MessageExpiredVideoBuilder {
     inner: MessageExpiredVideo,
 }
 
-impl RTDMessageExpiredVideoBuilder {
+#[deprecated]
+pub type RTDMessageExpiredVideoBuilder = MessageExpiredVideoBuilder;
+
+impl MessageExpiredVideoBuilder {
     pub fn build(&self) -> MessageExpiredVideo {
         self.inner.clone()
     }
@@ -1777,7 +2067,7 @@ impl AsRef<MessageExpiredVideo> for MessageExpiredVideo {
     }
 }
 
-impl AsRef<MessageExpiredVideo> for RTDMessageExpiredVideoBuilder {
+impl AsRef<MessageExpiredVideo> for MessageExpiredVideoBuilder {
     fn as_ref(&self) -> &MessageExpiredVideo {
         &self.inner
     }
@@ -1809,14 +2099,14 @@ impl RObject for MessageGame {
 impl TDMessageContent for MessageGame {}
 
 impl MessageGame {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageGameBuilder {
+    pub fn builder() -> MessageGameBuilder {
         let mut inner = MessageGame::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageGameBuilder { inner }
+        MessageGameBuilder { inner }
     }
 
     pub fn game(&self) -> &Game {
@@ -1825,11 +2115,14 @@ impl MessageGame {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageGameBuilder {
+pub struct MessageGameBuilder {
     inner: MessageGame,
 }
 
-impl RTDMessageGameBuilder {
+#[deprecated]
+pub type RTDMessageGameBuilder = MessageGameBuilder;
+
+impl MessageGameBuilder {
     pub fn build(&self) -> MessageGame {
         self.inner.clone()
     }
@@ -1846,7 +2139,7 @@ impl AsRef<MessageGame> for MessageGame {
     }
 }
 
-impl AsRef<MessageGame> for RTDMessageGameBuilder {
+impl AsRef<MessageGame> for MessageGameBuilder {
     fn as_ref(&self) -> &MessageGame {
         &self.inner
     }
@@ -1861,12 +2154,17 @@ pub struct MessageGameScore {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the message with the game, can be an identifier of a deleted message
+
+    #[serde(default)]
     game_message_id: i64,
     /// Identifier of the game; may be different from the games presented in the message with the game
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     game_id: i64,
     /// New score
+
+    #[serde(default)]
     score: i32,
 }
 
@@ -1884,14 +2182,14 @@ impl RObject for MessageGameScore {
 impl TDMessageContent for MessageGameScore {}
 
 impl MessageGameScore {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageGameScoreBuilder {
+    pub fn builder() -> MessageGameScoreBuilder {
         let mut inner = MessageGameScore::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageGameScoreBuilder { inner }
+        MessageGameScoreBuilder { inner }
     }
 
     pub fn game_message_id(&self) -> i64 {
@@ -1908,11 +2206,14 @@ impl MessageGameScore {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageGameScoreBuilder {
+pub struct MessageGameScoreBuilder {
     inner: MessageGameScore,
 }
 
-impl RTDMessageGameScoreBuilder {
+#[deprecated]
+pub type RTDMessageGameScoreBuilder = MessageGameScoreBuilder;
+
+impl MessageGameScoreBuilder {
     pub fn build(&self) -> MessageGameScore {
         self.inner.clone()
     }
@@ -1939,8 +2240,95 @@ impl AsRef<MessageGameScore> for MessageGameScore {
     }
 }
 
-impl AsRef<MessageGameScore> for RTDMessageGameScoreBuilder {
+impl AsRef<MessageGameScore> for MessageGameScoreBuilder {
     fn as_ref(&self) -> &MessageGameScore {
+        &self.inner
+    }
+}
+
+/// A message with information about an invite to a video chat
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageInviteVideoChatParticipants {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+
+    #[serde(default)]
+    group_call_id: i32,
+    /// Invited user identifiers
+
+    #[serde(default)]
+    user_ids: Vec<i64>,
+}
+
+impl RObject for MessageInviteVideoChatParticipants {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageInviteVideoChatParticipants {}
+
+impl MessageInviteVideoChatParticipants {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> MessageInviteVideoChatParticipantsBuilder {
+        let mut inner = MessageInviteVideoChatParticipants::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        MessageInviteVideoChatParticipantsBuilder { inner }
+    }
+
+    pub fn group_call_id(&self) -> i32 {
+        self.group_call_id
+    }
+
+    pub fn user_ids(&self) -> &Vec<i64> {
+        &self.user_ids
+    }
+}
+
+#[doc(hidden)]
+pub struct MessageInviteVideoChatParticipantsBuilder {
+    inner: MessageInviteVideoChatParticipants,
+}
+
+#[deprecated]
+pub type RTDMessageInviteVideoChatParticipantsBuilder = MessageInviteVideoChatParticipantsBuilder;
+
+impl MessageInviteVideoChatParticipantsBuilder {
+    pub fn build(&self) -> MessageInviteVideoChatParticipants {
+        self.inner.clone()
+    }
+
+    pub fn group_call_id(&mut self, group_call_id: i32) -> &mut Self {
+        self.inner.group_call_id = group_call_id;
+        self
+    }
+
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
+        self.inner.user_ids = user_ids;
+        self
+    }
+}
+
+impl AsRef<MessageInviteVideoChatParticipants> for MessageInviteVideoChatParticipants {
+    fn as_ref(&self) -> &MessageInviteVideoChatParticipants {
+        self
+    }
+}
+
+impl AsRef<MessageInviteVideoChatParticipants> for MessageInviteVideoChatParticipantsBuilder {
+    fn as_ref(&self) -> &MessageInviteVideoChatParticipants {
         &self.inner
     }
 }
@@ -1954,22 +2342,38 @@ pub struct MessageInvoice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Product title
+
+    #[serde(default)]
     title: String,
     /// A message with an invoice from a bot
+
+    #[serde(default)]
     description: String,
     /// Product photo; may be null
     photo: Option<Photo>,
     /// Currency for the product price
+
+    #[serde(default)]
     currency: String,
-    /// Product total price in the minimal quantity of the currency
+    /// Product total price in the smallest units of the currency
+
+    #[serde(default)]
     total_amount: i64,
     /// Unique invoice bot start_parameter. To share an invoice use the URL https://t.me/{bot_username}?start={start_parameter}
+
+    #[serde(default)]
     start_parameter: String,
     /// True, if the invoice is a test invoice
+
+    #[serde(default)]
     is_test: bool,
-    /// True, if the shipping address should be specified
+    /// True, if the shipping address must be specified
+
+    #[serde(default)]
     need_shipping_address: bool,
     /// The identifier of the message with the receipt, after the product has been purchased
+
+    #[serde(default)]
     receipt_message_id: i64,
 }
 
@@ -1987,14 +2391,14 @@ impl RObject for MessageInvoice {
 impl TDMessageContent for MessageInvoice {}
 
 impl MessageInvoice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageInvoiceBuilder {
+    pub fn builder() -> MessageInvoiceBuilder {
         let mut inner = MessageInvoice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageInvoiceBuilder { inner }
+        MessageInvoiceBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -2035,11 +2439,14 @@ impl MessageInvoice {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageInvoiceBuilder {
+pub struct MessageInvoiceBuilder {
     inner: MessageInvoice,
 }
 
-impl RTDMessageInvoiceBuilder {
+#[deprecated]
+pub type RTDMessageInvoiceBuilder = MessageInvoiceBuilder;
+
+impl MessageInvoiceBuilder {
     pub fn build(&self) -> MessageInvoice {
         self.inner.clone()
     }
@@ -2096,7 +2503,7 @@ impl AsRef<MessageInvoice> for MessageInvoice {
     }
 }
 
-impl AsRef<MessageInvoice> for RTDMessageInvoiceBuilder {
+impl AsRef<MessageInvoice> for MessageInvoiceBuilder {
     fn as_ref(&self) -> &MessageInvoice {
         &self.inner
     }
@@ -2113,12 +2520,20 @@ pub struct MessageLocation {
     /// The location description
     location: Location,
     /// Time relative to the message send date, for which the location can be updated, in seconds
+
+    #[serde(default)]
     live_period: i32,
     /// Left time for which the location can be updated, in seconds. updateMessageContent is not sent when this field changes
+
+    #[serde(default)]
     expires_in: i32,
     /// For live locations, a direction in which the location moves, in degrees; 1-360. If 0 the direction is unknown
+
+    #[serde(default)]
     heading: i32,
     /// For live locations, a maximum distance to another chat member for proximity alerts, in meters (0-100000). 0 if the notification is disabled. Available only for the message sender
+
+    #[serde(default)]
     proximity_alert_radius: i32,
 }
 
@@ -2136,14 +2551,14 @@ impl RObject for MessageLocation {
 impl TDMessageContent for MessageLocation {}
 
 impl MessageLocation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageLocationBuilder {
+    pub fn builder() -> MessageLocationBuilder {
         let mut inner = MessageLocation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageLocationBuilder { inner }
+        MessageLocationBuilder { inner }
     }
 
     pub fn location(&self) -> &Location {
@@ -2168,11 +2583,14 @@ impl MessageLocation {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageLocationBuilder {
+pub struct MessageLocationBuilder {
     inner: MessageLocation,
 }
 
-impl RTDMessageLocationBuilder {
+#[deprecated]
+pub type RTDMessageLocationBuilder = MessageLocationBuilder;
+
+impl MessageLocationBuilder {
     pub fn build(&self) -> MessageLocation {
         self.inner.clone()
     }
@@ -2209,7 +2627,7 @@ impl AsRef<MessageLocation> for MessageLocation {
     }
 }
 
-impl AsRef<MessageLocation> for RTDMessageLocationBuilder {
+impl AsRef<MessageLocation> for MessageLocationBuilder {
     fn as_ref(&self) -> &MessageLocation {
         &self.inner
     }
@@ -2224,6 +2642,8 @@ pub struct MessagePassportDataReceived {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of received Telegram Passport elements
+
+    #[serde(default)]
     elements: Vec<EncryptedPassportElement>,
     /// Encrypted data credentials
     credentials: EncryptedCredentials,
@@ -2243,14 +2663,14 @@ impl RObject for MessagePassportDataReceived {
 impl TDMessageContent for MessagePassportDataReceived {}
 
 impl MessagePassportDataReceived {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePassportDataReceivedBuilder {
+    pub fn builder() -> MessagePassportDataReceivedBuilder {
         let mut inner = MessagePassportDataReceived::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePassportDataReceivedBuilder { inner }
+        MessagePassportDataReceivedBuilder { inner }
     }
 
     pub fn elements(&self) -> &Vec<EncryptedPassportElement> {
@@ -2263,11 +2683,14 @@ impl MessagePassportDataReceived {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePassportDataReceivedBuilder {
+pub struct MessagePassportDataReceivedBuilder {
     inner: MessagePassportDataReceived,
 }
 
-impl RTDMessagePassportDataReceivedBuilder {
+#[deprecated]
+pub type RTDMessagePassportDataReceivedBuilder = MessagePassportDataReceivedBuilder;
+
+impl MessagePassportDataReceivedBuilder {
     pub fn build(&self) -> MessagePassportDataReceived {
         self.inner.clone()
     }
@@ -2289,7 +2712,7 @@ impl AsRef<MessagePassportDataReceived> for MessagePassportDataReceived {
     }
 }
 
-impl AsRef<MessagePassportDataReceived> for RTDMessagePassportDataReceivedBuilder {
+impl AsRef<MessagePassportDataReceived> for MessagePassportDataReceivedBuilder {
     fn as_ref(&self) -> &MessagePassportDataReceived {
         &self.inner
     }
@@ -2304,6 +2727,8 @@ pub struct MessagePassportDataSent {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of Telegram Passport element types sent
+
+    #[serde(default)]
     types: Vec<PassportElementType>,
 }
 
@@ -2321,14 +2746,14 @@ impl RObject for MessagePassportDataSent {
 impl TDMessageContent for MessagePassportDataSent {}
 
 impl MessagePassportDataSent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePassportDataSentBuilder {
+    pub fn builder() -> MessagePassportDataSentBuilder {
         let mut inner = MessagePassportDataSent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePassportDataSentBuilder { inner }
+        MessagePassportDataSentBuilder { inner }
     }
 
     pub fn types(&self) -> &Vec<PassportElementType> {
@@ -2337,11 +2762,14 @@ impl MessagePassportDataSent {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePassportDataSentBuilder {
+pub struct MessagePassportDataSentBuilder {
     inner: MessagePassportDataSent,
 }
 
-impl RTDMessagePassportDataSentBuilder {
+#[deprecated]
+pub type RTDMessagePassportDataSentBuilder = MessagePassportDataSentBuilder;
+
+impl MessagePassportDataSentBuilder {
     pub fn build(&self) -> MessagePassportDataSent {
         self.inner.clone()
     }
@@ -2358,7 +2786,7 @@ impl AsRef<MessagePassportDataSent> for MessagePassportDataSent {
     }
 }
 
-impl AsRef<MessagePassportDataSent> for RTDMessagePassportDataSentBuilder {
+impl AsRef<MessagePassportDataSent> for MessagePassportDataSentBuilder {
     fn as_ref(&self) -> &MessagePassportDataSent {
         &self.inner
     }
@@ -2372,11 +2800,21 @@ pub struct MessagePaymentSuccessful {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
+    /// Identifier of the chat, containing the corresponding invoice message; 0 if unknown
+
+    #[serde(default)]
+    invoice_chat_id: i64,
     /// Identifier of the message with the corresponding invoice; can be an identifier of a deleted message
+
+    #[serde(default)]
     invoice_message_id: i64,
     /// Currency for the price of the product
+
+    #[serde(default)]
     currency: String,
-    /// Total price for the product, in the minimal quantity of the currency
+    /// Total price for the product, in the smallest units of the currency
+
+    #[serde(default)]
     total_amount: i64,
 }
 
@@ -2394,14 +2832,18 @@ impl RObject for MessagePaymentSuccessful {
 impl TDMessageContent for MessagePaymentSuccessful {}
 
 impl MessagePaymentSuccessful {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePaymentSuccessfulBuilder {
+    pub fn builder() -> MessagePaymentSuccessfulBuilder {
         let mut inner = MessagePaymentSuccessful::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePaymentSuccessfulBuilder { inner }
+        MessagePaymentSuccessfulBuilder { inner }
+    }
+
+    pub fn invoice_chat_id(&self) -> i64 {
+        self.invoice_chat_id
     }
 
     pub fn invoice_message_id(&self) -> i64 {
@@ -2418,13 +2860,21 @@ impl MessagePaymentSuccessful {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePaymentSuccessfulBuilder {
+pub struct MessagePaymentSuccessfulBuilder {
     inner: MessagePaymentSuccessful,
 }
 
-impl RTDMessagePaymentSuccessfulBuilder {
+#[deprecated]
+pub type RTDMessagePaymentSuccessfulBuilder = MessagePaymentSuccessfulBuilder;
+
+impl MessagePaymentSuccessfulBuilder {
     pub fn build(&self) -> MessagePaymentSuccessful {
         self.inner.clone()
+    }
+
+    pub fn invoice_chat_id(&mut self, invoice_chat_id: i64) -> &mut Self {
+        self.inner.invoice_chat_id = invoice_chat_id;
+        self
     }
 
     pub fn invoice_message_id(&mut self, invoice_message_id: i64) -> &mut Self {
@@ -2449,7 +2899,7 @@ impl AsRef<MessagePaymentSuccessful> for MessagePaymentSuccessful {
     }
 }
 
-impl AsRef<MessagePaymentSuccessful> for RTDMessagePaymentSuccessfulBuilder {
+impl AsRef<MessagePaymentSuccessful> for MessagePaymentSuccessfulBuilder {
     fn as_ref(&self) -> &MessagePaymentSuccessful {
         &self.inner
     }
@@ -2463,21 +2913,31 @@ pub struct MessagePaymentSuccessfulBot {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the message with the corresponding invoice; can be an identifier of a deleted message
-    invoice_message_id: i64,
     /// Currency for price of the product
+
+    #[serde(default)]
     currency: String,
-    /// Total price for the product, in the minimal quantity of the currency
+    /// Total price for the product, in the smallest units of the currency
+
+    #[serde(default)]
     total_amount: i64,
     /// Invoice payload
+
+    #[serde(default)]
     invoice_payload: String,
     /// Identifier of the shipping option chosen by the user; may be empty if not applicable
+
+    #[serde(default)]
     shipping_option_id: String,
     /// Information about the order; may be null
     order_info: Option<OrderInfo>,
     /// Telegram payment identifier
+
+    #[serde(default)]
     telegram_payment_charge_id: String,
     /// Provider payment identifier
+
+    #[serde(default)]
     provider_payment_charge_id: String,
 }
 
@@ -2495,18 +2955,14 @@ impl RObject for MessagePaymentSuccessfulBot {
 impl TDMessageContent for MessagePaymentSuccessfulBot {}
 
 impl MessagePaymentSuccessfulBot {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePaymentSuccessfulBotBuilder {
+    pub fn builder() -> MessagePaymentSuccessfulBotBuilder {
         let mut inner = MessagePaymentSuccessfulBot::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePaymentSuccessfulBotBuilder { inner }
-    }
-
-    pub fn invoice_message_id(&self) -> i64 {
-        self.invoice_message_id
+        MessagePaymentSuccessfulBotBuilder { inner }
     }
 
     pub fn currency(&self) -> &String {
@@ -2539,18 +2995,16 @@ impl MessagePaymentSuccessfulBot {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePaymentSuccessfulBotBuilder {
+pub struct MessagePaymentSuccessfulBotBuilder {
     inner: MessagePaymentSuccessfulBot,
 }
 
-impl RTDMessagePaymentSuccessfulBotBuilder {
+#[deprecated]
+pub type RTDMessagePaymentSuccessfulBotBuilder = MessagePaymentSuccessfulBotBuilder;
+
+impl MessagePaymentSuccessfulBotBuilder {
     pub fn build(&self) -> MessagePaymentSuccessfulBot {
         self.inner.clone()
-    }
-
-    pub fn invoice_message_id(&mut self, invoice_message_id: i64) -> &mut Self {
-        self.inner.invoice_message_id = invoice_message_id;
-        self
     }
 
     pub fn currency<T: AsRef<str>>(&mut self, currency: T) -> &mut Self {
@@ -2601,7 +3055,7 @@ impl AsRef<MessagePaymentSuccessfulBot> for MessagePaymentSuccessfulBot {
     }
 }
 
-impl AsRef<MessagePaymentSuccessfulBot> for RTDMessagePaymentSuccessfulBotBuilder {
+impl AsRef<MessagePaymentSuccessfulBot> for MessagePaymentSuccessfulBotBuilder {
     fn as_ref(&self) -> &MessagePaymentSuccessfulBot {
         &self.inner
     }
@@ -2620,6 +3074,8 @@ pub struct MessagePhoto {
     /// Photo caption
     caption: FormattedText,
     /// True, if the photo must be blurred and must be shown only while tapped
+
+    #[serde(default)]
     is_secret: bool,
 }
 
@@ -2637,14 +3093,14 @@ impl RObject for MessagePhoto {
 impl TDMessageContent for MessagePhoto {}
 
 impl MessagePhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePhotoBuilder {
+    pub fn builder() -> MessagePhotoBuilder {
         let mut inner = MessagePhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePhotoBuilder { inner }
+        MessagePhotoBuilder { inner }
     }
 
     pub fn photo(&self) -> &Photo {
@@ -2661,11 +3117,14 @@ impl MessagePhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePhotoBuilder {
+pub struct MessagePhotoBuilder {
     inner: MessagePhoto,
 }
 
-impl RTDMessagePhotoBuilder {
+#[deprecated]
+pub type RTDMessagePhotoBuilder = MessagePhotoBuilder;
+
+impl MessagePhotoBuilder {
     pub fn build(&self) -> MessagePhoto {
         self.inner.clone()
     }
@@ -2692,7 +3151,7 @@ impl AsRef<MessagePhoto> for MessagePhoto {
     }
 }
 
-impl AsRef<MessagePhoto> for RTDMessagePhotoBuilder {
+impl AsRef<MessagePhoto> for MessagePhotoBuilder {
     fn as_ref(&self) -> &MessagePhoto {
         &self.inner
     }
@@ -2707,6 +3166,8 @@ pub struct MessagePinMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the pinned message, can be an identifier of a deleted message or 0
+
+    #[serde(default)]
     message_id: i64,
 }
 
@@ -2724,14 +3185,14 @@ impl RObject for MessagePinMessage {
 impl TDMessageContent for MessagePinMessage {}
 
 impl MessagePinMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePinMessageBuilder {
+    pub fn builder() -> MessagePinMessageBuilder {
         let mut inner = MessagePinMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePinMessageBuilder { inner }
+        MessagePinMessageBuilder { inner }
     }
 
     pub fn message_id(&self) -> i64 {
@@ -2740,11 +3201,14 @@ impl MessagePinMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePinMessageBuilder {
+pub struct MessagePinMessageBuilder {
     inner: MessagePinMessage,
 }
 
-impl RTDMessagePinMessageBuilder {
+#[deprecated]
+pub type RTDMessagePinMessageBuilder = MessagePinMessageBuilder;
+
+impl MessagePinMessageBuilder {
     pub fn build(&self) -> MessagePinMessage {
         self.inner.clone()
     }
@@ -2761,7 +3225,7 @@ impl AsRef<MessagePinMessage> for MessagePinMessage {
     }
 }
 
-impl AsRef<MessagePinMessage> for RTDMessagePinMessageBuilder {
+impl AsRef<MessagePinMessage> for MessagePinMessageBuilder {
     fn as_ref(&self) -> &MessagePinMessage {
         &self.inner
     }
@@ -2793,14 +3257,14 @@ impl RObject for MessagePoll {
 impl TDMessageContent for MessagePoll {}
 
 impl MessagePoll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessagePollBuilder {
+    pub fn builder() -> MessagePollBuilder {
         let mut inner = MessagePoll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessagePollBuilder { inner }
+        MessagePollBuilder { inner }
     }
 
     pub fn poll(&self) -> &Poll {
@@ -2809,11 +3273,14 @@ impl MessagePoll {
 }
 
 #[doc(hidden)]
-pub struct RTDMessagePollBuilder {
+pub struct MessagePollBuilder {
     inner: MessagePoll,
 }
 
-impl RTDMessagePollBuilder {
+#[deprecated]
+pub type RTDMessagePollBuilder = MessagePollBuilder;
+
+impl MessagePollBuilder {
     pub fn build(&self) -> MessagePoll {
         self.inner.clone()
     }
@@ -2830,7 +3297,7 @@ impl AsRef<MessagePoll> for MessagePoll {
     }
 }
 
-impl AsRef<MessagePoll> for RTDMessagePollBuilder {
+impl AsRef<MessagePoll> for MessagePollBuilder {
     fn as_ref(&self) -> &MessagePoll {
         &self.inner
     }
@@ -2844,15 +3311,17 @@ pub struct MessageProximityAlertTriggered {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The user or chat, which triggered the proximity alert
+    /// The identifier of a user or chat that triggered the proximity alert
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    traveler: MessageSender,
-    /// The user or chat, which subscribed for the proximity alert
+    traveler_id: MessageSender,
+    /// The identifier of a user or chat that subscribed for the proximity alert
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    watcher: MessageSender,
+    watcher_id: MessageSender,
     /// The distance between the users
+
+    #[serde(default)]
     distance: i32,
 }
 
@@ -2870,22 +3339,22 @@ impl RObject for MessageProximityAlertTriggered {
 impl TDMessageContent for MessageProximityAlertTriggered {}
 
 impl MessageProximityAlertTriggered {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageProximityAlertTriggeredBuilder {
+    pub fn builder() -> MessageProximityAlertTriggeredBuilder {
         let mut inner = MessageProximityAlertTriggered::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageProximityAlertTriggeredBuilder { inner }
+        MessageProximityAlertTriggeredBuilder { inner }
     }
 
-    pub fn traveler(&self) -> &MessageSender {
-        &self.traveler
+    pub fn traveler_id(&self) -> &MessageSender {
+        &self.traveler_id
     }
 
-    pub fn watcher(&self) -> &MessageSender {
-        &self.watcher
+    pub fn watcher_id(&self) -> &MessageSender {
+        &self.watcher_id
     }
 
     pub fn distance(&self) -> i32 {
@@ -2894,22 +3363,25 @@ impl MessageProximityAlertTriggered {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageProximityAlertTriggeredBuilder {
+pub struct MessageProximityAlertTriggeredBuilder {
     inner: MessageProximityAlertTriggered,
 }
 
-impl RTDMessageProximityAlertTriggeredBuilder {
+#[deprecated]
+pub type RTDMessageProximityAlertTriggeredBuilder = MessageProximityAlertTriggeredBuilder;
+
+impl MessageProximityAlertTriggeredBuilder {
     pub fn build(&self) -> MessageProximityAlertTriggered {
         self.inner.clone()
     }
 
-    pub fn traveler<T: AsRef<MessageSender>>(&mut self, traveler: T) -> &mut Self {
-        self.inner.traveler = traveler.as_ref().clone();
+    pub fn traveler_id<T: AsRef<MessageSender>>(&mut self, traveler_id: T) -> &mut Self {
+        self.inner.traveler_id = traveler_id.as_ref().clone();
         self
     }
 
-    pub fn watcher<T: AsRef<MessageSender>>(&mut self, watcher: T) -> &mut Self {
-        self.inner.watcher = watcher.as_ref().clone();
+    pub fn watcher_id<T: AsRef<MessageSender>>(&mut self, watcher_id: T) -> &mut Self {
+        self.inner.watcher_id = watcher_id.as_ref().clone();
         self
     }
 
@@ -2925,7 +3397,7 @@ impl AsRef<MessageProximityAlertTriggered> for MessageProximityAlertTriggered {
     }
 }
 
-impl AsRef<MessageProximityAlertTriggered> for RTDMessageProximityAlertTriggeredBuilder {
+impl AsRef<MessageProximityAlertTriggered> for MessageProximityAlertTriggeredBuilder {
     fn as_ref(&self) -> &MessageProximityAlertTriggered {
         &self.inner
     }
@@ -2955,23 +3427,26 @@ impl RObject for MessageScreenshotTaken {
 impl TDMessageContent for MessageScreenshotTaken {}
 
 impl MessageScreenshotTaken {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageScreenshotTakenBuilder {
+    pub fn builder() -> MessageScreenshotTakenBuilder {
         let mut inner = MessageScreenshotTaken::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageScreenshotTakenBuilder { inner }
+        MessageScreenshotTakenBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageScreenshotTakenBuilder {
+pub struct MessageScreenshotTakenBuilder {
     inner: MessageScreenshotTaken,
 }
 
-impl RTDMessageScreenshotTakenBuilder {
+#[deprecated]
+pub type RTDMessageScreenshotTakenBuilder = MessageScreenshotTakenBuilder;
+
+impl MessageScreenshotTakenBuilder {
     pub fn build(&self) -> MessageScreenshotTaken {
         self.inner.clone()
     }
@@ -2983,7 +3458,7 @@ impl AsRef<MessageScreenshotTaken> for MessageScreenshotTaken {
     }
 }
 
-impl AsRef<MessageScreenshotTaken> for RTDMessageScreenshotTakenBuilder {
+impl AsRef<MessageScreenshotTaken> for MessageScreenshotTakenBuilder {
     fn as_ref(&self) -> &MessageScreenshotTaken {
         &self.inner
     }
@@ -3015,14 +3490,14 @@ impl RObject for MessageSticker {
 impl TDMessageContent for MessageSticker {}
 
 impl MessageSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageStickerBuilder {
+    pub fn builder() -> MessageStickerBuilder {
         let mut inner = MessageSticker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageStickerBuilder { inner }
+        MessageStickerBuilder { inner }
     }
 
     pub fn sticker(&self) -> &Sticker {
@@ -3031,11 +3506,14 @@ impl MessageSticker {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageStickerBuilder {
+pub struct MessageStickerBuilder {
     inner: MessageSticker,
 }
 
-impl RTDMessageStickerBuilder {
+#[deprecated]
+pub type RTDMessageStickerBuilder = MessageStickerBuilder;
+
+impl MessageStickerBuilder {
     pub fn build(&self) -> MessageSticker {
         self.inner.clone()
     }
@@ -3052,7 +3530,7 @@ impl AsRef<MessageSticker> for MessageSticker {
     }
 }
 
-impl AsRef<MessageSticker> for RTDMessageStickerBuilder {
+impl AsRef<MessageSticker> for MessageStickerBuilder {
     fn as_ref(&self) -> &MessageSticker {
         &self.inner
     }
@@ -3067,6 +3545,8 @@ pub struct MessageSupergroupChatCreate {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title of the supergroup or channel
+
+    #[serde(default)]
     title: String,
 }
 
@@ -3084,14 +3564,14 @@ impl RObject for MessageSupergroupChatCreate {
 impl TDMessageContent for MessageSupergroupChatCreate {}
 
 impl MessageSupergroupChatCreate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSupergroupChatCreateBuilder {
+    pub fn builder() -> MessageSupergroupChatCreateBuilder {
         let mut inner = MessageSupergroupChatCreate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSupergroupChatCreateBuilder { inner }
+        MessageSupergroupChatCreateBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -3100,11 +3580,14 @@ impl MessageSupergroupChatCreate {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSupergroupChatCreateBuilder {
+pub struct MessageSupergroupChatCreateBuilder {
     inner: MessageSupergroupChatCreate,
 }
 
-impl RTDMessageSupergroupChatCreateBuilder {
+#[deprecated]
+pub type RTDMessageSupergroupChatCreateBuilder = MessageSupergroupChatCreateBuilder;
+
+impl MessageSupergroupChatCreateBuilder {
     pub fn build(&self) -> MessageSupergroupChatCreate {
         self.inner.clone()
     }
@@ -3121,7 +3604,7 @@ impl AsRef<MessageSupergroupChatCreate> for MessageSupergroupChatCreate {
     }
 }
 
-impl AsRef<MessageSupergroupChatCreate> for RTDMessageSupergroupChatCreateBuilder {
+impl AsRef<MessageSupergroupChatCreate> for MessageSupergroupChatCreateBuilder {
     fn as_ref(&self) -> &MessageSupergroupChatCreate {
         &self.inner
     }
@@ -3155,14 +3638,14 @@ impl RObject for MessageText {
 impl TDMessageContent for MessageText {}
 
 impl MessageText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageTextBuilder {
+    pub fn builder() -> MessageTextBuilder {
         let mut inner = MessageText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageTextBuilder { inner }
+        MessageTextBuilder { inner }
     }
 
     pub fn text(&self) -> &FormattedText {
@@ -3175,11 +3658,14 @@ impl MessageText {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageTextBuilder {
+pub struct MessageTextBuilder {
     inner: MessageText,
 }
 
-impl RTDMessageTextBuilder {
+#[deprecated]
+pub type RTDMessageTextBuilder = MessageTextBuilder;
+
+impl MessageTextBuilder {
     pub fn build(&self) -> MessageText {
         self.inner.clone()
     }
@@ -3201,7 +3687,7 @@ impl AsRef<MessageText> for MessageText {
     }
 }
 
-impl AsRef<MessageText> for RTDMessageTextBuilder {
+impl AsRef<MessageText> for MessageTextBuilder {
     fn as_ref(&self) -> &MessageText {
         &self.inner
     }
@@ -3231,23 +3717,26 @@ impl RObject for MessageUnsupported {
 impl TDMessageContent for MessageUnsupported {}
 
 impl MessageUnsupported {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageUnsupportedBuilder {
+    pub fn builder() -> MessageUnsupportedBuilder {
         let mut inner = MessageUnsupported::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageUnsupportedBuilder { inner }
+        MessageUnsupportedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageUnsupportedBuilder {
+pub struct MessageUnsupportedBuilder {
     inner: MessageUnsupported,
 }
 
-impl RTDMessageUnsupportedBuilder {
+#[deprecated]
+pub type RTDMessageUnsupportedBuilder = MessageUnsupportedBuilder;
+
+impl MessageUnsupportedBuilder {
     pub fn build(&self) -> MessageUnsupported {
         self.inner.clone()
     }
@@ -3259,7 +3748,7 @@ impl AsRef<MessageUnsupported> for MessageUnsupported {
     }
 }
 
-impl AsRef<MessageUnsupported> for RTDMessageUnsupportedBuilder {
+impl AsRef<MessageUnsupported> for MessageUnsupportedBuilder {
     fn as_ref(&self) -> &MessageUnsupported {
         &self.inner
     }
@@ -3291,14 +3780,14 @@ impl RObject for MessageVenue {
 impl TDMessageContent for MessageVenue {}
 
 impl MessageVenue {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVenueBuilder {
+    pub fn builder() -> MessageVenueBuilder {
         let mut inner = MessageVenue::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVenueBuilder { inner }
+        MessageVenueBuilder { inner }
     }
 
     pub fn venue(&self) -> &Venue {
@@ -3307,11 +3796,14 @@ impl MessageVenue {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVenueBuilder {
+pub struct MessageVenueBuilder {
     inner: MessageVenue,
 }
 
-impl RTDMessageVenueBuilder {
+#[deprecated]
+pub type RTDMessageVenueBuilder = MessageVenueBuilder;
+
+impl MessageVenueBuilder {
     pub fn build(&self) -> MessageVenue {
         self.inner.clone()
     }
@@ -3328,7 +3820,7 @@ impl AsRef<MessageVenue> for MessageVenue {
     }
 }
 
-impl AsRef<MessageVenue> for RTDMessageVenueBuilder {
+impl AsRef<MessageVenue> for MessageVenueBuilder {
     fn as_ref(&self) -> &MessageVenue {
         &self.inner
     }
@@ -3347,6 +3839,8 @@ pub struct MessageVideo {
     /// Video caption
     caption: FormattedText,
     /// True, if the video thumbnail must be blurred and the video must be shown only while tapped
+
+    #[serde(default)]
     is_secret: bool,
 }
 
@@ -3364,14 +3858,14 @@ impl RObject for MessageVideo {
 impl TDMessageContent for MessageVideo {}
 
 impl MessageVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVideoBuilder {
+    pub fn builder() -> MessageVideoBuilder {
         let mut inner = MessageVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVideoBuilder { inner }
+        MessageVideoBuilder { inner }
     }
 
     pub fn video(&self) -> &Video {
@@ -3388,11 +3882,14 @@ impl MessageVideo {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVideoBuilder {
+pub struct MessageVideoBuilder {
     inner: MessageVideo,
 }
 
-impl RTDMessageVideoBuilder {
+#[deprecated]
+pub type RTDMessageVideoBuilder = MessageVideoBuilder;
+
+impl MessageVideoBuilder {
     pub fn build(&self) -> MessageVideo {
         self.inner.clone()
     }
@@ -3419,8 +3916,243 @@ impl AsRef<MessageVideo> for MessageVideo {
     }
 }
 
-impl AsRef<MessageVideo> for RTDMessageVideoBuilder {
+impl AsRef<MessageVideo> for MessageVideoBuilder {
     fn as_ref(&self) -> &MessageVideo {
+        &self.inner
+    }
+}
+
+/// A message with information about an ended video chat
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageVideoChatEnded {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Call duration, in seconds
+
+    #[serde(default)]
+    duration: i32,
+}
+
+impl RObject for MessageVideoChatEnded {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageVideoChatEnded {}
+
+impl MessageVideoChatEnded {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> MessageVideoChatEndedBuilder {
+        let mut inner = MessageVideoChatEnded::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        MessageVideoChatEndedBuilder { inner }
+    }
+
+    pub fn duration(&self) -> i32 {
+        self.duration
+    }
+}
+
+#[doc(hidden)]
+pub struct MessageVideoChatEndedBuilder {
+    inner: MessageVideoChatEnded,
+}
+
+#[deprecated]
+pub type RTDMessageVideoChatEndedBuilder = MessageVideoChatEndedBuilder;
+
+impl MessageVideoChatEndedBuilder {
+    pub fn build(&self) -> MessageVideoChatEnded {
+        self.inner.clone()
+    }
+
+    pub fn duration(&mut self, duration: i32) -> &mut Self {
+        self.inner.duration = duration;
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatEnded> for MessageVideoChatEnded {
+    fn as_ref(&self) -> &MessageVideoChatEnded {
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatEnded> for MessageVideoChatEndedBuilder {
+    fn as_ref(&self) -> &MessageVideoChatEnded {
+        &self.inner
+    }
+}
+
+/// A new video chat was scheduled
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageVideoChatScheduled {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+
+    #[serde(default)]
+    group_call_id: i32,
+    /// Point in time (Unix timestamp) when the group call is supposed to be started by an administrator
+
+    #[serde(default)]
+    start_date: i32,
+}
+
+impl RObject for MessageVideoChatScheduled {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageVideoChatScheduled {}
+
+impl MessageVideoChatScheduled {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> MessageVideoChatScheduledBuilder {
+        let mut inner = MessageVideoChatScheduled::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        MessageVideoChatScheduledBuilder { inner }
+    }
+
+    pub fn group_call_id(&self) -> i32 {
+        self.group_call_id
+    }
+
+    pub fn start_date(&self) -> i32 {
+        self.start_date
+    }
+}
+
+#[doc(hidden)]
+pub struct MessageVideoChatScheduledBuilder {
+    inner: MessageVideoChatScheduled,
+}
+
+#[deprecated]
+pub type RTDMessageVideoChatScheduledBuilder = MessageVideoChatScheduledBuilder;
+
+impl MessageVideoChatScheduledBuilder {
+    pub fn build(&self) -> MessageVideoChatScheduled {
+        self.inner.clone()
+    }
+
+    pub fn group_call_id(&mut self, group_call_id: i32) -> &mut Self {
+        self.inner.group_call_id = group_call_id;
+        self
+    }
+
+    pub fn start_date(&mut self, start_date: i32) -> &mut Self {
+        self.inner.start_date = start_date;
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatScheduled> for MessageVideoChatScheduled {
+    fn as_ref(&self) -> &MessageVideoChatScheduled {
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatScheduled> for MessageVideoChatScheduledBuilder {
+    fn as_ref(&self) -> &MessageVideoChatScheduled {
+        &self.inner
+    }
+}
+
+/// A newly created video chat
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MessageVideoChatStarted {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the video chat. The video chat can be received through the method getGroupCall
+
+    #[serde(default)]
+    group_call_id: i32,
+}
+
+impl RObject for MessageVideoChatStarted {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDMessageContent for MessageVideoChatStarted {}
+
+impl MessageVideoChatStarted {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> MessageVideoChatStartedBuilder {
+        let mut inner = MessageVideoChatStarted::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        MessageVideoChatStartedBuilder { inner }
+    }
+
+    pub fn group_call_id(&self) -> i32 {
+        self.group_call_id
+    }
+}
+
+#[doc(hidden)]
+pub struct MessageVideoChatStartedBuilder {
+    inner: MessageVideoChatStarted,
+}
+
+#[deprecated]
+pub type RTDMessageVideoChatStartedBuilder = MessageVideoChatStartedBuilder;
+
+impl MessageVideoChatStartedBuilder {
+    pub fn build(&self) -> MessageVideoChatStarted {
+        self.inner.clone()
+    }
+
+    pub fn group_call_id(&mut self, group_call_id: i32) -> &mut Self {
+        self.inner.group_call_id = group_call_id;
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatStarted> for MessageVideoChatStarted {
+    fn as_ref(&self) -> &MessageVideoChatStarted {
+        self
+    }
+}
+
+impl AsRef<MessageVideoChatStarted> for MessageVideoChatStartedBuilder {
+    fn as_ref(&self) -> &MessageVideoChatStarted {
         &self.inner
     }
 }
@@ -3436,8 +4168,12 @@ pub struct MessageVideoNote {
     /// The video note description
     video_note: VideoNote,
     /// True, if at least one of the recipients has viewed the video note
+
+    #[serde(default)]
     is_viewed: bool,
     /// True, if the video note thumbnail must be blurred and the video note must be shown only while tapped
+
+    #[serde(default)]
     is_secret: bool,
 }
 
@@ -3455,14 +4191,14 @@ impl RObject for MessageVideoNote {
 impl TDMessageContent for MessageVideoNote {}
 
 impl MessageVideoNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVideoNoteBuilder {
+    pub fn builder() -> MessageVideoNoteBuilder {
         let mut inner = MessageVideoNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVideoNoteBuilder { inner }
+        MessageVideoNoteBuilder { inner }
     }
 
     pub fn video_note(&self) -> &VideoNote {
@@ -3479,11 +4215,14 @@ impl MessageVideoNote {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVideoNoteBuilder {
+pub struct MessageVideoNoteBuilder {
     inner: MessageVideoNote,
 }
 
-impl RTDMessageVideoNoteBuilder {
+#[deprecated]
+pub type RTDMessageVideoNoteBuilder = MessageVideoNoteBuilder;
+
+impl MessageVideoNoteBuilder {
     pub fn build(&self) -> MessageVideoNote {
         self.inner.clone()
     }
@@ -3510,7 +4249,7 @@ impl AsRef<MessageVideoNote> for MessageVideoNote {
     }
 }
 
-impl AsRef<MessageVideoNote> for RTDMessageVideoNoteBuilder {
+impl AsRef<MessageVideoNote> for MessageVideoNoteBuilder {
     fn as_ref(&self) -> &MessageVideoNote {
         &self.inner
     }
@@ -3529,6 +4268,8 @@ pub struct MessageVoiceNote {
     /// Voice note caption
     caption: FormattedText,
     /// True, if at least one of the recipients has listened to the voice note
+
+    #[serde(default)]
     is_listened: bool,
 }
 
@@ -3546,14 +4287,14 @@ impl RObject for MessageVoiceNote {
 impl TDMessageContent for MessageVoiceNote {}
 
 impl MessageVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageVoiceNoteBuilder {
+    pub fn builder() -> MessageVoiceNoteBuilder {
         let mut inner = MessageVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageVoiceNoteBuilder { inner }
+        MessageVoiceNoteBuilder { inner }
     }
 
     pub fn voice_note(&self) -> &VoiceNote {
@@ -3570,11 +4311,14 @@ impl MessageVoiceNote {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageVoiceNoteBuilder {
+pub struct MessageVoiceNoteBuilder {
     inner: MessageVoiceNote,
 }
 
-impl RTDMessageVoiceNoteBuilder {
+#[deprecated]
+pub type RTDMessageVoiceNoteBuilder = MessageVoiceNoteBuilder;
+
+impl MessageVoiceNoteBuilder {
     pub fn build(&self) -> MessageVoiceNote {
         self.inner.clone()
     }
@@ -3601,7 +4345,7 @@ impl AsRef<MessageVoiceNote> for MessageVoiceNote {
     }
 }
 
-impl AsRef<MessageVoiceNote> for RTDMessageVoiceNoteBuilder {
+impl AsRef<MessageVoiceNote> for MessageVoiceNoteBuilder {
     fn as_ref(&self) -> &MessageVoiceNote {
         &self.inner
     }
@@ -3616,6 +4360,8 @@ pub struct MessageWebsiteConnected {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Domain name of the connected website
+
+    #[serde(default)]
     domain_name: String,
 }
 
@@ -3633,14 +4379,14 @@ impl RObject for MessageWebsiteConnected {
 impl TDMessageContent for MessageWebsiteConnected {}
 
 impl MessageWebsiteConnected {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageWebsiteConnectedBuilder {
+    pub fn builder() -> MessageWebsiteConnectedBuilder {
         let mut inner = MessageWebsiteConnected::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageWebsiteConnectedBuilder { inner }
+        MessageWebsiteConnectedBuilder { inner }
     }
 
     pub fn domain_name(&self) -> &String {
@@ -3649,11 +4395,14 @@ impl MessageWebsiteConnected {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageWebsiteConnectedBuilder {
+pub struct MessageWebsiteConnectedBuilder {
     inner: MessageWebsiteConnected,
 }
 
-impl RTDMessageWebsiteConnectedBuilder {
+#[deprecated]
+pub type RTDMessageWebsiteConnectedBuilder = MessageWebsiteConnectedBuilder;
+
+impl MessageWebsiteConnectedBuilder {
     pub fn build(&self) -> MessageWebsiteConnected {
         self.inner.clone()
     }
@@ -3670,7 +4419,7 @@ impl AsRef<MessageWebsiteConnected> for MessageWebsiteConnected {
     }
 }
 
-impl AsRef<MessageWebsiteConnected> for RTDMessageWebsiteConnectedBuilder {
+impl AsRef<MessageWebsiteConnected> for MessageWebsiteConnectedBuilder {
     fn as_ref(&self) -> &MessageWebsiteConnected {
         &self.inner
     }

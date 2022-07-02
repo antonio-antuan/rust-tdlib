@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct Backgrounds {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of backgrounds
+
+    #[serde(default)]
     backgrounds: Vec<Background>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for Backgrounds {
 }
 
 impl Backgrounds {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundsBuilder {
+    pub fn builder() -> BackgroundsBuilder {
         let mut inner = Backgrounds::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundsBuilder { inner }
+        BackgroundsBuilder { inner }
     }
 
     pub fn backgrounds(&self) -> &Vec<Background> {
@@ -42,11 +44,14 @@ impl Backgrounds {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundsBuilder {
+pub struct BackgroundsBuilder {
     inner: Backgrounds,
 }
 
-impl RTDBackgroundsBuilder {
+#[deprecated]
+pub type RTDBackgroundsBuilder = BackgroundsBuilder;
+
+impl BackgroundsBuilder {
     pub fn build(&self) -> Backgrounds {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<Backgrounds> for Backgrounds {
     }
 }
 
-impl AsRef<Backgrounds> for RTDBackgroundsBuilder {
+impl AsRef<Backgrounds> for BackgroundsBuilder {
     fn as_ref(&self) -> &Backgrounds {
         &self.inner
     }

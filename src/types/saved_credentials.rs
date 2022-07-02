@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SavedCredentials {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the saved credentials
+
+    #[serde(default)]
     id: String,
     /// Title of the saved credentials
+
+    #[serde(default)]
     title: String,
 }
 
@@ -28,14 +32,14 @@ impl RObject for SavedCredentials {
 }
 
 impl SavedCredentials {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSavedCredentialsBuilder {
+    pub fn builder() -> SavedCredentialsBuilder {
         let mut inner = SavedCredentials::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSavedCredentialsBuilder { inner }
+        SavedCredentialsBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -48,11 +52,14 @@ impl SavedCredentials {
 }
 
 #[doc(hidden)]
-pub struct RTDSavedCredentialsBuilder {
+pub struct SavedCredentialsBuilder {
     inner: SavedCredentials,
 }
 
-impl RTDSavedCredentialsBuilder {
+#[deprecated]
+pub type RTDSavedCredentialsBuilder = SavedCredentialsBuilder;
+
+impl SavedCredentialsBuilder {
     pub fn build(&self) -> SavedCredentials {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<SavedCredentials> for SavedCredentials {
     }
 }
 
-impl AsRef<SavedCredentials> for RTDSavedCredentialsBuilder {
+impl AsRef<SavedCredentials> for SavedCredentialsBuilder {
     fn as_ref(&self) -> &SavedCredentials {
         &self.inner
     }

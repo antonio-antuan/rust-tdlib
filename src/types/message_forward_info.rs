@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -15,12 +15,20 @@ pub struct MessageForwardInfo {
     #[serde(skip_serializing_if = "MessageForwardOrigin::_is_default")]
     origin: MessageForwardOrigin,
     /// Point in time (Unix timestamp) when the message was originally sent
+
+    #[serde(default)]
     date: i32,
     /// The type of a public service announcement for the forwarded message
+
+    #[serde(default)]
     public_service_announcement_type: String,
     /// For messages forwarded to the chat with the current user (Saved Messages), to the Replies bot chat, or to the channel's discussion group, the identifier of the chat from which the message was forwarded last time; 0 if unknown
+
+    #[serde(default)]
     from_chat_id: i64,
     /// For messages forwarded to the chat with the current user (Saved Messages), to the Replies bot chat, or to the channel's discussion group, the identifier of the original message from which the new message was forwarded last time; 0 if unknown
+
+    #[serde(default)]
     from_message_id: i64,
 }
 
@@ -36,14 +44,14 @@ impl RObject for MessageForwardInfo {
 }
 
 impl MessageForwardInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageForwardInfoBuilder {
+    pub fn builder() -> MessageForwardInfoBuilder {
         let mut inner = MessageForwardInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageForwardInfoBuilder { inner }
+        MessageForwardInfoBuilder { inner }
     }
 
     pub fn origin(&self) -> &MessageForwardOrigin {
@@ -68,11 +76,14 @@ impl MessageForwardInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageForwardInfoBuilder {
+pub struct MessageForwardInfoBuilder {
     inner: MessageForwardInfo,
 }
 
-impl RTDMessageForwardInfoBuilder {
+#[deprecated]
+pub type RTDMessageForwardInfoBuilder = MessageForwardInfoBuilder;
+
+impl MessageForwardInfoBuilder {
     pub fn build(&self) -> MessageForwardInfo {
         self.inner.clone()
     }
@@ -113,7 +124,7 @@ impl AsRef<MessageForwardInfo> for MessageForwardInfo {
     }
 }
 
-impl AsRef<MessageForwardInfo> for RTDMessageForwardInfoBuilder {
+impl AsRef<MessageForwardInfo> for MessageForwardInfoBuilder {
     fn as_ref(&self) -> &MessageForwardInfo {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct AddCustomServerLanguagePack {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of a language pack to be added; may be different from a name that is used in an "https://t.me/setlanguage/" link
+
+    #[serde(default)]
     language_pack_id: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for AddCustomServerLanguagePack {
 impl RFunction for AddCustomServerLanguagePack {}
 
 impl AddCustomServerLanguagePack {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAddCustomServerLanguagePackBuilder {
+    pub fn builder() -> AddCustomServerLanguagePackBuilder {
         let mut inner = AddCustomServerLanguagePack::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "addCustomServerLanguagePack".to_string();
 
-        RTDAddCustomServerLanguagePackBuilder { inner }
+        AddCustomServerLanguagePackBuilder { inner }
     }
 
     pub fn language_pack_id(&self) -> &String {
@@ -49,11 +51,14 @@ impl AddCustomServerLanguagePack {
 }
 
 #[doc(hidden)]
-pub struct RTDAddCustomServerLanguagePackBuilder {
+pub struct AddCustomServerLanguagePackBuilder {
     inner: AddCustomServerLanguagePack,
 }
 
-impl RTDAddCustomServerLanguagePackBuilder {
+#[deprecated]
+pub type RTDAddCustomServerLanguagePackBuilder = AddCustomServerLanguagePackBuilder;
+
+impl AddCustomServerLanguagePackBuilder {
     pub fn build(&self) -> AddCustomServerLanguagePack {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<AddCustomServerLanguagePack> for AddCustomServerLanguagePack {
     }
 }
 
-impl AsRef<AddCustomServerLanguagePack> for RTDAddCustomServerLanguagePackBuilder {
+impl AsRef<AddCustomServerLanguagePack> for AddCustomServerLanguagePackBuilder {
     fn as_ref(&self) -> &AddCustomServerLanguagePack {
         &self.inner
     }

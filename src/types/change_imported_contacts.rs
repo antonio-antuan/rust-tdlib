@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes imported contacts using the list of current user contacts saved on the device. Imports newly added contacts and, if at least the file database is enabled, deletes recently deleted contacts. Query result depends on the result of the previous query, so only one query is possible at the same time
+/// Changes imported contacts using the list of contacts saved on the device. Imports newly added contacts and, if at least the file database is enabled, deletes recently deleted contacts. Query result depends on the result of the previous query, so only one query is possible at the same time
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChangeImportedContacts {
     #[doc(hidden)]
@@ -11,6 +11,8 @@ pub struct ChangeImportedContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The new list of contacts, contact's vCard are ignored and are not imported
+
+    #[serde(default)]
     contacts: Vec<Contact>,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for ChangeImportedContacts {
 impl RFunction for ChangeImportedContacts {}
 
 impl ChangeImportedContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChangeImportedContactsBuilder {
+    pub fn builder() -> ChangeImportedContactsBuilder {
         let mut inner = ChangeImportedContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "changeImportedContacts".to_string();
 
-        RTDChangeImportedContactsBuilder { inner }
+        ChangeImportedContactsBuilder { inner }
     }
 
     pub fn contacts(&self) -> &Vec<Contact> {
@@ -49,11 +51,14 @@ impl ChangeImportedContacts {
 }
 
 #[doc(hidden)]
-pub struct RTDChangeImportedContactsBuilder {
+pub struct ChangeImportedContactsBuilder {
     inner: ChangeImportedContacts,
 }
 
-impl RTDChangeImportedContactsBuilder {
+#[deprecated]
+pub type RTDChangeImportedContactsBuilder = ChangeImportedContactsBuilder;
+
+impl ChangeImportedContactsBuilder {
     pub fn build(&self) -> ChangeImportedContacts {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<ChangeImportedContacts> for ChangeImportedContacts {
     }
 }
 
-impl AsRef<ChangeImportedContacts> for RTDChangeImportedContactsBuilder {
+impl AsRef<ChangeImportedContacts> for ChangeImportedContactsBuilder {
     fn as_ref(&self) -> &ChangeImportedContacts {
         &self.inner
     }

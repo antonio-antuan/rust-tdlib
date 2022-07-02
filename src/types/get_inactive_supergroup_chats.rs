@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetInactiveSupergroupChats {
 impl RFunction for GetInactiveSupergroupChats {}
 
 impl GetInactiveSupergroupChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetInactiveSupergroupChatsBuilder {
+    pub fn builder() -> GetInactiveSupergroupChatsBuilder {
         let mut inner = GetInactiveSupergroupChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getInactiveSupergroupChats".to_string();
 
-        RTDGetInactiveSupergroupChatsBuilder { inner }
+        GetInactiveSupergroupChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetInactiveSupergroupChatsBuilder {
+pub struct GetInactiveSupergroupChatsBuilder {
     inner: GetInactiveSupergroupChats,
 }
 
-impl RTDGetInactiveSupergroupChatsBuilder {
+#[deprecated]
+pub type RTDGetInactiveSupergroupChatsBuilder = GetInactiveSupergroupChatsBuilder;
+
+impl GetInactiveSupergroupChatsBuilder {
     pub fn build(&self) -> GetInactiveSupergroupChats {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetInactiveSupergroupChats> for GetInactiveSupergroupChats {
     }
 }
 
-impl AsRef<GetInactiveSupergroupChats> for RTDGetInactiveSupergroupChatsBuilder {
+impl AsRef<GetInactiveSupergroupChats> for GetInactiveSupergroupChatsBuilder {
     fn as_ref(&self) -> &GetInactiveSupergroupChats {
         &self.inner
     }

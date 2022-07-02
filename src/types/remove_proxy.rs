@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct RemoveProxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Proxy identifier
+
+    #[serde(default)]
     proxy_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for RemoveProxy {
 impl RFunction for RemoveProxy {}
 
 impl RemoveProxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRemoveProxyBuilder {
+    pub fn builder() -> RemoveProxyBuilder {
         let mut inner = RemoveProxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "removeProxy".to_string();
 
-        RTDRemoveProxyBuilder { inner }
+        RemoveProxyBuilder { inner }
     }
 
     pub fn proxy_id(&self) -> i32 {
@@ -49,11 +51,14 @@ impl RemoveProxy {
 }
 
 #[doc(hidden)]
-pub struct RTDRemoveProxyBuilder {
+pub struct RemoveProxyBuilder {
     inner: RemoveProxy,
 }
 
-impl RTDRemoveProxyBuilder {
+#[deprecated]
+pub type RTDRemoveProxyBuilder = RemoveProxyBuilder;
+
+impl RemoveProxyBuilder {
     pub fn build(&self) -> RemoveProxy {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<RemoveProxy> for RemoveProxy {
     }
 }
 
-impl AsRef<RemoveProxy> for RTDRemoveProxyBuilder {
+impl AsRef<RemoveProxy> for RemoveProxyBuilder {
     fn as_ref(&self) -> &RemoveProxy {
         &self.inner
     }

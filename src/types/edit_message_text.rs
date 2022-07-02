@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,18 @@ pub struct EditMessageText {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat the message belongs to
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
-    /// The new message reply markup; for bots only
+    /// The new message reply markup; pass null if none; for bots only
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New text content of the message. Should be of type InputMessageText
+    /// New text content of the message. Must be of type inputMessageText
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_content: InputMessageContent,
@@ -41,16 +45,16 @@ impl RObject for EditMessageText {
 impl RFunction for EditMessageText {}
 
 impl EditMessageText {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEditMessageTextBuilder {
+    pub fn builder() -> EditMessageTextBuilder {
         let mut inner = EditMessageText::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "editMessageText".to_string();
 
-        RTDEditMessageTextBuilder { inner }
+        EditMessageTextBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -71,11 +75,14 @@ impl EditMessageText {
 }
 
 #[doc(hidden)]
-pub struct RTDEditMessageTextBuilder {
+pub struct EditMessageTextBuilder {
     inner: EditMessageText,
 }
 
-impl RTDEditMessageTextBuilder {
+#[deprecated]
+pub type RTDEditMessageTextBuilder = EditMessageTextBuilder;
+
+impl EditMessageTextBuilder {
     pub fn build(&self) -> EditMessageText {
         self.inner.clone()
     }
@@ -110,7 +117,7 @@ impl AsRef<EditMessageText> for EditMessageText {
     }
 }
 
-impl AsRef<EditMessageText> for RTDEditMessageTextBuilder {
+impl AsRef<EditMessageText> for EditMessageTextBuilder {
     fn as_ref(&self) -> &EditMessageText {
         &self.inner
     }

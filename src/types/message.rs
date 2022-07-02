@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,64 +11,125 @@ pub struct Message {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Message identifier; unique for the chat to which the message belongs
+
+    #[serde(default)]
     id: i64,
-    /// The sender of the message
+    /// Identifier of the sender of the message
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    sender: MessageSender,
+    sender_id: MessageSender,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
-    /// Information about the sending state of the message; may be null
+    /// The sending state of the message; may be null
     sending_state: Option<MessageSendingState>,
-    /// Information about the scheduling state of the message; may be null
+    /// The scheduling state of the message; may be null
     scheduling_state: Option<MessageSchedulingState>,
     /// True, if the message is outgoing
+
+    #[serde(default)]
     is_outgoing: bool,
     /// True, if the message is pinned
+
+    #[serde(default)]
     is_pinned: bool,
     /// True, if the message can be edited. For live location and poll messages this fields shows whether editMessageLiveLocation or stopPoll can be used with this message by the application
+
+    #[serde(default)]
     can_be_edited: bool,
     /// True, if the message can be forwarded
+
+    #[serde(default)]
     can_be_forwarded: bool,
+    /// True, if content of the message can be saved locally or copied
+
+    #[serde(default)]
+    can_be_saved: bool,
     /// True, if the message can be deleted only for the current user while other users will continue to see it
+
+    #[serde(default)]
     can_be_deleted_only_for_self: bool,
     /// True, if the message can be deleted for all users
+
+    #[serde(default)]
     can_be_deleted_for_all_users: bool,
     /// True, if the message statistics are available
+
+    #[serde(default)]
     can_get_statistics: bool,
     /// True, if the message thread info is available
+
+    #[serde(default)]
     can_get_message_thread: bool,
+    /// True, if chat members already viewed the message can be received through getMessageViewers
+
+    #[serde(default)]
+    can_get_viewers: bool,
+    /// True, if media timestamp links can be generated for media timestamp entities in the message text, caption or web page description
+
+    #[serde(default)]
+    can_get_media_timestamp_links: bool,
+    /// True, if media timestamp entities refers to a media in this message as opposed to a media in the replied message
+
+    #[serde(default)]
+    has_timestamped_media: bool,
     /// True, if the message is a channel post. All messages to channels are channel posts, all other messages are not channel posts
+
+    #[serde(default)]
     is_channel_post: bool,
     /// True, if the message contains an unread mention for the current user
+
+    #[serde(default)]
     contains_unread_mention: bool,
     /// Point in time (Unix timestamp) when the message was sent
+
+    #[serde(default)]
     date: i32,
     /// Point in time (Unix timestamp) when the message was last edited
+
+    #[serde(default)]
     edit_date: i32,
     /// Information about the initial message sender; may be null
     forward_info: Option<MessageForwardInfo>,
     /// Information about interactions with the message; may be null
     interaction_info: Option<MessageInteractionInfo>,
     /// If non-zero, the identifier of the chat to which the replied message belongs; Currently, only messages in the Replies chat can have different reply_in_chat_id and chat_id
+
+    #[serde(default)]
     reply_in_chat_id: i64,
     /// If non-zero, the identifier of the message this message is replying to; can be the identifier of a deleted message
+
+    #[serde(default)]
     reply_to_message_id: i64,
     /// If non-zero, the identifier of the message thread the message belongs to; unique within the chat to which the message belongs
+
+    #[serde(default)]
     message_thread_id: i64,
     /// For self-destructing messages, the message's TTL (Time To Live), in seconds; 0 if none. TDLib will send updateDeleteMessages or updateMessageContent once the TTL expires
+
+    #[serde(default)]
     ttl: i32,
-    /// Time left before the message expires, in seconds
+    /// Time left before the message expires, in seconds. If the TTL timer isn't started yet, equals to the value of the ttl field
+
+    #[serde(default)]
     ttl_expires_in: f32,
     /// If non-zero, the user identifier of the bot through which this message was sent
-    via_bot_user_id: i32,
+
+    #[serde(default)]
+    via_bot_user_id: i64,
     /// For channel posts and anonymous group messages, optional author signature
+
+    #[serde(default)]
     author_signature: String,
-    /// Unique identifier of an album this message belongs to. Only photos and videos can be grouped together in albums
+    /// Unique identifier of an album this message belongs to. Only audios, documents, photos and videos can be grouped together in albums
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     media_album_id: i64,
     /// If non-empty, contains a human-readable description of the reason why access to this message must be restricted
+
+    #[serde(default)]
     restriction_reason: String,
     /// Content of the message
 
@@ -90,22 +151,22 @@ impl RObject for Message {
 }
 
 impl Message {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageBuilder {
+    pub fn builder() -> MessageBuilder {
         let mut inner = Message::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageBuilder { inner }
+        MessageBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
         self.id
     }
 
-    pub fn sender(&self) -> &MessageSender {
-        &self.sender
+    pub fn sender_id(&self) -> &MessageSender {
+        &self.sender_id
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -136,6 +197,10 @@ impl Message {
         self.can_be_forwarded
     }
 
+    pub fn can_be_saved(&self) -> bool {
+        self.can_be_saved
+    }
+
     pub fn can_be_deleted_only_for_self(&self) -> bool {
         self.can_be_deleted_only_for_self
     }
@@ -150,6 +215,18 @@ impl Message {
 
     pub fn can_get_message_thread(&self) -> bool {
         self.can_get_message_thread
+    }
+
+    pub fn can_get_viewers(&self) -> bool {
+        self.can_get_viewers
+    }
+
+    pub fn can_get_media_timestamp_links(&self) -> bool {
+        self.can_get_media_timestamp_links
+    }
+
+    pub fn has_timestamped_media(&self) -> bool {
+        self.has_timestamped_media
     }
 
     pub fn is_channel_post(&self) -> bool {
@@ -196,7 +273,7 @@ impl Message {
         self.ttl_expires_in
     }
 
-    pub fn via_bot_user_id(&self) -> i32 {
+    pub fn via_bot_user_id(&self) -> i64 {
         self.via_bot_user_id
     }
 
@@ -222,11 +299,14 @@ impl Message {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageBuilder {
+pub struct MessageBuilder {
     inner: Message,
 }
 
-impl RTDMessageBuilder {
+#[deprecated]
+pub type RTDMessageBuilder = MessageBuilder;
+
+impl MessageBuilder {
     pub fn build(&self) -> Message {
         self.inner.clone()
     }
@@ -236,8 +316,8 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
-        self.inner.sender = sender.as_ref().clone();
+    pub fn sender_id<T: AsRef<MessageSender>>(&mut self, sender_id: T) -> &mut Self {
+        self.inner.sender_id = sender_id.as_ref().clone();
         self
     }
 
@@ -279,6 +359,11 @@ impl RTDMessageBuilder {
         self
     }
 
+    pub fn can_be_saved(&mut self, can_be_saved: bool) -> &mut Self {
+        self.inner.can_be_saved = can_be_saved;
+        self
+    }
+
     pub fn can_be_deleted_only_for_self(
         &mut self,
         can_be_deleted_only_for_self: bool,
@@ -302,6 +387,24 @@ impl RTDMessageBuilder {
 
     pub fn can_get_message_thread(&mut self, can_get_message_thread: bool) -> &mut Self {
         self.inner.can_get_message_thread = can_get_message_thread;
+        self
+    }
+
+    pub fn can_get_viewers(&mut self, can_get_viewers: bool) -> &mut Self {
+        self.inner.can_get_viewers = can_get_viewers;
+        self
+    }
+
+    pub fn can_get_media_timestamp_links(
+        &mut self,
+        can_get_media_timestamp_links: bool,
+    ) -> &mut Self {
+        self.inner.can_get_media_timestamp_links = can_get_media_timestamp_links;
+        self
+    }
+
+    pub fn has_timestamped_media(&mut self, has_timestamped_media: bool) -> &mut Self {
+        self.inner.has_timestamped_media = has_timestamped_media;
         self
     }
 
@@ -363,7 +466,7 @@ impl RTDMessageBuilder {
         self
     }
 
-    pub fn via_bot_user_id(&mut self, via_bot_user_id: i32) -> &mut Self {
+    pub fn via_bot_user_id(&mut self, via_bot_user_id: i64) -> &mut Self {
         self.inner.via_bot_user_id = via_bot_user_id;
         self
     }
@@ -400,7 +503,7 @@ impl AsRef<Message> for Message {
     }
 }
 
-impl AsRef<Message> for RTDMessageBuilder {
+impl AsRef<Message> for MessageBuilder {
     fn as_ref(&self) -> &Message {
         &self.inner
     }

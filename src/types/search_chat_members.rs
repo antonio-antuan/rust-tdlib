@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,18 @@ pub struct SearchChatMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
-    /// The maximum number of users to be returned
+    /// The maximum number of users to be returned; up to 200
+
+    #[serde(default)]
     limit: i32,
-    /// The type of users to return. By default, chatMembersFilterMembers
+    /// The type of users to search for; pass null to search among all chat members
 
     #[serde(skip_serializing_if = "ChatMembersFilter::_is_default")]
     filter: ChatMembersFilter,
@@ -39,16 +45,16 @@ impl RObject for SearchChatMembers {
 impl RFunction for SearchChatMembers {}
 
 impl SearchChatMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchChatMembersBuilder {
+    pub fn builder() -> SearchChatMembersBuilder {
         let mut inner = SearchChatMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchChatMembers".to_string();
 
-        RTDSearchChatMembersBuilder { inner }
+        SearchChatMembersBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -69,11 +75,14 @@ impl SearchChatMembers {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchChatMembersBuilder {
+pub struct SearchChatMembersBuilder {
     inner: SearchChatMembers,
 }
 
-impl RTDSearchChatMembersBuilder {
+#[deprecated]
+pub type RTDSearchChatMembersBuilder = SearchChatMembersBuilder;
+
+impl SearchChatMembersBuilder {
     pub fn build(&self) -> SearchChatMembers {
         self.inner.clone()
     }
@@ -105,7 +114,7 @@ impl AsRef<SearchChatMembers> for SearchChatMembers {
     }
 }
 
-impl AsRef<SearchChatMembers> for RTDSearchChatMembersBuilder {
+impl AsRef<SearchChatMembers> for SearchChatMembersBuilder {
     fn as_ref(&self) -> &SearchChatMembers {
         &self.inner
     }

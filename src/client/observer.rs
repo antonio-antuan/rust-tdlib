@@ -1,4 +1,3 @@
-use crate::types::TdType;
 use futures::channel::oneshot;
 use std::collections::HashMap;
 #[doc(hidden)]
@@ -9,7 +8,7 @@ lazy_static::lazy_static! {
 }
 
 pub(super) struct Observer {
-    channels: RwLock<HashMap<String, oneshot::Sender<TdType>>>,
+    channels: RwLock<HashMap<String, oneshot::Sender<serde_json::Value>>>,
 }
 
 impl Observer {
@@ -19,33 +18,33 @@ impl Observer {
         }
     }
 
-    pub fn notify(&self, payload: TdType) -> Option<TdType> {
-        match payload.extra() {
-            None => {
-                log::trace!("no extra for payload {:?}", payload);
-                Some(payload)
-            }
-            Some(extra) => {
+    pub fn notify(&self, t: serde_json::Value) -> Option<serde_json::Value> {
+        match t.get("@extra") {
+            None => Some(t),
+            Some(serde_json::Value::String(extra)) => {
                 let mut map = self.channels.write().unwrap();
                 match map.remove(extra) {
                     None => {
-                        log::trace!("no subscribers for {}", extra);
-                        Some(payload)
+                        log::warn!("no subscribers for {}", extra);
                     }
                     Some(sender) => {
                         log::trace!("signal send for {}", extra);
-                        if let Err(t) = sender.send(payload) {
+                        if let Err(t) = sender.send(t) {
                             log::warn!("request already closed, received update: {:?}", t)
                         };
-                        None
                     }
                 }
+                None
+            }
+            Some(_) => {
+                log::error!("invalid type for extra, data received: {}", t);
+                None
             }
         }
     }
 
-    pub fn subscribe(&self, extra: &str) -> oneshot::Receiver<TdType> {
-        let (sender, receiver) = oneshot::channel::<TdType>();
+    pub fn subscribe(&self, extra: &str) -> oneshot::Receiver<serde_json::Value> {
+        let (sender, receiver) = oneshot::channel();
         match self.channels.write() {
             Ok(mut map) => {
                 map.insert(extra.to_string(), sender);

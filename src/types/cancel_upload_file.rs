@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct CancelUploadFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file to stop uploading
+
+    #[serde(default)]
     file_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for CancelUploadFile {
 impl RFunction for CancelUploadFile {}
 
 impl CancelUploadFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCancelUploadFileBuilder {
+    pub fn builder() -> CancelUploadFileBuilder {
         let mut inner = CancelUploadFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "cancelUploadFile".to_string();
 
-        RTDCancelUploadFileBuilder { inner }
+        CancelUploadFileBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -49,11 +51,14 @@ impl CancelUploadFile {
 }
 
 #[doc(hidden)]
-pub struct RTDCancelUploadFileBuilder {
+pub struct CancelUploadFileBuilder {
     inner: CancelUploadFile,
 }
 
-impl RTDCancelUploadFileBuilder {
+#[deprecated]
+pub type RTDCancelUploadFileBuilder = CancelUploadFileBuilder;
+
+impl CancelUploadFileBuilder {
     pub fn build(&self) -> CancelUploadFile {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<CancelUploadFile> for CancelUploadFile {
     }
 }
 
-impl AsRef<CancelUploadFile> for RTDCancelUploadFileBuilder {
+impl AsRef<CancelUploadFile> for CancelUploadFileBuilder {
     fn as_ref(&self) -> &CancelUploadFile {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SetChatSlowModeDelay {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
-    /// New slow mode delay for the chat; must be one of 0, 10, 30, 60, 300, 900, 3600
+    /// New slow mode delay for the chat, in seconds; must be one of 0, 10, 30, 60, 300, 900, 3600
+
+    #[serde(default)]
     slow_mode_delay: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SetChatSlowModeDelay {
 impl RFunction for SetChatSlowModeDelay {}
 
 impl SetChatSlowModeDelay {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetChatSlowModeDelayBuilder {
+    pub fn builder() -> SetChatSlowModeDelayBuilder {
         let mut inner = SetChatSlowModeDelay::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setChatSlowModeDelay".to_string();
 
-        RTDSetChatSlowModeDelayBuilder { inner }
+        SetChatSlowModeDelayBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,11 +59,14 @@ impl SetChatSlowModeDelay {
 }
 
 #[doc(hidden)]
-pub struct RTDSetChatSlowModeDelayBuilder {
+pub struct SetChatSlowModeDelayBuilder {
     inner: SetChatSlowModeDelay,
 }
 
-impl RTDSetChatSlowModeDelayBuilder {
+#[deprecated]
+pub type RTDSetChatSlowModeDelayBuilder = SetChatSlowModeDelayBuilder;
+
+impl SetChatSlowModeDelayBuilder {
     pub fn build(&self) -> SetChatSlowModeDelay {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SetChatSlowModeDelay> for SetChatSlowModeDelay {
     }
 }
 
-impl AsRef<SetChatSlowModeDelay> for RTDSetChatSlowModeDelayBuilder {
+impl AsRef<SetChatSlowModeDelay> for SetChatSlowModeDelayBuilder {
     fn as_ref(&self) -> &SetChatSlowModeDelay {
         &self.inner
     }

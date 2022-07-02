@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct Emojis {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of emojis
+
+    #[serde(default)]
     emojis: Vec<String>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for Emojis {
 }
 
 impl Emojis {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEmojisBuilder {
+    pub fn builder() -> EmojisBuilder {
         let mut inner = Emojis::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDEmojisBuilder { inner }
+        EmojisBuilder { inner }
     }
 
     pub fn emojis(&self) -> &Vec<String> {
@@ -42,11 +44,14 @@ impl Emojis {
 }
 
 #[doc(hidden)]
-pub struct RTDEmojisBuilder {
+pub struct EmojisBuilder {
     inner: Emojis,
 }
 
-impl RTDEmojisBuilder {
+#[deprecated]
+pub type RTDEmojisBuilder = EmojisBuilder;
+
+impl EmojisBuilder {
     pub fn build(&self) -> Emojis {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<Emojis> for Emojis {
     }
 }
 
-impl AsRef<Emojis> for RTDEmojisBuilder {
+impl AsRef<Emojis> for EmojisBuilder {
     fn as_ref(&self) -> &Emojis {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetBackgroundUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Background name
+
+    #[serde(default)]
     name: String,
     /// Background type
 
@@ -36,16 +38,16 @@ impl RObject for GetBackgroundUrl {
 impl RFunction for GetBackgroundUrl {}
 
 impl GetBackgroundUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetBackgroundUrlBuilder {
+    pub fn builder() -> GetBackgroundUrlBuilder {
         let mut inner = GetBackgroundUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getBackgroundUrl".to_string();
 
-        RTDGetBackgroundUrlBuilder { inner }
+        GetBackgroundUrlBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -58,11 +60,14 @@ impl GetBackgroundUrl {
 }
 
 #[doc(hidden)]
-pub struct RTDGetBackgroundUrlBuilder {
+pub struct GetBackgroundUrlBuilder {
     inner: GetBackgroundUrl,
 }
 
-impl RTDGetBackgroundUrlBuilder {
+#[deprecated]
+pub type RTDGetBackgroundUrlBuilder = GetBackgroundUrlBuilder;
+
+impl GetBackgroundUrlBuilder {
     pub fn build(&self) -> GetBackgroundUrl {
         self.inner.clone()
     }
@@ -84,7 +89,7 @@ impl AsRef<GetBackgroundUrl> for GetBackgroundUrl {
     }
 }
 
-impl AsRef<GetBackgroundUrl> for RTDGetBackgroundUrlBuilder {
+impl AsRef<GetBackgroundUrl> for GetBackgroundUrlBuilder {
     fn as_ref(&self) -> &GetBackgroundUrl {
         &self.inner
     }

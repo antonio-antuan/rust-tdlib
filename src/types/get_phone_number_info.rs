@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetPhoneNumberInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The phone number prefix
+
+    #[serde(default)]
     phone_number_prefix: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetPhoneNumberInfo {
 impl RFunction for GetPhoneNumberInfo {}
 
 impl GetPhoneNumberInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPhoneNumberInfoBuilder {
+    pub fn builder() -> GetPhoneNumberInfoBuilder {
         let mut inner = GetPhoneNumberInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPhoneNumberInfo".to_string();
 
-        RTDGetPhoneNumberInfoBuilder { inner }
+        GetPhoneNumberInfoBuilder { inner }
     }
 
     pub fn phone_number_prefix(&self) -> &String {
@@ -49,11 +51,14 @@ impl GetPhoneNumberInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPhoneNumberInfoBuilder {
+pub struct GetPhoneNumberInfoBuilder {
     inner: GetPhoneNumberInfo,
 }
 
-impl RTDGetPhoneNumberInfoBuilder {
+#[deprecated]
+pub type RTDGetPhoneNumberInfoBuilder = GetPhoneNumberInfoBuilder;
+
+impl GetPhoneNumberInfoBuilder {
     pub fn build(&self) -> GetPhoneNumberInfo {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetPhoneNumberInfo> for GetPhoneNumberInfo {
     }
 }
 
-impl AsRef<GetPhoneNumberInfo> for RTDGetPhoneNumberInfoBuilder {
+impl AsRef<GetPhoneNumberInfo> for GetPhoneNumberInfoBuilder {
     fn as_ref(&self) -> &GetPhoneNumberInfo {
         &self.inner
     }

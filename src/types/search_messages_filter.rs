@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,112 +14,52 @@ pub enum SearchMessagesFilter {
     #[doc(hidden)]
     _Default,
     /// Returns only animation messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterAnimation",
-        deserialize = "searchMessagesFilterAnimation"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterAnimation"))]
     Animation(SearchMessagesFilterAnimation),
     /// Returns only audio messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterAudio",
-        deserialize = "searchMessagesFilterAudio"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterAudio"))]
     Audio(SearchMessagesFilterAudio),
-    /// Returns only call messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterCall",
-        deserialize = "searchMessagesFilterCall"
-    ))]
-    Call(SearchMessagesFilterCall),
     /// Returns only messages containing chat photos
-    #[serde(rename(
-        serialize = "searchMessagesFilterChatPhoto",
-        deserialize = "searchMessagesFilterChatPhoto"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterChatPhoto"))]
     ChatPhoto(SearchMessagesFilterChatPhoto),
     /// Returns only document messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterDocument",
-        deserialize = "searchMessagesFilterDocument"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterDocument"))]
     Document(SearchMessagesFilterDocument),
     /// Returns all found messages, no filter is applied
-    #[serde(rename(
-        serialize = "searchMessagesFilterEmpty",
-        deserialize = "searchMessagesFilterEmpty"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterEmpty"))]
     Empty(SearchMessagesFilterEmpty),
     /// Returns only failed to send messages. This filter can be used only if the message database is used
-    #[serde(rename(
-        serialize = "searchMessagesFilterFailedToSend",
-        deserialize = "searchMessagesFilterFailedToSend"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterFailedToSend"))]
     FailedToSend(SearchMessagesFilterFailedToSend),
     /// Returns only messages with mentions of the current user, or messages that are replies to their messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterMention",
-        deserialize = "searchMessagesFilterMention"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterMention"))]
     Mention(SearchMessagesFilterMention),
-    /// Returns only incoming call messages with missed/declined discard reasons
-    #[serde(rename(
-        serialize = "searchMessagesFilterMissedCall",
-        deserialize = "searchMessagesFilterMissedCall"
-    ))]
-    MissedCall(SearchMessagesFilterMissedCall),
     /// Returns only photo messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterPhoto",
-        deserialize = "searchMessagesFilterPhoto"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterPhoto"))]
     Photo(SearchMessagesFilterPhoto),
     /// Returns only photo and video messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterPhotoAndVideo",
-        deserialize = "searchMessagesFilterPhotoAndVideo"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterPhotoAndVideo"))]
     PhotoAndVideo(SearchMessagesFilterPhotoAndVideo),
     /// Returns only pinned messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterPinned",
-        deserialize = "searchMessagesFilterPinned"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterPinned"))]
     Pinned(SearchMessagesFilterPinned),
     /// Returns only messages with unread mentions of the current user, or messages that are replies to their messages. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
-    #[serde(rename(
-        serialize = "searchMessagesFilterUnreadMention",
-        deserialize = "searchMessagesFilterUnreadMention"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterUnreadMention"))]
     UnreadMention(SearchMessagesFilterUnreadMention),
     /// Returns only messages containing URLs
-    #[serde(rename(
-        serialize = "searchMessagesFilterUrl",
-        deserialize = "searchMessagesFilterUrl"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterUrl"))]
     Url(SearchMessagesFilterUrl),
     /// Returns only video messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterVideo",
-        deserialize = "searchMessagesFilterVideo"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterVideo"))]
     Video(SearchMessagesFilterVideo),
     /// Returns only video note messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterVideoNote",
-        deserialize = "searchMessagesFilterVideoNote"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterVideoNote"))]
     VideoNote(SearchMessagesFilterVideoNote),
     /// Returns only voice and video note messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterVoiceAndVideoNote",
-        deserialize = "searchMessagesFilterVoiceAndVideoNote"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterVoiceAndVideoNote"))]
     VoiceAndVideoNote(SearchMessagesFilterVoiceAndVideoNote),
     /// Returns only voice note messages
-    #[serde(rename(
-        serialize = "searchMessagesFilterVoiceNote",
-        deserialize = "searchMessagesFilterVoiceNote"
-    ))]
+    #[serde(rename(deserialize = "searchMessagesFilterVoiceNote"))]
     VoiceNote(SearchMessagesFilterVoiceNote),
 }
 
@@ -135,13 +75,11 @@ impl RObject for SearchMessagesFilter {
         match self {
             SearchMessagesFilter::Animation(t) => t.extra(),
             SearchMessagesFilter::Audio(t) => t.extra(),
-            SearchMessagesFilter::Call(t) => t.extra(),
             SearchMessagesFilter::ChatPhoto(t) => t.extra(),
             SearchMessagesFilter::Document(t) => t.extra(),
             SearchMessagesFilter::Empty(t) => t.extra(),
             SearchMessagesFilter::FailedToSend(t) => t.extra(),
             SearchMessagesFilter::Mention(t) => t.extra(),
-            SearchMessagesFilter::MissedCall(t) => t.extra(),
             SearchMessagesFilter::Photo(t) => t.extra(),
             SearchMessagesFilter::PhotoAndVideo(t) => t.extra(),
             SearchMessagesFilter::Pinned(t) => t.extra(),
@@ -160,13 +98,11 @@ impl RObject for SearchMessagesFilter {
         match self {
             SearchMessagesFilter::Animation(t) => t.client_id(),
             SearchMessagesFilter::Audio(t) => t.client_id(),
-            SearchMessagesFilter::Call(t) => t.client_id(),
             SearchMessagesFilter::ChatPhoto(t) => t.client_id(),
             SearchMessagesFilter::Document(t) => t.client_id(),
             SearchMessagesFilter::Empty(t) => t.client_id(),
             SearchMessagesFilter::FailedToSend(t) => t.client_id(),
             SearchMessagesFilter::Mention(t) => t.client_id(),
-            SearchMessagesFilter::MissedCall(t) => t.client_id(),
             SearchMessagesFilter::Photo(t) => t.client_id(),
             SearchMessagesFilter::PhotoAndVideo(t) => t.client_id(),
             SearchMessagesFilter::Pinned(t) => t.client_id(),
@@ -183,7 +119,7 @@ impl RObject for SearchMessagesFilter {
 }
 
 impl SearchMessagesFilter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -222,23 +158,26 @@ impl RObject for SearchMessagesFilterAnimation {
 impl TDSearchMessagesFilter for SearchMessagesFilterAnimation {}
 
 impl SearchMessagesFilterAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterAnimationBuilder {
+    pub fn builder() -> SearchMessagesFilterAnimationBuilder {
         let mut inner = SearchMessagesFilterAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterAnimationBuilder { inner }
+        SearchMessagesFilterAnimationBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterAnimationBuilder {
+pub struct SearchMessagesFilterAnimationBuilder {
     inner: SearchMessagesFilterAnimation,
 }
 
-impl RTDSearchMessagesFilterAnimationBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterAnimationBuilder = SearchMessagesFilterAnimationBuilder;
+
+impl SearchMessagesFilterAnimationBuilder {
     pub fn build(&self) -> SearchMessagesFilterAnimation {
         self.inner.clone()
     }
@@ -250,7 +189,7 @@ impl AsRef<SearchMessagesFilterAnimation> for SearchMessagesFilterAnimation {
     }
 }
 
-impl AsRef<SearchMessagesFilterAnimation> for RTDSearchMessagesFilterAnimationBuilder {
+impl AsRef<SearchMessagesFilterAnimation> for SearchMessagesFilterAnimationBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterAnimation {
         &self.inner
     }
@@ -280,23 +219,26 @@ impl RObject for SearchMessagesFilterAudio {
 impl TDSearchMessagesFilter for SearchMessagesFilterAudio {}
 
 impl SearchMessagesFilterAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterAudioBuilder {
+    pub fn builder() -> SearchMessagesFilterAudioBuilder {
         let mut inner = SearchMessagesFilterAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterAudioBuilder { inner }
+        SearchMessagesFilterAudioBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterAudioBuilder {
+pub struct SearchMessagesFilterAudioBuilder {
     inner: SearchMessagesFilterAudio,
 }
 
-impl RTDSearchMessagesFilterAudioBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterAudioBuilder = SearchMessagesFilterAudioBuilder;
+
+impl SearchMessagesFilterAudioBuilder {
     pub fn build(&self) -> SearchMessagesFilterAudio {
         self.inner.clone()
     }
@@ -308,66 +250,8 @@ impl AsRef<SearchMessagesFilterAudio> for SearchMessagesFilterAudio {
     }
 }
 
-impl AsRef<SearchMessagesFilterAudio> for RTDSearchMessagesFilterAudioBuilder {
+impl AsRef<SearchMessagesFilterAudio> for SearchMessagesFilterAudioBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterAudio {
-        &self.inner
-    }
-}
-
-/// Returns only call messages
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SearchMessagesFilterCall {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for SearchMessagesFilterCall {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDSearchMessagesFilter for SearchMessagesFilterCall {}
-
-impl SearchMessagesFilterCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDSearchMessagesFilterCallBuilder {
-        let mut inner = SearchMessagesFilterCall::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDSearchMessagesFilterCallBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDSearchMessagesFilterCallBuilder {
-    inner: SearchMessagesFilterCall,
-}
-
-impl RTDSearchMessagesFilterCallBuilder {
-    pub fn build(&self) -> SearchMessagesFilterCall {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<SearchMessagesFilterCall> for SearchMessagesFilterCall {
-    fn as_ref(&self) -> &SearchMessagesFilterCall {
-        self
-    }
-}
-
-impl AsRef<SearchMessagesFilterCall> for RTDSearchMessagesFilterCallBuilder {
-    fn as_ref(&self) -> &SearchMessagesFilterCall {
         &self.inner
     }
 }
@@ -396,23 +280,26 @@ impl RObject for SearchMessagesFilterChatPhoto {
 impl TDSearchMessagesFilter for SearchMessagesFilterChatPhoto {}
 
 impl SearchMessagesFilterChatPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterChatPhotoBuilder {
+    pub fn builder() -> SearchMessagesFilterChatPhotoBuilder {
         let mut inner = SearchMessagesFilterChatPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterChatPhotoBuilder { inner }
+        SearchMessagesFilterChatPhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterChatPhotoBuilder {
+pub struct SearchMessagesFilterChatPhotoBuilder {
     inner: SearchMessagesFilterChatPhoto,
 }
 
-impl RTDSearchMessagesFilterChatPhotoBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterChatPhotoBuilder = SearchMessagesFilterChatPhotoBuilder;
+
+impl SearchMessagesFilterChatPhotoBuilder {
     pub fn build(&self) -> SearchMessagesFilterChatPhoto {
         self.inner.clone()
     }
@@ -424,7 +311,7 @@ impl AsRef<SearchMessagesFilterChatPhoto> for SearchMessagesFilterChatPhoto {
     }
 }
 
-impl AsRef<SearchMessagesFilterChatPhoto> for RTDSearchMessagesFilterChatPhotoBuilder {
+impl AsRef<SearchMessagesFilterChatPhoto> for SearchMessagesFilterChatPhotoBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterChatPhoto {
         &self.inner
     }
@@ -454,23 +341,26 @@ impl RObject for SearchMessagesFilterDocument {
 impl TDSearchMessagesFilter for SearchMessagesFilterDocument {}
 
 impl SearchMessagesFilterDocument {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterDocumentBuilder {
+    pub fn builder() -> SearchMessagesFilterDocumentBuilder {
         let mut inner = SearchMessagesFilterDocument::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterDocumentBuilder { inner }
+        SearchMessagesFilterDocumentBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterDocumentBuilder {
+pub struct SearchMessagesFilterDocumentBuilder {
     inner: SearchMessagesFilterDocument,
 }
 
-impl RTDSearchMessagesFilterDocumentBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterDocumentBuilder = SearchMessagesFilterDocumentBuilder;
+
+impl SearchMessagesFilterDocumentBuilder {
     pub fn build(&self) -> SearchMessagesFilterDocument {
         self.inner.clone()
     }
@@ -482,7 +372,7 @@ impl AsRef<SearchMessagesFilterDocument> for SearchMessagesFilterDocument {
     }
 }
 
-impl AsRef<SearchMessagesFilterDocument> for RTDSearchMessagesFilterDocumentBuilder {
+impl AsRef<SearchMessagesFilterDocument> for SearchMessagesFilterDocumentBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterDocument {
         &self.inner
     }
@@ -512,23 +402,26 @@ impl RObject for SearchMessagesFilterEmpty {
 impl TDSearchMessagesFilter for SearchMessagesFilterEmpty {}
 
 impl SearchMessagesFilterEmpty {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterEmptyBuilder {
+    pub fn builder() -> SearchMessagesFilterEmptyBuilder {
         let mut inner = SearchMessagesFilterEmpty::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterEmptyBuilder { inner }
+        SearchMessagesFilterEmptyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterEmptyBuilder {
+pub struct SearchMessagesFilterEmptyBuilder {
     inner: SearchMessagesFilterEmpty,
 }
 
-impl RTDSearchMessagesFilterEmptyBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterEmptyBuilder = SearchMessagesFilterEmptyBuilder;
+
+impl SearchMessagesFilterEmptyBuilder {
     pub fn build(&self) -> SearchMessagesFilterEmpty {
         self.inner.clone()
     }
@@ -540,7 +433,7 @@ impl AsRef<SearchMessagesFilterEmpty> for SearchMessagesFilterEmpty {
     }
 }
 
-impl AsRef<SearchMessagesFilterEmpty> for RTDSearchMessagesFilterEmptyBuilder {
+impl AsRef<SearchMessagesFilterEmpty> for SearchMessagesFilterEmptyBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterEmpty {
         &self.inner
     }
@@ -570,23 +463,26 @@ impl RObject for SearchMessagesFilterFailedToSend {
 impl TDSearchMessagesFilter for SearchMessagesFilterFailedToSend {}
 
 impl SearchMessagesFilterFailedToSend {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterFailedToSendBuilder {
+    pub fn builder() -> SearchMessagesFilterFailedToSendBuilder {
         let mut inner = SearchMessagesFilterFailedToSend::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterFailedToSendBuilder { inner }
+        SearchMessagesFilterFailedToSendBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterFailedToSendBuilder {
+pub struct SearchMessagesFilterFailedToSendBuilder {
     inner: SearchMessagesFilterFailedToSend,
 }
 
-impl RTDSearchMessagesFilterFailedToSendBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterFailedToSendBuilder = SearchMessagesFilterFailedToSendBuilder;
+
+impl SearchMessagesFilterFailedToSendBuilder {
     pub fn build(&self) -> SearchMessagesFilterFailedToSend {
         self.inner.clone()
     }
@@ -598,7 +494,7 @@ impl AsRef<SearchMessagesFilterFailedToSend> for SearchMessagesFilterFailedToSen
     }
 }
 
-impl AsRef<SearchMessagesFilterFailedToSend> for RTDSearchMessagesFilterFailedToSendBuilder {
+impl AsRef<SearchMessagesFilterFailedToSend> for SearchMessagesFilterFailedToSendBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterFailedToSend {
         &self.inner
     }
@@ -628,23 +524,26 @@ impl RObject for SearchMessagesFilterMention {
 impl TDSearchMessagesFilter for SearchMessagesFilterMention {}
 
 impl SearchMessagesFilterMention {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterMentionBuilder {
+    pub fn builder() -> SearchMessagesFilterMentionBuilder {
         let mut inner = SearchMessagesFilterMention::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterMentionBuilder { inner }
+        SearchMessagesFilterMentionBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterMentionBuilder {
+pub struct SearchMessagesFilterMentionBuilder {
     inner: SearchMessagesFilterMention,
 }
 
-impl RTDSearchMessagesFilterMentionBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterMentionBuilder = SearchMessagesFilterMentionBuilder;
+
+impl SearchMessagesFilterMentionBuilder {
     pub fn build(&self) -> SearchMessagesFilterMention {
         self.inner.clone()
     }
@@ -656,66 +555,8 @@ impl AsRef<SearchMessagesFilterMention> for SearchMessagesFilterMention {
     }
 }
 
-impl AsRef<SearchMessagesFilterMention> for RTDSearchMessagesFilterMentionBuilder {
+impl AsRef<SearchMessagesFilterMention> for SearchMessagesFilterMentionBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterMention {
-        &self.inner
-    }
-}
-
-/// Returns only incoming call messages with missed/declined discard reasons
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SearchMessagesFilterMissedCall {
-    #[doc(hidden)]
-    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
-    extra: Option<String>,
-    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
-    client_id: Option<i32>,
-}
-
-impl RObject for SearchMessagesFilterMissedCall {
-    #[doc(hidden)]
-    fn extra(&self) -> Option<&str> {
-        self.extra.as_deref()
-    }
-    #[doc(hidden)]
-    fn client_id(&self) -> Option<i32> {
-        self.client_id
-    }
-}
-
-impl TDSearchMessagesFilter for SearchMessagesFilterMissedCall {}
-
-impl SearchMessagesFilterMissedCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
-        Ok(serde_json::from_str(json.as_ref())?)
-    }
-    pub fn builder() -> RTDSearchMessagesFilterMissedCallBuilder {
-        let mut inner = SearchMessagesFilterMissedCall::default();
-        inner.extra = Some(Uuid::new_v4().to_string());
-
-        RTDSearchMessagesFilterMissedCallBuilder { inner }
-    }
-}
-
-#[doc(hidden)]
-pub struct RTDSearchMessagesFilterMissedCallBuilder {
-    inner: SearchMessagesFilterMissedCall,
-}
-
-impl RTDSearchMessagesFilterMissedCallBuilder {
-    pub fn build(&self) -> SearchMessagesFilterMissedCall {
-        self.inner.clone()
-    }
-}
-
-impl AsRef<SearchMessagesFilterMissedCall> for SearchMessagesFilterMissedCall {
-    fn as_ref(&self) -> &SearchMessagesFilterMissedCall {
-        self
-    }
-}
-
-impl AsRef<SearchMessagesFilterMissedCall> for RTDSearchMessagesFilterMissedCallBuilder {
-    fn as_ref(&self) -> &SearchMessagesFilterMissedCall {
         &self.inner
     }
 }
@@ -744,23 +585,26 @@ impl RObject for SearchMessagesFilterPhoto {
 impl TDSearchMessagesFilter for SearchMessagesFilterPhoto {}
 
 impl SearchMessagesFilterPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterPhotoBuilder {
+    pub fn builder() -> SearchMessagesFilterPhotoBuilder {
         let mut inner = SearchMessagesFilterPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterPhotoBuilder { inner }
+        SearchMessagesFilterPhotoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterPhotoBuilder {
+pub struct SearchMessagesFilterPhotoBuilder {
     inner: SearchMessagesFilterPhoto,
 }
 
-impl RTDSearchMessagesFilterPhotoBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterPhotoBuilder = SearchMessagesFilterPhotoBuilder;
+
+impl SearchMessagesFilterPhotoBuilder {
     pub fn build(&self) -> SearchMessagesFilterPhoto {
         self.inner.clone()
     }
@@ -772,7 +616,7 @@ impl AsRef<SearchMessagesFilterPhoto> for SearchMessagesFilterPhoto {
     }
 }
 
-impl AsRef<SearchMessagesFilterPhoto> for RTDSearchMessagesFilterPhotoBuilder {
+impl AsRef<SearchMessagesFilterPhoto> for SearchMessagesFilterPhotoBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterPhoto {
         &self.inner
     }
@@ -802,23 +646,26 @@ impl RObject for SearchMessagesFilterPhotoAndVideo {
 impl TDSearchMessagesFilter for SearchMessagesFilterPhotoAndVideo {}
 
 impl SearchMessagesFilterPhotoAndVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterPhotoAndVideoBuilder {
+    pub fn builder() -> SearchMessagesFilterPhotoAndVideoBuilder {
         let mut inner = SearchMessagesFilterPhotoAndVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterPhotoAndVideoBuilder { inner }
+        SearchMessagesFilterPhotoAndVideoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterPhotoAndVideoBuilder {
+pub struct SearchMessagesFilterPhotoAndVideoBuilder {
     inner: SearchMessagesFilterPhotoAndVideo,
 }
 
-impl RTDSearchMessagesFilterPhotoAndVideoBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterPhotoAndVideoBuilder = SearchMessagesFilterPhotoAndVideoBuilder;
+
+impl SearchMessagesFilterPhotoAndVideoBuilder {
     pub fn build(&self) -> SearchMessagesFilterPhotoAndVideo {
         self.inner.clone()
     }
@@ -830,7 +677,7 @@ impl AsRef<SearchMessagesFilterPhotoAndVideo> for SearchMessagesFilterPhotoAndVi
     }
 }
 
-impl AsRef<SearchMessagesFilterPhotoAndVideo> for RTDSearchMessagesFilterPhotoAndVideoBuilder {
+impl AsRef<SearchMessagesFilterPhotoAndVideo> for SearchMessagesFilterPhotoAndVideoBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterPhotoAndVideo {
         &self.inner
     }
@@ -860,23 +707,26 @@ impl RObject for SearchMessagesFilterPinned {
 impl TDSearchMessagesFilter for SearchMessagesFilterPinned {}
 
 impl SearchMessagesFilterPinned {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterPinnedBuilder {
+    pub fn builder() -> SearchMessagesFilterPinnedBuilder {
         let mut inner = SearchMessagesFilterPinned::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterPinnedBuilder { inner }
+        SearchMessagesFilterPinnedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterPinnedBuilder {
+pub struct SearchMessagesFilterPinnedBuilder {
     inner: SearchMessagesFilterPinned,
 }
 
-impl RTDSearchMessagesFilterPinnedBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterPinnedBuilder = SearchMessagesFilterPinnedBuilder;
+
+impl SearchMessagesFilterPinnedBuilder {
     pub fn build(&self) -> SearchMessagesFilterPinned {
         self.inner.clone()
     }
@@ -888,7 +738,7 @@ impl AsRef<SearchMessagesFilterPinned> for SearchMessagesFilterPinned {
     }
 }
 
-impl AsRef<SearchMessagesFilterPinned> for RTDSearchMessagesFilterPinnedBuilder {
+impl AsRef<SearchMessagesFilterPinned> for SearchMessagesFilterPinnedBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterPinned {
         &self.inner
     }
@@ -918,23 +768,26 @@ impl RObject for SearchMessagesFilterUnreadMention {
 impl TDSearchMessagesFilter for SearchMessagesFilterUnreadMention {}
 
 impl SearchMessagesFilterUnreadMention {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterUnreadMentionBuilder {
+    pub fn builder() -> SearchMessagesFilterUnreadMentionBuilder {
         let mut inner = SearchMessagesFilterUnreadMention::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterUnreadMentionBuilder { inner }
+        SearchMessagesFilterUnreadMentionBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterUnreadMentionBuilder {
+pub struct SearchMessagesFilterUnreadMentionBuilder {
     inner: SearchMessagesFilterUnreadMention,
 }
 
-impl RTDSearchMessagesFilterUnreadMentionBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterUnreadMentionBuilder = SearchMessagesFilterUnreadMentionBuilder;
+
+impl SearchMessagesFilterUnreadMentionBuilder {
     pub fn build(&self) -> SearchMessagesFilterUnreadMention {
         self.inner.clone()
     }
@@ -946,7 +799,7 @@ impl AsRef<SearchMessagesFilterUnreadMention> for SearchMessagesFilterUnreadMent
     }
 }
 
-impl AsRef<SearchMessagesFilterUnreadMention> for RTDSearchMessagesFilterUnreadMentionBuilder {
+impl AsRef<SearchMessagesFilterUnreadMention> for SearchMessagesFilterUnreadMentionBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterUnreadMention {
         &self.inner
     }
@@ -976,23 +829,26 @@ impl RObject for SearchMessagesFilterUrl {
 impl TDSearchMessagesFilter for SearchMessagesFilterUrl {}
 
 impl SearchMessagesFilterUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterUrlBuilder {
+    pub fn builder() -> SearchMessagesFilterUrlBuilder {
         let mut inner = SearchMessagesFilterUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterUrlBuilder { inner }
+        SearchMessagesFilterUrlBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterUrlBuilder {
+pub struct SearchMessagesFilterUrlBuilder {
     inner: SearchMessagesFilterUrl,
 }
 
-impl RTDSearchMessagesFilterUrlBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterUrlBuilder = SearchMessagesFilterUrlBuilder;
+
+impl SearchMessagesFilterUrlBuilder {
     pub fn build(&self) -> SearchMessagesFilterUrl {
         self.inner.clone()
     }
@@ -1004,7 +860,7 @@ impl AsRef<SearchMessagesFilterUrl> for SearchMessagesFilterUrl {
     }
 }
 
-impl AsRef<SearchMessagesFilterUrl> for RTDSearchMessagesFilterUrlBuilder {
+impl AsRef<SearchMessagesFilterUrl> for SearchMessagesFilterUrlBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterUrl {
         &self.inner
     }
@@ -1034,23 +890,26 @@ impl RObject for SearchMessagesFilterVideo {
 impl TDSearchMessagesFilter for SearchMessagesFilterVideo {}
 
 impl SearchMessagesFilterVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterVideoBuilder {
+    pub fn builder() -> SearchMessagesFilterVideoBuilder {
         let mut inner = SearchMessagesFilterVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterVideoBuilder { inner }
+        SearchMessagesFilterVideoBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterVideoBuilder {
+pub struct SearchMessagesFilterVideoBuilder {
     inner: SearchMessagesFilterVideo,
 }
 
-impl RTDSearchMessagesFilterVideoBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterVideoBuilder = SearchMessagesFilterVideoBuilder;
+
+impl SearchMessagesFilterVideoBuilder {
     pub fn build(&self) -> SearchMessagesFilterVideo {
         self.inner.clone()
     }
@@ -1062,7 +921,7 @@ impl AsRef<SearchMessagesFilterVideo> for SearchMessagesFilterVideo {
     }
 }
 
-impl AsRef<SearchMessagesFilterVideo> for RTDSearchMessagesFilterVideoBuilder {
+impl AsRef<SearchMessagesFilterVideo> for SearchMessagesFilterVideoBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterVideo {
         &self.inner
     }
@@ -1092,23 +951,26 @@ impl RObject for SearchMessagesFilterVideoNote {
 impl TDSearchMessagesFilter for SearchMessagesFilterVideoNote {}
 
 impl SearchMessagesFilterVideoNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterVideoNoteBuilder {
+    pub fn builder() -> SearchMessagesFilterVideoNoteBuilder {
         let mut inner = SearchMessagesFilterVideoNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterVideoNoteBuilder { inner }
+        SearchMessagesFilterVideoNoteBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterVideoNoteBuilder {
+pub struct SearchMessagesFilterVideoNoteBuilder {
     inner: SearchMessagesFilterVideoNote,
 }
 
-impl RTDSearchMessagesFilterVideoNoteBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterVideoNoteBuilder = SearchMessagesFilterVideoNoteBuilder;
+
+impl SearchMessagesFilterVideoNoteBuilder {
     pub fn build(&self) -> SearchMessagesFilterVideoNote {
         self.inner.clone()
     }
@@ -1120,7 +982,7 @@ impl AsRef<SearchMessagesFilterVideoNote> for SearchMessagesFilterVideoNote {
     }
 }
 
-impl AsRef<SearchMessagesFilterVideoNote> for RTDSearchMessagesFilterVideoNoteBuilder {
+impl AsRef<SearchMessagesFilterVideoNote> for SearchMessagesFilterVideoNoteBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterVideoNote {
         &self.inner
     }
@@ -1150,23 +1012,27 @@ impl RObject for SearchMessagesFilterVoiceAndVideoNote {
 impl TDSearchMessagesFilter for SearchMessagesFilterVoiceAndVideoNote {}
 
 impl SearchMessagesFilterVoiceAndVideoNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterVoiceAndVideoNoteBuilder {
+    pub fn builder() -> SearchMessagesFilterVoiceAndVideoNoteBuilder {
         let mut inner = SearchMessagesFilterVoiceAndVideoNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterVoiceAndVideoNoteBuilder { inner }
+        SearchMessagesFilterVoiceAndVideoNoteBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterVoiceAndVideoNoteBuilder {
+pub struct SearchMessagesFilterVoiceAndVideoNoteBuilder {
     inner: SearchMessagesFilterVoiceAndVideoNote,
 }
 
-impl RTDSearchMessagesFilterVoiceAndVideoNoteBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterVoiceAndVideoNoteBuilder =
+    SearchMessagesFilterVoiceAndVideoNoteBuilder;
+
+impl SearchMessagesFilterVoiceAndVideoNoteBuilder {
     pub fn build(&self) -> SearchMessagesFilterVoiceAndVideoNote {
         self.inner.clone()
     }
@@ -1178,9 +1044,7 @@ impl AsRef<SearchMessagesFilterVoiceAndVideoNote> for SearchMessagesFilterVoiceA
     }
 }
 
-impl AsRef<SearchMessagesFilterVoiceAndVideoNote>
-    for RTDSearchMessagesFilterVoiceAndVideoNoteBuilder
-{
+impl AsRef<SearchMessagesFilterVoiceAndVideoNote> for SearchMessagesFilterVoiceAndVideoNoteBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterVoiceAndVideoNote {
         &self.inner
     }
@@ -1210,23 +1074,26 @@ impl RObject for SearchMessagesFilterVoiceNote {
 impl TDSearchMessagesFilter for SearchMessagesFilterVoiceNote {}
 
 impl SearchMessagesFilterVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchMessagesFilterVoiceNoteBuilder {
+    pub fn builder() -> SearchMessagesFilterVoiceNoteBuilder {
         let mut inner = SearchMessagesFilterVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDSearchMessagesFilterVoiceNoteBuilder { inner }
+        SearchMessagesFilterVoiceNoteBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDSearchMessagesFilterVoiceNoteBuilder {
+pub struct SearchMessagesFilterVoiceNoteBuilder {
     inner: SearchMessagesFilterVoiceNote,
 }
 
-impl RTDSearchMessagesFilterVoiceNoteBuilder {
+#[deprecated]
+pub type RTDSearchMessagesFilterVoiceNoteBuilder = SearchMessagesFilterVoiceNoteBuilder;
+
+impl SearchMessagesFilterVoiceNoteBuilder {
     pub fn build(&self) -> SearchMessagesFilterVoiceNote {
         self.inner.clone()
     }
@@ -1238,7 +1105,7 @@ impl AsRef<SearchMessagesFilterVoiceNote> for SearchMessagesFilterVoiceNote {
     }
 }
 
-impl AsRef<SearchMessagesFilterVoiceNote> for RTDSearchMessagesFilterVoiceNoteBuilder {
+impl AsRef<SearchMessagesFilterVoiceNote> for SearchMessagesFilterVoiceNoteBuilder {
     fn as_ref(&self) -> &SearchMessagesFilterVoiceNote {
         &self.inner
     }

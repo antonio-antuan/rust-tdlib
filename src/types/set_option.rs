@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,10 @@ pub struct SetOption {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The name of the option
+
+    #[serde(default)]
     name: String,
-    /// The new value of the option
+    /// The new value of the option; pass null to reset option value to a default value
 
     #[serde(skip_serializing_if = "OptionValue::_is_default")]
     value: OptionValue,
@@ -35,16 +37,16 @@ impl RObject for SetOption {
 impl RFunction for SetOption {}
 
 impl SetOption {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetOptionBuilder {
+    pub fn builder() -> SetOptionBuilder {
         let mut inner = SetOption::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setOption".to_string();
 
-        RTDSetOptionBuilder { inner }
+        SetOptionBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -57,11 +59,14 @@ impl SetOption {
 }
 
 #[doc(hidden)]
-pub struct RTDSetOptionBuilder {
+pub struct SetOptionBuilder {
     inner: SetOption,
 }
 
-impl RTDSetOptionBuilder {
+#[deprecated]
+pub type RTDSetOptionBuilder = SetOptionBuilder;
+
+impl SetOptionBuilder {
     pub fn build(&self) -> SetOption {
         self.inner.clone()
     }
@@ -83,7 +88,7 @@ impl AsRef<SetOption> for SetOption {
     }
 }
 
-impl AsRef<SetOption> for RTDSetOptionBuilder {
+impl AsRef<SetOption> for SetOptionBuilder {
     fn as_ref(&self) -> &SetOption {
         &self.inner
     }

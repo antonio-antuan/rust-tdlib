@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,6 +13,7 @@ pub struct TerminateSession {
     /// Session identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     session_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +34,16 @@ impl RObject for TerminateSession {
 impl RFunction for TerminateSession {}
 
 impl TerminateSession {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTerminateSessionBuilder {
+    pub fn builder() -> TerminateSessionBuilder {
         let mut inner = TerminateSession::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "terminateSession".to_string();
 
-        RTDTerminateSessionBuilder { inner }
+        TerminateSessionBuilder { inner }
     }
 
     pub fn session_id(&self) -> i64 {
@@ -51,11 +52,14 @@ impl TerminateSession {
 }
 
 #[doc(hidden)]
-pub struct RTDTerminateSessionBuilder {
+pub struct TerminateSessionBuilder {
     inner: TerminateSession,
 }
 
-impl RTDTerminateSessionBuilder {
+#[deprecated]
+pub type RTDTerminateSessionBuilder = TerminateSessionBuilder;
+
+impl TerminateSessionBuilder {
     pub fn build(&self) -> TerminateSession {
         self.inner.clone()
     }
@@ -72,7 +76,7 @@ impl AsRef<TerminateSession> for TerminateSession {
     }
 }
 
-impl AsRef<TerminateSession> for RTDTerminateSessionBuilder {
+impl AsRef<TerminateSession> for TerminateSessionBuilder {
     fn as_ref(&self) -> &TerminateSession {
         &self.inner
     }

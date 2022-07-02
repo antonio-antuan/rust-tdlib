@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct Hashtags {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of hashtags
+
+    #[serde(default)]
     hashtags: Vec<String>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for Hashtags {
 }
 
 impl Hashtags {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDHashtagsBuilder {
+    pub fn builder() -> HashtagsBuilder {
         let mut inner = Hashtags::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDHashtagsBuilder { inner }
+        HashtagsBuilder { inner }
     }
 
     pub fn hashtags(&self) -> &Vec<String> {
@@ -42,11 +44,14 @@ impl Hashtags {
 }
 
 #[doc(hidden)]
-pub struct RTDHashtagsBuilder {
+pub struct HashtagsBuilder {
     inner: Hashtags,
 }
 
-impl RTDHashtagsBuilder {
+#[deprecated]
+pub type RTDHashtagsBuilder = HashtagsBuilder;
+
+impl HashtagsBuilder {
     pub fn build(&self) -> Hashtags {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<Hashtags> for Hashtags {
     }
 }
 
-impl AsRef<Hashtags> for RTDHashtagsBuilder {
+impl AsRef<Hashtags> for HashtagsBuilder {
     fn as_ref(&self) -> &Hashtags {
         &self.inner
     }

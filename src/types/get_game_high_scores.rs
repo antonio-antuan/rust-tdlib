@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,11 +11,17 @@ pub struct GetGameHighScores {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat that contains the message with the game
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message
+
+    #[serde(default)]
     message_id: i64,
     /// User identifier
-    user_id: i32,
+
+    #[serde(default)]
+    user_id: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -35,16 +41,16 @@ impl RObject for GetGameHighScores {
 impl RFunction for GetGameHighScores {}
 
 impl GetGameHighScores {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetGameHighScoresBuilder {
+    pub fn builder() -> GetGameHighScoresBuilder {
         let mut inner = GetGameHighScores::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getGameHighScores".to_string();
 
-        RTDGetGameHighScoresBuilder { inner }
+        GetGameHighScoresBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -55,17 +61,20 @@ impl GetGameHighScores {
         self.message_id
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetGameHighScoresBuilder {
+pub struct GetGameHighScoresBuilder {
     inner: GetGameHighScores,
 }
 
-impl RTDGetGameHighScoresBuilder {
+#[deprecated]
+pub type RTDGetGameHighScoresBuilder = GetGameHighScoresBuilder;
+
+impl GetGameHighScoresBuilder {
     pub fn build(&self) -> GetGameHighScores {
         self.inner.clone()
     }
@@ -80,7 +89,7 @@ impl RTDGetGameHighScoresBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -92,7 +101,7 @@ impl AsRef<GetGameHighScores> for GetGameHighScores {
     }
 }
 
-impl AsRef<GetGameHighScores> for RTDGetGameHighScoresBuilder {
+impl AsRef<GetGameHighScores> for GetGameHighScoresBuilder {
     fn as_ref(&self) -> &GetGameHighScores {
         &self.inner
     }

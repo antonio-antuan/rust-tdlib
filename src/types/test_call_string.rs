@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct TestCallString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// String to return
+
+    #[serde(default)]
     x: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for TestCallString {
 impl RFunction for TestCallString {}
 
 impl TestCallString {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestCallStringBuilder {
+    pub fn builder() -> TestCallStringBuilder {
         let mut inner = TestCallString::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "testCallString".to_string();
 
-        RTDTestCallStringBuilder { inner }
+        TestCallStringBuilder { inner }
     }
 
     pub fn x(&self) -> &String {
@@ -49,11 +51,14 @@ impl TestCallString {
 }
 
 #[doc(hidden)]
-pub struct RTDTestCallStringBuilder {
+pub struct TestCallStringBuilder {
     inner: TestCallString,
 }
 
-impl RTDTestCallStringBuilder {
+#[deprecated]
+pub type RTDTestCallStringBuilder = TestCallStringBuilder;
+
+impl TestCallStringBuilder {
     pub fn build(&self) -> TestCallString {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<TestCallString> for TestCallString {
     }
 }
 
-impl AsRef<TestCallString> for RTDTestCallStringBuilder {
+impl AsRef<TestCallString> for TestCallStringBuilder {
     fn as_ref(&self) -> &TestCallString {
         &self.inner
     }

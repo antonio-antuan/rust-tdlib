@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SearchContacts {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Query to search for; may be empty to return all contacts
+
+    #[serde(default)]
     query: String,
     /// The maximum number of users to be returned
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SearchContacts {
 impl RFunction for SearchContacts {}
 
 impl SearchContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchContactsBuilder {
+    pub fn builder() -> SearchContactsBuilder {
         let mut inner = SearchContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchContacts".to_string();
 
-        RTDSearchContactsBuilder { inner }
+        SearchContactsBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -55,11 +59,14 @@ impl SearchContacts {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchContactsBuilder {
+pub struct SearchContactsBuilder {
     inner: SearchContacts,
 }
 
-impl RTDSearchContactsBuilder {
+#[deprecated]
+pub type RTDSearchContactsBuilder = SearchContactsBuilder;
+
+impl SearchContactsBuilder {
     pub fn build(&self) -> SearchContacts {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SearchContacts> for SearchContacts {
     }
 }
 
-impl AsRef<SearchContacts> for RTDSearchContactsBuilder {
+impl AsRef<SearchContacts> for SearchContactsBuilder {
     fn as_ref(&self) -> &SearchContacts {
         &self.inner
     }

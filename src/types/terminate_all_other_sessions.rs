@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for TerminateAllOtherSessions {
 impl RFunction for TerminateAllOtherSessions {}
 
 impl TerminateAllOtherSessions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTerminateAllOtherSessionsBuilder {
+    pub fn builder() -> TerminateAllOtherSessionsBuilder {
         let mut inner = TerminateAllOtherSessions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "terminateAllOtherSessions".to_string();
 
-        RTDTerminateAllOtherSessionsBuilder { inner }
+        TerminateAllOtherSessionsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTerminateAllOtherSessionsBuilder {
+pub struct TerminateAllOtherSessionsBuilder {
     inner: TerminateAllOtherSessions,
 }
 
-impl RTDTerminateAllOtherSessionsBuilder {
+#[deprecated]
+pub type RTDTerminateAllOtherSessionsBuilder = TerminateAllOtherSessionsBuilder;
+
+impl TerminateAllOtherSessionsBuilder {
     pub fn build(&self) -> TerminateAllOtherSessions {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<TerminateAllOtherSessions> for TerminateAllOtherSessions {
     }
 }
 
-impl AsRef<TerminateAllOtherSessions> for RTDTerminateAllOtherSessionsBuilder {
+impl AsRef<TerminateAllOtherSessions> for TerminateAllOtherSessionsBuilder {
     fn as_ref(&self) -> &TerminateAllOtherSessions {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct Photo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if stickers were added to the photo. The list of corresponding sticker sets can be received using getAttachedStickerSets
+
+    #[serde(default)]
     has_stickers: bool,
     /// Photo minithumbnail; may be null
     minithumbnail: Option<Minithumbnail>,
     /// Available variants of the photo, in different sizes
+
+    #[serde(default)]
     sizes: Vec<PhotoSize>,
 }
 
@@ -30,14 +34,14 @@ impl RObject for Photo {
 }
 
 impl Photo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPhotoBuilder {
+    pub fn builder() -> PhotoBuilder {
         let mut inner = Photo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPhotoBuilder { inner }
+        PhotoBuilder { inner }
     }
 
     pub fn has_stickers(&self) -> bool {
@@ -54,11 +58,14 @@ impl Photo {
 }
 
 #[doc(hidden)]
-pub struct RTDPhotoBuilder {
+pub struct PhotoBuilder {
     inner: Photo,
 }
 
-impl RTDPhotoBuilder {
+#[deprecated]
+pub type RTDPhotoBuilder = PhotoBuilder;
+
+impl PhotoBuilder {
     pub fn build(&self) -> Photo {
         self.inner.clone()
     }
@@ -85,7 +92,7 @@ impl AsRef<Photo> for Photo {
     }
 }
 
-impl AsRef<Photo> for RTDPhotoBuilder {
+impl AsRef<Photo> for PhotoBuilder {
     fn as_ref(&self) -> &Photo {
         &self.inner
     }

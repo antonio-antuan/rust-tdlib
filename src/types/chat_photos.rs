@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct ChatPhotos {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Total number of photos
+
+    #[serde(default)]
     total_count: i32,
     /// List of photos
+
+    #[serde(default)]
     photos: Vec<ChatPhoto>,
 }
 
@@ -28,14 +32,14 @@ impl RObject for ChatPhotos {
 }
 
 impl ChatPhotos {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatPhotosBuilder {
+    pub fn builder() -> ChatPhotosBuilder {
         let mut inner = ChatPhotos::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatPhotosBuilder { inner }
+        ChatPhotosBuilder { inner }
     }
 
     pub fn total_count(&self) -> i32 {
@@ -48,11 +52,14 @@ impl ChatPhotos {
 }
 
 #[doc(hidden)]
-pub struct RTDChatPhotosBuilder {
+pub struct ChatPhotosBuilder {
     inner: ChatPhotos,
 }
 
-impl RTDChatPhotosBuilder {
+#[deprecated]
+pub type RTDChatPhotosBuilder = ChatPhotosBuilder;
+
+impl ChatPhotosBuilder {
     pub fn build(&self) -> ChatPhotos {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<ChatPhotos> for ChatPhotos {
     }
 }
 
-impl AsRef<ChatPhotos> for RTDChatPhotosBuilder {
+impl AsRef<ChatPhotos> for ChatPhotosBuilder {
     fn as_ref(&self) -> &ChatPhotos {
         &self.inner
     }

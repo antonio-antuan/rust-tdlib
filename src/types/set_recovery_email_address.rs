@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SetRecoveryEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Password of the current user
+
+    #[serde(default)]
     password: String,
     /// New recovery email address
+
+    #[serde(default)]
     new_recovery_email_address: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SetRecoveryEmailAddress {
 impl RFunction for SetRecoveryEmailAddress {}
 
 impl SetRecoveryEmailAddress {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetRecoveryEmailAddressBuilder {
+    pub fn builder() -> SetRecoveryEmailAddressBuilder {
         let mut inner = SetRecoveryEmailAddress::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setRecoveryEmailAddress".to_string();
 
-        RTDSetRecoveryEmailAddressBuilder { inner }
+        SetRecoveryEmailAddressBuilder { inner }
     }
 
     pub fn password(&self) -> &String {
@@ -55,11 +59,14 @@ impl SetRecoveryEmailAddress {
 }
 
 #[doc(hidden)]
-pub struct RTDSetRecoveryEmailAddressBuilder {
+pub struct SetRecoveryEmailAddressBuilder {
     inner: SetRecoveryEmailAddress,
 }
 
-impl RTDSetRecoveryEmailAddressBuilder {
+#[deprecated]
+pub type RTDSetRecoveryEmailAddressBuilder = SetRecoveryEmailAddressBuilder;
+
+impl SetRecoveryEmailAddressBuilder {
     pub fn build(&self) -> SetRecoveryEmailAddress {
         self.inner.clone()
     }
@@ -84,7 +91,7 @@ impl AsRef<SetRecoveryEmailAddress> for SetRecoveryEmailAddress {
     }
 }
 
-impl AsRef<SetRecoveryEmailAddress> for RTDSetRecoveryEmailAddressBuilder {
+impl AsRef<SetRecoveryEmailAddress> for SetRecoveryEmailAddressBuilder {
     fn as_ref(&self) -> &SetRecoveryEmailAddress {
         &self.inner
     }

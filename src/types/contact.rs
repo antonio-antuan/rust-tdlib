@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,15 +11,25 @@ pub struct Contact {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Phone number of the user
+
+    #[serde(default)]
     phone_number: String,
     /// First name of the user; 1-255 characters in length
+
+    #[serde(default)]
     first_name: String,
     /// Last name of the user
+
+    #[serde(default)]
     last_name: String,
     /// Additional data about the user in a form of vCard; 0-2048 bytes in length
+
+    #[serde(default)]
     vcard: String,
     /// Identifier of the user, if known; otherwise 0
-    user_id: i32,
+
+    #[serde(default)]
+    user_id: i64,
 }
 
 impl RObject for Contact {
@@ -34,14 +44,14 @@ impl RObject for Contact {
 }
 
 impl Contact {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDContactBuilder {
+    pub fn builder() -> ContactBuilder {
         let mut inner = Contact::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDContactBuilder { inner }
+        ContactBuilder { inner }
     }
 
     pub fn phone_number(&self) -> &String {
@@ -60,17 +70,20 @@ impl Contact {
         &self.vcard
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDContactBuilder {
+pub struct ContactBuilder {
     inner: Contact,
 }
 
-impl RTDContactBuilder {
+#[deprecated]
+pub type RTDContactBuilder = ContactBuilder;
+
+impl ContactBuilder {
     pub fn build(&self) -> Contact {
         self.inner.clone()
     }
@@ -95,7 +108,7 @@ impl RTDContactBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -107,7 +120,7 @@ impl AsRef<Contact> for Contact {
     }
 }
 
-impl AsRef<Contact> for RTDContactBuilder {
+impl AsRef<Contact> for ContactBuilder {
     fn as_ref(&self) -> &Contact {
         &self.inner
     }

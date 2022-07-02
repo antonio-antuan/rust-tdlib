@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct ChatEvents {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of events
+
+    #[serde(default)]
     events: Vec<ChatEvent>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for ChatEvents {
 }
 
 impl ChatEvents {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatEventsBuilder {
+    pub fn builder() -> ChatEventsBuilder {
         let mut inner = ChatEvents::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatEventsBuilder { inner }
+        ChatEventsBuilder { inner }
     }
 
     pub fn events(&self) -> &Vec<ChatEvent> {
@@ -42,11 +44,14 @@ impl ChatEvents {
 }
 
 #[doc(hidden)]
-pub struct RTDChatEventsBuilder {
+pub struct ChatEventsBuilder {
     inner: ChatEvents,
 }
 
-impl RTDChatEventsBuilder {
+#[deprecated]
+pub type RTDChatEventsBuilder = ChatEventsBuilder;
+
+impl ChatEventsBuilder {
     pub fn build(&self) -> ChatEvents {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<ChatEvents> for ChatEvents {
     }
 }
 
-impl AsRef<ChatEvents> for RTDChatEventsBuilder {
+impl AsRef<ChatEvents> for ChatEventsBuilder {
     fn as_ref(&self) -> &ChatEvents {
         &self.inner
     }

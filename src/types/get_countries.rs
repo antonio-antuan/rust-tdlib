@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetCountries {
 impl RFunction for GetCountries {}
 
 impl GetCountries {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetCountriesBuilder {
+    pub fn builder() -> GetCountriesBuilder {
         let mut inner = GetCountries::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getCountries".to_string();
 
-        RTDGetCountriesBuilder { inner }
+        GetCountriesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetCountriesBuilder {
+pub struct GetCountriesBuilder {
     inner: GetCountries,
 }
 
-impl RTDGetCountriesBuilder {
+#[deprecated]
+pub type RTDGetCountriesBuilder = GetCountriesBuilder;
+
+impl GetCountriesBuilder {
     pub fn build(&self) -> GetCountries {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetCountries> for GetCountries {
     }
 }
 
-impl AsRef<GetCountries> for RTDGetCountriesBuilder {
+impl AsRef<GetCountries> for GetCountriesBuilder {
     fn as_ref(&self) -> &GetCountries {
         &self.inner
     }

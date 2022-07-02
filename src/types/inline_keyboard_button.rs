@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct InlineKeyboardButton {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text of the button
+
+    #[serde(default)]
     text: String,
     /// Type of the button
 
@@ -31,14 +33,14 @@ impl RObject for InlineKeyboardButton {
 }
 
 impl InlineKeyboardButton {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInlineKeyboardButtonBuilder {
+    pub fn builder() -> InlineKeyboardButtonBuilder {
         let mut inner = InlineKeyboardButton::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInlineKeyboardButtonBuilder { inner }
+        InlineKeyboardButtonBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -51,11 +53,14 @@ impl InlineKeyboardButton {
 }
 
 #[doc(hidden)]
-pub struct RTDInlineKeyboardButtonBuilder {
+pub struct InlineKeyboardButtonBuilder {
     inner: InlineKeyboardButton,
 }
 
-impl RTDInlineKeyboardButtonBuilder {
+#[deprecated]
+pub type RTDInlineKeyboardButtonBuilder = InlineKeyboardButtonBuilder;
+
+impl InlineKeyboardButtonBuilder {
     pub fn build(&self) -> InlineKeyboardButton {
         self.inner.clone()
     }
@@ -77,7 +82,7 @@ impl AsRef<InlineKeyboardButton> for InlineKeyboardButton {
     }
 }
 
-impl AsRef<InlineKeyboardButton> for RTDInlineKeyboardButtonBuilder {
+impl AsRef<InlineKeyboardButton> for InlineKeyboardButtonBuilder {
     fn as_ref(&self) -> &InlineKeyboardButton {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct ShippingOption {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Shipping option identifier
+
+    #[serde(default)]
     id: String,
     /// Option title
+
+    #[serde(default)]
     title: String,
     /// A list of objects used to calculate the total shipping costs
+
+    #[serde(default)]
     price_parts: Vec<LabeledPricePart>,
 }
 
@@ -30,14 +36,14 @@ impl RObject for ShippingOption {
 }
 
 impl ShippingOption {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDShippingOptionBuilder {
+    pub fn builder() -> ShippingOptionBuilder {
         let mut inner = ShippingOption::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDShippingOptionBuilder { inner }
+        ShippingOptionBuilder { inner }
     }
 
     pub fn id(&self) -> &String {
@@ -54,11 +60,14 @@ impl ShippingOption {
 }
 
 #[doc(hidden)]
-pub struct RTDShippingOptionBuilder {
+pub struct ShippingOptionBuilder {
     inner: ShippingOption,
 }
 
-impl RTDShippingOptionBuilder {
+#[deprecated]
+pub type RTDShippingOptionBuilder = ShippingOptionBuilder;
+
+impl ShippingOptionBuilder {
     pub fn build(&self) -> ShippingOption {
         self.inner.clone()
     }
@@ -85,7 +94,7 @@ impl AsRef<ShippingOption> for ShippingOption {
     }
 }
 
-impl AsRef<ShippingOption> for RTDShippingOptionBuilder {
+impl AsRef<ShippingOption> for ShippingOptionBuilder {
     fn as_ref(&self) -> &ShippingOption {
         &self.inner
     }

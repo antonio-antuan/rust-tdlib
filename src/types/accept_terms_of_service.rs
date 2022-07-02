@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct AcceptTermsOfService {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Terms of service identifier
+
+    #[serde(default)]
     terms_of_service_id: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for AcceptTermsOfService {
 impl RFunction for AcceptTermsOfService {}
 
 impl AcceptTermsOfService {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAcceptTermsOfServiceBuilder {
+    pub fn builder() -> AcceptTermsOfServiceBuilder {
         let mut inner = AcceptTermsOfService::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "acceptTermsOfService".to_string();
 
-        RTDAcceptTermsOfServiceBuilder { inner }
+        AcceptTermsOfServiceBuilder { inner }
     }
 
     pub fn terms_of_service_id(&self) -> &String {
@@ -49,11 +51,14 @@ impl AcceptTermsOfService {
 }
 
 #[doc(hidden)]
-pub struct RTDAcceptTermsOfServiceBuilder {
+pub struct AcceptTermsOfServiceBuilder {
     inner: AcceptTermsOfService,
 }
 
-impl RTDAcceptTermsOfServiceBuilder {
+#[deprecated]
+pub type RTDAcceptTermsOfServiceBuilder = AcceptTermsOfServiceBuilder;
+
+impl AcceptTermsOfServiceBuilder {
     pub fn build(&self) -> AcceptTermsOfService {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<AcceptTermsOfService> for AcceptTermsOfService {
     }
 }
 
-impl AsRef<AcceptTermsOfService> for RTDAcceptTermsOfServiceBuilder {
+impl AsRef<AcceptTermsOfService> for AcceptTermsOfServiceBuilder {
     fn as_ref(&self) -> &AcceptTermsOfService {
         &self.inner
     }

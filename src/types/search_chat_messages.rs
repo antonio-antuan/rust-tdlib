@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages should be used instead), or without an enabled message database. For optimal performance the number of returned messages is chosen by the library
+/// Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchChatMessages {
     #[doc(hidden)]
@@ -11,24 +11,36 @@ pub struct SearchChatMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat in which to search messages
+
+    #[serde(default)]
     chat_id: i64,
     /// Query to search for
+
+    #[serde(default)]
     query: String,
-    /// If not null, only messages sent by the specified sender will be returned. Not supported in secret chats
+    /// Identifier of the sender of messages to search for; pass null to search for messages from any sender. Not supported in secret chats
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
-    sender: MessageSender,
+    sender_id: MessageSender,
     /// Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
+
+    #[serde(default)]
     from_message_id: i64,
     /// Specify 0 to get results from exactly the from_message_id or a negative offset to get the specified message and some newer messages
+
+    #[serde(default)]
     offset: i32,
-    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than offset. Fewer messages may be returned than specified by the limit, even if the end of the message history has not been reached
+    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
-    /// Filter for message content in the search results
+    /// Additional filter for messages to search; pass null to search for all messages
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
     /// If not 0, only messages in the specified thread will be returned; supergroups only
+
+    #[serde(default)]
     message_thread_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -49,16 +61,16 @@ impl RObject for SearchChatMessages {
 impl RFunction for SearchChatMessages {}
 
 impl SearchChatMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchChatMessagesBuilder {
+    pub fn builder() -> SearchChatMessagesBuilder {
         let mut inner = SearchChatMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchChatMessages".to_string();
 
-        RTDSearchChatMessagesBuilder { inner }
+        SearchChatMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -69,8 +81,8 @@ impl SearchChatMessages {
         &self.query
     }
 
-    pub fn sender(&self) -> &MessageSender {
-        &self.sender
+    pub fn sender_id(&self) -> &MessageSender {
+        &self.sender_id
     }
 
     pub fn from_message_id(&self) -> i64 {
@@ -95,11 +107,14 @@ impl SearchChatMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchChatMessagesBuilder {
+pub struct SearchChatMessagesBuilder {
     inner: SearchChatMessages,
 }
 
-impl RTDSearchChatMessagesBuilder {
+#[deprecated]
+pub type RTDSearchChatMessagesBuilder = SearchChatMessagesBuilder;
+
+impl SearchChatMessagesBuilder {
     pub fn build(&self) -> SearchChatMessages {
         self.inner.clone()
     }
@@ -114,8 +129,8 @@ impl RTDSearchChatMessagesBuilder {
         self
     }
 
-    pub fn sender<T: AsRef<MessageSender>>(&mut self, sender: T) -> &mut Self {
-        self.inner.sender = sender.as_ref().clone();
+    pub fn sender_id<T: AsRef<MessageSender>>(&mut self, sender_id: T) -> &mut Self {
+        self.inner.sender_id = sender_id.as_ref().clone();
         self
     }
 
@@ -151,7 +166,7 @@ impl AsRef<SearchChatMessages> for SearchChatMessages {
     }
 }
 
-impl AsRef<SearchChatMessages> for RTDSearchChatMessagesBuilder {
+impl AsRef<SearchChatMessages> for SearchChatMessagesBuilder {
     fn as_ref(&self) -> &SearchChatMessages {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,10 +14,10 @@ pub enum MessageSender {
     #[doc(hidden)]
     _Default,
     /// The message was sent on behalf of a chat
-    #[serde(rename(serialize = "messageSenderChat", deserialize = "messageSenderChat"))]
+    #[serde(rename(deserialize = "messageSenderChat"))]
     Chat(MessageSenderChat),
     /// The message was sent by a known user
-    #[serde(rename(serialize = "messageSenderUser", deserialize = "messageSenderUser"))]
+    #[serde(rename(deserialize = "messageSenderUser"))]
     User(MessageSenderUser),
 }
 
@@ -49,7 +49,7 @@ impl RObject for MessageSender {
 }
 
 impl MessageSender {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -73,6 +73,8 @@ pub struct MessageSenderChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat that sent the message
+
+    #[serde(default)]
     chat_id: i64,
 }
 
@@ -90,14 +92,14 @@ impl RObject for MessageSenderChat {
 impl TDMessageSender for MessageSenderChat {}
 
 impl MessageSenderChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSenderChatBuilder {
+    pub fn builder() -> MessageSenderChatBuilder {
         let mut inner = MessageSenderChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSenderChatBuilder { inner }
+        MessageSenderChatBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -106,11 +108,14 @@ impl MessageSenderChat {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSenderChatBuilder {
+pub struct MessageSenderChatBuilder {
     inner: MessageSenderChat,
 }
 
-impl RTDMessageSenderChatBuilder {
+#[deprecated]
+pub type RTDMessageSenderChatBuilder = MessageSenderChatBuilder;
+
+impl MessageSenderChatBuilder {
     pub fn build(&self) -> MessageSenderChat {
         self.inner.clone()
     }
@@ -127,7 +132,7 @@ impl AsRef<MessageSenderChat> for MessageSenderChat {
     }
 }
 
-impl AsRef<MessageSenderChat> for RTDMessageSenderChatBuilder {
+impl AsRef<MessageSenderChat> for MessageSenderChatBuilder {
     fn as_ref(&self) -> &MessageSenderChat {
         &self.inner
     }
@@ -142,7 +147,9 @@ pub struct MessageSenderUser {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the user that sent the message
-    user_id: i32,
+
+    #[serde(default)]
+    user_id: i64,
 }
 
 impl RObject for MessageSenderUser {
@@ -159,32 +166,35 @@ impl RObject for MessageSenderUser {
 impl TDMessageSender for MessageSenderUser {}
 
 impl MessageSenderUser {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageSenderUserBuilder {
+    pub fn builder() -> MessageSenderUserBuilder {
         let mut inner = MessageSenderUser::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageSenderUserBuilder { inner }
+        MessageSenderUserBuilder { inner }
     }
 
-    pub fn user_id(&self) -> i32 {
+    pub fn user_id(&self) -> i64 {
         self.user_id
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMessageSenderUserBuilder {
+pub struct MessageSenderUserBuilder {
     inner: MessageSenderUser,
 }
 
-impl RTDMessageSenderUserBuilder {
+#[deprecated]
+pub type RTDMessageSenderUserBuilder = MessageSenderUserBuilder;
+
+impl MessageSenderUserBuilder {
     pub fn build(&self) -> MessageSenderUser {
         self.inner.clone()
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
+    pub fn user_id(&mut self, user_id: i64) -> &mut Self {
         self.inner.user_id = user_id;
         self
     }
@@ -196,7 +206,7 @@ impl AsRef<MessageSenderUser> for MessageSenderUser {
     }
 }
 
-impl AsRef<MessageSenderUser> for RTDMessageSenderUserBuilder {
+impl AsRef<MessageSenderUser> for MessageSenderUserBuilder {
     fn as_ref(&self) -> &MessageSenderUser {
         &self.inner
     }

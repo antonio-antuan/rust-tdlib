@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,19 +14,13 @@ pub enum BackgroundType {
     #[doc(hidden)]
     _Default,
     /// A filled background
-    #[serde(rename(serialize = "backgroundTypeFill", deserialize = "backgroundTypeFill"))]
+    #[serde(rename(deserialize = "backgroundTypeFill"))]
     Fill(BackgroundTypeFill),
     /// A PNG or TGV (gzipped subset of SVG with MIME type "application/x-tgwallpattern") pattern to be combined with the background fill chosen by the user
-    #[serde(rename(
-        serialize = "backgroundTypePattern",
-        deserialize = "backgroundTypePattern"
-    ))]
+    #[serde(rename(deserialize = "backgroundTypePattern"))]
     Pattern(BackgroundTypePattern),
     /// A wallpaper in JPEG format
-    #[serde(rename(
-        serialize = "backgroundTypeWallpaper",
-        deserialize = "backgroundTypeWallpaper"
-    ))]
+    #[serde(rename(deserialize = "backgroundTypeWallpaper"))]
     Wallpaper(BackgroundTypeWallpaper),
 }
 
@@ -60,7 +54,7 @@ impl RObject for BackgroundType {
 }
 
 impl BackgroundType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -83,7 +77,7 @@ pub struct BackgroundTypeFill {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Description of the background fill
+    /// The background fill
 
     #[serde(skip_serializing_if = "BackgroundFill::_is_default")]
     fill: BackgroundFill,
@@ -103,14 +97,14 @@ impl RObject for BackgroundTypeFill {
 impl TDBackgroundType for BackgroundTypeFill {}
 
 impl BackgroundTypeFill {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundTypeFillBuilder {
+    pub fn builder() -> BackgroundTypeFillBuilder {
         let mut inner = BackgroundTypeFill::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundTypeFillBuilder { inner }
+        BackgroundTypeFillBuilder { inner }
     }
 
     pub fn fill(&self) -> &BackgroundFill {
@@ -119,11 +113,14 @@ impl BackgroundTypeFill {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundTypeFillBuilder {
+pub struct BackgroundTypeFillBuilder {
     inner: BackgroundTypeFill,
 }
 
-impl RTDBackgroundTypeFillBuilder {
+#[deprecated]
+pub type RTDBackgroundTypeFillBuilder = BackgroundTypeFillBuilder;
+
+impl BackgroundTypeFillBuilder {
     pub fn build(&self) -> BackgroundTypeFill {
         self.inner.clone()
     }
@@ -140,7 +137,7 @@ impl AsRef<BackgroundTypeFill> for BackgroundTypeFill {
     }
 }
 
-impl AsRef<BackgroundTypeFill> for RTDBackgroundTypeFillBuilder {
+impl AsRef<BackgroundTypeFill> for BackgroundTypeFillBuilder {
     fn as_ref(&self) -> &BackgroundTypeFill {
         &self.inner
     }
@@ -154,13 +151,21 @@ pub struct BackgroundTypePattern {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Description of the background fill
+    /// Fill of the background
 
     #[serde(skip_serializing_if = "BackgroundFill::_is_default")]
     fill: BackgroundFill,
-    /// Intensity of the pattern when it is shown above the filled background, 0-100
+    /// Intensity of the pattern when it is shown above the filled background; 0-100.
+
+    #[serde(default)]
     intensity: i32,
+    /// True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only
+
+    #[serde(default)]
+    is_inverted: bool,
     /// True, if the background needs to be slightly moved when device is tilted
+
+    #[serde(default)]
     is_moving: bool,
 }
 
@@ -178,14 +183,14 @@ impl RObject for BackgroundTypePattern {
 impl TDBackgroundType for BackgroundTypePattern {}
 
 impl BackgroundTypePattern {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundTypePatternBuilder {
+    pub fn builder() -> BackgroundTypePatternBuilder {
         let mut inner = BackgroundTypePattern::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundTypePatternBuilder { inner }
+        BackgroundTypePatternBuilder { inner }
     }
 
     pub fn fill(&self) -> &BackgroundFill {
@@ -196,17 +201,24 @@ impl BackgroundTypePattern {
         self.intensity
     }
 
+    pub fn is_inverted(&self) -> bool {
+        self.is_inverted
+    }
+
     pub fn is_moving(&self) -> bool {
         self.is_moving
     }
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundTypePatternBuilder {
+pub struct BackgroundTypePatternBuilder {
     inner: BackgroundTypePattern,
 }
 
-impl RTDBackgroundTypePatternBuilder {
+#[deprecated]
+pub type RTDBackgroundTypePatternBuilder = BackgroundTypePatternBuilder;
+
+impl BackgroundTypePatternBuilder {
     pub fn build(&self) -> BackgroundTypePattern {
         self.inner.clone()
     }
@@ -218,6 +230,11 @@ impl RTDBackgroundTypePatternBuilder {
 
     pub fn intensity(&mut self, intensity: i32) -> &mut Self {
         self.inner.intensity = intensity;
+        self
+    }
+
+    pub fn is_inverted(&mut self, is_inverted: bool) -> &mut Self {
+        self.inner.is_inverted = is_inverted;
         self
     }
 
@@ -233,7 +250,7 @@ impl AsRef<BackgroundTypePattern> for BackgroundTypePattern {
     }
 }
 
-impl AsRef<BackgroundTypePattern> for RTDBackgroundTypePatternBuilder {
+impl AsRef<BackgroundTypePattern> for BackgroundTypePatternBuilder {
     fn as_ref(&self) -> &BackgroundTypePattern {
         &self.inner
     }
@@ -248,8 +265,12 @@ pub struct BackgroundTypeWallpaper {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// True, if the wallpaper must be downscaled to fit in 450x450 square and then box-blurred with radius 12
+
+    #[serde(default)]
     is_blurred: bool,
     /// True, if the background needs to be slightly moved when device is tilted
+
+    #[serde(default)]
     is_moving: bool,
 }
 
@@ -267,14 +288,14 @@ impl RObject for BackgroundTypeWallpaper {
 impl TDBackgroundType for BackgroundTypeWallpaper {}
 
 impl BackgroundTypeWallpaper {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundTypeWallpaperBuilder {
+    pub fn builder() -> BackgroundTypeWallpaperBuilder {
         let mut inner = BackgroundTypeWallpaper::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundTypeWallpaperBuilder { inner }
+        BackgroundTypeWallpaperBuilder { inner }
     }
 
     pub fn is_blurred(&self) -> bool {
@@ -287,11 +308,14 @@ impl BackgroundTypeWallpaper {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundTypeWallpaperBuilder {
+pub struct BackgroundTypeWallpaperBuilder {
     inner: BackgroundTypeWallpaper,
 }
 
-impl RTDBackgroundTypeWallpaperBuilder {
+#[deprecated]
+pub type RTDBackgroundTypeWallpaperBuilder = BackgroundTypeWallpaperBuilder;
+
+impl BackgroundTypeWallpaperBuilder {
     pub fn build(&self) -> BackgroundTypeWallpaper {
         self.inner.clone()
     }
@@ -313,7 +337,7 @@ impl AsRef<BackgroundTypeWallpaper> for BackgroundTypeWallpaper {
     }
 }
 
-impl AsRef<BackgroundTypeWallpaper> for RTDBackgroundTypeWallpaperBuilder {
+impl AsRef<BackgroundTypeWallpaper> for BackgroundTypeWallpaperBuilder {
     fn as_ref(&self) -> &BackgroundTypeWallpaper {
         &self.inner
     }

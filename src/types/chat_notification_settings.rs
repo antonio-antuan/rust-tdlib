@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,24 +11,44 @@ pub struct ChatNotificationSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If true, mute_for is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_mute_for: bool,
     /// Time left before notifications will be unmuted, in seconds
+
+    #[serde(default)]
     mute_for: i32,
     /// If true, sound is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_sound: bool,
     /// The name of an audio file to be used for notification sounds; only applies to iOS applications
+
+    #[serde(default)]
     sound: String,
     /// If true, show_preview is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_show_preview: bool,
-    /// True, if message content should be displayed in notifications
+    /// True, if message content must be displayed in notifications
+
+    #[serde(default)]
     show_preview: bool,
     /// If true, disable_pinned_message_notifications is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_disable_pinned_message_notifications: bool,
     /// If true, notifications for incoming pinned messages will be created as for an ordinary unread message
+
+    #[serde(default)]
     disable_pinned_message_notifications: bool,
     /// If true, disable_mention_notifications is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
     use_default_disable_mention_notifications: bool,
     /// If true, notifications for messages with mentions will be created as for an ordinary unread message
+
+    #[serde(default)]
     disable_mention_notifications: bool,
 }
 
@@ -44,14 +64,14 @@ impl RObject for ChatNotificationSettings {
 }
 
 impl ChatNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatNotificationSettingsBuilder {
+    pub fn builder() -> ChatNotificationSettingsBuilder {
         let mut inner = ChatNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatNotificationSettingsBuilder { inner }
+        ChatNotificationSettingsBuilder { inner }
     }
 
     pub fn use_default_mute_for(&self) -> bool {
@@ -96,11 +116,14 @@ impl ChatNotificationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDChatNotificationSettingsBuilder {
+pub struct ChatNotificationSettingsBuilder {
     inner: ChatNotificationSettings,
 }
 
-impl RTDChatNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDChatNotificationSettingsBuilder = ChatNotificationSettingsBuilder;
+
+impl ChatNotificationSettingsBuilder {
     pub fn build(&self) -> ChatNotificationSettings {
         self.inner.clone()
     }
@@ -176,7 +199,7 @@ impl AsRef<ChatNotificationSettings> for ChatNotificationSettings {
     }
 }
 
-impl AsRef<ChatNotificationSettings> for RTDChatNotificationSettingsBuilder {
+impl AsRef<ChatNotificationSettings> for ChatNotificationSettingsBuilder {
     fn as_ref(&self) -> &ChatNotificationSettings {
         &self.inner
     }

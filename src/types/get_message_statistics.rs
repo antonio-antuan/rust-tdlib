@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns detailed statistics about a message. Can be used only if Message.can_get_statistics == true
+/// Returns detailed statistics about a message. Can be used only if message.can_get_statistics == true
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetMessageStatistics {
     #[doc(hidden)]
@@ -11,10 +11,16 @@ pub struct GetMessageStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
     /// Pass true if a dark theme is used by the application
+
+    #[serde(default)]
     is_dark: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +41,16 @@ impl RObject for GetMessageStatistics {
 impl RFunction for GetMessageStatistics {}
 
 impl GetMessageStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageStatisticsBuilder {
+    pub fn builder() -> GetMessageStatisticsBuilder {
         let mut inner = GetMessageStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageStatistics".to_string();
 
-        RTDGetMessageStatisticsBuilder { inner }
+        GetMessageStatisticsBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -61,11 +67,14 @@ impl GetMessageStatistics {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageStatisticsBuilder {
+pub struct GetMessageStatisticsBuilder {
     inner: GetMessageStatistics,
 }
 
-impl RTDGetMessageStatisticsBuilder {
+#[deprecated]
+pub type RTDGetMessageStatisticsBuilder = GetMessageStatisticsBuilder;
+
+impl GetMessageStatisticsBuilder {
     pub fn build(&self) -> GetMessageStatistics {
         self.inner.clone()
     }
@@ -92,7 +101,7 @@ impl AsRef<GetMessageStatistics> for GetMessageStatistics {
     }
 }
 
-impl AsRef<GetMessageStatistics> for RTDGetMessageStatisticsBuilder {
+impl AsRef<GetMessageStatistics> for GetMessageStatisticsBuilder {
     fn as_ref(&self) -> &GetMessageStatistics {
         &self.inner
     }

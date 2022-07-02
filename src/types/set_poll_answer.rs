@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct SetPollAnswer {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the poll belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message containing the poll
+
+    #[serde(default)]
     message_id: i64,
     /// 0-based identifiers of answer options, chosen by the user. User can choose more than 1 answer option only is the poll allows multiple answers
+
+    #[serde(default)]
     option_ids: Vec<i32>,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +41,16 @@ impl RObject for SetPollAnswer {
 impl RFunction for SetPollAnswer {}
 
 impl SetPollAnswer {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetPollAnswerBuilder {
+    pub fn builder() -> SetPollAnswerBuilder {
         let mut inner = SetPollAnswer::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setPollAnswer".to_string();
 
-        RTDSetPollAnswerBuilder { inner }
+        SetPollAnswerBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -61,11 +67,14 @@ impl SetPollAnswer {
 }
 
 #[doc(hidden)]
-pub struct RTDSetPollAnswerBuilder {
+pub struct SetPollAnswerBuilder {
     inner: SetPollAnswer,
 }
 
-impl RTDSetPollAnswerBuilder {
+#[deprecated]
+pub type RTDSetPollAnswerBuilder = SetPollAnswerBuilder;
+
+impl SetPollAnswerBuilder {
     pub fn build(&self) -> SetPollAnswer {
         self.inner.clone()
     }
@@ -92,7 +101,7 @@ impl AsRef<SetPollAnswer> for SetPollAnswer {
     }
 }
 
-impl AsRef<SetPollAnswer> for RTDSetPollAnswerBuilder {
+impl AsRef<SetPollAnswer> for SetPollAnswerBuilder {
     fn as_ref(&self) -> &SetPollAnswer {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct EmailAddressAuthenticationCodeInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pattern of the email address to which an authentication code was sent
+
+    #[serde(default)]
     email_address_pattern: String,
     /// Length of the code; 0 if unknown
+
+    #[serde(default)]
     length: i32,
 }
 
@@ -28,14 +32,14 @@ impl RObject for EmailAddressAuthenticationCodeInfo {
 }
 
 impl EmailAddressAuthenticationCodeInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDEmailAddressAuthenticationCodeInfoBuilder {
+    pub fn builder() -> EmailAddressAuthenticationCodeInfoBuilder {
         let mut inner = EmailAddressAuthenticationCodeInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDEmailAddressAuthenticationCodeInfoBuilder { inner }
+        EmailAddressAuthenticationCodeInfoBuilder { inner }
     }
 
     pub fn email_address_pattern(&self) -> &String {
@@ -48,11 +52,14 @@ impl EmailAddressAuthenticationCodeInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDEmailAddressAuthenticationCodeInfoBuilder {
+pub struct EmailAddressAuthenticationCodeInfoBuilder {
     inner: EmailAddressAuthenticationCodeInfo,
 }
 
-impl RTDEmailAddressAuthenticationCodeInfoBuilder {
+#[deprecated]
+pub type RTDEmailAddressAuthenticationCodeInfoBuilder = EmailAddressAuthenticationCodeInfoBuilder;
+
+impl EmailAddressAuthenticationCodeInfoBuilder {
     pub fn build(&self) -> EmailAddressAuthenticationCodeInfo {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<EmailAddressAuthenticationCodeInfo> for EmailAddressAuthenticationCod
     }
 }
 
-impl AsRef<EmailAddressAuthenticationCodeInfo> for RTDEmailAddressAuthenticationCodeInfoBuilder {
+impl AsRef<EmailAddressAuthenticationCodeInfo> for EmailAddressAuthenticationCodeInfoBuilder {
     fn as_ref(&self) -> &EmailAddressAuthenticationCodeInfo {
         &self.inner
     }

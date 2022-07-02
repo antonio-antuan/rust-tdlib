@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the password for the user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
+/// Changes the password for the current user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetPassword {
     #[doc(hidden)]
@@ -11,14 +11,24 @@ pub struct SetPassword {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Previous password of the user
+
+    #[serde(default)]
     old_password: String,
     /// New password of the user; may be empty to remove the password
+
+    #[serde(default)]
     new_password: String,
     /// New password hint; may be empty
+
+    #[serde(default)]
     new_hint: String,
-    /// Pass true if the recovery email address should be changed
+    /// Pass true if the recovery email address must be changed
+
+    #[serde(default)]
     set_recovery_email_address: bool,
     /// New recovery email address; may be empty
+
+    #[serde(default)]
     new_recovery_email_address: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -39,16 +49,16 @@ impl RObject for SetPassword {
 impl RFunction for SetPassword {}
 
 impl SetPassword {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetPasswordBuilder {
+    pub fn builder() -> SetPasswordBuilder {
         let mut inner = SetPassword::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setPassword".to_string();
 
-        RTDSetPasswordBuilder { inner }
+        SetPasswordBuilder { inner }
     }
 
     pub fn old_password(&self) -> &String {
@@ -73,11 +83,14 @@ impl SetPassword {
 }
 
 #[doc(hidden)]
-pub struct RTDSetPasswordBuilder {
+pub struct SetPasswordBuilder {
     inner: SetPassword,
 }
 
-impl RTDSetPasswordBuilder {
+#[deprecated]
+pub type RTDSetPasswordBuilder = SetPasswordBuilder;
+
+impl SetPasswordBuilder {
     pub fn build(&self) -> SetPassword {
         self.inner.clone()
     }
@@ -117,7 +130,7 @@ impl AsRef<SetPassword> for SetPassword {
     }
 }
 
-impl AsRef<SetPassword> for RTDSetPasswordBuilder {
+impl AsRef<SetPassword> for SetPasswordBuilder {
     fn as_ref(&self) -> &SetPassword {
         &self.inner
     }

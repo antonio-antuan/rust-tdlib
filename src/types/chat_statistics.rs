@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,19 +14,13 @@ pub enum ChatStatistics {
     #[doc(hidden)]
     _Default,
     /// A detailed statistics about a channel chat
-    #[serde(rename(
-        serialize = "chatStatisticsChannel",
-        deserialize = "chatStatisticsChannel"
-    ))]
+    #[serde(rename(deserialize = "chatStatisticsChannel"))]
     Channel(ChatStatisticsChannel),
     /// A detailed statistics about a supergroup chat
-    #[serde(rename(
-        serialize = "chatStatisticsSupergroup",
-        deserialize = "chatStatisticsSupergroup"
-    ))]
+    #[serde(rename(deserialize = "chatStatisticsSupergroup"))]
     Supergroup(ChatStatisticsSupergroup),
-    /// Returns detailed statistics about a chat. Currently this method can be used only for supergroups and channels. Can be used only if SupergroupFullInfo.can_get_statistics == true
-    #[serde(rename(serialize = "getChatStatistics", deserialize = "getChatStatistics"))]
+    /// Returns detailed statistics about a chat. Currently, this method can be used only for supergroups and channels. Can be used only if supergroupFullInfo.can_get_statistics == true
+    #[serde(rename(deserialize = "getChatStatistics"))]
     GetChatStatistics(GetChatStatistics),
 }
 
@@ -60,7 +54,7 @@ impl RObject for ChatStatistics {
 }
 
 impl ChatStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -92,6 +86,8 @@ pub struct ChatStatisticsChannel {
     /// Mean number of times the recently sent messages was shared
     mean_share_count: StatisticalValue,
     /// A percentage of users with enabled notifications for the chat
+
+    #[serde(default)]
     enabled_notifications_percentage: f32,
     /// A graph containing number of members in the chat
 
@@ -130,6 +126,8 @@ pub struct ChatStatisticsChannel {
     #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     instant_view_interaction_graph: StatisticalGraph,
     /// Detailed statistics about number of views and shares of recently sent messages
+
+    #[serde(default)]
     recent_message_interactions: Vec<ChatStatisticsMessageInteractionInfo>,
 }
 
@@ -147,14 +145,14 @@ impl RObject for ChatStatisticsChannel {
 impl TDChatStatistics for ChatStatisticsChannel {}
 
 impl ChatStatisticsChannel {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatStatisticsChannelBuilder {
+    pub fn builder() -> ChatStatisticsChannelBuilder {
         let mut inner = ChatStatisticsChannel::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatStatisticsChannelBuilder { inner }
+        ChatStatisticsChannelBuilder { inner }
     }
 
     pub fn period(&self) -> &DateRange {
@@ -219,11 +217,14 @@ impl ChatStatisticsChannel {
 }
 
 #[doc(hidden)]
-pub struct RTDChatStatisticsChannelBuilder {
+pub struct ChatStatisticsChannelBuilder {
     inner: ChatStatisticsChannel,
 }
 
-impl RTDChatStatisticsChannelBuilder {
+#[deprecated]
+pub type RTDChatStatisticsChannelBuilder = ChatStatisticsChannelBuilder;
+
+impl ChatStatisticsChannelBuilder {
     pub fn build(&self) -> ChatStatisticsChannel {
         self.inner.clone()
     }
@@ -337,7 +338,7 @@ impl AsRef<ChatStatisticsChannel> for ChatStatisticsChannel {
     }
 }
 
-impl AsRef<ChatStatisticsChannel> for RTDChatStatisticsChannelBuilder {
+impl AsRef<ChatStatisticsChannel> for ChatStatisticsChannelBuilder {
     fn as_ref(&self) -> &ChatStatisticsChannel {
         &self.inner
     }
@@ -394,10 +395,16 @@ pub struct ChatStatisticsSupergroup {
     #[serde(skip_serializing_if = "StatisticalGraph::_is_default")]
     week_graph: StatisticalGraph,
     /// List of users sent most messages in the last week
+
+    #[serde(default)]
     top_senders: Vec<ChatStatisticsMessageSenderInfo>,
     /// List of most active administrators in the last week
+
+    #[serde(default)]
     top_administrators: Vec<ChatStatisticsAdministratorActionsInfo>,
     /// List of most active inviters of new members in the last week
+
+    #[serde(default)]
     top_inviters: Vec<ChatStatisticsInviterInfo>,
 }
 
@@ -415,14 +422,14 @@ impl RObject for ChatStatisticsSupergroup {
 impl TDChatStatistics for ChatStatisticsSupergroup {}
 
 impl ChatStatisticsSupergroup {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatStatisticsSupergroupBuilder {
+    pub fn builder() -> ChatStatisticsSupergroupBuilder {
         let mut inner = ChatStatisticsSupergroup::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatStatisticsSupergroupBuilder { inner }
+        ChatStatisticsSupergroupBuilder { inner }
     }
 
     pub fn period(&self) -> &DateRange {
@@ -491,11 +498,14 @@ impl ChatStatisticsSupergroup {
 }
 
 #[doc(hidden)]
-pub struct RTDChatStatisticsSupergroupBuilder {
+pub struct ChatStatisticsSupergroupBuilder {
     inner: ChatStatisticsSupergroup,
 }
 
-impl RTDChatStatisticsSupergroupBuilder {
+#[deprecated]
+pub type RTDChatStatisticsSupergroupBuilder = ChatStatisticsSupergroupBuilder;
+
+impl ChatStatisticsSupergroupBuilder {
     pub fn build(&self) -> ChatStatisticsSupergroup {
         self.inner.clone()
     }
@@ -599,7 +609,7 @@ impl AsRef<ChatStatisticsSupergroup> for ChatStatisticsSupergroup {
     }
 }
 
-impl AsRef<ChatStatisticsSupergroup> for RTDChatStatisticsSupergroupBuilder {
+impl AsRef<ChatStatisticsSupergroup> for ChatStatisticsSupergroupBuilder {
     fn as_ref(&self) -> &ChatStatisticsSupergroup {
         &self.inner
     }

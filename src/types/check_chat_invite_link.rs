@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,7 +10,9 @@ pub struct CheckChatInviteLink {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Invite link to be checked; should begin with "https://t.me/joinchat/", "https://telegram.me/joinchat/", or "https://telegram.dog/joinchat/"
+    /// Invite link to be checked
+
+    #[serde(default)]
     invite_link: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for CheckChatInviteLink {
 impl RFunction for CheckChatInviteLink {}
 
 impl CheckChatInviteLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCheckChatInviteLinkBuilder {
+    pub fn builder() -> CheckChatInviteLinkBuilder {
         let mut inner = CheckChatInviteLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "checkChatInviteLink".to_string();
 
-        RTDCheckChatInviteLinkBuilder { inner }
+        CheckChatInviteLinkBuilder { inner }
     }
 
     pub fn invite_link(&self) -> &String {
@@ -49,11 +51,14 @@ impl CheckChatInviteLink {
 }
 
 #[doc(hidden)]
-pub struct RTDCheckChatInviteLinkBuilder {
+pub struct CheckChatInviteLinkBuilder {
     inner: CheckChatInviteLink,
 }
 
-impl RTDCheckChatInviteLinkBuilder {
+#[deprecated]
+pub type RTDCheckChatInviteLinkBuilder = CheckChatInviteLinkBuilder;
+
+impl CheckChatInviteLinkBuilder {
     pub fn build(&self) -> CheckChatInviteLink {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<CheckChatInviteLink> for CheckChatInviteLink {
     }
 }
 
-impl AsRef<CheckChatInviteLink> for RTDCheckChatInviteLinkBuilder {
+impl AsRef<CheckChatInviteLink> for CheckChatInviteLinkBuilder {
     fn as_ref(&self) -> &CheckChatInviteLink {
         &self.inner
     }

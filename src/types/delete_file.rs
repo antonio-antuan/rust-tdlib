@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct DeleteFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file to delete
+
+    #[serde(default)]
     file_id: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for DeleteFile {
 impl RFunction for DeleteFile {}
 
 impl DeleteFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteFileBuilder {
+    pub fn builder() -> DeleteFileBuilder {
         let mut inner = DeleteFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteFile".to_string();
 
-        RTDDeleteFileBuilder { inner }
+        DeleteFileBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -49,11 +51,14 @@ impl DeleteFile {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteFileBuilder {
+pub struct DeleteFileBuilder {
     inner: DeleteFile,
 }
 
-impl RTDDeleteFileBuilder {
+#[deprecated]
+pub type RTDDeleteFileBuilder = DeleteFileBuilder;
+
+impl DeleteFileBuilder {
     pub fn build(&self) -> DeleteFile {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<DeleteFile> for DeleteFile {
     }
 }
 
-impl AsRef<DeleteFile> for RTDDeleteFileBuilder {
+impl AsRef<DeleteFile> for DeleteFileBuilder {
     fn as_ref(&self) -> &DeleteFile {
         &self.inner
     }

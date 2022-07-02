@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -35,16 +35,16 @@ impl RObject for SetScopeNotificationSettings {
 impl RFunction for SetScopeNotificationSettings {}
 
 impl SetScopeNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetScopeNotificationSettingsBuilder {
+    pub fn builder() -> SetScopeNotificationSettingsBuilder {
         let mut inner = SetScopeNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setScopeNotificationSettings".to_string();
 
-        RTDSetScopeNotificationSettingsBuilder { inner }
+        SetScopeNotificationSettingsBuilder { inner }
     }
 
     pub fn scope(&self) -> &NotificationSettingsScope {
@@ -57,11 +57,14 @@ impl SetScopeNotificationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDSetScopeNotificationSettingsBuilder {
+pub struct SetScopeNotificationSettingsBuilder {
     inner: SetScopeNotificationSettings,
 }
 
-impl RTDSetScopeNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDSetScopeNotificationSettingsBuilder = SetScopeNotificationSettingsBuilder;
+
+impl SetScopeNotificationSettingsBuilder {
     pub fn build(&self) -> SetScopeNotificationSettings {
         self.inner.clone()
     }
@@ -86,7 +89,7 @@ impl AsRef<SetScopeNotificationSettings> for SetScopeNotificationSettings {
     }
 }
 
-impl AsRef<SetScopeNotificationSettings> for RTDSetScopeNotificationSettingsBuilder {
+impl AsRef<SetScopeNotificationSettings> for SetScopeNotificationSettingsBuilder {
     fn as_ref(&self) -> &SetScopeNotificationSettings {
         &self.inner
     }

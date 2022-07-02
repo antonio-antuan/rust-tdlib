@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct TestString {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// String
+
+    #[serde(default)]
     value: String,
 }
 
@@ -26,14 +28,14 @@ impl RObject for TestString {
 }
 
 impl TestString {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestStringBuilder {
+    pub fn builder() -> TestStringBuilder {
         let mut inner = TestString::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTestStringBuilder { inner }
+        TestStringBuilder { inner }
     }
 
     pub fn value(&self) -> &String {
@@ -42,11 +44,14 @@ impl TestString {
 }
 
 #[doc(hidden)]
-pub struct RTDTestStringBuilder {
+pub struct TestStringBuilder {
     inner: TestString,
 }
 
-impl RTDTestStringBuilder {
+#[deprecated]
+pub type RTDTestStringBuilder = TestStringBuilder;
+
+impl TestStringBuilder {
     pub fn build(&self) -> TestString {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<TestString> for TestString {
     }
 }
 
-impl AsRef<TestString> for RTDTestStringBuilder {
+impl AsRef<TestString> for TestStringBuilder {
     fn as_ref(&self) -> &TestString {
         &self.inner
     }

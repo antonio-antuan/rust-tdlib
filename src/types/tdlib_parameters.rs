@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,34 +11,64 @@ pub struct TdlibParameters {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If set to true, the Telegram test environment will be used instead of the production environment
+
+    #[serde(default)]
     use_test_dc: bool,
     /// The path to the directory for the persistent database; if empty, the current working directory will be used
+
+    #[serde(default)]
     database_directory: String,
     /// The path to the directory for storing files; if empty, database_directory will be used
+
+    #[serde(default)]
     files_directory: String,
     /// If set to true, information about downloaded and uploaded files will be saved between application restarts
+
+    #[serde(default)]
     use_file_database: bool,
     /// If set to true, the library will maintain a cache of users, basic groups, supergroups, channels and secret chats. Implies use_file_database
+
+    #[serde(default)]
     use_chat_info_database: bool,
     /// If set to true, the library will maintain a cache of chats and messages. Implies use_chat_info_database
+
+    #[serde(default)]
     use_message_database: bool,
     /// If set to true, support for secret chats will be enabled
+
+    #[serde(default)]
     use_secret_chats: bool,
     /// Application identifier for Telegram API access, which can be obtained at https://my.telegram.org
+
+    #[serde(default)]
     api_id: i32,
     /// Application identifier hash for Telegram API access, which can be obtained at https://my.telegram.org
+
+    #[serde(default)]
     api_hash: String,
     /// IETF language tag of the user's operating system language; must be non-empty
+
+    #[serde(default)]
     system_language_code: String,
     /// Model of the device the application is being run on; must be non-empty
+
+    #[serde(default)]
     device_model: String,
     /// Version of the operating system the application is being run on. If empty, the version is automatically detected by TDLib
+
+    #[serde(default)]
     system_version: String,
     /// Application version; must be non-empty
+
+    #[serde(default)]
     application_version: String,
     /// If set to true, old files will automatically be deleted
+
+    #[serde(default)]
     enable_storage_optimizer: bool,
     /// If set to true, original file names will be ignored. Otherwise, downloaded files will be saved under names as close as possible to the original name
+
+    #[serde(default)]
     ignore_file_names: bool,
 }
 
@@ -54,14 +84,14 @@ impl RObject for TdlibParameters {
 }
 
 impl TdlibParameters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTdlibParametersBuilder {
+    pub fn builder() -> TdlibParametersBuilder {
         let mut inner = TdlibParameters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTdlibParametersBuilder { inner }
+        TdlibParametersBuilder { inner }
     }
 
     pub fn use_test_dc(&self) -> bool {
@@ -126,11 +156,14 @@ impl TdlibParameters {
 }
 
 #[doc(hidden)]
-pub struct RTDTdlibParametersBuilder {
+pub struct TdlibParametersBuilder {
     inner: TdlibParameters,
 }
 
-impl RTDTdlibParametersBuilder {
+#[deprecated]
+pub type RTDTdlibParametersBuilder = TdlibParametersBuilder;
+
+impl TdlibParametersBuilder {
     pub fn build(&self) -> TdlibParameters {
         self.inner.clone()
     }
@@ -217,7 +250,7 @@ impl AsRef<TdlibParameters> for TdlibParameters {
     }
 }
 
-impl AsRef<TdlibParameters> for RTDTdlibParametersBuilder {
+impl AsRef<TdlibParameters> for TdlibParametersBuilder {
     fn as_ref(&self) -> &TdlibParameters {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetTextEntities {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The text in which to look for entites
+
+    #[serde(default)]
     text: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetTextEntities {
 impl RFunction for GetTextEntities {}
 
 impl GetTextEntities {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetTextEntitiesBuilder {
+    pub fn builder() -> GetTextEntitiesBuilder {
         let mut inner = GetTextEntities::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getTextEntities".to_string();
 
-        RTDGetTextEntitiesBuilder { inner }
+        GetTextEntitiesBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -49,11 +51,14 @@ impl GetTextEntities {
 }
 
 #[doc(hidden)]
-pub struct RTDGetTextEntitiesBuilder {
+pub struct GetTextEntitiesBuilder {
     inner: GetTextEntities,
 }
 
-impl RTDGetTextEntitiesBuilder {
+#[deprecated]
+pub type RTDGetTextEntitiesBuilder = GetTextEntitiesBuilder;
+
+impl GetTextEntitiesBuilder {
     pub fn build(&self) -> GetTextEntities {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetTextEntities> for GetTextEntities {
     }
 }
 
-impl AsRef<GetTextEntities> for RTDGetTextEntitiesBuilder {
+impl AsRef<GetTextEntities> for GetTextEntitiesBuilder {
     fn as_ref(&self) -> &GetTextEntities {
         &self.inner
     }

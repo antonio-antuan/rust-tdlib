@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct KeyboardButton {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text of the button
+
+    #[serde(default)]
     text: String,
     /// Type of the button
 
@@ -31,14 +33,14 @@ impl RObject for KeyboardButton {
 }
 
 impl KeyboardButton {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDKeyboardButtonBuilder {
+    pub fn builder() -> KeyboardButtonBuilder {
         let mut inner = KeyboardButton::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDKeyboardButtonBuilder { inner }
+        KeyboardButtonBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -51,11 +53,14 @@ impl KeyboardButton {
 }
 
 #[doc(hidden)]
-pub struct RTDKeyboardButtonBuilder {
+pub struct KeyboardButtonBuilder {
     inner: KeyboardButton,
 }
 
-impl RTDKeyboardButtonBuilder {
+#[deprecated]
+pub type RTDKeyboardButtonBuilder = KeyboardButtonBuilder;
+
+impl KeyboardButtonBuilder {
     pub fn build(&self) -> KeyboardButton {
         self.inner.clone()
     }
@@ -77,7 +82,7 @@ impl AsRef<KeyboardButton> for KeyboardButton {
     }
 }
 
-impl AsRef<KeyboardButton> for RTDKeyboardButtonBuilder {
+impl AsRef<KeyboardButton> for KeyboardButtonBuilder {
     fn as_ref(&self) -> &KeyboardButton {
         &self.inner
     }

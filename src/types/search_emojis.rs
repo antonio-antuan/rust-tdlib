@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct SearchEmojis {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Text to search for
+
+    #[serde(default)]
     text: String,
     /// True, if only emojis, which exactly match text needs to be returned
+
+    #[serde(default)]
     exact_match: bool,
     /// List of possible IETF language tags of the user's input language; may be empty if unknown
+
+    #[serde(default)]
     input_language_codes: Vec<String>,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +41,16 @@ impl RObject for SearchEmojis {
 impl RFunction for SearchEmojis {}
 
 impl SearchEmojis {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchEmojisBuilder {
+    pub fn builder() -> SearchEmojisBuilder {
         let mut inner = SearchEmojis::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchEmojis".to_string();
 
-        RTDSearchEmojisBuilder { inner }
+        SearchEmojisBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -61,11 +67,14 @@ impl SearchEmojis {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchEmojisBuilder {
+pub struct SearchEmojisBuilder {
     inner: SearchEmojis,
 }
 
-impl RTDSearchEmojisBuilder {
+#[deprecated]
+pub type RTDSearchEmojisBuilder = SearchEmojisBuilder;
+
+impl SearchEmojisBuilder {
     pub fn build(&self) -> SearchEmojis {
         self.inner.clone()
     }
@@ -92,7 +101,7 @@ impl AsRef<SearchEmojis> for SearchEmojis {
     }
 }
 
-impl AsRef<SearchEmojis> for RTDSearchEmojisBuilder {
+impl AsRef<SearchEmojis> for SearchEmojisBuilder {
     fn as_ref(&self) -> &SearchEmojis {
         &self.inner
     }

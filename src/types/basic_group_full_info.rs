@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,13 +13,23 @@ pub struct BasicGroupFullInfo {
     /// Chat photo; may be null
     photo: Option<ChatPhoto>,
     /// Contains full information about a basic group
+
+    #[serde(default)]
     description: String,
     /// User identifier of the creator of the group; 0 if unknown
-    creator_user_id: i32,
+
+    #[serde(default)]
+    creator_user_id: i64,
     /// Group members
+
+    #[serde(default)]
     members: Vec<ChatMember>,
-    /// Invite link for this group; available only after it has been generated at least once and only for the group creator
-    invite_link: String,
+    /// Primary invite link for this group; may be null. For chat administrators with can_invite_users right only. Updated only after the basic group is opened
+    invite_link: Option<ChatInviteLink>,
+    /// List of commands of bots in the group
+
+    #[serde(default)]
+    bot_commands: Vec<BotCommands>,
 }
 
 impl RObject for BasicGroupFullInfo {
@@ -34,14 +44,14 @@ impl RObject for BasicGroupFullInfo {
 }
 
 impl BasicGroupFullInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBasicGroupFullInfoBuilder {
+    pub fn builder() -> BasicGroupFullInfoBuilder {
         let mut inner = BasicGroupFullInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBasicGroupFullInfoBuilder { inner }
+        BasicGroupFullInfoBuilder { inner }
     }
 
     pub fn photo(&self) -> &Option<ChatPhoto> {
@@ -52,7 +62,7 @@ impl BasicGroupFullInfo {
         &self.description
     }
 
-    pub fn creator_user_id(&self) -> i32 {
+    pub fn creator_user_id(&self) -> i64 {
         self.creator_user_id
     }
 
@@ -60,17 +70,24 @@ impl BasicGroupFullInfo {
         &self.members
     }
 
-    pub fn invite_link(&self) -> &String {
+    pub fn invite_link(&self) -> &Option<ChatInviteLink> {
         &self.invite_link
+    }
+
+    pub fn bot_commands(&self) -> &Vec<BotCommands> {
+        &self.bot_commands
     }
 }
 
 #[doc(hidden)]
-pub struct RTDBasicGroupFullInfoBuilder {
+pub struct BasicGroupFullInfoBuilder {
     inner: BasicGroupFullInfo,
 }
 
-impl RTDBasicGroupFullInfoBuilder {
+#[deprecated]
+pub type RTDBasicGroupFullInfoBuilder = BasicGroupFullInfoBuilder;
+
+impl BasicGroupFullInfoBuilder {
     pub fn build(&self) -> BasicGroupFullInfo {
         self.inner.clone()
     }
@@ -85,7 +102,7 @@ impl RTDBasicGroupFullInfoBuilder {
         self
     }
 
-    pub fn creator_user_id(&mut self, creator_user_id: i32) -> &mut Self {
+    pub fn creator_user_id(&mut self, creator_user_id: i64) -> &mut Self {
         self.inner.creator_user_id = creator_user_id;
         self
     }
@@ -95,8 +112,13 @@ impl RTDBasicGroupFullInfoBuilder {
         self
     }
 
-    pub fn invite_link<T: AsRef<str>>(&mut self, invite_link: T) -> &mut Self {
-        self.inner.invite_link = invite_link.as_ref().to_string();
+    pub fn invite_link<T: AsRef<ChatInviteLink>>(&mut self, invite_link: T) -> &mut Self {
+        self.inner.invite_link = Some(invite_link.as_ref().clone());
+        self
+    }
+
+    pub fn bot_commands(&mut self, bot_commands: Vec<BotCommands>) -> &mut Self {
+        self.inner.bot_commands = bot_commands;
         self
     }
 }
@@ -107,7 +129,7 @@ impl AsRef<BasicGroupFullInfo> for BasicGroupFullInfo {
     }
 }
 
-impl AsRef<BasicGroupFullInfo> for RTDBasicGroupFullInfoBuilder {
+impl AsRef<BasicGroupFullInfo> for BasicGroupFullInfoBuilder {
     fn as_ref(&self) -> &BasicGroupFullInfo {
         &self.inner
     }

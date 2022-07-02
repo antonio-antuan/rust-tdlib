@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct LabeledPricePart {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Label for this portion of the product price
+
+    #[serde(default)]
     label: String,
-    /// Currency amount in minimal quantity of the currency
+    /// Currency amount in the smallest units of the currency
+
+    #[serde(default)]
     amount: i64,
 }
 
@@ -28,14 +32,14 @@ impl RObject for LabeledPricePart {
 }
 
 impl LabeledPricePart {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDLabeledPricePartBuilder {
+    pub fn builder() -> LabeledPricePartBuilder {
         let mut inner = LabeledPricePart::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDLabeledPricePartBuilder { inner }
+        LabeledPricePartBuilder { inner }
     }
 
     pub fn label(&self) -> &String {
@@ -48,11 +52,14 @@ impl LabeledPricePart {
 }
 
 #[doc(hidden)]
-pub struct RTDLabeledPricePartBuilder {
+pub struct LabeledPricePartBuilder {
     inner: LabeledPricePart,
 }
 
-impl RTDLabeledPricePartBuilder {
+#[deprecated]
+pub type RTDLabeledPricePartBuilder = LabeledPricePartBuilder;
+
+impl LabeledPricePartBuilder {
     pub fn build(&self) -> LabeledPricePart {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<LabeledPricePart> for LabeledPricePart {
     }
 }
 
-impl AsRef<LabeledPricePart> for RTDLabeledPricePartBuilder {
+impl AsRef<LabeledPricePart> for LabeledPricePartBuilder {
     fn as_ref(&self) -> &LabeledPricePart {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct StopPoll {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the poll belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message containing the poll
+
+    #[serde(default)]
     message_id: i64,
-    /// The new message reply markup; for bots only
+    /// The new message reply markup; pass null if none; for bots only
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
@@ -37,16 +41,16 @@ impl RObject for StopPoll {
 impl RFunction for StopPoll {}
 
 impl StopPoll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDStopPollBuilder {
+    pub fn builder() -> StopPollBuilder {
         let mut inner = StopPoll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "stopPoll".to_string();
 
-        RTDStopPollBuilder { inner }
+        StopPollBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -63,11 +67,14 @@ impl StopPoll {
 }
 
 #[doc(hidden)]
-pub struct RTDStopPollBuilder {
+pub struct StopPollBuilder {
     inner: StopPoll,
 }
 
-impl RTDStopPollBuilder {
+#[deprecated]
+pub type RTDStopPollBuilder = StopPollBuilder;
+
+impl StopPollBuilder {
     pub fn build(&self) -> StopPoll {
         self.inner.clone()
     }
@@ -94,7 +101,7 @@ impl AsRef<StopPoll> for StopPoll {
     }
 }
 
-impl AsRef<StopPoll> for RTDStopPollBuilder {
+impl AsRef<StopPoll> for StopPollBuilder {
     fn as_ref(&self) -> &StopPoll {
         &self.inner
     }

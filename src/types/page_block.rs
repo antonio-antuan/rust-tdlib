@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,100 +14,91 @@ pub enum PageBlock {
     #[doc(hidden)]
     _Default,
     /// An invisible anchor on a page, which can be used in a URL to open the page from the specified anchor
-    #[serde(rename(serialize = "pageBlockAnchor", deserialize = "pageBlockAnchor"))]
+    #[serde(rename(deserialize = "pageBlockAnchor"))]
     Anchor(PageBlockAnchor),
     /// An animation
-    #[serde(rename(serialize = "pageBlockAnimation", deserialize = "pageBlockAnimation"))]
+    #[serde(rename(deserialize = "pageBlockAnimation"))]
     Animation(PageBlockAnimation),
     /// An audio file
-    #[serde(rename(serialize = "pageBlockAudio", deserialize = "pageBlockAudio"))]
+    #[serde(rename(deserialize = "pageBlockAudio"))]
     Audio(PageBlockAudio),
     /// The author and publishing date of a page
-    #[serde(rename(serialize = "pageBlockAuthorDate", deserialize = "pageBlockAuthorDate"))]
+    #[serde(rename(deserialize = "pageBlockAuthorDate"))]
     AuthorDate(PageBlockAuthorDate),
     /// A block quote
-    #[serde(rename(serialize = "pageBlockBlockQuote", deserialize = "pageBlockBlockQuote"))]
+    #[serde(rename(deserialize = "pageBlockBlockQuote"))]
     BlockQuote(PageBlockBlockQuote),
     /// A link to a chat
-    #[serde(rename(serialize = "pageBlockChatLink", deserialize = "pageBlockChatLink"))]
+    #[serde(rename(deserialize = "pageBlockChatLink"))]
     ChatLink(PageBlockChatLink),
     /// A collage
-    #[serde(rename(serialize = "pageBlockCollage", deserialize = "pageBlockCollage"))]
+    #[serde(rename(deserialize = "pageBlockCollage"))]
     Collage(PageBlockCollage),
     /// A page cover
-    #[serde(rename(serialize = "pageBlockCover", deserialize = "pageBlockCover"))]
+    #[serde(rename(deserialize = "pageBlockCover"))]
     Cover(PageBlockCover),
     /// A collapsible block
-    #[serde(rename(serialize = "pageBlockDetails", deserialize = "pageBlockDetails"))]
+    #[serde(rename(deserialize = "pageBlockDetails"))]
     Details(PageBlockDetails),
     /// An empty block separating a page
-    #[serde(rename(serialize = "pageBlockDivider", deserialize = "pageBlockDivider"))]
+    #[serde(rename(deserialize = "pageBlockDivider"))]
     Divider(PageBlockDivider),
     /// An embedded web page
-    #[serde(rename(serialize = "pageBlockEmbedded", deserialize = "pageBlockEmbedded"))]
+    #[serde(rename(deserialize = "pageBlockEmbedded"))]
     Embedded(PageBlockEmbedded),
     /// An embedded post
-    #[serde(rename(
-        serialize = "pageBlockEmbeddedPost",
-        deserialize = "pageBlockEmbeddedPost"
-    ))]
+    #[serde(rename(deserialize = "pageBlockEmbeddedPost"))]
     EmbeddedPost(PageBlockEmbeddedPost),
     /// The footer of a page
-    #[serde(rename(serialize = "pageBlockFooter", deserialize = "pageBlockFooter"))]
+    #[serde(rename(deserialize = "pageBlockFooter"))]
     Footer(PageBlockFooter),
     /// A header
-    #[serde(rename(serialize = "pageBlockHeader", deserialize = "pageBlockHeader"))]
+    #[serde(rename(deserialize = "pageBlockHeader"))]
     Header(PageBlockHeader),
     /// A kicker
-    #[serde(rename(serialize = "pageBlockKicker", deserialize = "pageBlockKicker"))]
+    #[serde(rename(deserialize = "pageBlockKicker"))]
     Kicker(PageBlockKicker),
     /// A list of data blocks
-    #[serde(rename(serialize = "pageBlockList", deserialize = "pageBlockList"))]
+    #[serde(rename(deserialize = "pageBlockList"))]
     List(PageBlockList),
     /// A map
-    #[serde(rename(serialize = "pageBlockMap", deserialize = "pageBlockMap"))]
+    #[serde(rename(deserialize = "pageBlockMap"))]
     Map(PageBlockMap),
     /// A text paragraph
-    #[serde(rename(serialize = "pageBlockParagraph", deserialize = "pageBlockParagraph"))]
+    #[serde(rename(deserialize = "pageBlockParagraph"))]
     Paragraph(PageBlockParagraph),
     /// A photo
-    #[serde(rename(serialize = "pageBlockPhoto", deserialize = "pageBlockPhoto"))]
+    #[serde(rename(deserialize = "pageBlockPhoto"))]
     Photo(PageBlockPhoto),
     /// A preformatted text paragraph
-    #[serde(rename(
-        serialize = "pageBlockPreformatted",
-        deserialize = "pageBlockPreformatted"
-    ))]
+    #[serde(rename(deserialize = "pageBlockPreformatted"))]
     Preformatted(PageBlockPreformatted),
     /// A pull quote
-    #[serde(rename(serialize = "pageBlockPullQuote", deserialize = "pageBlockPullQuote"))]
+    #[serde(rename(deserialize = "pageBlockPullQuote"))]
     PullQuote(PageBlockPullQuote),
     /// Related articles
-    #[serde(rename(
-        serialize = "pageBlockRelatedArticles",
-        deserialize = "pageBlockRelatedArticles"
-    ))]
+    #[serde(rename(deserialize = "pageBlockRelatedArticles"))]
     RelatedArticles(PageBlockRelatedArticles),
     /// A slideshow
-    #[serde(rename(serialize = "pageBlockSlideshow", deserialize = "pageBlockSlideshow"))]
+    #[serde(rename(deserialize = "pageBlockSlideshow"))]
     Slideshow(PageBlockSlideshow),
     /// A subheader
-    #[serde(rename(serialize = "pageBlockSubheader", deserialize = "pageBlockSubheader"))]
+    #[serde(rename(deserialize = "pageBlockSubheader"))]
     Subheader(PageBlockSubheader),
     /// The subtitle of a page
-    #[serde(rename(serialize = "pageBlockSubtitle", deserialize = "pageBlockSubtitle"))]
+    #[serde(rename(deserialize = "pageBlockSubtitle"))]
     Subtitle(PageBlockSubtitle),
     /// A table
-    #[serde(rename(serialize = "pageBlockTable", deserialize = "pageBlockTable"))]
+    #[serde(rename(deserialize = "pageBlockTable"))]
     Table(PageBlockTable),
     /// The title of a page
-    #[serde(rename(serialize = "pageBlockTitle", deserialize = "pageBlockTitle"))]
+    #[serde(rename(deserialize = "pageBlockTitle"))]
     Title(PageBlockTitle),
     /// A video
-    #[serde(rename(serialize = "pageBlockVideo", deserialize = "pageBlockVideo"))]
+    #[serde(rename(deserialize = "pageBlockVideo"))]
     Video(PageBlockVideo),
     /// A voice note
-    #[serde(rename(serialize = "pageBlockVoiceNote", deserialize = "pageBlockVoiceNote"))]
+    #[serde(rename(deserialize = "pageBlockVoiceNote"))]
     VoiceNote(PageBlockVoiceNote),
 }
 
@@ -193,7 +184,7 @@ impl RObject for PageBlock {
 }
 
 impl PageBlock {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -217,6 +208,8 @@ pub struct PageBlockAnchor {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Name of the anchor
+
+    #[serde(default)]
     name: String,
 }
 
@@ -234,14 +227,14 @@ impl RObject for PageBlockAnchor {
 impl TDPageBlock for PageBlockAnchor {}
 
 impl PageBlockAnchor {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockAnchorBuilder {
+    pub fn builder() -> PageBlockAnchorBuilder {
         let mut inner = PageBlockAnchor::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockAnchorBuilder { inner }
+        PageBlockAnchorBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -250,11 +243,14 @@ impl PageBlockAnchor {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockAnchorBuilder {
+pub struct PageBlockAnchorBuilder {
     inner: PageBlockAnchor,
 }
 
-impl RTDPageBlockAnchorBuilder {
+#[deprecated]
+pub type RTDPageBlockAnchorBuilder = PageBlockAnchorBuilder;
+
+impl PageBlockAnchorBuilder {
     pub fn build(&self) -> PageBlockAnchor {
         self.inner.clone()
     }
@@ -271,7 +267,7 @@ impl AsRef<PageBlockAnchor> for PageBlockAnchor {
     }
 }
 
-impl AsRef<PageBlockAnchor> for RTDPageBlockAnchorBuilder {
+impl AsRef<PageBlockAnchor> for PageBlockAnchorBuilder {
     fn as_ref(&self) -> &PageBlockAnchor {
         &self.inner
     }
@@ -289,7 +285,9 @@ pub struct PageBlockAnimation {
     animation: Option<Animation>,
     /// Animation caption
     caption: PageBlockCaption,
-    /// True, if the animation should be played automatically
+    /// True, if the animation must be played automatically
+
+    #[serde(default)]
     need_autoplay: bool,
 }
 
@@ -307,14 +305,14 @@ impl RObject for PageBlockAnimation {
 impl TDPageBlock for PageBlockAnimation {}
 
 impl PageBlockAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockAnimationBuilder {
+    pub fn builder() -> PageBlockAnimationBuilder {
         let mut inner = PageBlockAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockAnimationBuilder { inner }
+        PageBlockAnimationBuilder { inner }
     }
 
     pub fn animation(&self) -> &Option<Animation> {
@@ -331,11 +329,14 @@ impl PageBlockAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockAnimationBuilder {
+pub struct PageBlockAnimationBuilder {
     inner: PageBlockAnimation,
 }
 
-impl RTDPageBlockAnimationBuilder {
+#[deprecated]
+pub type RTDPageBlockAnimationBuilder = PageBlockAnimationBuilder;
+
+impl PageBlockAnimationBuilder {
     pub fn build(&self) -> PageBlockAnimation {
         self.inner.clone()
     }
@@ -362,7 +363,7 @@ impl AsRef<PageBlockAnimation> for PageBlockAnimation {
     }
 }
 
-impl AsRef<PageBlockAnimation> for RTDPageBlockAnimationBuilder {
+impl AsRef<PageBlockAnimation> for PageBlockAnimationBuilder {
     fn as_ref(&self) -> &PageBlockAnimation {
         &self.inner
     }
@@ -396,14 +397,14 @@ impl RObject for PageBlockAudio {
 impl TDPageBlock for PageBlockAudio {}
 
 impl PageBlockAudio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockAudioBuilder {
+    pub fn builder() -> PageBlockAudioBuilder {
         let mut inner = PageBlockAudio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockAudioBuilder { inner }
+        PageBlockAudioBuilder { inner }
     }
 
     pub fn audio(&self) -> &Option<Audio> {
@@ -416,11 +417,14 @@ impl PageBlockAudio {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockAudioBuilder {
+pub struct PageBlockAudioBuilder {
     inner: PageBlockAudio,
 }
 
-impl RTDPageBlockAudioBuilder {
+#[deprecated]
+pub type RTDPageBlockAudioBuilder = PageBlockAudioBuilder;
+
+impl PageBlockAudioBuilder {
     pub fn build(&self) -> PageBlockAudio {
         self.inner.clone()
     }
@@ -442,7 +446,7 @@ impl AsRef<PageBlockAudio> for PageBlockAudio {
     }
 }
 
-impl AsRef<PageBlockAudio> for RTDPageBlockAudioBuilder {
+impl AsRef<PageBlockAudio> for PageBlockAudioBuilder {
     fn as_ref(&self) -> &PageBlockAudio {
         &self.inner
     }
@@ -461,6 +465,8 @@ pub struct PageBlockAuthorDate {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     author: RichText,
     /// Point in time (Unix timestamp) when the article was published; 0 if unknown
+
+    #[serde(default)]
     publish_date: i32,
 }
 
@@ -478,14 +484,14 @@ impl RObject for PageBlockAuthorDate {
 impl TDPageBlock for PageBlockAuthorDate {}
 
 impl PageBlockAuthorDate {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockAuthorDateBuilder {
+    pub fn builder() -> PageBlockAuthorDateBuilder {
         let mut inner = PageBlockAuthorDate::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockAuthorDateBuilder { inner }
+        PageBlockAuthorDateBuilder { inner }
     }
 
     pub fn author(&self) -> &RichText {
@@ -498,11 +504,14 @@ impl PageBlockAuthorDate {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockAuthorDateBuilder {
+pub struct PageBlockAuthorDateBuilder {
     inner: PageBlockAuthorDate,
 }
 
-impl RTDPageBlockAuthorDateBuilder {
+#[deprecated]
+pub type RTDPageBlockAuthorDateBuilder = PageBlockAuthorDateBuilder;
+
+impl PageBlockAuthorDateBuilder {
     pub fn build(&self) -> PageBlockAuthorDate {
         self.inner.clone()
     }
@@ -524,7 +533,7 @@ impl AsRef<PageBlockAuthorDate> for PageBlockAuthorDate {
     }
 }
 
-impl AsRef<PageBlockAuthorDate> for RTDPageBlockAuthorDateBuilder {
+impl AsRef<PageBlockAuthorDate> for PageBlockAuthorDateBuilder {
     fn as_ref(&self) -> &PageBlockAuthorDate {
         &self.inner
     }
@@ -562,14 +571,14 @@ impl RObject for PageBlockBlockQuote {
 impl TDPageBlock for PageBlockBlockQuote {}
 
 impl PageBlockBlockQuote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockBlockQuoteBuilder {
+    pub fn builder() -> PageBlockBlockQuoteBuilder {
         let mut inner = PageBlockBlockQuote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockBlockQuoteBuilder { inner }
+        PageBlockBlockQuoteBuilder { inner }
     }
 
     pub fn text(&self) -> &RichText {
@@ -582,11 +591,14 @@ impl PageBlockBlockQuote {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockBlockQuoteBuilder {
+pub struct PageBlockBlockQuoteBuilder {
     inner: PageBlockBlockQuote,
 }
 
-impl RTDPageBlockBlockQuoteBuilder {
+#[deprecated]
+pub type RTDPageBlockBlockQuoteBuilder = PageBlockBlockQuoteBuilder;
+
+impl PageBlockBlockQuoteBuilder {
     pub fn build(&self) -> PageBlockBlockQuote {
         self.inner.clone()
     }
@@ -608,7 +620,7 @@ impl AsRef<PageBlockBlockQuote> for PageBlockBlockQuote {
     }
 }
 
-impl AsRef<PageBlockBlockQuote> for RTDPageBlockBlockQuoteBuilder {
+impl AsRef<PageBlockBlockQuote> for PageBlockBlockQuoteBuilder {
     fn as_ref(&self) -> &PageBlockBlockQuote {
         &self.inner
     }
@@ -623,10 +635,14 @@ pub struct PageBlockChatLink {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat title
+
+    #[serde(default)]
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
-    /// Chat username, by which all other information about the chat should be resolved
+    /// Chat username, by which all other information about the chat can be resolved
+
+    #[serde(default)]
     username: String,
 }
 
@@ -644,14 +660,14 @@ impl RObject for PageBlockChatLink {
 impl TDPageBlock for PageBlockChatLink {}
 
 impl PageBlockChatLink {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockChatLinkBuilder {
+    pub fn builder() -> PageBlockChatLinkBuilder {
         let mut inner = PageBlockChatLink::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockChatLinkBuilder { inner }
+        PageBlockChatLinkBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -668,11 +684,14 @@ impl PageBlockChatLink {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockChatLinkBuilder {
+pub struct PageBlockChatLinkBuilder {
     inner: PageBlockChatLink,
 }
 
-impl RTDPageBlockChatLinkBuilder {
+#[deprecated]
+pub type RTDPageBlockChatLinkBuilder = PageBlockChatLinkBuilder;
+
+impl PageBlockChatLinkBuilder {
     pub fn build(&self) -> PageBlockChatLink {
         self.inner.clone()
     }
@@ -699,7 +718,7 @@ impl AsRef<PageBlockChatLink> for PageBlockChatLink {
     }
 }
 
-impl AsRef<PageBlockChatLink> for RTDPageBlockChatLinkBuilder {
+impl AsRef<PageBlockChatLink> for PageBlockChatLinkBuilder {
     fn as_ref(&self) -> &PageBlockChatLink {
         &self.inner
     }
@@ -714,6 +733,8 @@ pub struct PageBlockCollage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Collage item contents
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// Block caption
     caption: PageBlockCaption,
@@ -733,14 +754,14 @@ impl RObject for PageBlockCollage {
 impl TDPageBlock for PageBlockCollage {}
 
 impl PageBlockCollage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockCollageBuilder {
+    pub fn builder() -> PageBlockCollageBuilder {
         let mut inner = PageBlockCollage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockCollageBuilder { inner }
+        PageBlockCollageBuilder { inner }
     }
 
     pub fn page_blocks(&self) -> &Vec<PageBlock> {
@@ -753,11 +774,14 @@ impl PageBlockCollage {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockCollageBuilder {
+pub struct PageBlockCollageBuilder {
     inner: PageBlockCollage,
 }
 
-impl RTDPageBlockCollageBuilder {
+#[deprecated]
+pub type RTDPageBlockCollageBuilder = PageBlockCollageBuilder;
+
+impl PageBlockCollageBuilder {
     pub fn build(&self) -> PageBlockCollage {
         self.inner.clone()
     }
@@ -779,7 +803,7 @@ impl AsRef<PageBlockCollage> for PageBlockCollage {
     }
 }
 
-impl AsRef<PageBlockCollage> for RTDPageBlockCollageBuilder {
+impl AsRef<PageBlockCollage> for PageBlockCollageBuilder {
     fn as_ref(&self) -> &PageBlockCollage {
         &self.inner
     }
@@ -813,14 +837,14 @@ impl RObject for PageBlockCover {
 impl TDPageBlock for PageBlockCover {}
 
 impl PageBlockCover {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockCoverBuilder {
+    pub fn builder() -> PageBlockCoverBuilder {
         let mut inner = PageBlockCover::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockCoverBuilder { inner }
+        PageBlockCoverBuilder { inner }
     }
 
     pub fn cover(&self) -> &Box<PageBlock> {
@@ -829,11 +853,14 @@ impl PageBlockCover {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockCoverBuilder {
+pub struct PageBlockCoverBuilder {
     inner: PageBlockCover,
 }
 
-impl RTDPageBlockCoverBuilder {
+#[deprecated]
+pub type RTDPageBlockCoverBuilder = PageBlockCoverBuilder;
+
+impl PageBlockCoverBuilder {
     pub fn build(&self) -> PageBlockCover {
         self.inner.clone()
     }
@@ -850,7 +877,7 @@ impl AsRef<PageBlockCover> for PageBlockCover {
     }
 }
 
-impl AsRef<PageBlockCover> for RTDPageBlockCoverBuilder {
+impl AsRef<PageBlockCover> for PageBlockCoverBuilder {
     fn as_ref(&self) -> &PageBlockCover {
         &self.inner
     }
@@ -869,8 +896,12 @@ pub struct PageBlockDetails {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     header: RichText,
     /// Block contents
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// True, if the block is open by default
+
+    #[serde(default)]
     is_open: bool,
 }
 
@@ -888,14 +919,14 @@ impl RObject for PageBlockDetails {
 impl TDPageBlock for PageBlockDetails {}
 
 impl PageBlockDetails {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockDetailsBuilder {
+    pub fn builder() -> PageBlockDetailsBuilder {
         let mut inner = PageBlockDetails::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockDetailsBuilder { inner }
+        PageBlockDetailsBuilder { inner }
     }
 
     pub fn header(&self) -> &RichText {
@@ -912,11 +943,14 @@ impl PageBlockDetails {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockDetailsBuilder {
+pub struct PageBlockDetailsBuilder {
     inner: PageBlockDetails,
 }
 
-impl RTDPageBlockDetailsBuilder {
+#[deprecated]
+pub type RTDPageBlockDetailsBuilder = PageBlockDetailsBuilder;
+
+impl PageBlockDetailsBuilder {
     pub fn build(&self) -> PageBlockDetails {
         self.inner.clone()
     }
@@ -943,7 +977,7 @@ impl AsRef<PageBlockDetails> for PageBlockDetails {
     }
 }
 
-impl AsRef<PageBlockDetails> for RTDPageBlockDetailsBuilder {
+impl AsRef<PageBlockDetails> for PageBlockDetailsBuilder {
     fn as_ref(&self) -> &PageBlockDetails {
         &self.inner
     }
@@ -973,23 +1007,26 @@ impl RObject for PageBlockDivider {
 impl TDPageBlock for PageBlockDivider {}
 
 impl PageBlockDivider {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockDividerBuilder {
+    pub fn builder() -> PageBlockDividerBuilder {
         let mut inner = PageBlockDivider::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockDividerBuilder { inner }
+        PageBlockDividerBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockDividerBuilder {
+pub struct PageBlockDividerBuilder {
     inner: PageBlockDivider,
 }
 
-impl RTDPageBlockDividerBuilder {
+#[deprecated]
+pub type RTDPageBlockDividerBuilder = PageBlockDividerBuilder;
+
+impl PageBlockDividerBuilder {
     pub fn build(&self) -> PageBlockDivider {
         self.inner.clone()
     }
@@ -1001,7 +1038,7 @@ impl AsRef<PageBlockDivider> for PageBlockDivider {
     }
 }
 
-impl AsRef<PageBlockDivider> for RTDPageBlockDividerBuilder {
+impl AsRef<PageBlockDivider> for PageBlockDividerBuilder {
     fn as_ref(&self) -> &PageBlockDivider {
         &self.inner
     }
@@ -1016,20 +1053,32 @@ pub struct PageBlockEmbedded {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Web page URL, if available
+
+    #[serde(default)]
     url: String,
     /// HTML-markup of the embedded page
+
+    #[serde(default)]
     html: String,
     /// Poster photo, if available; may be null
     poster_photo: Option<Photo>,
     /// Block width; 0 if unknown
+
+    #[serde(default)]
     width: i32,
     /// Block height; 0 if unknown
+
+    #[serde(default)]
     height: i32,
     /// Block caption
     caption: PageBlockCaption,
-    /// True, if the block should be full width
+    /// True, if the block must be full width
+
+    #[serde(default)]
     is_full_width: bool,
-    /// True, if scrolling should be allowed
+    /// True, if scrolling needs to be allowed
+
+    #[serde(default)]
     allow_scrolling: bool,
 }
 
@@ -1047,14 +1096,14 @@ impl RObject for PageBlockEmbedded {
 impl TDPageBlock for PageBlockEmbedded {}
 
 impl PageBlockEmbedded {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockEmbeddedBuilder {
+    pub fn builder() -> PageBlockEmbeddedBuilder {
         let mut inner = PageBlockEmbedded::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockEmbeddedBuilder { inner }
+        PageBlockEmbeddedBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -1091,11 +1140,14 @@ impl PageBlockEmbedded {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockEmbeddedBuilder {
+pub struct PageBlockEmbeddedBuilder {
     inner: PageBlockEmbedded,
 }
 
-impl RTDPageBlockEmbeddedBuilder {
+#[deprecated]
+pub type RTDPageBlockEmbeddedBuilder = PageBlockEmbeddedBuilder;
+
+impl PageBlockEmbeddedBuilder {
     pub fn build(&self) -> PageBlockEmbedded {
         self.inner.clone()
     }
@@ -1147,7 +1199,7 @@ impl AsRef<PageBlockEmbedded> for PageBlockEmbedded {
     }
 }
 
-impl AsRef<PageBlockEmbedded> for RTDPageBlockEmbeddedBuilder {
+impl AsRef<PageBlockEmbedded> for PageBlockEmbeddedBuilder {
     fn as_ref(&self) -> &PageBlockEmbedded {
         &self.inner
     }
@@ -1162,14 +1214,22 @@ pub struct PageBlockEmbeddedPost {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Web page URL
+
+    #[serde(default)]
     url: String,
     /// Post author
+
+    #[serde(default)]
     author: String,
     /// Post author photo; may be null
     author_photo: Option<Photo>,
     /// Point in time (Unix timestamp) when the post was created; 0 if unknown
+
+    #[serde(default)]
     date: i32,
     /// Post content
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// Post caption
     caption: PageBlockCaption,
@@ -1189,14 +1249,14 @@ impl RObject for PageBlockEmbeddedPost {
 impl TDPageBlock for PageBlockEmbeddedPost {}
 
 impl PageBlockEmbeddedPost {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockEmbeddedPostBuilder {
+    pub fn builder() -> PageBlockEmbeddedPostBuilder {
         let mut inner = PageBlockEmbeddedPost::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockEmbeddedPostBuilder { inner }
+        PageBlockEmbeddedPostBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -1225,11 +1285,14 @@ impl PageBlockEmbeddedPost {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockEmbeddedPostBuilder {
+pub struct PageBlockEmbeddedPostBuilder {
     inner: PageBlockEmbeddedPost,
 }
 
-impl RTDPageBlockEmbeddedPostBuilder {
+#[deprecated]
+pub type RTDPageBlockEmbeddedPostBuilder = PageBlockEmbeddedPostBuilder;
+
+impl PageBlockEmbeddedPostBuilder {
     pub fn build(&self) -> PageBlockEmbeddedPost {
         self.inner.clone()
     }
@@ -1271,7 +1334,7 @@ impl AsRef<PageBlockEmbeddedPost> for PageBlockEmbeddedPost {
     }
 }
 
-impl AsRef<PageBlockEmbeddedPost> for RTDPageBlockEmbeddedPostBuilder {
+impl AsRef<PageBlockEmbeddedPost> for PageBlockEmbeddedPostBuilder {
     fn as_ref(&self) -> &PageBlockEmbeddedPost {
         &self.inner
     }
@@ -1305,14 +1368,14 @@ impl RObject for PageBlockFooter {
 impl TDPageBlock for PageBlockFooter {}
 
 impl PageBlockFooter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockFooterBuilder {
+    pub fn builder() -> PageBlockFooterBuilder {
         let mut inner = PageBlockFooter::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockFooterBuilder { inner }
+        PageBlockFooterBuilder { inner }
     }
 
     pub fn footer(&self) -> &RichText {
@@ -1321,11 +1384,14 @@ impl PageBlockFooter {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockFooterBuilder {
+pub struct PageBlockFooterBuilder {
     inner: PageBlockFooter,
 }
 
-impl RTDPageBlockFooterBuilder {
+#[deprecated]
+pub type RTDPageBlockFooterBuilder = PageBlockFooterBuilder;
+
+impl PageBlockFooterBuilder {
     pub fn build(&self) -> PageBlockFooter {
         self.inner.clone()
     }
@@ -1342,7 +1408,7 @@ impl AsRef<PageBlockFooter> for PageBlockFooter {
     }
 }
 
-impl AsRef<PageBlockFooter> for RTDPageBlockFooterBuilder {
+impl AsRef<PageBlockFooter> for PageBlockFooterBuilder {
     fn as_ref(&self) -> &PageBlockFooter {
         &self.inner
     }
@@ -1376,14 +1442,14 @@ impl RObject for PageBlockHeader {
 impl TDPageBlock for PageBlockHeader {}
 
 impl PageBlockHeader {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockHeaderBuilder {
+    pub fn builder() -> PageBlockHeaderBuilder {
         let mut inner = PageBlockHeader::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockHeaderBuilder { inner }
+        PageBlockHeaderBuilder { inner }
     }
 
     pub fn header(&self) -> &RichText {
@@ -1392,11 +1458,14 @@ impl PageBlockHeader {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockHeaderBuilder {
+pub struct PageBlockHeaderBuilder {
     inner: PageBlockHeader,
 }
 
-impl RTDPageBlockHeaderBuilder {
+#[deprecated]
+pub type RTDPageBlockHeaderBuilder = PageBlockHeaderBuilder;
+
+impl PageBlockHeaderBuilder {
     pub fn build(&self) -> PageBlockHeader {
         self.inner.clone()
     }
@@ -1413,7 +1482,7 @@ impl AsRef<PageBlockHeader> for PageBlockHeader {
     }
 }
 
-impl AsRef<PageBlockHeader> for RTDPageBlockHeaderBuilder {
+impl AsRef<PageBlockHeader> for PageBlockHeaderBuilder {
     fn as_ref(&self) -> &PageBlockHeader {
         &self.inner
     }
@@ -1447,14 +1516,14 @@ impl RObject for PageBlockKicker {
 impl TDPageBlock for PageBlockKicker {}
 
 impl PageBlockKicker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockKickerBuilder {
+    pub fn builder() -> PageBlockKickerBuilder {
         let mut inner = PageBlockKicker::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockKickerBuilder { inner }
+        PageBlockKickerBuilder { inner }
     }
 
     pub fn kicker(&self) -> &RichText {
@@ -1463,11 +1532,14 @@ impl PageBlockKicker {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockKickerBuilder {
+pub struct PageBlockKickerBuilder {
     inner: PageBlockKicker,
 }
 
-impl RTDPageBlockKickerBuilder {
+#[deprecated]
+pub type RTDPageBlockKickerBuilder = PageBlockKickerBuilder;
+
+impl PageBlockKickerBuilder {
     pub fn build(&self) -> PageBlockKicker {
         self.inner.clone()
     }
@@ -1484,7 +1556,7 @@ impl AsRef<PageBlockKicker> for PageBlockKicker {
     }
 }
 
-impl AsRef<PageBlockKicker> for RTDPageBlockKickerBuilder {
+impl AsRef<PageBlockKicker> for PageBlockKickerBuilder {
     fn as_ref(&self) -> &PageBlockKicker {
         &self.inner
     }
@@ -1499,6 +1571,8 @@ pub struct PageBlockList {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The items of the list
+
+    #[serde(default)]
     items: Vec<PageBlockListItem>,
 }
 
@@ -1516,14 +1590,14 @@ impl RObject for PageBlockList {
 impl TDPageBlock for PageBlockList {}
 
 impl PageBlockList {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockListBuilder {
+    pub fn builder() -> PageBlockListBuilder {
         let mut inner = PageBlockList::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockListBuilder { inner }
+        PageBlockListBuilder { inner }
     }
 
     pub fn items(&self) -> &Vec<PageBlockListItem> {
@@ -1532,11 +1606,14 @@ impl PageBlockList {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockListBuilder {
+pub struct PageBlockListBuilder {
     inner: PageBlockList,
 }
 
-impl RTDPageBlockListBuilder {
+#[deprecated]
+pub type RTDPageBlockListBuilder = PageBlockListBuilder;
+
+impl PageBlockListBuilder {
     pub fn build(&self) -> PageBlockList {
         self.inner.clone()
     }
@@ -1553,7 +1630,7 @@ impl AsRef<PageBlockList> for PageBlockList {
     }
 }
 
-impl AsRef<PageBlockList> for RTDPageBlockListBuilder {
+impl AsRef<PageBlockList> for PageBlockListBuilder {
     fn as_ref(&self) -> &PageBlockList {
         &self.inner
     }
@@ -1570,10 +1647,16 @@ pub struct PageBlockMap {
     /// Location of the map center
     location: Location,
     /// Map zoom level
+
+    #[serde(default)]
     zoom: i32,
     /// Map width
+
+    #[serde(default)]
     width: i32,
     /// Map height
+
+    #[serde(default)]
     height: i32,
     /// Block caption
     caption: PageBlockCaption,
@@ -1593,14 +1676,14 @@ impl RObject for PageBlockMap {
 impl TDPageBlock for PageBlockMap {}
 
 impl PageBlockMap {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockMapBuilder {
+    pub fn builder() -> PageBlockMapBuilder {
         let mut inner = PageBlockMap::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockMapBuilder { inner }
+        PageBlockMapBuilder { inner }
     }
 
     pub fn location(&self) -> &Location {
@@ -1625,11 +1708,14 @@ impl PageBlockMap {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockMapBuilder {
+pub struct PageBlockMapBuilder {
     inner: PageBlockMap,
 }
 
-impl RTDPageBlockMapBuilder {
+#[deprecated]
+pub type RTDPageBlockMapBuilder = PageBlockMapBuilder;
+
+impl PageBlockMapBuilder {
     pub fn build(&self) -> PageBlockMap {
         self.inner.clone()
     }
@@ -1666,7 +1752,7 @@ impl AsRef<PageBlockMap> for PageBlockMap {
     }
 }
 
-impl AsRef<PageBlockMap> for RTDPageBlockMapBuilder {
+impl AsRef<PageBlockMap> for PageBlockMapBuilder {
     fn as_ref(&self) -> &PageBlockMap {
         &self.inner
     }
@@ -1700,14 +1786,14 @@ impl RObject for PageBlockParagraph {
 impl TDPageBlock for PageBlockParagraph {}
 
 impl PageBlockParagraph {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockParagraphBuilder {
+    pub fn builder() -> PageBlockParagraphBuilder {
         let mut inner = PageBlockParagraph::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockParagraphBuilder { inner }
+        PageBlockParagraphBuilder { inner }
     }
 
     pub fn text(&self) -> &RichText {
@@ -1716,11 +1802,14 @@ impl PageBlockParagraph {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockParagraphBuilder {
+pub struct PageBlockParagraphBuilder {
     inner: PageBlockParagraph,
 }
 
-impl RTDPageBlockParagraphBuilder {
+#[deprecated]
+pub type RTDPageBlockParagraphBuilder = PageBlockParagraphBuilder;
+
+impl PageBlockParagraphBuilder {
     pub fn build(&self) -> PageBlockParagraph {
         self.inner.clone()
     }
@@ -1737,7 +1826,7 @@ impl AsRef<PageBlockParagraph> for PageBlockParagraph {
     }
 }
 
-impl AsRef<PageBlockParagraph> for RTDPageBlockParagraphBuilder {
+impl AsRef<PageBlockParagraph> for PageBlockParagraphBuilder {
     fn as_ref(&self) -> &PageBlockParagraph {
         &self.inner
     }
@@ -1756,6 +1845,8 @@ pub struct PageBlockPhoto {
     /// Photo caption
     caption: PageBlockCaption,
     /// URL that needs to be opened when the photo is clicked
+
+    #[serde(default)]
     url: String,
 }
 
@@ -1773,14 +1864,14 @@ impl RObject for PageBlockPhoto {
 impl TDPageBlock for PageBlockPhoto {}
 
 impl PageBlockPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockPhotoBuilder {
+    pub fn builder() -> PageBlockPhotoBuilder {
         let mut inner = PageBlockPhoto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockPhotoBuilder { inner }
+        PageBlockPhotoBuilder { inner }
     }
 
     pub fn photo(&self) -> &Option<Photo> {
@@ -1797,11 +1888,14 @@ impl PageBlockPhoto {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockPhotoBuilder {
+pub struct PageBlockPhotoBuilder {
     inner: PageBlockPhoto,
 }
 
-impl RTDPageBlockPhotoBuilder {
+#[deprecated]
+pub type RTDPageBlockPhotoBuilder = PageBlockPhotoBuilder;
+
+impl PageBlockPhotoBuilder {
     pub fn build(&self) -> PageBlockPhoto {
         self.inner.clone()
     }
@@ -1828,7 +1922,7 @@ impl AsRef<PageBlockPhoto> for PageBlockPhoto {
     }
 }
 
-impl AsRef<PageBlockPhoto> for RTDPageBlockPhotoBuilder {
+impl AsRef<PageBlockPhoto> for PageBlockPhotoBuilder {
     fn as_ref(&self) -> &PageBlockPhoto {
         &self.inner
     }
@@ -1846,7 +1940,9 @@ pub struct PageBlockPreformatted {
 
     #[serde(skip_serializing_if = "RichText::_is_default")]
     text: RichText,
-    /// Programming language for which the text should be formatted
+    /// Programming language for which the text needs to be formatted
+
+    #[serde(default)]
     language: String,
 }
 
@@ -1864,14 +1960,14 @@ impl RObject for PageBlockPreformatted {
 impl TDPageBlock for PageBlockPreformatted {}
 
 impl PageBlockPreformatted {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockPreformattedBuilder {
+    pub fn builder() -> PageBlockPreformattedBuilder {
         let mut inner = PageBlockPreformatted::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockPreformattedBuilder { inner }
+        PageBlockPreformattedBuilder { inner }
     }
 
     pub fn text(&self) -> &RichText {
@@ -1884,11 +1980,14 @@ impl PageBlockPreformatted {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockPreformattedBuilder {
+pub struct PageBlockPreformattedBuilder {
     inner: PageBlockPreformatted,
 }
 
-impl RTDPageBlockPreformattedBuilder {
+#[deprecated]
+pub type RTDPageBlockPreformattedBuilder = PageBlockPreformattedBuilder;
+
+impl PageBlockPreformattedBuilder {
     pub fn build(&self) -> PageBlockPreformatted {
         self.inner.clone()
     }
@@ -1910,7 +2009,7 @@ impl AsRef<PageBlockPreformatted> for PageBlockPreformatted {
     }
 }
 
-impl AsRef<PageBlockPreformatted> for RTDPageBlockPreformattedBuilder {
+impl AsRef<PageBlockPreformatted> for PageBlockPreformattedBuilder {
     fn as_ref(&self) -> &PageBlockPreformatted {
         &self.inner
     }
@@ -1948,14 +2047,14 @@ impl RObject for PageBlockPullQuote {
 impl TDPageBlock for PageBlockPullQuote {}
 
 impl PageBlockPullQuote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockPullQuoteBuilder {
+    pub fn builder() -> PageBlockPullQuoteBuilder {
         let mut inner = PageBlockPullQuote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockPullQuoteBuilder { inner }
+        PageBlockPullQuoteBuilder { inner }
     }
 
     pub fn text(&self) -> &RichText {
@@ -1968,11 +2067,14 @@ impl PageBlockPullQuote {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockPullQuoteBuilder {
+pub struct PageBlockPullQuoteBuilder {
     inner: PageBlockPullQuote,
 }
 
-impl RTDPageBlockPullQuoteBuilder {
+#[deprecated]
+pub type RTDPageBlockPullQuoteBuilder = PageBlockPullQuoteBuilder;
+
+impl PageBlockPullQuoteBuilder {
     pub fn build(&self) -> PageBlockPullQuote {
         self.inner.clone()
     }
@@ -1994,7 +2096,7 @@ impl AsRef<PageBlockPullQuote> for PageBlockPullQuote {
     }
 }
 
-impl AsRef<PageBlockPullQuote> for RTDPageBlockPullQuoteBuilder {
+impl AsRef<PageBlockPullQuote> for PageBlockPullQuoteBuilder {
     fn as_ref(&self) -> &PageBlockPullQuote {
         &self.inner
     }
@@ -2013,6 +2115,8 @@ pub struct PageBlockRelatedArticles {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     header: RichText,
     /// List of related articles
+
+    #[serde(default)]
     articles: Vec<PageBlockRelatedArticle>,
 }
 
@@ -2030,14 +2134,14 @@ impl RObject for PageBlockRelatedArticles {
 impl TDPageBlock for PageBlockRelatedArticles {}
 
 impl PageBlockRelatedArticles {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockRelatedArticlesBuilder {
+    pub fn builder() -> PageBlockRelatedArticlesBuilder {
         let mut inner = PageBlockRelatedArticles::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockRelatedArticlesBuilder { inner }
+        PageBlockRelatedArticlesBuilder { inner }
     }
 
     pub fn header(&self) -> &RichText {
@@ -2050,11 +2154,14 @@ impl PageBlockRelatedArticles {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockRelatedArticlesBuilder {
+pub struct PageBlockRelatedArticlesBuilder {
     inner: PageBlockRelatedArticles,
 }
 
-impl RTDPageBlockRelatedArticlesBuilder {
+#[deprecated]
+pub type RTDPageBlockRelatedArticlesBuilder = PageBlockRelatedArticlesBuilder;
+
+impl PageBlockRelatedArticlesBuilder {
     pub fn build(&self) -> PageBlockRelatedArticles {
         self.inner.clone()
     }
@@ -2076,7 +2183,7 @@ impl AsRef<PageBlockRelatedArticles> for PageBlockRelatedArticles {
     }
 }
 
-impl AsRef<PageBlockRelatedArticles> for RTDPageBlockRelatedArticlesBuilder {
+impl AsRef<PageBlockRelatedArticles> for PageBlockRelatedArticlesBuilder {
     fn as_ref(&self) -> &PageBlockRelatedArticles {
         &self.inner
     }
@@ -2091,6 +2198,8 @@ pub struct PageBlockSlideshow {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Slideshow item contents
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// Block caption
     caption: PageBlockCaption,
@@ -2110,14 +2219,14 @@ impl RObject for PageBlockSlideshow {
 impl TDPageBlock for PageBlockSlideshow {}
 
 impl PageBlockSlideshow {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockSlideshowBuilder {
+    pub fn builder() -> PageBlockSlideshowBuilder {
         let mut inner = PageBlockSlideshow::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockSlideshowBuilder { inner }
+        PageBlockSlideshowBuilder { inner }
     }
 
     pub fn page_blocks(&self) -> &Vec<PageBlock> {
@@ -2130,11 +2239,14 @@ impl PageBlockSlideshow {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockSlideshowBuilder {
+pub struct PageBlockSlideshowBuilder {
     inner: PageBlockSlideshow,
 }
 
-impl RTDPageBlockSlideshowBuilder {
+#[deprecated]
+pub type RTDPageBlockSlideshowBuilder = PageBlockSlideshowBuilder;
+
+impl PageBlockSlideshowBuilder {
     pub fn build(&self) -> PageBlockSlideshow {
         self.inner.clone()
     }
@@ -2156,7 +2268,7 @@ impl AsRef<PageBlockSlideshow> for PageBlockSlideshow {
     }
 }
 
-impl AsRef<PageBlockSlideshow> for RTDPageBlockSlideshowBuilder {
+impl AsRef<PageBlockSlideshow> for PageBlockSlideshowBuilder {
     fn as_ref(&self) -> &PageBlockSlideshow {
         &self.inner
     }
@@ -2190,14 +2302,14 @@ impl RObject for PageBlockSubheader {
 impl TDPageBlock for PageBlockSubheader {}
 
 impl PageBlockSubheader {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockSubheaderBuilder {
+    pub fn builder() -> PageBlockSubheaderBuilder {
         let mut inner = PageBlockSubheader::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockSubheaderBuilder { inner }
+        PageBlockSubheaderBuilder { inner }
     }
 
     pub fn subheader(&self) -> &RichText {
@@ -2206,11 +2318,14 @@ impl PageBlockSubheader {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockSubheaderBuilder {
+pub struct PageBlockSubheaderBuilder {
     inner: PageBlockSubheader,
 }
 
-impl RTDPageBlockSubheaderBuilder {
+#[deprecated]
+pub type RTDPageBlockSubheaderBuilder = PageBlockSubheaderBuilder;
+
+impl PageBlockSubheaderBuilder {
     pub fn build(&self) -> PageBlockSubheader {
         self.inner.clone()
     }
@@ -2227,7 +2342,7 @@ impl AsRef<PageBlockSubheader> for PageBlockSubheader {
     }
 }
 
-impl AsRef<PageBlockSubheader> for RTDPageBlockSubheaderBuilder {
+impl AsRef<PageBlockSubheader> for PageBlockSubheaderBuilder {
     fn as_ref(&self) -> &PageBlockSubheader {
         &self.inner
     }
@@ -2261,14 +2376,14 @@ impl RObject for PageBlockSubtitle {
 impl TDPageBlock for PageBlockSubtitle {}
 
 impl PageBlockSubtitle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockSubtitleBuilder {
+    pub fn builder() -> PageBlockSubtitleBuilder {
         let mut inner = PageBlockSubtitle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockSubtitleBuilder { inner }
+        PageBlockSubtitleBuilder { inner }
     }
 
     pub fn subtitle(&self) -> &RichText {
@@ -2277,11 +2392,14 @@ impl PageBlockSubtitle {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockSubtitleBuilder {
+pub struct PageBlockSubtitleBuilder {
     inner: PageBlockSubtitle,
 }
 
-impl RTDPageBlockSubtitleBuilder {
+#[deprecated]
+pub type RTDPageBlockSubtitleBuilder = PageBlockSubtitleBuilder;
+
+impl PageBlockSubtitleBuilder {
     pub fn build(&self) -> PageBlockSubtitle {
         self.inner.clone()
     }
@@ -2298,7 +2416,7 @@ impl AsRef<PageBlockSubtitle> for PageBlockSubtitle {
     }
 }
 
-impl AsRef<PageBlockSubtitle> for RTDPageBlockSubtitleBuilder {
+impl AsRef<PageBlockSubtitle> for PageBlockSubtitleBuilder {
     fn as_ref(&self) -> &PageBlockSubtitle {
         &self.inner
     }
@@ -2317,10 +2435,16 @@ pub struct PageBlockTable {
     #[serde(skip_serializing_if = "RichText::_is_default")]
     caption: RichText,
     /// Table cells
+
+    #[serde(default)]
     cells: Vec<Vec<PageBlockTableCell>>,
     /// True, if the table is bordered
+
+    #[serde(default)]
     is_bordered: bool,
     /// True, if the table is striped
+
+    #[serde(default)]
     is_striped: bool,
 }
 
@@ -2338,14 +2462,14 @@ impl RObject for PageBlockTable {
 impl TDPageBlock for PageBlockTable {}
 
 impl PageBlockTable {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockTableBuilder {
+    pub fn builder() -> PageBlockTableBuilder {
         let mut inner = PageBlockTable::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockTableBuilder { inner }
+        PageBlockTableBuilder { inner }
     }
 
     pub fn caption(&self) -> &RichText {
@@ -2366,11 +2490,14 @@ impl PageBlockTable {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockTableBuilder {
+pub struct PageBlockTableBuilder {
     inner: PageBlockTable,
 }
 
-impl RTDPageBlockTableBuilder {
+#[deprecated]
+pub type RTDPageBlockTableBuilder = PageBlockTableBuilder;
+
+impl PageBlockTableBuilder {
     pub fn build(&self) -> PageBlockTable {
         self.inner.clone()
     }
@@ -2402,7 +2529,7 @@ impl AsRef<PageBlockTable> for PageBlockTable {
     }
 }
 
-impl AsRef<PageBlockTable> for RTDPageBlockTableBuilder {
+impl AsRef<PageBlockTable> for PageBlockTableBuilder {
     fn as_ref(&self) -> &PageBlockTable {
         &self.inner
     }
@@ -2436,14 +2563,14 @@ impl RObject for PageBlockTitle {
 impl TDPageBlock for PageBlockTitle {}
 
 impl PageBlockTitle {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockTitleBuilder {
+    pub fn builder() -> PageBlockTitleBuilder {
         let mut inner = PageBlockTitle::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockTitleBuilder { inner }
+        PageBlockTitleBuilder { inner }
     }
 
     pub fn title(&self) -> &RichText {
@@ -2452,11 +2579,14 @@ impl PageBlockTitle {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockTitleBuilder {
+pub struct PageBlockTitleBuilder {
     inner: PageBlockTitle,
 }
 
-impl RTDPageBlockTitleBuilder {
+#[deprecated]
+pub type RTDPageBlockTitleBuilder = PageBlockTitleBuilder;
+
+impl PageBlockTitleBuilder {
     pub fn build(&self) -> PageBlockTitle {
         self.inner.clone()
     }
@@ -2473,7 +2603,7 @@ impl AsRef<PageBlockTitle> for PageBlockTitle {
     }
 }
 
-impl AsRef<PageBlockTitle> for RTDPageBlockTitleBuilder {
+impl AsRef<PageBlockTitle> for PageBlockTitleBuilder {
     fn as_ref(&self) -> &PageBlockTitle {
         &self.inner
     }
@@ -2491,9 +2621,13 @@ pub struct PageBlockVideo {
     video: Option<Video>,
     /// Video caption
     caption: PageBlockCaption,
-    /// True, if the video should be played automatically
+    /// True, if the video must be played automatically
+
+    #[serde(default)]
     need_autoplay: bool,
-    /// True, if the video should be looped
+    /// True, if the video must be looped
+
+    #[serde(default)]
     is_looped: bool,
 }
 
@@ -2511,14 +2645,14 @@ impl RObject for PageBlockVideo {
 impl TDPageBlock for PageBlockVideo {}
 
 impl PageBlockVideo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockVideoBuilder {
+    pub fn builder() -> PageBlockVideoBuilder {
         let mut inner = PageBlockVideo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockVideoBuilder { inner }
+        PageBlockVideoBuilder { inner }
     }
 
     pub fn video(&self) -> &Option<Video> {
@@ -2539,11 +2673,14 @@ impl PageBlockVideo {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockVideoBuilder {
+pub struct PageBlockVideoBuilder {
     inner: PageBlockVideo,
 }
 
-impl RTDPageBlockVideoBuilder {
+#[deprecated]
+pub type RTDPageBlockVideoBuilder = PageBlockVideoBuilder;
+
+impl PageBlockVideoBuilder {
     pub fn build(&self) -> PageBlockVideo {
         self.inner.clone()
     }
@@ -2575,7 +2712,7 @@ impl AsRef<PageBlockVideo> for PageBlockVideo {
     }
 }
 
-impl AsRef<PageBlockVideo> for RTDPageBlockVideoBuilder {
+impl AsRef<PageBlockVideo> for PageBlockVideoBuilder {
     fn as_ref(&self) -> &PageBlockVideo {
         &self.inner
     }
@@ -2609,14 +2746,14 @@ impl RObject for PageBlockVoiceNote {
 impl TDPageBlock for PageBlockVoiceNote {}
 
 impl PageBlockVoiceNote {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPageBlockVoiceNoteBuilder {
+    pub fn builder() -> PageBlockVoiceNoteBuilder {
         let mut inner = PageBlockVoiceNote::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPageBlockVoiceNoteBuilder { inner }
+        PageBlockVoiceNoteBuilder { inner }
     }
 
     pub fn voice_note(&self) -> &Option<VoiceNote> {
@@ -2629,11 +2766,14 @@ impl PageBlockVoiceNote {
 }
 
 #[doc(hidden)]
-pub struct RTDPageBlockVoiceNoteBuilder {
+pub struct PageBlockVoiceNoteBuilder {
     inner: PageBlockVoiceNote,
 }
 
-impl RTDPageBlockVoiceNoteBuilder {
+#[deprecated]
+pub type RTDPageBlockVoiceNoteBuilder = PageBlockVoiceNoteBuilder;
+
+impl PageBlockVoiceNoteBuilder {
     pub fn build(&self) -> PageBlockVoiceNote {
         self.inner.clone()
     }
@@ -2655,7 +2795,7 @@ impl AsRef<PageBlockVoiceNote> for PageBlockVoiceNote {
     }
 }
 
-impl AsRef<PageBlockVoiceNote> for RTDPageBlockVoiceNoteBuilder {
+impl AsRef<PageBlockVoiceNote> for PageBlockVoiceNoteBuilder {
     fn as_ref(&self) -> &PageBlockVoiceNote {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -33,16 +33,16 @@ impl RObject for GetUserPrivacySettingRules {
 impl RFunction for GetUserPrivacySettingRules {}
 
 impl GetUserPrivacySettingRules {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetUserPrivacySettingRulesBuilder {
+    pub fn builder() -> GetUserPrivacySettingRulesBuilder {
         let mut inner = GetUserPrivacySettingRules::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getUserPrivacySettingRules".to_string();
 
-        RTDGetUserPrivacySettingRulesBuilder { inner }
+        GetUserPrivacySettingRulesBuilder { inner }
     }
 
     pub fn setting(&self) -> &UserPrivacySetting {
@@ -51,11 +51,14 @@ impl GetUserPrivacySettingRules {
 }
 
 #[doc(hidden)]
-pub struct RTDGetUserPrivacySettingRulesBuilder {
+pub struct GetUserPrivacySettingRulesBuilder {
     inner: GetUserPrivacySettingRules,
 }
 
-impl RTDGetUserPrivacySettingRulesBuilder {
+#[deprecated]
+pub type RTDGetUserPrivacySettingRulesBuilder = GetUserPrivacySettingRulesBuilder;
+
+impl GetUserPrivacySettingRulesBuilder {
     pub fn build(&self) -> GetUserPrivacySettingRules {
         self.inner.clone()
     }
@@ -72,7 +75,7 @@ impl AsRef<GetUserPrivacySettingRules> for GetUserPrivacySettingRules {
     }
 }
 
-impl AsRef<GetUserPrivacySettingRules> for RTDGetUserPrivacySettingRulesBuilder {
+impl AsRef<GetUserPrivacySettingRules> for GetUserPrivacySettingRulesBuilder {
     fn as_ref(&self) -> &GetUserPrivacySettingRules {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct SendBotStartMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the bot
-    bot_user_id: i32,
+
+    #[serde(default)]
+    bot_user_id: i64,
     /// Identifier of the target chat
+
+    #[serde(default)]
     chat_id: i64,
     /// A hidden parameter sent to the bot for deep linking purposes (https://core.telegram.org/bots#deep-linking)
+
+    #[serde(default)]
     parameter: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,19 +41,19 @@ impl RObject for SendBotStartMessage {
 impl RFunction for SendBotStartMessage {}
 
 impl SendBotStartMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendBotStartMessageBuilder {
+    pub fn builder() -> SendBotStartMessageBuilder {
         let mut inner = SendBotStartMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendBotStartMessage".to_string();
 
-        RTDSendBotStartMessageBuilder { inner }
+        SendBotStartMessageBuilder { inner }
     }
 
-    pub fn bot_user_id(&self) -> i32 {
+    pub fn bot_user_id(&self) -> i64 {
         self.bot_user_id
     }
 
@@ -61,16 +67,19 @@ impl SendBotStartMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDSendBotStartMessageBuilder {
+pub struct SendBotStartMessageBuilder {
     inner: SendBotStartMessage,
 }
 
-impl RTDSendBotStartMessageBuilder {
+#[deprecated]
+pub type RTDSendBotStartMessageBuilder = SendBotStartMessageBuilder;
+
+impl SendBotStartMessageBuilder {
     pub fn build(&self) -> SendBotStartMessage {
         self.inner.clone()
     }
 
-    pub fn bot_user_id(&mut self, bot_user_id: i32) -> &mut Self {
+    pub fn bot_user_id(&mut self, bot_user_id: i64) -> &mut Self {
         self.inner.bot_user_id = bot_user_id;
         self
     }
@@ -92,7 +101,7 @@ impl AsRef<SendBotStartMessage> for SendBotStartMessage {
     }
 }
 
-impl AsRef<SendBotStartMessage> for RTDSendBotStartMessageBuilder {
+impl AsRef<SendBotStartMessage> for SendBotStartMessageBuilder {
     fn as_ref(&self) -> &SendBotStartMessage {
         &self.inner
     }

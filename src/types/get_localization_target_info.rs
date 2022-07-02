@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetLocalizationTargetInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// If true, returns only locally available information without sending network requests
+
+    #[serde(default)]
     only_local: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetLocalizationTargetInfo {
 impl RFunction for GetLocalizationTargetInfo {}
 
 impl GetLocalizationTargetInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetLocalizationTargetInfoBuilder {
+    pub fn builder() -> GetLocalizationTargetInfoBuilder {
         let mut inner = GetLocalizationTargetInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getLocalizationTargetInfo".to_string();
 
-        RTDGetLocalizationTargetInfoBuilder { inner }
+        GetLocalizationTargetInfoBuilder { inner }
     }
 
     pub fn only_local(&self) -> bool {
@@ -49,11 +51,14 @@ impl GetLocalizationTargetInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDGetLocalizationTargetInfoBuilder {
+pub struct GetLocalizationTargetInfoBuilder {
     inner: GetLocalizationTargetInfo,
 }
 
-impl RTDGetLocalizationTargetInfoBuilder {
+#[deprecated]
+pub type RTDGetLocalizationTargetInfoBuilder = GetLocalizationTargetInfoBuilder;
+
+impl GetLocalizationTargetInfoBuilder {
     pub fn build(&self) -> GetLocalizationTargetInfo {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetLocalizationTargetInfo> for GetLocalizationTargetInfo {
     }
 }
 
-impl AsRef<GetLocalizationTargetInfo> for RTDGetLocalizationTargetInfoBuilder {
+impl AsRef<GetLocalizationTargetInfo> for GetLocalizationTargetInfoBuilder {
     fn as_ref(&self) -> &GetLocalizationTargetInfo {
         &self.inner
     }

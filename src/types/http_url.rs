@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct HttpUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The URL
+
+    #[serde(default)]
     url: String,
 }
 
@@ -26,14 +28,14 @@ impl RObject for HttpUrl {
 }
 
 impl HttpUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDHttpUrlBuilder {
+    pub fn builder() -> HttpUrlBuilder {
         let mut inner = HttpUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDHttpUrlBuilder { inner }
+        HttpUrlBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -42,11 +44,14 @@ impl HttpUrl {
 }
 
 #[doc(hidden)]
-pub struct RTDHttpUrlBuilder {
+pub struct HttpUrlBuilder {
     inner: HttpUrl,
 }
 
-impl RTDHttpUrlBuilder {
+#[deprecated]
+pub type RTDHttpUrlBuilder = HttpUrlBuilder;
+
+impl HttpUrlBuilder {
     pub fn build(&self) -> HttpUrl {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<HttpUrl> for HttpUrl {
     }
 }
 
-impl AsRef<HttpUrl> for RTDHttpUrlBuilder {
+impl AsRef<HttpUrl> for HttpUrlBuilder {
     fn as_ref(&self) -> &HttpUrl {
         &self.inner
     }

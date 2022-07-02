@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for ClearRecentlyFoundChats {
 impl RFunction for ClearRecentlyFoundChats {}
 
 impl ClearRecentlyFoundChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDClearRecentlyFoundChatsBuilder {
+    pub fn builder() -> ClearRecentlyFoundChatsBuilder {
         let mut inner = ClearRecentlyFoundChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "clearRecentlyFoundChats".to_string();
 
-        RTDClearRecentlyFoundChatsBuilder { inner }
+        ClearRecentlyFoundChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDClearRecentlyFoundChatsBuilder {
+pub struct ClearRecentlyFoundChatsBuilder {
     inner: ClearRecentlyFoundChats,
 }
 
-impl RTDClearRecentlyFoundChatsBuilder {
+#[deprecated]
+pub type RTDClearRecentlyFoundChatsBuilder = ClearRecentlyFoundChatsBuilder;
+
+impl ClearRecentlyFoundChatsBuilder {
     pub fn build(&self) -> ClearRecentlyFoundChats {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ClearRecentlyFoundChats> for ClearRecentlyFoundChats {
     }
 }
 
-impl AsRef<ClearRecentlyFoundChats> for RTDClearRecentlyFoundChatsBuilder {
+impl AsRef<ClearRecentlyFoundChats> for ClearRecentlyFoundChatsBuilder {
     fn as_ref(&self) -> &ClearRecentlyFoundChats {
         &self.inner
     }

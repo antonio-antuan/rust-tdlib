@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct ConnectedWebsites {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// List of connected websites
+
+    #[serde(default)]
     websites: Vec<ConnectedWebsite>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for ConnectedWebsites {
 }
 
 impl ConnectedWebsites {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDConnectedWebsitesBuilder {
+    pub fn builder() -> ConnectedWebsitesBuilder {
         let mut inner = ConnectedWebsites::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDConnectedWebsitesBuilder { inner }
+        ConnectedWebsitesBuilder { inner }
     }
 
     pub fn websites(&self) -> &Vec<ConnectedWebsite> {
@@ -42,11 +44,14 @@ impl ConnectedWebsites {
 }
 
 #[doc(hidden)]
-pub struct RTDConnectedWebsitesBuilder {
+pub struct ConnectedWebsitesBuilder {
     inner: ConnectedWebsites,
 }
 
-impl RTDConnectedWebsitesBuilder {
+#[deprecated]
+pub type RTDConnectedWebsitesBuilder = ConnectedWebsitesBuilder;
+
+impl ConnectedWebsitesBuilder {
     pub fn build(&self) -> ConnectedWebsites {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<ConnectedWebsites> for ConnectedWebsites {
     }
 }
 
-impl AsRef<ConnectedWebsites> for RTDConnectedWebsitesBuilder {
+impl AsRef<ConnectedWebsites> for ConnectedWebsitesBuilder {
     fn as_ref(&self) -> &ConnectedWebsites {
         &self.inner
     }

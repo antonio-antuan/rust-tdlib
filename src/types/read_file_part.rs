@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,16 @@ pub struct ReadFilePart {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the file. The file must be located in the TDLib file cache
+
+    #[serde(default)]
     file_id: i32,
     /// The offset from which to read the file
+
+    #[serde(default)]
     offset: i32,
     /// Number of bytes to read. An error will be returned if there are not enough bytes available in the file from the specified position. Pass 0 to read all available data from the specified position
+
+    #[serde(default)]
     count: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +41,16 @@ impl RObject for ReadFilePart {
 impl RFunction for ReadFilePart {}
 
 impl ReadFilePart {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReadFilePartBuilder {
+    pub fn builder() -> ReadFilePartBuilder {
         let mut inner = ReadFilePart::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "readFilePart".to_string();
 
-        RTDReadFilePartBuilder { inner }
+        ReadFilePartBuilder { inner }
     }
 
     pub fn file_id(&self) -> i32 {
@@ -61,11 +67,14 @@ impl ReadFilePart {
 }
 
 #[doc(hidden)]
-pub struct RTDReadFilePartBuilder {
+pub struct ReadFilePartBuilder {
     inner: ReadFilePart,
 }
 
-impl RTDReadFilePartBuilder {
+#[deprecated]
+pub type RTDReadFilePartBuilder = ReadFilePartBuilder;
+
+impl ReadFilePartBuilder {
     pub fn build(&self) -> ReadFilePart {
         self.inner.clone()
     }
@@ -92,7 +101,7 @@ impl AsRef<ReadFilePart> for ReadFilePart {
     }
 }
 
-impl AsRef<ReadFilePart> for RTDReadFilePartBuilder {
+impl AsRef<ReadFilePart> for ReadFilePartBuilder {
     fn as_ref(&self) -> &ReadFilePart {
         &self.inner
     }

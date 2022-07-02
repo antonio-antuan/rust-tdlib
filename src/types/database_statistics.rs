@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct DatabaseStatistics {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Database statistics in an unspecified human-readable format
+
+    #[serde(default)]
     statistics: String,
 }
 
@@ -26,14 +28,14 @@ impl RObject for DatabaseStatistics {
 }
 
 impl DatabaseStatistics {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDatabaseStatisticsBuilder {
+    pub fn builder() -> DatabaseStatisticsBuilder {
         let mut inner = DatabaseStatistics::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDatabaseStatisticsBuilder { inner }
+        DatabaseStatisticsBuilder { inner }
     }
 
     pub fn statistics(&self) -> &String {
@@ -42,11 +44,14 @@ impl DatabaseStatistics {
 }
 
 #[doc(hidden)]
-pub struct RTDDatabaseStatisticsBuilder {
+pub struct DatabaseStatisticsBuilder {
     inner: DatabaseStatistics,
 }
 
-impl RTDDatabaseStatisticsBuilder {
+#[deprecated]
+pub type RTDDatabaseStatisticsBuilder = DatabaseStatisticsBuilder;
+
+impl DatabaseStatisticsBuilder {
     pub fn build(&self) -> DatabaseStatistics {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<DatabaseStatistics> for DatabaseStatistics {
     }
 }
 
-impl AsRef<DatabaseStatistics> for RTDDatabaseStatisticsBuilder {
+impl AsRef<DatabaseStatistics> for DatabaseStatisticsBuilder {
     fn as_ref(&self) -> &DatabaseStatistics {
         &self.inner
     }

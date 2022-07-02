@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,58 +14,31 @@ pub enum PassportElementErrorSource {
     #[doc(hidden)]
     _Default,
     /// One of the data fields contains an error. The error will be considered resolved when the value of the field changes
-    #[serde(rename(
-        serialize = "passportElementErrorSourceDataField",
-        deserialize = "passportElementErrorSourceDataField"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceDataField"))]
     DataField(PassportElementErrorSourceDataField),
     /// The file contains an error. The error will be considered resolved when the file changes
-    #[serde(rename(
-        serialize = "passportElementErrorSourceFile",
-        deserialize = "passportElementErrorSourceFile"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceFile"))]
     File(PassportElementErrorSourceFile),
     /// The list of attached files contains an error. The error will be considered resolved when the list of files changes
-    #[serde(rename(
-        serialize = "passportElementErrorSourceFiles",
-        deserialize = "passportElementErrorSourceFiles"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceFiles"))]
     Files(PassportElementErrorSourceFiles),
     /// The front side of the document contains an error. The error will be considered resolved when the file with the front side changes
-    #[serde(rename(
-        serialize = "passportElementErrorSourceFrontSide",
-        deserialize = "passportElementErrorSourceFrontSide"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceFrontSide"))]
     FrontSide(PassportElementErrorSourceFrontSide),
     /// The reverse side of the document contains an error. The error will be considered resolved when the file with the reverse side changes
-    #[serde(rename(
-        serialize = "passportElementErrorSourceReverseSide",
-        deserialize = "passportElementErrorSourceReverseSide"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceReverseSide"))]
     ReverseSide(PassportElementErrorSourceReverseSide),
     /// The selfie with the document contains an error. The error will be considered resolved when the file with the selfie changes
-    #[serde(rename(
-        serialize = "passportElementErrorSourceSelfie",
-        deserialize = "passportElementErrorSourceSelfie"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceSelfie"))]
     Selfie(PassportElementErrorSourceSelfie),
     /// One of files with the translation of the document contains an error. The error will be considered resolved when the file changes
-    #[serde(rename(
-        serialize = "passportElementErrorSourceTranslationFile",
-        deserialize = "passportElementErrorSourceTranslationFile"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceTranslationFile"))]
     TranslationFile(PassportElementErrorSourceTranslationFile),
     /// The translation of the document contains an error. The error will be considered resolved when the list of translation files changes
-    #[serde(rename(
-        serialize = "passportElementErrorSourceTranslationFiles",
-        deserialize = "passportElementErrorSourceTranslationFiles"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceTranslationFiles"))]
     TranslationFiles(PassportElementErrorSourceTranslationFiles),
     /// The element contains an error in an unspecified place. The error will be considered resolved when new data is added
-    #[serde(rename(
-        serialize = "passportElementErrorSourceUnspecified",
-        deserialize = "passportElementErrorSourceUnspecified"
-    ))]
+    #[serde(rename(deserialize = "passportElementErrorSourceUnspecified"))]
     Unspecified(PassportElementErrorSourceUnspecified),
 }
 
@@ -111,7 +84,7 @@ impl RObject for PassportElementErrorSource {
 }
 
 impl PassportElementErrorSource {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -135,6 +108,8 @@ pub struct PassportElementErrorSourceDataField {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Field name
+
+    #[serde(default)]
     field_name: String,
 }
 
@@ -152,14 +127,14 @@ impl RObject for PassportElementErrorSourceDataField {
 impl TDPassportElementErrorSource for PassportElementErrorSourceDataField {}
 
 impl PassportElementErrorSourceDataField {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceDataFieldBuilder {
+    pub fn builder() -> PassportElementErrorSourceDataFieldBuilder {
         let mut inner = PassportElementErrorSourceDataField::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceDataFieldBuilder { inner }
+        PassportElementErrorSourceDataFieldBuilder { inner }
     }
 
     pub fn field_name(&self) -> &String {
@@ -168,11 +143,14 @@ impl PassportElementErrorSourceDataField {
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceDataFieldBuilder {
+pub struct PassportElementErrorSourceDataFieldBuilder {
     inner: PassportElementErrorSourceDataField,
 }
 
-impl RTDPassportElementErrorSourceDataFieldBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceDataFieldBuilder = PassportElementErrorSourceDataFieldBuilder;
+
+impl PassportElementErrorSourceDataFieldBuilder {
     pub fn build(&self) -> PassportElementErrorSourceDataField {
         self.inner.clone()
     }
@@ -189,7 +167,7 @@ impl AsRef<PassportElementErrorSourceDataField> for PassportElementErrorSourceDa
     }
 }
 
-impl AsRef<PassportElementErrorSourceDataField> for RTDPassportElementErrorSourceDataFieldBuilder {
+impl AsRef<PassportElementErrorSourceDataField> for PassportElementErrorSourceDataFieldBuilder {
     fn as_ref(&self) -> &PassportElementErrorSourceDataField {
         &self.inner
     }
@@ -204,6 +182,8 @@ pub struct PassportElementErrorSourceFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Index of a file with the error
+
+    #[serde(default)]
     file_index: i32,
 }
 
@@ -221,14 +201,14 @@ impl RObject for PassportElementErrorSourceFile {
 impl TDPassportElementErrorSource for PassportElementErrorSourceFile {}
 
 impl PassportElementErrorSourceFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceFileBuilder {
+    pub fn builder() -> PassportElementErrorSourceFileBuilder {
         let mut inner = PassportElementErrorSourceFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceFileBuilder { inner }
+        PassportElementErrorSourceFileBuilder { inner }
     }
 
     pub fn file_index(&self) -> i32 {
@@ -237,11 +217,14 @@ impl PassportElementErrorSourceFile {
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceFileBuilder {
+pub struct PassportElementErrorSourceFileBuilder {
     inner: PassportElementErrorSourceFile,
 }
 
-impl RTDPassportElementErrorSourceFileBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceFileBuilder = PassportElementErrorSourceFileBuilder;
+
+impl PassportElementErrorSourceFileBuilder {
     pub fn build(&self) -> PassportElementErrorSourceFile {
         self.inner.clone()
     }
@@ -258,7 +241,7 @@ impl AsRef<PassportElementErrorSourceFile> for PassportElementErrorSourceFile {
     }
 }
 
-impl AsRef<PassportElementErrorSourceFile> for RTDPassportElementErrorSourceFileBuilder {
+impl AsRef<PassportElementErrorSourceFile> for PassportElementErrorSourceFileBuilder {
     fn as_ref(&self) -> &PassportElementErrorSourceFile {
         &self.inner
     }
@@ -288,23 +271,26 @@ impl RObject for PassportElementErrorSourceFiles {
 impl TDPassportElementErrorSource for PassportElementErrorSourceFiles {}
 
 impl PassportElementErrorSourceFiles {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceFilesBuilder {
+    pub fn builder() -> PassportElementErrorSourceFilesBuilder {
         let mut inner = PassportElementErrorSourceFiles::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceFilesBuilder { inner }
+        PassportElementErrorSourceFilesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceFilesBuilder {
+pub struct PassportElementErrorSourceFilesBuilder {
     inner: PassportElementErrorSourceFiles,
 }
 
-impl RTDPassportElementErrorSourceFilesBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceFilesBuilder = PassportElementErrorSourceFilesBuilder;
+
+impl PassportElementErrorSourceFilesBuilder {
     pub fn build(&self) -> PassportElementErrorSourceFiles {
         self.inner.clone()
     }
@@ -316,7 +302,7 @@ impl AsRef<PassportElementErrorSourceFiles> for PassportElementErrorSourceFiles 
     }
 }
 
-impl AsRef<PassportElementErrorSourceFiles> for RTDPassportElementErrorSourceFilesBuilder {
+impl AsRef<PassportElementErrorSourceFiles> for PassportElementErrorSourceFilesBuilder {
     fn as_ref(&self) -> &PassportElementErrorSourceFiles {
         &self.inner
     }
@@ -346,23 +332,26 @@ impl RObject for PassportElementErrorSourceFrontSide {
 impl TDPassportElementErrorSource for PassportElementErrorSourceFrontSide {}
 
 impl PassportElementErrorSourceFrontSide {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceFrontSideBuilder {
+    pub fn builder() -> PassportElementErrorSourceFrontSideBuilder {
         let mut inner = PassportElementErrorSourceFrontSide::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceFrontSideBuilder { inner }
+        PassportElementErrorSourceFrontSideBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceFrontSideBuilder {
+pub struct PassportElementErrorSourceFrontSideBuilder {
     inner: PassportElementErrorSourceFrontSide,
 }
 
-impl RTDPassportElementErrorSourceFrontSideBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceFrontSideBuilder = PassportElementErrorSourceFrontSideBuilder;
+
+impl PassportElementErrorSourceFrontSideBuilder {
     pub fn build(&self) -> PassportElementErrorSourceFrontSide {
         self.inner.clone()
     }
@@ -374,7 +363,7 @@ impl AsRef<PassportElementErrorSourceFrontSide> for PassportElementErrorSourceFr
     }
 }
 
-impl AsRef<PassportElementErrorSourceFrontSide> for RTDPassportElementErrorSourceFrontSideBuilder {
+impl AsRef<PassportElementErrorSourceFrontSide> for PassportElementErrorSourceFrontSideBuilder {
     fn as_ref(&self) -> &PassportElementErrorSourceFrontSide {
         &self.inner
     }
@@ -404,23 +393,27 @@ impl RObject for PassportElementErrorSourceReverseSide {
 impl TDPassportElementErrorSource for PassportElementErrorSourceReverseSide {}
 
 impl PassportElementErrorSourceReverseSide {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceReverseSideBuilder {
+    pub fn builder() -> PassportElementErrorSourceReverseSideBuilder {
         let mut inner = PassportElementErrorSourceReverseSide::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceReverseSideBuilder { inner }
+        PassportElementErrorSourceReverseSideBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceReverseSideBuilder {
+pub struct PassportElementErrorSourceReverseSideBuilder {
     inner: PassportElementErrorSourceReverseSide,
 }
 
-impl RTDPassportElementErrorSourceReverseSideBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceReverseSideBuilder =
+    PassportElementErrorSourceReverseSideBuilder;
+
+impl PassportElementErrorSourceReverseSideBuilder {
     pub fn build(&self) -> PassportElementErrorSourceReverseSide {
         self.inner.clone()
     }
@@ -432,9 +425,7 @@ impl AsRef<PassportElementErrorSourceReverseSide> for PassportElementErrorSource
     }
 }
 
-impl AsRef<PassportElementErrorSourceReverseSide>
-    for RTDPassportElementErrorSourceReverseSideBuilder
-{
+impl AsRef<PassportElementErrorSourceReverseSide> for PassportElementErrorSourceReverseSideBuilder {
     fn as_ref(&self) -> &PassportElementErrorSourceReverseSide {
         &self.inner
     }
@@ -464,23 +455,26 @@ impl RObject for PassportElementErrorSourceSelfie {
 impl TDPassportElementErrorSource for PassportElementErrorSourceSelfie {}
 
 impl PassportElementErrorSourceSelfie {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceSelfieBuilder {
+    pub fn builder() -> PassportElementErrorSourceSelfieBuilder {
         let mut inner = PassportElementErrorSourceSelfie::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceSelfieBuilder { inner }
+        PassportElementErrorSourceSelfieBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceSelfieBuilder {
+pub struct PassportElementErrorSourceSelfieBuilder {
     inner: PassportElementErrorSourceSelfie,
 }
 
-impl RTDPassportElementErrorSourceSelfieBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceSelfieBuilder = PassportElementErrorSourceSelfieBuilder;
+
+impl PassportElementErrorSourceSelfieBuilder {
     pub fn build(&self) -> PassportElementErrorSourceSelfie {
         self.inner.clone()
     }
@@ -492,7 +486,7 @@ impl AsRef<PassportElementErrorSourceSelfie> for PassportElementErrorSourceSelfi
     }
 }
 
-impl AsRef<PassportElementErrorSourceSelfie> for RTDPassportElementErrorSourceSelfieBuilder {
+impl AsRef<PassportElementErrorSourceSelfie> for PassportElementErrorSourceSelfieBuilder {
     fn as_ref(&self) -> &PassportElementErrorSourceSelfie {
         &self.inner
     }
@@ -507,6 +501,8 @@ pub struct PassportElementErrorSourceTranslationFile {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Index of a file with the error
+
+    #[serde(default)]
     file_index: i32,
 }
 
@@ -524,14 +520,14 @@ impl RObject for PassportElementErrorSourceTranslationFile {
 impl TDPassportElementErrorSource for PassportElementErrorSourceTranslationFile {}
 
 impl PassportElementErrorSourceTranslationFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceTranslationFileBuilder {
+    pub fn builder() -> PassportElementErrorSourceTranslationFileBuilder {
         let mut inner = PassportElementErrorSourceTranslationFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceTranslationFileBuilder { inner }
+        PassportElementErrorSourceTranslationFileBuilder { inner }
     }
 
     pub fn file_index(&self) -> i32 {
@@ -540,11 +536,15 @@ impl PassportElementErrorSourceTranslationFile {
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceTranslationFileBuilder {
+pub struct PassportElementErrorSourceTranslationFileBuilder {
     inner: PassportElementErrorSourceTranslationFile,
 }
 
-impl RTDPassportElementErrorSourceTranslationFileBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceTranslationFileBuilder =
+    PassportElementErrorSourceTranslationFileBuilder;
+
+impl PassportElementErrorSourceTranslationFileBuilder {
     pub fn build(&self) -> PassportElementErrorSourceTranslationFile {
         self.inner.clone()
     }
@@ -564,7 +564,7 @@ impl AsRef<PassportElementErrorSourceTranslationFile>
 }
 
 impl AsRef<PassportElementErrorSourceTranslationFile>
-    for RTDPassportElementErrorSourceTranslationFileBuilder
+    for PassportElementErrorSourceTranslationFileBuilder
 {
     fn as_ref(&self) -> &PassportElementErrorSourceTranslationFile {
         &self.inner
@@ -595,23 +595,27 @@ impl RObject for PassportElementErrorSourceTranslationFiles {
 impl TDPassportElementErrorSource for PassportElementErrorSourceTranslationFiles {}
 
 impl PassportElementErrorSourceTranslationFiles {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceTranslationFilesBuilder {
+    pub fn builder() -> PassportElementErrorSourceTranslationFilesBuilder {
         let mut inner = PassportElementErrorSourceTranslationFiles::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceTranslationFilesBuilder { inner }
+        PassportElementErrorSourceTranslationFilesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceTranslationFilesBuilder {
+pub struct PassportElementErrorSourceTranslationFilesBuilder {
     inner: PassportElementErrorSourceTranslationFiles,
 }
 
-impl RTDPassportElementErrorSourceTranslationFilesBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceTranslationFilesBuilder =
+    PassportElementErrorSourceTranslationFilesBuilder;
+
+impl PassportElementErrorSourceTranslationFilesBuilder {
     pub fn build(&self) -> PassportElementErrorSourceTranslationFiles {
         self.inner.clone()
     }
@@ -626,7 +630,7 @@ impl AsRef<PassportElementErrorSourceTranslationFiles>
 }
 
 impl AsRef<PassportElementErrorSourceTranslationFiles>
-    for RTDPassportElementErrorSourceTranslationFilesBuilder
+    for PassportElementErrorSourceTranslationFilesBuilder
 {
     fn as_ref(&self) -> &PassportElementErrorSourceTranslationFiles {
         &self.inner
@@ -657,23 +661,27 @@ impl RObject for PassportElementErrorSourceUnspecified {
 impl TDPassportElementErrorSource for PassportElementErrorSourceUnspecified {}
 
 impl PassportElementErrorSourceUnspecified {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportElementErrorSourceUnspecifiedBuilder {
+    pub fn builder() -> PassportElementErrorSourceUnspecifiedBuilder {
         let mut inner = PassportElementErrorSourceUnspecified::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportElementErrorSourceUnspecifiedBuilder { inner }
+        PassportElementErrorSourceUnspecifiedBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDPassportElementErrorSourceUnspecifiedBuilder {
+pub struct PassportElementErrorSourceUnspecifiedBuilder {
     inner: PassportElementErrorSourceUnspecified,
 }
 
-impl RTDPassportElementErrorSourceUnspecifiedBuilder {
+#[deprecated]
+pub type RTDPassportElementErrorSourceUnspecifiedBuilder =
+    PassportElementErrorSourceUnspecifiedBuilder;
+
+impl PassportElementErrorSourceUnspecifiedBuilder {
     pub fn build(&self) -> PassportElementErrorSourceUnspecified {
         self.inner.clone()
     }
@@ -685,9 +693,7 @@ impl AsRef<PassportElementErrorSourceUnspecified> for PassportElementErrorSource
     }
 }
 
-impl AsRef<PassportElementErrorSourceUnspecified>
-    for RTDPassportElementErrorSourceUnspecifiedBuilder
-{
+impl AsRef<PassportElementErrorSourceUnspecified> for PassportElementErrorSourceUnspecifiedBuilder {
     fn as_ref(&self) -> &PassportElementErrorSourceUnspecified {
         &self.inner
     }

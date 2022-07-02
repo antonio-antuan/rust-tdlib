@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,13 +14,10 @@ pub enum InputSticker {
     #[doc(hidden)]
     _Default,
     /// An animated sticker in TGS format
-    #[serde(rename(
-        serialize = "inputStickerAnimated",
-        deserialize = "inputStickerAnimated"
-    ))]
+    #[serde(rename(deserialize = "inputStickerAnimated"))]
     Animated(InputStickerAnimated),
     /// A static sticker in PNG format, which will be converted to WEBP server-side
-    #[serde(rename(serialize = "inputStickerStatic", deserialize = "inputStickerStatic"))]
+    #[serde(rename(deserialize = "inputStickerStatic"))]
     Static(InputStickerStatic),
 }
 
@@ -52,7 +49,7 @@ impl RObject for InputSticker {
 }
 
 impl InputSticker {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -80,6 +77,8 @@ pub struct InputStickerAnimated {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
     /// Emojis corresponding to the sticker
+
+    #[serde(default)]
     emojis: String,
 }
 
@@ -97,14 +96,14 @@ impl RObject for InputStickerAnimated {
 impl TDInputSticker for InputStickerAnimated {}
 
 impl InputStickerAnimated {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputStickerAnimatedBuilder {
+    pub fn builder() -> InputStickerAnimatedBuilder {
         let mut inner = InputStickerAnimated::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputStickerAnimatedBuilder { inner }
+        InputStickerAnimatedBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -117,11 +116,14 @@ impl InputStickerAnimated {
 }
 
 #[doc(hidden)]
-pub struct RTDInputStickerAnimatedBuilder {
+pub struct InputStickerAnimatedBuilder {
     inner: InputStickerAnimated,
 }
 
-impl RTDInputStickerAnimatedBuilder {
+#[deprecated]
+pub type RTDInputStickerAnimatedBuilder = InputStickerAnimatedBuilder;
+
+impl InputStickerAnimatedBuilder {
     pub fn build(&self) -> InputStickerAnimated {
         self.inner.clone()
     }
@@ -143,7 +145,7 @@ impl AsRef<InputStickerAnimated> for InputStickerAnimated {
     }
 }
 
-impl AsRef<InputStickerAnimated> for RTDInputStickerAnimatedBuilder {
+impl AsRef<InputStickerAnimated> for InputStickerAnimatedBuilder {
     fn as_ref(&self) -> &InputStickerAnimated {
         &self.inner
     }
@@ -162,9 +164,11 @@ pub struct InputStickerStatic {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
     /// Emojis corresponding to the sticker
+
+    #[serde(default)]
     emojis: String,
-    /// For masks, position where the mask should be placed; may be null
-    mask_position: Option<MaskPosition>,
+    /// For masks, position where the mask is placed; pass null if unspecified
+    mask_position: MaskPosition,
 }
 
 impl RObject for InputStickerStatic {
@@ -181,14 +185,14 @@ impl RObject for InputStickerStatic {
 impl TDInputSticker for InputStickerStatic {}
 
 impl InputStickerStatic {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputStickerStaticBuilder {
+    pub fn builder() -> InputStickerStaticBuilder {
         let mut inner = InputStickerStatic::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputStickerStaticBuilder { inner }
+        InputStickerStaticBuilder { inner }
     }
 
     pub fn sticker(&self) -> &InputFile {
@@ -199,17 +203,20 @@ impl InputStickerStatic {
         &self.emojis
     }
 
-    pub fn mask_position(&self) -> &Option<MaskPosition> {
+    pub fn mask_position(&self) -> &MaskPosition {
         &self.mask_position
     }
 }
 
 #[doc(hidden)]
-pub struct RTDInputStickerStaticBuilder {
+pub struct InputStickerStaticBuilder {
     inner: InputStickerStatic,
 }
 
-impl RTDInputStickerStaticBuilder {
+#[deprecated]
+pub type RTDInputStickerStaticBuilder = InputStickerStaticBuilder;
+
+impl InputStickerStaticBuilder {
     pub fn build(&self) -> InputStickerStatic {
         self.inner.clone()
     }
@@ -225,7 +232,7 @@ impl RTDInputStickerStaticBuilder {
     }
 
     pub fn mask_position<T: AsRef<MaskPosition>>(&mut self, mask_position: T) -> &mut Self {
-        self.inner.mask_position = Some(mask_position.as_ref().clone());
+        self.inner.mask_position = mask_position.as_ref().clone();
         self
     }
 }
@@ -236,7 +243,7 @@ impl AsRef<InputStickerStatic> for InputStickerStatic {
     }
 }
 
-impl AsRef<InputStickerStatic> for RTDInputStickerStaticBuilder {
+impl AsRef<InputStickerStatic> for InputStickerStaticBuilder {
     fn as_ref(&self) -> &InputStickerStatic {
         &self.inner
     }

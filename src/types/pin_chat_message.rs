@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,12 +11,20 @@ pub struct PinChatMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the new pinned message
+
+    #[serde(default)]
     message_id: i64,
-    /// True, if there should be no notification about the pinned message. Notifications are always disabled in channels and private chats
+    /// True, if there must be no notification about the pinned message. Notifications are always disabled in channels and private chats
+
+    #[serde(default)]
     disable_notification: bool,
     /// True, if the message needs to be pinned for one side only; private chats only
+
+    #[serde(default)]
     only_for_self: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +45,16 @@ impl RObject for PinChatMessage {
 impl RFunction for PinChatMessage {}
 
 impl PinChatMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPinChatMessageBuilder {
+    pub fn builder() -> PinChatMessageBuilder {
         let mut inner = PinChatMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "pinChatMessage".to_string();
 
-        RTDPinChatMessageBuilder { inner }
+        PinChatMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -67,11 +75,14 @@ impl PinChatMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDPinChatMessageBuilder {
+pub struct PinChatMessageBuilder {
     inner: PinChatMessage,
 }
 
-impl RTDPinChatMessageBuilder {
+#[deprecated]
+pub type RTDPinChatMessageBuilder = PinChatMessageBuilder;
+
+impl PinChatMessageBuilder {
     pub fn build(&self) -> PinChatMessage {
         self.inner.clone()
     }
@@ -103,7 +114,7 @@ impl AsRef<PinChatMessage> for PinChatMessage {
     }
 }
 
-impl AsRef<PinChatMessage> for RTDPinChatMessageBuilder {
+impl AsRef<PinChatMessage> for PinChatMessageBuilder {
     fn as_ref(&self) -> &PinChatMessage {
         &self.inner
     }

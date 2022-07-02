@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,38 +11,59 @@ pub struct WebPage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Original URL of the link
+
+    #[serde(default)]
     url: String,
     /// URL to display
+
+    #[serde(default)]
     display_url: String,
     /// Type of the web page. Can be: article, photo, audio, video, document, profile, app, or something else
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(default)]
     type_: String,
     /// Short name of the site (e.g., Google Docs, App Store)
+
+    #[serde(default)]
     site_name: String,
     /// Title of the content
+
+    #[serde(default)]
     title: String,
     /// Describes a web page preview
     description: FormattedText,
     /// Image representing the content; may be null
     photo: Option<Photo>,
     /// URL to show in the embedded preview
+
+    #[serde(default)]
     embed_url: String,
     /// MIME type of the embedded preview, (e.g., text/html or video/mp4)
+
+    #[serde(default)]
     embed_type: String,
     /// Width of the embedded preview
+
+    #[serde(default)]
     embed_width: i32,
     /// Height of the embedded preview
+
+    #[serde(default)]
     embed_height: i32,
     /// Duration of the content, in seconds
+
+    #[serde(default)]
     duration: i32,
     /// Author of the content
+
+    #[serde(default)]
     author: String,
     /// Preview of the content as an animation, if available; may be null
     animation: Option<Animation>,
     /// Preview of the content as an audio file, if available; may be null
     audio: Option<Audio>,
-    /// Preview of the content as a document, if available (currently only available for small PDF files and ZIP archives); may be null
+    /// Preview of the content as a document, if available; may be null
     document: Option<Document>,
     /// Preview of the content as a sticker for small WEBP files, if available; may be null
     sticker: Option<Sticker>,
@@ -52,7 +73,9 @@ pub struct WebPage {
     video_note: Option<VideoNote>,
     /// Preview of the content as a voice note, if available; may be null
     voice_note: Option<VoiceNote>,
-    /// Version of instant view, available for the web page (currently can be 1 or 2), 0 if none
+    /// Version of instant view, available for the web page (currently, can be 1 or 2), 0 if none
+
+    #[serde(default)]
     instant_view_version: i32,
 }
 
@@ -68,14 +91,14 @@ impl RObject for WebPage {
 }
 
 impl WebPage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDWebPageBuilder {
+    pub fn builder() -> WebPageBuilder {
         let mut inner = WebPage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDWebPageBuilder { inner }
+        WebPageBuilder { inner }
     }
 
     pub fn url(&self) -> &String {
@@ -164,11 +187,14 @@ impl WebPage {
 }
 
 #[doc(hidden)]
-pub struct RTDWebPageBuilder {
+pub struct WebPageBuilder {
     inner: WebPage,
 }
 
-impl RTDWebPageBuilder {
+#[deprecated]
+pub type RTDWebPageBuilder = WebPageBuilder;
+
+impl WebPageBuilder {
     pub fn build(&self) -> WebPage {
         self.inner.clone()
     }
@@ -285,7 +311,7 @@ impl AsRef<WebPage> for WebPage {
     }
 }
 
-impl AsRef<WebPage> for RTDWebPageBuilder {
+impl AsRef<WebPage> for WebPageBuilder {
     fn as_ref(&self) -> &WebPage {
         &self.inner
     }

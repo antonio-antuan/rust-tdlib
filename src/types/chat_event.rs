@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,12 +13,17 @@ pub struct ChatEvent {
     /// Chat event identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Point in time (Unix timestamp) when the event happened
+
+    #[serde(default)]
     date: i32,
-    /// Identifier of the user who performed the action that triggered the event
-    user_id: i32,
-    /// Action performed by the user
+    /// Identifier of the user or chat who performed the action
+
+    #[serde(skip_serializing_if = "MessageSender::_is_default")]
+    member_id: MessageSender,
+    /// The action
 
     #[serde(skip_serializing_if = "ChatEventAction::_is_default")]
     action: ChatEventAction,
@@ -36,14 +41,14 @@ impl RObject for ChatEvent {
 }
 
 impl ChatEvent {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatEventBuilder {
+    pub fn builder() -> ChatEventBuilder {
         let mut inner = ChatEvent::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatEventBuilder { inner }
+        ChatEventBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -54,8 +59,8 @@ impl ChatEvent {
         self.date
     }
 
-    pub fn user_id(&self) -> i32 {
-        self.user_id
+    pub fn member_id(&self) -> &MessageSender {
+        &self.member_id
     }
 
     pub fn action(&self) -> &ChatEventAction {
@@ -64,11 +69,14 @@ impl ChatEvent {
 }
 
 #[doc(hidden)]
-pub struct RTDChatEventBuilder {
+pub struct ChatEventBuilder {
     inner: ChatEvent,
 }
 
-impl RTDChatEventBuilder {
+#[deprecated]
+pub type RTDChatEventBuilder = ChatEventBuilder;
+
+impl ChatEventBuilder {
     pub fn build(&self) -> ChatEvent {
         self.inner.clone()
     }
@@ -83,8 +91,8 @@ impl RTDChatEventBuilder {
         self
     }
 
-    pub fn user_id(&mut self, user_id: i32) -> &mut Self {
-        self.inner.user_id = user_id;
+    pub fn member_id<T: AsRef<MessageSender>>(&mut self, member_id: T) -> &mut Self {
+        self.inner.member_id = member_id.as_ref().clone();
         self
     }
 
@@ -100,7 +108,7 @@ impl AsRef<ChatEvent> for ChatEvent {
     }
 }
 
-impl AsRef<ChatEvent> for RTDChatEventBuilder {
+impl AsRef<ChatEvent> for ChatEventBuilder {
     fn as_ref(&self) -> &ChatEvent {
         &self.inner
     }

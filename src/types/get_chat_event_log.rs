@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,19 +11,28 @@ pub struct GetChatEventLog {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Search query by which to filter events
+
+    #[serde(default)]
     query: String,
     /// Identifier of an event from which to return results. Use 0 to get results from the latest events
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     from_event_id: i64,
     /// The maximum number of events to return; up to 100
+
+    #[serde(default)]
     limit: i32,
-    /// The types of events to return. By default, all types will be returned
+    /// The types of events to return; pass null to get chat events of all types
     filters: ChatEventLogFilters,
     /// User identifiers by which to filter events. By default, events relating to all users will be returned
-    user_ids: Vec<i32>,
+
+    #[serde(default)]
+    user_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -43,16 +52,16 @@ impl RObject for GetChatEventLog {
 impl RFunction for GetChatEventLog {}
 
 impl GetChatEventLog {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetChatEventLogBuilder {
+    pub fn builder() -> GetChatEventLogBuilder {
         let mut inner = GetChatEventLog::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getChatEventLog".to_string();
 
-        RTDGetChatEventLogBuilder { inner }
+        GetChatEventLogBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -75,17 +84,20 @@ impl GetChatEventLog {
         &self.filters
     }
 
-    pub fn user_ids(&self) -> &Vec<i32> {
+    pub fn user_ids(&self) -> &Vec<i64> {
         &self.user_ids
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetChatEventLogBuilder {
+pub struct GetChatEventLogBuilder {
     inner: GetChatEventLog,
 }
 
-impl RTDGetChatEventLogBuilder {
+#[deprecated]
+pub type RTDGetChatEventLogBuilder = GetChatEventLogBuilder;
+
+impl GetChatEventLogBuilder {
     pub fn build(&self) -> GetChatEventLog {
         self.inner.clone()
     }
@@ -115,7 +127,7 @@ impl RTDGetChatEventLogBuilder {
         self
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }
@@ -127,7 +139,7 @@ impl AsRef<GetChatEventLog> for GetChatEventLog {
     }
 }
 
-impl AsRef<GetChatEventLog> for RTDGetChatEventLogBuilder {
+impl AsRef<GetChatEventLog> for GetChatEventLogBuilder {
     fn as_ref(&self) -> &GetChatEventLog {
         &self.inner
     }

@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Toggles sender signatures messages sent in a channel; requires can_change_info rights
+/// Toggles whether sender signature is added to sent messages in a channel; requires can_change_info administrator right
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ToggleSupergroupSignMessages {
     #[doc(hidden)]
@@ -11,8 +11,12 @@ pub struct ToggleSupergroupSignMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the channel
-    supergroup_id: i32,
+
+    #[serde(default)]
+    supergroup_id: i64,
     /// New value of sign_messages
+
+    #[serde(default)]
     sign_messages: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,19 +37,19 @@ impl RObject for ToggleSupergroupSignMessages {
 impl RFunction for ToggleSupergroupSignMessages {}
 
 impl ToggleSupergroupSignMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDToggleSupergroupSignMessagesBuilder {
+    pub fn builder() -> ToggleSupergroupSignMessagesBuilder {
         let mut inner = ToggleSupergroupSignMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "toggleSupergroupSignMessages".to_string();
 
-        RTDToggleSupergroupSignMessagesBuilder { inner }
+        ToggleSupergroupSignMessagesBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 
@@ -55,16 +59,19 @@ impl ToggleSupergroupSignMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDToggleSupergroupSignMessagesBuilder {
+pub struct ToggleSupergroupSignMessagesBuilder {
     inner: ToggleSupergroupSignMessages,
 }
 
-impl RTDToggleSupergroupSignMessagesBuilder {
+#[deprecated]
+pub type RTDToggleSupergroupSignMessagesBuilder = ToggleSupergroupSignMessagesBuilder;
+
+impl ToggleSupergroupSignMessagesBuilder {
     pub fn build(&self) -> ToggleSupergroupSignMessages {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }
@@ -81,7 +88,7 @@ impl AsRef<ToggleSupergroupSignMessages> for ToggleSupergroupSignMessages {
     }
 }
 
-impl AsRef<ToggleSupergroupSignMessages> for RTDToggleSupergroupSignMessagesBuilder {
+impl AsRef<ToggleSupergroupSignMessages> for ToggleSupergroupSignMessagesBuilder {
     fn as_ref(&self) -> &ToggleSupergroupSignMessages {
         &self.inner
     }

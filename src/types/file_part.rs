@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct FilePart {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// File bytes
+
+    #[serde(default)]
     data: String,
 }
 
@@ -26,14 +28,14 @@ impl RObject for FilePart {
 }
 
 impl FilePart {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDFilePartBuilder {
+    pub fn builder() -> FilePartBuilder {
         let mut inner = FilePart::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDFilePartBuilder { inner }
+        FilePartBuilder { inner }
     }
 
     pub fn data(&self) -> &String {
@@ -42,11 +44,14 @@ impl FilePart {
 }
 
 #[doc(hidden)]
-pub struct RTDFilePartBuilder {
+pub struct FilePartBuilder {
     inner: FilePart,
 }
 
-impl RTDFilePartBuilder {
+#[deprecated]
+pub type RTDFilePartBuilder = FilePartBuilder;
+
+impl FilePartBuilder {
     pub fn build(&self) -> FilePart {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<FilePart> for FilePart {
     }
 }
 
-impl AsRef<FilePart> for RTDFilePartBuilder {
+impl AsRef<FilePart> for FilePartBuilder {
     fn as_ref(&self) -> &FilePart {
         &self.inner
     }

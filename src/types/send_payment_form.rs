@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,17 +11,34 @@ pub struct SendPaymentForm {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier of the Invoice message
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier
+
+    #[serde(default)]
     message_id: i64,
-    /// Identifier returned by ValidateOrderInfo, or an empty string
+    /// Payment form identifier returned by getPaymentForm
+
+    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
+    payment_form_id: i64,
+    /// Identifier returned by validateOrderInfo, or an empty string
+
+    #[serde(default)]
     order_info_id: String,
     /// Identifier of a chosen shipping option, if applicable
+
+    #[serde(default)]
     shipping_option_id: String,
     /// The credentials chosen by user for payment
 
     #[serde(skip_serializing_if = "InputCredentials::_is_default")]
     credentials: InputCredentials,
+    /// Chosen by the user amount of tip in the smallest units of the currency
+
+    #[serde(default)]
+    tip_amount: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -41,16 +58,16 @@ impl RObject for SendPaymentForm {
 impl RFunction for SendPaymentForm {}
 
 impl SendPaymentForm {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendPaymentFormBuilder {
+    pub fn builder() -> SendPaymentFormBuilder {
         let mut inner = SendPaymentForm::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendPaymentForm".to_string();
 
-        RTDSendPaymentFormBuilder { inner }
+        SendPaymentFormBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -59,6 +76,10 @@ impl SendPaymentForm {
 
     pub fn message_id(&self) -> i64 {
         self.message_id
+    }
+
+    pub fn payment_form_id(&self) -> i64 {
+        self.payment_form_id
     }
 
     pub fn order_info_id(&self) -> &String {
@@ -72,14 +93,21 @@ impl SendPaymentForm {
     pub fn credentials(&self) -> &InputCredentials {
         &self.credentials
     }
+
+    pub fn tip_amount(&self) -> i64 {
+        self.tip_amount
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDSendPaymentFormBuilder {
+pub struct SendPaymentFormBuilder {
     inner: SendPaymentForm,
 }
 
-impl RTDSendPaymentFormBuilder {
+#[deprecated]
+pub type RTDSendPaymentFormBuilder = SendPaymentFormBuilder;
+
+impl SendPaymentFormBuilder {
     pub fn build(&self) -> SendPaymentForm {
         self.inner.clone()
     }
@@ -91,6 +119,11 @@ impl RTDSendPaymentFormBuilder {
 
     pub fn message_id(&mut self, message_id: i64) -> &mut Self {
         self.inner.message_id = message_id;
+        self
+    }
+
+    pub fn payment_form_id(&mut self, payment_form_id: i64) -> &mut Self {
+        self.inner.payment_form_id = payment_form_id;
         self
     }
 
@@ -108,6 +141,11 @@ impl RTDSendPaymentFormBuilder {
         self.inner.credentials = credentials.as_ref().clone();
         self
     }
+
+    pub fn tip_amount(&mut self, tip_amount: i64) -> &mut Self {
+        self.inner.tip_amount = tip_amount;
+        self
+    }
 }
 
 impl AsRef<SendPaymentForm> for SendPaymentForm {
@@ -116,7 +154,7 @@ impl AsRef<SendPaymentForm> for SendPaymentForm {
     }
 }
 
-impl AsRef<SendPaymentForm> for RTDSendPaymentFormBuilder {
+impl AsRef<SendPaymentForm> for SendPaymentFormBuilder {
     fn as_ref(&self) -> &SendPaymentForm {
         &self.inner
     }

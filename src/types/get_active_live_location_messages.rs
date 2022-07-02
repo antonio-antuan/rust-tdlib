@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns all active live locations that should be updated by the application. The list is persistent across application restarts only if the message database is used
+/// Returns all active live locations that need to be updated by the application. The list is persistent across application restarts only if the message database is used
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetActiveLiveLocationMessages {
     #[doc(hidden)]
@@ -29,25 +29,28 @@ impl RObject for GetActiveLiveLocationMessages {
 impl RFunction for GetActiveLiveLocationMessages {}
 
 impl GetActiveLiveLocationMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetActiveLiveLocationMessagesBuilder {
+    pub fn builder() -> GetActiveLiveLocationMessagesBuilder {
         let mut inner = GetActiveLiveLocationMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getActiveLiveLocationMessages".to_string();
 
-        RTDGetActiveLiveLocationMessagesBuilder { inner }
+        GetActiveLiveLocationMessagesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetActiveLiveLocationMessagesBuilder {
+pub struct GetActiveLiveLocationMessagesBuilder {
     inner: GetActiveLiveLocationMessages,
 }
 
-impl RTDGetActiveLiveLocationMessagesBuilder {
+#[deprecated]
+pub type RTDGetActiveLiveLocationMessagesBuilder = GetActiveLiveLocationMessagesBuilder;
+
+impl GetActiveLiveLocationMessagesBuilder {
     pub fn build(&self) -> GetActiveLiveLocationMessages {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetActiveLiveLocationMessages> for GetActiveLiveLocationMessages {
     }
 }
 
-impl AsRef<GetActiveLiveLocationMessages> for RTDGetActiveLiveLocationMessagesBuilder {
+impl AsRef<GetActiveLiveLocationMessages> for GetActiveLiveLocationMessagesBuilder {
     fn as_ref(&self) -> &GetActiveLiveLocationMessages {
         &self.inner
     }

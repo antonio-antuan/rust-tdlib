@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,7 +10,7 @@ pub struct SetTdlibParameters {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Parameters
+    /// Parameters for TDLib initialization
     parameters: TdlibParameters,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +31,16 @@ impl RObject for SetTdlibParameters {
 impl RFunction for SetTdlibParameters {}
 
 impl SetTdlibParameters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetTdlibParametersBuilder {
+    pub fn builder() -> SetTdlibParametersBuilder {
         let mut inner = SetTdlibParameters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setTdlibParameters".to_string();
 
-        RTDSetTdlibParametersBuilder { inner }
+        SetTdlibParametersBuilder { inner }
     }
 
     pub fn parameters(&self) -> &TdlibParameters {
@@ -49,11 +49,14 @@ impl SetTdlibParameters {
 }
 
 #[doc(hidden)]
-pub struct RTDSetTdlibParametersBuilder {
+pub struct SetTdlibParametersBuilder {
     inner: SetTdlibParameters,
 }
 
-impl RTDSetTdlibParametersBuilder {
+#[deprecated]
+pub type RTDSetTdlibParametersBuilder = SetTdlibParametersBuilder;
+
+impl SetTdlibParametersBuilder {
     pub fn build(&self) -> SetTdlibParameters {
         self.inner.clone()
     }
@@ -70,7 +73,7 @@ impl AsRef<SetTdlibParameters> for SetTdlibParameters {
     }
 }
 
-impl AsRef<SetTdlibParameters> for RTDSetTdlibParametersBuilder {
+impl AsRef<SetTdlibParameters> for SetTdlibParametersBuilder {
     fn as_ref(&self) -> &SetTdlibParameters {
         &self.inner
     }

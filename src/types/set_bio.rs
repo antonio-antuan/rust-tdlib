@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct SetBio {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The new value of the user bio; 0-70 characters without line feeds
+
+    #[serde(default)]
     bio: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for SetBio {
 impl RFunction for SetBio {}
 
 impl SetBio {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetBioBuilder {
+    pub fn builder() -> SetBioBuilder {
         let mut inner = SetBio::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setBio".to_string();
 
-        RTDSetBioBuilder { inner }
+        SetBioBuilder { inner }
     }
 
     pub fn bio(&self) -> &String {
@@ -49,11 +51,14 @@ impl SetBio {
 }
 
 #[doc(hidden)]
-pub struct RTDSetBioBuilder {
+pub struct SetBioBuilder {
     inner: SetBio,
 }
 
-impl RTDSetBioBuilder {
+#[deprecated]
+pub type RTDSetBioBuilder = SetBioBuilder;
+
+impl SetBioBuilder {
     pub fn build(&self) -> SetBio {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<SetBio> for SetBio {
     }
 }
 
-impl AsRef<SetBio> for RTDSetBioBuilder {
+impl AsRef<SetBio> for SetBioBuilder {
     fn as_ref(&self) -> &SetBio {
         &self.inner
     }

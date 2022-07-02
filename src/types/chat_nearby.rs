@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct ChatNearby {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Distance to the chat location, in meters
+
+    #[serde(default)]
     distance: i32,
 }
 
@@ -28,14 +32,14 @@ impl RObject for ChatNearby {
 }
 
 impl ChatNearby {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDChatNearbyBuilder {
+    pub fn builder() -> ChatNearbyBuilder {
         let mut inner = ChatNearby::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDChatNearbyBuilder { inner }
+        ChatNearbyBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -48,11 +52,14 @@ impl ChatNearby {
 }
 
 #[doc(hidden)]
-pub struct RTDChatNearbyBuilder {
+pub struct ChatNearbyBuilder {
     inner: ChatNearby,
 }
 
-impl RTDChatNearbyBuilder {
+#[deprecated]
+pub type RTDChatNearbyBuilder = ChatNearbyBuilder;
+
+impl ChatNearbyBuilder {
     pub fn build(&self) -> ChatNearby {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<ChatNearby> for ChatNearby {
     }
 }
 
-impl AsRef<ChatNearby> for RTDChatNearbyBuilder {
+impl AsRef<ChatNearby> for ChatNearbyBuilder {
     fn as_ref(&self) -> &ChatNearby {
         &self.inner
     }

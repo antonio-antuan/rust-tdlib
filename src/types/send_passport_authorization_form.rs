@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct SendPassportAuthorizationForm {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Authorization form identifier
+
+    #[serde(default)]
     autorization_form_id: i32,
     /// Types of Telegram Passport elements chosen by user to complete the authorization form
+
+    #[serde(default)]
     types: Vec<PassportElementType>,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SendPassportAuthorizationForm {
 impl RFunction for SendPassportAuthorizationForm {}
 
 impl SendPassportAuthorizationForm {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendPassportAuthorizationFormBuilder {
+    pub fn builder() -> SendPassportAuthorizationFormBuilder {
         let mut inner = SendPassportAuthorizationForm::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendPassportAuthorizationForm".to_string();
 
-        RTDSendPassportAuthorizationFormBuilder { inner }
+        SendPassportAuthorizationFormBuilder { inner }
     }
 
     pub fn autorization_form_id(&self) -> i32 {
@@ -55,11 +59,14 @@ impl SendPassportAuthorizationForm {
 }
 
 #[doc(hidden)]
-pub struct RTDSendPassportAuthorizationFormBuilder {
+pub struct SendPassportAuthorizationFormBuilder {
     inner: SendPassportAuthorizationForm,
 }
 
-impl RTDSendPassportAuthorizationFormBuilder {
+#[deprecated]
+pub type RTDSendPassportAuthorizationFormBuilder = SendPassportAuthorizationFormBuilder;
+
+impl SendPassportAuthorizationFormBuilder {
     pub fn build(&self) -> SendPassportAuthorizationForm {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SendPassportAuthorizationForm> for SendPassportAuthorizationForm {
     }
 }
 
-impl AsRef<SendPassportAuthorizationForm> for RTDSendPassportAuthorizationFormBuilder {
+impl AsRef<SendPassportAuthorizationForm> for SendPassportAuthorizationFormBuilder {
     fn as_ref(&self) -> &SendPassportAuthorizationForm {
         &self.inner
     }

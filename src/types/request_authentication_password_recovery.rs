@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,29 @@ impl RObject for RequestAuthenticationPasswordRecovery {
 impl RFunction for RequestAuthenticationPasswordRecovery {}
 
 impl RequestAuthenticationPasswordRecovery {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRequestAuthenticationPasswordRecoveryBuilder {
+    pub fn builder() -> RequestAuthenticationPasswordRecoveryBuilder {
         let mut inner = RequestAuthenticationPasswordRecovery::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "requestAuthenticationPasswordRecovery".to_string();
 
-        RTDRequestAuthenticationPasswordRecoveryBuilder { inner }
+        RequestAuthenticationPasswordRecoveryBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDRequestAuthenticationPasswordRecoveryBuilder {
+pub struct RequestAuthenticationPasswordRecoveryBuilder {
     inner: RequestAuthenticationPasswordRecovery,
 }
 
-impl RTDRequestAuthenticationPasswordRecoveryBuilder {
+#[deprecated]
+pub type RTDRequestAuthenticationPasswordRecoveryBuilder =
+    RequestAuthenticationPasswordRecoveryBuilder;
+
+impl RequestAuthenticationPasswordRecoveryBuilder {
     pub fn build(&self) -> RequestAuthenticationPasswordRecovery {
         self.inner.clone()
     }
@@ -59,9 +63,7 @@ impl AsRef<RequestAuthenticationPasswordRecovery> for RequestAuthenticationPassw
     }
 }
 
-impl AsRef<RequestAuthenticationPasswordRecovery>
-    for RTDRequestAuthenticationPasswordRecoveryBuilder
-{
+impl AsRef<RequestAuthenticationPasswordRecovery> for RequestAuthenticationPasswordRecoveryBuilder {
     fn as_ref(&self) -> &RequestAuthenticationPasswordRecovery {
         &self.inner
     }

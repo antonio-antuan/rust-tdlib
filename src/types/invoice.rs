@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,24 +11,52 @@ pub struct Invoice {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// ISO 4217 currency code
+
+    #[serde(default)]
     currency: String,
     /// A list of objects used to calculate the total price of the product
+
+    #[serde(default)]
     price_parts: Vec<LabeledPricePart>,
+    /// The maximum allowed amount of tip in the smallest units of the currency
+
+    #[serde(default)]
+    max_tip_amount: i64,
+    /// Suggested amounts of tip in the smallest units of the currency
+
+    #[serde(default)]
+    suggested_tip_amounts: Vec<i64>,
     /// True, if the payment is a test payment
+
+    #[serde(default)]
     is_test: bool,
     /// True, if the user's name is needed for payment
+
+    #[serde(default)]
     need_name: bool,
     /// True, if the user's phone number is needed for payment
+
+    #[serde(default)]
     need_phone_number: bool,
     /// True, if the user's email address is needed for payment
+
+    #[serde(default)]
     need_email_address: bool,
     /// True, if the user's shipping address is needed for payment
+
+    #[serde(default)]
     need_shipping_address: bool,
     /// True, if the user's phone number will be sent to the provider
+
+    #[serde(default)]
     send_phone_number_to_provider: bool,
     /// True, if the user's email address will be sent to the provider
+
+    #[serde(default)]
     send_email_address_to_provider: bool,
     /// True, if the total price depends on the shipping method
+
+    #[serde(default)]
     is_flexible: bool,
 }
 
@@ -44,14 +72,14 @@ impl RObject for Invoice {
 }
 
 impl Invoice {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInvoiceBuilder {
+    pub fn builder() -> InvoiceBuilder {
         let mut inner = Invoice::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInvoiceBuilder { inner }
+        InvoiceBuilder { inner }
     }
 
     pub fn currency(&self) -> &String {
@@ -60,6 +88,14 @@ impl Invoice {
 
     pub fn price_parts(&self) -> &Vec<LabeledPricePart> {
         &self.price_parts
+    }
+
+    pub fn max_tip_amount(&self) -> i64 {
+        self.max_tip_amount
+    }
+
+    pub fn suggested_tip_amounts(&self) -> &Vec<i64> {
+        &self.suggested_tip_amounts
     }
 
     pub fn is_test(&self) -> bool {
@@ -96,11 +132,14 @@ impl Invoice {
 }
 
 #[doc(hidden)]
-pub struct RTDInvoiceBuilder {
+pub struct InvoiceBuilder {
     inner: Invoice,
 }
 
-impl RTDInvoiceBuilder {
+#[deprecated]
+pub type RTDInvoiceBuilder = InvoiceBuilder;
+
+impl InvoiceBuilder {
     pub fn build(&self) -> Invoice {
         self.inner.clone()
     }
@@ -112,6 +151,16 @@ impl RTDInvoiceBuilder {
 
     pub fn price_parts(&mut self, price_parts: Vec<LabeledPricePart>) -> &mut Self {
         self.inner.price_parts = price_parts;
+        self
+    }
+
+    pub fn max_tip_amount(&mut self, max_tip_amount: i64) -> &mut Self {
+        self.inner.max_tip_amount = max_tip_amount;
+        self
+    }
+
+    pub fn suggested_tip_amounts(&mut self, suggested_tip_amounts: Vec<i64>) -> &mut Self {
+        self.inner.suggested_tip_amounts = suggested_tip_amounts;
         self
     }
 
@@ -168,7 +217,7 @@ impl AsRef<Invoice> for Invoice {
     }
 }
 
-impl AsRef<Invoice> for RTDInvoiceBuilder {
+impl AsRef<Invoice> for InvoiceBuilder {
     fn as_ref(&self) -> &Invoice {
         &self.inner
     }

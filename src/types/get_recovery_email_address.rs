@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetRecoveryEmailAddress {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The password for the current user
+
+    #[serde(default)]
     password: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for GetRecoveryEmailAddress {
 impl RFunction for GetRecoveryEmailAddress {}
 
 impl GetRecoveryEmailAddress {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetRecoveryEmailAddressBuilder {
+    pub fn builder() -> GetRecoveryEmailAddressBuilder {
         let mut inner = GetRecoveryEmailAddress::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getRecoveryEmailAddress".to_string();
 
-        RTDGetRecoveryEmailAddressBuilder { inner }
+        GetRecoveryEmailAddressBuilder { inner }
     }
 
     pub fn password(&self) -> &String {
@@ -49,11 +51,14 @@ impl GetRecoveryEmailAddress {
 }
 
 #[doc(hidden)]
-pub struct RTDGetRecoveryEmailAddressBuilder {
+pub struct GetRecoveryEmailAddressBuilder {
     inner: GetRecoveryEmailAddress,
 }
 
-impl RTDGetRecoveryEmailAddressBuilder {
+#[deprecated]
+pub type RTDGetRecoveryEmailAddressBuilder = GetRecoveryEmailAddressBuilder;
+
+impl GetRecoveryEmailAddressBuilder {
     pub fn build(&self) -> GetRecoveryEmailAddress {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<GetRecoveryEmailAddress> for GetRecoveryEmailAddress {
     }
 }
 
-impl AsRef<GetRecoveryEmailAddress> for RTDGetRecoveryEmailAddressBuilder {
+impl AsRef<GetRecoveryEmailAddress> for GetRecoveryEmailAddressBuilder {
     fn as_ref(&self) -> &GetRecoveryEmailAddress {
         &self.inner
     }

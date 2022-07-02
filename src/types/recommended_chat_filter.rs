@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,6 +13,8 @@ pub struct RecommendedChatFilter {
     /// The chat filter
     filter: ChatFilter,
     /// Describes a recommended chat filter
+
+    #[serde(default)]
     description: String,
 }
 
@@ -28,14 +30,14 @@ impl RObject for RecommendedChatFilter {
 }
 
 impl RecommendedChatFilter {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDRecommendedChatFilterBuilder {
+    pub fn builder() -> RecommendedChatFilterBuilder {
         let mut inner = RecommendedChatFilter::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDRecommendedChatFilterBuilder { inner }
+        RecommendedChatFilterBuilder { inner }
     }
 
     pub fn filter(&self) -> &ChatFilter {
@@ -48,11 +50,14 @@ impl RecommendedChatFilter {
 }
 
 #[doc(hidden)]
-pub struct RTDRecommendedChatFilterBuilder {
+pub struct RecommendedChatFilterBuilder {
     inner: RecommendedChatFilter,
 }
 
-impl RTDRecommendedChatFilterBuilder {
+#[deprecated]
+pub type RTDRecommendedChatFilterBuilder = RecommendedChatFilterBuilder;
+
+impl RecommendedChatFilterBuilder {
     pub fn build(&self) -> RecommendedChatFilter {
         self.inner.clone()
     }
@@ -74,7 +79,7 @@ impl AsRef<RecommendedChatFilter> for RecommendedChatFilter {
     }
 }
 
-impl AsRef<RecommendedChatFilter> for RTDRecommendedChatFilterBuilder {
+impl AsRef<RecommendedChatFilter> for RecommendedChatFilterBuilder {
     fn as_ref(&self) -> &RecommendedChatFilter {
         &self.inner
     }

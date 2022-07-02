@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -16,10 +16,16 @@ pub struct PassportSuitableElement {
     #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
     /// True, if a selfie is required with the identity document
+
+    #[serde(default)]
     is_selfie_required: bool,
     /// True, if a certified English translation is required with the document
+
+    #[serde(default)]
     is_translation_required: bool,
     /// True, if personal details must include the user's name in the language of their country of residence
+
+    #[serde(default)]
     is_native_name_required: bool,
 }
 
@@ -35,14 +41,14 @@ impl RObject for PassportSuitableElement {
 }
 
 impl PassportSuitableElement {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDPassportSuitableElementBuilder {
+    pub fn builder() -> PassportSuitableElementBuilder {
         let mut inner = PassportSuitableElement::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDPassportSuitableElementBuilder { inner }
+        PassportSuitableElementBuilder { inner }
     }
 
     pub fn type_(&self) -> &PassportElementType {
@@ -63,11 +69,14 @@ impl PassportSuitableElement {
 }
 
 #[doc(hidden)]
-pub struct RTDPassportSuitableElementBuilder {
+pub struct PassportSuitableElementBuilder {
     inner: PassportSuitableElement,
 }
 
-impl RTDPassportSuitableElementBuilder {
+#[deprecated]
+pub type RTDPassportSuitableElementBuilder = PassportSuitableElementBuilder;
+
+impl PassportSuitableElementBuilder {
     pub fn build(&self) -> PassportSuitableElement {
         self.inner.clone()
     }
@@ -99,7 +108,7 @@ impl AsRef<PassportSuitableElement> for PassportSuitableElement {
     }
 }
 
-impl AsRef<PassportSuitableElement> for RTDPassportSuitableElementBuilder {
+impl AsRef<PassportSuitableElement> for PassportSuitableElementBuilder {
     fn as_ref(&self) -> &PassportSuitableElement {
         &self.inner
     }

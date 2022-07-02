@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct CreateSupergroupChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Supergroup or channel identifier
-    supergroup_id: i32,
+
+    #[serde(default)]
+    supergroup_id: i64,
     /// If true, the chat will be created without network request. In this case all information about the chat except its type, title and photo can be incorrect
+
+    #[serde(default)]
     force: bool,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,19 +37,19 @@ impl RObject for CreateSupergroupChat {
 impl RFunction for CreateSupergroupChat {}
 
 impl CreateSupergroupChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateSupergroupChatBuilder {
+    pub fn builder() -> CreateSupergroupChatBuilder {
         let mut inner = CreateSupergroupChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createSupergroupChat".to_string();
 
-        RTDCreateSupergroupChatBuilder { inner }
+        CreateSupergroupChatBuilder { inner }
     }
 
-    pub fn supergroup_id(&self) -> i32 {
+    pub fn supergroup_id(&self) -> i64 {
         self.supergroup_id
     }
 
@@ -55,16 +59,19 @@ impl CreateSupergroupChat {
 }
 
 #[doc(hidden)]
-pub struct RTDCreateSupergroupChatBuilder {
+pub struct CreateSupergroupChatBuilder {
     inner: CreateSupergroupChat,
 }
 
-impl RTDCreateSupergroupChatBuilder {
+#[deprecated]
+pub type RTDCreateSupergroupChatBuilder = CreateSupergroupChatBuilder;
+
+impl CreateSupergroupChatBuilder {
     pub fn build(&self) -> CreateSupergroupChat {
         self.inner.clone()
     }
 
-    pub fn supergroup_id(&mut self, supergroup_id: i32) -> &mut Self {
+    pub fn supergroup_id(&mut self, supergroup_id: i64) -> &mut Self {
         self.inner.supergroup_id = supergroup_id;
         self
     }
@@ -81,7 +88,7 @@ impl AsRef<CreateSupergroupChat> for CreateSupergroupChat {
     }
 }
 
-impl AsRef<CreateSupergroupChat> for RTDCreateSupergroupChatBuilder {
+impl AsRef<CreateSupergroupChat> for CreateSupergroupChatBuilder {
     fn as_ref(&self) -> &CreateSupergroupChat {
         &self.inner
     }

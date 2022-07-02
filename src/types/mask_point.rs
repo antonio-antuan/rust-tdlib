@@ -1,29 +1,29 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Part of the face, relative to which a mask should be placed
+/// Part of the face, relative to which a mask is placed
 pub trait TDMaskPoint: Debug + RObject {}
 
-/// Part of the face, relative to which a mask should be placed
+/// Part of the face, relative to which a mask is placed
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(tag = "@type")]
 pub enum MaskPoint {
     #[doc(hidden)]
     _Default,
-    /// A mask should be placed relatively to the chin
-    #[serde(rename(serialize = "maskPointChin", deserialize = "maskPointChin"))]
+    /// The mask is placed relatively to the chin
+    #[serde(rename(deserialize = "maskPointChin"))]
     Chin(MaskPointChin),
-    /// A mask should be placed relatively to the eyes
-    #[serde(rename(serialize = "maskPointEyes", deserialize = "maskPointEyes"))]
+    /// The mask is placed relatively to the eyes
+    #[serde(rename(deserialize = "maskPointEyes"))]
     Eyes(MaskPointEyes),
-    /// A mask should be placed relatively to the forehead
-    #[serde(rename(serialize = "maskPointForehead", deserialize = "maskPointForehead"))]
+    /// The mask is placed relatively to the forehead
+    #[serde(rename(deserialize = "maskPointForehead"))]
     Forehead(MaskPointForehead),
-    /// A mask should be placed relatively to the mouth
-    #[serde(rename(serialize = "maskPointMouth", deserialize = "maskPointMouth"))]
+    /// The mask is placed relatively to the mouth
+    #[serde(rename(deserialize = "maskPointMouth"))]
     Mouth(MaskPointMouth),
 }
 
@@ -59,7 +59,7 @@ impl RObject for MaskPoint {
 }
 
 impl MaskPoint {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -74,7 +74,7 @@ impl AsRef<MaskPoint> for MaskPoint {
     }
 }
 
-/// A mask should be placed relatively to the chin
+/// The mask is placed relatively to the chin
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPointChin {
     #[doc(hidden)]
@@ -98,23 +98,26 @@ impl RObject for MaskPointChin {
 impl TDMaskPoint for MaskPointChin {}
 
 impl MaskPointChin {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMaskPointChinBuilder {
+    pub fn builder() -> MaskPointChinBuilder {
         let mut inner = MaskPointChin::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMaskPointChinBuilder { inner }
+        MaskPointChinBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMaskPointChinBuilder {
+pub struct MaskPointChinBuilder {
     inner: MaskPointChin,
 }
 
-impl RTDMaskPointChinBuilder {
+#[deprecated]
+pub type RTDMaskPointChinBuilder = MaskPointChinBuilder;
+
+impl MaskPointChinBuilder {
     pub fn build(&self) -> MaskPointChin {
         self.inner.clone()
     }
@@ -126,13 +129,13 @@ impl AsRef<MaskPointChin> for MaskPointChin {
     }
 }
 
-impl AsRef<MaskPointChin> for RTDMaskPointChinBuilder {
+impl AsRef<MaskPointChin> for MaskPointChinBuilder {
     fn as_ref(&self) -> &MaskPointChin {
         &self.inner
     }
 }
 
-/// A mask should be placed relatively to the eyes
+/// The mask is placed relatively to the eyes
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPointEyes {
     #[doc(hidden)]
@@ -156,23 +159,26 @@ impl RObject for MaskPointEyes {
 impl TDMaskPoint for MaskPointEyes {}
 
 impl MaskPointEyes {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMaskPointEyesBuilder {
+    pub fn builder() -> MaskPointEyesBuilder {
         let mut inner = MaskPointEyes::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMaskPointEyesBuilder { inner }
+        MaskPointEyesBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMaskPointEyesBuilder {
+pub struct MaskPointEyesBuilder {
     inner: MaskPointEyes,
 }
 
-impl RTDMaskPointEyesBuilder {
+#[deprecated]
+pub type RTDMaskPointEyesBuilder = MaskPointEyesBuilder;
+
+impl MaskPointEyesBuilder {
     pub fn build(&self) -> MaskPointEyes {
         self.inner.clone()
     }
@@ -184,13 +190,13 @@ impl AsRef<MaskPointEyes> for MaskPointEyes {
     }
 }
 
-impl AsRef<MaskPointEyes> for RTDMaskPointEyesBuilder {
+impl AsRef<MaskPointEyes> for MaskPointEyesBuilder {
     fn as_ref(&self) -> &MaskPointEyes {
         &self.inner
     }
 }
 
-/// A mask should be placed relatively to the forehead
+/// The mask is placed relatively to the forehead
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPointForehead {
     #[doc(hidden)]
@@ -214,23 +220,26 @@ impl RObject for MaskPointForehead {
 impl TDMaskPoint for MaskPointForehead {}
 
 impl MaskPointForehead {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMaskPointForeheadBuilder {
+    pub fn builder() -> MaskPointForeheadBuilder {
         let mut inner = MaskPointForehead::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMaskPointForeheadBuilder { inner }
+        MaskPointForeheadBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMaskPointForeheadBuilder {
+pub struct MaskPointForeheadBuilder {
     inner: MaskPointForehead,
 }
 
-impl RTDMaskPointForeheadBuilder {
+#[deprecated]
+pub type RTDMaskPointForeheadBuilder = MaskPointForeheadBuilder;
+
+impl MaskPointForeheadBuilder {
     pub fn build(&self) -> MaskPointForehead {
         self.inner.clone()
     }
@@ -242,13 +251,13 @@ impl AsRef<MaskPointForehead> for MaskPointForehead {
     }
 }
 
-impl AsRef<MaskPointForehead> for RTDMaskPointForeheadBuilder {
+impl AsRef<MaskPointForehead> for MaskPointForeheadBuilder {
     fn as_ref(&self) -> &MaskPointForehead {
         &self.inner
     }
 }
 
-/// A mask should be placed relatively to the mouth
+/// The mask is placed relatively to the mouth
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPointMouth {
     #[doc(hidden)]
@@ -272,23 +281,26 @@ impl RObject for MaskPointMouth {
 impl TDMaskPoint for MaskPointMouth {}
 
 impl MaskPointMouth {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMaskPointMouthBuilder {
+    pub fn builder() -> MaskPointMouthBuilder {
         let mut inner = MaskPointMouth::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMaskPointMouthBuilder { inner }
+        MaskPointMouthBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDMaskPointMouthBuilder {
+pub struct MaskPointMouthBuilder {
     inner: MaskPointMouth,
 }
 
-impl RTDMaskPointMouthBuilder {
+#[deprecated]
+pub type RTDMaskPointMouthBuilder = MaskPointMouthBuilder;
+
+impl MaskPointMouthBuilder {
     pub fn build(&self) -> MaskPointMouth {
         self.inner.clone()
     }
@@ -300,7 +312,7 @@ impl AsRef<MaskPointMouth> for MaskPointMouth {
     }
 }
 
-impl AsRef<MaskPointMouth> for RTDMaskPointMouthBuilder {
+impl AsRef<MaskPointMouth> for MaskPointMouthBuilder {
     fn as_ref(&self) -> &MaskPointMouth {
         &self.inner
     }

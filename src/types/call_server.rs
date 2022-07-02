@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,12 +13,19 @@ pub struct CallServer {
     /// Server identifier
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     id: i64,
     /// Server IPv4 address
+
+    #[serde(default)]
     ip_address: String,
     /// Server IPv6 address
+
+    #[serde(default)]
     ipv6_address: String,
     /// Server port number
+
+    #[serde(default)]
     port: i32,
     /// Server type
 
@@ -39,14 +46,14 @@ impl RObject for CallServer {
 }
 
 impl CallServer {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCallServerBuilder {
+    pub fn builder() -> CallServerBuilder {
         let mut inner = CallServer::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCallServerBuilder { inner }
+        CallServerBuilder { inner }
     }
 
     pub fn id(&self) -> i64 {
@@ -71,11 +78,14 @@ impl CallServer {
 }
 
 #[doc(hidden)]
-pub struct RTDCallServerBuilder {
+pub struct CallServerBuilder {
     inner: CallServer,
 }
 
-impl RTDCallServerBuilder {
+#[deprecated]
+pub type RTDCallServerBuilder = CallServerBuilder;
+
+impl CallServerBuilder {
     pub fn build(&self) -> CallServer {
         self.inner.clone()
     }
@@ -112,7 +122,7 @@ impl AsRef<CallServer> for CallServer {
     }
 }
 
-impl AsRef<CallServer> for RTDCallServerBuilder {
+impl AsRef<CallServer> for CallServerBuilder {
     fn as_ref(&self) -> &CallServer {
         &self.inner
     }

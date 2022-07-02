@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct CustomRequestResult {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A JSON-serialized result
+
+    #[serde(default)]
     result: String,
 }
 
@@ -26,14 +28,14 @@ impl RObject for CustomRequestResult {
 }
 
 impl CustomRequestResult {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCustomRequestResultBuilder {
+    pub fn builder() -> CustomRequestResultBuilder {
         let mut inner = CustomRequestResult::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDCustomRequestResultBuilder { inner }
+        CustomRequestResultBuilder { inner }
     }
 
     pub fn result(&self) -> &String {
@@ -42,11 +44,14 @@ impl CustomRequestResult {
 }
 
 #[doc(hidden)]
-pub struct RTDCustomRequestResultBuilder {
+pub struct CustomRequestResultBuilder {
     inner: CustomRequestResult,
 }
 
-impl RTDCustomRequestResultBuilder {
+#[deprecated]
+pub type RTDCustomRequestResultBuilder = CustomRequestResultBuilder;
+
+impl CustomRequestResultBuilder {
     pub fn build(&self) -> CustomRequestResult {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<CustomRequestResult> for CustomRequestResult {
     }
 }
 
-impl AsRef<CustomRequestResult> for RTDCustomRequestResultBuilder {
+impl AsRef<CustomRequestResult> for CustomRequestResultBuilder {
     fn as_ref(&self) -> &CustomRequestResult {
         &self.inner
     }

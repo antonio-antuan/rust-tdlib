@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,52 +14,28 @@ pub enum UserPrivacySettingRule {
     #[doc(hidden)]
     _Default,
     /// A rule to allow all users to do something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleAllowAll",
-        deserialize = "userPrivacySettingRuleAllowAll"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowAll"))]
     AllowAll(UserPrivacySettingRuleAllowAll),
     /// A rule to allow all members of certain specified basic groups and supergroups to doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleAllowChatMembers",
-        deserialize = "userPrivacySettingRuleAllowChatMembers"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowChatMembers"))]
     AllowChatMembers(UserPrivacySettingRuleAllowChatMembers),
     /// A rule to allow all of a user's contacts to do something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleAllowContacts",
-        deserialize = "userPrivacySettingRuleAllowContacts"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowContacts"))]
     AllowContacts(UserPrivacySettingRuleAllowContacts),
     /// A rule to allow certain specified users to do something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleAllowUsers",
-        deserialize = "userPrivacySettingRuleAllowUsers"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleAllowUsers"))]
     AllowUsers(UserPrivacySettingRuleAllowUsers),
     /// A rule to restrict all users from doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleRestrictAll",
-        deserialize = "userPrivacySettingRuleRestrictAll"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictAll"))]
     RestrictAll(UserPrivacySettingRuleRestrictAll),
     /// A rule to restrict all members of specified basic groups and supergroups from doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleRestrictChatMembers",
-        deserialize = "userPrivacySettingRuleRestrictChatMembers"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictChatMembers"))]
     RestrictChatMembers(UserPrivacySettingRuleRestrictChatMembers),
     /// A rule to restrict all contacts of a user from doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleRestrictContacts",
-        deserialize = "userPrivacySettingRuleRestrictContacts"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictContacts"))]
     RestrictContacts(UserPrivacySettingRuleRestrictContacts),
     /// A rule to restrict all specified users from doing something
-    #[serde(rename(
-        serialize = "userPrivacySettingRuleRestrictUsers",
-        deserialize = "userPrivacySettingRuleRestrictUsers"
-    ))]
+    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictUsers"))]
     RestrictUsers(UserPrivacySettingRuleRestrictUsers),
 }
 
@@ -103,7 +79,7 @@ impl RObject for UserPrivacySettingRule {
 }
 
 impl UserPrivacySettingRule {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -142,23 +118,26 @@ impl RObject for UserPrivacySettingRuleAllowAll {
 impl TDUserPrivacySettingRule for UserPrivacySettingRuleAllowAll {}
 
 impl UserPrivacySettingRuleAllowAll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingRuleAllowAllBuilder {
+    pub fn builder() -> UserPrivacySettingRuleAllowAllBuilder {
         let mut inner = UserPrivacySettingRuleAllowAll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingRuleAllowAllBuilder { inner }
+        UserPrivacySettingRuleAllowAllBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingRuleAllowAllBuilder {
+pub struct UserPrivacySettingRuleAllowAllBuilder {
     inner: UserPrivacySettingRuleAllowAll,
 }
 
-impl RTDUserPrivacySettingRuleAllowAllBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingRuleAllowAllBuilder = UserPrivacySettingRuleAllowAllBuilder;
+
+impl UserPrivacySettingRuleAllowAllBuilder {
     pub fn build(&self) -> UserPrivacySettingRuleAllowAll {
         self.inner.clone()
     }
@@ -170,7 +149,7 @@ impl AsRef<UserPrivacySettingRuleAllowAll> for UserPrivacySettingRuleAllowAll {
     }
 }
 
-impl AsRef<UserPrivacySettingRuleAllowAll> for RTDUserPrivacySettingRuleAllowAllBuilder {
+impl AsRef<UserPrivacySettingRuleAllowAll> for UserPrivacySettingRuleAllowAllBuilder {
     fn as_ref(&self) -> &UserPrivacySettingRuleAllowAll {
         &self.inner
     }
@@ -185,6 +164,8 @@ pub struct UserPrivacySettingRuleAllowChatMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat identifiers, total number of chats in all rules must not exceed 20
+
+    #[serde(default)]
     chat_ids: Vec<i64>,
 }
 
@@ -202,14 +183,14 @@ impl RObject for UserPrivacySettingRuleAllowChatMembers {
 impl TDUserPrivacySettingRule for UserPrivacySettingRuleAllowChatMembers {}
 
 impl UserPrivacySettingRuleAllowChatMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingRuleAllowChatMembersBuilder {
+    pub fn builder() -> UserPrivacySettingRuleAllowChatMembersBuilder {
         let mut inner = UserPrivacySettingRuleAllowChatMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingRuleAllowChatMembersBuilder { inner }
+        UserPrivacySettingRuleAllowChatMembersBuilder { inner }
     }
 
     pub fn chat_ids(&self) -> &Vec<i64> {
@@ -218,11 +199,15 @@ impl UserPrivacySettingRuleAllowChatMembers {
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingRuleAllowChatMembersBuilder {
+pub struct UserPrivacySettingRuleAllowChatMembersBuilder {
     inner: UserPrivacySettingRuleAllowChatMembers,
 }
 
-impl RTDUserPrivacySettingRuleAllowChatMembersBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingRuleAllowChatMembersBuilder =
+    UserPrivacySettingRuleAllowChatMembersBuilder;
+
+impl UserPrivacySettingRuleAllowChatMembersBuilder {
     pub fn build(&self) -> UserPrivacySettingRuleAllowChatMembers {
         self.inner.clone()
     }
@@ -240,7 +225,7 @@ impl AsRef<UserPrivacySettingRuleAllowChatMembers> for UserPrivacySettingRuleAll
 }
 
 impl AsRef<UserPrivacySettingRuleAllowChatMembers>
-    for RTDUserPrivacySettingRuleAllowChatMembersBuilder
+    for UserPrivacySettingRuleAllowChatMembersBuilder
 {
     fn as_ref(&self) -> &UserPrivacySettingRuleAllowChatMembers {
         &self.inner
@@ -271,23 +256,26 @@ impl RObject for UserPrivacySettingRuleAllowContacts {
 impl TDUserPrivacySettingRule for UserPrivacySettingRuleAllowContacts {}
 
 impl UserPrivacySettingRuleAllowContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingRuleAllowContactsBuilder {
+    pub fn builder() -> UserPrivacySettingRuleAllowContactsBuilder {
         let mut inner = UserPrivacySettingRuleAllowContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingRuleAllowContactsBuilder { inner }
+        UserPrivacySettingRuleAllowContactsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingRuleAllowContactsBuilder {
+pub struct UserPrivacySettingRuleAllowContactsBuilder {
     inner: UserPrivacySettingRuleAllowContacts,
 }
 
-impl RTDUserPrivacySettingRuleAllowContactsBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingRuleAllowContactsBuilder = UserPrivacySettingRuleAllowContactsBuilder;
+
+impl UserPrivacySettingRuleAllowContactsBuilder {
     pub fn build(&self) -> UserPrivacySettingRuleAllowContacts {
         self.inner.clone()
     }
@@ -299,7 +287,7 @@ impl AsRef<UserPrivacySettingRuleAllowContacts> for UserPrivacySettingRuleAllowC
     }
 }
 
-impl AsRef<UserPrivacySettingRuleAllowContacts> for RTDUserPrivacySettingRuleAllowContactsBuilder {
+impl AsRef<UserPrivacySettingRuleAllowContacts> for UserPrivacySettingRuleAllowContactsBuilder {
     fn as_ref(&self) -> &UserPrivacySettingRuleAllowContacts {
         &self.inner
     }
@@ -314,7 +302,9 @@ pub struct UserPrivacySettingRuleAllowUsers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The user identifiers, total number of users in all rules must not exceed 1000
-    user_ids: Vec<i32>,
+
+    #[serde(default)]
+    user_ids: Vec<i64>,
 }
 
 impl RObject for UserPrivacySettingRuleAllowUsers {
@@ -331,32 +321,35 @@ impl RObject for UserPrivacySettingRuleAllowUsers {
 impl TDUserPrivacySettingRule for UserPrivacySettingRuleAllowUsers {}
 
 impl UserPrivacySettingRuleAllowUsers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingRuleAllowUsersBuilder {
+    pub fn builder() -> UserPrivacySettingRuleAllowUsersBuilder {
         let mut inner = UserPrivacySettingRuleAllowUsers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingRuleAllowUsersBuilder { inner }
+        UserPrivacySettingRuleAllowUsersBuilder { inner }
     }
 
-    pub fn user_ids(&self) -> &Vec<i32> {
+    pub fn user_ids(&self) -> &Vec<i64> {
         &self.user_ids
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingRuleAllowUsersBuilder {
+pub struct UserPrivacySettingRuleAllowUsersBuilder {
     inner: UserPrivacySettingRuleAllowUsers,
 }
 
-impl RTDUserPrivacySettingRuleAllowUsersBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingRuleAllowUsersBuilder = UserPrivacySettingRuleAllowUsersBuilder;
+
+impl UserPrivacySettingRuleAllowUsersBuilder {
     pub fn build(&self) -> UserPrivacySettingRuleAllowUsers {
         self.inner.clone()
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }
@@ -368,7 +361,7 @@ impl AsRef<UserPrivacySettingRuleAllowUsers> for UserPrivacySettingRuleAllowUser
     }
 }
 
-impl AsRef<UserPrivacySettingRuleAllowUsers> for RTDUserPrivacySettingRuleAllowUsersBuilder {
+impl AsRef<UserPrivacySettingRuleAllowUsers> for UserPrivacySettingRuleAllowUsersBuilder {
     fn as_ref(&self) -> &UserPrivacySettingRuleAllowUsers {
         &self.inner
     }
@@ -398,23 +391,26 @@ impl RObject for UserPrivacySettingRuleRestrictAll {
 impl TDUserPrivacySettingRule for UserPrivacySettingRuleRestrictAll {}
 
 impl UserPrivacySettingRuleRestrictAll {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingRuleRestrictAllBuilder {
+    pub fn builder() -> UserPrivacySettingRuleRestrictAllBuilder {
         let mut inner = UserPrivacySettingRuleRestrictAll::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingRuleRestrictAllBuilder { inner }
+        UserPrivacySettingRuleRestrictAllBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingRuleRestrictAllBuilder {
+pub struct UserPrivacySettingRuleRestrictAllBuilder {
     inner: UserPrivacySettingRuleRestrictAll,
 }
 
-impl RTDUserPrivacySettingRuleRestrictAllBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingRuleRestrictAllBuilder = UserPrivacySettingRuleRestrictAllBuilder;
+
+impl UserPrivacySettingRuleRestrictAllBuilder {
     pub fn build(&self) -> UserPrivacySettingRuleRestrictAll {
         self.inner.clone()
     }
@@ -426,7 +422,7 @@ impl AsRef<UserPrivacySettingRuleRestrictAll> for UserPrivacySettingRuleRestrict
     }
 }
 
-impl AsRef<UserPrivacySettingRuleRestrictAll> for RTDUserPrivacySettingRuleRestrictAllBuilder {
+impl AsRef<UserPrivacySettingRuleRestrictAll> for UserPrivacySettingRuleRestrictAllBuilder {
     fn as_ref(&self) -> &UserPrivacySettingRuleRestrictAll {
         &self.inner
     }
@@ -441,6 +437,8 @@ pub struct UserPrivacySettingRuleRestrictChatMembers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The chat identifiers, total number of chats in all rules must not exceed 20
+
+    #[serde(default)]
     chat_ids: Vec<i64>,
 }
 
@@ -458,14 +456,14 @@ impl RObject for UserPrivacySettingRuleRestrictChatMembers {
 impl TDUserPrivacySettingRule for UserPrivacySettingRuleRestrictChatMembers {}
 
 impl UserPrivacySettingRuleRestrictChatMembers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingRuleRestrictChatMembersBuilder {
+    pub fn builder() -> UserPrivacySettingRuleRestrictChatMembersBuilder {
         let mut inner = UserPrivacySettingRuleRestrictChatMembers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingRuleRestrictChatMembersBuilder { inner }
+        UserPrivacySettingRuleRestrictChatMembersBuilder { inner }
     }
 
     pub fn chat_ids(&self) -> &Vec<i64> {
@@ -474,11 +472,15 @@ impl UserPrivacySettingRuleRestrictChatMembers {
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingRuleRestrictChatMembersBuilder {
+pub struct UserPrivacySettingRuleRestrictChatMembersBuilder {
     inner: UserPrivacySettingRuleRestrictChatMembers,
 }
 
-impl RTDUserPrivacySettingRuleRestrictChatMembersBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingRuleRestrictChatMembersBuilder =
+    UserPrivacySettingRuleRestrictChatMembersBuilder;
+
+impl UserPrivacySettingRuleRestrictChatMembersBuilder {
     pub fn build(&self) -> UserPrivacySettingRuleRestrictChatMembers {
         self.inner.clone()
     }
@@ -498,7 +500,7 @@ impl AsRef<UserPrivacySettingRuleRestrictChatMembers>
 }
 
 impl AsRef<UserPrivacySettingRuleRestrictChatMembers>
-    for RTDUserPrivacySettingRuleRestrictChatMembersBuilder
+    for UserPrivacySettingRuleRestrictChatMembersBuilder
 {
     fn as_ref(&self) -> &UserPrivacySettingRuleRestrictChatMembers {
         &self.inner
@@ -529,23 +531,27 @@ impl RObject for UserPrivacySettingRuleRestrictContacts {
 impl TDUserPrivacySettingRule for UserPrivacySettingRuleRestrictContacts {}
 
 impl UserPrivacySettingRuleRestrictContacts {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingRuleRestrictContactsBuilder {
+    pub fn builder() -> UserPrivacySettingRuleRestrictContactsBuilder {
         let mut inner = UserPrivacySettingRuleRestrictContacts::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingRuleRestrictContactsBuilder { inner }
+        UserPrivacySettingRuleRestrictContactsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingRuleRestrictContactsBuilder {
+pub struct UserPrivacySettingRuleRestrictContactsBuilder {
     inner: UserPrivacySettingRuleRestrictContacts,
 }
 
-impl RTDUserPrivacySettingRuleRestrictContactsBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingRuleRestrictContactsBuilder =
+    UserPrivacySettingRuleRestrictContactsBuilder;
+
+impl UserPrivacySettingRuleRestrictContactsBuilder {
     pub fn build(&self) -> UserPrivacySettingRuleRestrictContacts {
         self.inner.clone()
     }
@@ -558,7 +564,7 @@ impl AsRef<UserPrivacySettingRuleRestrictContacts> for UserPrivacySettingRuleRes
 }
 
 impl AsRef<UserPrivacySettingRuleRestrictContacts>
-    for RTDUserPrivacySettingRuleRestrictContactsBuilder
+    for UserPrivacySettingRuleRestrictContactsBuilder
 {
     fn as_ref(&self) -> &UserPrivacySettingRuleRestrictContacts {
         &self.inner
@@ -574,7 +580,9 @@ pub struct UserPrivacySettingRuleRestrictUsers {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The user identifiers, total number of users in all rules must not exceed 1000
-    user_ids: Vec<i32>,
+
+    #[serde(default)]
+    user_ids: Vec<i64>,
 }
 
 impl RObject for UserPrivacySettingRuleRestrictUsers {
@@ -591,32 +599,35 @@ impl RObject for UserPrivacySettingRuleRestrictUsers {
 impl TDUserPrivacySettingRule for UserPrivacySettingRuleRestrictUsers {}
 
 impl UserPrivacySettingRuleRestrictUsers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserPrivacySettingRuleRestrictUsersBuilder {
+    pub fn builder() -> UserPrivacySettingRuleRestrictUsersBuilder {
         let mut inner = UserPrivacySettingRuleRestrictUsers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserPrivacySettingRuleRestrictUsersBuilder { inner }
+        UserPrivacySettingRuleRestrictUsersBuilder { inner }
     }
 
-    pub fn user_ids(&self) -> &Vec<i32> {
+    pub fn user_ids(&self) -> &Vec<i64> {
         &self.user_ids
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserPrivacySettingRuleRestrictUsersBuilder {
+pub struct UserPrivacySettingRuleRestrictUsersBuilder {
     inner: UserPrivacySettingRuleRestrictUsers,
 }
 
-impl RTDUserPrivacySettingRuleRestrictUsersBuilder {
+#[deprecated]
+pub type RTDUserPrivacySettingRuleRestrictUsersBuilder = UserPrivacySettingRuleRestrictUsersBuilder;
+
+impl UserPrivacySettingRuleRestrictUsersBuilder {
     pub fn build(&self) -> UserPrivacySettingRuleRestrictUsers {
         self.inner.clone()
     }
 
-    pub fn user_ids(&mut self, user_ids: Vec<i32>) -> &mut Self {
+    pub fn user_ids(&mut self, user_ids: Vec<i64>) -> &mut Self {
         self.inner.user_ids = user_ids;
         self
     }
@@ -628,7 +639,7 @@ impl AsRef<UserPrivacySettingRuleRestrictUsers> for UserPrivacySettingRuleRestri
     }
 }
 
-impl AsRef<UserPrivacySettingRuleRestrictUsers> for RTDUserPrivacySettingRuleRestrictUsersBuilder {
+impl AsRef<UserPrivacySettingRuleRestrictUsers> for UserPrivacySettingRuleRestrictUsersBuilder {
     fn as_ref(&self) -> &UserPrivacySettingRuleRestrictUsers {
         &self.inner
     }

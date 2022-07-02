@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,10 +13,15 @@ pub struct SetFileGenerationProgress {
     /// The identifier of the generation process
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     generation_id: i64,
     /// Expected size of the generated file, in bytes; 0 if unknown
+
+    #[serde(default)]
     expected_size: i32,
     /// The number of bytes already generated
+
+    #[serde(default)]
     local_prefix_size: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +42,16 @@ impl RObject for SetFileGenerationProgress {
 impl RFunction for SetFileGenerationProgress {}
 
 impl SetFileGenerationProgress {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetFileGenerationProgressBuilder {
+    pub fn builder() -> SetFileGenerationProgressBuilder {
         let mut inner = SetFileGenerationProgress::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setFileGenerationProgress".to_string();
 
-        RTDSetFileGenerationProgressBuilder { inner }
+        SetFileGenerationProgressBuilder { inner }
     }
 
     pub fn generation_id(&self) -> i64 {
@@ -63,11 +68,14 @@ impl SetFileGenerationProgress {
 }
 
 #[doc(hidden)]
-pub struct RTDSetFileGenerationProgressBuilder {
+pub struct SetFileGenerationProgressBuilder {
     inner: SetFileGenerationProgress,
 }
 
-impl RTDSetFileGenerationProgressBuilder {
+#[deprecated]
+pub type RTDSetFileGenerationProgressBuilder = SetFileGenerationProgressBuilder;
+
+impl SetFileGenerationProgressBuilder {
     pub fn build(&self) -> SetFileGenerationProgress {
         self.inner.clone()
     }
@@ -94,7 +102,7 @@ impl AsRef<SetFileGenerationProgress> for SetFileGenerationProgress {
     }
 }
 
-impl AsRef<SetFileGenerationProgress> for RTDSetFileGenerationProgressBuilder {
+impl AsRef<SetFileGenerationProgress> for SetFileGenerationProgressBuilder {
     fn as_ref(&self) -> &SetFileGenerationProgress {
         &self.inner
     }

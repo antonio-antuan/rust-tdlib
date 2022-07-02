@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,14 @@ pub struct DraftMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the message to reply to; 0 if none
+
+    #[serde(default)]
     reply_to_message_id: i64,
     /// Point in time (Unix timestamp) when the draft was created
+
+    #[serde(default)]
     date: i32,
-    /// Content of the message draft; this should always be of type inputMessageText
+    /// Content of the message draft; must be of the type inputMessageText
 
     #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
     input_message_text: InputMessageContent,
@@ -32,14 +36,14 @@ impl RObject for DraftMessage {
 }
 
 impl DraftMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDraftMessageBuilder {
+    pub fn builder() -> DraftMessageBuilder {
         let mut inner = DraftMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDDraftMessageBuilder { inner }
+        DraftMessageBuilder { inner }
     }
 
     pub fn reply_to_message_id(&self) -> i64 {
@@ -56,11 +60,14 @@ impl DraftMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDDraftMessageBuilder {
+pub struct DraftMessageBuilder {
     inner: DraftMessage,
 }
 
-impl RTDDraftMessageBuilder {
+#[deprecated]
+pub type RTDDraftMessageBuilder = DraftMessageBuilder;
+
+impl DraftMessageBuilder {
     pub fn build(&self) -> DraftMessage {
         self.inner.clone()
     }
@@ -90,7 +97,7 @@ impl AsRef<DraftMessage> for DraftMessage {
     }
 }
 
-impl AsRef<DraftMessage> for RTDDraftMessageBuilder {
+impl AsRef<DraftMessage> for DraftMessageBuilder {
     fn as_ref(&self) -> &DraftMessage {
         &self.inner
     }

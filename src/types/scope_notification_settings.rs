@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,24 @@ pub struct ScopeNotificationSettings {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Time left before notifications will be unmuted, in seconds
+
+    #[serde(default)]
     mute_for: i32,
     /// The name of an audio file to be used for notification sounds; only applies to iOS applications
+
+    #[serde(default)]
     sound: String,
-    /// True, if message content should be displayed in notifications
+    /// True, if message content must be displayed in notifications
+
+    #[serde(default)]
     show_preview: bool,
     /// True, if notifications for incoming pinned messages will be created as for an ordinary unread message
+
+    #[serde(default)]
     disable_pinned_message_notifications: bool,
     /// True, if notifications for messages with mentions will be created as for an ordinary unread message
+
+    #[serde(default)]
     disable_mention_notifications: bool,
 }
 
@@ -34,14 +44,14 @@ impl RObject for ScopeNotificationSettings {
 }
 
 impl ScopeNotificationSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDScopeNotificationSettingsBuilder {
+    pub fn builder() -> ScopeNotificationSettingsBuilder {
         let mut inner = ScopeNotificationSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDScopeNotificationSettingsBuilder { inner }
+        ScopeNotificationSettingsBuilder { inner }
     }
 
     pub fn mute_for(&self) -> i32 {
@@ -66,11 +76,14 @@ impl ScopeNotificationSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDScopeNotificationSettingsBuilder {
+pub struct ScopeNotificationSettingsBuilder {
     inner: ScopeNotificationSettings,
 }
 
-impl RTDScopeNotificationSettingsBuilder {
+#[deprecated]
+pub type RTDScopeNotificationSettingsBuilder = ScopeNotificationSettingsBuilder;
+
+impl ScopeNotificationSettingsBuilder {
     pub fn build(&self) -> ScopeNotificationSettings {
         self.inner.clone()
     }
@@ -113,7 +126,7 @@ impl AsRef<ScopeNotificationSettings> for ScopeNotificationSettings {
     }
 }
 
-impl AsRef<ScopeNotificationSettings> for RTDScopeNotificationSettingsBuilder {
+impl AsRef<ScopeNotificationSettings> for ScopeNotificationSettingsBuilder {
     fn as_ref(&self) -> &ScopeNotificationSettings {
         &self.inner
     }

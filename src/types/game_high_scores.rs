@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GameHighScores {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A list of game high scores
+
+    #[serde(default)]
     scores: Vec<GameHighScore>,
 }
 
@@ -26,14 +28,14 @@ impl RObject for GameHighScores {
 }
 
 impl GameHighScores {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGameHighScoresBuilder {
+    pub fn builder() -> GameHighScoresBuilder {
         let mut inner = GameHighScores::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDGameHighScoresBuilder { inner }
+        GameHighScoresBuilder { inner }
     }
 
     pub fn scores(&self) -> &Vec<GameHighScore> {
@@ -42,11 +44,14 @@ impl GameHighScores {
 }
 
 #[doc(hidden)]
-pub struct RTDGameHighScoresBuilder {
+pub struct GameHighScoresBuilder {
     inner: GameHighScores,
 }
 
-impl RTDGameHighScoresBuilder {
+#[deprecated]
+pub type RTDGameHighScoresBuilder = GameHighScoresBuilder;
+
+impl GameHighScoresBuilder {
     pub fn build(&self) -> GameHighScores {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<GameHighScores> for GameHighScores {
     }
 }
 
-impl AsRef<GameHighScores> for RTDGameHighScoresBuilder {
+impl AsRef<GameHighScores> for GameHighScoresBuilder {
     fn as_ref(&self) -> &GameHighScores {
         &self.inner
     }

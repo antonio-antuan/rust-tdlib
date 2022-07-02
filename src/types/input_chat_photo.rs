@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,22 +14,13 @@ pub enum InputChatPhoto {
     #[doc(hidden)]
     _Default,
     /// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 800 and be at most 2MB in size
-    #[serde(rename(
-        serialize = "inputChatPhotoAnimation",
-        deserialize = "inputChatPhotoAnimation"
-    ))]
+    #[serde(rename(deserialize = "inputChatPhotoAnimation"))]
     Animation(InputChatPhotoAnimation),
     /// A previously used profile photo of the current user
-    #[serde(rename(
-        serialize = "inputChatPhotoPrevious",
-        deserialize = "inputChatPhotoPrevious"
-    ))]
+    #[serde(rename(deserialize = "inputChatPhotoPrevious"))]
     Previous(InputChatPhotoPrevious),
     /// A static photo in JPEG format
-    #[serde(rename(
-        serialize = "inputChatPhotoStatic",
-        deserialize = "inputChatPhotoStatic"
-    ))]
+    #[serde(rename(deserialize = "inputChatPhotoStatic"))]
     Static(InputChatPhotoStatic),
 }
 
@@ -63,7 +54,7 @@ impl RObject for InputChatPhoto {
 }
 
 impl InputChatPhoto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -91,6 +82,8 @@ pub struct InputChatPhotoAnimation {
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     animation: InputFile,
     /// Timestamp of the frame, which will be used as static chat photo
+
+    #[serde(default)]
     main_frame_timestamp: f32,
 }
 
@@ -108,14 +101,14 @@ impl RObject for InputChatPhotoAnimation {
 impl TDInputChatPhoto for InputChatPhotoAnimation {}
 
 impl InputChatPhotoAnimation {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputChatPhotoAnimationBuilder {
+    pub fn builder() -> InputChatPhotoAnimationBuilder {
         let mut inner = InputChatPhotoAnimation::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputChatPhotoAnimationBuilder { inner }
+        InputChatPhotoAnimationBuilder { inner }
     }
 
     pub fn animation(&self) -> &InputFile {
@@ -128,11 +121,14 @@ impl InputChatPhotoAnimation {
 }
 
 #[doc(hidden)]
-pub struct RTDInputChatPhotoAnimationBuilder {
+pub struct InputChatPhotoAnimationBuilder {
     inner: InputChatPhotoAnimation,
 }
 
-impl RTDInputChatPhotoAnimationBuilder {
+#[deprecated]
+pub type RTDInputChatPhotoAnimationBuilder = InputChatPhotoAnimationBuilder;
+
+impl InputChatPhotoAnimationBuilder {
     pub fn build(&self) -> InputChatPhotoAnimation {
         self.inner.clone()
     }
@@ -154,7 +150,7 @@ impl AsRef<InputChatPhotoAnimation> for InputChatPhotoAnimation {
     }
 }
 
-impl AsRef<InputChatPhotoAnimation> for RTDInputChatPhotoAnimationBuilder {
+impl AsRef<InputChatPhotoAnimation> for InputChatPhotoAnimationBuilder {
     fn as_ref(&self) -> &InputChatPhotoAnimation {
         &self.inner
     }
@@ -168,9 +164,10 @@ pub struct InputChatPhotoPrevious {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the profile photo to reuse
+    /// Identifier of the current user's profile photo to reuse
 
     #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(default)]
     chat_photo_id: i64,
 }
 
@@ -188,14 +185,14 @@ impl RObject for InputChatPhotoPrevious {
 impl TDInputChatPhoto for InputChatPhotoPrevious {}
 
 impl InputChatPhotoPrevious {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputChatPhotoPreviousBuilder {
+    pub fn builder() -> InputChatPhotoPreviousBuilder {
         let mut inner = InputChatPhotoPrevious::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputChatPhotoPreviousBuilder { inner }
+        InputChatPhotoPreviousBuilder { inner }
     }
 
     pub fn chat_photo_id(&self) -> i64 {
@@ -204,11 +201,14 @@ impl InputChatPhotoPrevious {
 }
 
 #[doc(hidden)]
-pub struct RTDInputChatPhotoPreviousBuilder {
+pub struct InputChatPhotoPreviousBuilder {
     inner: InputChatPhotoPrevious,
 }
 
-impl RTDInputChatPhotoPreviousBuilder {
+#[deprecated]
+pub type RTDInputChatPhotoPreviousBuilder = InputChatPhotoPreviousBuilder;
+
+impl InputChatPhotoPreviousBuilder {
     pub fn build(&self) -> InputChatPhotoPrevious {
         self.inner.clone()
     }
@@ -225,7 +225,7 @@ impl AsRef<InputChatPhotoPrevious> for InputChatPhotoPrevious {
     }
 }
 
-impl AsRef<InputChatPhotoPrevious> for RTDInputChatPhotoPreviousBuilder {
+impl AsRef<InputChatPhotoPrevious> for InputChatPhotoPreviousBuilder {
     fn as_ref(&self) -> &InputChatPhotoPrevious {
         &self.inner
     }
@@ -259,14 +259,14 @@ impl RObject for InputChatPhotoStatic {
 impl TDInputChatPhoto for InputChatPhotoStatic {}
 
 impl InputChatPhotoStatic {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDInputChatPhotoStaticBuilder {
+    pub fn builder() -> InputChatPhotoStaticBuilder {
         let mut inner = InputChatPhotoStatic::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDInputChatPhotoStaticBuilder { inner }
+        InputChatPhotoStaticBuilder { inner }
     }
 
     pub fn photo(&self) -> &InputFile {
@@ -275,11 +275,14 @@ impl InputChatPhotoStatic {
 }
 
 #[doc(hidden)]
-pub struct RTDInputChatPhotoStaticBuilder {
+pub struct InputChatPhotoStaticBuilder {
     inner: InputChatPhotoStatic,
 }
 
-impl RTDInputChatPhotoStaticBuilder {
+#[deprecated]
+pub type RTDInputChatPhotoStaticBuilder = InputChatPhotoStaticBuilder;
+
+impl InputChatPhotoStaticBuilder {
     pub fn build(&self) -> InputChatPhotoStatic {
         self.inner.clone()
     }
@@ -296,7 +299,7 @@ impl AsRef<InputChatPhotoStatic> for InputChatPhotoStatic {
     }
 }
 
-impl AsRef<InputChatPhotoStatic> for RTDInputChatPhotoStaticBuilder {
+impl AsRef<InputChatPhotoStatic> for InputChatPhotoStaticBuilder {
     fn as_ref(&self) -> &InputChatPhotoStatic {
         &self.inner
     }

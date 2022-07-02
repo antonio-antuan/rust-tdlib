@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,10 +11,13 @@ pub struct ReorderInstalledStickerSets {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Pass true to change the order of mask sticker sets; pass false to change the order of ordinary sticker sets
+
+    #[serde(default)]
     is_masks: bool,
     /// Identifiers of installed sticker sets in the new correct order
 
     #[serde(deserialize_with = "super::_common::vec_of_i64_from_str")]
+    #[serde(default)]
     sticker_set_ids: Vec<i64>,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +38,16 @@ impl RObject for ReorderInstalledStickerSets {
 impl RFunction for ReorderInstalledStickerSets {}
 
 impl ReorderInstalledStickerSets {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDReorderInstalledStickerSetsBuilder {
+    pub fn builder() -> ReorderInstalledStickerSetsBuilder {
         let mut inner = ReorderInstalledStickerSets::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "reorderInstalledStickerSets".to_string();
 
-        RTDReorderInstalledStickerSetsBuilder { inner }
+        ReorderInstalledStickerSetsBuilder { inner }
     }
 
     pub fn is_masks(&self) -> bool {
@@ -57,11 +60,14 @@ impl ReorderInstalledStickerSets {
 }
 
 #[doc(hidden)]
-pub struct RTDReorderInstalledStickerSetsBuilder {
+pub struct ReorderInstalledStickerSetsBuilder {
     inner: ReorderInstalledStickerSets,
 }
 
-impl RTDReorderInstalledStickerSetsBuilder {
+#[deprecated]
+pub type RTDReorderInstalledStickerSetsBuilder = ReorderInstalledStickerSetsBuilder;
+
+impl ReorderInstalledStickerSetsBuilder {
     pub fn build(&self) -> ReorderInstalledStickerSets {
         self.inner.clone()
     }
@@ -83,7 +89,7 @@ impl AsRef<ReorderInstalledStickerSets> for ReorderInstalledStickerSets {
     }
 }
 
-impl AsRef<ReorderInstalledStickerSets> for RTDReorderInstalledStickerSetsBuilder {
+impl AsRef<ReorderInstalledStickerSets> for ReorderInstalledStickerSetsBuilder {
     fn as_ref(&self) -> &ReorderInstalledStickerSets {
         &self.inner
     }

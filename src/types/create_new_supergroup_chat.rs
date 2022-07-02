@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,13 +11,23 @@ pub struct CreateNewSupergroupChat {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Title of the new chat; 1-128 characters
+
+    #[serde(default)]
     title: String,
-    /// True, if a channel chat should be created
+    /// True, if a channel chat needs to be created
+
+    #[serde(default)]
     is_channel: bool,
     /// Creates a new supergroup or channel and sends a corresponding messageSupergroupChatCreate. Returns the newly created chat
+
+    #[serde(default)]
     description: String,
-    /// Chat location if a location-based supergroup is being created
+    /// Chat location if a location-based supergroup is being created; pass null to create an ordinary supergroup chat
     location: ChatLocation,
+    /// True, if the supergroup is created for importing messages using importMessage
+
+    #[serde(default)]
+    for_import: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -37,16 +47,16 @@ impl RObject for CreateNewSupergroupChat {
 impl RFunction for CreateNewSupergroupChat {}
 
 impl CreateNewSupergroupChat {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCreateNewSupergroupChatBuilder {
+    pub fn builder() -> CreateNewSupergroupChatBuilder {
         let mut inner = CreateNewSupergroupChat::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "createNewSupergroupChat".to_string();
 
-        RTDCreateNewSupergroupChatBuilder { inner }
+        CreateNewSupergroupChatBuilder { inner }
     }
 
     pub fn title(&self) -> &String {
@@ -64,14 +74,21 @@ impl CreateNewSupergroupChat {
     pub fn location(&self) -> &ChatLocation {
         &self.location
     }
+
+    pub fn for_import(&self) -> bool {
+        self.for_import
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDCreateNewSupergroupChatBuilder {
+pub struct CreateNewSupergroupChatBuilder {
     inner: CreateNewSupergroupChat,
 }
 
-impl RTDCreateNewSupergroupChatBuilder {
+#[deprecated]
+pub type RTDCreateNewSupergroupChatBuilder = CreateNewSupergroupChatBuilder;
+
+impl CreateNewSupergroupChatBuilder {
     pub fn build(&self) -> CreateNewSupergroupChat {
         self.inner.clone()
     }
@@ -95,6 +112,11 @@ impl RTDCreateNewSupergroupChatBuilder {
         self.inner.location = location.as_ref().clone();
         self
     }
+
+    pub fn for_import(&mut self, for_import: bool) -> &mut Self {
+        self.inner.for_import = for_import;
+        self
+    }
 }
 
 impl AsRef<CreateNewSupergroupChat> for CreateNewSupergroupChat {
@@ -103,7 +125,7 @@ impl AsRef<CreateNewSupergroupChat> for CreateNewSupergroupChat {
     }
 }
 
-impl AsRef<CreateNewSupergroupChat> for RTDCreateNewSupergroupChatBuilder {
+impl AsRef<CreateNewSupergroupChat> for CreateNewSupergroupChatBuilder {
     fn as_ref(&self) -> &CreateNewSupergroupChat {
         &self.inner
     }

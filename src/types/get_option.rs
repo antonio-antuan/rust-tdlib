@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct GetOption {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The name of the option
+
+    #[serde(default)]
     name: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +35,16 @@ impl TDOptionValue for GetOption {}
 impl RFunction for GetOption {}
 
 impl GetOption {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetOptionBuilder {
+    pub fn builder() -> GetOptionBuilder {
         let mut inner = GetOption::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getOption".to_string();
 
-        RTDGetOptionBuilder { inner }
+        GetOptionBuilder { inner }
     }
 
     pub fn name(&self) -> &String {
@@ -51,11 +53,14 @@ impl GetOption {
 }
 
 #[doc(hidden)]
-pub struct RTDGetOptionBuilder {
+pub struct GetOptionBuilder {
     inner: GetOption,
 }
 
-impl RTDGetOptionBuilder {
+#[deprecated]
+pub type RTDGetOptionBuilder = GetOptionBuilder;
+
+impl GetOptionBuilder {
     pub fn build(&self) -> GetOption {
         self.inner.clone()
     }
@@ -72,7 +77,7 @@ impl AsRef<GetOption> for GetOption {
     }
 }
 
-impl AsRef<GetOption> for RTDGetOptionBuilder {
+impl AsRef<GetOption> for GetOptionBuilder {
     fn as_ref(&self) -> &GetOption {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -15,6 +15,8 @@ pub struct GetTopChats {
     #[serde(skip_serializing_if = "TopChatCategory::_is_default")]
     category: TopChatCategory,
     /// The maximum number of chats to be returned; up to 30
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -35,16 +37,16 @@ impl RObject for GetTopChats {
 impl RFunction for GetTopChats {}
 
 impl GetTopChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetTopChatsBuilder {
+    pub fn builder() -> GetTopChatsBuilder {
         let mut inner = GetTopChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getTopChats".to_string();
 
-        RTDGetTopChatsBuilder { inner }
+        GetTopChatsBuilder { inner }
     }
 
     pub fn category(&self) -> &TopChatCategory {
@@ -57,11 +59,14 @@ impl GetTopChats {
 }
 
 #[doc(hidden)]
-pub struct RTDGetTopChatsBuilder {
+pub struct GetTopChatsBuilder {
     inner: GetTopChats,
 }
 
-impl RTDGetTopChatsBuilder {
+#[deprecated]
+pub type RTDGetTopChatsBuilder = GetTopChatsBuilder;
+
+impl GetTopChatsBuilder {
     pub fn build(&self) -> GetTopChats {
         self.inner.clone()
     }
@@ -83,7 +88,7 @@ impl AsRef<GetTopChats> for GetTopChats {
     }
 }
 
-impl AsRef<GetTopChats> for RTDGetTopChatsBuilder {
+impl AsRef<GetTopChats> for GetTopChatsBuilder {
     fn as_ref(&self) -> &GetTopChats {
         &self.inner
     }

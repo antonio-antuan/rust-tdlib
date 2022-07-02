@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,14 +13,14 @@ pub trait TDBackgroundFill: Debug + RObject {}
 pub enum BackgroundFill {
     #[doc(hidden)]
     _Default,
+    /// Describes a freeform gradient fill of a background
+    #[serde(rename(deserialize = "backgroundFillFreeformGradient"))]
+    FreeformGradient(BackgroundFillFreeformGradient),
     /// Describes a gradient fill of a background
-    #[serde(rename(
-        serialize = "backgroundFillGradient",
-        deserialize = "backgroundFillGradient"
-    ))]
+    #[serde(rename(deserialize = "backgroundFillGradient"))]
     Gradient(BackgroundFillGradient),
     /// Describes a solid fill of a background
-    #[serde(rename(serialize = "backgroundFillSolid", deserialize = "backgroundFillSolid"))]
+    #[serde(rename(deserialize = "backgroundFillSolid"))]
     Solid(BackgroundFillSolid),
 }
 
@@ -34,6 +34,7 @@ impl RObject for BackgroundFill {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         match self {
+            BackgroundFill::FreeformGradient(t) => t.extra(),
             BackgroundFill::Gradient(t) => t.extra(),
             BackgroundFill::Solid(t) => t.extra(),
 
@@ -43,6 +44,7 @@ impl RObject for BackgroundFill {
     #[doc(hidden)]
     fn client_id(&self) -> Option<i32> {
         match self {
+            BackgroundFill::FreeformGradient(t) => t.client_id(),
             BackgroundFill::Gradient(t) => t.client_id(),
             BackgroundFill::Solid(t) => t.client_id(),
 
@@ -52,7 +54,7 @@ impl RObject for BackgroundFill {
 }
 
 impl BackgroundFill {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -67,6 +69,80 @@ impl AsRef<BackgroundFill> for BackgroundFill {
     }
 }
 
+/// Describes a freeform gradient fill of a background
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct BackgroundFillFreeformGradient {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// A list of 3 or 4 colors of the freeform gradients in the RGB24 format
+
+    #[serde(default)]
+    colors: Vec<i32>,
+}
+
+impl RObject for BackgroundFillFreeformGradient {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDBackgroundFill for BackgroundFillFreeformGradient {}
+
+impl BackgroundFillFreeformGradient {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> BackgroundFillFreeformGradientBuilder {
+        let mut inner = BackgroundFillFreeformGradient::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        BackgroundFillFreeformGradientBuilder { inner }
+    }
+
+    pub fn colors(&self) -> &Vec<i32> {
+        &self.colors
+    }
+}
+
+#[doc(hidden)]
+pub struct BackgroundFillFreeformGradientBuilder {
+    inner: BackgroundFillFreeformGradient,
+}
+
+#[deprecated]
+pub type RTDBackgroundFillFreeformGradientBuilder = BackgroundFillFreeformGradientBuilder;
+
+impl BackgroundFillFreeformGradientBuilder {
+    pub fn build(&self) -> BackgroundFillFreeformGradient {
+        self.inner.clone()
+    }
+
+    pub fn colors(&mut self, colors: Vec<i32>) -> &mut Self {
+        self.inner.colors = colors;
+        self
+    }
+}
+
+impl AsRef<BackgroundFillFreeformGradient> for BackgroundFillFreeformGradient {
+    fn as_ref(&self) -> &BackgroundFillFreeformGradient {
+        self
+    }
+}
+
+impl AsRef<BackgroundFillFreeformGradient> for BackgroundFillFreeformGradientBuilder {
+    fn as_ref(&self) -> &BackgroundFillFreeformGradient {
+        &self.inner
+    }
+}
+
 /// Describes a gradient fill of a background
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct BackgroundFillGradient {
@@ -76,10 +152,16 @@ pub struct BackgroundFillGradient {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A top color of the background in the RGB24 format
+
+    #[serde(default)]
     top_color: i32,
     /// A bottom color of the background in the RGB24 format
+
+    #[serde(default)]
     bottom_color: i32,
-    /// Clockwise rotation angle of the gradient, in degrees; 0-359. Should be always divisible by 45
+    /// Clockwise rotation angle of the gradient, in degrees; 0-359. Must be always divisible by 45
+
+    #[serde(default)]
     rotation_angle: i32,
 }
 
@@ -97,14 +179,14 @@ impl RObject for BackgroundFillGradient {
 impl TDBackgroundFill for BackgroundFillGradient {}
 
 impl BackgroundFillGradient {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundFillGradientBuilder {
+    pub fn builder() -> BackgroundFillGradientBuilder {
         let mut inner = BackgroundFillGradient::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundFillGradientBuilder { inner }
+        BackgroundFillGradientBuilder { inner }
     }
 
     pub fn top_color(&self) -> i32 {
@@ -121,11 +203,14 @@ impl BackgroundFillGradient {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundFillGradientBuilder {
+pub struct BackgroundFillGradientBuilder {
     inner: BackgroundFillGradient,
 }
 
-impl RTDBackgroundFillGradientBuilder {
+#[deprecated]
+pub type RTDBackgroundFillGradientBuilder = BackgroundFillGradientBuilder;
+
+impl BackgroundFillGradientBuilder {
     pub fn build(&self) -> BackgroundFillGradient {
         self.inner.clone()
     }
@@ -152,7 +237,7 @@ impl AsRef<BackgroundFillGradient> for BackgroundFillGradient {
     }
 }
 
-impl AsRef<BackgroundFillGradient> for RTDBackgroundFillGradientBuilder {
+impl AsRef<BackgroundFillGradient> for BackgroundFillGradientBuilder {
     fn as_ref(&self) -> &BackgroundFillGradient {
         &self.inner
     }
@@ -167,6 +252,8 @@ pub struct BackgroundFillSolid {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// A color of the background in the RGB24 format
+
+    #[serde(default)]
     color: i32,
 }
 
@@ -184,14 +271,14 @@ impl RObject for BackgroundFillSolid {
 impl TDBackgroundFill for BackgroundFillSolid {}
 
 impl BackgroundFillSolid {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBackgroundFillSolidBuilder {
+    pub fn builder() -> BackgroundFillSolidBuilder {
         let mut inner = BackgroundFillSolid::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBackgroundFillSolidBuilder { inner }
+        BackgroundFillSolidBuilder { inner }
     }
 
     pub fn color(&self) -> i32 {
@@ -200,11 +287,14 @@ impl BackgroundFillSolid {
 }
 
 #[doc(hidden)]
-pub struct RTDBackgroundFillSolidBuilder {
+pub struct BackgroundFillSolidBuilder {
     inner: BackgroundFillSolid,
 }
 
-impl RTDBackgroundFillSolidBuilder {
+#[deprecated]
+pub type RTDBackgroundFillSolidBuilder = BackgroundFillSolidBuilder;
+
+impl BackgroundFillSolidBuilder {
     pub fn build(&self) -> BackgroundFillSolid {
         self.inner.clone()
     }
@@ -221,7 +311,7 @@ impl AsRef<BackgroundFillSolid> for BackgroundFillSolid {
     }
 }
 
-impl AsRef<BackgroundFillSolid> for RTDBackgroundFillSolidBuilder {
+impl AsRef<BackgroundFillSolid> for BackgroundFillSolidBuilder {
     fn as_ref(&self) -> &BackgroundFillSolid {
         &self.inner
     }

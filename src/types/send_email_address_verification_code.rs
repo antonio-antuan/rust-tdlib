@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct SendEmailAddressVerificationCode {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Email address
+
+    #[serde(default)]
     email_address: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for SendEmailAddressVerificationCode {
 impl RFunction for SendEmailAddressVerificationCode {}
 
 impl SendEmailAddressVerificationCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendEmailAddressVerificationCodeBuilder {
+    pub fn builder() -> SendEmailAddressVerificationCodeBuilder {
         let mut inner = SendEmailAddressVerificationCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendEmailAddressVerificationCode".to_string();
 
-        RTDSendEmailAddressVerificationCodeBuilder { inner }
+        SendEmailAddressVerificationCodeBuilder { inner }
     }
 
     pub fn email_address(&self) -> &String {
@@ -49,11 +51,14 @@ impl SendEmailAddressVerificationCode {
 }
 
 #[doc(hidden)]
-pub struct RTDSendEmailAddressVerificationCodeBuilder {
+pub struct SendEmailAddressVerificationCodeBuilder {
     inner: SendEmailAddressVerificationCode,
 }
 
-impl RTDSendEmailAddressVerificationCodeBuilder {
+#[deprecated]
+pub type RTDSendEmailAddressVerificationCodeBuilder = SendEmailAddressVerificationCodeBuilder;
+
+impl SendEmailAddressVerificationCodeBuilder {
     pub fn build(&self) -> SendEmailAddressVerificationCode {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<SendEmailAddressVerificationCode> for SendEmailAddressVerificationCod
     }
 }
 
-impl AsRef<SendEmailAddressVerificationCode> for RTDSendEmailAddressVerificationCodeBuilder {
+impl AsRef<SendEmailAddressVerificationCode> for SendEmailAddressVerificationCodeBuilder {
     fn as_ref(&self) -> &SendEmailAddressVerificationCode {
         &self.inner
     }

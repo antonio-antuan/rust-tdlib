@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for ResendRecoveryEmailAddressCode {
 impl RFunction for ResendRecoveryEmailAddressCode {}
 
 impl ResendRecoveryEmailAddressCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResendRecoveryEmailAddressCodeBuilder {
+    pub fn builder() -> ResendRecoveryEmailAddressCodeBuilder {
         let mut inner = ResendRecoveryEmailAddressCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "resendRecoveryEmailAddressCode".to_string();
 
-        RTDResendRecoveryEmailAddressCodeBuilder { inner }
+        ResendRecoveryEmailAddressCodeBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDResendRecoveryEmailAddressCodeBuilder {
+pub struct ResendRecoveryEmailAddressCodeBuilder {
     inner: ResendRecoveryEmailAddressCode,
 }
 
-impl RTDResendRecoveryEmailAddressCodeBuilder {
+#[deprecated]
+pub type RTDResendRecoveryEmailAddressCodeBuilder = ResendRecoveryEmailAddressCodeBuilder;
+
+impl ResendRecoveryEmailAddressCodeBuilder {
     pub fn build(&self) -> ResendRecoveryEmailAddressCode {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ResendRecoveryEmailAddressCode> for ResendRecoveryEmailAddressCode {
     }
 }
 
-impl AsRef<ResendRecoveryEmailAddressCode> for RTDResendRecoveryEmailAddressCodeBuilder {
+impl AsRef<ResendRecoveryEmailAddressCode> for ResendRecoveryEmailAddressCodeBuilder {
     fn as_ref(&self) -> &ResendRecoveryEmailAddressCode {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -10,9 +10,13 @@ pub struct SearchChats {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Query to search for. If the query is empty, returns up to 20 recently found chats
+    /// Query to search for. If the query is empty, returns up to 50 recently found chats
+
+    #[serde(default)]
     query: String,
     /// The maximum number of chats to be returned
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for SearchChats {
 impl RFunction for SearchChats {}
 
 impl SearchChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSearchChatsBuilder {
+    pub fn builder() -> SearchChatsBuilder {
         let mut inner = SearchChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "searchChats".to_string();
 
-        RTDSearchChatsBuilder { inner }
+        SearchChatsBuilder { inner }
     }
 
     pub fn query(&self) -> &String {
@@ -55,11 +59,14 @@ impl SearchChats {
 }
 
 #[doc(hidden)]
-pub struct RTDSearchChatsBuilder {
+pub struct SearchChatsBuilder {
     inner: SearchChats,
 }
 
-impl RTDSearchChatsBuilder {
+#[deprecated]
+pub type RTDSearchChatsBuilder = SearchChatsBuilder;
+
+impl SearchChatsBuilder {
     pub fn build(&self) -> SearchChats {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<SearchChats> for SearchChats {
     }
 }
 
-impl AsRef<SearchChats> for RTDSearchChatsBuilder {
+impl AsRef<SearchChats> for SearchChatsBuilder {
     fn as_ref(&self) -> &SearchChats {
         &self.inner
     }

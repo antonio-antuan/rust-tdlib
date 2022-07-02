@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -13,14 +13,24 @@ pub struct GetMapThumbnailFile {
     /// Location of the map center
     location: Location,
     /// Map zoom level; 13-20
+
+    #[serde(default)]
     zoom: i32,
     /// Map width in pixels before applying scale; 16-1024
+
+    #[serde(default)]
     width: i32,
     /// Map height in pixels before applying scale; 16-1024
+
+    #[serde(default)]
     height: i32,
     /// Map scale; 1-3
+
+    #[serde(default)]
     scale: i32,
     /// Identifier of a chat, in which the thumbnail will be shown. Use 0 if unknown
+
+    #[serde(default)]
     chat_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -41,16 +51,16 @@ impl RObject for GetMapThumbnailFile {
 impl RFunction for GetMapThumbnailFile {}
 
 impl GetMapThumbnailFile {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMapThumbnailFileBuilder {
+    pub fn builder() -> GetMapThumbnailFileBuilder {
         let mut inner = GetMapThumbnailFile::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMapThumbnailFile".to_string();
 
-        RTDGetMapThumbnailFileBuilder { inner }
+        GetMapThumbnailFileBuilder { inner }
     }
 
     pub fn location(&self) -> &Location {
@@ -79,11 +89,14 @@ impl GetMapThumbnailFile {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMapThumbnailFileBuilder {
+pub struct GetMapThumbnailFileBuilder {
     inner: GetMapThumbnailFile,
 }
 
-impl RTDGetMapThumbnailFileBuilder {
+#[deprecated]
+pub type RTDGetMapThumbnailFileBuilder = GetMapThumbnailFileBuilder;
+
+impl GetMapThumbnailFileBuilder {
     pub fn build(&self) -> GetMapThumbnailFile {
         self.inner.clone()
     }
@@ -125,7 +138,7 @@ impl AsRef<GetMapThumbnailFile> for GetMapThumbnailFile {
     }
 }
 
-impl AsRef<GetMapThumbnailFile> for RTDGetMapThumbnailFileBuilder {
+impl AsRef<GetMapThumbnailFile> for GetMapThumbnailFileBuilder {
     fn as_ref(&self) -> &GetMapThumbnailFile {
         &self.inner
     }

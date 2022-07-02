@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct DeleteAccount {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The reason why the account was deleted; optional
+
+    #[serde(default)]
     reason: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for DeleteAccount {
 impl RFunction for DeleteAccount {}
 
 impl DeleteAccount {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDDeleteAccountBuilder {
+    pub fn builder() -> DeleteAccountBuilder {
         let mut inner = DeleteAccount::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "deleteAccount".to_string();
 
-        RTDDeleteAccountBuilder { inner }
+        DeleteAccountBuilder { inner }
     }
 
     pub fn reason(&self) -> &String {
@@ -49,11 +51,14 @@ impl DeleteAccount {
 }
 
 #[doc(hidden)]
-pub struct RTDDeleteAccountBuilder {
+pub struct DeleteAccountBuilder {
     inner: DeleteAccount,
 }
 
-impl RTDDeleteAccountBuilder {
+#[deprecated]
+pub type RTDDeleteAccountBuilder = DeleteAccountBuilder;
+
+impl DeleteAccountBuilder {
     pub fn build(&self) -> DeleteAccount {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<DeleteAccount> for DeleteAccount {
     }
 }
 
-impl AsRef<DeleteAccount> for RTDDeleteAccountBuilder {
+impl AsRef<DeleteAccount> for DeleteAccountBuilder {
     fn as_ref(&self) -> &DeleteAccount {
         &self.inner
     }

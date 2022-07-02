@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns messages in a message thread of a message. Can be used only if message.can_get_message_thread == true. Message thread of a channel message is in the channel's linked supergroup. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance the number of returned messages is chosen by the library
+/// Returns messages in a message thread of a message. Can be used only if message.can_get_message_thread == true. Message thread of a channel message is in the channel's linked supergroup. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetMessageThreadHistory {
     #[doc(hidden)]
@@ -11,14 +11,24 @@ pub struct GetMessageThreadHistory {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Chat identifier
+
+    #[serde(default)]
     chat_id: i64,
     /// Message identifier, which thread history needs to be returned
+
+    #[serde(default)]
     message_id: i64,
     /// Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
+
+    #[serde(default)]
     from_message_id: i64,
     /// Specify 0 to get results from exactly the from_message_id or a negative offset up to 99 to get additionally some newer messages
+
+    #[serde(default)]
     offset: i32,
-    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to offset. Fewer messages may be returned than specified by the limit, even if the end of the message thread history has not been reached
+    /// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -39,16 +49,16 @@ impl RObject for GetMessageThreadHistory {
 impl RFunction for GetMessageThreadHistory {}
 
 impl GetMessageThreadHistory {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetMessageThreadHistoryBuilder {
+    pub fn builder() -> GetMessageThreadHistoryBuilder {
         let mut inner = GetMessageThreadHistory::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getMessageThreadHistory".to_string();
 
-        RTDGetMessageThreadHistoryBuilder { inner }
+        GetMessageThreadHistoryBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -73,11 +83,14 @@ impl GetMessageThreadHistory {
 }
 
 #[doc(hidden)]
-pub struct RTDGetMessageThreadHistoryBuilder {
+pub struct GetMessageThreadHistoryBuilder {
     inner: GetMessageThreadHistory,
 }
 
-impl RTDGetMessageThreadHistoryBuilder {
+#[deprecated]
+pub type RTDGetMessageThreadHistoryBuilder = GetMessageThreadHistoryBuilder;
+
+impl GetMessageThreadHistoryBuilder {
     pub fn build(&self) -> GetMessageThreadHistory {
         self.inner.clone()
     }
@@ -114,7 +127,7 @@ impl AsRef<GetMessageThreadHistory> for GetMessageThreadHistory {
     }
 }
 
-impl AsRef<GetMessageThreadHistory> for RTDGetMessageThreadHistoryBuilder {
+impl AsRef<GetMessageThreadHistory> for GetMessageThreadHistoryBuilder {
     fn as_ref(&self) -> &GetMessageThreadHistory {
         &self.inner
     }

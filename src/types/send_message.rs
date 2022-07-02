@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,20 @@ pub struct SendMessage {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Target chat
+
+    #[serde(default)]
     chat_id: i64,
     /// If not 0, a message thread identifier in which the message will be sent
+
+    #[serde(default)]
     message_thread_id: i64,
     /// Identifier of the message to reply to or 0
+
+    #[serde(default)]
     reply_to_message_id: i64,
-    /// Options to be used to send the message
+    /// Options to be used to send the message; pass null to use default options
     options: MessageSendOptions,
-    /// Markup for replying to the message; for bots only
+    /// Markup for replying to the message; pass null if none; for bots only
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
@@ -45,16 +51,16 @@ impl RObject for SendMessage {
 impl RFunction for SendMessage {}
 
 impl SendMessage {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSendMessageBuilder {
+    pub fn builder() -> SendMessageBuilder {
         let mut inner = SendMessage::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "sendMessage".to_string();
 
-        RTDSendMessageBuilder { inner }
+        SendMessageBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -83,11 +89,14 @@ impl SendMessage {
 }
 
 #[doc(hidden)]
-pub struct RTDSendMessageBuilder {
+pub struct SendMessageBuilder {
     inner: SendMessage,
 }
 
-impl RTDSendMessageBuilder {
+#[deprecated]
+pub type RTDSendMessageBuilder = SendMessageBuilder;
+
+impl SendMessageBuilder {
     pub fn build(&self) -> SendMessage {
         self.inner.clone()
     }
@@ -132,7 +141,7 @@ impl AsRef<SendMessage> for SendMessage {
     }
 }
 
-impl AsRef<SendMessage> for RTDSendMessageBuilder {
+impl AsRef<SendMessage> for SendMessageBuilder {
     fn as_ref(&self) -> &SendMessage {
         &self.inner
     }

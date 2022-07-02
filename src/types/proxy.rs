@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,24 @@ pub struct Proxy {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Unique identifier of the proxy
+
+    #[serde(default)]
     id: i32,
     /// Proxy server IP address
+
+    #[serde(default)]
     server: String,
     /// Proxy server port
+
+    #[serde(default)]
     port: i32,
     /// Point in time (Unix timestamp) when the proxy was last used; 0 if never
+
+    #[serde(default)]
     last_used_date: i32,
     /// True, if the proxy is enabled now
+
+    #[serde(default)]
     is_enabled: bool,
     /// Type of the proxy
 
@@ -39,14 +49,14 @@ impl RObject for Proxy {
 }
 
 impl Proxy {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDProxyBuilder {
+    pub fn builder() -> ProxyBuilder {
         let mut inner = Proxy::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDProxyBuilder { inner }
+        ProxyBuilder { inner }
     }
 
     pub fn id(&self) -> i32 {
@@ -75,11 +85,14 @@ impl Proxy {
 }
 
 #[doc(hidden)]
-pub struct RTDProxyBuilder {
+pub struct ProxyBuilder {
     inner: Proxy,
 }
 
-impl RTDProxyBuilder {
+#[deprecated]
+pub type RTDProxyBuilder = ProxyBuilder;
+
+impl ProxyBuilder {
     pub fn build(&self) -> Proxy {
         self.inner.clone()
     }
@@ -121,7 +134,7 @@ impl AsRef<Proxy> for Proxy {
     }
 }
 
-impl AsRef<Proxy> for RTDProxyBuilder {
+impl AsRef<Proxy> for ProxyBuilder {
     fn as_ref(&self) -> &Proxy {
         &self.inner
     }

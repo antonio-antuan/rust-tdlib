@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct GetBlockedMessageSenders {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of users and chats to skip in the result; must be non-negative
+
+    #[serde(default)]
     offset: i32,
     /// The maximum number of users and chats to return; up to 100
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +37,16 @@ impl RObject for GetBlockedMessageSenders {
 impl RFunction for GetBlockedMessageSenders {}
 
 impl GetBlockedMessageSenders {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetBlockedMessageSendersBuilder {
+    pub fn builder() -> GetBlockedMessageSendersBuilder {
         let mut inner = GetBlockedMessageSenders::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getBlockedMessageSenders".to_string();
 
-        RTDGetBlockedMessageSendersBuilder { inner }
+        GetBlockedMessageSendersBuilder { inner }
     }
 
     pub fn offset(&self) -> i32 {
@@ -55,11 +59,14 @@ impl GetBlockedMessageSenders {
 }
 
 #[doc(hidden)]
-pub struct RTDGetBlockedMessageSendersBuilder {
+pub struct GetBlockedMessageSendersBuilder {
     inner: GetBlockedMessageSenders,
 }
 
-impl RTDGetBlockedMessageSendersBuilder {
+#[deprecated]
+pub type RTDGetBlockedMessageSendersBuilder = GetBlockedMessageSendersBuilder;
+
+impl GetBlockedMessageSendersBuilder {
     pub fn build(&self) -> GetBlockedMessageSenders {
         self.inner.clone()
     }
@@ -81,7 +88,7 @@ impl AsRef<GetBlockedMessageSenders> for GetBlockedMessageSenders {
     }
 }
 
-impl AsRef<GetBlockedMessageSenders> for RTDGetBlockedMessageSendersBuilder {
+impl AsRef<GetBlockedMessageSenders> for GetBlockedMessageSendersBuilder {
     fn as_ref(&self) -> &GetBlockedMessageSenders {
         &self.inner
     }

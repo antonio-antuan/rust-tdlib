@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct UnpinAllChatMessages {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat
+
+    #[serde(default)]
     chat_id: i64,
 
     #[serde(rename(serialize = "@type"))]
@@ -31,16 +33,16 @@ impl RObject for UnpinAllChatMessages {
 impl RFunction for UnpinAllChatMessages {}
 
 impl UnpinAllChatMessages {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUnpinAllChatMessagesBuilder {
+    pub fn builder() -> UnpinAllChatMessagesBuilder {
         let mut inner = UnpinAllChatMessages::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "unpinAllChatMessages".to_string();
 
-        RTDUnpinAllChatMessagesBuilder { inner }
+        UnpinAllChatMessagesBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -49,11 +51,14 @@ impl UnpinAllChatMessages {
 }
 
 #[doc(hidden)]
-pub struct RTDUnpinAllChatMessagesBuilder {
+pub struct UnpinAllChatMessagesBuilder {
     inner: UnpinAllChatMessages,
 }
 
-impl RTDUnpinAllChatMessagesBuilder {
+#[deprecated]
+pub type RTDUnpinAllChatMessagesBuilder = UnpinAllChatMessagesBuilder;
+
+impl UnpinAllChatMessagesBuilder {
     pub fn build(&self) -> UnpinAllChatMessages {
         self.inner.clone()
     }
@@ -70,7 +75,7 @@ impl AsRef<UnpinAllChatMessages> for UnpinAllChatMessages {
     }
 }
 
-impl AsRef<UnpinAllChatMessages> for RTDUnpinAllChatMessagesBuilder {
+impl AsRef<UnpinAllChatMessages> for UnpinAllChatMessagesBuilder {
     fn as_ref(&self) -> &UnpinAllChatMessages {
         &self.inner
     }

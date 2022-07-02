@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,6 +11,8 @@ pub struct TestInt {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number
+
+    #[serde(default)]
     value: i32,
 }
 
@@ -26,14 +28,14 @@ impl RObject for TestInt {
 }
 
 impl TestInt {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTestIntBuilder {
+    pub fn builder() -> TestIntBuilder {
         let mut inner = TestInt::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTestIntBuilder { inner }
+        TestIntBuilder { inner }
     }
 
     pub fn value(&self) -> i32 {
@@ -42,11 +44,14 @@ impl TestInt {
 }
 
 #[doc(hidden)]
-pub struct RTDTestIntBuilder {
+pub struct TestIntBuilder {
     inner: TestInt,
 }
 
-impl RTDTestIntBuilder {
+#[deprecated]
+pub type RTDTestIntBuilder = TestIntBuilder;
+
+impl TestIntBuilder {
     pub fn build(&self) -> TestInt {
         self.inner.clone()
     }
@@ -63,7 +68,7 @@ impl AsRef<TestInt> for TestInt {
     }
 }
 
-impl AsRef<TestInt> for RTDTestIntBuilder {
+impl AsRef<TestInt> for TestIntBuilder {
     fn as_ref(&self) -> &TestInt {
         &self.inner
     }

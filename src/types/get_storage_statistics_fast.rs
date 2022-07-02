@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetStorageStatisticsFast {
 impl RFunction for GetStorageStatisticsFast {}
 
 impl GetStorageStatisticsFast {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetStorageStatisticsFastBuilder {
+    pub fn builder() -> GetStorageStatisticsFastBuilder {
         let mut inner = GetStorageStatisticsFast::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getStorageStatisticsFast".to_string();
 
-        RTDGetStorageStatisticsFastBuilder { inner }
+        GetStorageStatisticsFastBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetStorageStatisticsFastBuilder {
+pub struct GetStorageStatisticsFastBuilder {
     inner: GetStorageStatisticsFast,
 }
 
-impl RTDGetStorageStatisticsFastBuilder {
+#[deprecated]
+pub type RTDGetStorageStatisticsFastBuilder = GetStorageStatisticsFastBuilder;
+
+impl GetStorageStatisticsFastBuilder {
     pub fn build(&self) -> GetStorageStatisticsFast {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetStorageStatisticsFast> for GetStorageStatisticsFast {
     }
 }
 
-impl AsRef<GetStorageStatisticsFast> for RTDGetStorageStatisticsFastBuilder {
+impl AsRef<GetStorageStatisticsFast> for GetStorageStatisticsFastBuilder {
     fn as_ref(&self) -> &GetStorageStatisticsFast {
         &self.inner
     }

@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -15,6 +15,8 @@ pub struct SetPassportElement {
     #[serde(skip_serializing_if = "InputPassportElement::_is_default")]
     element: InputPassportElement,
     /// Password of the current user
+
+    #[serde(default)]
     password: String,
 
     #[serde(rename(serialize = "@type"))]
@@ -37,16 +39,16 @@ impl TDPassportElement for SetPassportElement {}
 impl RFunction for SetPassportElement {}
 
 impl SetPassportElement {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetPassportElementBuilder {
+    pub fn builder() -> SetPassportElementBuilder {
         let mut inner = SetPassportElement::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setPassportElement".to_string();
 
-        RTDSetPassportElementBuilder { inner }
+        SetPassportElementBuilder { inner }
     }
 
     pub fn element(&self) -> &InputPassportElement {
@@ -59,11 +61,14 @@ impl SetPassportElement {
 }
 
 #[doc(hidden)]
-pub struct RTDSetPassportElementBuilder {
+pub struct SetPassportElementBuilder {
     inner: SetPassportElement,
 }
 
-impl RTDSetPassportElementBuilder {
+#[deprecated]
+pub type RTDSetPassportElementBuilder = SetPassportElementBuilder;
+
+impl SetPassportElementBuilder {
     pub fn build(&self) -> SetPassportElement {
         self.inner.clone()
     }
@@ -85,7 +90,7 @@ impl AsRef<SetPassportElement> for SetPassportElement {
     }
 }
 
-impl AsRef<SetPassportElement> for RTDSetPassportElementBuilder {
+impl AsRef<SetPassportElement> for SetPassportElementBuilder {
     fn as_ref(&self) -> &SetPassportElement {
         &self.inner
     }

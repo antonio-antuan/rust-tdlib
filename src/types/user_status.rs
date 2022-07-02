@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,22 +14,22 @@ pub enum UserStatus {
     #[doc(hidden)]
     _Default,
     /// The user status was never changed
-    #[serde(rename(serialize = "userStatusEmpty", deserialize = "userStatusEmpty"))]
+    #[serde(rename(deserialize = "userStatusEmpty"))]
     Empty(UserStatusEmpty),
     /// The user is offline, but was online last month
-    #[serde(rename(serialize = "userStatusLastMonth", deserialize = "userStatusLastMonth"))]
+    #[serde(rename(deserialize = "userStatusLastMonth"))]
     LastMonth(UserStatusLastMonth),
     /// The user is offline, but was online last week
-    #[serde(rename(serialize = "userStatusLastWeek", deserialize = "userStatusLastWeek"))]
+    #[serde(rename(deserialize = "userStatusLastWeek"))]
     LastWeek(UserStatusLastWeek),
     /// The user is offline
-    #[serde(rename(serialize = "userStatusOffline", deserialize = "userStatusOffline"))]
+    #[serde(rename(deserialize = "userStatusOffline"))]
     Offline(UserStatusOffline),
     /// The user is online
-    #[serde(rename(serialize = "userStatusOnline", deserialize = "userStatusOnline"))]
+    #[serde(rename(deserialize = "userStatusOnline"))]
     Online(UserStatusOnline),
     /// The user was online recently
-    #[serde(rename(serialize = "userStatusRecently", deserialize = "userStatusRecently"))]
+    #[serde(rename(deserialize = "userStatusRecently"))]
     Recently(UserStatusRecently),
 }
 
@@ -69,7 +69,7 @@ impl RObject for UserStatus {
 }
 
 impl UserStatus {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -108,23 +108,26 @@ impl RObject for UserStatusEmpty {
 impl TDUserStatus for UserStatusEmpty {}
 
 impl UserStatusEmpty {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserStatusEmptyBuilder {
+    pub fn builder() -> UserStatusEmptyBuilder {
         let mut inner = UserStatusEmpty::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserStatusEmptyBuilder { inner }
+        UserStatusEmptyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserStatusEmptyBuilder {
+pub struct UserStatusEmptyBuilder {
     inner: UserStatusEmpty,
 }
 
-impl RTDUserStatusEmptyBuilder {
+#[deprecated]
+pub type RTDUserStatusEmptyBuilder = UserStatusEmptyBuilder;
+
+impl UserStatusEmptyBuilder {
     pub fn build(&self) -> UserStatusEmpty {
         self.inner.clone()
     }
@@ -136,7 +139,7 @@ impl AsRef<UserStatusEmpty> for UserStatusEmpty {
     }
 }
 
-impl AsRef<UserStatusEmpty> for RTDUserStatusEmptyBuilder {
+impl AsRef<UserStatusEmpty> for UserStatusEmptyBuilder {
     fn as_ref(&self) -> &UserStatusEmpty {
         &self.inner
     }
@@ -166,23 +169,26 @@ impl RObject for UserStatusLastMonth {
 impl TDUserStatus for UserStatusLastMonth {}
 
 impl UserStatusLastMonth {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserStatusLastMonthBuilder {
+    pub fn builder() -> UserStatusLastMonthBuilder {
         let mut inner = UserStatusLastMonth::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserStatusLastMonthBuilder { inner }
+        UserStatusLastMonthBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserStatusLastMonthBuilder {
+pub struct UserStatusLastMonthBuilder {
     inner: UserStatusLastMonth,
 }
 
-impl RTDUserStatusLastMonthBuilder {
+#[deprecated]
+pub type RTDUserStatusLastMonthBuilder = UserStatusLastMonthBuilder;
+
+impl UserStatusLastMonthBuilder {
     pub fn build(&self) -> UserStatusLastMonth {
         self.inner.clone()
     }
@@ -194,7 +200,7 @@ impl AsRef<UserStatusLastMonth> for UserStatusLastMonth {
     }
 }
 
-impl AsRef<UserStatusLastMonth> for RTDUserStatusLastMonthBuilder {
+impl AsRef<UserStatusLastMonth> for UserStatusLastMonthBuilder {
     fn as_ref(&self) -> &UserStatusLastMonth {
         &self.inner
     }
@@ -224,23 +230,26 @@ impl RObject for UserStatusLastWeek {
 impl TDUserStatus for UserStatusLastWeek {}
 
 impl UserStatusLastWeek {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserStatusLastWeekBuilder {
+    pub fn builder() -> UserStatusLastWeekBuilder {
         let mut inner = UserStatusLastWeek::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserStatusLastWeekBuilder { inner }
+        UserStatusLastWeekBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserStatusLastWeekBuilder {
+pub struct UserStatusLastWeekBuilder {
     inner: UserStatusLastWeek,
 }
 
-impl RTDUserStatusLastWeekBuilder {
+#[deprecated]
+pub type RTDUserStatusLastWeekBuilder = UserStatusLastWeekBuilder;
+
+impl UserStatusLastWeekBuilder {
     pub fn build(&self) -> UserStatusLastWeek {
         self.inner.clone()
     }
@@ -252,7 +261,7 @@ impl AsRef<UserStatusLastWeek> for UserStatusLastWeek {
     }
 }
 
-impl AsRef<UserStatusLastWeek> for RTDUserStatusLastWeekBuilder {
+impl AsRef<UserStatusLastWeek> for UserStatusLastWeekBuilder {
     fn as_ref(&self) -> &UserStatusLastWeek {
         &self.inner
     }
@@ -267,6 +276,8 @@ pub struct UserStatusOffline {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the user was last online
+
+    #[serde(default)]
     was_online: i32,
 }
 
@@ -284,14 +295,14 @@ impl RObject for UserStatusOffline {
 impl TDUserStatus for UserStatusOffline {}
 
 impl UserStatusOffline {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserStatusOfflineBuilder {
+    pub fn builder() -> UserStatusOfflineBuilder {
         let mut inner = UserStatusOffline::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserStatusOfflineBuilder { inner }
+        UserStatusOfflineBuilder { inner }
     }
 
     pub fn was_online(&self) -> i32 {
@@ -300,11 +311,14 @@ impl UserStatusOffline {
 }
 
 #[doc(hidden)]
-pub struct RTDUserStatusOfflineBuilder {
+pub struct UserStatusOfflineBuilder {
     inner: UserStatusOffline,
 }
 
-impl RTDUserStatusOfflineBuilder {
+#[deprecated]
+pub type RTDUserStatusOfflineBuilder = UserStatusOfflineBuilder;
+
+impl UserStatusOfflineBuilder {
     pub fn build(&self) -> UserStatusOffline {
         self.inner.clone()
     }
@@ -321,7 +335,7 @@ impl AsRef<UserStatusOffline> for UserStatusOffline {
     }
 }
 
-impl AsRef<UserStatusOffline> for RTDUserStatusOfflineBuilder {
+impl AsRef<UserStatusOffline> for UserStatusOfflineBuilder {
     fn as_ref(&self) -> &UserStatusOffline {
         &self.inner
     }
@@ -336,6 +350,8 @@ pub struct UserStatusOnline {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Point in time (Unix timestamp) when the user's online status will expire
+
+    #[serde(default)]
     expires: i32,
 }
 
@@ -353,14 +369,14 @@ impl RObject for UserStatusOnline {
 impl TDUserStatus for UserStatusOnline {}
 
 impl UserStatusOnline {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserStatusOnlineBuilder {
+    pub fn builder() -> UserStatusOnlineBuilder {
         let mut inner = UserStatusOnline::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserStatusOnlineBuilder { inner }
+        UserStatusOnlineBuilder { inner }
     }
 
     pub fn expires(&self) -> i32 {
@@ -369,11 +385,14 @@ impl UserStatusOnline {
 }
 
 #[doc(hidden)]
-pub struct RTDUserStatusOnlineBuilder {
+pub struct UserStatusOnlineBuilder {
     inner: UserStatusOnline,
 }
 
-impl RTDUserStatusOnlineBuilder {
+#[deprecated]
+pub type RTDUserStatusOnlineBuilder = UserStatusOnlineBuilder;
+
+impl UserStatusOnlineBuilder {
     pub fn build(&self) -> UserStatusOnline {
         self.inner.clone()
     }
@@ -390,7 +409,7 @@ impl AsRef<UserStatusOnline> for UserStatusOnline {
     }
 }
 
-impl AsRef<UserStatusOnline> for RTDUserStatusOnlineBuilder {
+impl AsRef<UserStatusOnline> for UserStatusOnlineBuilder {
     fn as_ref(&self) -> &UserStatusOnline {
         &self.inner
     }
@@ -420,23 +439,26 @@ impl RObject for UserStatusRecently {
 impl TDUserStatus for UserStatusRecently {}
 
 impl UserStatusRecently {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDUserStatusRecentlyBuilder {
+    pub fn builder() -> UserStatusRecentlyBuilder {
         let mut inner = UserStatusRecently::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDUserStatusRecentlyBuilder { inner }
+        UserStatusRecentlyBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDUserStatusRecentlyBuilder {
+pub struct UserStatusRecentlyBuilder {
     inner: UserStatusRecently,
 }
 
-impl RTDUserStatusRecentlyBuilder {
+#[deprecated]
+pub type RTDUserStatusRecentlyBuilder = UserStatusRecentlyBuilder;
+
+impl UserStatusRecentlyBuilder {
     pub fn build(&self) -> UserStatusRecently {
         self.inner.clone()
     }
@@ -448,7 +470,7 @@ impl AsRef<UserStatusRecently> for UserStatusRecently {
     }
 }
 
-impl AsRef<UserStatusRecently> for RTDUserStatusRecentlyBuilder {
+impl AsRef<UserStatusRecently> for UserStatusRecentlyBuilder {
     fn as_ref(&self) -> &UserStatusRecently {
         &self.inner
     }

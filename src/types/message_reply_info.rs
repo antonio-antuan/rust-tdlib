@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,14 +11,24 @@ pub struct MessageReplyInfo {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Number of times the message was directly or indirectly replied
+
+    #[serde(default)]
     reply_count: i32,
-    /// Recent repliers to the message; available in channels with a discussion supergroup
-    recent_repliers: Vec<MessageSender>,
+    /// Identifiers of at most 3 recent repliers to the message; available in channels with a discussion supergroup. The users and chats are expected to be inaccessible: only their photo and name will be available
+
+    #[serde(default)]
+    recent_replier_ids: Vec<MessageSender>,
     /// Identifier of the last read incoming reply to the message
+
+    #[serde(default)]
     last_read_inbox_message_id: i64,
     /// Identifier of the last read outgoing reply to the message
+
+    #[serde(default)]
     last_read_outbox_message_id: i64,
     /// Identifier of the last reply to the message
+
+    #[serde(default)]
     last_message_id: i64,
 }
 
@@ -34,22 +44,22 @@ impl RObject for MessageReplyInfo {
 }
 
 impl MessageReplyInfo {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMessageReplyInfoBuilder {
+    pub fn builder() -> MessageReplyInfoBuilder {
         let mut inner = MessageReplyInfo::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMessageReplyInfoBuilder { inner }
+        MessageReplyInfoBuilder { inner }
     }
 
     pub fn reply_count(&self) -> i32 {
         self.reply_count
     }
 
-    pub fn recent_repliers(&self) -> &Vec<MessageSender> {
-        &self.recent_repliers
+    pub fn recent_replier_ids(&self) -> &Vec<MessageSender> {
+        &self.recent_replier_ids
     }
 
     pub fn last_read_inbox_message_id(&self) -> i64 {
@@ -66,11 +76,14 @@ impl MessageReplyInfo {
 }
 
 #[doc(hidden)]
-pub struct RTDMessageReplyInfoBuilder {
+pub struct MessageReplyInfoBuilder {
     inner: MessageReplyInfo,
 }
 
-impl RTDMessageReplyInfoBuilder {
+#[deprecated]
+pub type RTDMessageReplyInfoBuilder = MessageReplyInfoBuilder;
+
+impl MessageReplyInfoBuilder {
     pub fn build(&self) -> MessageReplyInfo {
         self.inner.clone()
     }
@@ -80,8 +93,8 @@ impl RTDMessageReplyInfoBuilder {
         self
     }
 
-    pub fn recent_repliers(&mut self, recent_repliers: Vec<MessageSender>) -> &mut Self {
-        self.inner.recent_repliers = recent_repliers;
+    pub fn recent_replier_ids(&mut self, recent_replier_ids: Vec<MessageSender>) -> &mut Self {
+        self.inner.recent_replier_ids = recent_replier_ids;
         self
     }
 
@@ -107,7 +120,7 @@ impl AsRef<MessageReplyInfo> for MessageReplyInfo {
     }
 }
 
-impl AsRef<MessageReplyInfo> for RTDMessageReplyInfoBuilder {
+impl AsRef<MessageReplyInfo> for MessageReplyInfoBuilder {
     fn as_ref(&self) -> &MessageReplyInfo {
         &self.inner
     }

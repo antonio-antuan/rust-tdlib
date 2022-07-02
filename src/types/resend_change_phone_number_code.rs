@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Re-sends the authentication code sent to confirm a new phone number for the user. Works only if the previously received authenticationCodeInfo next_code_type was not null
+/// Re-sends the authentication code sent to confirm a new phone number for the current user. Works only if the previously received authenticationCodeInfo next_code_type was not null and the server-specified timeout has passed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ResendChangePhoneNumberCode {
     #[doc(hidden)]
@@ -29,25 +29,28 @@ impl RObject for ResendChangePhoneNumberCode {
 impl RFunction for ResendChangePhoneNumberCode {}
 
 impl ResendChangePhoneNumberCode {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDResendChangePhoneNumberCodeBuilder {
+    pub fn builder() -> ResendChangePhoneNumberCodeBuilder {
         let mut inner = ResendChangePhoneNumberCode::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "resendChangePhoneNumberCode".to_string();
 
-        RTDResendChangePhoneNumberCodeBuilder { inner }
+        ResendChangePhoneNumberCodeBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDResendChangePhoneNumberCodeBuilder {
+pub struct ResendChangePhoneNumberCodeBuilder {
     inner: ResendChangePhoneNumberCode,
 }
 
-impl RTDResendChangePhoneNumberCodeBuilder {
+#[deprecated]
+pub type RTDResendChangePhoneNumberCodeBuilder = ResendChangePhoneNumberCodeBuilder;
+
+impl ResendChangePhoneNumberCodeBuilder {
     pub fn build(&self) -> ResendChangePhoneNumberCode {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<ResendChangePhoneNumberCode> for ResendChangePhoneNumberCode {
     }
 }
 
-impl AsRef<ResendChangePhoneNumberCode> for RTDResendChangePhoneNumberCodeBuilder {
+impl AsRef<ResendChangePhoneNumberCode> for ResendChangePhoneNumberCodeBuilder {
     fn as_ref(&self) -> &ResendChangePhoneNumberCode {
         &self.inner
     }

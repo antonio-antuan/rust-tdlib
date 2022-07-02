@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -12,7 +12,7 @@ pub struct SetAutoDownloadSettings {
     client_id: Option<i32>,
     /// New user auto-download settings
     settings: AutoDownloadSettings,
-    /// Type of the network for which the new settings are applied
+    /// Type of the network for which the new settings are relevant
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "NetworkType::_is_default")]
@@ -36,16 +36,16 @@ impl RObject for SetAutoDownloadSettings {
 impl RFunction for SetAutoDownloadSettings {}
 
 impl SetAutoDownloadSettings {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDSetAutoDownloadSettingsBuilder {
+    pub fn builder() -> SetAutoDownloadSettingsBuilder {
         let mut inner = SetAutoDownloadSettings::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "setAutoDownloadSettings".to_string();
 
-        RTDSetAutoDownloadSettingsBuilder { inner }
+        SetAutoDownloadSettingsBuilder { inner }
     }
 
     pub fn settings(&self) -> &AutoDownloadSettings {
@@ -58,11 +58,14 @@ impl SetAutoDownloadSettings {
 }
 
 #[doc(hidden)]
-pub struct RTDSetAutoDownloadSettingsBuilder {
+pub struct SetAutoDownloadSettingsBuilder {
     inner: SetAutoDownloadSettings,
 }
 
-impl RTDSetAutoDownloadSettingsBuilder {
+#[deprecated]
+pub type RTDSetAutoDownloadSettingsBuilder = SetAutoDownloadSettingsBuilder;
+
+impl SetAutoDownloadSettingsBuilder {
     pub fn build(&self) -> SetAutoDownloadSettings {
         self.inner.clone()
     }
@@ -84,7 +87,7 @@ impl AsRef<SetAutoDownloadSettings> for SetAutoDownloadSettings {
     }
 }
 
-impl AsRef<SetAutoDownloadSettings> for RTDSetAutoDownloadSettingsBuilder {
+impl AsRef<SetAutoDownloadSettings> for SetAutoDownloadSettingsBuilder {
     fn as_ref(&self) -> &SetAutoDownloadSettings {
         &self.inner
     }

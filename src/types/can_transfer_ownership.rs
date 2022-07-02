@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -31,25 +31,28 @@ impl TDCanTransferOwnershipResult for CanTransferOwnership {}
 impl RFunction for CanTransferOwnership {}
 
 impl CanTransferOwnership {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDCanTransferOwnershipBuilder {
+    pub fn builder() -> CanTransferOwnershipBuilder {
         let mut inner = CanTransferOwnership::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "canTransferOwnership".to_string();
 
-        RTDCanTransferOwnershipBuilder { inner }
+        CanTransferOwnershipBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDCanTransferOwnershipBuilder {
+pub struct CanTransferOwnershipBuilder {
     inner: CanTransferOwnership,
 }
 
-impl RTDCanTransferOwnershipBuilder {
+#[deprecated]
+pub type RTDCanTransferOwnershipBuilder = CanTransferOwnershipBuilder;
+
+impl CanTransferOwnershipBuilder {
     pub fn build(&self) -> CanTransferOwnership {
         self.inner.clone()
     }
@@ -61,7 +64,7 @@ impl AsRef<CanTransferOwnership> for CanTransferOwnership {
     }
 }
 
-impl AsRef<CanTransferOwnership> for RTDCanTransferOwnershipBuilder {
+impl AsRef<CanTransferOwnership> for CanTransferOwnershipBuilder {
     fn as_ref(&self) -> &CanTransferOwnership {
         &self.inner
     }

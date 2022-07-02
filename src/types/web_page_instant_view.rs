@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,15 +11,29 @@ pub struct WebPageInstantView {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Content of the web page
+
+    #[serde(default)]
     page_blocks: Vec<PageBlock>,
     /// Number of the instant view views; 0 if unknown
+
+    #[serde(default)]
     view_count: i32,
-    /// Version of the instant view, currently can be 1 or 2
+    /// Version of the instant view; currently, can be 1 or 2
+
+    #[serde(default)]
     version: i32,
     /// True, if the instant view must be shown from right to left
+
+    #[serde(default)]
     is_rtl: bool,
     /// True, if the instant view contains the full page. A network request might be needed to get the full web page instant view
+
+    #[serde(default)]
     is_full: bool,
+    /// An internal link to be opened to leave feedback about the instant view
+
+    #[serde(skip_serializing_if = "InternalLinkType::_is_default")]
+    feedback_link: InternalLinkType,
 }
 
 impl RObject for WebPageInstantView {
@@ -34,14 +48,14 @@ impl RObject for WebPageInstantView {
 }
 
 impl WebPageInstantView {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDWebPageInstantViewBuilder {
+    pub fn builder() -> WebPageInstantViewBuilder {
         let mut inner = WebPageInstantView::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDWebPageInstantViewBuilder { inner }
+        WebPageInstantViewBuilder { inner }
     }
 
     pub fn page_blocks(&self) -> &Vec<PageBlock> {
@@ -63,14 +77,21 @@ impl WebPageInstantView {
     pub fn is_full(&self) -> bool {
         self.is_full
     }
+
+    pub fn feedback_link(&self) -> &InternalLinkType {
+        &self.feedback_link
+    }
 }
 
 #[doc(hidden)]
-pub struct RTDWebPageInstantViewBuilder {
+pub struct WebPageInstantViewBuilder {
     inner: WebPageInstantView,
 }
 
-impl RTDWebPageInstantViewBuilder {
+#[deprecated]
+pub type RTDWebPageInstantViewBuilder = WebPageInstantViewBuilder;
+
+impl WebPageInstantViewBuilder {
     pub fn build(&self) -> WebPageInstantView {
         self.inner.clone()
     }
@@ -99,6 +120,11 @@ impl RTDWebPageInstantViewBuilder {
         self.inner.is_full = is_full;
         self
     }
+
+    pub fn feedback_link<T: AsRef<InternalLinkType>>(&mut self, feedback_link: T) -> &mut Self {
+        self.inner.feedback_link = feedback_link.as_ref().clone();
+        self
+    }
 }
 
 impl AsRef<WebPageInstantView> for WebPageInstantView {
@@ -107,7 +133,7 @@ impl AsRef<WebPageInstantView> for WebPageInstantView {
     }
 }
 
-impl AsRef<WebPageInstantView> for RTDWebPageInstantViewBuilder {
+impl AsRef<WebPageInstantView> for WebPageInstantViewBuilder {
     fn as_ref(&self) -> &WebPageInstantView {
         &self.inner
     }

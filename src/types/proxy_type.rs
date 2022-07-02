@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,13 +14,13 @@ pub enum ProxyType {
     #[doc(hidden)]
     _Default,
     /// A HTTP transparent proxy server
-    #[serde(rename(serialize = "proxyTypeHttp", deserialize = "proxyTypeHttp"))]
+    #[serde(rename(deserialize = "proxyTypeHttp"))]
     Http(ProxyTypeHttp),
     /// An MTProto proxy server
-    #[serde(rename(serialize = "proxyTypeMtproto", deserialize = "proxyTypeMtproto"))]
+    #[serde(rename(deserialize = "proxyTypeMtproto"))]
     Mtproto(ProxyTypeMtproto),
     /// A SOCKS5 proxy server
-    #[serde(rename(serialize = "proxyTypeSocks5", deserialize = "proxyTypeSocks5"))]
+    #[serde(rename(deserialize = "proxyTypeSocks5"))]
     Socks5(ProxyTypeSocks5),
 }
 
@@ -54,7 +54,7 @@ impl RObject for ProxyType {
 }
 
 impl ProxyType {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -78,10 +78,16 @@ pub struct ProxyTypeHttp {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username for logging in; may be empty
+
+    #[serde(default)]
     username: String,
     /// Password for logging in; may be empty
+
+    #[serde(default)]
     password: String,
     /// Pass true if the proxy supports only HTTP requests and doesn't support transparent TCP connections via HTTP CONNECT method
+
+    #[serde(default)]
     http_only: bool,
 }
 
@@ -99,14 +105,14 @@ impl RObject for ProxyTypeHttp {
 impl TDProxyType for ProxyTypeHttp {}
 
 impl ProxyTypeHttp {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDProxyTypeHttpBuilder {
+    pub fn builder() -> ProxyTypeHttpBuilder {
         let mut inner = ProxyTypeHttp::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDProxyTypeHttpBuilder { inner }
+        ProxyTypeHttpBuilder { inner }
     }
 
     pub fn username(&self) -> &String {
@@ -123,11 +129,14 @@ impl ProxyTypeHttp {
 }
 
 #[doc(hidden)]
-pub struct RTDProxyTypeHttpBuilder {
+pub struct ProxyTypeHttpBuilder {
     inner: ProxyTypeHttp,
 }
 
-impl RTDProxyTypeHttpBuilder {
+#[deprecated]
+pub type RTDProxyTypeHttpBuilder = ProxyTypeHttpBuilder;
+
+impl ProxyTypeHttpBuilder {
     pub fn build(&self) -> ProxyTypeHttp {
         self.inner.clone()
     }
@@ -154,7 +163,7 @@ impl AsRef<ProxyTypeHttp> for ProxyTypeHttp {
     }
 }
 
-impl AsRef<ProxyTypeHttp> for RTDProxyTypeHttpBuilder {
+impl AsRef<ProxyTypeHttp> for ProxyTypeHttpBuilder {
     fn as_ref(&self) -> &ProxyTypeHttp {
         &self.inner
     }
@@ -169,6 +178,8 @@ pub struct ProxyTypeMtproto {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// The proxy's secret in hexadecimal encoding
+
+    #[serde(default)]
     secret: String,
 }
 
@@ -186,14 +197,14 @@ impl RObject for ProxyTypeMtproto {
 impl TDProxyType for ProxyTypeMtproto {}
 
 impl ProxyTypeMtproto {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDProxyTypeMtprotoBuilder {
+    pub fn builder() -> ProxyTypeMtprotoBuilder {
         let mut inner = ProxyTypeMtproto::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDProxyTypeMtprotoBuilder { inner }
+        ProxyTypeMtprotoBuilder { inner }
     }
 
     pub fn secret(&self) -> &String {
@@ -202,11 +213,14 @@ impl ProxyTypeMtproto {
 }
 
 #[doc(hidden)]
-pub struct RTDProxyTypeMtprotoBuilder {
+pub struct ProxyTypeMtprotoBuilder {
     inner: ProxyTypeMtproto,
 }
 
-impl RTDProxyTypeMtprotoBuilder {
+#[deprecated]
+pub type RTDProxyTypeMtprotoBuilder = ProxyTypeMtprotoBuilder;
+
+impl ProxyTypeMtprotoBuilder {
     pub fn build(&self) -> ProxyTypeMtproto {
         self.inner.clone()
     }
@@ -223,7 +237,7 @@ impl AsRef<ProxyTypeMtproto> for ProxyTypeMtproto {
     }
 }
 
-impl AsRef<ProxyTypeMtproto> for RTDProxyTypeMtprotoBuilder {
+impl AsRef<ProxyTypeMtproto> for ProxyTypeMtprotoBuilder {
     fn as_ref(&self) -> &ProxyTypeMtproto {
         &self.inner
     }
@@ -238,8 +252,12 @@ pub struct ProxyTypeSocks5 {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Username for logging in; may be empty
+
+    #[serde(default)]
     username: String,
     /// Password for logging in; may be empty
+
+    #[serde(default)]
     password: String,
 }
 
@@ -257,14 +275,14 @@ impl RObject for ProxyTypeSocks5 {
 impl TDProxyType for ProxyTypeSocks5 {}
 
 impl ProxyTypeSocks5 {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDProxyTypeSocks5Builder {
+    pub fn builder() -> ProxyTypeSocks5Builder {
         let mut inner = ProxyTypeSocks5::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDProxyTypeSocks5Builder { inner }
+        ProxyTypeSocks5Builder { inner }
     }
 
     pub fn username(&self) -> &String {
@@ -277,11 +295,14 @@ impl ProxyTypeSocks5 {
 }
 
 #[doc(hidden)]
-pub struct RTDProxyTypeSocks5Builder {
+pub struct ProxyTypeSocks5Builder {
     inner: ProxyTypeSocks5,
 }
 
-impl RTDProxyTypeSocks5Builder {
+#[deprecated]
+pub type RTDProxyTypeSocks5Builder = ProxyTypeSocks5Builder;
+
+impl ProxyTypeSocks5Builder {
     pub fn build(&self) -> ProxyTypeSocks5 {
         self.inner.clone()
     }
@@ -303,7 +324,7 @@ impl AsRef<ProxyTypeSocks5> for ProxyTypeSocks5 {
     }
 }
 
-impl AsRef<ProxyTypeSocks5> for RTDProxyTypeSocks5Builder {
+impl AsRef<ProxyTypeSocks5> for ProxyTypeSocks5Builder {
     fn as_ref(&self) -> &ProxyTypeSocks5 {
         &self.inner
     }

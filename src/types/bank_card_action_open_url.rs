@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,12 @@ pub struct BankCardActionOpenUrl {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Action text
+
+    #[serde(default)]
     text: String,
     /// The URL to be opened
+
+    #[serde(default)]
     url: String,
 }
 
@@ -28,14 +32,14 @@ impl RObject for BankCardActionOpenUrl {
 }
 
 impl BankCardActionOpenUrl {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDBankCardActionOpenUrlBuilder {
+    pub fn builder() -> BankCardActionOpenUrlBuilder {
         let mut inner = BankCardActionOpenUrl::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDBankCardActionOpenUrlBuilder { inner }
+        BankCardActionOpenUrlBuilder { inner }
     }
 
     pub fn text(&self) -> &String {
@@ -48,11 +52,14 @@ impl BankCardActionOpenUrl {
 }
 
 #[doc(hidden)]
-pub struct RTDBankCardActionOpenUrlBuilder {
+pub struct BankCardActionOpenUrlBuilder {
     inner: BankCardActionOpenUrl,
 }
 
-impl RTDBankCardActionOpenUrlBuilder {
+#[deprecated]
+pub type RTDBankCardActionOpenUrlBuilder = BankCardActionOpenUrlBuilder;
+
+impl BankCardActionOpenUrlBuilder {
     pub fn build(&self) -> BankCardActionOpenUrl {
         self.inner.clone()
     }
@@ -74,7 +81,7 @@ impl AsRef<BankCardActionOpenUrl> for BankCardActionOpenUrl {
     }
 }
 
-impl AsRef<BankCardActionOpenUrl> for RTDBankCardActionOpenUrlBuilder {
+impl AsRef<BankCardActionOpenUrl> for BankCardActionOpenUrlBuilder {
     fn as_ref(&self) -> &BankCardActionOpenUrl {
         &self.inner
     }

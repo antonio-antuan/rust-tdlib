@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns users voted for the specified option in a non-anonymous polls. For the optimal performance the number of returned users is chosen by the library
+/// Returns users voted for the specified option in a non-anonymous polls. For optimal performance, the number of returned users is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetPollVoters {
     #[doc(hidden)]
@@ -11,14 +11,24 @@ pub struct GetPollVoters {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Identifier of the chat to which the poll belongs
+
+    #[serde(default)]
     chat_id: i64,
     /// Identifier of the message containing the poll
+
+    #[serde(default)]
     message_id: i64,
     /// 0-based identifier of the answer option
+
+    #[serde(default)]
     option_id: i32,
     /// Number of users to skip in the result; must be non-negative
+
+    #[serde(default)]
     offset: i32,
-    /// The maximum number of users to be returned; must be positive and can't be greater than 50. Fewer users may be returned than specified by the limit, even if the end of the voter list has not been reached
+    /// The maximum number of users to be returned; must be positive and can't be greater than 50. For optimal performance, the number of returned users is chosen by TDLib and can be smaller than the specified limit, even if the end of the voter list has not been reached
+
+    #[serde(default)]
     limit: i32,
 
     #[serde(rename(serialize = "@type"))]
@@ -39,16 +49,16 @@ impl RObject for GetPollVoters {
 impl RFunction for GetPollVoters {}
 
 impl GetPollVoters {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetPollVotersBuilder {
+    pub fn builder() -> GetPollVotersBuilder {
         let mut inner = GetPollVoters::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getPollVoters".to_string();
 
-        RTDGetPollVotersBuilder { inner }
+        GetPollVotersBuilder { inner }
     }
 
     pub fn chat_id(&self) -> i64 {
@@ -73,11 +83,14 @@ impl GetPollVoters {
 }
 
 #[doc(hidden)]
-pub struct RTDGetPollVotersBuilder {
+pub struct GetPollVotersBuilder {
     inner: GetPollVoters,
 }
 
-impl RTDGetPollVotersBuilder {
+#[deprecated]
+pub type RTDGetPollVotersBuilder = GetPollVotersBuilder;
+
+impl GetPollVotersBuilder {
     pub fn build(&self) -> GetPollVoters {
         self.inner.clone()
     }
@@ -114,7 +127,7 @@ impl AsRef<GetPollVoters> for GetPollVoters {
     }
 }
 
-impl AsRef<GetPollVoters> for RTDGetPollVotersBuilder {
+impl AsRef<GetPollVoters> for GetPollVotersBuilder {
     fn as_ref(&self) -> &GetPollVoters {
         &self.inner
     }

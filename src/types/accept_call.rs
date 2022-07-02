@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -11,8 +11,10 @@ pub struct AcceptCall {
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
     /// Call identifier
+
+    #[serde(default)]
     call_id: i32,
-    /// Description of the call protocols supported by the application
+    /// The call protocols supported by the application
     protocol: CallProtocol,
 
     #[serde(rename(serialize = "@type"))]
@@ -33,16 +35,16 @@ impl RObject for AcceptCall {
 impl RFunction for AcceptCall {}
 
 impl AcceptCall {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDAcceptCallBuilder {
+    pub fn builder() -> AcceptCallBuilder {
         let mut inner = AcceptCall::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "acceptCall".to_string();
 
-        RTDAcceptCallBuilder { inner }
+        AcceptCallBuilder { inner }
     }
 
     pub fn call_id(&self) -> i32 {
@@ -55,11 +57,14 @@ impl AcceptCall {
 }
 
 #[doc(hidden)]
-pub struct RTDAcceptCallBuilder {
+pub struct AcceptCallBuilder {
     inner: AcceptCall,
 }
 
-impl RTDAcceptCallBuilder {
+#[deprecated]
+pub type RTDAcceptCallBuilder = AcceptCallBuilder;
+
+impl AcceptCallBuilder {
     pub fn build(&self) -> AcceptCall {
         self.inner.clone()
     }
@@ -81,7 +86,7 @@ impl AsRef<AcceptCall> for AcceptCall {
     }
 }
 
-impl AsRef<AcceptCall> for RTDAcceptCallBuilder {
+impl AsRef<AcceptCall> for AcceptCallBuilder {
     fn as_ref(&self) -> &AcceptCall {
         &self.inner
     }

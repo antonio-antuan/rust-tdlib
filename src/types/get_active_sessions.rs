@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -29,25 +29,28 @@ impl RObject for GetActiveSessions {
 impl RFunction for GetActiveSessions {}
 
 impl GetActiveSessions {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDGetActiveSessionsBuilder {
+    pub fn builder() -> GetActiveSessionsBuilder {
         let mut inner = GetActiveSessions::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
         inner.td_type = "getActiveSessions".to_string();
 
-        RTDGetActiveSessionsBuilder { inner }
+        GetActiveSessionsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDGetActiveSessionsBuilder {
+pub struct GetActiveSessionsBuilder {
     inner: GetActiveSessions,
 }
 
-impl RTDGetActiveSessionsBuilder {
+#[deprecated]
+pub type RTDGetActiveSessionsBuilder = GetActiveSessionsBuilder;
+
+impl GetActiveSessionsBuilder {
     pub fn build(&self) -> GetActiveSessions {
         self.inner.clone()
     }
@@ -59,7 +62,7 @@ impl AsRef<GetActiveSessions> for GetActiveSessions {
     }
 }
 
-impl AsRef<GetActiveSessions> for RTDGetActiveSessionsBuilder {
+impl AsRef<GetActiveSessions> for GetActiveSessionsBuilder {
     fn as_ref(&self) -> &GetActiveSessions {
         &self.inner
     }

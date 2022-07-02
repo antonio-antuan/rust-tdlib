@@ -1,4 +1,4 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
@@ -14,43 +14,25 @@ pub enum TopChatCategory {
     #[doc(hidden)]
     _Default,
     /// A category containing frequently used private chats with bot users
-    #[serde(rename(serialize = "topChatCategoryBots", deserialize = "topChatCategoryBots"))]
+    #[serde(rename(deserialize = "topChatCategoryBots"))]
     Bots(TopChatCategoryBots),
     /// A category containing frequently used chats used for calls
-    #[serde(rename(
-        serialize = "topChatCategoryCalls",
-        deserialize = "topChatCategoryCalls"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryCalls"))]
     Calls(TopChatCategoryCalls),
     /// A category containing frequently used channels
-    #[serde(rename(
-        serialize = "topChatCategoryChannels",
-        deserialize = "topChatCategoryChannels"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryChannels"))]
     Channels(TopChatCategoryChannels),
     /// A category containing frequently used chats used to forward messages
-    #[serde(rename(
-        serialize = "topChatCategoryForwardChats",
-        deserialize = "topChatCategoryForwardChats"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryForwardChats"))]
     ForwardChats(TopChatCategoryForwardChats),
     /// A category containing frequently used basic groups and supergroups
-    #[serde(rename(
-        serialize = "topChatCategoryGroups",
-        deserialize = "topChatCategoryGroups"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryGroups"))]
     Groups(TopChatCategoryGroups),
     /// A category containing frequently used chats with inline bots sorted by their usage in inline mode
-    #[serde(rename(
-        serialize = "topChatCategoryInlineBots",
-        deserialize = "topChatCategoryInlineBots"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryInlineBots"))]
     InlineBots(TopChatCategoryInlineBots),
     /// A category containing frequently used private chats with non-bot users
-    #[serde(rename(
-        serialize = "topChatCategoryUsers",
-        deserialize = "topChatCategoryUsers"
-    ))]
+    #[serde(rename(deserialize = "topChatCategoryUsers"))]
     Users(TopChatCategoryUsers),
 }
 
@@ -92,7 +74,7 @@ impl RObject for TopChatCategory {
 }
 
 impl TopChatCategory {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
     #[doc(hidden)]
@@ -131,23 +113,26 @@ impl RObject for TopChatCategoryBots {
 impl TDTopChatCategory for TopChatCategoryBots {}
 
 impl TopChatCategoryBots {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTopChatCategoryBotsBuilder {
+    pub fn builder() -> TopChatCategoryBotsBuilder {
         let mut inner = TopChatCategoryBots::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTopChatCategoryBotsBuilder { inner }
+        TopChatCategoryBotsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTopChatCategoryBotsBuilder {
+pub struct TopChatCategoryBotsBuilder {
     inner: TopChatCategoryBots,
 }
 
-impl RTDTopChatCategoryBotsBuilder {
+#[deprecated]
+pub type RTDTopChatCategoryBotsBuilder = TopChatCategoryBotsBuilder;
+
+impl TopChatCategoryBotsBuilder {
     pub fn build(&self) -> TopChatCategoryBots {
         self.inner.clone()
     }
@@ -159,7 +144,7 @@ impl AsRef<TopChatCategoryBots> for TopChatCategoryBots {
     }
 }
 
-impl AsRef<TopChatCategoryBots> for RTDTopChatCategoryBotsBuilder {
+impl AsRef<TopChatCategoryBots> for TopChatCategoryBotsBuilder {
     fn as_ref(&self) -> &TopChatCategoryBots {
         &self.inner
     }
@@ -189,23 +174,26 @@ impl RObject for TopChatCategoryCalls {
 impl TDTopChatCategory for TopChatCategoryCalls {}
 
 impl TopChatCategoryCalls {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTopChatCategoryCallsBuilder {
+    pub fn builder() -> TopChatCategoryCallsBuilder {
         let mut inner = TopChatCategoryCalls::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTopChatCategoryCallsBuilder { inner }
+        TopChatCategoryCallsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTopChatCategoryCallsBuilder {
+pub struct TopChatCategoryCallsBuilder {
     inner: TopChatCategoryCalls,
 }
 
-impl RTDTopChatCategoryCallsBuilder {
+#[deprecated]
+pub type RTDTopChatCategoryCallsBuilder = TopChatCategoryCallsBuilder;
+
+impl TopChatCategoryCallsBuilder {
     pub fn build(&self) -> TopChatCategoryCalls {
         self.inner.clone()
     }
@@ -217,7 +205,7 @@ impl AsRef<TopChatCategoryCalls> for TopChatCategoryCalls {
     }
 }
 
-impl AsRef<TopChatCategoryCalls> for RTDTopChatCategoryCallsBuilder {
+impl AsRef<TopChatCategoryCalls> for TopChatCategoryCallsBuilder {
     fn as_ref(&self) -> &TopChatCategoryCalls {
         &self.inner
     }
@@ -247,23 +235,26 @@ impl RObject for TopChatCategoryChannels {
 impl TDTopChatCategory for TopChatCategoryChannels {}
 
 impl TopChatCategoryChannels {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTopChatCategoryChannelsBuilder {
+    pub fn builder() -> TopChatCategoryChannelsBuilder {
         let mut inner = TopChatCategoryChannels::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTopChatCategoryChannelsBuilder { inner }
+        TopChatCategoryChannelsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTopChatCategoryChannelsBuilder {
+pub struct TopChatCategoryChannelsBuilder {
     inner: TopChatCategoryChannels,
 }
 
-impl RTDTopChatCategoryChannelsBuilder {
+#[deprecated]
+pub type RTDTopChatCategoryChannelsBuilder = TopChatCategoryChannelsBuilder;
+
+impl TopChatCategoryChannelsBuilder {
     pub fn build(&self) -> TopChatCategoryChannels {
         self.inner.clone()
     }
@@ -275,7 +266,7 @@ impl AsRef<TopChatCategoryChannels> for TopChatCategoryChannels {
     }
 }
 
-impl AsRef<TopChatCategoryChannels> for RTDTopChatCategoryChannelsBuilder {
+impl AsRef<TopChatCategoryChannels> for TopChatCategoryChannelsBuilder {
     fn as_ref(&self) -> &TopChatCategoryChannels {
         &self.inner
     }
@@ -305,23 +296,26 @@ impl RObject for TopChatCategoryForwardChats {
 impl TDTopChatCategory for TopChatCategoryForwardChats {}
 
 impl TopChatCategoryForwardChats {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTopChatCategoryForwardChatsBuilder {
+    pub fn builder() -> TopChatCategoryForwardChatsBuilder {
         let mut inner = TopChatCategoryForwardChats::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTopChatCategoryForwardChatsBuilder { inner }
+        TopChatCategoryForwardChatsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTopChatCategoryForwardChatsBuilder {
+pub struct TopChatCategoryForwardChatsBuilder {
     inner: TopChatCategoryForwardChats,
 }
 
-impl RTDTopChatCategoryForwardChatsBuilder {
+#[deprecated]
+pub type RTDTopChatCategoryForwardChatsBuilder = TopChatCategoryForwardChatsBuilder;
+
+impl TopChatCategoryForwardChatsBuilder {
     pub fn build(&self) -> TopChatCategoryForwardChats {
         self.inner.clone()
     }
@@ -333,7 +327,7 @@ impl AsRef<TopChatCategoryForwardChats> for TopChatCategoryForwardChats {
     }
 }
 
-impl AsRef<TopChatCategoryForwardChats> for RTDTopChatCategoryForwardChatsBuilder {
+impl AsRef<TopChatCategoryForwardChats> for TopChatCategoryForwardChatsBuilder {
     fn as_ref(&self) -> &TopChatCategoryForwardChats {
         &self.inner
     }
@@ -363,23 +357,26 @@ impl RObject for TopChatCategoryGroups {
 impl TDTopChatCategory for TopChatCategoryGroups {}
 
 impl TopChatCategoryGroups {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTopChatCategoryGroupsBuilder {
+    pub fn builder() -> TopChatCategoryGroupsBuilder {
         let mut inner = TopChatCategoryGroups::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTopChatCategoryGroupsBuilder { inner }
+        TopChatCategoryGroupsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTopChatCategoryGroupsBuilder {
+pub struct TopChatCategoryGroupsBuilder {
     inner: TopChatCategoryGroups,
 }
 
-impl RTDTopChatCategoryGroupsBuilder {
+#[deprecated]
+pub type RTDTopChatCategoryGroupsBuilder = TopChatCategoryGroupsBuilder;
+
+impl TopChatCategoryGroupsBuilder {
     pub fn build(&self) -> TopChatCategoryGroups {
         self.inner.clone()
     }
@@ -391,7 +388,7 @@ impl AsRef<TopChatCategoryGroups> for TopChatCategoryGroups {
     }
 }
 
-impl AsRef<TopChatCategoryGroups> for RTDTopChatCategoryGroupsBuilder {
+impl AsRef<TopChatCategoryGroups> for TopChatCategoryGroupsBuilder {
     fn as_ref(&self) -> &TopChatCategoryGroups {
         &self.inner
     }
@@ -421,23 +418,26 @@ impl RObject for TopChatCategoryInlineBots {
 impl TDTopChatCategory for TopChatCategoryInlineBots {}
 
 impl TopChatCategoryInlineBots {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTopChatCategoryInlineBotsBuilder {
+    pub fn builder() -> TopChatCategoryInlineBotsBuilder {
         let mut inner = TopChatCategoryInlineBots::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTopChatCategoryInlineBotsBuilder { inner }
+        TopChatCategoryInlineBotsBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTopChatCategoryInlineBotsBuilder {
+pub struct TopChatCategoryInlineBotsBuilder {
     inner: TopChatCategoryInlineBots,
 }
 
-impl RTDTopChatCategoryInlineBotsBuilder {
+#[deprecated]
+pub type RTDTopChatCategoryInlineBotsBuilder = TopChatCategoryInlineBotsBuilder;
+
+impl TopChatCategoryInlineBotsBuilder {
     pub fn build(&self) -> TopChatCategoryInlineBots {
         self.inner.clone()
     }
@@ -449,7 +449,7 @@ impl AsRef<TopChatCategoryInlineBots> for TopChatCategoryInlineBots {
     }
 }
 
-impl AsRef<TopChatCategoryInlineBots> for RTDTopChatCategoryInlineBotsBuilder {
+impl AsRef<TopChatCategoryInlineBots> for TopChatCategoryInlineBotsBuilder {
     fn as_ref(&self) -> &TopChatCategoryInlineBots {
         &self.inner
     }
@@ -479,23 +479,26 @@ impl RObject for TopChatCategoryUsers {
 impl TDTopChatCategory for TopChatCategoryUsers {}
 
 impl TopChatCategoryUsers {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDTopChatCategoryUsersBuilder {
+    pub fn builder() -> TopChatCategoryUsersBuilder {
         let mut inner = TopChatCategoryUsers::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDTopChatCategoryUsersBuilder { inner }
+        TopChatCategoryUsersBuilder { inner }
     }
 }
 
 #[doc(hidden)]
-pub struct RTDTopChatCategoryUsersBuilder {
+pub struct TopChatCategoryUsersBuilder {
     inner: TopChatCategoryUsers,
 }
 
-impl RTDTopChatCategoryUsersBuilder {
+#[deprecated]
+pub type RTDTopChatCategoryUsersBuilder = TopChatCategoryUsersBuilder;
+
+impl TopChatCategoryUsersBuilder {
     pub fn build(&self) -> TopChatCategoryUsers {
         self.inner.clone()
     }
@@ -507,7 +510,7 @@ impl AsRef<TopChatCategoryUsers> for TopChatCategoryUsers {
     }
 }
 
-impl AsRef<TopChatCategoryUsers> for RTDTopChatCategoryUsersBuilder {
+impl AsRef<TopChatCategoryUsers> for TopChatCategoryUsersBuilder {
     fn as_ref(&self) -> &TopChatCategoryUsers {
         &self.inner
     }

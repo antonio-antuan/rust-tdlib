@@ -1,8 +1,8 @@
-use crate::errors::*;
+use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Position on a photo where a mask should be placed
+/// Position on a photo where a mask is placed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MaskPosition {
     #[doc(hidden)]
@@ -10,15 +10,21 @@ pub struct MaskPosition {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Part of the face, relative to which the mask should be placed
+    /// Part of the face, relative to which the mask is placed
 
     #[serde(skip_serializing_if = "MaskPoint::_is_default")]
     point: MaskPoint,
     /// Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. (For example, 1.0 will place the mask just to the left of the default mask position)
+
+    #[serde(default)]
     x_shift: f32,
     /// Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. (For example, 1.0 will place the mask just below the default mask position)
+
+    #[serde(default)]
     y_shift: f32,
     /// Mask scaling coefficient. (For example, 2.0 means a doubled size)
+
+    #[serde(default)]
     scale: f32,
 }
 
@@ -34,14 +40,14 @@ impl RObject for MaskPosition {
 }
 
 impl MaskPosition {
-    pub fn from_json<S: AsRef<str>>(json: S) -> RTDResult<Self> {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> RTDMaskPositionBuilder {
+    pub fn builder() -> MaskPositionBuilder {
         let mut inner = MaskPosition::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        RTDMaskPositionBuilder { inner }
+        MaskPositionBuilder { inner }
     }
 
     pub fn point(&self) -> &MaskPoint {
@@ -62,11 +68,14 @@ impl MaskPosition {
 }
 
 #[doc(hidden)]
-pub struct RTDMaskPositionBuilder {
+pub struct MaskPositionBuilder {
     inner: MaskPosition,
 }
 
-impl RTDMaskPositionBuilder {
+#[deprecated]
+pub type RTDMaskPositionBuilder = MaskPositionBuilder;
+
+impl MaskPositionBuilder {
     pub fn build(&self) -> MaskPosition {
         self.inner.clone()
     }
@@ -98,7 +107,7 @@ impl AsRef<MaskPosition> for MaskPosition {
     }
 }
 
-impl AsRef<MaskPosition> for RTDMaskPositionBuilder {
+impl AsRef<MaskPosition> for MaskPositionBuilder {
     fn as_ref(&self) -> &MaskPosition {
         &self.inner
     }
