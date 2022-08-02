@@ -14,22 +14,22 @@ pub enum SuggestedAction {
     #[doc(hidden)]
     _Default,
     /// Suggests the user to check whether they still remember their 2-step verification password
-    #[serde(rename(deserialize = "suggestedActionCheckPassword"))]
+    #[serde(rename = "suggestedActionCheckPassword")]
     CheckPassword(SuggestedActionCheckPassword),
     /// Suggests the user to check whether authorization phone number is correct and change the phone number if it is inaccessible
-    #[serde(rename(deserialize = "suggestedActionCheckPhoneNumber"))]
+    #[serde(rename = "suggestedActionCheckPhoneNumber")]
     CheckPhoneNumber(SuggestedActionCheckPhoneNumber),
     /// Suggests the user to convert specified supergroup to a broadcast group
-    #[serde(rename(deserialize = "suggestedActionConvertToBroadcastGroup"))]
+    #[serde(rename = "suggestedActionConvertToBroadcastGroup")]
     ConvertToBroadcastGroup(SuggestedActionConvertToBroadcastGroup),
     /// Suggests the user to enable "archive_and_mute_new_chats_from_unknown_users" option
-    #[serde(rename(deserialize = "suggestedActionEnableArchiveAndMuteNewChats"))]
+    #[serde(rename = "suggestedActionEnableArchiveAndMuteNewChats")]
     EnableArchiveAndMuteNewChats(SuggestedActionEnableArchiveAndMuteNewChats),
     /// Suggests the user to set a 2-step verification password to be able to log in again
-    #[serde(rename(deserialize = "suggestedActionSetPassword"))]
+    #[serde(rename = "suggestedActionSetPassword")]
     SetPassword(SuggestedActionSetPassword),
     /// Suggests the user to view a hint about the meaning of one and two check marks on sent messages
-    #[serde(rename(deserialize = "suggestedActionViewChecksHint"))]
+    #[serde(rename = "suggestedActionViewChecksHint")]
     ViewChecksHint(SuggestedActionViewChecksHint),
 }
 

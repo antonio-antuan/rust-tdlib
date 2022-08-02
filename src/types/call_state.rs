@@ -14,22 +14,22 @@ pub enum CallState {
     #[doc(hidden)]
     _Default,
     /// The call has ended successfully
-    #[serde(rename(deserialize = "callStateDiscarded"))]
+    #[serde(rename = "callStateDiscarded")]
     Discarded(CallStateDiscarded),
     /// The call has ended with an error
-    #[serde(rename(deserialize = "callStateError"))]
+    #[serde(rename = "callStateError")]
     Error(CallStateError),
     /// The call has been answered and encryption keys are being exchanged
-    #[serde(rename(deserialize = "callStateExchangingKeys"))]
+    #[serde(rename = "callStateExchangingKeys")]
     ExchangingKeys(CallStateExchangingKeys),
     /// The call is hanging up after discardCall has been called
-    #[serde(rename(deserialize = "callStateHangingUp"))]
+    #[serde(rename = "callStateHangingUp")]
     HangingUp(CallStateHangingUp),
     /// The call is pending, waiting to be accepted by a user
-    #[serde(rename(deserialize = "callStatePending"))]
+    #[serde(rename = "callStatePending")]
     Pending(CallStatePending),
     /// The call is ready to use
-    #[serde(rename(deserialize = "callStateReady"))]
+    #[serde(rename = "callStateReady")]
     Ready(CallStateReady),
 }
 

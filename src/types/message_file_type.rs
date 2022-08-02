@@ -14,16 +14,16 @@ pub enum MessageFileType {
     #[doc(hidden)]
     _Default,
     /// Returns information about a file with messages exported from another app
-    #[serde(rename(deserialize = "getMessageFileType"))]
+    #[serde(rename = "getMessageFileType")]
     GetMessageFileType(GetMessageFileType),
     /// The messages was exported from a group chat
-    #[serde(rename(deserialize = "messageFileTypeGroup"))]
+    #[serde(rename = "messageFileTypeGroup")]
     Group(MessageFileTypeGroup),
     /// The messages was exported from a private chat
-    #[serde(rename(deserialize = "messageFileTypePrivate"))]
+    #[serde(rename = "messageFileTypePrivate")]
     Private(MessageFileTypePrivate),
     /// The messages was exported from a chat of unknown type
-    #[serde(rename(deserialize = "messageFileTypeUnknown"))]
+    #[serde(rename = "messageFileTypeUnknown")]
     Unknown(MessageFileTypeUnknown),
 }
 

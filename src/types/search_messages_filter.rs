@@ -14,52 +14,52 @@ pub enum SearchMessagesFilter {
     #[doc(hidden)]
     _Default,
     /// Returns only animation messages
-    #[serde(rename(deserialize = "searchMessagesFilterAnimation"))]
+    #[serde(rename = "searchMessagesFilterAnimation")]
     Animation(SearchMessagesFilterAnimation),
     /// Returns only audio messages
-    #[serde(rename(deserialize = "searchMessagesFilterAudio"))]
+    #[serde(rename = "searchMessagesFilterAudio")]
     Audio(SearchMessagesFilterAudio),
     /// Returns only messages containing chat photos
-    #[serde(rename(deserialize = "searchMessagesFilterChatPhoto"))]
+    #[serde(rename = "searchMessagesFilterChatPhoto")]
     ChatPhoto(SearchMessagesFilterChatPhoto),
     /// Returns only document messages
-    #[serde(rename(deserialize = "searchMessagesFilterDocument"))]
+    #[serde(rename = "searchMessagesFilterDocument")]
     Document(SearchMessagesFilterDocument),
     /// Returns all found messages, no filter is applied
-    #[serde(rename(deserialize = "searchMessagesFilterEmpty"))]
+    #[serde(rename = "searchMessagesFilterEmpty")]
     Empty(SearchMessagesFilterEmpty),
     /// Returns only failed to send messages. This filter can be used only if the message database is used
-    #[serde(rename(deserialize = "searchMessagesFilterFailedToSend"))]
+    #[serde(rename = "searchMessagesFilterFailedToSend")]
     FailedToSend(SearchMessagesFilterFailedToSend),
     /// Returns only messages with mentions of the current user, or messages that are replies to their messages
-    #[serde(rename(deserialize = "searchMessagesFilterMention"))]
+    #[serde(rename = "searchMessagesFilterMention")]
     Mention(SearchMessagesFilterMention),
     /// Returns only photo messages
-    #[serde(rename(deserialize = "searchMessagesFilterPhoto"))]
+    #[serde(rename = "searchMessagesFilterPhoto")]
     Photo(SearchMessagesFilterPhoto),
     /// Returns only photo and video messages
-    #[serde(rename(deserialize = "searchMessagesFilterPhotoAndVideo"))]
+    #[serde(rename = "searchMessagesFilterPhotoAndVideo")]
     PhotoAndVideo(SearchMessagesFilterPhotoAndVideo),
     /// Returns only pinned messages
-    #[serde(rename(deserialize = "searchMessagesFilterPinned"))]
+    #[serde(rename = "searchMessagesFilterPinned")]
     Pinned(SearchMessagesFilterPinned),
     /// Returns only messages with unread mentions of the current user, or messages that are replies to their messages. When using this filter the results can't be additionally filtered by a query, a message thread or by the sending user
-    #[serde(rename(deserialize = "searchMessagesFilterUnreadMention"))]
+    #[serde(rename = "searchMessagesFilterUnreadMention")]
     UnreadMention(SearchMessagesFilterUnreadMention),
     /// Returns only messages containing URLs
-    #[serde(rename(deserialize = "searchMessagesFilterUrl"))]
+    #[serde(rename = "searchMessagesFilterUrl")]
     Url(SearchMessagesFilterUrl),
     /// Returns only video messages
-    #[serde(rename(deserialize = "searchMessagesFilterVideo"))]
+    #[serde(rename = "searchMessagesFilterVideo")]
     Video(SearchMessagesFilterVideo),
     /// Returns only video note messages
-    #[serde(rename(deserialize = "searchMessagesFilterVideoNote"))]
+    #[serde(rename = "searchMessagesFilterVideoNote")]
     VideoNote(SearchMessagesFilterVideoNote),
     /// Returns only voice and video note messages
-    #[serde(rename(deserialize = "searchMessagesFilterVoiceAndVideoNote"))]
+    #[serde(rename = "searchMessagesFilterVoiceAndVideoNote")]
     VoiceAndVideoNote(SearchMessagesFilterVoiceAndVideoNote),
     /// Returns only voice note messages
-    #[serde(rename(deserialize = "searchMessagesFilterVoiceNote"))]
+    #[serde(rename = "searchMessagesFilterVoiceNote")]
     VoiceNote(SearchMessagesFilterVoiceNote),
 }
 

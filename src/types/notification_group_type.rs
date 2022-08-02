@@ -14,16 +14,16 @@ pub enum NotificationGroupType {
     #[doc(hidden)]
     _Default,
     /// A group containing notifications of type notificationTypeNewCall
-    #[serde(rename(deserialize = "notificationGroupTypeCalls"))]
+    #[serde(rename = "notificationGroupTypeCalls")]
     Calls(NotificationGroupTypeCalls),
     /// A group containing notifications of type notificationTypeNewMessage and notificationTypeNewPushMessage with unread mentions of the current user, replies to their messages, or a pinned message
-    #[serde(rename(deserialize = "notificationGroupTypeMentions"))]
+    #[serde(rename = "notificationGroupTypeMentions")]
     Mentions(NotificationGroupTypeMentions),
     /// A group containing notifications of type notificationTypeNewMessage and notificationTypeNewPushMessage with ordinary unread messages
-    #[serde(rename(deserialize = "notificationGroupTypeMessages"))]
+    #[serde(rename = "notificationGroupTypeMessages")]
     Messages(NotificationGroupTypeMessages),
     /// A group containing a notification of type notificationTypeNewSecretChat
-    #[serde(rename(deserialize = "notificationGroupTypeSecretChat"))]
+    #[serde(rename = "notificationGroupTypeSecretChat")]
     SecretChat(NotificationGroupTypeSecretChat),
 }
 

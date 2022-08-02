@@ -14,13 +14,13 @@ pub enum PageBlockVerticalAlignment {
     #[doc(hidden)]
     _Default,
     /// The content must be bottom-aligned
-    #[serde(rename(deserialize = "pageBlockVerticalAlignmentBottom"))]
+    #[serde(rename = "pageBlockVerticalAlignmentBottom")]
     Bottom(PageBlockVerticalAlignmentBottom),
     /// The content must be middle-aligned
-    #[serde(rename(deserialize = "pageBlockVerticalAlignmentMiddle"))]
+    #[serde(rename = "pageBlockVerticalAlignmentMiddle")]
     Middle(PageBlockVerticalAlignmentMiddle),
     /// The content must be top-aligned
-    #[serde(rename(deserialize = "pageBlockVerticalAlignmentTop"))]
+    #[serde(rename = "pageBlockVerticalAlignmentTop")]
     Top(PageBlockVerticalAlignmentTop),
 }
 

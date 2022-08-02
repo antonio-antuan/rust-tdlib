@@ -14,79 +14,79 @@ pub enum InternalLinkType {
     #[doc(hidden)]
     _Default,
     /// Returns information about the type of an internal link. Returns a 404 error if the link is not internal. Can be called before authorization
-    #[serde(rename(deserialize = "getInternalLinkType"))]
+    #[serde(rename = "getInternalLinkType")]
     GetInternalLinkType(GetInternalLinkType),
     /// The link is a link to the active sessions section of the app. Use getActiveSessions to handle the link
-    #[serde(rename(deserialize = "internalLinkTypeActiveSessions"))]
+    #[serde(rename = "internalLinkTypeActiveSessions")]
     ActiveSessions(InternalLinkTypeActiveSessions),
     /// The link contains an authentication code. Call checkAuthenticationCode with the code if the current authorization state is authorizationStateWaitCode
-    #[serde(rename(deserialize = "internalLinkTypeAuthenticationCode"))]
+    #[serde(rename = "internalLinkTypeAuthenticationCode")]
     AuthenticationCode(InternalLinkTypeAuthenticationCode),
     /// The link is a link to a background. Call searchBackground with the given background name to process the link
-    #[serde(rename(deserialize = "internalLinkTypeBackground"))]
+    #[serde(rename = "internalLinkTypeBackground")]
     Background(InternalLinkTypeBackground),
     /// The link is a link to a chat with a Telegram bot. Call searchPublicChat with the given bot username, check that the user is a bot, show START button in the chat with the bot, and then call sendBotStartMessage with the given start parameter after the button is pressed
-    #[serde(rename(deserialize = "internalLinkTypeBotStart"))]
+    #[serde(rename = "internalLinkTypeBotStart")]
     BotStart(InternalLinkTypeBotStart),
     /// The link is a link to a Telegram bot, which is supposed to be added to a group chat. Call searchPublicChat with the given bot username, check that the user is a bot and can be added to groups, ask the current user to select a group to add the bot to, and then call sendBotStartMessage with the given start parameter and the chosen group chat. Bots can be added to a public group only by administrators of the group
-    #[serde(rename(deserialize = "internalLinkTypeBotStartInGroup"))]
+    #[serde(rename = "internalLinkTypeBotStartInGroup")]
     BotStartInGroup(InternalLinkTypeBotStartInGroup),
     /// The link is a link to the change phone number section of the app
-    #[serde(rename(deserialize = "internalLinkTypeChangePhoneNumber"))]
+    #[serde(rename = "internalLinkTypeChangePhoneNumber")]
     ChangePhoneNumber(InternalLinkTypeChangePhoneNumber),
     /// The link is a chat invite link. Call checkChatInviteLink with the given invite link to process the link
-    #[serde(rename(deserialize = "internalLinkTypeChatInvite"))]
+    #[serde(rename = "internalLinkTypeChatInvite")]
     ChatInvite(InternalLinkTypeChatInvite),
     /// The link is a link to the filter settings section of the app
-    #[serde(rename(deserialize = "internalLinkTypeFilterSettings"))]
+    #[serde(rename = "internalLinkTypeFilterSettings")]
     FilterSettings(InternalLinkTypeFilterSettings),
     /// The link is a link to a game. Call searchPublicChat with the given bot username, check that the user is a bot, ask the current user to select a chat to send the game, and then call sendMessage with inputMessageGame
-    #[serde(rename(deserialize = "internalLinkTypeGame"))]
+    #[serde(rename = "internalLinkTypeGame")]
     Game(InternalLinkTypeGame),
     /// The link is a link to a language pack. Call getLanguagePackInfo with the given language pack identifier to process the link
-    #[serde(rename(deserialize = "internalLinkTypeLanguagePack"))]
+    #[serde(rename = "internalLinkTypeLanguagePack")]
     LanguagePack(InternalLinkTypeLanguagePack),
     /// The link is a link to a Telegram message. Call getMessageLinkInfo with the given URL to process the link
-    #[serde(rename(deserialize = "internalLinkTypeMessage"))]
+    #[serde(rename = "internalLinkTypeMessage")]
     Message(InternalLinkTypeMessage),
     /// The link contains a message draft text. A share screen needs to be shown to the user, then the chosen chat must be opened and the text is added to the input field
-    #[serde(rename(deserialize = "internalLinkTypeMessageDraft"))]
+    #[serde(rename = "internalLinkTypeMessageDraft")]
     MessageDraft(InternalLinkTypeMessageDraft),
     /// The link contains a request of Telegram passport data. Call getPassportAuthorizationForm with the given parameters to process the link if the link was received from outside of the app, otherwise ignore it
-    #[serde(rename(deserialize = "internalLinkTypePassportDataRequest"))]
+    #[serde(rename = "internalLinkTypePassportDataRequest")]
     PassportDataRequest(InternalLinkTypePassportDataRequest),
     /// The link can be used to confirm ownership of a phone number to prevent account deletion. Call sendPhoneNumberConfirmationCode with the given hash and phone number to process the link
-    #[serde(rename(deserialize = "internalLinkTypePhoneNumberConfirmation"))]
+    #[serde(rename = "internalLinkTypePhoneNumberConfirmation")]
     PhoneNumberConfirmation(InternalLinkTypePhoneNumberConfirmation),
     /// The link is a link to a proxy. Call addProxy with the given parameters to process the link and add the proxy
-    #[serde(rename(deserialize = "internalLinkTypeProxy"))]
+    #[serde(rename = "internalLinkTypeProxy")]
     Proxy(InternalLinkTypeProxy),
     /// The link is a link to a chat by its username. Call searchPublicChat with the given chat username to process the link
-    #[serde(rename(deserialize = "internalLinkTypePublicChat"))]
+    #[serde(rename = "internalLinkTypePublicChat")]
     PublicChat(InternalLinkTypePublicChat),
     /// The link can be used to login the current user on another device, but it must be scanned from QR-code using in-app camera. An alert similar to "This code can be used to allow someone to log in to your Telegram account. To confirm Telegram login, please go to Settings > Devices > Scan QR and scan the code" needs to be shown
-    #[serde(rename(deserialize = "internalLinkTypeQrCodeAuthentication"))]
+    #[serde(rename = "internalLinkTypeQrCodeAuthentication")]
     QrCodeAuthentication(InternalLinkTypeQrCodeAuthentication),
     /// The link is a link to app settings
-    #[serde(rename(deserialize = "internalLinkTypeSettings"))]
+    #[serde(rename = "internalLinkTypeSettings")]
     Settings(InternalLinkTypeSettings),
     /// The link is a link to a sticker set. Call searchStickerSet with the given sticker set name to process the link and show the sticker set
-    #[serde(rename(deserialize = "internalLinkTypeStickerSet"))]
+    #[serde(rename = "internalLinkTypeStickerSet")]
     StickerSet(InternalLinkTypeStickerSet),
     /// The link is a link to a theme. TDLib has no theme support yet
-    #[serde(rename(deserialize = "internalLinkTypeTheme"))]
+    #[serde(rename = "internalLinkTypeTheme")]
     Theme(InternalLinkTypeTheme),
     /// The link is a link to the theme settings section of the app
-    #[serde(rename(deserialize = "internalLinkTypeThemeSettings"))]
+    #[serde(rename = "internalLinkTypeThemeSettings")]
     ThemeSettings(InternalLinkTypeThemeSettings),
     /// The link is an unknown tg: link. Call getDeepLinkInfo to process the link
-    #[serde(rename(deserialize = "internalLinkTypeUnknownDeepLink"))]
+    #[serde(rename = "internalLinkTypeUnknownDeepLink")]
     UnknownDeepLink(InternalLinkTypeUnknownDeepLink),
     /// The link is a link to an unsupported proxy. An alert can be shown to the user
-    #[serde(rename(deserialize = "internalLinkTypeUnsupportedProxy"))]
+    #[serde(rename = "internalLinkTypeUnsupportedProxy")]
     UnsupportedProxy(InternalLinkTypeUnsupportedProxy),
     /// The link is a link to a video chat. Call searchPublicChat with the given chat username, and then joinGoupCall with the given invite hash to process the link
-    #[serde(rename(deserialize = "internalLinkTypeVideoChat"))]
+    #[serde(rename = "internalLinkTypeVideoChat")]
     VideoChat(InternalLinkTypeVideoChat),
 }
 

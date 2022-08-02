@@ -14,28 +14,28 @@ pub enum InlineKeyboardButtonType {
     #[doc(hidden)]
     _Default,
     /// A button to buy something. This button must be in the first column and row of the keyboard and can be attached only to a message with content of the type messageInvoice
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeBuy"))]
+    #[serde(rename = "inlineKeyboardButtonTypeBuy")]
     Buy(InlineKeyboardButtonTypeBuy),
     /// A button that sends a callback query to a bot
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeCallback"))]
+    #[serde(rename = "inlineKeyboardButtonTypeCallback")]
     Callback(InlineKeyboardButtonTypeCallback),
     /// A button with a game that sends a callback query to a bot. This button must be in the first column and row of the keyboard and can be attached only to a message with content of the type messageGame
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeCallbackGame"))]
+    #[serde(rename = "inlineKeyboardButtonTypeCallbackGame")]
     CallbackGame(InlineKeyboardButtonTypeCallbackGame),
     /// A button that asks for password of the current user and then sends a callback query to a bot
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeCallbackWithPassword"))]
+    #[serde(rename = "inlineKeyboardButtonTypeCallbackWithPassword")]
     CallbackWithPassword(InlineKeyboardButtonTypeCallbackWithPassword),
     /// A button that opens a specified URL and automatically authorize the current user if allowed to do so
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeLoginUrl"))]
+    #[serde(rename = "inlineKeyboardButtonTypeLoginUrl")]
     LoginUrl(InlineKeyboardButtonTypeLoginUrl),
     /// A button that forces an inline query to the bot to be inserted in the input field
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeSwitchInline"))]
+    #[serde(rename = "inlineKeyboardButtonTypeSwitchInline")]
     SwitchInline(InlineKeyboardButtonTypeSwitchInline),
     /// A button that opens a specified URL
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeUrl"))]
+    #[serde(rename = "inlineKeyboardButtonTypeUrl")]
     Url(InlineKeyboardButtonTypeUrl),
     /// A button with a user reference to be handled in the same way as textEntityTypeMentionName entities
-    #[serde(rename(deserialize = "inlineKeyboardButtonTypeUser"))]
+    #[serde(rename = "inlineKeyboardButtonTypeUser")]
     User(InlineKeyboardButtonTypeUser),
 }
 

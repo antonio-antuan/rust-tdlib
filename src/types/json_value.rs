@@ -14,28 +14,28 @@ pub enum JsonValue {
     #[doc(hidden)]
     _Default,
     /// Returns application config, provided by the server. Can be called before authorization
-    #[serde(rename(deserialize = "getApplicationConfig"))]
+    #[serde(rename = "getApplicationConfig")]
     GetApplicationConfig(GetApplicationConfig),
     /// Converts a JSON-serialized string to corresponding JsonValue object. Can be called synchronously
-    #[serde(rename(deserialize = "getJsonValue"))]
+    #[serde(rename = "getJsonValue")]
     GetJsonValue(GetJsonValue),
     /// Represents a JSON array
-    #[serde(rename(deserialize = "jsonValueArray"))]
+    #[serde(rename = "jsonValueArray")]
     Array(JsonValueArray),
     /// Represents a boolean JSON value
-    #[serde(rename(deserialize = "jsonValueBoolean"))]
+    #[serde(rename = "jsonValueBoolean")]
     Boolean(JsonValueBoolean),
     /// Represents a null JSON value
-    #[serde(rename(deserialize = "jsonValueNull"))]
+    #[serde(rename = "jsonValueNull")]
     Null(JsonValueNull),
     /// Represents a numeric JSON value
-    #[serde(rename(deserialize = "jsonValueNumber"))]
+    #[serde(rename = "jsonValueNumber")]
     Number(JsonValueNumber),
     /// Represents a JSON object
-    #[serde(rename(deserialize = "jsonValueObject"))]
+    #[serde(rename = "jsonValueObject")]
     Object(JsonValueObject),
     /// Represents a string JSON value
-    #[serde(rename(deserialize = "jsonValueString"))]
+    #[serde(rename = "jsonValueString")]
     String(JsonValueString),
 }
 

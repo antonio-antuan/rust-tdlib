@@ -14,19 +14,19 @@ pub enum ConnectionState {
     #[doc(hidden)]
     _Default,
     /// Currently establishing a connection to the Telegram servers
-    #[serde(rename(deserialize = "connectionStateConnecting"))]
+    #[serde(rename = "connectionStateConnecting")]
     Connecting(ConnectionStateConnecting),
     /// Currently establishing a connection with a proxy server
-    #[serde(rename(deserialize = "connectionStateConnectingToProxy"))]
+    #[serde(rename = "connectionStateConnectingToProxy")]
     ConnectingToProxy(ConnectionStateConnectingToProxy),
     /// There is a working connection to the Telegram servers
-    #[serde(rename(deserialize = "connectionStateReady"))]
+    #[serde(rename = "connectionStateReady")]
     Ready(ConnectionStateReady),
     /// Downloading data received while the application was offline
-    #[serde(rename(deserialize = "connectionStateUpdating"))]
+    #[serde(rename = "connectionStateUpdating")]
     Updating(ConnectionStateUpdating),
     /// Currently waiting for the network to become available. Use setNetworkType to change the available network type
-    #[serde(rename(deserialize = "connectionStateWaitingForNetwork"))]
+    #[serde(rename = "connectionStateWaitingForNetwork")]
     WaitingForNetwork(ConnectionStateWaitingForNetwork),
 }
 

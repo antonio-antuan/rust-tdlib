@@ -14,16 +14,16 @@ pub enum LoginUrlInfo {
     #[doc(hidden)]
     _Default,
     /// Returns information about an action to be done when the current user clicks an external link. Don't use this method for links from secret chats if web page preview is disabled in secret chats
-    #[serde(rename(deserialize = "getExternalLinkInfo"))]
+    #[serde(rename = "getExternalLinkInfo")]
     GetExternalLinkInfo(GetExternalLinkInfo),
     /// Returns information about a button of type inlineKeyboardButtonTypeLoginUrl. The method needs to be called when the user presses the button
-    #[serde(rename(deserialize = "getLoginUrlInfo"))]
+    #[serde(rename = "getLoginUrlInfo")]
     GetLoginUrlInfo(GetLoginUrlInfo),
     /// An HTTP url needs to be open
-    #[serde(rename(deserialize = "loginUrlInfoOpen"))]
+    #[serde(rename = "loginUrlInfoOpen")]
     Open(LoginUrlInfoOpen),
     /// An authorization confirmation dialog needs to be shown to the user
-    #[serde(rename(deserialize = "loginUrlInfoRequestConfirmation"))]
+    #[serde(rename = "loginUrlInfoRequestConfirmation")]
     RequestConfirmation(LoginUrlInfoRequestConfirmation),
 }
 

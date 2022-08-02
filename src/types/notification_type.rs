@@ -14,16 +14,16 @@ pub enum NotificationType {
     #[doc(hidden)]
     _Default,
     /// New call was received
-    #[serde(rename(deserialize = "notificationTypeNewCall"))]
+    #[serde(rename = "notificationTypeNewCall")]
     NewCall(NotificationTypeNewCall),
     /// New message was received
-    #[serde(rename(deserialize = "notificationTypeNewMessage"))]
+    #[serde(rename = "notificationTypeNewMessage")]
     NewMessage(Box<NotificationTypeNewMessage>),
     /// New message was received through a push notification
-    #[serde(rename(deserialize = "notificationTypeNewPushMessage"))]
+    #[serde(rename = "notificationTypeNewPushMessage")]
     NewPushMessage(Box<NotificationTypeNewPushMessage>),
     /// New secret chat was created
-    #[serde(rename(deserialize = "notificationTypeNewSecretChat"))]
+    #[serde(rename = "notificationTypeNewSecretChat")]
     NewSecretChat(NotificationTypeNewSecretChat),
 }
 

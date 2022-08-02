@@ -14,19 +14,19 @@ pub enum CanTransferOwnershipResult {
     #[doc(hidden)]
     _Default,
     /// Checks whether the current session can be used to transfer a chat ownership to another user
-    #[serde(rename(deserialize = "canTransferOwnership"))]
+    #[serde(rename = "canTransferOwnership")]
     CanTransferOwnership(CanTransferOwnership),
     /// The session can be used
-    #[serde(rename(deserialize = "canTransferOwnershipResultOk"))]
+    #[serde(rename = "canTransferOwnershipResultOk")]
     Ok(CanTransferOwnershipResultOk),
     /// The 2-step verification needs to be enabled first
-    #[serde(rename(deserialize = "canTransferOwnershipResultPasswordNeeded"))]
+    #[serde(rename = "canTransferOwnershipResultPasswordNeeded")]
     PasswordNeeded(CanTransferOwnershipResultPasswordNeeded),
     /// The 2-step verification was enabled recently, user needs to wait
-    #[serde(rename(deserialize = "canTransferOwnershipResultPasswordTooFresh"))]
+    #[serde(rename = "canTransferOwnershipResultPasswordTooFresh")]
     PasswordTooFresh(CanTransferOwnershipResultPasswordTooFresh),
     /// The session was created recently, user needs to wait
-    #[serde(rename(deserialize = "canTransferOwnershipResultSessionTooFresh"))]
+    #[serde(rename = "canTransferOwnershipResultSessionTooFresh")]
     SessionTooFresh(CanTransferOwnershipResultSessionTooFresh),
 }
 

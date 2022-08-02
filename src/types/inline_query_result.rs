@@ -14,40 +14,40 @@ pub enum InlineQueryResult {
     #[doc(hidden)]
     _Default,
     /// Represents an animation file
-    #[serde(rename(deserialize = "inlineQueryResultAnimation"))]
+    #[serde(rename = "inlineQueryResultAnimation")]
     Animation(InlineQueryResultAnimation),
     /// Represents a link to an article or web page
-    #[serde(rename(deserialize = "inlineQueryResultArticle"))]
+    #[serde(rename = "inlineQueryResultArticle")]
     Article(InlineQueryResultArticle),
     /// Represents an audio file
-    #[serde(rename(deserialize = "inlineQueryResultAudio"))]
+    #[serde(rename = "inlineQueryResultAudio")]
     Audio(InlineQueryResultAudio),
     /// Represents a user contact
-    #[serde(rename(deserialize = "inlineQueryResultContact"))]
+    #[serde(rename = "inlineQueryResultContact")]
     Contact(InlineQueryResultContact),
     /// Represents a document
-    #[serde(rename(deserialize = "inlineQueryResultDocument"))]
+    #[serde(rename = "inlineQueryResultDocument")]
     Document(InlineQueryResultDocument),
     /// Represents information about a game
-    #[serde(rename(deserialize = "inlineQueryResultGame"))]
+    #[serde(rename = "inlineQueryResultGame")]
     Game(Box<InlineQueryResultGame>),
     /// Represents a point on the map
-    #[serde(rename(deserialize = "inlineQueryResultLocation"))]
+    #[serde(rename = "inlineQueryResultLocation")]
     Location(InlineQueryResultLocation),
     /// Represents a photo
-    #[serde(rename(deserialize = "inlineQueryResultPhoto"))]
+    #[serde(rename = "inlineQueryResultPhoto")]
     Photo(InlineQueryResultPhoto),
     /// Represents a sticker
-    #[serde(rename(deserialize = "inlineQueryResultSticker"))]
+    #[serde(rename = "inlineQueryResultSticker")]
     Sticker(InlineQueryResultSticker),
     /// Represents information about a venue
-    #[serde(rename(deserialize = "inlineQueryResultVenue"))]
+    #[serde(rename = "inlineQueryResultVenue")]
     Venue(InlineQueryResultVenue),
     /// Represents a video
-    #[serde(rename(deserialize = "inlineQueryResultVideo"))]
+    #[serde(rename = "inlineQueryResultVideo")]
     Video(Box<InlineQueryResultVideo>),
     /// Represents a voice note
-    #[serde(rename(deserialize = "inlineQueryResultVoiceNote"))]
+    #[serde(rename = "inlineQueryResultVoiceNote")]
     VoiceNote(InlineQueryResultVoiceNote),
 }
 

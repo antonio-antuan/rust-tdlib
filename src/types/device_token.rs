@@ -14,37 +14,37 @@ pub enum DeviceToken {
     #[doc(hidden)]
     _Default,
     /// A token for Apple Push Notification service
-    #[serde(rename(deserialize = "deviceTokenApplePush"))]
+    #[serde(rename = "deviceTokenApplePush")]
     ApplePush(DeviceTokenApplePush),
     /// A token for Apple Push Notification service VoIP notifications
-    #[serde(rename(deserialize = "deviceTokenApplePushVoIP"))]
+    #[serde(rename = "deviceTokenApplePushVoIP")]
     ApplePushVoIP(DeviceTokenApplePushVoIP),
     /// A token for BlackBerry Push Service
-    #[serde(rename(deserialize = "deviceTokenBlackBerryPush"))]
+    #[serde(rename = "deviceTokenBlackBerryPush")]
     BlackBerryPush(DeviceTokenBlackBerryPush),
     /// A token for Firebase Cloud Messaging
-    #[serde(rename(deserialize = "deviceTokenFirebaseCloudMessaging"))]
+    #[serde(rename = "deviceTokenFirebaseCloudMessaging")]
     FirebaseCloudMessaging(DeviceTokenFirebaseCloudMessaging),
     /// A token for Microsoft Push Notification Service
-    #[serde(rename(deserialize = "deviceTokenMicrosoftPush"))]
+    #[serde(rename = "deviceTokenMicrosoftPush")]
     MicrosoftPush(DeviceTokenMicrosoftPush),
     /// A token for Microsoft Push Notification Service VoIP channel
-    #[serde(rename(deserialize = "deviceTokenMicrosoftPushVoIP"))]
+    #[serde(rename = "deviceTokenMicrosoftPushVoIP")]
     MicrosoftPushVoIP(DeviceTokenMicrosoftPushVoIP),
     /// A token for Simple Push API for Firefox OS
-    #[serde(rename(deserialize = "deviceTokenSimplePush"))]
+    #[serde(rename = "deviceTokenSimplePush")]
     SimplePush(DeviceTokenSimplePush),
     /// A token for Tizen Push Service
-    #[serde(rename(deserialize = "deviceTokenTizenPush"))]
+    #[serde(rename = "deviceTokenTizenPush")]
     TizenPush(DeviceTokenTizenPush),
     /// A token for Ubuntu Push Client service
-    #[serde(rename(deserialize = "deviceTokenUbuntuPush"))]
+    #[serde(rename = "deviceTokenUbuntuPush")]
     UbuntuPush(DeviceTokenUbuntuPush),
     /// A token for web Push API
-    #[serde(rename(deserialize = "deviceTokenWebPush"))]
+    #[serde(rename = "deviceTokenWebPush")]
     WebPush(DeviceTokenWebPush),
     /// A token for Windows Push Notification Services
-    #[serde(rename(deserialize = "deviceTokenWindowsPush"))]
+    #[serde(rename = "deviceTokenWindowsPush")]
     WindowsPush(DeviceTokenWindowsPush),
 }
 

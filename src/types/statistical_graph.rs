@@ -14,16 +14,16 @@ pub enum StatisticalGraph {
     #[doc(hidden)]
     _Default,
     /// Loads an asynchronous or a zoomed in statistical graph
-    #[serde(rename(deserialize = "getStatisticalGraph"))]
+    #[serde(rename = "getStatisticalGraph")]
     GetStatisticalGraph(GetStatisticalGraph),
     /// The graph data to be asynchronously loaded through getStatisticalGraph
-    #[serde(rename(deserialize = "statisticalGraphAsync"))]
+    #[serde(rename = "statisticalGraphAsync")]
     Async(StatisticalGraphAsync),
     /// A graph data
-    #[serde(rename(deserialize = "statisticalGraphData"))]
+    #[serde(rename = "statisticalGraphData")]
     Data(StatisticalGraphData),
     /// An error message to be shown to the user instead of the graph
-    #[serde(rename(deserialize = "statisticalGraphError"))]
+    #[serde(rename = "statisticalGraphError")]
     Error(StatisticalGraphError),
 }
 

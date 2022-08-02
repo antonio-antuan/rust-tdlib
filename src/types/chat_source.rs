@@ -14,10 +14,10 @@ pub enum ChatSource {
     #[doc(hidden)]
     _Default,
     /// The chat is sponsored by the user's MTProxy server
-    #[serde(rename(deserialize = "chatSourceMtprotoProxy"))]
+    #[serde(rename = "chatSourceMtprotoProxy")]
     MtprotoProxy(ChatSourceMtprotoProxy),
     /// The chat contains a public service announcement
-    #[serde(rename(deserialize = "chatSourcePublicServiceAnnouncement"))]
+    #[serde(rename = "chatSourcePublicServiceAnnouncement")]
     PublicServiceAnnouncement(ChatSourcePublicServiceAnnouncement),
 }
 

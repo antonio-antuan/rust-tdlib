@@ -14,28 +14,28 @@ pub enum ChatReportReason {
     #[doc(hidden)]
     _Default,
     /// The chat has child abuse related content
-    #[serde(rename(deserialize = "chatReportReasonChildAbuse"))]
+    #[serde(rename = "chatReportReasonChildAbuse")]
     ChildAbuse(ChatReportReasonChildAbuse),
     /// The chat contains copyrighted content
-    #[serde(rename(deserialize = "chatReportReasonCopyright"))]
+    #[serde(rename = "chatReportReasonCopyright")]
     Copyright(ChatReportReasonCopyright),
     /// A custom reason provided by the user
-    #[serde(rename(deserialize = "chatReportReasonCustom"))]
+    #[serde(rename = "chatReportReasonCustom")]
     Custom(ChatReportReasonCustom),
     /// The chat represents a fake account
-    #[serde(rename(deserialize = "chatReportReasonFake"))]
+    #[serde(rename = "chatReportReasonFake")]
     Fake(ChatReportReasonFake),
     /// The chat contains pornographic messages
-    #[serde(rename(deserialize = "chatReportReasonPornography"))]
+    #[serde(rename = "chatReportReasonPornography")]
     Pornography(ChatReportReasonPornography),
     /// The chat contains spam messages
-    #[serde(rename(deserialize = "chatReportReasonSpam"))]
+    #[serde(rename = "chatReportReasonSpam")]
     Spam(ChatReportReasonSpam),
     /// The location-based chat is unrelated to its stated location
-    #[serde(rename(deserialize = "chatReportReasonUnrelatedLocation"))]
+    #[serde(rename = "chatReportReasonUnrelatedLocation")]
     UnrelatedLocation(ChatReportReasonUnrelatedLocation),
     /// The chat promotes violence
-    #[serde(rename(deserialize = "chatReportReasonViolence"))]
+    #[serde(rename = "chatReportReasonViolence")]
     Violence(ChatReportReasonViolence),
 }
 

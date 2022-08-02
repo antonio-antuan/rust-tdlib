@@ -14,10 +14,10 @@ pub enum MessageSendingState {
     #[doc(hidden)]
     _Default,
     /// The message failed to be sent
-    #[serde(rename(deserialize = "messageSendingStateFailed"))]
+    #[serde(rename = "messageSendingStateFailed")]
     Failed(MessageSendingStateFailed),
     /// The message is being sent now, but has not yet been delivered to the server
-    #[serde(rename(deserialize = "messageSendingStatePending"))]
+    #[serde(rename = "messageSendingStatePending")]
     Pending(MessageSendingStatePending),
 }
 

@@ -14,22 +14,22 @@ pub enum CheckChatUsernameResult {
     #[doc(hidden)]
     _Default,
     /// Checks whether a username can be set for a chat
-    #[serde(rename(deserialize = "checkChatUsername"))]
+    #[serde(rename = "checkChatUsername")]
     CheckChatUsername(CheckChatUsername),
     /// The username can be set
-    #[serde(rename(deserialize = "checkChatUsernameResultOk"))]
+    #[serde(rename = "checkChatUsernameResultOk")]
     Ok(CheckChatUsernameResultOk),
     /// The user has too much chats with username, one of them must be made private first
-    #[serde(rename(deserialize = "checkChatUsernameResultPublicChatsTooMuch"))]
+    #[serde(rename = "checkChatUsernameResultPublicChatsTooMuch")]
     PublicChatsTooMuch(CheckChatUsernameResultPublicChatsTooMuch),
     /// The user can't be a member of a public supergroup
-    #[serde(rename(deserialize = "checkChatUsernameResultPublicGroupsUnavailable"))]
+    #[serde(rename = "checkChatUsernameResultPublicGroupsUnavailable")]
     PublicGroupsUnavailable(CheckChatUsernameResultPublicGroupsUnavailable),
     /// The username is invalid
-    #[serde(rename(deserialize = "checkChatUsernameResultUsernameInvalid"))]
+    #[serde(rename = "checkChatUsernameResultUsernameInvalid")]
     UsernameInvalid(CheckChatUsernameResultUsernameInvalid),
     /// The username is occupied
-    #[serde(rename(deserialize = "checkChatUsernameResultUsernameOccupied"))]
+    #[serde(rename = "checkChatUsernameResultUsernameOccupied")]
     UsernameOccupied(CheckChatUsernameResultUsernameOccupied),
 }
 

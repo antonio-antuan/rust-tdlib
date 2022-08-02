@@ -14,25 +14,25 @@ pub enum BotCommandScope {
     #[doc(hidden)]
     _Default,
     /// A scope covering all group and supergroup chat administrators
-    #[serde(rename(deserialize = "botCommandScopeAllChatAdministrators"))]
+    #[serde(rename = "botCommandScopeAllChatAdministrators")]
     AllChatAdministrators(BotCommandScopeAllChatAdministrators),
     /// A scope covering all group and supergroup chats
-    #[serde(rename(deserialize = "botCommandScopeAllGroupChats"))]
+    #[serde(rename = "botCommandScopeAllGroupChats")]
     AllGroupChats(BotCommandScopeAllGroupChats),
     /// A scope covering all private chats
-    #[serde(rename(deserialize = "botCommandScopeAllPrivateChats"))]
+    #[serde(rename = "botCommandScopeAllPrivateChats")]
     AllPrivateChats(BotCommandScopeAllPrivateChats),
     /// A scope covering all members of a chat
-    #[serde(rename(deserialize = "botCommandScopeChat"))]
+    #[serde(rename = "botCommandScopeChat")]
     Chat(BotCommandScopeChat),
     /// A scope covering all administrators of a chat
-    #[serde(rename(deserialize = "botCommandScopeChatAdministrators"))]
+    #[serde(rename = "botCommandScopeChatAdministrators")]
     ChatAdministrators(BotCommandScopeChatAdministrators),
     /// A scope covering a member of a chat
-    #[serde(rename(deserialize = "botCommandScopeChatMember"))]
+    #[serde(rename = "botCommandScopeChatMember")]
     ChatMember(BotCommandScopeChatMember),
     /// A scope covering all users
-    #[serde(rename(deserialize = "botCommandScopeDefault"))]
+    #[serde(rename = "botCommandScopeDefault")]
     Default(BotCommandScopeDefault),
 }
 

@@ -14,10 +14,10 @@ pub enum InputBackground {
     #[doc(hidden)]
     _Default,
     /// A background from a local file
-    #[serde(rename(deserialize = "inputBackgroundLocal"))]
+    #[serde(rename = "inputBackgroundLocal")]
     Local(InputBackgroundLocal),
     /// A background from the server
-    #[serde(rename(deserialize = "inputBackgroundRemote"))]
+    #[serde(rename = "inputBackgroundRemote")]
     Remote(InputBackgroundRemote),
 }
 

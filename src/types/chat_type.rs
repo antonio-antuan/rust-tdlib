@@ -14,16 +14,16 @@ pub enum ChatType {
     #[doc(hidden)]
     _Default,
     /// A basic group (a chat with 0-200 other users)
-    #[serde(rename(deserialize = "chatTypeBasicGroup"))]
+    #[serde(rename = "chatTypeBasicGroup")]
     BasicGroup(ChatTypeBasicGroup),
     /// An ordinary chat with a user
-    #[serde(rename(deserialize = "chatTypePrivate"))]
+    #[serde(rename = "chatTypePrivate")]
     Private(ChatTypePrivate),
     /// A secret chat with a user
-    #[serde(rename(deserialize = "chatTypeSecret"))]
+    #[serde(rename = "chatTypeSecret")]
     Secret(ChatTypeSecret),
     /// A supergroup or channel (with unlimited members)
-    #[serde(rename(deserialize = "chatTypeSupergroup"))]
+    #[serde(rename = "chatTypeSupergroup")]
     Supergroup(ChatTypeSupergroup),
 }
 

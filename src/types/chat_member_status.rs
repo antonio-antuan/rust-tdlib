@@ -14,22 +14,22 @@ pub enum ChatMemberStatus {
     #[doc(hidden)]
     _Default,
     /// The user is a member of the chat and has some additional privileges. In basic groups, administrators can edit and delete messages sent by others, add new members, ban unprivileged members, and manage video chats. In supergroups and channels, there are more detailed options for administrator privileges
-    #[serde(rename(deserialize = "chatMemberStatusAdministrator"))]
+    #[serde(rename = "chatMemberStatusAdministrator")]
     Administrator(ChatMemberStatusAdministrator),
     /// The user or the chat was banned (and hence is not a member of the chat). Implies the user can't return to the chat, view messages, or be used as a participant identifier to join a video chat of the chat
-    #[serde(rename(deserialize = "chatMemberStatusBanned"))]
+    #[serde(rename = "chatMemberStatusBanned")]
     Banned(ChatMemberStatusBanned),
     /// The user is the owner of the chat and has all the administrator privileges
-    #[serde(rename(deserialize = "chatMemberStatusCreator"))]
+    #[serde(rename = "chatMemberStatusCreator")]
     Creator(ChatMemberStatusCreator),
     /// The user or the chat is not a chat member
-    #[serde(rename(deserialize = "chatMemberStatusLeft"))]
+    #[serde(rename = "chatMemberStatusLeft")]
     Left(ChatMemberStatusLeft),
     /// The user is a member of the chat, without any additional privileges or restrictions
-    #[serde(rename(deserialize = "chatMemberStatusMember"))]
+    #[serde(rename = "chatMemberStatusMember")]
     Member(ChatMemberStatusMember),
     /// The user is under certain restrictions in the chat. Not supported in basic groups and channels
-    #[serde(rename(deserialize = "chatMemberStatusRestricted"))]
+    #[serde(rename = "chatMemberStatusRestricted")]
     Restricted(ChatMemberStatusRestricted),
 }
 

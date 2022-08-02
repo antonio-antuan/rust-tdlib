@@ -14,16 +14,16 @@ pub enum CheckStickerSetNameResult {
     #[doc(hidden)]
     _Default,
     /// Checks whether a name can be used for a new sticker set
-    #[serde(rename(deserialize = "checkStickerSetName"))]
+    #[serde(rename = "checkStickerSetName")]
     CheckStickerSetName(CheckStickerSetName),
     /// The name is invalid
-    #[serde(rename(deserialize = "checkStickerSetNameResultNameInvalid"))]
+    #[serde(rename = "checkStickerSetNameResultNameInvalid")]
     NameInvalid(CheckStickerSetNameResultNameInvalid),
     /// The name is occupied
-    #[serde(rename(deserialize = "checkStickerSetNameResultNameOccupied"))]
+    #[serde(rename = "checkStickerSetNameResultNameOccupied")]
     NameOccupied(CheckStickerSetNameResultNameOccupied),
     /// The name can be set
-    #[serde(rename(deserialize = "checkStickerSetNameResultOk"))]
+    #[serde(rename = "checkStickerSetNameResultOk")]
     Ok(CheckStickerSetNameResultOk),
 }
 
