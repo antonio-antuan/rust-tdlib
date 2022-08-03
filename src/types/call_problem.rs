@@ -14,31 +14,31 @@ pub enum CallProblem {
     #[doc(hidden)]
     _Default,
     /// The speech was distorted
-    #[serde(rename(deserialize = "callProblemDistortedSpeech"))]
+    #[serde(rename = "callProblemDistortedSpeech")]
     DistortedSpeech(CallProblemDistortedSpeech),
     /// The video was distorted
-    #[serde(rename(deserialize = "callProblemDistortedVideo"))]
+    #[serde(rename = "callProblemDistortedVideo")]
     DistortedVideo(CallProblemDistortedVideo),
     /// The call ended unexpectedly
-    #[serde(rename(deserialize = "callProblemDropped"))]
+    #[serde(rename = "callProblemDropped")]
     Dropped(CallProblemDropped),
     /// The user heard their own voice
-    #[serde(rename(deserialize = "callProblemEcho"))]
+    #[serde(rename = "callProblemEcho")]
     Echo(CallProblemEcho),
     /// The other side kept disappearing
-    #[serde(rename(deserialize = "callProblemInterruptions"))]
+    #[serde(rename = "callProblemInterruptions")]
     Interruptions(CallProblemInterruptions),
     /// The user heard background noise
-    #[serde(rename(deserialize = "callProblemNoise"))]
+    #[serde(rename = "callProblemNoise")]
     Noise(CallProblemNoise),
     /// The video was pixelated
-    #[serde(rename(deserialize = "callProblemPixelatedVideo"))]
+    #[serde(rename = "callProblemPixelatedVideo")]
     PixelatedVideo(CallProblemPixelatedVideo),
     /// The user couldn't hear the other side
-    #[serde(rename(deserialize = "callProblemSilentLocal"))]
+    #[serde(rename = "callProblemSilentLocal")]
     SilentLocal(CallProblemSilentLocal),
     /// The other side couldn't hear the user
-    #[serde(rename(deserialize = "callProblemSilentRemote"))]
+    #[serde(rename = "callProblemSilentRemote")]
     SilentRemote(CallProblemSilentRemote),
 }
 

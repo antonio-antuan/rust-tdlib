@@ -14,22 +14,22 @@ pub enum ThumbnailFormat {
     #[doc(hidden)]
     _Default,
     /// The thumbnail is in static GIF format. It will be used only for some bot inline results
-    #[serde(rename(deserialize = "thumbnailFormatGif"))]
+    #[serde(rename = "thumbnailFormatGif")]
     Gif(ThumbnailFormatGif),
     /// The thumbnail is in JPEG format
-    #[serde(rename(deserialize = "thumbnailFormatJpeg"))]
+    #[serde(rename = "thumbnailFormatJpeg")]
     Jpeg(ThumbnailFormatJpeg),
     /// The thumbnail is in MPEG4 format. It will be used only for some animations and videos
-    #[serde(rename(deserialize = "thumbnailFormatMpeg4"))]
+    #[serde(rename = "thumbnailFormatMpeg4")]
     Mpeg4(ThumbnailFormatMpeg4),
     /// The thumbnail is in PNG format. It will be used only for background patterns
-    #[serde(rename(deserialize = "thumbnailFormatPng"))]
+    #[serde(rename = "thumbnailFormatPng")]
     Png(ThumbnailFormatPng),
     /// The thumbnail is in TGS format. It will be used only for animated sticker sets
-    #[serde(rename(deserialize = "thumbnailFormatTgs"))]
+    #[serde(rename = "thumbnailFormatTgs")]
     Tgs(ThumbnailFormatTgs),
     /// The thumbnail is in WEBP format. It will be used only for some stickers
-    #[serde(rename(deserialize = "thumbnailFormatWebp"))]
+    #[serde(rename = "thumbnailFormatWebp")]
     Webp(ThumbnailFormatWebp),
 }
 

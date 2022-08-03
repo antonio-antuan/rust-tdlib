@@ -14,13 +14,13 @@ pub enum CallbackQueryPayload {
     #[doc(hidden)]
     _Default,
     /// The payload for a general callback button
-    #[serde(rename(deserialize = "callbackQueryPayloadData"))]
+    #[serde(rename = "callbackQueryPayloadData")]
     Data(CallbackQueryPayloadData),
     /// The payload for a callback button requiring password
-    #[serde(rename(deserialize = "callbackQueryPayloadDataWithPassword"))]
+    #[serde(rename = "callbackQueryPayloadDataWithPassword")]
     DataWithPassword(CallbackQueryPayloadDataWithPassword),
     /// The payload for a game callback button
-    #[serde(rename(deserialize = "callbackQueryPayloadGame"))]
+    #[serde(rename = "callbackQueryPayloadGame")]
     Game(CallbackQueryPayloadGame),
 }
 

@@ -14,16 +14,16 @@ pub enum TMeUrlType {
     #[doc(hidden)]
     _Default,
     /// A chat invite link
-    #[serde(rename(deserialize = "tMeUrlTypeChatInvite"))]
+    #[serde(rename = "tMeUrlTypeChatInvite")]
     ChatInvite(Box<TMeUrlTypeChatInvite>),
     /// A URL linking to a sticker set
-    #[serde(rename(deserialize = "tMeUrlTypeStickerSet"))]
+    #[serde(rename = "tMeUrlTypeStickerSet")]
     StickerSet(TMeUrlTypeStickerSet),
     /// A URL linking to a public supergroup or channel
-    #[serde(rename(deserialize = "tMeUrlTypeSupergroup"))]
+    #[serde(rename = "tMeUrlTypeSupergroup")]
     Supergroup(TMeUrlTypeSupergroup),
     /// A URL linking to a user
-    #[serde(rename(deserialize = "tMeUrlTypeUser"))]
+    #[serde(rename = "tMeUrlTypeUser")]
     User(TMeUrlTypeUser),
 }
 

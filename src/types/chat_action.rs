@@ -14,49 +14,49 @@ pub enum ChatAction {
     #[doc(hidden)]
     _Default,
     /// The user has canceled the previous action
-    #[serde(rename(deserialize = "chatActionCancel"))]
+    #[serde(rename = "chatActionCancel")]
     Cancel(ChatActionCancel),
     /// The user is picking a contact to send
-    #[serde(rename(deserialize = "chatActionChoosingContact"))]
+    #[serde(rename = "chatActionChoosingContact")]
     ChoosingContact(ChatActionChoosingContact),
     /// The user is picking a location or venue to send
-    #[serde(rename(deserialize = "chatActionChoosingLocation"))]
+    #[serde(rename = "chatActionChoosingLocation")]
     ChoosingLocation(ChatActionChoosingLocation),
     /// The user is picking a sticker to send
-    #[serde(rename(deserialize = "chatActionChoosingSticker"))]
+    #[serde(rename = "chatActionChoosingSticker")]
     ChoosingSticker(ChatActionChoosingSticker),
     /// The user is recording a video
-    #[serde(rename(deserialize = "chatActionRecordingVideo"))]
+    #[serde(rename = "chatActionRecordingVideo")]
     RecordingVideo(ChatActionRecordingVideo),
     /// The user is recording a video note
-    #[serde(rename(deserialize = "chatActionRecordingVideoNote"))]
+    #[serde(rename = "chatActionRecordingVideoNote")]
     RecordingVideoNote(ChatActionRecordingVideoNote),
     /// The user is recording a voice note
-    #[serde(rename(deserialize = "chatActionRecordingVoiceNote"))]
+    #[serde(rename = "chatActionRecordingVoiceNote")]
     RecordingVoiceNote(ChatActionRecordingVoiceNote),
     /// The user has started to play a game
-    #[serde(rename(deserialize = "chatActionStartPlayingGame"))]
+    #[serde(rename = "chatActionStartPlayingGame")]
     StartPlayingGame(ChatActionStartPlayingGame),
     /// The user is typing a message
-    #[serde(rename(deserialize = "chatActionTyping"))]
+    #[serde(rename = "chatActionTyping")]
     Typing(ChatActionTyping),
     /// The user is uploading a document
-    #[serde(rename(deserialize = "chatActionUploadingDocument"))]
+    #[serde(rename = "chatActionUploadingDocument")]
     UploadingDocument(ChatActionUploadingDocument),
     /// The user is uploading a photo
-    #[serde(rename(deserialize = "chatActionUploadingPhoto"))]
+    #[serde(rename = "chatActionUploadingPhoto")]
     UploadingPhoto(ChatActionUploadingPhoto),
     /// The user is uploading a video
-    #[serde(rename(deserialize = "chatActionUploadingVideo"))]
+    #[serde(rename = "chatActionUploadingVideo")]
     UploadingVideo(ChatActionUploadingVideo),
     /// The user is uploading a video note
-    #[serde(rename(deserialize = "chatActionUploadingVideoNote"))]
+    #[serde(rename = "chatActionUploadingVideoNote")]
     UploadingVideoNote(ChatActionUploadingVideoNote),
     /// The user is uploading a voice note
-    #[serde(rename(deserialize = "chatActionUploadingVoiceNote"))]
+    #[serde(rename = "chatActionUploadingVoiceNote")]
     UploadingVoiceNote(ChatActionUploadingVoiceNote),
     /// The user is watching animations sent by the other party by clicking on an animated emoji
-    #[serde(rename(deserialize = "chatActionWatchingAnimations"))]
+    #[serde(rename = "chatActionWatchingAnimations")]
     WatchingAnimations(ChatActionWatchingAnimations),
 }
 

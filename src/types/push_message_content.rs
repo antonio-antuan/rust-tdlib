@@ -14,88 +14,88 @@ pub enum PushMessageContent {
     #[doc(hidden)]
     _Default,
     /// An animation message (GIF-style).
-    #[serde(rename(deserialize = "pushMessageContentAnimation"))]
+    #[serde(rename = "pushMessageContentAnimation")]
     Animation(PushMessageContentAnimation),
     /// An audio message
-    #[serde(rename(deserialize = "pushMessageContentAudio"))]
+    #[serde(rename = "pushMessageContentAudio")]
     Audio(PushMessageContentAudio),
     /// A newly created basic group
-    #[serde(rename(deserialize = "pushMessageContentBasicGroupChatCreate"))]
+    #[serde(rename = "pushMessageContentBasicGroupChatCreate")]
     BasicGroupChatCreate(PushMessageContentBasicGroupChatCreate),
     /// New chat members were invited to a group
-    #[serde(rename(deserialize = "pushMessageContentChatAddMembers"))]
+    #[serde(rename = "pushMessageContentChatAddMembers")]
     ChatAddMembers(PushMessageContentChatAddMembers),
     /// A chat photo was edited
-    #[serde(rename(deserialize = "pushMessageContentChatChangePhoto"))]
+    #[serde(rename = "pushMessageContentChatChangePhoto")]
     ChatChangePhoto(PushMessageContentChatChangePhoto),
     /// A chat title was edited
-    #[serde(rename(deserialize = "pushMessageContentChatChangeTitle"))]
+    #[serde(rename = "pushMessageContentChatChangeTitle")]
     ChatChangeTitle(PushMessageContentChatChangeTitle),
     /// A chat member was deleted
-    #[serde(rename(deserialize = "pushMessageContentChatDeleteMember"))]
+    #[serde(rename = "pushMessageContentChatDeleteMember")]
     ChatDeleteMember(PushMessageContentChatDeleteMember),
     /// A new member joined the chat via an invite link
-    #[serde(rename(deserialize = "pushMessageContentChatJoinByLink"))]
+    #[serde(rename = "pushMessageContentChatJoinByLink")]
     ChatJoinByLink(PushMessageContentChatJoinByLink),
     /// A new member was accepted to the chat by an administrator
-    #[serde(rename(deserialize = "pushMessageContentChatJoinByRequest"))]
+    #[serde(rename = "pushMessageContentChatJoinByRequest")]
     ChatJoinByRequest(PushMessageContentChatJoinByRequest),
     /// A chat theme was edited
-    #[serde(rename(deserialize = "pushMessageContentChatSetTheme"))]
+    #[serde(rename = "pushMessageContentChatSetTheme")]
     ChatSetTheme(PushMessageContentChatSetTheme),
     /// A message with a user contact
-    #[serde(rename(deserialize = "pushMessageContentContact"))]
+    #[serde(rename = "pushMessageContentContact")]
     Contact(PushMessageContentContact),
     /// A contact has registered with Telegram
-    #[serde(rename(deserialize = "pushMessageContentContactRegistered"))]
+    #[serde(rename = "pushMessageContentContactRegistered")]
     ContactRegistered(PushMessageContentContactRegistered),
     /// A document message (a general file)
-    #[serde(rename(deserialize = "pushMessageContentDocument"))]
+    #[serde(rename = "pushMessageContentDocument")]
     Document(PushMessageContentDocument),
     /// A message with a game
-    #[serde(rename(deserialize = "pushMessageContentGame"))]
+    #[serde(rename = "pushMessageContentGame")]
     Game(PushMessageContentGame),
     /// A new high score was achieved in a game
-    #[serde(rename(deserialize = "pushMessageContentGameScore"))]
+    #[serde(rename = "pushMessageContentGameScore")]
     GameScore(PushMessageContentGameScore),
     /// A general message with hidden content
-    #[serde(rename(deserialize = "pushMessageContentHidden"))]
+    #[serde(rename = "pushMessageContentHidden")]
     Hidden(PushMessageContentHidden),
     /// A message with an invoice from a bot
-    #[serde(rename(deserialize = "pushMessageContentInvoice"))]
+    #[serde(rename = "pushMessageContentInvoice")]
     Invoice(PushMessageContentInvoice),
     /// A message with a location
-    #[serde(rename(deserialize = "pushMessageContentLocation"))]
+    #[serde(rename = "pushMessageContentLocation")]
     Location(PushMessageContentLocation),
     /// A media album
-    #[serde(rename(deserialize = "pushMessageContentMediaAlbum"))]
+    #[serde(rename = "pushMessageContentMediaAlbum")]
     MediaAlbum(PushMessageContentMediaAlbum),
     /// A forwarded messages
-    #[serde(rename(deserialize = "pushMessageContentMessageForwards"))]
+    #[serde(rename = "pushMessageContentMessageForwards")]
     MessageForwards(PushMessageContentMessageForwards),
     /// A photo message
-    #[serde(rename(deserialize = "pushMessageContentPhoto"))]
+    #[serde(rename = "pushMessageContentPhoto")]
     Photo(PushMessageContentPhoto),
     /// A message with a poll
-    #[serde(rename(deserialize = "pushMessageContentPoll"))]
+    #[serde(rename = "pushMessageContentPoll")]
     Poll(PushMessageContentPoll),
     /// A screenshot of a message in the chat has been taken
-    #[serde(rename(deserialize = "pushMessageContentScreenshotTaken"))]
+    #[serde(rename = "pushMessageContentScreenshotTaken")]
     ScreenshotTaken(PushMessageContentScreenshotTaken),
     /// A message with a sticker
-    #[serde(rename(deserialize = "pushMessageContentSticker"))]
+    #[serde(rename = "pushMessageContentSticker")]
     Sticker(PushMessageContentSticker),
     /// A text message
-    #[serde(rename(deserialize = "pushMessageContentText"))]
+    #[serde(rename = "pushMessageContentText")]
     Text(PushMessageContentText),
     /// A video message
-    #[serde(rename(deserialize = "pushMessageContentVideo"))]
+    #[serde(rename = "pushMessageContentVideo")]
     Video(PushMessageContentVideo),
     /// A video note message
-    #[serde(rename(deserialize = "pushMessageContentVideoNote"))]
+    #[serde(rename = "pushMessageContentVideoNote")]
     VideoNote(PushMessageContentVideoNote),
     /// A voice note message
-    #[serde(rename(deserialize = "pushMessageContentVoiceNote"))]
+    #[serde(rename = "pushMessageContentVoiceNote")]
     VoiceNote(PushMessageContentVoiceNote),
 }
 

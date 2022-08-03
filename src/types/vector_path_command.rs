@@ -14,10 +14,10 @@ pub enum VectorPathCommand {
     #[doc(hidden)]
     _Default,
     /// A cubic Bézier curve to a given point
-    #[serde(rename(deserialize = "vectorPathCommandCubicBezierCurve"))]
+    #[serde(rename = "vectorPathCommandCubicBezierCurve")]
     CubicBezierCurve(VectorPathCommandCubicBezierCurve),
     /// A straight line to a given point
-    #[serde(rename(deserialize = "vectorPathCommandLine"))]
+    #[serde(rename = "vectorPathCommandLine")]
     Line(VectorPathCommandLine),
 }
 

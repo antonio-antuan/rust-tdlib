@@ -14,16 +14,16 @@ pub enum KeyboardButtonType {
     #[doc(hidden)]
     _Default,
     /// A button that sends the user's location when pressed; available only in private chats
-    #[serde(rename(deserialize = "keyboardButtonTypeRequestLocation"))]
+    #[serde(rename = "keyboardButtonTypeRequestLocation")]
     RequestLocation(KeyboardButtonTypeRequestLocation),
     /// A button that sends the user's phone number when pressed; available only in private chats
-    #[serde(rename(deserialize = "keyboardButtonTypeRequestPhoneNumber"))]
+    #[serde(rename = "keyboardButtonTypeRequestPhoneNumber")]
     RequestPhoneNumber(KeyboardButtonTypeRequestPhoneNumber),
     /// A button that allows the user to create and send a poll when pressed; available only in private chats
-    #[serde(rename(deserialize = "keyboardButtonTypeRequestPoll"))]
+    #[serde(rename = "keyboardButtonTypeRequestPoll")]
     RequestPoll(KeyboardButtonTypeRequestPoll),
     /// A simple button, with text that must be sent when the button is pressed
-    #[serde(rename(deserialize = "keyboardButtonTypeText"))]
+    #[serde(rename = "keyboardButtonTypeText")]
     Text(KeyboardButtonTypeText),
 }
 

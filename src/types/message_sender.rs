@@ -14,10 +14,10 @@ pub enum MessageSender {
     #[doc(hidden)]
     _Default,
     /// The message was sent on behalf of a chat
-    #[serde(rename(deserialize = "messageSenderChat"))]
+    #[serde(rename = "messageSenderChat")]
     Chat(MessageSenderChat),
     /// The message was sent by a known user
-    #[serde(rename(deserialize = "messageSenderUser"))]
+    #[serde(rename = "messageSenderUser")]
     User(MessageSenderUser),
 }
 

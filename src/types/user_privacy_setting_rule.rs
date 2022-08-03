@@ -14,28 +14,28 @@ pub enum UserPrivacySettingRule {
     #[doc(hidden)]
     _Default,
     /// A rule to allow all users to do something
-    #[serde(rename(deserialize = "userPrivacySettingRuleAllowAll"))]
+    #[serde(rename = "userPrivacySettingRuleAllowAll")]
     AllowAll(UserPrivacySettingRuleAllowAll),
     /// A rule to allow all members of certain specified basic groups and supergroups to doing something
-    #[serde(rename(deserialize = "userPrivacySettingRuleAllowChatMembers"))]
+    #[serde(rename = "userPrivacySettingRuleAllowChatMembers")]
     AllowChatMembers(UserPrivacySettingRuleAllowChatMembers),
     /// A rule to allow all of a user's contacts to do something
-    #[serde(rename(deserialize = "userPrivacySettingRuleAllowContacts"))]
+    #[serde(rename = "userPrivacySettingRuleAllowContacts")]
     AllowContacts(UserPrivacySettingRuleAllowContacts),
     /// A rule to allow certain specified users to do something
-    #[serde(rename(deserialize = "userPrivacySettingRuleAllowUsers"))]
+    #[serde(rename = "userPrivacySettingRuleAllowUsers")]
     AllowUsers(UserPrivacySettingRuleAllowUsers),
     /// A rule to restrict all users from doing something
-    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictAll"))]
+    #[serde(rename = "userPrivacySettingRuleRestrictAll")]
     RestrictAll(UserPrivacySettingRuleRestrictAll),
     /// A rule to restrict all members of specified basic groups and supergroups from doing something
-    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictChatMembers"))]
+    #[serde(rename = "userPrivacySettingRuleRestrictChatMembers")]
     RestrictChatMembers(UserPrivacySettingRuleRestrictChatMembers),
     /// A rule to restrict all contacts of a user from doing something
-    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictContacts"))]
+    #[serde(rename = "userPrivacySettingRuleRestrictContacts")]
     RestrictContacts(UserPrivacySettingRuleRestrictContacts),
     /// A rule to restrict all specified users from doing something
-    #[serde(rename(deserialize = "userPrivacySettingRuleRestrictUsers"))]
+    #[serde(rename = "userPrivacySettingRuleRestrictUsers")]
     RestrictUsers(UserPrivacySettingRuleRestrictUsers),
 }
 

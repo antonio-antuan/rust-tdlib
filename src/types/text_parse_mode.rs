@@ -14,10 +14,10 @@ pub enum TextParseMode {
     #[doc(hidden)]
     _Default,
     /// The text uses HTML-style formatting. The same as Telegram Bot API "HTML" parse mode
-    #[serde(rename(deserialize = "textParseModeHTML"))]
+    #[serde(rename = "textParseModeHTML")]
     HTML(TextParseModeHTML),
     /// The text uses Markdown-style formatting
-    #[serde(rename(deserialize = "textParseModeMarkdown"))]
+    #[serde(rename = "textParseModeMarkdown")]
     Markdown(TextParseModeMarkdown),
 }
 

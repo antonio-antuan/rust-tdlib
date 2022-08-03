@@ -14,25 +14,25 @@ pub enum ChatActionBar {
     #[doc(hidden)]
     _Default,
     /// The chat is a private or secret chat and the other user can be added to the contact list using the method addContact
-    #[serde(rename(deserialize = "chatActionBarAddContact"))]
+    #[serde(rename = "chatActionBarAddContact")]
     AddContact(ChatActionBarAddContact),
     /// The chat is a recently created group chat to which new members can be invited
-    #[serde(rename(deserialize = "chatActionBarInviteMembers"))]
+    #[serde(rename = "chatActionBarInviteMembers")]
     InviteMembers(ChatActionBarInviteMembers),
     /// The chat is a private chat with an administrator of a chat to which the user sent join request
-    #[serde(rename(deserialize = "chatActionBarJoinRequest"))]
+    #[serde(rename = "chatActionBarJoinRequest")]
     JoinRequest(ChatActionBarJoinRequest),
     /// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method toggleMessageSenderIsBlocked, or the other user can be added to the contact list using the method addContact
-    #[serde(rename(deserialize = "chatActionBarReportAddBlock"))]
+    #[serde(rename = "chatActionBarReportAddBlock")]
     ReportAddBlock(ChatActionBarReportAddBlock),
     /// The chat can be reported as spam using the method reportChat with the reason chatReportReasonSpam
-    #[serde(rename(deserialize = "chatActionBarReportSpam"))]
+    #[serde(rename = "chatActionBarReportSpam")]
     ReportSpam(ChatActionBarReportSpam),
     /// The chat is a location-based supergroup, which can be reported as having unrelated location using the method reportChat with the reason chatReportReasonUnrelatedLocation
-    #[serde(rename(deserialize = "chatActionBarReportUnrelatedLocation"))]
+    #[serde(rename = "chatActionBarReportUnrelatedLocation")]
     ReportUnrelatedLocation(ChatActionBarReportUnrelatedLocation),
     /// The chat is a private or secret chat with a mutual contact and the user's phone number can be shared with the other user using the method sharePhoneNumber
-    #[serde(rename(deserialize = "chatActionBarSharePhoneNumber"))]
+    #[serde(rename = "chatActionBarSharePhoneNumber")]
     SharePhoneNumber(ChatActionBarSharePhoneNumber),
 }
 

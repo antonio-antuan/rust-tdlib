@@ -14,10 +14,10 @@ pub enum PollType {
     #[doc(hidden)]
     _Default,
     /// A poll in quiz mode, which has exactly one correct answer option and can be answered only once
-    #[serde(rename(deserialize = "pollTypeQuiz"))]
+    #[serde(rename = "pollTypeQuiz")]
     Quiz(PollTypeQuiz),
     /// A regular poll
-    #[serde(rename(deserialize = "pollTypeRegular"))]
+    #[serde(rename = "pollTypeRegular")]
     Regular(PollTypeRegular),
 }
 

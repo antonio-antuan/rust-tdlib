@@ -14,13 +14,13 @@ pub enum ChatStatistics {
     #[doc(hidden)]
     _Default,
     /// A detailed statistics about a channel chat
-    #[serde(rename(deserialize = "chatStatisticsChannel"))]
+    #[serde(rename = "chatStatisticsChannel")]
     Channel(ChatStatisticsChannel),
     /// A detailed statistics about a supergroup chat
-    #[serde(rename(deserialize = "chatStatisticsSupergroup"))]
+    #[serde(rename = "chatStatisticsSupergroup")]
     Supergroup(ChatStatisticsSupergroup),
     /// Returns detailed statistics about a chat. Currently, this method can be used only for supergroups and channels. Can be used only if supergroupFullInfo.can_get_statistics == true
-    #[serde(rename(deserialize = "getChatStatistics"))]
+    #[serde(rename = "getChatStatistics")]
     GetChatStatistics(GetChatStatistics),
 }
 

@@ -14,16 +14,16 @@ pub enum ResetPasswordResult {
     #[doc(hidden)]
     _Default,
     /// Removes 2-step verification password without previous password and access to recovery email address. The password can't be reset immediately and the request needs to be repeated after the specified time
-    #[serde(rename(deserialize = "resetPassword"))]
+    #[serde(rename = "resetPassword")]
     ResetPassword(ResetPassword),
     /// The password reset request was declined
-    #[serde(rename(deserialize = "resetPasswordResultDeclined"))]
+    #[serde(rename = "resetPasswordResultDeclined")]
     Declined(ResetPasswordResultDeclined),
     /// The password was reset
-    #[serde(rename(deserialize = "resetPasswordResultOk"))]
+    #[serde(rename = "resetPasswordResultOk")]
     Ok(ResetPasswordResultOk),
     /// The password reset request is pending
-    #[serde(rename(deserialize = "resetPasswordResultPending"))]
+    #[serde(rename = "resetPasswordResultPending")]
     Pending(ResetPasswordResultPending),
 }
 

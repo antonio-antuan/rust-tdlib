@@ -14,13 +14,13 @@ pub enum NotificationSettingsScope {
     #[doc(hidden)]
     _Default,
     /// Notification settings applied to all channels when the corresponding chat setting has a default value
-    #[serde(rename(deserialize = "notificationSettingsScopeChannelChats"))]
+    #[serde(rename = "notificationSettingsScopeChannelChats")]
     ChannelChats(NotificationSettingsScopeChannelChats),
     /// Notification settings applied to all basic groups and supergroups when the corresponding chat setting has a default value
-    #[serde(rename(deserialize = "notificationSettingsScopeGroupChats"))]
+    #[serde(rename = "notificationSettingsScopeGroupChats")]
     GroupChats(NotificationSettingsScopeGroupChats),
     /// Notification settings applied to all private and secret chats when the corresponding chat setting has a default value
-    #[serde(rename(deserialize = "notificationSettingsScopePrivateChats"))]
+    #[serde(rename = "notificationSettingsScopePrivateChats")]
     PrivateChats(NotificationSettingsScopePrivateChats),
 }
 

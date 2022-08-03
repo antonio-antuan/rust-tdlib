@@ -14,19 +14,19 @@ pub enum MessageForwardOrigin {
     #[doc(hidden)]
     _Default,
     /// The message was originally a post in a channel
-    #[serde(rename(deserialize = "messageForwardOriginChannel"))]
+    #[serde(rename = "messageForwardOriginChannel")]
     Channel(MessageForwardOriginChannel),
     /// The message was originally sent on behalf of a chat
-    #[serde(rename(deserialize = "messageForwardOriginChat"))]
+    #[serde(rename = "messageForwardOriginChat")]
     Chat(MessageForwardOriginChat),
     /// The message was originally sent by a user, which is hidden by their privacy settings
-    #[serde(rename(deserialize = "messageForwardOriginHiddenUser"))]
+    #[serde(rename = "messageForwardOriginHiddenUser")]
     HiddenUser(MessageForwardOriginHiddenUser),
     /// The message was imported from an exported message history
-    #[serde(rename(deserialize = "messageForwardOriginMessageImport"))]
+    #[serde(rename = "messageForwardOriginMessageImport")]
     MessageImport(MessageForwardOriginMessageImport),
     /// The message was originally sent by a known user
-    #[serde(rename(deserialize = "messageForwardOriginUser"))]
+    #[serde(rename = "messageForwardOriginUser")]
     User(MessageForwardOriginUser),
 }
 

@@ -14,25 +14,25 @@ pub enum ChatMembersFilter {
     #[doc(hidden)]
     _Default,
     /// Returns the owner and administrators
-    #[serde(rename(deserialize = "chatMembersFilterAdministrators"))]
+    #[serde(rename = "chatMembersFilterAdministrators")]
     Administrators(ChatMembersFilterAdministrators),
     /// Returns users banned from the chat; can be used only by administrators in a supergroup or in a channel
-    #[serde(rename(deserialize = "chatMembersFilterBanned"))]
+    #[serde(rename = "chatMembersFilterBanned")]
     Banned(ChatMembersFilterBanned),
     /// Returns bot members of the chat
-    #[serde(rename(deserialize = "chatMembersFilterBots"))]
+    #[serde(rename = "chatMembersFilterBots")]
     Bots(ChatMembersFilterBots),
     /// Returns contacts of the user
-    #[serde(rename(deserialize = "chatMembersFilterContacts"))]
+    #[serde(rename = "chatMembersFilterContacts")]
     Contacts(ChatMembersFilterContacts),
     /// Returns all chat members, including restricted chat members
-    #[serde(rename(deserialize = "chatMembersFilterMembers"))]
+    #[serde(rename = "chatMembersFilterMembers")]
     Members(ChatMembersFilterMembers),
     /// Returns users which can be mentioned in the chat
-    #[serde(rename(deserialize = "chatMembersFilterMention"))]
+    #[serde(rename = "chatMembersFilterMention")]
     Mention(ChatMembersFilterMention),
     /// Returns users under certain restrictions in the chat; can be used only by administrators in a supergroup
-    #[serde(rename(deserialize = "chatMembersFilterRestricted"))]
+    #[serde(rename = "chatMembersFilterRestricted")]
     Restricted(ChatMembersFilterRestricted),
 }
 

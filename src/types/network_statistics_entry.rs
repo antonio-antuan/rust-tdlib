@@ -14,10 +14,10 @@ pub enum NetworkStatisticsEntry {
     #[doc(hidden)]
     _Default,
     /// Contains information about the total amount of data that was used for calls
-    #[serde(rename(deserialize = "networkStatisticsEntryCall"))]
+    #[serde(rename = "networkStatisticsEntryCall")]
     Call(NetworkStatisticsEntryCall),
     /// Contains information about the total amount of data that was used to send and receive files
-    #[serde(rename(deserialize = "networkStatisticsEntryFile"))]
+    #[serde(rename = "networkStatisticsEntryFile")]
     File(NetworkStatisticsEntryFile),
 }
 

@@ -14,13 +14,13 @@ pub enum GroupCallVideoQuality {
     #[doc(hidden)]
     _Default,
     /// The best available video quality
-    #[serde(rename(deserialize = "groupCallVideoQualityFull"))]
+    #[serde(rename = "groupCallVideoQualityFull")]
     Full(GroupCallVideoQualityFull),
     /// The medium video quality
-    #[serde(rename(deserialize = "groupCallVideoQualityMedium"))]
+    #[serde(rename = "groupCallVideoQualityMedium")]
     Medium(GroupCallVideoQualityMedium),
     /// The worst available video quality
-    #[serde(rename(deserialize = "groupCallVideoQualityThumbnail"))]
+    #[serde(rename = "groupCallVideoQualityThumbnail")]
     Thumbnail(GroupCallVideoQualityThumbnail),
 }
 

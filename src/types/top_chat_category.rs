@@ -14,25 +14,25 @@ pub enum TopChatCategory {
     #[doc(hidden)]
     _Default,
     /// A category containing frequently used private chats with bot users
-    #[serde(rename(deserialize = "topChatCategoryBots"))]
+    #[serde(rename = "topChatCategoryBots")]
     Bots(TopChatCategoryBots),
     /// A category containing frequently used chats used for calls
-    #[serde(rename(deserialize = "topChatCategoryCalls"))]
+    #[serde(rename = "topChatCategoryCalls")]
     Calls(TopChatCategoryCalls),
     /// A category containing frequently used channels
-    #[serde(rename(deserialize = "topChatCategoryChannels"))]
+    #[serde(rename = "topChatCategoryChannels")]
     Channels(TopChatCategoryChannels),
     /// A category containing frequently used chats used to forward messages
-    #[serde(rename(deserialize = "topChatCategoryForwardChats"))]
+    #[serde(rename = "topChatCategoryForwardChats")]
     ForwardChats(TopChatCategoryForwardChats),
     /// A category containing frequently used basic groups and supergroups
-    #[serde(rename(deserialize = "topChatCategoryGroups"))]
+    #[serde(rename = "topChatCategoryGroups")]
     Groups(TopChatCategoryGroups),
     /// A category containing frequently used chats with inline bots sorted by their usage in inline mode
-    #[serde(rename(deserialize = "topChatCategoryInlineBots"))]
+    #[serde(rename = "topChatCategoryInlineBots")]
     InlineBots(TopChatCategoryInlineBots),
     /// A category containing frequently used private chats with non-bot users
-    #[serde(rename(deserialize = "topChatCategoryUsers"))]
+    #[serde(rename = "topChatCategoryUsers")]
     Users(TopChatCategoryUsers),
 }
 

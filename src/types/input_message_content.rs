@@ -14,55 +14,55 @@ pub enum InputMessageContent {
     #[doc(hidden)]
     _Default,
     /// An animation message (GIF-style).
-    #[serde(rename(deserialize = "inputMessageAnimation"))]
+    #[serde(rename = "inputMessageAnimation")]
     InputMessageAnimation(InputMessageAnimation),
     /// An audio message
-    #[serde(rename(deserialize = "inputMessageAudio"))]
+    #[serde(rename = "inputMessageAudio")]
     InputMessageAudio(InputMessageAudio),
     /// A message containing a user contact
-    #[serde(rename(deserialize = "inputMessageContact"))]
+    #[serde(rename = "inputMessageContact")]
     InputMessageContact(InputMessageContact),
     /// A dice message
-    #[serde(rename(deserialize = "inputMessageDice"))]
+    #[serde(rename = "inputMessageDice")]
     InputMessageDice(InputMessageDice),
     /// A document message (general file)
-    #[serde(rename(deserialize = "inputMessageDocument"))]
+    #[serde(rename = "inputMessageDocument")]
     InputMessageDocument(InputMessageDocument),
     /// A forwarded message
-    #[serde(rename(deserialize = "inputMessageForwarded"))]
+    #[serde(rename = "inputMessageForwarded")]
     InputMessageForwarded(InputMessageForwarded),
     /// A message with a game; not supported for channels or secret chats
-    #[serde(rename(deserialize = "inputMessageGame"))]
+    #[serde(rename = "inputMessageGame")]
     InputMessageGame(InputMessageGame),
     /// A message with an invoice; can be used only by bots
-    #[serde(rename(deserialize = "inputMessageInvoice"))]
+    #[serde(rename = "inputMessageInvoice")]
     InputMessageInvoice(InputMessageInvoice),
     /// A message with a location
-    #[serde(rename(deserialize = "inputMessageLocation"))]
+    #[serde(rename = "inputMessageLocation")]
     InputMessageLocation(InputMessageLocation),
     /// A photo message
-    #[serde(rename(deserialize = "inputMessagePhoto"))]
+    #[serde(rename = "inputMessagePhoto")]
     InputMessagePhoto(InputMessagePhoto),
     /// A message with a poll. Polls can't be sent to secret chats. Polls can be sent only to a private chat with a bot
-    #[serde(rename(deserialize = "inputMessagePoll"))]
+    #[serde(rename = "inputMessagePoll")]
     InputMessagePoll(InputMessagePoll),
     /// A sticker message
-    #[serde(rename(deserialize = "inputMessageSticker"))]
+    #[serde(rename = "inputMessageSticker")]
     InputMessageSticker(InputMessageSticker),
     /// A text message
-    #[serde(rename(deserialize = "inputMessageText"))]
+    #[serde(rename = "inputMessageText")]
     InputMessageText(InputMessageText),
     /// A message with information about a venue
-    #[serde(rename(deserialize = "inputMessageVenue"))]
+    #[serde(rename = "inputMessageVenue")]
     InputMessageVenue(InputMessageVenue),
     /// A video message
-    #[serde(rename(deserialize = "inputMessageVideo"))]
+    #[serde(rename = "inputMessageVideo")]
     InputMessageVideo(InputMessageVideo),
     /// A video note message
-    #[serde(rename(deserialize = "inputMessageVideoNote"))]
+    #[serde(rename = "inputMessageVideoNote")]
     InputMessageVideoNote(InputMessageVideoNote),
     /// A voice note message
-    #[serde(rename(deserialize = "inputMessageVoiceNote"))]
+    #[serde(rename = "inputMessageVoiceNote")]
     InputMessageVoiceNote(InputMessageVoiceNote),
 }
 
