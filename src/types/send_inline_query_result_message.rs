@@ -26,7 +26,10 @@ pub struct SendInlineQueryResultMessage {
     options: MessageSendOptions,
     /// Identifier of the inline query
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     query_id: i64,
     /// Identifier of the inline result

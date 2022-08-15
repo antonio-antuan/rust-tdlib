@@ -124,7 +124,10 @@ pub struct Message {
     author_signature: String,
     /// Unique identifier of an album this message belongs to. Only audios, documents, photos and videos can be grouped together in albums
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     media_album_id: i64,
     /// If non-empty, contains a human-readable description of the reason why access to this message must be restricted

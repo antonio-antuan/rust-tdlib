@@ -3931,7 +3931,10 @@ pub struct UpdateFileGenerationStart {
     client_id: Option<i32>,
     /// Unique identifier for the generation process
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     generation_id: i64,
     /// The path to a file from which a new file is generated; may be empty
@@ -4045,7 +4048,10 @@ pub struct UpdateFileGenerationStop {
     client_id: Option<i32>,
     /// Unique identifier for the generation process
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     generation_id: i64,
 }
@@ -5611,7 +5617,10 @@ pub struct UpdateNewCallbackQuery {
     client_id: Option<i32>,
     /// Unique query identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     id: i64,
     /// Identifier of the user who sent the query
@@ -5628,7 +5637,10 @@ pub struct UpdateNewCallbackQuery {
     message_id: i64,
     /// Identifier that uniquely corresponds to the chat to which the message was sent
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     chat_instance: i64,
     /// Query payload
@@ -6118,7 +6130,10 @@ pub struct UpdateNewCustomQuery {
     client_id: Option<i32>,
     /// The query identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     id: i64,
     /// JSON-serialized query data
@@ -6219,7 +6234,10 @@ pub struct UpdateNewInlineCallbackQuery {
     client_id: Option<i32>,
     /// Unique query identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     id: i64,
     /// Identifier of the user who sent the query
@@ -6232,7 +6250,10 @@ pub struct UpdateNewInlineCallbackQuery {
     inline_message_id: String,
     /// An identifier uniquely corresponding to the chat a message was sent to
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     chat_instance: i64,
     /// Query payload
@@ -6347,7 +6368,10 @@ pub struct UpdateNewInlineQuery {
     client_id: Option<i32>,
     /// Unique query identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     id: i64,
     /// Identifier of the user who sent the query
@@ -6555,7 +6579,10 @@ pub struct UpdateNewPreCheckoutQuery {
     client_id: Option<i32>,
     /// Unique query identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     id: i64,
     /// Identifier of the user who sent the query
@@ -6706,7 +6733,10 @@ pub struct UpdateNewShippingQuery {
     client_id: Option<i32>,
     /// Unique query identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     id: i64,
     /// Identifier of the user who sent the query
@@ -7231,7 +7261,10 @@ pub struct UpdatePollAnswer {
     client_id: Option<i32>,
     /// Unique poll identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     poll_id: i64,
     /// The user, who changed the answer to the poll

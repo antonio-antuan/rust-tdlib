@@ -2294,12 +2294,18 @@ pub struct ChatEventStickerSetChanged {
     client_id: Option<i32>,
     /// Previous identifier of the chat sticker set; 0 if none
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     old_sticker_set_id: i64,
     /// New identifier of the chat sticker set; 0 if none
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     new_sticker_set_id: i64,
 }

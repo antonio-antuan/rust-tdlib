@@ -1,17 +1,17 @@
-use std::{
-    fmt::{Debug, Display},
-    str::FromStr,
+use std::fmt::{Debug, Display};
+use std::str::FromStr;
+
+use serde::{
+    de::{Deserialize, Deserializer, Error as SerdeDeError},
+    ser::{Serialize, Serializer},
 };
 
-use serde::de::{Deserialize, Deserializer, Error as SerdeError};
-
 use crate::{errors::*, types::*};
-use serde::{de, Serialize};
 
 #[allow(dead_code)]
 pub fn from_json<'a, T>(json: &'a str) -> Result<T>
 where
-    T: serde::de::Deserialize<'a>,
+    T: Deserialize<'a>,
 {
     Ok(serde_json::from_str(json)?)
 }
@@ -486,7 +486,15 @@ where
     D: Deserializer<'de>,
 {
     let s = String::deserialize(deserializer)?;
-    T::from_str(&s).map_err(de::Error::custom)
+    T::from_str(&s).map_err(SerdeDeError::custom)
+}
+
+pub(super) fn string_to_number<T, S>(value: &T, serializer: S) -> Result<S::Ok, S::Error>
+where
+    T: Display,
+    S: Serializer,
+{
+    serializer.collect_str(value)
 }
 
 pub(super) fn vec_of_i64_from_str<'de, D>(deserializer: D) -> Result<Vec<i64>, D::Error>

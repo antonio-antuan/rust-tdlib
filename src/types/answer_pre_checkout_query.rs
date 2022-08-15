@@ -12,7 +12,10 @@ pub struct AnswerPreCheckoutQuery {
     client_id: Option<i32>,
     /// Identifier of the pre-checkout query
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     pre_checkout_query_id: i64,
     /// An error message, empty on success

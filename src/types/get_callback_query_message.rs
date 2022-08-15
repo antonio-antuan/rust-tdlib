@@ -20,7 +20,10 @@ pub struct GetCallbackQueryMessage {
     message_id: i64,
     /// Identifier of the callback query
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     callback_query_id: i64,
 

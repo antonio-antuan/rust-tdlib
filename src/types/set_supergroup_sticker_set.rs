@@ -16,7 +16,10 @@ pub struct SetSupergroupStickerSet {
     supergroup_id: i64,
     /// New value of the supergroup sticker set identifier. Use 0 to remove the supergroup sticker set
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     sticker_set_id: i64,
 

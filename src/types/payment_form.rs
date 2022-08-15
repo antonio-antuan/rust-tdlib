@@ -12,7 +12,10 @@ pub struct PaymentForm {
     client_id: Option<i32>,
     /// The payment form identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     id: i64,
     /// Full information of the invoice

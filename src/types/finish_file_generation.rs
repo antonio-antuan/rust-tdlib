@@ -12,7 +12,10 @@ pub struct FinishFileGeneration {
     client_id: Option<i32>,
     /// The identifier of the generation process
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     generation_id: i64,
     /// If passed, the file generation has failed and must be terminated; pass null if the file generation succeeded

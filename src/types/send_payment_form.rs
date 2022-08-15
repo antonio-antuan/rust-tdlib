@@ -20,7 +20,10 @@ pub struct SendPaymentForm {
     message_id: i64,
     /// Payment form identifier returned by getPaymentForm
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     payment_form_id: i64,
     /// Identifier returned by validateOrderInfo, or an empty string

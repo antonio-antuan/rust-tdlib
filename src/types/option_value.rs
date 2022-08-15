@@ -224,7 +224,10 @@ pub struct OptionValueInteger {
     client_id: Option<i32>,
     /// The value of the option
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     value: i64,
 }

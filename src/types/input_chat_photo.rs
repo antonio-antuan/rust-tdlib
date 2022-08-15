@@ -166,7 +166,10 @@ pub struct InputChatPhotoPrevious {
     client_id: Option<i32>,
     /// Identifier of the current user's profile photo to reuse
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     chat_photo_id: i64,
 }

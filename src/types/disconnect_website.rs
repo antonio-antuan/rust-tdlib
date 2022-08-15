@@ -12,7 +12,10 @@ pub struct DisconnectWebsite {
     client_id: Option<i32>,
     /// Website identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     website_id: i64,
 

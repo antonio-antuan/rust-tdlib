@@ -12,7 +12,10 @@ pub struct RemoveBackground {
     client_id: Option<i32>,
     /// The background identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     background_id: i64,
 
