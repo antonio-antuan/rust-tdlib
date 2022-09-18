@@ -4,6 +4,7 @@ use crate::types::{
     AuthorizationStateWaitPhoneNumber, AuthorizationStateWaitRegistration,
 };
 use async_trait::async_trait;
+use std::fmt::Debug;
 use std::io;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -11,17 +12,12 @@ use tokio::sync::Mutex;
 /// `AuthStateHandler` trait provides methods that returns data, required for authentication
 /// It allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
 #[async_trait]
-pub trait AuthStateHandler {
+pub trait AuthStateHandler: Debug {
     /// Interacts with provided link
     async fn handle_other_device_confirmation(
         &self,
         wait_device_confirmation: &AuthorizationStateWaitOtherDeviceConfirmation,
-    ) {
-        println!(
-            "other device confirmation link: {}",
-            wait_device_confirmation.link()
-        );
-    }
+    );
     /// Returns wait code
     async fn handle_wait_code(&self, wait_code: &AuthorizationStateWaitCode) -> String;
     /// Returns database encryption key
@@ -70,6 +66,16 @@ impl ConsoleAuthStateHandler {
 
 #[async_trait]
 impl AuthStateHandler for ConsoleAuthStateHandler {
+    async fn handle_other_device_confirmation(
+        &self,
+        wait_device_confirmation: &AuthorizationStateWaitOtherDeviceConfirmation,
+    ) {
+        println!(
+            "other device confirmation link: {}",
+            wait_device_confirmation.link()
+        );
+    }
+
     async fn handle_wait_code(&self, _wait_code: &AuthorizationStateWaitCode) -> String {
         println!("waiting for auth code");
         ConsoleAuthStateHandler::wait_input()
@@ -134,6 +140,16 @@ impl SignalAuthStateHandler {
 
 #[async_trait]
 impl AuthStateHandler for SignalAuthStateHandler {
+    async fn handle_other_device_confirmation(
+        &self,
+        wait_device_confirmation: &AuthorizationStateWaitOtherDeviceConfirmation,
+    ) {
+        println!(
+            "other device confirmation link: {}",
+            wait_device_confirmation.link()
+        );
+    }
+
     async fn handle_wait_code(&self, _: &AuthorizationStateWaitCode) -> String {
         log::info!("waiting for auth code");
         self.wait_signal().await

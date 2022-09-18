@@ -4,6 +4,7 @@ use rust_tdlib::{
     tdjson,
     types::TdlibParameters,
 };
+use std::sync::Arc;
 
 #[tokio::main]
 async fn main() {
@@ -38,7 +39,7 @@ async fn main() {
     let (sx, rx) = tokio::sync::mpsc::channel(5);
     let auth_handler = SignalAuthStateHandler::new(rx);
     let mut worker = Worker::builder()
-        .with_auth_state_handler(auth_handler)
+        .with_auth_state_handler(Arc::new(auth_handler))
         .build()
         .unwrap();
 

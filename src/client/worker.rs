@@ -26,33 +26,33 @@ use tokio::{
     time,
 };
 
+pub(crate) type DynAuthStateHandler = dyn AuthStateHandler + Send + Sync + 'static;
+
 #[derive(Debug)]
-pub struct WorkerBuilder<A, T>
+pub struct WorkerBuilder<T>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
     T: TdLibClient + Send + Sync + Clone + 'static,
 {
     read_updates_timeout: f64,
     channels_send_timeout: f64,
-    auth_state_handler: A,
+    auth_state_handler: Arc<DynAuthStateHandler>,
     tdlib_client: T,
 }
 
-impl Default for WorkerBuilder<ConsoleAuthStateHandler, TdJson> {
+impl Default for WorkerBuilder<TdJson> {
     /// Provides default implementation with [ConsoleAuthStateHandler](crate::client::client::ConsoleAuthStateHandler)
     fn default() -> Self {
         Self {
             read_updates_timeout: 2.0,
             channels_send_timeout: 5.0,
-            auth_state_handler: ConsoleAuthStateHandler::new(),
+            auth_state_handler: Arc::new(ConsoleAuthStateHandler::new()),
             tdlib_client: TdJson::new(),
         }
     }
 }
 
-impl<A, T> WorkerBuilder<A, T>
+impl<T> WorkerBuilder<T>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
     T: TdLibClient + Send + Sync + Clone + 'static,
 {
     /// Specifies timeout which will be used during sending to [tokio::sync::mpsc](tokio::sync::mpsc).
@@ -68,10 +68,10 @@ where
 
     /// [AuthStateHandler](crate::client::client::AuthStateHandler) allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
     /// See [AuthorizationState](crate::types::AuthorizationState).
-    pub fn with_auth_state_handler<N>(self, auth_state_handler: N) -> WorkerBuilder<N, T>
-    where
-        N: AuthStateHandler + Send + Sync + 'static,
-    {
+    pub fn with_auth_state_handler(
+        self,
+        auth_state_handler: Arc<DynAuthStateHandler>,
+    ) -> WorkerBuilder<T> {
         WorkerBuilder {
             auth_state_handler,
             read_updates_timeout: self.read_updates_timeout,
@@ -81,7 +81,7 @@ where
     }
 
     #[doc(hidden)]
-    pub fn with_tdlib_client<C>(self, tdlib_client: C) -> WorkerBuilder<A, C>
+    pub fn with_tdlib_client<C>(self, tdlib_client: C) -> WorkerBuilder<C>
     where
         C: TdLibClient + Send + Sync + Clone + 'static,
     {
@@ -93,7 +93,7 @@ where
         }
     }
 
-    pub fn build(self) -> Result<Worker<A, T>> {
+    pub fn build(self) -> Result<Worker<T>> {
         let worker = Worker::new(
             self.auth_state_handler,
             self.read_updates_timeout,
@@ -141,28 +141,26 @@ type ClientsMap<S> = HashMap<ClientId, ClientContext<S>>;
 /// The main object in all interactions.
 /// You have to [start](crate::client::worker::Worker::start) worker and bind each client with worker using [auth_client](crate::client::worker::Worker::auth_client).
 #[derive(Debug, Clone)]
-pub struct Worker<A, S>
+pub struct Worker<S>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
     S: TdLibClient + Send + Sync + Clone + 'static,
 {
     run_flag: Arc<AtomicBool>,
-    auth_state_handler: Arc<A>,
+    auth_state_handler: Arc<DynAuthStateHandler>,
     read_updates_timeout: Duration,
     channels_send_timeout: Duration,
     tdlib_client: S,
     clients: Arc<RwLock<ClientsMap<S>>>,
 }
 
-impl Worker<ConsoleAuthStateHandler, TdJson> {
-    pub fn builder() -> WorkerBuilder<ConsoleAuthStateHandler, TdJson> {
+impl Worker<TdJson> {
+    pub fn builder() -> WorkerBuilder<TdJson> {
         WorkerBuilder::default()
     }
 }
 
-impl<A, T> Worker<A, T>
+impl<T> Worker<T>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
     T: TdLibClient + Send + Sync + Clone + 'static,
 {
     /// Returns state of the client.
@@ -304,7 +302,7 @@ where
 
     // Client must be created only with builder
     pub(crate) fn new(
-        auth_state_handler: A,
+        auth_state_handler: Arc<DynAuthStateHandler>,
         read_updates_timeout: f64,
         channels_send_timeout: f64,
         tdlib_client: T,
@@ -315,9 +313,9 @@ where
         Self {
             run_flag,
             tdlib_client,
+            auth_state_handler,
             read_updates_timeout: time::Duration::from_secs_f64(read_updates_timeout),
             channels_send_timeout: time::Duration::from_secs_f64(channels_send_timeout),
-            auth_state_handler: Arc::new(auth_state_handler),
             clients: Arc::new(RwLock::new(clients)),
         }
     }
@@ -518,9 +516,8 @@ async fn handle_td_resp_received<S: TdLibClient + Send + Sync + Clone>(
     }
 }
 
-impl<A, S> Drop for Worker<A, S>
+impl<S> Drop for Worker<S>
 where
-    A: AuthStateHandler + Send + Sync + 'static,
     S: TdLibClient + Send + Sync + Clone + 'static,
 {
     fn drop(&mut self) {
@@ -528,11 +525,11 @@ where
     }
 }
 
-async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
+async fn handle_auth_state<R: TdLibClient + Clone>(
     client: &Client<R>,
     pub_state_sender: &Option<mpsc::Sender<StateMessage>>,
     private_state_sender: &mpsc::Sender<ClientState>,
-    auth_state_handler: &A,
+    auth_state_handler: &DynAuthStateHandler,
     state: &AuthorizationState,
     send_state_timeout: time::Duration,
 ) -> Result<()> {
