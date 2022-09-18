@@ -68,16 +68,9 @@ where
 
     /// [AuthStateHandler](crate::client::client::AuthStateHandler) allows you to handle particular "auth states", such as [WaitPassword](crate::types::AuthorizationStateWaitPassword), [WaitPhoneNumber](crate::types::AuthorizationStateWaitPhoneNumber) and so on.
     /// See [AuthorizationState](crate::types::AuthorizationState).
-    pub fn with_auth_state_handler(
-        self,
-        auth_state_handler: Arc<DynAuthStateHandler>,
-    ) -> WorkerBuilder<T> {
-        WorkerBuilder {
-            auth_state_handler,
-            read_updates_timeout: self.read_updates_timeout,
-            channels_send_timeout: self.channels_send_timeout,
-            tdlib_client: self.tdlib_client,
-        }
+    pub fn with_auth_state_handler(mut self, auth_state_handler: &DynAuthStateHandler) -> Self {
+        self.auth_state_handler = Arc::new(auth_state_handler);
+        self
     }
 
     #[doc(hidden)]
@@ -163,6 +156,11 @@ impl<T> Worker<T>
 where
     T: TdLibClient + Send + Sync + Clone + 'static,
 {
+    /// Changes auth_state_handler at runtime.
+    pub fn set_auth_state_handler(&mut self, new_auth_state_handler: &DynAuthStateHandler) {
+        self.auth_state_handler = Arc::new(new_auth_state_handler);
+    }
+
     /// Returns state of the client.
     pub async fn get_client_state(
         &self,
@@ -745,24 +743,6 @@ mod tests {
             .with_tdlib_client(mocked_raw_api.clone())
             .build()
             .unwrap();
-        let res = timeout(
-            Duration::from_millis(50),
-            worker.bind_client(
-                Client::builder()
-                    .with_tdlib_client(mocked_raw_api.clone())
-                    .with_tdlib_parameters(TdlibParameters::builder().build())
-                    .build()
-                    .unwrap(),
-            ),
-        )
-        .await;
-        match res {
-            Err(e) => panic!("{:?}", e),
-            Ok(v) => match v {
-                Err(e) => assert_eq!(e.to_string(), "worker not started yet".to_string()),
-                Ok(_) => panic!("error not raised"),
-            },
-        };
 
         worker.start();
         // we can't handle first request because we do not know @extra. so just wait a while.
