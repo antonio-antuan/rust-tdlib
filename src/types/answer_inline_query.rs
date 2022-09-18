@@ -12,7 +12,10 @@ pub struct AnswerInlineQuery {
     client_id: Option<i32>,
     /// Identifier of the inline query
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     inline_query_id: i64,
     /// True, if the result of the query can be cached for the specified user

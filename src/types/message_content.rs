@@ -2159,7 +2159,10 @@ pub struct MessageGameScore {
     game_message_id: i64,
     /// Identifier of the game; may be different from the games presented in the message with the game
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     game_id: i64,
     /// New score

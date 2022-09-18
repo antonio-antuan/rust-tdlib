@@ -28,7 +28,10 @@ pub struct DiscardCall {
     is_video: bool,
     /// Identifier of the connection used during the call
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     connection_id: i64,
 

@@ -12,7 +12,10 @@ pub struct AnswerCustomQuery {
     client_id: Option<i32>,
     /// Identifier of a custom query
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     custom_query_id: i64,
     /// JSON-serialized answer to the query

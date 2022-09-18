@@ -1,5 +1,8 @@
 CHANGELOG
 ===
+## 0.4.1
+* Fix serde rename for all types instead of just deserialize [#17](https://github.com/aCLr/rust-tdlib/pull/17)
+
 ## 0.4.0
 * Support for tdlib 1.8.0.
 * `errors::RTDError` and `errors::RTDResult` are deprecated, use `errors::Error` and `errors::Result` instead.

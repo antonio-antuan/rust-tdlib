@@ -156,7 +156,10 @@ pub struct TMeUrlTypeStickerSet {
     client_id: Option<i32>,
     /// Identifier of the sticker set
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     sticker_set_id: i64,
 }

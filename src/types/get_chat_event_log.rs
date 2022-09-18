@@ -20,7 +20,10 @@ pub struct GetChatEventLog {
     query: String,
     /// Identifier of an event from which to return results. Use 0 to get results from the latest events
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     from_event_id: i64,
     /// The maximum number of events to return; up to 100

@@ -12,7 +12,10 @@ pub struct Poll {
     client_id: Option<i32>,
     /// Unique poll identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     id: i64,
     /// Poll question; 1-300 characters

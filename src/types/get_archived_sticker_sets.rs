@@ -16,7 +16,10 @@ pub struct GetArchivedStickerSets {
     is_masks: bool,
     /// Identifier of the sticker set from which to return the result
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     offset_sticker_set_id: i64,
     /// The maximum number of sticker sets to return; up to 100

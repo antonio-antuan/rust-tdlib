@@ -12,7 +12,10 @@ pub struct ToggleSessionCanAcceptSecretChats {
     client_id: Option<i32>,
     /// Session identifier
 
-    #[serde(deserialize_with = "super::_common::number_from_string")]
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
     session_id: i64,
     /// True, if incoming secret chats can be accepted by the session
