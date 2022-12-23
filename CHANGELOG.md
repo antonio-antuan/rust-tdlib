@@ -1,5 +1,8 @@
 CHANGELOG
 ===
+## 0.4.2
+* Add an option to authenticate as a bot. `client::auth_state_handler::ClientIdentifier` is used to determine the client: a bot with a token or "a human" with a phone number.
+
 ## 0.4.1
 * Fix serde rename for all types instead of just deserialize [#17](https://github.com/aCLr/rust-tdlib/pull/17)
 

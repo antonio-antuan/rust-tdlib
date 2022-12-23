@@ -1,10 +1,10 @@
 [package]
 name = "rust-tdlib"
-version = "0.4.1"
-authors = ["aCLr <a.ch.clr@gmail.com>"]
+version = "0.4.2"
+authors = ["aCLr <an_github@fastmail.com>"]
 description = "TDlib (Telegram Database library) client"
-homepage = "https://github.com/aCLr/rust-tdlib"
-repository = "https://github.com/aCLr/rust-tdlib"
+homepage = "https://github.com/antonio-antuan/rust-tdlib"
+repository = "https://github.com/antonio-antuan/rust-tdlib"
 license = "MIT"
 keywords = [ "telegram", "tdlib" ]
 categories = ["api-bindings"]

@@ -13,7 +13,9 @@ pub mod auth_handler;
 #[doc(hidden)]
 pub mod tdlib_client;
 
-pub use auth_handler::{AuthStateHandler, ConsoleAuthStateHandler, SignalAuthStateHandler};
+pub use auth_handler::{
+    AuthStateHandler, ClientIdentifier, ConsoleAuthStateHandler, SignalAuthStateHandler,
+};
 use observer::OBSERVER;
 use serde::de::DeserializeOwned;
 pub use worker::{Worker, WorkerBuilder};

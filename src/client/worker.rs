@@ -5,7 +5,8 @@ use super::{
     tdlib_client::{TdJson, TdLibClient},
     {Client, ClientState},
 };
-use crate::types::{GetAuthorizationState, JsonValue};
+use crate::client::ClientIdentifier;
+use crate::types::{CheckAuthenticationBotToken, GetAuthorizationState, JsonValue};
 use crate::{
     errors::{Error, Result},
     tdjson::ClientId,
@@ -595,17 +596,29 @@ async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
             Ok(())
         }
         AuthorizationState::WaitPhoneNumber(wait_phone_number) => {
-            let phone_number = auth_state_handler
-                .handle_wait_phone_number(wait_phone_number)
+            let identifier = auth_state_handler
+                .handle_wait_client_identifier(wait_phone_number)
                 .await;
-            client
-                .set_authentication_phone_number(
-                    SetAuthenticationPhoneNumber::builder()
-                        .phone_number(phone_number)
-                        .build(),
-                )
-                .await?;
-            Ok(())
+            match identifier {
+                ClientIdentifier::BotToken(token) => {
+                    client
+                        .check_authentication_bot_token(
+                            CheckAuthenticationBotToken::builder().token(token).build(),
+                        )
+                        .await?;
+                    Ok(())
+                }
+                ClientIdentifier::PhoneNumber(phone) => {
+                    client
+                        .set_authentication_phone_number(
+                            SetAuthenticationPhoneNumber::builder()
+                                .phone_number(phone)
+                                .build(),
+                        )
+                        .await?;
+                    Ok(())
+                }
+            }
         }
         AuthorizationState::WaitRegistration(wait_registration) => {
             log::debug!("handling wait registration");
