@@ -702,8 +702,9 @@ async fn first_internal_request<S: TdLibClient>(tdlib_client: &S, client_id: Cli
     match received {
         Err(_) => log::error!("receiver already closed"),
         Ok(v) => {
+            log::trace!("first internal response: {v}");
             if let Err(e) = serde_json::from_value::<JsonValue>(v) {
-                log::error!("invalid response received: {}", e)
+                log::warn!("invalid first internal response received: {}", e)
             }
         }
     };

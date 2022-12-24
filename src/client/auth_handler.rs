@@ -10,6 +10,7 @@ use crate::types::{
     AuthorizationStateWaitPhoneNumber, AuthorizationStateWaitRegistration,
 };
 
+/// `ClientIdentifier` allows to determine if client is bot (with bot token as identifier) or client (with a phone number)
 #[derive(Debug, Clone)]
 pub enum ClientIdentifier {
     PhoneNumber(String),

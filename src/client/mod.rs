@@ -228,6 +228,7 @@ where
     ) -> Result<Q> {
         let extra = param.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(extra);
+        log::trace!("sending request: {:?}", param.as_ref());
         self.tdlib_client
             .send(self.get_client_id()?, param.as_ref())?;
         let received = signal.await;
