@@ -222,6 +222,11 @@ where
         self.close(Close::builder().build()).await
     }
 
+    pub(crate) async fn reload(&mut self, client_id: i32) -> Result<i32> {
+        self.stop().await?;
+        Ok(self.client_id.replace(client_id).unwrap_or_default())
+    }
+
     async fn make_request<T: RFunction, P: AsRef<T>, Q: DeserializeOwned>(
         &self,
         param: P,

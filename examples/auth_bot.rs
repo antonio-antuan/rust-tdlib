@@ -36,7 +36,7 @@ async fn main() {
         .unwrap();
 
     tokio::spawn(async move {
-        let mut wait_messages: i32 = 1000;
+        let mut wait_messages: i32 = 2000;
         while let Some(message) = receiver.recv().await {
             log::info!("updates handler received {:?}", message);
             wait_messages -= 1;
@@ -68,9 +68,18 @@ async fn main() {
         .unwrap();
     worker.start();
 
-    worker.bind_client(client).await.unwrap();
+    let client = worker.bind_client(client).await.unwrap();
 
-    tokio::time::sleep(Duration::from_secs(60)).await;
+    tokio::time::sleep(Duration::from_secs(5)).await;
+
+    sx.send("".to_string()).await.unwrap(); // empty encryption key for the new one client
+    worker.reload_client(client).await.unwrap();
+
+    log::info!("client was reloaded");
+
+    // check that updates still received
+    tokio::time::sleep(Duration::from_secs(10)).await;
     log::info!("stop worker");
+
     worker.stop();
 }
