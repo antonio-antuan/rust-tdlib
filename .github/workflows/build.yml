@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: build without default features
-      run: cargo build --no-default-features
+      run: make build-no-defaults
 
     - name: build client
-      run: cargo build
+      run: make build

@@ -1,10 +1,10 @@
 [package]
 name = "rust-tdlib"
-version = "0.4.1"
-authors = ["aCLr <a.ch.clr@gmail.com>"]
+version = "0.4.2"
+authors = ["antonio-antuan <an_github@fastmail.com>"]
 description = "TDlib (Telegram Database library) client"
-homepage = "https://github.com/aCLr/rust-tdlib"
-repository = "https://github.com/aCLr/rust-tdlib"
+homepage = "https://github.com/antonio-antuan/rust-tdlib"
+repository = "https://github.com/antonio-antuan/rust-tdlib"
 license = "MIT"
 keywords = [ "telegram", "tdlib" ]
 categories = ["api-bindings"]
@@ -30,7 +30,7 @@ default = ["client"]
 [dependencies]
 futures = "0.3"
 
-uuid = { version = "0.8", features = ["v4"] }
+uuid = { version = "1.2.2", features = ["v4"] }
 
 serde = "1"
 serde_derive = "1"
@@ -45,4 +45,4 @@ async-trait = { version = "0.1", optional = true }
 [dev-dependencies]
 tokio = {version = "1", features = ["macros", "rt-multi-thread", "sync", "time"]}
 log = { version = "0.4" }
-env_logger = "0.8"
+env_logger = "0.10.0"

@@ -13,7 +13,9 @@ pub mod auth_handler;
 #[doc(hidden)]
 pub mod tdlib_client;
 
-pub use auth_handler::{AuthStateHandler, ConsoleAuthStateHandler, SignalAuthStateHandler};
+pub use auth_handler::{
+    AuthStateHandler, ClientIdentifier, ConsoleAuthStateHandler, SignalAuthStateHandler,
+};
 use observer::OBSERVER;
 use serde::de::DeserializeOwned;
 pub use worker::{Worker, WorkerBuilder};
@@ -220,12 +222,18 @@ where
         self.close(Close::builder().build()).await
     }
 
+    pub(crate) async fn reload(&mut self, client_id: i32) -> Result<i32> {
+        self.stop().await?;
+        Ok(self.client_id.replace(client_id).unwrap_or_default())
+    }
+
     async fn make_request<T: RFunction, P: AsRef<T>, Q: DeserializeOwned>(
         &self,
         param: P,
     ) -> Result<Q> {
         let extra = param.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(extra);
+        log::trace!("sending request: {:?}", param.as_ref());
         self.tdlib_client
             .send(self.get_client_id()?, param.as_ref())?;
         let received = signal.await;

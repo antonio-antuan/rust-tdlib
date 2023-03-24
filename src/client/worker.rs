@@ -5,7 +5,8 @@ use super::{
     tdlib_client::{TdJson, TdLibClient},
     {Client, ClientState},
 };
-use crate::types::{GetAuthorizationState, JsonValue};
+use crate::client::ClientIdentifier;
+use crate::types::{CheckAuthenticationBotToken, GetAuthorizationState, JsonValue};
 use crate::{
     errors::{Error, Result},
     tdjson::ClientId,
@@ -247,7 +248,25 @@ where
         let client_id = client.get_tdlib_client().new_client();
         log::debug!("new client created: {}", client_id);
         client.set_client_id(client_id)?;
+        self.store_client_context(&client).await?;
 
+        Ok(client)
+    }
+
+    pub async fn reload_client(&mut self, mut client: Client<T>) -> Result<Client<T>> {
+        if !self.is_running() {
+            return Err(Error::BadRequest("worker not started yet"));
+        };
+        let client_id = client.get_tdlib_client().new_client();
+        log::debug!("new client created: {}", client_id);
+        let old_client_id = client.reload(client_id).await?;
+        self.store_client_context(&client).await?;
+        self.clients.write().await.remove(&old_client_id);
+
+        Ok(client)
+    }
+
+    async fn store_client_context(&self, client: &Client<T>) -> Result<()> {
         let (sx, rx) = match client.get_auth_state_channel_size() {
             None => (None, None),
             Some(size) => {
@@ -265,6 +284,8 @@ where
             private_state_message_sender: psx,
         };
 
+        let client_id = client.get_client_id()?;
+
         self.clients.write().await.insert(client_id, ctx);
         log::debug!("new client added");
 
@@ -274,7 +295,7 @@ where
 
         log::trace!("received first internal response");
 
-        Ok(client)
+        Ok(())
     }
 
     /// Determines that the worker is running.
@@ -448,7 +469,7 @@ where
                                         }
                                     }
                                     None => {
-                                        log::error!("error received and possibly cannot be handled because of empty state receiver: {err}")
+                                        log::warn!("error received and possibly cannot be handled because of empty state receiver for client {client_id}: {err}")
                                     }
                                 },
                             };
@@ -595,17 +616,29 @@ async fn handle_auth_state<A: AuthStateHandler + Sync, R: TdLibClient + Clone>(
             Ok(())
         }
         AuthorizationState::WaitPhoneNumber(wait_phone_number) => {
-            let phone_number = auth_state_handler
-                .handle_wait_phone_number(wait_phone_number)
+            let identifier = auth_state_handler
+                .handle_wait_client_identifier(wait_phone_number)
                 .await;
-            client
-                .set_authentication_phone_number(
-                    SetAuthenticationPhoneNumber::builder()
-                        .phone_number(phone_number)
-                        .build(),
-                )
-                .await?;
-            Ok(())
+            match identifier {
+                ClientIdentifier::BotToken(token) => {
+                    client
+                        .check_authentication_bot_token(
+                            CheckAuthenticationBotToken::builder().token(token).build(),
+                        )
+                        .await?;
+                    Ok(())
+                }
+                ClientIdentifier::PhoneNumber(phone) => {
+                    client
+                        .set_authentication_phone_number(
+                            SetAuthenticationPhoneNumber::builder()
+                                .phone_number(phone)
+                                .build(),
+                        )
+                        .await?;
+                    Ok(())
+                }
+            }
         }
         AuthorizationState::WaitRegistration(wait_registration) => {
             log::debug!("handling wait registration");
@@ -689,8 +722,9 @@ async fn first_internal_request<S: TdLibClient>(tdlib_client: &S, client_id: Cli
     match received {
         Err(_) => log::error!("receiver already closed"),
         Ok(v) => {
+            log::trace!("first internal response: {v}");
             if let Err(e) = serde_json::from_value::<JsonValue>(v) {
-                log::error!("invalid response received: {}", e)
+                log::warn!("invalid first internal response received: {}", e)
             }
         }
     };
