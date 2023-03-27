@@ -1,6 +1,6 @@
-use rust_tdlib::client::SignalAuthStateHandler;
+use rust_tdlib::client::{AuthStateHandlerProxy, ClientIdentifier};
 use rust_tdlib::{
-    client::{Client, Worker},
+    client::{Client, ConsoleClientStateHandler, ConsoleClientStateHandlerIdentified, Worker},
     tdjson,
     types::{TdlibParameters, Update},
 };
@@ -32,6 +32,9 @@ async fn main() {
     let client = Client::builder()
         .with_tdlib_parameters(tdlib_parameters)
         .with_updates_sender(sender)
+        .with_client_auth_state_handler(ConsoleClientStateHandlerIdentified::new(
+            ClientIdentifier::PhoneNumber(std::env::var("PHONE_NUMBER").unwrap()),
+        ))
         .build()
         .unwrap();
 
@@ -46,39 +49,22 @@ async fn main() {
         }
     });
 
-    let (sx, rx) = tokio::sync::mpsc::channel(5);
-    let auth_handler = SignalAuthStateHandler::new(rx);
-    sx.send("".to_string()).await.unwrap(); // empty encryption key
-    let client_type = std::env::var("CLIENT_TYPE").unwrap_or_else(|_| "b".to_string());
-    match client_type.as_str() {
-        "p" | "b" => {}
-        _ => {
-            panic!(
-                "expect one of \"p\" or \"b\" for CLIENT_TYPE env variable, got {}",
-                client_type
-            )
-        }
-    }
-    sx.send(client_type).await.unwrap(); // bot
-    sx.send(std::env::var("BOT_TOKEN").unwrap()).await.unwrap(); // empty encryption key
-
     let mut worker = Worker::builder()
-        .with_auth_state_handler(auth_handler)
+        .with_auth_state_handler(AuthStateHandlerProxy {})
         .build()
         .unwrap();
     worker.start();
 
     let client = worker.bind_client(client).await.unwrap();
 
-    tokio::time::sleep(Duration::from_secs(5)).await;
+    tokio::time::sleep(Duration::from_secs(30)).await;
 
-    sx.send("".to_string()).await.unwrap(); // empty encryption key for the new one client
     worker.reload_client(client).await.unwrap();
 
     log::info!("client was reloaded");
 
     // check that updates still received
-    tokio::time::sleep(Duration::from_secs(10)).await;
+    tokio::time::sleep(Duration::from_secs(30)).await;
     log::info!("stop worker");
 
     worker.stop();
