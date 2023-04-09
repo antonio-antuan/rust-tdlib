@@ -11,6 +11,7 @@ jobs:
     uses: ./.github/workflows/checks.yml
 
   publish:
+    needs: [check]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
