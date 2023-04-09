@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDDiceStickers: Debug + RObject {}
 
 /// Contains animated stickers which must be used for dice animation rendering
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum DiceStickers {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A regular animated sticker
     #[serde(rename = "diceStickersRegular")]
@@ -19,12 +20,6 @@ pub enum DiceStickers {
     /// Animated stickers to be combined into a slot machine
     #[serde(rename = "diceStickersSlotMachine")]
     SlotMachine(Box<DiceStickersSlotMachine>),
-}
-
-impl Default for DiceStickers {
-    fn default() -> Self {
-        DiceStickers::_Default
-    }
 }
 
 impl RObject for DiceStickers {

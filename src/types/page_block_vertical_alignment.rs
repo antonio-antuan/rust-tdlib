@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDPageBlockVerticalAlignment: Debug + RObject {}
 
 /// Describes a Vertical alignment of a table cell content
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum PageBlockVerticalAlignment {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The content must be bottom-aligned
     #[serde(rename = "pageBlockVerticalAlignmentBottom")]
@@ -22,12 +23,6 @@ pub enum PageBlockVerticalAlignment {
     /// The content must be top-aligned
     #[serde(rename = "pageBlockVerticalAlignmentTop")]
     Top(PageBlockVerticalAlignmentTop),
-}
-
-impl Default for PageBlockVerticalAlignment {
-    fn default() -> Self {
-        PageBlockVerticalAlignment::_Default
-    }
 }
 
 impl RObject for PageBlockVerticalAlignment {

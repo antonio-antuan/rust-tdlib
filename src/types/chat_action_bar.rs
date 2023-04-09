@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatActionBar: Debug + RObject {}
 
 /// Describes actions which must be possible to do through a chat action bar
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatActionBar {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The chat is a private or secret chat and the other user can be added to the contact list using the method addContact
     #[serde(rename = "chatActionBarAddContact")]
@@ -34,12 +35,6 @@ pub enum ChatActionBar {
     /// The chat is a private or secret chat with a mutual contact and the user's phone number can be shared with the other user using the method sharePhoneNumber
     #[serde(rename = "chatActionBarSharePhoneNumber")]
     SharePhoneNumber(ChatActionBarSharePhoneNumber),
-}
-
-impl Default for ChatActionBar {
-    fn default() -> Self {
-        ChatActionBar::_Default
-    }
 }
 
 impl RObject for ChatActionBar {

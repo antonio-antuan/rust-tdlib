@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDLogStream: Debug + RObject {}
 
 /// Describes a stream to which TDLib internal log is written
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum LogStream {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns information about currently used log stream for internal logging of TDLib. Can be called synchronously
     #[serde(rename = "getLogStream")]
@@ -25,12 +26,6 @@ pub enum LogStream {
     /// The log is written to a file
     #[serde(rename = "logStreamFile")]
     File(LogStreamFile),
-}
-
-impl Default for LogStream {
-    fn default() -> Self {
-        LogStream::_Default
-    }
 }
 
 impl RObject for LogStream {

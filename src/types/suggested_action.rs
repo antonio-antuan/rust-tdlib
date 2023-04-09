@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDSuggestedAction: Debug + RObject {}
 
 /// Describes an action suggested to the current user
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum SuggestedAction {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Suggests the user to check whether they still remember their 2-step verification password
     #[serde(rename = "suggestedActionCheckPassword")]
@@ -31,12 +32,6 @@ pub enum SuggestedAction {
     /// Suggests the user to view a hint about the meaning of one and two check marks on sent messages
     #[serde(rename = "suggestedActionViewChecksHint")]
     ViewChecksHint(SuggestedActionViewChecksHint),
-}
-
-impl Default for SuggestedAction {
-    fn default() -> Self {
-        SuggestedAction::_Default
-    }
 }
 
 impl RObject for SuggestedAction {

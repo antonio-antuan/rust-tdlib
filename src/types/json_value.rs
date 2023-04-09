@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDJsonValue: Debug + RObject {}
 
 /// Represents a JSON value
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum JsonValue {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns application config, provided by the server. Can be called before authorization
     #[serde(rename = "getApplicationConfig")]
@@ -37,12 +38,6 @@ pub enum JsonValue {
     /// Represents a string JSON value
     #[serde(rename = "jsonValueString")]
     String(JsonValueString),
-}
-
-impl Default for JsonValue {
-    fn default() -> Self {
-        JsonValue::_Default
-    }
 }
 
 impl RObject for JsonValue {

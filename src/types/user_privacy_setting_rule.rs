@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDUserPrivacySettingRule: Debug + RObject {}
 
 /// Represents a single rule for managing privacy settings
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum UserPrivacySettingRule {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A rule to allow all users to do something
     #[serde(rename = "userPrivacySettingRuleAllowAll")]
@@ -37,12 +38,6 @@ pub enum UserPrivacySettingRule {
     /// A rule to restrict all specified users from doing something
     #[serde(rename = "userPrivacySettingRuleRestrictUsers")]
     RestrictUsers(UserPrivacySettingRuleRestrictUsers),
-}
-
-impl Default for UserPrivacySettingRule {
-    fn default() -> Self {
-        UserPrivacySettingRule::_Default
-    }
 }
 
 impl RObject for UserPrivacySettingRule {

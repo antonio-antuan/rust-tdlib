@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDSearchMessagesFilter: Debug + RObject {}
 
 /// Represents a filter for message search results
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum SearchMessagesFilter {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns only animation messages
     #[serde(rename = "searchMessagesFilterAnimation")]
@@ -61,12 +62,6 @@ pub enum SearchMessagesFilter {
     /// Returns only voice note messages
     #[serde(rename = "searchMessagesFilterVoiceNote")]
     VoiceNote(SearchMessagesFilterVoiceNote),
-}
-
-impl Default for SearchMessagesFilter {
-    fn default() -> Self {
-        SearchMessagesFilter::_Default
-    }
 }
 
 impl RObject for SearchMessagesFilter {

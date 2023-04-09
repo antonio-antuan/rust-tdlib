@@ -43,6 +43,6 @@ impl TdLibClient for TdJson {
 
 impl TdJson {
     pub fn new() -> Self {
-        Self {}
+        Self
     }
 }

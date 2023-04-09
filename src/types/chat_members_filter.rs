@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatMembersFilter: Debug + RObject {}
 
 /// Specifies the kind of chat members to return in searchChatMembers
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatMembersFilter {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns the owner and administrators
     #[serde(rename = "chatMembersFilterAdministrators")]
@@ -34,12 +35,6 @@ pub enum ChatMembersFilter {
     /// Returns users under certain restrictions in the chat; can be used only by administrators in a supergroup
     #[serde(rename = "chatMembersFilterRestricted")]
     Restricted(ChatMembersFilterRestricted),
-}
-
-impl Default for ChatMembersFilter {
-    fn default() -> Self {
-        ChatMembersFilter::_Default
-    }
 }
 
 impl RObject for ChatMembersFilter {

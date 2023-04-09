@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDBackgroundType: Debug + RObject {}
 
 /// Describes the type of a background
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum BackgroundType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A filled background
     #[serde(rename = "backgroundTypeFill")]
@@ -22,12 +23,6 @@ pub enum BackgroundType {
     /// A wallpaper in JPEG format
     #[serde(rename = "backgroundTypeWallpaper")]
     Wallpaper(BackgroundTypeWallpaper),
-}
-
-impl Default for BackgroundType {
-    fn default() -> Self {
-        BackgroundType::_Default
-    }
 }
 
 impl RObject for BackgroundType {

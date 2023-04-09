@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDOptionValue: Debug + RObject {}
 
 /// Represents the value of an option
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum OptionValue {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns the value of an option by its name. (Check the list of available options on https://core.telegram.org/tdlib/options.) Can be called before authorization
     #[serde(rename = "getOption")]
@@ -28,12 +29,6 @@ pub enum OptionValue {
     /// Represents a string option
     #[serde(rename = "optionValueString")]
     String(OptionValueString),
-}
-
-impl Default for OptionValue {
-    fn default() -> Self {
-        OptionValue::_Default
-    }
 }
 
 impl RObject for OptionValue {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDPageBlockHorizontalAlignment: Debug + RObject {}
 
 /// Describes a horizontal alignment of a table cell content
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum PageBlockHorizontalAlignment {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The content must be center-aligned
     #[serde(rename = "pageBlockHorizontalAlignmentCenter")]
@@ -22,12 +23,6 @@ pub enum PageBlockHorizontalAlignment {
     /// The content must be right-aligned
     #[serde(rename = "pageBlockHorizontalAlignmentRight")]
     Right(PageBlockHorizontalAlignmentRight),
-}
-
-impl Default for PageBlockHorizontalAlignment {
-    fn default() -> Self {
-        PageBlockHorizontalAlignment::_Default
-    }
 }
 
 impl RObject for PageBlockHorizontalAlignment {

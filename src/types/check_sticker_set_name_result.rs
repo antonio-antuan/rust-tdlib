@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDCheckStickerSetNameResult: Debug + RObject {}
 
 /// Represents result of checking whether a name can be used for a new sticker set
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum CheckStickerSetNameResult {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Checks whether a name can be used for a new sticker set
     #[serde(rename = "checkStickerSetName")]
@@ -25,12 +26,6 @@ pub enum CheckStickerSetNameResult {
     /// The name can be set
     #[serde(rename = "checkStickerSetNameResultOk")]
     Ok(CheckStickerSetNameResultOk),
-}
-
-impl Default for CheckStickerSetNameResult {
-    fn default() -> Self {
-        CheckStickerSetNameResult::_Default
-    }
 }
 
 impl RObject for CheckStickerSetNameResult {

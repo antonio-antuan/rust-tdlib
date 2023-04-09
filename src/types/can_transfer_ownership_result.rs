@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDCanTransferOwnershipResult: Debug + RObject {}
 
 /// Represents result of checking whether the current session can be used to transfer a chat ownership to another user
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum CanTransferOwnershipResult {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Checks whether the current session can be used to transfer a chat ownership to another user
     #[serde(rename = "canTransferOwnership")]
@@ -28,12 +29,6 @@ pub enum CanTransferOwnershipResult {
     /// The session was created recently, user needs to wait
     #[serde(rename = "canTransferOwnershipResultSessionTooFresh")]
     SessionTooFresh(CanTransferOwnershipResultSessionTooFresh),
-}
-
-impl Default for CanTransferOwnershipResult {
-    fn default() -> Self {
-        CanTransferOwnershipResult::_Default
-    }
 }
 
 impl RObject for CanTransferOwnershipResult {

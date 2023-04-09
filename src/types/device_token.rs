@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDDeviceToken: Debug + RObject {}
 
 /// Represents a data needed to subscribe for push notifications through registerDevice method. To use specific push notification service, the correct application platform must be specified and a valid server authentication data must be uploaded at https://my.telegram.org
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum DeviceToken {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A token for Apple Push Notification service
     #[serde(rename = "deviceTokenApplePush")]
@@ -46,12 +47,6 @@ pub enum DeviceToken {
     /// A token for Windows Push Notification Services
     #[serde(rename = "deviceTokenWindowsPush")]
     WindowsPush(DeviceTokenWindowsPush),
-}
-
-impl Default for DeviceToken {
-    fn default() -> Self {
-        DeviceToken::_Default
-    }
 }
 
 impl RObject for DeviceToken {

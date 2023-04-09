@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDAuthenticationCodeType: Debug + RObject {}
 
 /// Provides information about the method by which an authentication code is delivered to the user
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum AuthenticationCodeType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// An authentication code is delivered via a phone call to the specified phone number
     #[serde(rename = "authenticationCodeTypeCall")]
@@ -28,12 +29,6 @@ pub enum AuthenticationCodeType {
     /// An authentication code is delivered via a private Telegram message, which can be viewed from another active session
     #[serde(rename = "authenticationCodeTypeTelegramMessage")]
     TelegramMessage(AuthenticationCodeTypeTelegramMessage),
-}
-
-impl Default for AuthenticationCodeType {
-    fn default() -> Self {
-        AuthenticationCodeType::_Default
-    }
 }
 
 impl RObject for AuthenticationCodeType {

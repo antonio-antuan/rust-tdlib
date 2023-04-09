@@ -14,17 +14,25 @@ pub mod auth_handler;
 pub mod tdlib_client;
 
 pub use auth_handler::{
-    AuthStateHandler, ClientIdentifier, ConsoleAuthStateHandler, SignalAuthStateHandler,
+    AuthStateHandler, AuthStateHandlerProxy, ClientIdentifier, ConsoleAuthStateHandler,
+    SignalAuthStateHandler,
 };
 use observer::OBSERVER;
 use serde::de::DeserializeOwned;
 pub use worker::{Worker, WorkerBuilder};
 
-use crate::types::{Close, Ok, RFunction, TdlibParameters, Update};
+use crate::client::auth_handler::ClientAuthStateHandler;
+use crate::types::{
+    AuthorizationStateWaitCode, AuthorizationStateWaitEncryptionKey,
+    AuthorizationStateWaitPassword, AuthorizationStateWaitPhoneNumber,
+    AuthorizationStateWaitRegistration, Close, Ok, RFunction, TdlibParameters, Update,
+};
 use crate::{
     errors::{Error, Result},
     types::Error as TDLibError,
+    utils,
 };
+use async_trait::async_trait;
 use tdlib_client::{TdJson, TdLibClient};
 use tokio::sync::mpsc;
 
@@ -44,6 +52,123 @@ pub enum ClientState {
     Authorizing,
 }
 
+#[derive(Debug, Clone)]
+pub struct ConsoleClientStateHandler;
+
+#[async_trait]
+impl ClientAuthStateHandler for ConsoleClientStateHandler {
+    async fn handle_wait_code(&self, _wait_code: &AuthorizationStateWaitCode) -> String {
+        println!("waiting for auth code");
+        utils::wait_input_sync()
+    }
+
+    async fn handle_encryption_key(
+        &self,
+        _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
+    ) -> String {
+        println!("waiting for encryption key");
+        utils::wait_input_sync()
+    }
+
+    async fn handle_wait_password(
+        &self,
+        _wait_password: &AuthorizationStateWaitPassword,
+    ) -> String {
+        println!("waiting for password");
+        utils::wait_input_sync()
+    }
+
+    async fn handle_wait_client_identifier(
+        &self,
+        _: &AuthorizationStateWaitPhoneNumber,
+    ) -> ClientIdentifier {
+        loop {
+            println!("ConsoleClientStateHandler: choose one of phone number (p) or bot token (b)");
+            let inp = utils::wait_input_sync();
+            match inp.to_lowercase().trim() {
+                "b" => {
+                    println!("enter bot token");
+                    return ClientIdentifier::BotToken(utils::wait_input_sync());
+                }
+                "p" => {
+                    println!("ConsoleClientStateHandler: enter phone number");
+                    return ClientIdentifier::PhoneNumber(utils::wait_input_sync());
+                }
+                _ => {
+                    // invalid input, next iteration}
+                    continue;
+                }
+            }
+        }
+    }
+
+    async fn handle_wait_registration(
+        &self,
+        _wait_registration: &AuthorizationStateWaitRegistration,
+    ) -> (String, String) {
+        loop {
+            println!("waiting for first_name and second_name separated by comma");
+            let inp: String = utils::wait_input_sync();
+            if let Some((f, l)) = utils::split_string(inp, ',') {
+                return (f, l);
+            }
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ConsoleClientStateHandlerIdentified(ClientIdentifier);
+
+impl ConsoleClientStateHandlerIdentified {
+    pub fn new(ident: ClientIdentifier) -> Self {
+        Self(ident)
+    }
+}
+
+#[async_trait]
+impl ClientAuthStateHandler for ConsoleClientStateHandlerIdentified {
+    async fn handle_wait_code(&self, _wait_code: &AuthorizationStateWaitCode) -> String {
+        println!("waiting for auth code");
+        utils::wait_input_sync()
+    }
+
+    async fn handle_encryption_key(
+        &self,
+        _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
+    ) -> String {
+        println!("waiting for encryption key");
+        utils::wait_input_sync()
+    }
+
+    async fn handle_wait_password(
+        &self,
+        _wait_password: &AuthorizationStateWaitPassword,
+    ) -> String {
+        println!("waiting for password");
+        utils::wait_input_sync()
+    }
+
+    async fn handle_wait_client_identifier(
+        &self,
+        _: &AuthorizationStateWaitPhoneNumber,
+    ) -> ClientIdentifier {
+        self.0.clone()
+    }
+
+    async fn handle_wait_registration(
+        &self,
+        _wait_registration: &AuthorizationStateWaitRegistration,
+    ) -> (String, String) {
+        loop {
+            println!("waiting for first_name and second_name separated by comma");
+            let inp: String = utils::wait_input_sync();
+            if let Some((f, l)) = utils::split_string(inp, ',') {
+                return (f, l);
+            }
+        }
+    }
+}
+
 /// Struct stores all methods which you can call to interact with Telegram, such as:
 /// [send_message](Api::send_message), [download_file](Api::download_file), [search_chats](Api::search_chats) and so on.
 #[derive(Clone, Debug)]
@@ -57,6 +182,7 @@ where
     updates_sender: Option<mpsc::Sender<Box<Update>>>,
     tdlib_parameters: TdlibParameters,
     auth_state_channel_size: Option<usize>,
+    auth_handler: Box<dyn ClientAuthStateHandler>,
 }
 
 impl<S> Client<S>
@@ -71,15 +197,16 @@ where
         &self.tdlib_parameters
     }
 
+    pub(crate) fn get_auth_handler(&self) -> Box<dyn ClientAuthStateHandler> {
+        dyn_clone::clone_box(&*self.auth_handler)
+    }
+
     pub fn get_tdlib_client(&self) -> S {
         self.tdlib_client.clone()
     }
 
-    pub(crate) fn get_client_id(&self) -> Result<i32> {
-        match self.client_id {
-            Some(client_id) => Ok(client_id),
-            None => Err(CLIENT_NOT_AUTHORIZED),
-        }
+    pub(crate) fn get_client_id(&self) -> Option<i32> {
+        self.client_id
     }
 
     pub(crate) fn take_client_id(&mut self) -> Result<i32> {
@@ -106,30 +233,34 @@ where
 }
 
 #[derive(Debug)]
-pub struct ClientBuilder<R>
+pub struct ClientBuilder<R, A>
 where
     R: TdLibClient + Clone,
+    A: ClientAuthStateHandler + Clone + 'static,
 {
     updates_sender: Option<mpsc::Sender<Box<Update>>>,
     tdlib_parameters: Option<TdlibParameters>,
     tdlib_client: R,
     auth_state_channel_size: Option<usize>,
+    auth_handler: A,
 }
 
-impl Default for ClientBuilder<TdJson> {
+impl Default for ClientBuilder<TdJson, ConsoleClientStateHandler> {
     fn default() -> Self {
         Self {
             updates_sender: None,
             tdlib_parameters: None,
             auth_state_channel_size: None,
             tdlib_client: TdJson::new(),
+            auth_handler: ConsoleClientStateHandler,
         }
     }
 }
 
-impl<R> ClientBuilder<R>
+impl<R, A> ClientBuilder<R, A>
 where
     R: TdLibClient + Clone,
+    A: ClientAuthStateHandler + Clone,
 {
     /// If you want to receive Telegram updates (messages, channels, etc; see `crate::types::Update`),
     /// you must set mpsc::Sender here.
@@ -152,13 +283,28 @@ where
         self
     }
 
+    /// Use it to bound specific auth handler with a client.
+    pub fn with_client_auth_state_handler<NA: ClientAuthStateHandler + Clone>(
+        self,
+        auth_handler: NA,
+    ) -> ClientBuilder<R, NA> {
+        ClientBuilder {
+            auth_handler,
+            tdlib_client: self.tdlib_client,
+            updates_sender: self.updates_sender,
+            tdlib_parameters: self.tdlib_parameters,
+            auth_state_channel_size: self.auth_state_channel_size,
+        }
+    }
+
     #[doc(hidden)]
-    pub fn with_tdlib_client<T: TdLibClient + Clone>(self, tdlib_client: T) -> ClientBuilder<T> {
+    pub fn with_tdlib_client<T: TdLibClient + Clone>(self, tdlib_client: T) -> ClientBuilder<T, A> {
         ClientBuilder {
             tdlib_client,
             updates_sender: self.updates_sender,
             tdlib_parameters: self.tdlib_parameters,
             auth_state_channel_size: self.auth_state_channel_size,
+            auth_handler: self.auth_handler,
         }
     }
 
@@ -169,6 +315,7 @@ where
 
         let client = Client::new(
             self.tdlib_client,
+            self.auth_handler,
             self.updates_sender,
             self.tdlib_parameters.unwrap(),
             self.auth_state_channel_size,
@@ -178,7 +325,7 @@ where
 }
 
 impl Client<TdJson> {
-    pub fn builder() -> ClientBuilder<TdJson> {
+    pub fn builder() -> ClientBuilder<TdJson, ConsoleClientStateHandler> {
         ClientBuilder::default()
     }
 }
@@ -189,8 +336,9 @@ where
     R: TdLibClient + Clone,
 {
     #[doc(hidden)]
-    pub fn new(
+    pub fn new<A: ClientAuthStateHandler + 'static>(
         tdlib_client: R,
+        auth_handler: A,
         updates_sender: Option<mpsc::Sender<Box<Update>>>,
         tdlib_parameters: TdlibParameters,
         auth_state_channel_size: Option<usize>,
@@ -199,6 +347,7 @@ where
             tdlib_client,
             updates_sender,
             tdlib_parameters,
+            auth_handler: Box::new(auth_handler),
             auth_state_channel_size,
             is_started: false,
             client_id: None,
@@ -234,8 +383,10 @@ where
         let extra = param.as_ref().extra().ok_or(NO_EXTRA)?;
         let signal = OBSERVER.subscribe(extra);
         log::trace!("sending request: {:?}", param.as_ref());
-        self.tdlib_client
-            .send(self.get_client_id()?, param.as_ref())?;
+        self.tdlib_client.send(
+            self.get_client_id().ok_or(CLIENT_NOT_AUTHORIZED)?,
+            param.as_ref(),
+        )?;
         let received = signal.await;
         OBSERVER.unsubscribe(extra);
         match received {

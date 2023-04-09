@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatMemberStatus: Debug + RObject {}
 
 /// Provides information about the status of a member in a chat
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatMemberStatus {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The user is a member of the chat and has some additional privileges. In basic groups, administrators can edit and delete messages sent by others, add new members, ban unprivileged members, and manage video chats. In supergroups and channels, there are more detailed options for administrator privileges
     #[serde(rename = "chatMemberStatusAdministrator")]
@@ -31,12 +32,6 @@ pub enum ChatMemberStatus {
     /// The user is under certain restrictions in the chat. Not supported in basic groups and channels
     #[serde(rename = "chatMemberStatusRestricted")]
     Restricted(ChatMemberStatusRestricted),
-}
-
-impl Default for ChatMemberStatus {
-    fn default() -> Self {
-        ChatMemberStatus::_Default
-    }
 }
 
 impl RObject for ChatMemberStatus {

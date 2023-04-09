@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatReportReason: Debug + RObject {}
 
 /// Describes the reason why a chat is reported
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatReportReason {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The chat has child abuse related content
     #[serde(rename = "chatReportReasonChildAbuse")]
@@ -37,12 +38,6 @@ pub enum ChatReportReason {
     /// The chat promotes violence
     #[serde(rename = "chatReportReasonViolence")]
     Violence(ChatReportReasonViolence),
-}
-
-impl Default for ChatReportReason {
-    fn default() -> Self {
-        ChatReportReason::_Default
-    }
 }
 
 impl RObject for ChatReportReason {

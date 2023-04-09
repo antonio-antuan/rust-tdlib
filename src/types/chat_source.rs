@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatSource: Debug + RObject {}
 
 /// Describes a reason why an external chat is shown in a chat list
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatSource {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The chat is sponsored by the user's MTProxy server
     #[serde(rename = "chatSourceMtprotoProxy")]
@@ -19,12 +20,6 @@ pub enum ChatSource {
     /// The chat contains a public service announcement
     #[serde(rename = "chatSourcePublicServiceAnnouncement")]
     PublicServiceAnnouncement(ChatSourcePublicServiceAnnouncement),
-}
-
-impl Default for ChatSource {
-    fn default() -> Self {
-        ChatSource::_Default
-    }
 }
 
 impl RObject for ChatSource {

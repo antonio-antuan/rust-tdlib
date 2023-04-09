@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDCallDiscardReason: Debug + RObject {}
 
 /// Describes the reason why a call was discarded
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum CallDiscardReason {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The call was ended before the conversation started. It was declined by the other party
     #[serde(rename = "callDiscardReasonDeclined")]
@@ -28,12 +29,6 @@ pub enum CallDiscardReason {
     /// The call was ended before the conversation started. It was canceled by the caller or missed by the other party
     #[serde(rename = "callDiscardReasonMissed")]
     Missed(CallDiscardReasonMissed),
-}
-
-impl Default for CallDiscardReason {
-    fn default() -> Self {
-        CallDiscardReason::_Default
-    }
 }
 
 impl RObject for CallDiscardReason {

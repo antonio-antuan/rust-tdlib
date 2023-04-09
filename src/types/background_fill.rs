@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDBackgroundFill: Debug + RObject {}
 
 /// Describes a fill of a background
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum BackgroundFill {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Describes a freeform gradient fill of a background
     #[serde(rename = "backgroundFillFreeformGradient")]
@@ -22,12 +23,6 @@ pub enum BackgroundFill {
     /// Describes a solid fill of a background
     #[serde(rename = "backgroundFillSolid")]
     Solid(BackgroundFillSolid),
-}
-
-impl Default for BackgroundFill {
-    fn default() -> Self {
-        BackgroundFill::_Default
-    }
 }
 
 impl RObject for BackgroundFill {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDPassportElementType: Debug + RObject {}
 
 /// Contains the type of a Telegram Passport element
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum PassportElementType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A Telegram Passport element containing the user's address
     #[serde(rename = "passportElementTypeAddress")]
@@ -52,12 +53,6 @@ pub enum PassportElementType {
     /// A Telegram Passport element containing the user's utility bill
     #[serde(rename = "passportElementTypeUtilityBill")]
     UtilityBill(PassportElementTypeUtilityBill),
-}
-
-impl Default for PassportElementType {
-    fn default() -> Self {
-        PassportElementType::_Default
-    }
 }
 
 impl RObject for PassportElementType {

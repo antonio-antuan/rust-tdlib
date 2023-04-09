@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDNetworkStatisticsEntry: Debug + RObject {}
 
 /// Contains statistics about network usage
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum NetworkStatisticsEntry {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Contains information about the total amount of data that was used for calls
     #[serde(rename = "networkStatisticsEntryCall")]
@@ -19,12 +20,6 @@ pub enum NetworkStatisticsEntry {
     /// Contains information about the total amount of data that was used to send and receive files
     #[serde(rename = "networkStatisticsEntryFile")]
     File(NetworkStatisticsEntryFile),
-}
-
-impl Default for NetworkStatisticsEntry {
-    fn default() -> Self {
-        NetworkStatisticsEntry::_Default
-    }
 }
 
 impl RObject for NetworkStatisticsEntry {

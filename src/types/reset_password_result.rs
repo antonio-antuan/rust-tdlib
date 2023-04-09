@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDResetPasswordResult: Debug + RObject {}
 
 /// Represents result of 2-step verification password reset
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ResetPasswordResult {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Removes 2-step verification password without previous password and access to recovery email address. The password can't be reset immediately and the request needs to be repeated after the specified time
     #[serde(rename = "resetPassword")]
@@ -25,12 +26,6 @@ pub enum ResetPasswordResult {
     /// The password reset request is pending
     #[serde(rename = "resetPasswordResultPending")]
     Pending(ResetPasswordResultPending),
-}
-
-impl Default for ResetPasswordResult {
-    fn default() -> Self {
-        ResetPasswordResult::_Default
-    }
 }
 
 impl RObject for ResetPasswordResult {

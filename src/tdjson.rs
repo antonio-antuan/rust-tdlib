@@ -5,6 +5,7 @@ use std::os::raw::{c_char, c_double, c_int, c_long};
 use std::ptr;
 
 pub type ClientId = i32;
+
 #[link(name = "tdjson")]
 extern "C" {
     fn td_create_client_id() -> c_int;

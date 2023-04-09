@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInputCredentials: Debug + RObject {}
 
 /// Contains information about the payment method chosen by the user
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InputCredentials {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Applies if a user enters new credentials using Apple Pay
     #[serde(rename = "inputCredentialsApplePay")]
@@ -25,12 +26,6 @@ pub enum InputCredentials {
     /// Applies if a user chooses some previously saved payment credentials. To use their previously saved credentials, the user must have a valid temporary password
     #[serde(rename = "inputCredentialsSaved")]
     Saved(InputCredentialsSaved),
-}
-
-impl Default for InputCredentials {
-    fn default() -> Self {
-        InputCredentials::_Default
-    }
 }
 
 impl RObject for InputCredentials {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDFileType: Debug + RObject {}
 
 /// Represents the type of a file
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum FileType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The file is an animation
     #[serde(rename = "fileTypeAnimation")]
@@ -61,12 +62,6 @@ pub enum FileType {
     /// The file is a wallpaper or a background pattern
     #[serde(rename = "fileTypeWallpaper")]
     Wallpaper(FileTypeWallpaper),
-}
-
-impl Default for FileType {
-    fn default() -> Self {
-        FileType::_Default
-    }
 }
 
 impl RObject for FileType {

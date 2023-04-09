@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDStatisticalGraph: Debug + RObject {}
 
 /// Describes a statistical graph
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum StatisticalGraph {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Loads an asynchronous or a zoomed in statistical graph
     #[serde(rename = "getStatisticalGraph")]
@@ -25,12 +26,6 @@ pub enum StatisticalGraph {
     /// An error message to be shown to the user instead of the graph
     #[serde(rename = "statisticalGraphError")]
     Error(StatisticalGraphError),
-}
-
-impl Default for StatisticalGraph {
-    fn default() -> Self {
-        StatisticalGraph::_Default
-    }
 }
 
 impl RObject for StatisticalGraph {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDLanguagePackStringValue: Debug + RObject {}
 
 /// Represents the value of a string in a language pack
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum LanguagePackStringValue {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns a string stored in the local database from the specified localization target and language pack by its key. Returns a 404 error if the string is not found. Can be called synchronously
     #[serde(rename = "getLanguagePackString")]
@@ -25,12 +26,6 @@ pub enum LanguagePackStringValue {
     /// A language pack string which has different forms based on the number of some object it mentions. See https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html for more info
     #[serde(rename = "languagePackStringValuePluralized")]
     Pluralized(LanguagePackStringValuePluralized),
-}
-
-impl Default for LanguagePackStringValue {
-    fn default() -> Self {
-        LanguagePackStringValue::_Default
-    }
 }
 
 impl RObject for LanguagePackStringValue {

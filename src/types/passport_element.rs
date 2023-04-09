@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDPassportElement: Debug + RObject {}
 
 /// Contains information about a Telegram Passport element
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum PassportElement {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns one of the available Telegram Passport elements
     #[serde(rename = "getPassportElement")]
@@ -58,12 +59,6 @@ pub enum PassportElement {
     /// Adds an element to the user's Telegram Passport. May return an error with a message "PHONE_VERIFICATION_NEEDED" or "EMAIL_VERIFICATION_NEEDED" if the chosen phone number or the chosen email address must be verified first
     #[serde(rename = "setPassportElement")]
     SetPassportElement(SetPassportElement),
-}
-
-impl Default for PassportElement {
-    fn default() -> Self {
-        PassportElement::_Default
-    }
 }
 
 impl RObject for PassportElement {

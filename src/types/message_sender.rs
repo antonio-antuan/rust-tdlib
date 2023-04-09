@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDMessageSender: Debug + RObject {}
 
 /// Contains information about the sender of a message
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum MessageSender {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The message was sent on behalf of a chat
     #[serde(rename = "messageSenderChat")]
@@ -19,12 +20,6 @@ pub enum MessageSender {
     /// The message was sent by a known user
     #[serde(rename = "messageSenderUser")]
     User(MessageSenderUser),
-}
-
-impl Default for MessageSender {
-    fn default() -> Self {
-        MessageSender::_Default
-    }
 }
 
 impl RObject for MessageSender {

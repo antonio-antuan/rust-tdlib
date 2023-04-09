@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDUserType: Debug + RObject {}
 
 /// Represents the type of a user. The following types are possible: regular users, deleted users and bots
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum UserType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A bot (see https://core.telegram.org/bots)
     #[serde(rename = "userTypeBot")]
@@ -25,12 +26,6 @@ pub enum UserType {
     /// No information on the user besides the user identifier is available, yet this user has not been deleted. This object is extremely rare and must be handled like a deleted user. It is not possible to perform any actions on users of this type
     #[serde(rename = "userTypeUnknown")]
     Unknown(UserTypeUnknown),
-}
-
-impl Default for UserType {
-    fn default() -> Self {
-        UserType::_Default
-    }
 }
 
 impl RObject for UserType {

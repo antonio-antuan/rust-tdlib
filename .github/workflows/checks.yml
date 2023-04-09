@@ -1,15 +1,44 @@
-name: Test
+name: Build
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
-env:
-  CARGO_TERM_COLOR: always
+  workflow_call:
 
 jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: build without default features
+      run: make build-no-defaults
+
+    - name: build client
+      run: make build
+
+  lint:
+    runs-on: ubuntu-latest
+
+    env:
+      API_ID: 1
+      API_HASH: 1
+      PHONE_NUMBER: 1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: formatting
+        run: make format-check
+
+      - name: clippy
+        run: make lint
+
   test:
 
     runs-on: ubuntu-latest

@@ -56,3 +56,5 @@ pub mod tdjson;
 
 pub mod errors;
 pub mod types;
+
+mod utils;

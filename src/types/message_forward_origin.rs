@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDMessageForwardOrigin: Debug + RObject {}
 
 /// Contains information about the origin of a forwarded message
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum MessageForwardOrigin {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The message was originally a post in a channel
     #[serde(rename = "messageForwardOriginChannel")]
@@ -28,12 +29,6 @@ pub enum MessageForwardOrigin {
     /// The message was originally sent by a known user
     #[serde(rename = "messageForwardOriginUser")]
     User(MessageForwardOriginUser),
-}
-
-impl Default for MessageForwardOrigin {
-    fn default() -> Self {
-        MessageForwardOrigin::_Default
-    }
 }
 
 impl RObject for MessageForwardOrigin {

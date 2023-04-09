@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDUserStatus: Debug + RObject {}
 
 /// Describes the last time the user was online
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum UserStatus {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The user status was never changed
     #[serde(rename = "userStatusEmpty")]
@@ -31,12 +32,6 @@ pub enum UserStatus {
     /// The user was online recently
     #[serde(rename = "userStatusRecently")]
     Recently(UserStatusRecently),
-}
-
-impl Default for UserStatus {
-    fn default() -> Self {
-        UserStatus::_Default
-    }
 }
 
 impl RObject for UserStatus {

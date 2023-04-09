@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInternalLinkType: Debug + RObject {}
 
 /// Describes an internal https://t.me or tg: link, which must be processed by the app in a special way
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InternalLinkType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns information about the type of an internal link. Returns a 404 error if the link is not internal. Can be called before authorization
     #[serde(rename = "getInternalLinkType")]
@@ -88,12 +89,6 @@ pub enum InternalLinkType {
     /// The link is a link to a video chat. Call searchPublicChat with the given chat username, and then joinGoupCall with the given invite hash to process the link
     #[serde(rename = "internalLinkTypeVideoChat")]
     VideoChat(InternalLinkTypeVideoChat),
-}
-
-impl Default for InternalLinkType {
-    fn default() -> Self {
-        InternalLinkType::_Default
-    }
 }
 
 impl RObject for InternalLinkType {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDTextEntityType: Debug + RObject {}
 
 /// Represents a part of the text which must be formatted differently
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum TextEntityType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A bank card number. The getBankCardInfo method can be used to get information about the bank card
     #[serde(rename = "textEntityTypeBankCardNumber")]
@@ -67,12 +68,6 @@ pub enum TextEntityType {
     /// An HTTP URL
     #[serde(rename = "textEntityTypeUrl")]
     Url(TextEntityTypeUrl),
-}
-
-impl Default for TextEntityType {
-    fn default() -> Self {
-        TextEntityType::_Default
-    }
 }
 
 impl RObject for TextEntityType {

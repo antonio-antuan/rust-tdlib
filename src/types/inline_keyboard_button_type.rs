@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInlineKeyboardButtonType: Debug + RObject {}
 
 /// Describes the type of an inline keyboard button
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InlineKeyboardButtonType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A button to buy something. This button must be in the first column and row of the keyboard and can be attached only to a message with content of the type messageInvoice
     #[serde(rename = "inlineKeyboardButtonTypeBuy")]
@@ -37,12 +38,6 @@ pub enum InlineKeyboardButtonType {
     /// A button with a user reference to be handled in the same way as textEntityTypeMentionName entities
     #[serde(rename = "inlineKeyboardButtonTypeUser")]
     User(InlineKeyboardButtonTypeUser),
-}
-
-impl Default for InlineKeyboardButtonType {
-    fn default() -> Self {
-        InlineKeyboardButtonType::_Default
-    }
 }
 
 impl RObject for InlineKeyboardButtonType {

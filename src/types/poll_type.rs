@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDPollType: Debug + RObject {}
 
 /// Describes the type of a poll
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum PollType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A poll in quiz mode, which has exactly one correct answer option and can be answered only once
     #[serde(rename = "pollTypeQuiz")]
@@ -19,12 +20,6 @@ pub enum PollType {
     /// A regular poll
     #[serde(rename = "pollTypeRegular")]
     Regular(PollTypeRegular),
-}
-
-impl Default for PollType {
-    fn default() -> Self {
-        PollType::_Default
-    }
 }
 
 impl RObject for PollType {
