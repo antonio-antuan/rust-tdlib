@@ -62,7 +62,7 @@ pub trait AuthStateHandler {
     /// Interacts with provided link
     async fn handle_other_device_confirmation(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         wait_device_confirmation: &AuthorizationStateWaitOtherDeviceConfirmation,
     ) {
         println!(
@@ -123,7 +123,7 @@ impl ConsoleAuthStateHandler {
 impl AuthStateHandler for ConsoleAuthStateHandler {
     async fn handle_wait_code(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _wait_code: &AuthorizationStateWaitCode,
     ) -> String {
         println!("waiting for auth code");
@@ -132,7 +132,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
 
     async fn handle_encryption_key(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
     ) -> String {
         println!("waiting for encryption key");
@@ -141,7 +141,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
 
     async fn handle_wait_password(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _wait_password: &AuthorizationStateWaitPassword,
     ) -> String {
         println!("waiting for password");
@@ -150,7 +150,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
 
     async fn handle_wait_client_identifier(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _: &AuthorizationStateWaitPhoneNumber,
     ) -> ClientIdentifier {
         loop {
@@ -174,7 +174,7 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
     }
     async fn handle_wait_registration(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _wait_registration: &AuthorizationStateWaitRegistration,
     ) -> (String, String) {
         loop {
@@ -210,7 +210,7 @@ impl SignalAuthStateHandler {
 impl AuthStateHandler for SignalAuthStateHandler {
     async fn handle_wait_code(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _: &AuthorizationStateWaitCode,
     ) -> String {
         log::info!("waiting for auth code");
@@ -219,7 +219,7 @@ impl AuthStateHandler for SignalAuthStateHandler {
 
     async fn handle_encryption_key(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _: &AuthorizationStateWaitEncryptionKey,
     ) -> String {
         log::info!("waiting for encryption key");
@@ -230,7 +230,7 @@ impl AuthStateHandler for SignalAuthStateHandler {
 
     async fn handle_wait_password(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _: &AuthorizationStateWaitPassword,
     ) -> String {
         log::info!("waiting for password");
@@ -239,7 +239,7 @@ impl AuthStateHandler for SignalAuthStateHandler {
 
     async fn handle_wait_client_identifier(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _: &AuthorizationStateWaitPhoneNumber,
     ) -> ClientIdentifier {
         loop {
@@ -264,7 +264,7 @@ impl AuthStateHandler for SignalAuthStateHandler {
 
     async fn handle_wait_registration(
         &self,
-        client: Box<dyn ClientAuthStateHandler>,
+        _client: Box<dyn ClientAuthStateHandler>,
         _: &AuthorizationStateWaitRegistration,
     ) -> (String, String) {
         loop {
@@ -278,7 +278,17 @@ impl AuthStateHandler for SignalAuthStateHandler {
 }
 
 #[derive(Debug, Clone)]
-pub struct AuthStateHandlerProxy;
+pub struct AuthStateHandlerProxy(Option<String>);
+
+impl AuthStateHandlerProxy {
+    pub fn new() -> Self {
+        Self(None)
+    }
+
+    pub fn new_with_encryption_key(key: String) -> Self {
+        Self(Some(key))
+    }
+}
 
 #[async_trait]
 impl AuthStateHandler for AuthStateHandlerProxy {
@@ -305,7 +315,15 @@ impl AuthStateHandler for AuthStateHandlerProxy {
         client: Box<dyn ClientAuthStateHandler>,
         wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
     ) -> String {
-        client.handle_encryption_key(wait_encryption_key).await
+        match &self.0 {
+            None => {
+                log::info!("wait for client's encryption key");
+                client.handle_encryption_key(wait_encryption_key).await
+            },
+            Some(key) => {
+                key.clone()
+            }
+        }
     }
 
     async fn handle_wait_password(

@@ -1,6 +1,6 @@
 //! Handlers for all incoming data
 use super::{
-    auth_handler::{AuthStateHandler, ClientAuthStateHandler, ConsoleAuthStateHandler},
+    auth_handler::{AuthStateHandler, ConsoleAuthStateHandler},
     observer::OBSERVER,
     tdlib_client::{TdJson, TdLibClient},
     {Client, ClientState},
@@ -43,7 +43,7 @@ impl Default for WorkerBuilder<ConsoleAuthStateHandler, TdJson> {
     /// Provides default implementation with [ConsoleAuthStateHandler](crate::client::client::ConsoleAuthStateHandler)
     fn default() -> Self {
         Self {
-            read_updates_timeout: 2.0,
+            read_updates_timeout: 1.0,
             channels_send_timeout: 5.0,
             auth_state_handler: ConsoleAuthStateHandler::new(),
             tdlib_client: TdJson::new(),
@@ -421,7 +421,6 @@ where
                                 client_ctx.pub_state_message_sender(),
                                 client_ctx.private_state_message_sender(),
                                 auth_state_handler.as_ref(),
-                                client_id,
                                 auth_state.authorization_state(),
                                 send_timeout,
                             )
@@ -533,7 +532,6 @@ async fn handle_auth_state<A, R>(
     pub_state_sender: &Option<mpsc::Sender<StateMessage>>,
     private_state_sender: &mpsc::Sender<ClientState>,
     auth_state_handler: &A,
-    client_id: i32,
     state: &AuthorizationState,
     send_state_timeout: Duration,
 ) -> Result<()>
