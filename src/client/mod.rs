@@ -283,6 +283,7 @@ where
         self
     }
 
+    /// Use it to bound specific auth handler with a client.
     pub fn with_client_auth_state_handler<NA: ClientAuthStateHandler + Clone>(
         self,
         auth_handler: NA,

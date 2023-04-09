@@ -1,5 +1,10 @@
 CHANGELOG
 ===
+## 0.4.3
+* Improved multi-client support with `client::ClientAuthStateHandler`
+* added `client::AuthStateHandlerProxy`, deprecation of all other existing `client::AuthStateHandler` implementations
+* fixed [#15](https://github.com/antonio-antuan/rust-tdlib/issues/15)
+
 ## 0.4.2
 * Added a way to be authenticated as a bot. `client::auth_state_handler::ClientIdentifier` is used to determine the client: a bot with a token or "a human" with a phone number.
 * Provided `client::worker::Worker::reload_client`. May be useful if you want to remove clean memory gained by internal tdlib routines. Fixed [#19](https://github.com/antonio-antuan/rust-tdlib/issues/19).
