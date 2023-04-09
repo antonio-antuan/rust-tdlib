@@ -18,9 +18,10 @@ jobs:
     - uses: actions/checkout@v3
 
     - run: |
-        make build-no-defaults
+        cargo generate-lockfile
         pkg_version=$(cargo pkgid | cut -d "#" -f2)
         echo $pkg_version
+        echo $GITHUB_REF_NAME
         if [[ "$pkg_version" = "$GITHUB_REF_NAME" ]]; then
           echo "equals"
         else
