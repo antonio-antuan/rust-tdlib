@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDThumbnailFormat: Debug + RObject {}
 
 /// Describes format of the thumbnail
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ThumbnailFormat {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The thumbnail is in static GIF format. It will be used only for some bot inline results
     #[serde(rename = "thumbnailFormatGif")]
@@ -31,12 +32,6 @@ pub enum ThumbnailFormat {
     /// The thumbnail is in WEBP format. It will be used only for some stickers
     #[serde(rename = "thumbnailFormatWebp")]
     Webp(ThumbnailFormatWebp),
-}
-
-impl Default for ThumbnailFormat {
-    fn default() -> Self {
-        ThumbnailFormat::_Default
-    }
 }
 
 impl RObject for ThumbnailFormat {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDMessageFileType: Debug + RObject {}
 
 /// Contains information about a file with messages exported from another app
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum MessageFileType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns information about a file with messages exported from another app
     #[serde(rename = "getMessageFileType")]
@@ -25,12 +26,6 @@ pub enum MessageFileType {
     /// The messages was exported from a chat of unknown type
     #[serde(rename = "messageFileTypeUnknown")]
     Unknown(MessageFileTypeUnknown),
-}
-
-impl Default for MessageFileType {
-    fn default() -> Self {
-        MessageFileType::_Default
-    }
 }
 
 impl RObject for MessageFileType {

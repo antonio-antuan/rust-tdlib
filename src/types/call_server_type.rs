@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDCallServerType: Debug + RObject {}
 
 /// Describes the type of a call server
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum CallServerType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A Telegram call reflector
     #[serde(rename = "callServerTypeTelegramReflector")]
@@ -19,12 +20,6 @@ pub enum CallServerType {
     /// A WebRTC server
     #[serde(rename = "callServerTypeWebrtc")]
     Webrtc(CallServerTypeWebrtc),
-}
-
-impl Default for CallServerType {
-    fn default() -> Self {
-        CallServerType::_Default
-    }
 }
 
 impl RObject for CallServerType {

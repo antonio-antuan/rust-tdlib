@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatType: Debug + RObject {}
 
 /// Describes the type of a chat
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A basic group (a chat with 0-200 other users)
     #[serde(rename = "chatTypeBasicGroup")]
@@ -25,12 +26,6 @@ pub enum ChatType {
     /// A supergroup or channel (with unlimited members)
     #[serde(rename = "chatTypeSupergroup")]
     Supergroup(ChatTypeSupergroup),
-}
-
-impl Default for ChatType {
-    fn default() -> Self {
-        ChatType::_Default
-    }
 }
 
 impl RObject for ChatType {

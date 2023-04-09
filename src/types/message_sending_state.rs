@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDMessageSendingState: Debug + RObject {}
 
 /// Contains information about the sending state of the message
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum MessageSendingState {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The message failed to be sent
     #[serde(rename = "messageSendingStateFailed")]
@@ -19,12 +20,6 @@ pub enum MessageSendingState {
     /// The message is being sent now, but has not yet been delivered to the server
     #[serde(rename = "messageSendingStatePending")]
     Pending(MessageSendingStatePending),
-}
-
-impl Default for MessageSendingState {
-    fn default() -> Self {
-        MessageSendingState::_Default
-    }
 }
 
 impl RObject for MessageSendingState {

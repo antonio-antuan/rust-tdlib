@@ -397,6 +397,28 @@ where
         })
     }
 
+    pub async fn handle_auth_state(
+        &self,
+        auth_state: &AuthorizationState,
+        client: &Client<T>,
+    ) -> Result<()> {
+        let clients_guard = self.clients.read().await;
+        match clients_guard.get(&client.get_client_id().ok_or(CLIENT_NOT_AUTHORIZED)?) {
+            None => Err(Error::BadRequest("client not bound yet")),
+            Some(ctx) => {
+                handle_auth_state(
+                    client,
+                    ctx.pub_state_message_sender(),
+                    ctx.private_state_message_sender(),
+                    self.auth_state_handler.as_ref(),
+                    auth_state,
+                    self.channels_send_timeout,
+                )
+                .await
+            }
+        }
+    }
+
     // creates task handles [UpdateAuthorizationState][crate::types::UpdateAuthorizationState] and sends it to particular methods of specified [AuthStateHandler](crate::client::client::AuthStateHandler)
     fn init_auth_task(
         &self,

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDSecretChatState: Debug + RObject {}
 
 /// Describes the current secret chat state
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum SecretChatState {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The secret chat is closed
     #[serde(rename = "secretChatStateClosed")]
@@ -22,12 +23,6 @@ pub enum SecretChatState {
     /// The secret chat is ready to use
     #[serde(rename = "secretChatStateReady")]
     Ready(SecretChatStateReady),
-}
-
-impl Default for SecretChatState {
-    fn default() -> Self {
-        SecretChatState::_Default
-    }
 }
 
 impl RObject for SecretChatState {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDPageBlock: Debug + RObject {}
 
 /// Describes a block of an instant view web page
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum PageBlock {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// An invisible anchor on a page, which can be used in a URL to open the page from the specified anchor
     #[serde(rename = "pageBlockAnchor")]
@@ -30,7 +31,7 @@ pub enum PageBlock {
     BlockQuote(PageBlockBlockQuote),
     /// A link to a chat
     #[serde(rename = "pageBlockChatLink")]
-    ChatLink(PageBlockChatLink),
+    ChatLink(Box<PageBlockChatLink>),
     /// A collage
     #[serde(rename = "pageBlockCollage")]
     Collage(PageBlockCollage),
@@ -100,12 +101,6 @@ pub enum PageBlock {
     /// A voice note
     #[serde(rename = "pageBlockVoiceNote")]
     VoiceNote(PageBlockVoiceNote),
-}
-
-impl Default for PageBlock {
-    fn default() -> Self {
-        PageBlock::_Default
-    }
 }
 
 impl RObject for PageBlock {

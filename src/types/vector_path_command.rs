@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDVectorPathCommand: Debug + RObject {}
 
 /// Represents a vector path command
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum VectorPathCommand {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A cubic Bézier curve to a given point
     #[serde(rename = "vectorPathCommandCubicBezierCurve")]
@@ -19,12 +20,6 @@ pub enum VectorPathCommand {
     /// A straight line to a given point
     #[serde(rename = "vectorPathCommandLine")]
     Line(VectorPathCommandLine),
-}
-
-impl Default for VectorPathCommand {
-    fn default() -> Self {
-        VectorPathCommand::_Default
-    }
 }
 
 impl RObject for VectorPathCommand {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDNotificationGroupType: Debug + RObject {}
 
 /// Describes the type of notifications in a notification group
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum NotificationGroupType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A group containing notifications of type notificationTypeNewCall
     #[serde(rename = "notificationGroupTypeCalls")]
@@ -25,12 +26,6 @@ pub enum NotificationGroupType {
     /// A group containing a notification of type notificationTypeNewSecretChat
     #[serde(rename = "notificationGroupTypeSecretChat")]
     SecretChat(NotificationGroupTypeSecretChat),
-}
-
-impl Default for NotificationGroupType {
-    fn default() -> Self {
-        NotificationGroupType::_Default
-    }
 }
 
 impl RObject for NotificationGroupType {

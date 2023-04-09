@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDNetworkType: Debug + RObject {}
 
 /// Represents the type of a network
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum NetworkType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A mobile network
     #[serde(rename = "networkTypeMobile")]
@@ -28,12 +29,6 @@ pub enum NetworkType {
     /// A Wi-Fi network
     #[serde(rename = "networkTypeWiFi")]
     WiFi(NetworkTypeWiFi),
-}
-
-impl Default for NetworkType {
-    fn default() -> Self {
-        NetworkType::_Default
-    }
 }
 
 impl RObject for NetworkType {

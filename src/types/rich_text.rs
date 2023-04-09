@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDRichText: Debug + RObject {}
 
 /// Describes a text object inside an instant-view web page
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum RichText {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// An anchor
     #[serde(rename = "richTextAnchor")]
@@ -64,12 +65,6 @@ pub enum RichText {
     /// A concatenation of rich texts
     #[serde(rename = "richTexts")]
     RichTexts(RichTexts),
-}
-
-impl Default for RichText {
-    fn default() -> Self {
-        RichText::_Default
-    }
 }
 
 impl RObject for RichText {

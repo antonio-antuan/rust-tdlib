@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatStatistics: Debug + RObject {}
 
 /// Contains a detailed statistics about a chat
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatStatistics {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A detailed statistics about a channel chat
     #[serde(rename = "chatStatisticsChannel")]
@@ -22,12 +23,6 @@ pub enum ChatStatistics {
     /// Returns detailed statistics about a chat. Currently, this method can be used only for supergroups and channels. Can be used only if supergroupFullInfo.can_get_statistics == true
     #[serde(rename = "getChatStatistics")]
     GetChatStatistics(GetChatStatistics),
-}
-
-impl Default for ChatStatistics {
-    fn default() -> Self {
-        ChatStatistics::_Default
-    }
 }
 
 impl RObject for ChatStatistics {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDMaskPoint: Debug + RObject {}
 
 /// Part of the face, relative to which a mask is placed
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum MaskPoint {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The mask is placed relatively to the chin
     #[serde(rename = "maskPointChin")]
@@ -25,12 +26,6 @@ pub enum MaskPoint {
     /// The mask is placed relatively to the mouth
     #[serde(rename = "maskPointMouth")]
     Mouth(MaskPointMouth),
-}
-
-impl Default for MaskPoint {
-    fn default() -> Self {
-        MaskPoint::_Default
-    }
 }
 
 impl RObject for MaskPoint {

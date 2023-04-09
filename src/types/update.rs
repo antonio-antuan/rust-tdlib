@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDUpdate: Debug + RObject {}
 
 /// Contains notifications about data changes
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum Update {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Does nothing and ensures that the Update object is used; for testing only. This is an offline method. Can be called before authorization
     #[serde(rename = "testUseUpdate")]
@@ -292,12 +293,6 @@ pub enum Update {
     /// The list of users nearby has changed. The update is guaranteed to be sent only 60 seconds after a successful searchChatsNearby request
     #[serde(rename = "updateUsersNearby")]
     UsersNearby(UpdateUsersNearby),
-}
-
-impl Default for Update {
-    fn default() -> Self {
-        Update::_Default
-    }
 }
 
 impl RObject for Update {

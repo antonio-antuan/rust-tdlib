@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDProxyType: Debug + RObject {}
 
 /// Describes the type of a proxy server
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ProxyType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A HTTP transparent proxy server
     #[serde(rename = "proxyTypeHttp")]
@@ -22,12 +23,6 @@ pub enum ProxyType {
     /// A SOCKS5 proxy server
     #[serde(rename = "proxyTypeSocks5")]
     Socks5(ProxyTypeSocks5),
-}
-
-impl Default for ProxyType {
-    fn default() -> Self {
-        ProxyType::_Default
-    }
 }
 
 impl RObject for ProxyType {

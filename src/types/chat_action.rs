@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatAction: Debug + RObject {}
 
 /// Describes the different types of activity in a chat
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatAction {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The user has canceled the previous action
     #[serde(rename = "chatActionCancel")]
@@ -58,12 +59,6 @@ pub enum ChatAction {
     /// The user is watching animations sent by the other party by clicking on an animated emoji
     #[serde(rename = "chatActionWatchingAnimations")]
     WatchingAnimations(ChatActionWatchingAnimations),
-}
-
-impl Default for ChatAction {
-    fn default() -> Self {
-        ChatAction::_Default
-    }
 }
 
 impl RObject for ChatAction {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDUserPrivacySetting: Debug + RObject {}
 
 /// Describes available user privacy settings
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum UserPrivacySetting {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A privacy setting for managing whether the user can be called
     #[serde(rename = "userPrivacySettingAllowCalls")]
@@ -37,12 +38,6 @@ pub enum UserPrivacySetting {
     /// A privacy setting for managing whether the user's online status is visible
     #[serde(rename = "userPrivacySettingShowStatus")]
     ShowStatus(UserPrivacySettingShowStatus),
-}
-
-impl Default for UserPrivacySetting {
-    fn default() -> Self {
-        UserPrivacySetting::_Default
-    }
 }
 
 impl RObject for UserPrivacySetting {

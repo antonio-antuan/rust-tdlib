@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDKeyboardButtonType: Debug + RObject {}
 
 /// Describes a keyboard button type
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum KeyboardButtonType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A button that sends the user's location when pressed; available only in private chats
     #[serde(rename = "keyboardButtonTypeRequestLocation")]
@@ -25,12 +26,6 @@ pub enum KeyboardButtonType {
     /// A simple button, with text that must be sent when the button is pressed
     #[serde(rename = "keyboardButtonTypeText")]
     Text(KeyboardButtonTypeText),
-}
-
-impl Default for KeyboardButtonType {
-    fn default() -> Self {
-        KeyboardButtonType::_Default
-    }
 }
 
 impl RObject for KeyboardButtonType {

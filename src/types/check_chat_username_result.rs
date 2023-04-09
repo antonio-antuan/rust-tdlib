@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDCheckChatUsernameResult: Debug + RObject {}
 
 /// Represents result of checking whether a username can be set for a chat
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum CheckChatUsernameResult {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Checks whether a username can be set for a chat
     #[serde(rename = "checkChatUsername")]
@@ -31,12 +32,6 @@ pub enum CheckChatUsernameResult {
     /// The username is occupied
     #[serde(rename = "checkChatUsernameResultUsernameOccupied")]
     UsernameOccupied(CheckChatUsernameResultUsernameOccupied),
-}
-
-impl Default for CheckChatUsernameResult {
-    fn default() -> Self {
-        CheckChatUsernameResult::_Default
-    }
 }
 
 impl RObject for CheckChatUsernameResult {

@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInputSticker: Debug + RObject {}
 
 /// Describes a sticker that needs to be added to a sticker set
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InputSticker {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// An animated sticker in TGS format
     #[serde(rename = "inputStickerAnimated")]
@@ -19,12 +20,6 @@ pub enum InputSticker {
     /// A static sticker in PNG format, which will be converted to WEBP server-side
     #[serde(rename = "inputStickerStatic")]
     Static(InputStickerStatic),
-}
-
-impl Default for InputSticker {
-    fn default() -> Self {
-        InputSticker::_Default
-    }
 }
 
 impl RObject for InputSticker {

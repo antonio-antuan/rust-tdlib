@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDGroupCallVideoQuality: Debug + RObject {}
 
 /// Describes the quality of a group call video
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum GroupCallVideoQuality {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The best available video quality
     #[serde(rename = "groupCallVideoQualityFull")]
@@ -22,12 +23,6 @@ pub enum GroupCallVideoQuality {
     /// The worst available video quality
     #[serde(rename = "groupCallVideoQualityThumbnail")]
     Thumbnail(GroupCallVideoQualityThumbnail),
-}
-
-impl Default for GroupCallVideoQuality {
-    fn default() -> Self {
-        GroupCallVideoQuality::_Default
-    }
 }
 
 impl RObject for GroupCallVideoQuality {

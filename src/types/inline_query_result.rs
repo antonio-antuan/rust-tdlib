@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInlineQueryResult: Debug + RObject {}
 
 /// Represents a single result of an inline query
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InlineQueryResult {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Represents an animation file
     #[serde(rename = "inlineQueryResultAnimation")]
@@ -49,12 +50,6 @@ pub enum InlineQueryResult {
     /// Represents a voice note
     #[serde(rename = "inlineQueryResultVoiceNote")]
     VoiceNote(InlineQueryResultVoiceNote),
-}
-
-impl Default for InlineQueryResult {
-    fn default() -> Self {
-        InlineQueryResult::_Default
-    }
 }
 
 impl RObject for InlineQueryResult {

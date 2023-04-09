@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInputBackground: Debug + RObject {}
 
 /// Contains information about background to set
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InputBackground {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A background from a local file
     #[serde(rename = "inputBackgroundLocal")]
@@ -19,12 +20,6 @@ pub enum InputBackground {
     /// A background from the server
     #[serde(rename = "inputBackgroundRemote")]
     Remote(InputBackgroundRemote),
-}
-
-impl Default for InputBackground {
-    fn default() -> Self {
-        InputBackground::_Default
-    }
 }
 
 impl RObject for InputBackground {

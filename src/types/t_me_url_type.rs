@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDTMeUrlType: Debug + RObject {}
 
 /// Describes the type of a URL linking to an internal Telegram entity
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum TMeUrlType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A chat invite link
     #[serde(rename = "tMeUrlTypeChatInvite")]
@@ -25,12 +26,6 @@ pub enum TMeUrlType {
     /// A URL linking to a user
     #[serde(rename = "tMeUrlTypeUser")]
     User(TMeUrlTypeUser),
-}
-
-impl Default for TMeUrlType {
-    fn default() -> Self {
-        TMeUrlType::_Default
-    }
 }
 
 impl RObject for TMeUrlType {

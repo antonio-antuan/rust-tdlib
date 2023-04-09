@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatEventAction: Debug + RObject {}
 
 /// Represents a chat event
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatEventAction {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The chat description was changed
     #[serde(rename = "chatEventDescriptionChanged")]
@@ -117,12 +118,6 @@ pub enum ChatEventAction {
     ChatEventVideoChatParticipantVolumeLevelChanged(
         ChatEventVideoChatParticipantVolumeLevelChanged,
     ),
-}
-
-impl Default for ChatEventAction {
-    fn default() -> Self {
-        ChatEventAction::_Default
-    }
 }
 
 impl RObject for ChatEventAction {

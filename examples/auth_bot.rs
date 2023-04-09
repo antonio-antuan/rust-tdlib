@@ -1,6 +1,6 @@
 use rust_tdlib::client::{AuthStateHandlerProxy, ClientIdentifier};
 use rust_tdlib::{
-    client::{Client, ConsoleClientStateHandler, ConsoleClientStateHandlerIdentified, Worker},
+    client::{Client, ConsoleClientStateHandlerIdentified, Worker},
     tdjson,
     types::{TdlibParameters, Update},
 };
@@ -50,7 +50,7 @@ async fn main() {
     });
 
     let mut worker = Worker::builder()
-        .with_auth_state_handler(AuthStateHandlerProxy {})
+        .with_auth_state_handler(AuthStateHandlerProxy::default())
         .build()
         .unwrap();
     worker.start();

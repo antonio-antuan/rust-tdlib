@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDReplyMarkup: Debug + RObject {}
 
 /// Contains a description of a custom keyboard and actions that can be done with it to quickly reply to bots
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ReplyMarkup {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Instructs application to force a reply to this message
     #[serde(rename = "replyMarkupForceReply")]
@@ -25,12 +26,6 @@ pub enum ReplyMarkup {
     /// Contains a custom keyboard layout to quickly reply to bots
     #[serde(rename = "replyMarkupShowKeyboard")]
     ShowKeyboard(ReplyMarkupShowKeyboard),
-}
-
-impl Default for ReplyMarkup {
-    fn default() -> Self {
-        ReplyMarkup::_Default
-    }
 }
 
 impl RObject for ReplyMarkup {

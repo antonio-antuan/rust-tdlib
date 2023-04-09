@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDPushMessageContent: Debug + RObject {}
 
 /// Contains content of a push message notification
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum PushMessageContent {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// An animation message (GIF-style).
     #[serde(rename = "pushMessageContentAnimation")]
@@ -97,12 +98,6 @@ pub enum PushMessageContent {
     /// A voice note message
     #[serde(rename = "pushMessageContentVoiceNote")]
     VoiceNote(PushMessageContentVoiceNote),
-}
-
-impl Default for PushMessageContent {
-    fn default() -> Self {
-        PushMessageContent::_Default
-    }
 }
 
 impl RObject for PushMessageContent {

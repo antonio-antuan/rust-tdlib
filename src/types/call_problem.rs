@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDCallProblem: Debug + RObject {}
 
 /// Describes the exact type of a problem with a call
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum CallProblem {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The speech was distorted
     #[serde(rename = "callProblemDistortedSpeech")]
@@ -40,12 +41,6 @@ pub enum CallProblem {
     /// The other side couldn't hear the user
     #[serde(rename = "callProblemSilentRemote")]
     SilentRemote(CallProblemSilentRemote),
-}
-
-impl Default for CallProblem {
-    fn default() -> Self {
-        CallProblem::_Default
-    }
 }
 
 impl RObject for CallProblem {

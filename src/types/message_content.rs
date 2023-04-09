@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDMessageContent: Debug + RObject {}
 
 /// Contains the content of a message
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum MessageContent {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A message with an animated emoji
     #[serde(rename = "messageAnimatedEmoji")]
@@ -160,12 +161,6 @@ pub enum MessageContent {
     /// The current user has connected a website by logging in using Telegram Login Widget on it
     #[serde(rename = "messageWebsiteConnected")]
     MessageWebsiteConnected(MessageWebsiteConnected),
-}
-
-impl Default for MessageContent {
-    fn default() -> Self {
-        MessageContent::_Default
-    }
 }
 
 impl RObject for MessageContent {

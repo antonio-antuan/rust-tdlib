@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDSupergroupMembersFilter: Debug + RObject {}
 
 /// Specifies the kind of chat members to return in getSupergroupMembers
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum SupergroupMembersFilter {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns the owner and administrators
     #[serde(rename = "supergroupMembersFilterAdministrators")]
@@ -37,12 +38,6 @@ pub enum SupergroupMembersFilter {
     /// Used to search for supergroup or channel members via a (string) query
     #[serde(rename = "supergroupMembersFilterSearch")]
     Search(SupergroupMembersFilterSearch),
-}
-
-impl Default for SupergroupMembersFilter {
-    fn default() -> Self {
-        SupergroupMembersFilter::_Default
-    }
 }
 
 impl RObject for SupergroupMembersFilter {

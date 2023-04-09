@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDMessageSchedulingState: Debug + RObject {}
 
 /// Contains information about the time when a scheduled message will be sent
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum MessageSchedulingState {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The message will be sent at the specified date
     #[serde(rename = "messageSchedulingStateSendAtDate")]
@@ -19,12 +20,6 @@ pub enum MessageSchedulingState {
     /// The message will be sent when the peer will be online. Applicable to private chats only and when the exact online status of the peer is known
     #[serde(rename = "messageSchedulingStateSendWhenOnline")]
     SendWhenOnline(MessageSchedulingStateSendWhenOnline),
-}
-
-impl Default for MessageSchedulingState {
-    fn default() -> Self {
-        MessageSchedulingState::_Default
-    }
 }
 
 impl RObject for MessageSchedulingState {

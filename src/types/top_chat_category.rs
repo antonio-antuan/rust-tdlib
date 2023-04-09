@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDTopChatCategory: Debug + RObject {}
 
 /// Represents the categories of chats for which a list of frequently used chats can be retrieved
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum TopChatCategory {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A category containing frequently used private chats with bot users
     #[serde(rename = "topChatCategoryBots")]
@@ -34,12 +35,6 @@ pub enum TopChatCategory {
     /// A category containing frequently used private chats with non-bot users
     #[serde(rename = "topChatCategoryUsers")]
     Users(TopChatCategoryUsers),
-}
-
-impl Default for TopChatCategory {
-    fn default() -> Self {
-        TopChatCategory::_Default
-    }
 }
 
 impl RObject for TopChatCategory {

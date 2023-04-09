@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDAuthorizationState: Debug + RObject {}
 
 /// Represents the current authorization state of the TDLib client
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum AuthorizationState {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// TDLib client is in its final state. All databases are closed and all resources are released. No other updates will be received after this. All queries will be responded to with error code 500. To continue working, one must create a new instance of the TDLib client
     #[serde(rename = "authorizationStateClosed")]
@@ -49,12 +50,6 @@ pub enum AuthorizationState {
     /// Returns the current authorization state; this is an offline request. For informational purposes only. Use updateAuthorizationState instead to maintain the current authorization state. Can be called before initialization
     #[serde(rename = "getAuthorizationState")]
     GetAuthorizationState(GetAuthorizationState),
-}
-
-impl Default for AuthorizationState {
-    fn default() -> Self {
-        AuthorizationState::_Default
-    }
 }
 
 impl RObject for AuthorizationState {

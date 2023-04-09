@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInputPassportElementErrorSource: Debug + RObject {}
 
 /// Contains the description of an error in a Telegram Passport element; for bots only
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InputPassportElementErrorSource {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A data field contains an error. The error is considered resolved when the field's value changes
     #[serde(rename = "inputPassportElementErrorSourceDataField")]
@@ -40,12 +41,6 @@ pub enum InputPassportElementErrorSource {
     /// The element contains an error in an unspecified place. The error will be considered resolved when new data is added
     #[serde(rename = "inputPassportElementErrorSourceUnspecified")]
     Unspecified(InputPassportElementErrorSourceUnspecified),
-}
-
-impl Default for InputPassportElementErrorSource {
-    fn default() -> Self {
-        InputPassportElementErrorSource::_Default
-    }
 }
 
 impl RObject for InputPassportElementErrorSource {

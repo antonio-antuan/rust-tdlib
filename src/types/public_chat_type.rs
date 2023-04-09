@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDPublicChatType: Debug + RObject {}
 
 /// Describes a type of public chats
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum PublicChatType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The chat is public, because it has username
     #[serde(rename = "publicChatTypeHasUsername")]
@@ -19,12 +20,6 @@ pub enum PublicChatType {
     /// The chat is public, because it is a location-based supergroup
     #[serde(rename = "publicChatTypeIsLocationBased")]
     IsLocationBased(PublicChatTypeIsLocationBased),
-}
-
-impl Default for PublicChatType {
-    fn default() -> Self {
-        PublicChatType::_Default
-    }
 }
 
 impl RObject for PublicChatType {

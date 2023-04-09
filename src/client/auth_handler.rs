@@ -290,6 +290,12 @@ impl AuthStateHandlerProxy {
     }
 }
 
+impl Default for AuthStateHandlerProxy {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[async_trait]
 impl AuthStateHandler for AuthStateHandlerProxy {
     async fn handle_other_device_confirmation(

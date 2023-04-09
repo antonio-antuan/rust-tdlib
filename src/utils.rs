@@ -11,7 +11,7 @@ pub(crate) fn wait_input_sync() -> String {
 pub(crate) fn split_string(input: String, sep: char) -> Option<(String, String)> {
     let found: Vec<&str> = input.splitn(2, |c| c == sep).collect();
     if let 2 = found.len() {
-        let f = found.get(0).unwrap().trim();
+        let f = found.first().unwrap().trim();
         let s = found.get(1).unwrap().trim();
         if !f.is_empty() && !s.is_empty() {
             return Some((f.to_string(), s.to_string()));

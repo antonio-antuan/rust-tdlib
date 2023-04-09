@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInputMessageContent: Debug + RObject {}
 
 /// The content of a message to send
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InputMessageContent {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// An animation message (GIF-style).
     #[serde(rename = "inputMessageAnimation")]
@@ -64,12 +65,6 @@ pub enum InputMessageContent {
     /// A voice note message
     #[serde(rename = "inputMessageVoiceNote")]
     InputMessageVoiceNote(InputMessageVoiceNote),
-}
-
-impl Default for InputMessageContent {
-    fn default() -> Self {
-        InputMessageContent::_Default
-    }
 }
 
 impl RObject for InputMessageContent {

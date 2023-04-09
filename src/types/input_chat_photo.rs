@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInputChatPhoto: Debug + RObject {}
 
 /// Describes a photo to be set as a user profile or chat photo
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InputChatPhoto {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 800 and be at most 2MB in size
     #[serde(rename = "inputChatPhotoAnimation")]
@@ -22,12 +23,6 @@ pub enum InputChatPhoto {
     /// A static photo in JPEG format
     #[serde(rename = "inputChatPhotoStatic")]
     Static(InputChatPhotoStatic),
-}
-
-impl Default for InputChatPhoto {
-    fn default() -> Self {
-        InputChatPhoto::_Default
-    }
 }
 
 impl RObject for InputChatPhoto {

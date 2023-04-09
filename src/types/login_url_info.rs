@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDLoginUrlInfo: Debug + RObject {}
 
 /// Contains information about an inline button of type inlineKeyboardButtonTypeLoginUrl
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum LoginUrlInfo {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Returns information about an action to be done when the current user clicks an external link. Don't use this method for links from secret chats if web page preview is disabled in secret chats
     #[serde(rename = "getExternalLinkInfo")]
@@ -25,12 +26,6 @@ pub enum LoginUrlInfo {
     /// An authorization confirmation dialog needs to be shown to the user
     #[serde(rename = "loginUrlInfoRequestConfirmation")]
     RequestConfirmation(LoginUrlInfoRequestConfirmation),
-}
-
-impl Default for LoginUrlInfo {
-    fn default() -> Self {
-        LoginUrlInfo::_Default
-    }
 }
 
 impl RObject for LoginUrlInfo {

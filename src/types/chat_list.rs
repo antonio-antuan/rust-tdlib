@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDChatList: Debug + RObject {}
 
 /// Describes a list of chats
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ChatList {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A list of chats usually located at the top of the main chat list. Unmuted chats are automatically moved from the Archive to the Main chat list when a new message arrives
     #[serde(rename = "chatListArchive")]
@@ -22,12 +23,6 @@ pub enum ChatList {
     /// A main list of chats
     #[serde(rename = "chatListMain")]
     Main(ChatListMain),
-}
-
-impl Default for ChatList {
-    fn default() -> Self {
-        ChatList::_Default
-    }
 }
 
 impl RObject for ChatList {

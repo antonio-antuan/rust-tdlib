@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDInputInlineQueryResult: Debug + RObject {}
 
 /// Represents a single result of an inline query; for bots only
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum InputInlineQueryResult {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Represents a link to an animated GIF or an animated (i.e., without sound) H.264/MPEG-4 AVC video
     #[serde(rename = "inputInlineQueryResultAnimation")]
@@ -49,12 +50,6 @@ pub enum InputInlineQueryResult {
     /// Represents a link to an opus-encoded audio file within an OGG container, single channel audio
     #[serde(rename = "inputInlineQueryResultVoiceNote")]
     VoiceNote(InputInlineQueryResultVoiceNote),
-}
-
-impl Default for InputInlineQueryResult {
-    fn default() -> Self {
-        InputInlineQueryResult::_Default
-    }
 }
 
 impl RObject for InputInlineQueryResult {

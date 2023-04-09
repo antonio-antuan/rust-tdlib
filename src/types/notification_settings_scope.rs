@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDNotificationSettingsScope: Debug + RObject {}
 
 /// Describes the types of chats to which notification settings are relevant
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum NotificationSettingsScope {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Notification settings applied to all channels when the corresponding chat setting has a default value
     #[serde(rename = "notificationSettingsScopeChannelChats")]
@@ -22,12 +23,6 @@ pub enum NotificationSettingsScope {
     /// Notification settings applied to all private and secret chats when the corresponding chat setting has a default value
     #[serde(rename = "notificationSettingsScopePrivateChats")]
     PrivateChats(NotificationSettingsScopePrivateChats),
-}
-
-impl Default for NotificationSettingsScope {
-    fn default() -> Self {
-        NotificationSettingsScope::_Default
-    }
 }
 
 impl RObject for NotificationSettingsScope {

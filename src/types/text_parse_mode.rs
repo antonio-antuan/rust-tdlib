@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDTextParseMode: Debug + RObject {}
 
 /// Describes the way the text needs to be parsed for TextEntities
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum TextParseMode {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The text uses HTML-style formatting. The same as Telegram Bot API "HTML" parse mode
     #[serde(rename = "textParseModeHTML")]
@@ -19,12 +20,6 @@ pub enum TextParseMode {
     /// The text uses Markdown-style formatting
     #[serde(rename = "textParseModeMarkdown")]
     Markdown(TextParseModeMarkdown),
-}
-
-impl Default for TextParseMode {
-    fn default() -> Self {
-        TextParseMode::_Default
-    }
 }
 
 impl RObject for TextParseMode {

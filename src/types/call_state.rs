@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDCallState: Debug + RObject {}
 
 /// Describes the current call state
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum CallState {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The call has ended successfully
     #[serde(rename = "callStateDiscarded")]
@@ -31,12 +32,6 @@ pub enum CallState {
     /// The call is ready to use
     #[serde(rename = "callStateReady")]
     Ready(CallStateReady),
-}
-
-impl Default for CallState {
-    fn default() -> Self {
-        CallState::_Default
-    }
 }
 
 impl RObject for CallState {

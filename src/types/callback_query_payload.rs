@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDCallbackQueryPayload: Debug + RObject {}
 
 /// Represents a payload of a callback query
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum CallbackQueryPayload {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// The payload for a general callback button
     #[serde(rename = "callbackQueryPayloadData")]
@@ -22,12 +23,6 @@ pub enum CallbackQueryPayload {
     /// The payload for a game callback button
     #[serde(rename = "callbackQueryPayloadGame")]
     Game(CallbackQueryPayloadGame),
-}
-
-impl Default for CallbackQueryPayload {
-    fn default() -> Self {
-        CallbackQueryPayload::_Default
-    }
 }
 
 impl RObject for CallbackQueryPayload {

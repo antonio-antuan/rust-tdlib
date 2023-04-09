@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDNotificationType: Debug + RObject {}
 
 /// Contains detailed information about a notification
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum NotificationType {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// New call was received
     #[serde(rename = "notificationTypeNewCall")]
@@ -25,12 +26,6 @@ pub enum NotificationType {
     /// New secret chat was created
     #[serde(rename = "notificationTypeNewSecretChat")]
     NewSecretChat(NotificationTypeNewSecretChat),
-}
-
-impl Default for NotificationType {
-    fn default() -> Self {
-        NotificationType::_Default
-    }
 }
 
 impl RObject for NotificationType {

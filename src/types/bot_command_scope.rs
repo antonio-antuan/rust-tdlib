@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDBotCommandScope: Debug + RObject {}
 
 /// Represents the scope to which bot commands are relevant
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum BotCommandScope {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// A scope covering all group and supergroup chat administrators
     #[serde(rename = "botCommandScopeAllChatAdministrators")]
@@ -34,12 +35,6 @@ pub enum BotCommandScope {
     /// A scope covering all users
     #[serde(rename = "botCommandScopeDefault")]
     Default(BotCommandScopeDefault),
-}
-
-impl Default for BotCommandScope {
-    fn default() -> Self {
-        BotCommandScope::_Default
-    }
 }
 
 impl RObject for BotCommandScope {

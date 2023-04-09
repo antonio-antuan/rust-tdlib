@@ -8,10 +8,11 @@ use std::fmt::Debug;
 pub trait TDConnectionState: Debug + RObject {}
 
 /// Describes the current state of the connection to Telegram servers
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum ConnectionState {
     #[doc(hidden)]
+    #[default]
     _Default,
     /// Currently establishing a connection to the Telegram servers
     #[serde(rename = "connectionStateConnecting")]
@@ -28,12 +29,6 @@ pub enum ConnectionState {
     /// Currently waiting for the network to become available. Use setNetworkType to change the available network type
     #[serde(rename = "connectionStateWaitingForNetwork")]
     WaitingForNetwork(ConnectionStateWaitingForNetwork),
-}
-
-impl Default for ConnectionState {
-    fn default() -> Self {
-        ConnectionState::_Default
-    }
 }
 
 impl RObject for ConnectionState {
