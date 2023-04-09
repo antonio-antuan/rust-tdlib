@@ -20,8 +20,11 @@ jobs:
     - run: |
         make build-no-defaults
         pkg_version=$(cargo pkgid | cut -d "#" -f2)
+        echo $pkg_version
         if [[ "$pkg_version" = "$GITHUB_REF_NAME" ]]; then
-        echo "equals"
+          echo "equals"
+        else
+          echo "not equals"
         fi
 
 #    - uses: katyo/publish-crates@v2
