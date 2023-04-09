@@ -2,11 +2,9 @@ name: Build
 
 on:
   push:
-    tags:
-      - '*'
-#    branches: [ master ]
-#  pull_request:
-#    branches: [ master ]
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
   workflow_call:
 
 jobs:

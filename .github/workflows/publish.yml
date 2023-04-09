@@ -2,22 +2,21 @@ name: Publish
 
 on:
   push:
-#    tags:
-#      - '*'
-#    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags:
+      - '*'
+
 jobs:
-#  check:
-#    uses: ./.github/workflows/checks.yml
+  check:
+    uses: ./.github/workflows/checks.yml
 
   publish:
-#    needs: [check]
+    needs: [check]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
 
-    - run: |
+    - name: check tag equals version
+      run: |
         cargo generate-lockfile
         pkg_version=$(cargo pkgid | cut -d "#" -f2)
         echo $pkg_version
