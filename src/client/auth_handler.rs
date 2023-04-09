@@ -319,10 +319,8 @@ impl AuthStateHandler for AuthStateHandlerProxy {
             None => {
                 log::info!("wait for client's encryption key");
                 client.handle_encryption_key(wait_encryption_key).await
-            },
-            Some(key) => {
-                key.clone()
             }
+            Some(key) => key.clone(),
         }
     }
 
