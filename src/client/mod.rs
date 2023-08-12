@@ -1,4 +1,7 @@
 //! Module contains structs and traits, required for proper interaction with Telegram server.
+use std::fmt::Debug;
+use std::sync::Arc;
+
 #[doc(hidden)]
 mod observer;
 
@@ -34,7 +37,7 @@ use crate::{
 };
 use async_trait::async_trait;
 use tdlib_client::{TdJson, TdLibClient};
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, Mutex};
 
 const CLIENT_NOT_AUTHORIZED: Error = Error::Internal("client not authorized yet");
 const CLOSED_RECEIVER_ERROR: Error = Error::Internal("receiver already closed");
@@ -52,14 +55,54 @@ pub enum ClientState {
     Authorizing,
 }
 
+#[async_trait]
+pub trait AuthInteractor: Clone + Debug + Send + Sync {
+    async fn interact(&self) -> String;
+}
+
 #[derive(Debug, Clone)]
-pub struct ConsoleClientStateHandler;
+pub struct ConsoleInteractor;
 
 #[async_trait]
-impl ClientAuthStateHandler for ConsoleClientStateHandler {
+impl AuthInteractor for ConsoleInteractor {
+    async fn interact(&self) -> String {
+        utils::wait_input_sync()
+    }
+}
+
+
+#[derive(Debug, Clone)]
+pub struct SignalsInteractor {
+    rec: Arc<Mutex<mpsc::Receiver<String>>>,
+}
+
+impl SignalsInteractor {
+    pub fn new(receiver: mpsc::Receiver<String>) -> Self {
+        Self {
+            rec: Arc::new(Mutex::new(receiver)),
+        }
+    }
+}
+
+#[async_trait]
+impl AuthInteractor for SignalsInteractor {
+    async fn interact(&self) -> String {
+        let mut guard = self.rec.lock().await;
+        guard.recv().await.expect("no signals received")
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ClientStateHandler<H: AuthInteractor>(H);
+
+
+#[async_trait]
+impl<H> ClientAuthStateHandler for ClientStateHandler<H>
+where H: AuthInteractor
+{
     async fn handle_wait_code(&self, _wait_code: &AuthorizationStateWaitCode) -> String {
         println!("waiting for auth code");
-        utils::wait_input_sync()
+        self.0.interact().await
     }
 
     async fn handle_encryption_key(
@@ -67,7 +110,7 @@ impl ClientAuthStateHandler for ConsoleClientStateHandler {
         _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
     ) -> String {
         println!("waiting for encryption key");
-        utils::wait_input_sync()
+        self.0.interact().await
     }
 
     async fn handle_wait_password(
@@ -75,7 +118,7 @@ impl ClientAuthStateHandler for ConsoleClientStateHandler {
         _wait_password: &AuthorizationStateWaitPassword,
     ) -> String {
         println!("waiting for password");
-        utils::wait_input_sync()
+        self.0.interact().await
     }
 
     async fn handle_wait_client_identifier(
@@ -84,7 +127,7 @@ impl ClientAuthStateHandler for ConsoleClientStateHandler {
     ) -> ClientIdentifier {
         loop {
             println!("ConsoleClientStateHandler: choose one of phone number (p) or bot token (b)");
-            let inp = utils::wait_input_sync();
+            let inp = self.0.interact().await;
             match inp.to_lowercase().trim() {
                 "b" => {
                     println!("enter bot token");
@@ -108,7 +151,7 @@ impl ClientAuthStateHandler for ConsoleClientStateHandler {
     ) -> (String, String) {
         loop {
             println!("waiting for first_name and second_name separated by comma");
-            let inp: String = utils::wait_input_sync();
+            let inp: String = self.0.interact().await;
             if let Some((f, l)) = utils::split_string(inp, ',') {
                 return (f, l);
             }
@@ -117,19 +160,22 @@ impl ClientAuthStateHandler for ConsoleClientStateHandler {
 }
 
 #[derive(Debug, Clone)]
-pub struct ConsoleClientStateHandlerIdentified(ClientIdentifier);
+pub struct ConsoleClientStateHandlerIdentified<H: AuthInteractor>(ClientIdentifier, H);
 
-impl ConsoleClientStateHandlerIdentified {
-    pub fn new(ident: ClientIdentifier) -> Self {
-        Self(ident)
+impl<H> ConsoleClientStateHandlerIdentified<H>
+where H: AuthInteractor {
+    pub fn new(ident: ClientIdentifier, interactor: H) -> Self {
+        Self(ident, interactor)
     }
 }
 
 #[async_trait]
-impl ClientAuthStateHandler for ConsoleClientStateHandlerIdentified {
+impl<H> ClientAuthStateHandler for ConsoleClientStateHandlerIdentified<H>
+where H: AuthInteractor
+{
     async fn handle_wait_code(&self, _wait_code: &AuthorizationStateWaitCode) -> String {
         println!("waiting for auth code");
-        utils::wait_input_sync()
+        self.1.interact().await
     }
 
     async fn handle_encryption_key(
@@ -137,7 +183,7 @@ impl ClientAuthStateHandler for ConsoleClientStateHandlerIdentified {
         _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
     ) -> String {
         println!("waiting for encryption key");
-        utils::wait_input_sync()
+        self.1.interact().await
     }
 
     async fn handle_wait_password(
@@ -145,7 +191,7 @@ impl ClientAuthStateHandler for ConsoleClientStateHandlerIdentified {
         _wait_password: &AuthorizationStateWaitPassword,
     ) -> String {
         println!("waiting for password");
-        utils::wait_input_sync()
+        self.1.interact().await
     }
 
     async fn handle_wait_client_identifier(
@@ -161,7 +207,7 @@ impl ClientAuthStateHandler for ConsoleClientStateHandlerIdentified {
     ) -> (String, String) {
         loop {
             println!("waiting for first_name and second_name separated by comma");
-            let inp: String = utils::wait_input_sync();
+            let inp: String = self.1.interact().await;
             if let Some((f, l)) = utils::split_string(inp, ',') {
                 return (f, l);
             }
@@ -245,14 +291,14 @@ where
     auth_handler: A,
 }
 
-impl Default for ClientBuilder<TdJson, ConsoleClientStateHandler> {
+impl Default for ClientBuilder<TdJson, ClientStateHandler<ConsoleInteractor>> {
     fn default() -> Self {
         Self {
             updates_sender: None,
             tdlib_parameters: None,
             auth_state_channel_size: None,
             tdlib_client: TdJson::new(),
-            auth_handler: ConsoleClientStateHandler,
+            auth_handler: ClientStateHandler(ConsoleInteractor),
         }
     }
 }
@@ -325,7 +371,7 @@ where
 }
 
 impl Client<TdJson> {
-    pub fn builder() -> ClientBuilder<TdJson, ConsoleClientStateHandler> {
+    pub fn builder() -> ClientBuilder<TdJson, ClientStateHandler<ConsoleInteractor>> {
         ClientBuilder::default()
     }
 }
