@@ -169,6 +169,10 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
 
 /// All required methods wait for data sent by [Sender](tokio::sync::mpsc::Sender).
 #[derive(Debug, Clone)]
+#[deprecated(
+    since = "0.4.3",
+    note = "use ClientAuthStateHandler trait implementations bound to particular client with AuthStateHandlerProxy bound to worker"
+)]
 pub struct SignalAuthStateHandler {
     rec: Arc<Mutex<tokio::sync::mpsc::Receiver<String>>>,
 }
@@ -246,6 +250,7 @@ impl AuthStateHandler for SignalAuthStateHandler {
     }
 }
 
+/// `AuthStateHandlerProxy` implements [AuthStateHandlerProxy](crate::client::AuthStateHandlerProxy) in a way that allows to proxy all auth methods to particular clients.
 #[derive(Debug, Clone)]
 pub struct AuthStateHandlerProxy(Option<String>);
 
