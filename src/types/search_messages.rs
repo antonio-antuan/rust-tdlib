@@ -18,23 +18,15 @@ pub struct SearchMessages {
 
     #[serde(default)]
     query: String,
-    /// The date of the message starting from which the results need to be fetched. Use 0 or any date in the future to get results from the last message
+    /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
 
     #[serde(default)]
-    offset_date: i32,
-    /// The chat identifier of the last found message, or 0 for the first request
-
-    #[serde(default)]
-    offset_chat_id: i64,
-    /// The message identifier of the last found message, or 0 for the first request
-
-    #[serde(default)]
-    offset_message_id: i64,
+    offset: String,
     /// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 
     #[serde(default)]
     limit: i32,
-    /// Additional filter for messages to search; pass null to search for all messages. Filters searchMessagesFilterMention, searchMessagesFilterUnreadMention, searchMessagesFilterFailedToSend and searchMessagesFilterPinned are unsupported in this function
+    /// Additional filter for messages to search; pass null to search for all messages. Filters searchMessagesFilterMention, searchMessagesFilterUnreadMention, searchMessagesFilterUnreadReaction, searchMessagesFilterFailedToSend, and searchMessagesFilterPinned are unsupported in this function
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
@@ -85,16 +77,8 @@ impl SearchMessages {
         &self.query
     }
 
-    pub fn offset_date(&self) -> i32 {
-        self.offset_date
-    }
-
-    pub fn offset_chat_id(&self) -> i64 {
-        self.offset_chat_id
-    }
-
-    pub fn offset_message_id(&self) -> i64 {
-        self.offset_message_id
+    pub fn offset(&self) -> &String {
+        &self.offset
     }
 
     pub fn limit(&self) -> i32 {
@@ -137,18 +121,8 @@ impl SearchMessagesBuilder {
         self
     }
 
-    pub fn offset_date(&mut self, offset_date: i32) -> &mut Self {
-        self.inner.offset_date = offset_date;
-        self
-    }
-
-    pub fn offset_chat_id(&mut self, offset_chat_id: i64) -> &mut Self {
-        self.inner.offset_chat_id = offset_chat_id;
-        self
-    }
-
-    pub fn offset_message_id(&mut self, offset_message_id: i64) -> &mut Self {
-        self.inner.offset_message_id = offset_message_id;
+    pub fn offset<T: AsRef<str>>(&mut self, offset: T) -> &mut Self {
+        self.inner.offset = offset.as_ref().to_string();
         self
     }
 

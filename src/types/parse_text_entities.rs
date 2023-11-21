@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Parses Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities contained in the text. Can be called synchronously
+/// Parses Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, BlockQuote, Code, Pre, PreCode, TextUrl and MentionName entities from a marked-up text. Can be called synchronously
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ParseTextEntities {
     #[doc(hidden)]

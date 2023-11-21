@@ -14,14 +14,38 @@ pub struct ScopeNotificationSettings {
 
     #[serde(default)]
     mute_for: i32,
-    /// The name of an audio file to be used for notification sounds; only applies to iOS applications
+    /// Identifier of the notification sound to be played; 0 if sound is disabled
 
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
-    sound: String,
+    sound_id: i64,
     /// True, if message content must be displayed in notifications
 
     #[serde(default)]
     show_preview: bool,
+    /// If true, mute_stories is ignored and story notifications are received only for the first 5 chats from topChatCategoryUsers
+
+    #[serde(default)]
+    use_default_mute_stories: bool,
+    /// True, if story notifications are disabled for the chat
+
+    #[serde(default)]
+    mute_stories: bool,
+    /// Identifier of the notification sound to be played for stories; 0 if sound is disabled
+
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
+    #[serde(default)]
+    story_sound_id: i64,
+    /// True, if the sender of stories must be displayed in notifications
+
+    #[serde(default)]
+    show_story_sender: bool,
     /// True, if notifications for incoming pinned messages will be created as for an ordinary unread message
 
     #[serde(default)]
@@ -58,12 +82,28 @@ impl ScopeNotificationSettings {
         self.mute_for
     }
 
-    pub fn sound(&self) -> &String {
-        &self.sound
+    pub fn sound_id(&self) -> i64 {
+        self.sound_id
     }
 
     pub fn show_preview(&self) -> bool {
         self.show_preview
+    }
+
+    pub fn use_default_mute_stories(&self) -> bool {
+        self.use_default_mute_stories
+    }
+
+    pub fn mute_stories(&self) -> bool {
+        self.mute_stories
+    }
+
+    pub fn story_sound_id(&self) -> i64 {
+        self.story_sound_id
+    }
+
+    pub fn show_story_sender(&self) -> bool {
+        self.show_story_sender
     }
 
     pub fn disable_pinned_message_notifications(&self) -> bool {
@@ -93,13 +133,33 @@ impl ScopeNotificationSettingsBuilder {
         self
     }
 
-    pub fn sound<T: AsRef<str>>(&mut self, sound: T) -> &mut Self {
-        self.inner.sound = sound.as_ref().to_string();
+    pub fn sound_id(&mut self, sound_id: i64) -> &mut Self {
+        self.inner.sound_id = sound_id;
         self
     }
 
     pub fn show_preview(&mut self, show_preview: bool) -> &mut Self {
         self.inner.show_preview = show_preview;
+        self
+    }
+
+    pub fn use_default_mute_stories(&mut self, use_default_mute_stories: bool) -> &mut Self {
+        self.inner.use_default_mute_stories = use_default_mute_stories;
+        self
+    }
+
+    pub fn mute_stories(&mut self, mute_stories: bool) -> &mut Self {
+        self.inner.mute_stories = mute_stories;
+        self
+    }
+
+    pub fn story_sound_id(&mut self, story_sound_id: i64) -> &mut Self {
+        self.inner.story_sound_id = story_sound_id;
+        self
+    }
+
+    pub fn show_story_sender(&mut self, show_story_sender: bool) -> &mut Self {
+        self.inner.show_story_sender = show_story_sender;
         self
     }
 

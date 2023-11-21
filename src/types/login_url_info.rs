@@ -20,7 +20,7 @@ pub enum LoginUrlInfo {
     /// Returns information about a button of type inlineKeyboardButtonTypeLoginUrl. The method needs to be called when the user presses the button
     #[serde(rename = "getLoginUrlInfo")]
     GetLoginUrlInfo(GetLoginUrlInfo),
-    /// An HTTP url needs to be open
+    /// An HTTP URL needs to be open
     #[serde(rename = "loginUrlInfoOpen")]
     Open(LoginUrlInfoOpen),
     /// An authorization confirmation dialog needs to be shown to the user
@@ -69,7 +69,7 @@ impl AsRef<LoginUrlInfo> for LoginUrlInfo {
     }
 }
 
-/// An HTTP url needs to be open
+/// An HTTP URL needs to be open
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LoginUrlInfoOpen {
     #[doc(hidden)]
@@ -81,10 +81,10 @@ pub struct LoginUrlInfoOpen {
 
     #[serde(default)]
     url: String,
-    /// True, if there is no need to show an ordinary open URL confirm
+    /// True, if there is no need to show an ordinary open URL confirmation
 
     #[serde(default)]
-    skip_confirm: bool,
+    skip_confirmation: bool,
 }
 
 impl RObject for LoginUrlInfoOpen {
@@ -115,8 +115,8 @@ impl LoginUrlInfoOpen {
         &self.url
     }
 
-    pub fn skip_confirm(&self) -> bool {
-        self.skip_confirm
+    pub fn skip_confirmation(&self) -> bool {
+        self.skip_confirmation
     }
 }
 
@@ -138,8 +138,8 @@ impl LoginUrlInfoOpenBuilder {
         self
     }
 
-    pub fn skip_confirm(&mut self, skip_confirm: bool) -> &mut Self {
-        self.inner.skip_confirm = skip_confirm;
+    pub fn skip_confirmation(&mut self, skip_confirmation: bool) -> &mut Self {
+        self.inner.skip_confirmation = skip_confirmation;
         self
     }
 }
@@ -176,7 +176,7 @@ pub struct LoginUrlInfoRequestConfirmation {
 
     #[serde(default)]
     bot_user_id: i64,
-    /// True, if the user needs to be requested to give the permission to the bot to send them messages
+    /// True, if the user must be asked for the permission to the bot to send them messages
 
     #[serde(default)]
     request_write_access: bool,

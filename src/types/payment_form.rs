@@ -18,12 +18,8 @@ pub struct PaymentForm {
     )]
     #[serde(default)]
     id: i64,
-    /// Full information of the invoice
+    /// Full information about the invoice
     invoice: Invoice,
-    /// Payment form URL
-
-    #[serde(default)]
-    url: String,
     /// User identifier of the seller bot
 
     #[serde(default)]
@@ -31,21 +27,37 @@ pub struct PaymentForm {
     /// User identifier of the payment provider bot
 
     #[serde(default)]
-    payments_provider_user_id: i64,
-    /// Information about the payment provider, if available, to support it natively without the need for opening the URL; may be null
-    payments_provider: Option<PaymentsProviderStripe>,
+    payment_provider_user_id: i64,
+    /// Information about the payment provider
+
+    #[serde(skip_serializing_if = "PaymentProvider::_is_default")]
+    payment_provider: PaymentProvider,
+    /// The list of additional payment options
+
+    #[serde(default)]
+    additional_payment_options: Vec<PaymentOption>,
     /// Saved server-side order information; may be null
     saved_order_info: Option<OrderInfo>,
-    /// Information about saved card credentials; may be null
-    saved_credentials: Option<SavedCredentials>,
+    /// The list of saved payment credentials
+
+    #[serde(default)]
+    saved_credentials: Vec<SavedCredentials>,
     /// True, if the user can choose to save credentials
 
     #[serde(default)]
     can_save_credentials: bool,
-    /// True, if the user will be able to save credentials protected by a password they set up
+    /// True, if the user will be able to save credentials, if sets up a 2-step verification password
 
     #[serde(default)]
     need_password: bool,
+    /// Product title
+
+    #[serde(default)]
+    product_title: String,
+    /// Product description
+    product_description: FormattedText,
+    /// Product photo; may be null
+    product_photo: Option<Photo>,
 }
 
 impl RObject for PaymentForm {
@@ -78,27 +90,27 @@ impl PaymentForm {
         &self.invoice
     }
 
-    pub fn url(&self) -> &String {
-        &self.url
-    }
-
     pub fn seller_bot_user_id(&self) -> i64 {
         self.seller_bot_user_id
     }
 
-    pub fn payments_provider_user_id(&self) -> i64 {
-        self.payments_provider_user_id
+    pub fn payment_provider_user_id(&self) -> i64 {
+        self.payment_provider_user_id
     }
 
-    pub fn payments_provider(&self) -> &Option<PaymentsProviderStripe> {
-        &self.payments_provider
+    pub fn payment_provider(&self) -> &PaymentProvider {
+        &self.payment_provider
+    }
+
+    pub fn additional_payment_options(&self) -> &Vec<PaymentOption> {
+        &self.additional_payment_options
     }
 
     pub fn saved_order_info(&self) -> &Option<OrderInfo> {
         &self.saved_order_info
     }
 
-    pub fn saved_credentials(&self) -> &Option<SavedCredentials> {
+    pub fn saved_credentials(&self) -> &Vec<SavedCredentials> {
         &self.saved_credentials
     }
 
@@ -108,6 +120,18 @@ impl PaymentForm {
 
     pub fn need_password(&self) -> bool {
         self.need_password
+    }
+
+    pub fn product_title(&self) -> &String {
+        &self.product_title
+    }
+
+    pub fn product_description(&self) -> &FormattedText {
+        &self.product_description
+    }
+
+    pub fn product_photo(&self) -> &Option<Photo> {
+        &self.product_photo
     }
 }
 
@@ -134,26 +158,29 @@ impl PaymentFormBuilder {
         self
     }
 
-    pub fn url<T: AsRef<str>>(&mut self, url: T) -> &mut Self {
-        self.inner.url = url.as_ref().to_string();
-        self
-    }
-
     pub fn seller_bot_user_id(&mut self, seller_bot_user_id: i64) -> &mut Self {
         self.inner.seller_bot_user_id = seller_bot_user_id;
         self
     }
 
-    pub fn payments_provider_user_id(&mut self, payments_provider_user_id: i64) -> &mut Self {
-        self.inner.payments_provider_user_id = payments_provider_user_id;
+    pub fn payment_provider_user_id(&mut self, payment_provider_user_id: i64) -> &mut Self {
+        self.inner.payment_provider_user_id = payment_provider_user_id;
         self
     }
 
-    pub fn payments_provider<T: AsRef<PaymentsProviderStripe>>(
+    pub fn payment_provider<T: AsRef<PaymentProvider>>(
         &mut self,
-        payments_provider: T,
+        payment_provider: T,
     ) -> &mut Self {
-        self.inner.payments_provider = Some(payments_provider.as_ref().clone());
+        self.inner.payment_provider = payment_provider.as_ref().clone();
+        self
+    }
+
+    pub fn additional_payment_options(
+        &mut self,
+        additional_payment_options: Vec<PaymentOption>,
+    ) -> &mut Self {
+        self.inner.additional_payment_options = additional_payment_options;
         self
     }
 
@@ -162,11 +189,8 @@ impl PaymentFormBuilder {
         self
     }
 
-    pub fn saved_credentials<T: AsRef<SavedCredentials>>(
-        &mut self,
-        saved_credentials: T,
-    ) -> &mut Self {
-        self.inner.saved_credentials = Some(saved_credentials.as_ref().clone());
+    pub fn saved_credentials(&mut self, saved_credentials: Vec<SavedCredentials>) -> &mut Self {
+        self.inner.saved_credentials = saved_credentials;
         self
     }
 
@@ -177,6 +201,24 @@ impl PaymentFormBuilder {
 
     pub fn need_password(&mut self, need_password: bool) -> &mut Self {
         self.inner.need_password = need_password;
+        self
+    }
+
+    pub fn product_title<T: AsRef<str>>(&mut self, product_title: T) -> &mut Self {
+        self.inner.product_title = product_title.as_ref().to_string();
+        self
+    }
+
+    pub fn product_description<T: AsRef<FormattedText>>(
+        &mut self,
+        product_description: T,
+    ) -> &mut Self {
+        self.inner.product_description = product_description.as_ref().clone();
+        self
+    }
+
+    pub fn product_photo<T: AsRef<Photo>>(&mut self, product_photo: T) -> &mut Self {
+        self.inner.product_photo = Some(product_photo.as_ref().clone());
         self
     }
 }

@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns the profile photos of a user. The result of this query may be outdated: some photos might have been deleted already
+/// Returns the profile photos of a user. Personal and public photo aren't returned
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetUserProfilePhotos {
     #[doc(hidden)]

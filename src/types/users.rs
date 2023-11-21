@@ -10,7 +10,7 @@ pub struct Users {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Approximate total count of users found
+    /// Approximate total number of users found
 
     #[serde(default)]
     total_count: i32,

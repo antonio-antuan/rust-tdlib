@@ -22,6 +22,8 @@ pub struct VoiceNote {
 
     #[serde(default)]
     mime_type: String,
+    /// Result of speech recognition in the voice note; may be null
+    speech_recognition_result: Option<SpeechRecognitionResult>,
     /// File containing the voice note
     voice: File,
 }
@@ -60,6 +62,10 @@ impl VoiceNote {
         &self.mime_type
     }
 
+    pub fn speech_recognition_result(&self) -> &Option<SpeechRecognitionResult> {
+        &self.speech_recognition_result
+    }
+
     pub fn voice(&self) -> &File {
         &self.voice
     }
@@ -90,6 +96,14 @@ impl VoiceNoteBuilder {
 
     pub fn mime_type<T: AsRef<str>>(&mut self, mime_type: T) -> &mut Self {
         self.inner.mime_type = mime_type.as_ref().to_string();
+        self
+    }
+
+    pub fn speech_recognition_result<T: AsRef<SpeechRecognitionResult>>(
+        &mut self,
+        speech_recognition_result: T,
+    ) -> &mut Self {
+        self.inner.speech_recognition_result = Some(speech_recognition_result.as_ref().clone());
         self
     }
 

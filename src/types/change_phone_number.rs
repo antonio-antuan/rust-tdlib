@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the phone number of the user and sends an authentication code to the user's new phone number. On success, returns information about the sent code
+/// Changes the phone number of the user and sends an authentication code to the user's new phone number; for official Android and iOS applications only. On success, returns information about the sent code
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChangePhoneNumber {
     #[doc(hidden)]

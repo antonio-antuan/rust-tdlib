@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Toggles whether the current user will receive a notification when the group call will start; scheduled group calls only
+/// Toggles whether the current user will receive a notification when the group call starts; scheduled group calls only
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ToggleGroupCallEnabledStartNotification {
     #[doc(hidden)]

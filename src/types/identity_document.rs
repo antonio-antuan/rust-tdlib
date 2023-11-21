@@ -14,8 +14,8 @@ pub struct IdentityDocument {
 
     #[serde(default)]
     number: String,
-    /// Document expiry date; may be null if not applicable
-    expiry_date: Option<Date>,
+    /// Document expiration date; may be null if not applicable
+    expiration_date: Option<Date>,
     /// Front side of the document
     front_side: DatedFile,
     /// Reverse side of the document; only for driver license and identity card; may be null
@@ -54,8 +54,8 @@ impl IdentityDocument {
         &self.number
     }
 
-    pub fn expiry_date(&self) -> &Option<Date> {
-        &self.expiry_date
+    pub fn expiration_date(&self) -> &Option<Date> {
+        &self.expiration_date
     }
 
     pub fn front_side(&self) -> &DatedFile {
@@ -93,8 +93,8 @@ impl IdentityDocumentBuilder {
         self
     }
 
-    pub fn expiry_date<T: AsRef<Date>>(&mut self, expiry_date: T) -> &mut Self {
-        self.inner.expiry_date = Some(expiry_date.as_ref().clone());
+    pub fn expiration_date<T: AsRef<Date>>(&mut self, expiration_date: T) -> &mut Self {
+        self.inner.expiration_date = Some(expiration_date.as_ref().clone());
         self
     }
 

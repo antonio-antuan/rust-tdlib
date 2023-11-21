@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains a temporary identifier of validated order information, which is stored for one hour. Also contains the available shipping options
+/// Contains a temporary identifier of validated order information, which is stored for one hour, and the available shipping options
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ValidatedOrderInfo {
     #[doc(hidden)]

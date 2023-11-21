@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Describes a web page preview
+/// Describes a link preview
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct WebPage {
     #[doc(hidden)]
@@ -31,7 +31,7 @@ pub struct WebPage {
 
     #[serde(default)]
     title: String,
-    /// Describes a web page preview
+    /// Describes a link preview
     description: FormattedText,
     /// Image representing the content; may be null
     photo: Option<Photo>,
@@ -59,6 +59,22 @@ pub struct WebPage {
 
     #[serde(default)]
     author: String,
+    /// True, if size of media in the preview can be changed
+
+    #[serde(default)]
+    has_large_media: bool,
+    /// True, if large media preview must be shown; otherwise, the media preview must be shown small and only the first frame must be shown for videos
+
+    #[serde(default)]
+    show_large_media: bool,
+    /// True, if there is no need to show an ordinary open URL confirmation, when opening the URL from the preview, because the URL is shown in the message text in clear
+
+    #[serde(default)]
+    skip_confirmation: bool,
+    /// True, if the link preview must be shown above message text; otherwise, the link preview must be shown below the message text
+
+    #[serde(default)]
+    show_above_text: bool,
     /// Preview of the content as an animation, if available; may be null
     animation: Option<Animation>,
     /// Preview of the content as an audio file, if available; may be null
@@ -73,7 +89,15 @@ pub struct WebPage {
     video_note: Option<VideoNote>,
     /// Preview of the content as a voice note, if available; may be null
     voice_note: Option<VoiceNote>,
-    /// Version of instant view, available for the web page (currently, can be 1 or 2), 0 if none
+    /// The identifier of the sender of the previewed story; 0 if none
+
+    #[serde(default)]
+    story_sender_chat_id: i64,
+    /// The identifier of the previewed story; 0 if none
+
+    #[serde(default)]
+    story_id: i32,
+    /// Version of web page instant view (currently, can be 1 or 2); 0 if none
 
     #[serde(default)]
     instant_view_version: i32,
@@ -153,6 +177,22 @@ impl WebPage {
         &self.author
     }
 
+    pub fn has_large_media(&self) -> bool {
+        self.has_large_media
+    }
+
+    pub fn show_large_media(&self) -> bool {
+        self.show_large_media
+    }
+
+    pub fn skip_confirmation(&self) -> bool {
+        self.skip_confirmation
+    }
+
+    pub fn show_above_text(&self) -> bool {
+        self.show_above_text
+    }
+
     pub fn animation(&self) -> &Option<Animation> {
         &self.animation
     }
@@ -179,6 +219,14 @@ impl WebPage {
 
     pub fn voice_note(&self) -> &Option<VoiceNote> {
         &self.voice_note
+    }
+
+    pub fn story_sender_chat_id(&self) -> i64 {
+        self.story_sender_chat_id
+    }
+
+    pub fn story_id(&self) -> i32 {
+        self.story_id
     }
 
     pub fn instant_view_version(&self) -> i32 {
@@ -264,6 +312,26 @@ impl WebPageBuilder {
         self
     }
 
+    pub fn has_large_media(&mut self, has_large_media: bool) -> &mut Self {
+        self.inner.has_large_media = has_large_media;
+        self
+    }
+
+    pub fn show_large_media(&mut self, show_large_media: bool) -> &mut Self {
+        self.inner.show_large_media = show_large_media;
+        self
+    }
+
+    pub fn skip_confirmation(&mut self, skip_confirmation: bool) -> &mut Self {
+        self.inner.skip_confirmation = skip_confirmation;
+        self
+    }
+
+    pub fn show_above_text(&mut self, show_above_text: bool) -> &mut Self {
+        self.inner.show_above_text = show_above_text;
+        self
+    }
+
     pub fn animation<T: AsRef<Animation>>(&mut self, animation: T) -> &mut Self {
         self.inner.animation = Some(animation.as_ref().clone());
         self
@@ -296,6 +364,16 @@ impl WebPageBuilder {
 
     pub fn voice_note<T: AsRef<VoiceNote>>(&mut self, voice_note: T) -> &mut Self {
         self.inner.voice_note = Some(voice_note.as_ref().clone());
+        self
+    }
+
+    pub fn story_sender_chat_id(&mut self, story_sender_chat_id: i64) -> &mut Self {
+        self.inner.story_sender_chat_id = story_sender_chat_id;
+        self
+    }
+
+    pub fn story_id(&mut self, story_id: i32) -> &mut Self {
+        self.inner.story_id = story_id;
         self
     }
 

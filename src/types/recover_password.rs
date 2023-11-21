@@ -14,7 +14,7 @@ pub struct RecoverPassword {
 
     #[serde(default)]
     recovery_code: String,
-    /// New password of the user; may be empty to remove the password
+    /// New 2-step verification password of the user; may be empty to remove the password
 
     #[serde(default)]
     new_password: String,

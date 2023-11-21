@@ -19,6 +19,30 @@ where
         self.make_request(accept_terms_of_service).await
     }
 
+    // Activates stealth mode for stories, which hides all views of stories from the current user in the last "story_stealth_mode_past_period" seconds and for the next "story_stealth_mode_future_period" seconds; for Telegram Premium users only
+    pub async fn activate_story_stealth_mode<C: AsRef<ActivateStoryStealthMode>>(
+        &self,
+        activate_story_stealth_mode: C,
+    ) -> Result<Ok> {
+        self.make_request(activate_story_stealth_mode).await
+    }
+
+    // Adds server-provided application changelog as messages to the chat 777000 (Telegram) or as a stories; for official applications only. Returns a 404 error if nothing changed
+    pub async fn add_application_changelog<C: AsRef<AddApplicationChangelog>>(
+        &self,
+        add_application_changelog: C,
+    ) -> Result<Ok> {
+        self.make_request(add_application_changelog).await
+    }
+
+    // Adds a chat folder by an invite link
+    pub async fn add_chat_folder_by_invite_link<C: AsRef<AddChatFolderByInviteLink>>(
+        &self,
+        add_chat_folder_by_invite_link: C,
+    ) -> Result<Ok> {
+        self.make_request(add_chat_folder_by_invite_link).await
+    }
+
     // Adds a new member to a chat. Members can't be added to private or secret chats
     pub async fn add_chat_member<C: AsRef<AddChatMember>>(&self, add_chat_member: C) -> Result<Ok> {
         self.make_request(add_chat_member).await
@@ -53,12 +77,20 @@ where
         self.make_request(add_custom_server_language_pack).await
     }
 
-    // Adds a new sticker to the list of favorite stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set can be added to this list
+    // Adds a new sticker to the list of favorite stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set can be added to this list. Emoji stickers can't be added to favorite stickers
     pub async fn add_favorite_sticker<C: AsRef<AddFavoriteSticker>>(
         &self,
         add_favorite_sticker: C,
     ) -> Result<Ok> {
         self.make_request(add_favorite_sticker).await
+    }
+
+    // Adds a file from a message to the list of file downloads. Download progress and completion of the download will be notified through updateFile updates. If message database is used, the list of file downloads is persistent across application restarts. The downloading is independent from download using downloadFile, i.e. it continues if downloadFile is canceled or is used to download a part of the file
+    pub async fn add_file_to_downloads<C: AsRef<AddFileToDownloads>>(
+        &self,
+        add_file_to_downloads: C,
+    ) -> Result<File> {
+        self.make_request(add_file_to_downloads).await
     }
 
     // Adds a local message to a chat. The message is persistent across application restarts only if the message database is used. Returns the added message
@@ -74,6 +106,14 @@ where
         self.make_request(add_log_message).await
     }
 
+    // Adds a reaction to a message. Use getMessageAvailableReactions to receive the list of available reactions for the message
+    pub async fn add_message_reaction<C: AsRef<AddMessageReaction>>(
+        &self,
+        add_message_reaction: C,
+    ) -> Result<Ok> {
+        self.make_request(add_message_reaction).await
+    }
+
     // Adds the specified data to data usage statistics. Can be called before authorization
     pub async fn add_network_statistics<C: AsRef<AddNetworkStatistics>>(
         &self,
@@ -87,7 +127,7 @@ where
         self.make_request(add_proxy).await
     }
 
-    // Manually adds a new sticker to the list of recently used stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set can be added to this list
+    // Manually adds a new sticker to the list of recently used stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set can be added to this list. Emoji stickers can't be added to recent stickers
     pub async fn add_recent_sticker<C: AsRef<AddRecentSticker>>(
         &self,
         add_recent_sticker: C,
@@ -111,12 +151,28 @@ where
         self.make_request(add_saved_animation).await
     }
 
-    // Adds a new sticker to a set; for bots only. Returns the sticker set
+    // Adds a new notification sound to the list of saved notification sounds. The new notification sound is added to the top of the list. If it is already in the list, its position isn't changed
+    pub async fn add_saved_notification_sound<C: AsRef<AddSavedNotificationSound>>(
+        &self,
+        add_saved_notification_sound: C,
+    ) -> Result<NotificationSound> {
+        self.make_request(add_saved_notification_sound).await
+    }
+
+    // Adds a new sticker to a set; for bots only
     pub async fn add_sticker_to_set<C: AsRef<AddStickerToSet>>(
         &self,
         add_sticker_to_set: C,
-    ) -> Result<StickerSet> {
+    ) -> Result<Ok> {
         self.make_request(add_sticker_to_set).await
+    }
+
+    // Allows the specified bot to send messages to the user
+    pub async fn allow_bot_to_send_messages<C: AsRef<AllowBotToSendMessages>>(
+        &self,
+        allow_bot_to_send_messages: C,
+    ) -> Result<Ok> {
+        self.make_request(allow_bot_to_send_messages).await
     }
 
     // Sets the result of a callback query; for bots only
@@ -159,6 +215,38 @@ where
         self.make_request(answer_shipping_query).await
     }
 
+    // Sets the result of interaction with a Web App and sends corresponding message on behalf of the user to the chat from which the query originated; for bots only
+    pub async fn answer_web_app_query<C: AsRef<AnswerWebAppQuery>>(
+        &self,
+        answer_web_app_query: C,
+    ) -> Result<SentWebAppMessage> {
+        self.make_request(answer_web_app_query).await
+    }
+
+    // Applies a Telegram Premium gift code
+    pub async fn apply_premium_gift_code<C: AsRef<ApplyPremiumGiftCode>>(
+        &self,
+        apply_premium_gift_code: C,
+    ) -> Result<Ok> {
+        self.make_request(apply_premium_gift_code).await
+    }
+
+    // Informs server about a purchase through App Store. For official applications only
+    pub async fn assign_app_store_transaction<C: AsRef<AssignAppStoreTransaction>>(
+        &self,
+        assign_app_store_transaction: C,
+    ) -> Result<Ok> {
+        self.make_request(assign_app_store_transaction).await
+    }
+
+    // Informs server about a purchase through Google Play. For official applications only
+    pub async fn assign_google_play_transaction<C: AsRef<AssignGooglePlayTransaction>>(
+        &self,
+        assign_google_play_transaction: C,
+    ) -> Result<Ok> {
+        self.make_request(assign_google_play_transaction).await
+    }
+
     // Bans a member in a chat. Members can't be banned in private or secret chats. In supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless unbanned first
     pub async fn ban_chat_member<C: AsRef<BanChatMember>>(&self, ban_chat_member: C) -> Result<Ok> {
         self.make_request(ban_chat_member).await
@@ -170,6 +258,35 @@ where
         block_message_sender_from_replies: C,
     ) -> Result<Ok> {
         self.make_request(block_message_sender_from_replies).await
+    }
+
+    // Boosts a chat and returns the list of available chat boost slots for the current user after the boost
+    pub async fn boost_chat<C: AsRef<BoostChat>>(&self, boost_chat: C) -> Result<ChatBoostSlots> {
+        self.make_request(boost_chat).await
+    }
+
+    // Checks whether the specified bot can send messages to the user. Returns a 404 error if can't and the access can be granted by call to allowBotToSendMessages
+    pub async fn can_bot_send_messages<C: AsRef<CanBotSendMessages>>(
+        &self,
+        can_bot_send_messages: C,
+    ) -> Result<Ok> {
+        self.make_request(can_bot_send_messages).await
+    }
+
+    // Checks whether Telegram Premium purchase is possible. Must be called before in-store Premium purchase
+    pub async fn can_purchase_premium<C: AsRef<CanPurchasePremium>>(
+        &self,
+        can_purchase_premium: C,
+    ) -> Result<Ok> {
+        self.make_request(can_purchase_premium).await
+    }
+
+    // Checks whether the current user can send a story on behalf of a chat; requires can_post_stories rights for channel chats
+    pub async fn can_send_story<C: AsRef<CanSendStory>>(
+        &self,
+        can_send_story: C,
+    ) -> Result<CanSendStoryResult> {
+        self.make_request(can_send_story).await
     }
 
     // Checks whether the current session can be used to transfer a chat ownership to another user
@@ -196,12 +313,12 @@ where
         self.make_request(cancel_password_reset).await
     }
 
-    // Stops the uploading of a file. Supported only for files uploaded by using uploadFile. For other files the behavior is undefined
-    pub async fn cancel_upload_file<C: AsRef<CancelUploadFile>>(
+    // Stops the preliminary uploading of a file. Supported only for files uploaded by using preliminaryUploadFile. For other files the behavior is undefined
+    pub async fn cancel_preliminary_upload_file<C: AsRef<CancelPreliminaryUploadFile>>(
         &self,
-        cancel_upload_file: C,
+        cancel_preliminary_upload_file: C,
     ) -> Result<Ok> {
-        self.make_request(cancel_upload_file).await
+        self.make_request(cancel_preliminary_upload_file).await
     }
 
     // Changes imported contacts using the list of contacts saved on the device. Imports newly added contacts and, if at least the file database is enabled, deletes recently deleted contacts. Query result depends on the result of the previous query, so only one query is possible at the same time
@@ -212,7 +329,7 @@ where
         self.make_request(change_imported_contacts).await
     }
 
-    // Changes the phone number of the user and sends an authentication code to the user's new phone number. On success, returns information about the sent code
+    // Changes the phone number of the user and sends an authentication code to the user's new phone number; for official Android and iOS applications only. On success, returns information about the sent code
     pub async fn change_phone_number<C: AsRef<ChangePhoneNumber>>(
         &self,
         change_phone_number: C,
@@ -244,7 +361,15 @@ where
         self.make_request(check_authentication_code).await
     }
 
-    // Checks the authentication password for correctness. Works only when the current authorization state is authorizationStateWaitPassword
+    // Checks the authentication of a email address. Works only when the current authorization state is authorizationStateWaitEmailCode
+    pub async fn check_authentication_email_code<C: AsRef<CheckAuthenticationEmailCode>>(
+        &self,
+        check_authentication_email_code: C,
+    ) -> Result<Ok> {
+        self.make_request(check_authentication_email_code).await
+    }
+
+    // Checks the 2-step verification password for correctness. Works only when the current authorization state is authorizationStateWaitPassword
     pub async fn check_authentication_password<C: AsRef<CheckAuthenticationPassword>>(
         &self,
         check_authentication_password: C,
@@ -252,7 +377,7 @@ where
         self.make_request(check_authentication_password).await
     }
 
-    // Checks whether a password recovery code sent to an email address is valid. Works only when the current authorization state is authorizationStateWaitPassword
+    // Checks whether a 2-step verification password recovery code sent to an email address is valid. Works only when the current authorization state is authorizationStateWaitPassword
     pub async fn check_authentication_password_recovery_code<
         C: AsRef<CheckAuthenticationPasswordRecoveryCode>,
     >(
@@ -271,6 +396,14 @@ where
         self.make_request(check_change_phone_number_code).await
     }
 
+    // Checks the validity of an invite link for a chat folder and returns information about the corresponding chat folder
+    pub async fn check_chat_folder_invite_link<C: AsRef<CheckChatFolderInviteLink>>(
+        &self,
+        check_chat_folder_invite_link: C,
+    ) -> Result<ChatFolderInviteLinkInfo> {
+        self.make_request(check_chat_folder_invite_link).await
+    }
+
     // Checks the validity of an invite link for a chat and returns information about the corresponding chat
     pub async fn check_chat_invite_link<C: AsRef<CheckChatInviteLink>>(
         &self,
@@ -287,20 +420,12 @@ where
         self.make_request(check_chat_username).await
     }
 
-    // Checks whether the maximum number of owned public chats has been reached. Returns corresponding error if the limit was reached
+    // Checks whether the maximum number of owned public chats has been reached. Returns corresponding error if the limit was reached. The limit can be increased with Telegram Premium
     pub async fn check_created_public_chats_limit<C: AsRef<CheckCreatedPublicChatsLimit>>(
         &self,
         check_created_public_chats_limit: C,
     ) -> Result<Ok> {
         self.make_request(check_created_public_chats_limit).await
-    }
-
-    // Checks the database encryption key for correctness. Works only when the current authorization state is authorizationStateWaitEncryptionKey
-    pub async fn check_database_encryption_key<C: AsRef<CheckDatabaseEncryptionKey>>(
-        &self,
-        check_database_encryption_key: C,
-    ) -> Result<Ok> {
-        self.make_request(check_database_encryption_key).await
     }
 
     // Checks the email address verification code for Telegram Passport
@@ -312,6 +437,14 @@ where
     ) -> Result<Ok> {
         self.make_request(check_email_address_verification_code)
             .await
+    }
+
+    // Checks the login email address authentication
+    pub async fn check_login_email_address_code<C: AsRef<CheckLoginEmailAddressCode>>(
+        &self,
+        check_login_email_address_code: C,
+    ) -> Result<Ok> {
+        self.make_request(check_login_email_address_code).await
     }
 
     // Checks whether a 2-step verification password recovery code sent to an email address is valid
@@ -344,6 +477,14 @@ where
             .await
     }
 
+    // Return information about a Telegram Premium gift code
+    pub async fn check_premium_gift_code<C: AsRef<CheckPremiumGiftCode>>(
+        &self,
+        check_premium_gift_code: C,
+    ) -> Result<PremiumGiftCodeInfo> {
+        self.make_request(check_premium_gift_code).await
+    }
+
     // Checks the 2-step verification recovery email address verification code
     pub async fn check_recovery_email_address_code<C: AsRef<CheckRecoveryEmailAddressCode>>(
         &self,
@@ -368,12 +509,20 @@ where
         self.make_request(clean_file_name).await
     }
 
-    // Clears draft messages in all chats
+    // Clears message drafts in all chats
     pub async fn clear_all_draft_messages<C: AsRef<ClearAllDraftMessages>>(
         &self,
         clear_all_draft_messages: C,
     ) -> Result<Ok> {
         self.make_request(clear_all_draft_messages).await
+    }
+
+    // Clears the list of all autosave settings exceptions. The method is guaranteed to work only after at least one call to getAutosaveSettings
+    pub async fn clear_autosave_settings_exceptions<C: AsRef<ClearAutosaveSettingsExceptions>>(
+        &self,
+        clear_autosave_settings_exceptions: C,
+    ) -> Result<Ok> {
+        self.make_request(clear_autosave_settings_exceptions).await
     }
 
     // Clears all imported contacts, contact list remains unchanged
@@ -382,6 +531,22 @@ where
         clear_imported_contacts: C,
     ) -> Result<Ok> {
         self.make_request(clear_imported_contacts).await
+    }
+
+    // Clears the list of recently used emoji statuses
+    pub async fn clear_recent_emoji_statuses<C: AsRef<ClearRecentEmojiStatuses>>(
+        &self,
+        clear_recent_emoji_statuses: C,
+    ) -> Result<Ok> {
+        self.make_request(clear_recent_emoji_statuses).await
+    }
+
+    // Clears the list of recently used reactions
+    pub async fn clear_recent_reactions<C: AsRef<ClearRecentReactions>>(
+        &self,
+        clear_recent_reactions: C,
+    ) -> Result<Ok> {
+        self.make_request(clear_recent_reactions).await
     }
 
     // Clears the list of recently used stickers
@@ -408,6 +573,22 @@ where
         self.make_request(click_animated_emoji_message).await
     }
 
+    // Informs TDLib that the user opened the sponsored chat via the button, the name, the photo, or a mention in the sponsored message
+    pub async fn click_chat_sponsored_message<C: AsRef<ClickChatSponsoredMessage>>(
+        &self,
+        click_chat_sponsored_message: C,
+    ) -> Result<Ok> {
+        self.make_request(click_chat_sponsored_message).await
+    }
+
+    // Informs TDLib that the user clicked Premium subscription button on the Premium features screen
+    pub async fn click_premium_subscription_button<C: AsRef<ClickPremiumSubscriptionButton>>(
+        &self,
+        click_premium_subscription_button: C,
+    ) -> Result<Ok> {
+        self.make_request(click_premium_subscription_button).await
+    }
+
     // Closes the TDLib instance. All databases will be flushed to disk and properly closed. After the close completes, updateAuthorizationState with authorizationStateClosed will be sent. Can be called before initialization
     pub async fn close<C: AsRef<Close>>(&self, close: C) -> Result<Ok> {
         self.make_request(close).await
@@ -426,12 +607,30 @@ where
         self.make_request(close_secret_chat).await
     }
 
+    // Informs TDLib that a story is closed by the user
+    pub async fn close_story<C: AsRef<CloseStory>>(&self, close_story: C) -> Result<Ok> {
+        self.make_request(close_story).await
+    }
+
+    // Informs TDLib that a previously opened Web App was closed
+    pub async fn close_web_app<C: AsRef<CloseWebApp>>(&self, close_web_app: C) -> Result<Ok> {
+        self.make_request(close_web_app).await
+    }
+
     // Confirms QR code authentication on another device. Returns created session on success
     pub async fn confirm_qr_code_authentication<C: AsRef<ConfirmQrCodeAuthentication>>(
         &self,
         confirm_qr_code_authentication: C,
     ) -> Result<Session> {
         self.make_request(confirm_qr_code_authentication).await
+    }
+
+    // Confirms an unconfirmed session of the current user from another device
+    pub async fn confirm_session<C: AsRef<ConfirmSession>>(
+        &self,
+        confirm_session: C,
+    ) -> Result<Ok> {
+        self.make_request(confirm_session).await
     }
 
     // Returns an existing chat corresponding to a known basic group
@@ -447,12 +646,20 @@ where
         self.make_request(create_call).await
     }
 
-    // Creates new chat filter. Returns information about the created chat filter
-    pub async fn create_chat_filter<C: AsRef<CreateChatFilter>>(
+    // Creates new chat folder. Returns information about the created chat folder. There can be up to getOption("chat_folder_count_max") chat folders, but the limit can be increased with Telegram Premium
+    pub async fn create_chat_folder<C: AsRef<CreateChatFolder>>(
         &self,
-        create_chat_filter: C,
-    ) -> Result<ChatFilterInfo> {
-        self.make_request(create_chat_filter).await
+        create_chat_folder: C,
+    ) -> Result<ChatFolderInfo> {
+        self.make_request(create_chat_folder).await
+    }
+
+    // Creates a new invite link for a chat folder. A link can be created for a chat folder if it has only pinned and included chats
+    pub async fn create_chat_folder_invite_link<C: AsRef<CreateChatFolderInviteLink>>(
+        &self,
+        create_chat_folder_invite_link: C,
+    ) -> Result<ChatFolderInviteLink> {
+        self.make_request(create_chat_folder_invite_link).await
     }
 
     // Creates a new invite link for a chat. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right in the chat
@@ -461,6 +668,22 @@ where
         create_chat_invite_link: C,
     ) -> Result<ChatInviteLink> {
         self.make_request(create_chat_invite_link).await
+    }
+
+    // Creates a topic in a forum supergroup chat; requires can_manage_topics rights in the supergroup
+    pub async fn create_forum_topic<C: AsRef<CreateForumTopic>>(
+        &self,
+        create_forum_topic: C,
+    ) -> Result<ForumTopicInfo> {
+        self.make_request(create_forum_topic).await
+    }
+
+    // Creates a link for the given invoice; for bots only
+    pub async fn create_invoice_link<C: AsRef<CreateInvoiceLink>>(
+        &self,
+        create_invoice_link: C,
+    ) -> Result<HttpUrl> {
+        self.make_request(create_invoice_link).await
     }
 
     // Creates a new basic group and sends a corresponding messageBasicGroupChatCreate. Returns the newly created chat
@@ -557,17 +780,25 @@ where
             .await
     }
 
-    // Deletes a chat along with all messages in the corresponding chat for all chat members; requires owner privileges. For group chats this will release the username and remove all members. Chats with more than 1000 members can't be deleted using this method
+    // Deletes a chat along with all messages in the corresponding chat for all chat members. For group chats this will release the usernames and remove all members. Use the field chat.can_be_deleted_for_all_users to find whether the method can be applied to the chat
     pub async fn delete_chat<C: AsRef<DeleteChat>>(&self, delete_chat: C) -> Result<Ok> {
         self.make_request(delete_chat).await
     }
 
-    // Deletes existing chat filter
-    pub async fn delete_chat_filter<C: AsRef<DeleteChatFilter>>(
+    // Deletes existing chat folder
+    pub async fn delete_chat_folder<C: AsRef<DeleteChatFolder>>(
         &self,
-        delete_chat_filter: C,
+        delete_chat_folder: C,
     ) -> Result<Ok> {
-        self.make_request(delete_chat_filter).await
+        self.make_request(delete_chat_folder).await
+    }
+
+    // Deletes an invite link for a chat folder
+    pub async fn delete_chat_folder_invite_link<C: AsRef<DeleteChatFolderInviteLink>>(
+        &self,
+        delete_chat_folder_invite_link: C,
+    ) -> Result<Ok> {
+        self.make_request(delete_chat_folder_invite_link).await
     }
 
     // Deletes all messages in the chat. Use chat.can_be_deleted_only_for_self and chat.can_be_deleted_for_all_users fields to find whether and how the method can be applied to the chat
@@ -594,7 +825,7 @@ where
         self.make_request(delete_chat_messages_by_sender).await
     }
 
-    // Deletes the default reply markup from a chat. Must be called after a one-time keyboard or a ForceReply reply markup has been used. UpdateChatReplyMarkup will be sent if the reply markup is changed
+    // Deletes the default reply markup from a chat. Must be called after a one-time keyboard or a replyMarkupForceReply reply markup has been used. An updateChatReplyMarkup update will be sent if the reply markup is changed
     pub async fn delete_chat_reply_markup<C: AsRef<DeleteChatReplyMarkup>>(
         &self,
         delete_chat_reply_markup: C,
@@ -613,6 +844,14 @@ where
     // Deletes a file from the TDLib file cache
     pub async fn delete_file<C: AsRef<DeleteFile>>(&self, delete_file: C) -> Result<Ok> {
         self.make_request(delete_file).await
+    }
+
+    // Deletes all messages in a forum topic; requires can_delete_messages administrator right in the supergroup unless the user is creator of the topic, the topic has no messages from other users and has at most 11 messages
+    pub async fn delete_forum_topic<C: AsRef<DeleteForumTopic>>(
+        &self,
+        delete_forum_topic: C,
+    ) -> Result<Ok> {
+        self.make_request(delete_forum_topic).await
     }
 
     // Deletes all information about a language pack in the current localization target. The language pack which is currently in use (including base language pack) or is being synchronized can't be deleted. Can be called before authorization
@@ -663,7 +902,7 @@ where
         self.make_request(delete_saved_credentials).await
     }
 
-    // Deletes saved order info
+    // Deletes saved order information
     pub async fn delete_saved_order_info<C: AsRef<DeleteSavedOrderInfo>>(
         &self,
         delete_saved_order_info: C,
@@ -671,9 +910,30 @@ where
         self.make_request(delete_saved_order_info).await
     }
 
+    // Deleted a sticker set; for bots only
+    pub async fn delete_sticker_set<C: AsRef<DeleteStickerSet>>(
+        &self,
+        delete_sticker_set: C,
+    ) -> Result<Ok> {
+        self.make_request(delete_sticker_set).await
+    }
+
+    // Deletes a previously sent story. Can be called only if story.can_be_deleted == true
+    pub async fn delete_story<C: AsRef<DeleteStory>>(&self, delete_story: C) -> Result<Ok> {
+        self.make_request(delete_story).await
+    }
+
     // Closes the TDLib instance, destroying all local data without a proper logout. The current user session will remain in the list of all active sessions. All local data will be destroyed. After the destruction completes updateAuthorizationState with authorizationStateClosed will be sent. Can be called before authorization
     pub async fn destroy<C: AsRef<Destroy>>(&self, destroy: C) -> Result<Ok> {
         self.make_request(destroy).await
+    }
+
+    // Disables all active non-editable usernames of a supergroup or channel, requires owner privileges in the supergroup or channel
+    pub async fn disable_all_supergroup_usernames<C: AsRef<DisableAllSupergroupUsernames>>(
+        &self,
+        disable_all_supergroup_usernames: C,
+    ) -> Result<Ok> {
+        self.make_request(disable_all_supergroup_usernames).await
     }
 
     // Disables the currently enabled proxy. Can be called before authorization
@@ -707,12 +967,20 @@ where
         self.make_request(download_file).await
     }
 
-    // Edits existing chat filter. Returns information about the edited chat filter
-    pub async fn edit_chat_filter<C: AsRef<EditChatFilter>>(
+    // Edits existing chat folder. Returns information about the edited chat folder
+    pub async fn edit_chat_folder<C: AsRef<EditChatFolder>>(
         &self,
-        edit_chat_filter: C,
-    ) -> Result<ChatFilterInfo> {
-        self.make_request(edit_chat_filter).await
+        edit_chat_folder: C,
+    ) -> Result<ChatFolderInfo> {
+        self.make_request(edit_chat_folder).await
+    }
+
+    // Edits an invite link for a chat folder
+    pub async fn edit_chat_folder_invite_link<C: AsRef<EditChatFolderInviteLink>>(
+        &self,
+        edit_chat_folder_invite_link: C,
+    ) -> Result<ChatFolderInviteLink> {
+        self.make_request(edit_chat_folder_invite_link).await
     }
 
     // Edits a non-primary invite link for a chat. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right in the chat for own links and owner privileges for other links
@@ -729,6 +997,14 @@ where
         edit_custom_language_pack_info: C,
     ) -> Result<Ok> {
         self.make_request(edit_custom_language_pack_info).await
+    }
+
+    // Edits title and icon of a topic in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup unless the user is creator of the topic
+    pub async fn edit_forum_topic<C: AsRef<EditForumTopic>>(
+        &self,
+        edit_forum_topic: C,
+    ) -> Result<Ok> {
+        self.make_request(edit_forum_topic).await
     }
 
     // Edits the caption of an inline message sent via a bot; for bots only
@@ -824,6 +1100,11 @@ where
         self.make_request(edit_proxy).await
     }
 
+    // Changes content and caption of a story. Can be called only if story.can_be_edited == true
+    pub async fn edit_story<C: AsRef<EditStory>>(&self, edit_story: C) -> Result<Ok> {
+        self.make_request(edit_story).await
+    }
+
     // Enables a proxy. Only one proxy can be enabled at a time. Can be called before authorization
     pub async fn enable_proxy<C: AsRef<EnableProxy>>(&self, enable_proxy: C) -> Result<Ok> {
         self.make_request(enable_proxy).await
@@ -898,6 +1179,14 @@ where
         self.make_request(get_all_passport_elements).await
     }
 
+    // Returns unique emoji that correspond to stickers to be found by the getStickers(sticker_type, query, 1000000, chat_id)
+    pub async fn get_all_sticker_emojis<C: AsRef<GetAllStickerEmojis>>(
+        &self,
+        get_all_sticker_emojis: C,
+    ) -> Result<Emojis> {
+        self.make_request(get_all_sticker_emojis).await
+    }
+
     // Returns an animated emoji corresponding to a given emoji. Returns a 404 error if the emoji has no animated emoji
     pub async fn get_animated_emoji<C: AsRef<GetAnimatedEmoji>>(
         &self,
@@ -922,6 +1211,14 @@ where
         self.make_request(get_application_download_link).await
     }
 
+    // Returns settings for automatic moving of chats to and from the Archive chat lists
+    pub async fn get_archive_chat_list_settings<C: AsRef<GetArchiveChatListSettings>>(
+        &self,
+        get_archive_chat_list_settings: C,
+    ) -> Result<ArchiveChatListSettings> {
+        self.make_request(get_archive_chat_list_settings).await
+    }
+
     // Returns a list of archived sticker sets
     pub async fn get_archived_sticker_sets<C: AsRef<GetArchivedStickerSets>>(
         &self,
@@ -930,12 +1227,20 @@ where
         self.make_request(get_archived_sticker_sets).await
     }
 
-    // Returns a list of sticker sets attached to a file. Currently, only photos and videos can have attached sticker sets
+    // Returns a list of sticker sets attached to a file, including regular, mask, and emoji sticker sets. Currently, only animations, photos, and videos can have attached sticker sets
     pub async fn get_attached_sticker_sets<C: AsRef<GetAttachedStickerSets>>(
         &self,
         get_attached_sticker_sets: C,
     ) -> Result<StickerSets> {
         self.make_request(get_attached_sticker_sets).await
+    }
+
+    // Returns information about a bot that can be added to attachment or side menu
+    pub async fn get_attachment_menu_bot<C: AsRef<GetAttachmentMenuBot>>(
+        &self,
+        get_attachment_menu_bot: C,
+    ) -> Result<AttachmentMenuBot> {
+        self.make_request(get_attachment_menu_bot).await
     }
 
     // Returns the current authorization state; this is an offline request. For informational purposes only. Use updateAuthorizationState instead to maintain the current authorization state. Can be called before initialization
@@ -952,6 +1257,22 @@ where
         get_auto_download_settings_presets: C,
     ) -> Result<AutoDownloadSettingsPresets> {
         self.make_request(get_auto_download_settings_presets).await
+    }
+
+    // Returns autosave settings for the current user
+    pub async fn get_autosave_settings<C: AsRef<GetAutosaveSettings>>(
+        &self,
+        get_autosave_settings: C,
+    ) -> Result<AutosaveSettings> {
+        self.make_request(get_autosave_settings).await
+    }
+
+    // Returns the list of available chat boost slots for the current user
+    pub async fn get_available_chat_boost_slots<C: AsRef<GetAvailableChatBoostSlots>>(
+        &self,
+        get_available_chat_boost_slots: C,
+    ) -> Result<ChatBoostSlots> {
+        self.make_request(get_available_chat_boost_slots).await
     }
 
     // Constructs a persistent HTTP URL for a background
@@ -1002,6 +1323,27 @@ where
         self.make_request(get_blocked_message_senders).await
     }
 
+    // Returns the text shown in the chat with a bot if the chat is empty in the given language. Can be called only if userTypeBot.can_be_edited == true
+    pub async fn get_bot_info_description<C: AsRef<GetBotInfoDescription>>(
+        &self,
+        get_bot_info_description: C,
+    ) -> Result<Text> {
+        self.make_request(get_bot_info_description).await
+    }
+
+    // Returns the text shown on a bot's profile page and sent together with the link when users share the bot in the given language. Can be called only if userTypeBot.can_be_edited == true
+    pub async fn get_bot_info_short_description<C: AsRef<GetBotInfoShortDescription>>(
+        &self,
+        get_bot_info_short_description: C,
+    ) -> Result<Text> {
+        self.make_request(get_bot_info_short_description).await
+    }
+
+    // Returns the name of a bot in the given language. Can be called only if userTypeBot.can_be_edited == true
+    pub async fn get_bot_name<C: AsRef<GetBotName>>(&self, get_bot_name: C) -> Result<Text> {
+        self.make_request(get_bot_name).await
+    }
+
     // Sends a callback query to a bot and returns an answer. Returns an error with code 502 if the bot fails to answer the query before the query timeout expires
     pub async fn get_callback_query_answer<C: AsRef<GetCallbackQueryAnswer>>(
         &self,
@@ -1018,9 +1360,17 @@ where
         self.make_request(get_callback_query_message).await
     }
 
-    // Returns information about a chat by its identifier, this is an offline request if the current user is not a bot
+    // Returns information about a chat by its identifier; this is an offline request if the current user is not a bot
     pub async fn get_chat<C: AsRef<GetChat>>(&self, get_chat: C) -> Result<Chat> {
         self.make_request(get_chat).await
+    }
+
+    // Returns the list of active stories posted by the given chat
+    pub async fn get_chat_active_stories<C: AsRef<GetChatActiveStories>>(
+        &self,
+        get_chat_active_stories: C,
+    ) -> Result<ChatActiveStories> {
+        self.make_request(get_chat_active_stories).await
     }
 
     // Returns a list of administrators of the chat with their custom titles
@@ -1031,15 +1381,55 @@ where
         self.make_request(get_chat_administrators).await
     }
 
+    // Returns the list of all stories posted by the given chat; requires can_edit_stories rights for channel chats. The stories are returned in a reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib
+    pub async fn get_chat_archived_stories<C: AsRef<GetChatArchivedStories>>(
+        &self,
+        get_chat_archived_stories: C,
+    ) -> Result<Stories> {
+        self.make_request(get_chat_archived_stories).await
+    }
+
     // Returns list of message sender identifiers, which can be used to send messages in a chat
     pub async fn get_chat_available_message_senders<C: AsRef<GetChatAvailableMessageSenders>>(
         &self,
         get_chat_available_message_senders: C,
-    ) -> Result<MessageSenders> {
+    ) -> Result<ChatMessageSenders> {
         self.make_request(get_chat_available_message_senders).await
     }
 
-    // Returns a list of service actions taken by chat members and administrators in the last 48 hours. Available only for supergroups and channels. Requires administrator rights. Returns results in reverse chronological order (i. e., in order of decreasing event_id)
+    // Returns an HTTPS link to boost the specified channel chat
+    pub async fn get_chat_boost_link<C: AsRef<GetChatBoostLink>>(
+        &self,
+        get_chat_boost_link: C,
+    ) -> Result<ChatBoostLink> {
+        self.make_request(get_chat_boost_link).await
+    }
+
+    // Returns information about a link to boost a chat. Can be called for any internal link of the type internalLinkTypeChatBoost
+    pub async fn get_chat_boost_link_info<C: AsRef<GetChatBoostLinkInfo>>(
+        &self,
+        get_chat_boost_link_info: C,
+    ) -> Result<ChatBoostLinkInfo> {
+        self.make_request(get_chat_boost_link_info).await
+    }
+
+    // Returns the current boost status for a channel chat
+    pub async fn get_chat_boost_status<C: AsRef<GetChatBoostStatus>>(
+        &self,
+        get_chat_boost_status: C,
+    ) -> Result<ChatBoostStatus> {
+        self.make_request(get_chat_boost_status).await
+    }
+
+    // Returns list of boosts applied to a chat; requires administrator rights in the channel chat
+    pub async fn get_chat_boosts<C: AsRef<GetChatBoosts>>(
+        &self,
+        get_chat_boosts: C,
+    ) -> Result<FoundChatBoosts> {
+        self.make_request(get_chat_boosts).await
+    }
+
+    // Returns a list of service actions taken by chat members and administrators in the last 48 hours. Available only for supergroups and channels. Requires administrator rights. Returns results in reverse chronological order (i.e., in order of decreasing event_id)
     pub async fn get_chat_event_log<C: AsRef<GetChatEventLog>>(
         &self,
         get_chat_event_log: C,
@@ -1047,20 +1437,52 @@ where
         self.make_request(get_chat_event_log).await
     }
 
-    // Returns information about a chat filter by its identifier
-    pub async fn get_chat_filter<C: AsRef<GetChatFilter>>(
+    // Returns information about a chat folder by its identifier
+    pub async fn get_chat_folder<C: AsRef<GetChatFolder>>(
         &self,
-        get_chat_filter: C,
-    ) -> Result<ChatFilter> {
-        self.make_request(get_chat_filter).await
+        get_chat_folder: C,
+    ) -> Result<ChatFolder> {
+        self.make_request(get_chat_folder).await
     }
 
-    // Returns default icon name for a filter. Can be called synchronously
-    pub async fn get_chat_filter_default_icon_name<C: AsRef<GetChatFilterDefaultIconName>>(
+    // Returns approximate number of chats in a being created chat folder. Main and archive chat lists must be fully preloaded for this function to work correctly
+    pub async fn get_chat_folder_chat_count<C: AsRef<GetChatFolderChatCount>>(
         &self,
-        get_chat_filter_default_icon_name: C,
-    ) -> Result<Text> {
-        self.make_request(get_chat_filter_default_icon_name).await
+        get_chat_folder_chat_count: C,
+    ) -> Result<Count> {
+        self.make_request(get_chat_folder_chat_count).await
+    }
+
+    // Returns identifiers of pinned or always included chats from a chat folder, which are suggested to be left when the chat folder is deleted
+    pub async fn get_chat_folder_chats_to_leave<C: AsRef<GetChatFolderChatsToLeave>>(
+        &self,
+        get_chat_folder_chats_to_leave: C,
+    ) -> Result<Chats> {
+        self.make_request(get_chat_folder_chats_to_leave).await
+    }
+
+    // Returns default icon name for a folder. Can be called synchronously
+    pub async fn get_chat_folder_default_icon_name<C: AsRef<GetChatFolderDefaultIconName>>(
+        &self,
+        get_chat_folder_default_icon_name: C,
+    ) -> Result<ChatFolderIcon> {
+        self.make_request(get_chat_folder_default_icon_name).await
+    }
+
+    // Returns invite links created by the current user for a shareable chat folder
+    pub async fn get_chat_folder_invite_links<C: AsRef<GetChatFolderInviteLinks>>(
+        &self,
+        get_chat_folder_invite_links: C,
+    ) -> Result<ChatFolderInviteLinks> {
+        self.make_request(get_chat_folder_invite_links).await
+    }
+
+    // Returns new chats added to a shareable chat folder by its owner. The method must be called at most once in getOption("chat_folder_new_chats_update_period") for the given chat folder
+    pub async fn get_chat_folder_new_chats<C: AsRef<GetChatFolderNewChats>>(
+        &self,
+        get_chat_folder_new_chats: C,
+    ) -> Result<Chats> {
+        self.make_request(get_chat_folder_new_chats).await
     }
 
     // Returns messages in a chat. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib. This is an offline request if only_local is true
@@ -1151,7 +1573,15 @@ where
         self.make_request(get_chat_message_count).await
     }
 
-    // Returns list of chats with non-default notification settings
+    // Returns approximate 1-based position of a message among messages, which can be found by the specified filter in the chat. Cannot be used in secret chats
+    pub async fn get_chat_message_position<C: AsRef<GetChatMessagePosition>>(
+        &self,
+        get_chat_message_position: C,
+    ) -> Result<Count> {
+        self.make_request(get_chat_message_position).await
+    }
+
+    // Returns list of chats with non-default notification settings for new messages
     pub async fn get_chat_notification_settings_exceptions<
         C: AsRef<GetChatNotificationSettingsExceptions>,
     >(
@@ -1170,6 +1600,14 @@ where
         self.make_request(get_chat_pinned_message).await
     }
 
+    // Returns the list of pinned stories posted by the given chat. The stories are returned in a reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib
+    pub async fn get_chat_pinned_stories<C: AsRef<GetChatPinnedStories>>(
+        &self,
+        get_chat_pinned_stories: C,
+    ) -> Result<Stories> {
+        self.make_request(get_chat_pinned_stories).await
+    }
+
     // Returns all scheduled messages in a chat. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id)
     pub async fn get_chat_scheduled_messages<C: AsRef<GetChatScheduledMessages>>(
         &self,
@@ -1186,12 +1624,12 @@ where
         self.make_request(get_chat_sparse_message_positions).await
     }
 
-    // Returns sponsored message to be shown in a chat; for channel chats only. Returns a 404 error if there is no sponsored message in the chat
-    pub async fn get_chat_sponsored_message<C: AsRef<GetChatSponsoredMessage>>(
+    // Returns sponsored messages to be shown in a chat; for channel chats only
+    pub async fn get_chat_sponsored_messages<C: AsRef<GetChatSponsoredMessages>>(
         &self,
-        get_chat_sponsored_message: C,
-    ) -> Result<SponsoredMessage> {
-        self.make_request(get_chat_sponsored_message).await
+        get_chat_sponsored_messages: C,
+    ) -> Result<SponsoredMessages> {
+        self.make_request(get_chat_sponsored_messages).await
     }
 
     // Returns detailed statistics about a chat. Currently, this method can be used only for supergroups and channels. Can be used only if supergroupFullInfo.can_get_statistics == true
@@ -1207,7 +1645,34 @@ where
         self.make_request(get_chats).await
     }
 
-    // Returns the list of commands supported by the bot for the given user scope and language; for bots only
+    // Returns identifiers of chats from a chat folder, suitable for adding to a chat folder invite link
+    pub async fn get_chats_for_chat_folder_invite_link<
+        C: AsRef<GetChatsForChatFolderInviteLink>,
+    >(
+        &self,
+        get_chats_for_chat_folder_invite_link: C,
+    ) -> Result<Chats> {
+        self.make_request(get_chats_for_chat_folder_invite_link)
+            .await
+    }
+
+    // Returns channel chats in which the current user has the right to post stories. The chats must be rechecked with canSendStory before actually trying to post a story there
+    pub async fn get_chats_to_send_stories<C: AsRef<GetChatsToSendStories>>(
+        &self,
+        get_chats_to_send_stories: C,
+    ) -> Result<Chats> {
+        self.make_request(get_chats_to_send_stories).await
+    }
+
+    // Returns all close friends of the current user
+    pub async fn get_close_friends<C: AsRef<GetCloseFriends>>(
+        &self,
+        get_close_friends: C,
+    ) -> Result<Users> {
+        self.make_request(get_close_friends).await
+    }
+
+    // Returns list of commands supported by the bot for the given user scope and language; for bots only
     pub async fn get_commands<C: AsRef<GetCommands>>(
         &self,
         get_commands: C,
@@ -1223,7 +1688,7 @@ where
         self.make_request(get_connected_websites).await
     }
 
-    // Returns all user contacts
+    // Returns all contacts of the user
     pub async fn get_contacts<C: AsRef<GetContacts>>(&self, get_contacts: C) -> Result<Users> {
         self.make_request(get_contacts).await
     }
@@ -1252,12 +1717,31 @@ where
         self.make_request(get_created_public_chats).await
     }
 
-    // Returns all updates needed to restore current TDLib state, i.e. all actual UpdateAuthorizationState/UpdateUser/UpdateNewChat and others. This is especially useful if TDLib is run in a separate process. Can be called before initialization
+    // Returns all updates needed to restore current TDLib state, i.e. all actual updateAuthorizationState/updateUser/updateNewChat and others. This is especially useful if TDLib is run in a separate process. Can be called before initialization
     pub async fn get_current_state<C: AsRef<GetCurrentState>>(
         &self,
         get_current_state: C,
     ) -> Result<Updates> {
         self.make_request(get_current_state).await
+    }
+
+    // Returns TGS stickers with generic animations for custom emoji reactions
+    pub async fn get_custom_emoji_reaction_animations<
+        C: AsRef<GetCustomEmojiReactionAnimations>,
+    >(
+        &self,
+        get_custom_emoji_reaction_animations: C,
+    ) -> Result<Stickers> {
+        self.make_request(get_custom_emoji_reaction_animations)
+            .await
+    }
+
+    // Returns list of custom emoji stickers by their identifiers. Stickers are returned in arbitrary order. Only found stickers are returned
+    pub async fn get_custom_emoji_stickers<C: AsRef<GetCustomEmojiStickers>>(
+        &self,
+        get_custom_emoji_stickers: C,
+    ) -> Result<Stickers> {
+        self.make_request(get_custom_emoji_stickers).await
     }
 
     // Returns database statistics
@@ -1274,6 +1758,72 @@ where
         get_deep_link_info: C,
     ) -> Result<DeepLinkInfo> {
         self.make_request(get_deep_link_info).await
+    }
+
+    // Returns default list of custom emoji stickers for reply background
+    pub async fn get_default_background_custom_emoji_stickers<
+        C: AsRef<GetDefaultBackgroundCustomEmojiStickers>,
+    >(
+        &self,
+        get_default_background_custom_emoji_stickers: C,
+    ) -> Result<Stickers> {
+        self.make_request(get_default_background_custom_emoji_stickers)
+            .await
+    }
+
+    // Returns default list of custom emoji stickers for placing on a chat photo
+    pub async fn get_default_chat_photo_custom_emoji_stickers<
+        C: AsRef<GetDefaultChatPhotoCustomEmojiStickers>,
+    >(
+        &self,
+        get_default_chat_photo_custom_emoji_stickers: C,
+    ) -> Result<Stickers> {
+        self.make_request(get_default_chat_photo_custom_emoji_stickers)
+            .await
+    }
+
+    // Returns default emoji statuses
+    pub async fn get_default_emoji_statuses<C: AsRef<GetDefaultEmojiStatuses>>(
+        &self,
+        get_default_emoji_statuses: C,
+    ) -> Result<EmojiStatuses> {
+        self.make_request(get_default_emoji_statuses).await
+    }
+
+    // Returns default message auto-delete time setting for new chats
+    pub async fn get_default_message_auto_delete_time<C: AsRef<GetDefaultMessageAutoDeleteTime>>(
+        &self,
+        get_default_message_auto_delete_time: C,
+    ) -> Result<MessageAutoDeleteTime> {
+        self.make_request(get_default_message_auto_delete_time)
+            .await
+    }
+
+    // Returns default list of custom emoji stickers for placing on a profile photo
+    pub async fn get_default_profile_photo_custom_emoji_stickers<
+        C: AsRef<GetDefaultProfilePhotoCustomEmojiStickers>,
+    >(
+        &self,
+        get_default_profile_photo_custom_emoji_stickers: C,
+    ) -> Result<Stickers> {
+        self.make_request(get_default_profile_photo_custom_emoji_stickers)
+            .await
+    }
+
+    // Returns available emojis categories
+    pub async fn get_emoji_categories<C: AsRef<GetEmojiCategories>>(
+        &self,
+        get_emoji_categories: C,
+    ) -> Result<EmojiCategories> {
+        self.make_request(get_emoji_categories).await
+    }
+
+    // Returns information about a emoji reaction. Returns a 404 error if the reaction is not found
+    pub async fn get_emoji_reaction<C: AsRef<GetEmojiReaction>>(
+        &self,
+        get_emoji_reaction: C,
+    ) -> Result<EmojiReaction> {
+        self.make_request(get_emoji_reaction).await
     }
 
     // Returns an HTTP URL which can be used to automatically log in to the translation platform and suggest new emoji replacements. The URL will be valid for 30 seconds after generation
@@ -1317,7 +1867,7 @@ where
     pub async fn get_file_downloaded_prefix_size<C: AsRef<GetFileDownloadedPrefixSize>>(
         &self,
         get_file_downloaded_prefix_size: C,
-    ) -> Result<Count> {
+    ) -> Result<FileDownloadedPrefixSize> {
         self.make_request(get_file_downloaded_prefix_size).await
     }
 
@@ -1335,6 +1885,38 @@ where
         get_file_mime_type: C,
     ) -> Result<Text> {
         self.make_request(get_file_mime_type).await
+    }
+
+    // Returns information about a forum topic
+    pub async fn get_forum_topic<C: AsRef<GetForumTopic>>(
+        &self,
+        get_forum_topic: C,
+    ) -> Result<ForumTopic> {
+        self.make_request(get_forum_topic).await
+    }
+
+    // Returns list of custom emojis, which can be used as forum topic icon by all users
+    pub async fn get_forum_topic_default_icons<C: AsRef<GetForumTopicDefaultIcons>>(
+        &self,
+        get_forum_topic_default_icons: C,
+    ) -> Result<Stickers> {
+        self.make_request(get_forum_topic_default_icons).await
+    }
+
+    // Returns an HTTPS link to a topic in a forum chat. This is an offline request
+    pub async fn get_forum_topic_link<C: AsRef<GetForumTopicLink>>(
+        &self,
+        get_forum_topic_link: C,
+    ) -> Result<MessageLink> {
+        self.make_request(get_forum_topic_link).await
+    }
+
+    // Returns found forum topics in a forum chat. This is a temporary method for getting information about topic list from the server
+    pub async fn get_forum_topics<C: AsRef<GetForumTopics>>(
+        &self,
+        get_forum_topics: C,
+    ) -> Result<ForumTopics> {
+        self.make_request(get_forum_topics).await
     }
 
     // Returns the high scores for a game and some part of the high score table in the range of the specified user; for bots only
@@ -1369,6 +1951,14 @@ where
         self.make_request(get_group_call_stream_segment).await
     }
 
+    // Returns information about available group call streams
+    pub async fn get_group_call_streams<C: AsRef<GetGroupCallStreams>>(
+        &self,
+        get_group_call_streams: C,
+    ) -> Result<GroupCallStreams> {
+        self.make_request(get_group_call_streams).await
+    }
+
     // Returns a list of common group chats with a given user. Chats are sorted by their type and creation date
     pub async fn get_groups_in_common<C: AsRef<GetGroupsInCommon>>(
         &self,
@@ -1385,7 +1975,7 @@ where
         self.make_request(get_imported_contact_count).await
     }
 
-    // Returns a list of recently inactive supergroups and channels. Can be used when user reaches limit on the number of joined supergroups and channels and receives CHANNELS_TOO_MUCH error
+    // Returns a list of recently inactive supergroups and channels. Can be used when user reaches limit on the number of joined supergroups and channels and receives CHANNELS_TOO_MUCH error. Also, the limit can be increased with Telegram Premium
     pub async fn get_inactive_supergroup_chats<C: AsRef<GetInactiveSupergroupChats>>(
         &self,
         get_inactive_supergroup_chats: C,
@@ -1415,6 +2005,14 @@ where
         get_installed_sticker_sets: C,
     ) -> Result<StickerSets> {
         self.make_request(get_installed_sticker_sets).await
+    }
+
+    // Returns an HTTPS or a tg: link with the given type. Can be called before authorization
+    pub async fn get_internal_link<C: AsRef<GetInternalLink>>(
+        &self,
+        get_internal_link: C,
+    ) -> Result<HttpUrl> {
+        self.make_request(get_internal_link).await
     }
 
     // Returns information about the type of an internal link. Returns a 404 error if the link is not internal. Can be called before authorization
@@ -1536,9 +2134,33 @@ where
         self.make_request(get_me).await
     }
 
+    // Returns menu button set by the bot for the given user; for bots only
+    pub async fn get_menu_button<C: AsRef<GetMenuButton>>(
+        &self,
+        get_menu_button: C,
+    ) -> Result<BotMenuButton> {
+        self.make_request(get_menu_button).await
+    }
+
     // Returns information about a message
     pub async fn get_message<C: AsRef<GetMessage>>(&self, get_message: C) -> Result<Message> {
         self.make_request(get_message).await
+    }
+
+    // Returns reactions added for a message, along with their sender
+    pub async fn get_message_added_reactions<C: AsRef<GetMessageAddedReactions>>(
+        &self,
+        get_message_added_reactions: C,
+    ) -> Result<AddedReactions> {
+        self.make_request(get_message_added_reactions).await
+    }
+
+    // Returns reactions, which can be added to a message. The list can change after updateActiveEmojiReactions, updateChatAvailableReactions for the chat, or updateMessageInteractionInfo for the message
+    pub async fn get_message_available_reactions<C: AsRef<GetMessageAvailableReactions>>(
+        &self,
+        get_message_available_reactions: C,
+    ) -> Result<AvailableReactions> {
+        self.make_request(get_message_available_reactions).await
     }
 
     // Returns an HTML code for embedding the message. Available only for messages in supergroups and channels with a username
@@ -1549,7 +2171,7 @@ where
         self.make_request(get_message_embedding_code).await
     }
 
-    // Returns information about a file with messages exported from another app
+    // Returns information about a file with messages exported from another application
     pub async fn get_message_file_type<C: AsRef<GetMessageFileType>>(
         &self,
         get_message_file_type: C,
@@ -1584,7 +2206,7 @@ where
         self.make_request(get_message_link_info).await
     }
 
-    // Returns information about a message, if it is available locally without sending network request. This is an offline request
+    // Returns information about a message, if it is available without sending network request. This is an offline request
     pub async fn get_message_locally<C: AsRef<GetMessageLocally>>(
         &self,
         get_message_locally: C,
@@ -1592,7 +2214,7 @@ where
         self.make_request(get_message_locally).await
     }
 
-    // Returns forwarded copies of a channel message to different public channels. For optimal performance, the number of returned messages is chosen by TDLib
+    // Returns forwarded copies of a channel message to different public channels. Can be used only if message.can_get_statistics == true. For optimal performance, the number of returned messages is chosen by TDLib
     pub async fn get_message_public_forwards<C: AsRef<GetMessagePublicForwards>>(
         &self,
         get_message_public_forwards: C,
@@ -1628,7 +2250,7 @@ where
     pub async fn get_message_viewers<C: AsRef<GetMessageViewers>>(
         &self,
         get_message_viewers: C,
-    ) -> Result<Users> {
+    ) -> Result<MessageViewers> {
         self.make_request(get_message_viewers).await
     }
 
@@ -1645,7 +2267,7 @@ where
         self.make_request(get_network_statistics).await
     }
 
-    // Returns the value of an option by its name. (Check the list of available options on https://core.telegram.org/tdlib/options.) Can be called before authorization
+    // Returns the value of an option by its name. (Check the list of available options on https://core.telegram.org/tdlib/options.) Can be called before authorization. Can be called synchronously for options "version" and "commit_hash"
     pub async fn get_option<C: AsRef<GetOption>>(&self, get_option: C) -> Result<OptionValue> {
         self.make_request(get_option).await
     }
@@ -1685,7 +2307,7 @@ where
         self.make_request(get_password_state).await
     }
 
-    // Returns an invoice payment form. This method must be called when the user presses inlineKeyboardButtonBuy
+    // Returns an invoice payment form. This method must be called when the user presses inline button of the type inlineKeyboardButtonTypeBuy
     pub async fn get_payment_form<C: AsRef<GetPaymentForm>>(
         &self,
         get_payment_form: C,
@@ -1717,11 +2339,11 @@ where
         self.make_request(get_phone_number_info_sync).await
     }
 
-    // Returns users voted for the specified option in a non-anonymous polls. For optimal performance, the number of returned users is chosen by TDLib
+    // Returns message senders voted for the specified option in a non-anonymous polls. For optimal performance, the number of returned users is chosen by TDLib
     pub async fn get_poll_voters<C: AsRef<GetPollVoters>>(
         &self,
         get_poll_voters: C,
-    ) -> Result<Users> {
+    ) -> Result<MessageSenders> {
         self.make_request(get_poll_voters).await
     }
 
@@ -1731,6 +2353,65 @@ where
         get_preferred_country_language: C,
     ) -> Result<Text> {
         self.make_request(get_preferred_country_language).await
+    }
+
+    // Returns information about features, available to Premium users
+    pub async fn get_premium_features<C: AsRef<GetPremiumFeatures>>(
+        &self,
+        get_premium_features: C,
+    ) -> Result<PremiumFeatures> {
+        self.make_request(get_premium_features).await
+    }
+
+    // Returns available options for Telegram Premium gift code or giveaway creation
+    pub async fn get_premium_gift_code_payment_options<
+        C: AsRef<GetPremiumGiftCodePaymentOptions>,
+    >(
+        &self,
+        get_premium_gift_code_payment_options: C,
+    ) -> Result<PremiumGiftCodePaymentOptions> {
+        self.make_request(get_premium_gift_code_payment_options)
+            .await
+    }
+
+    // Returns information about a Telegram Premium giveaway
+    pub async fn get_premium_giveaway_info<C: AsRef<GetPremiumGiveawayInfo>>(
+        &self,
+        get_premium_giveaway_info: C,
+    ) -> Result<PremiumGiveawayInfo> {
+        self.make_request(get_premium_giveaway_info).await
+    }
+
+    // Returns information about a limit, increased for Premium users. Returns a 404 error if the limit is unknown
+    pub async fn get_premium_limit<C: AsRef<GetPremiumLimit>>(
+        &self,
+        get_premium_limit: C,
+    ) -> Result<PremiumLimit> {
+        self.make_request(get_premium_limit).await
+    }
+
+    // Returns state of Telegram Premium subscription and promotion videos for Premium features
+    pub async fn get_premium_state<C: AsRef<GetPremiumState>>(
+        &self,
+        get_premium_state: C,
+    ) -> Result<PremiumState> {
+        self.make_request(get_premium_state).await
+    }
+
+    // Returns examples of premium stickers for demonstration purposes
+    pub async fn get_premium_sticker_examples<C: AsRef<GetPremiumStickerExamples>>(
+        &self,
+        get_premium_sticker_examples: C,
+    ) -> Result<Stickers> {
+        self.make_request(get_premium_sticker_examples).await
+    }
+
+    // Returns premium stickers from regular sticker sets
+    pub async fn get_premium_stickers<C: AsRef<GetPremiumStickers>>(
+        &self,
+        get_premium_stickers: C,
+    ) -> Result<Stickers> {
+        self.make_request(get_premium_stickers).await
     }
 
     // Returns list of proxies that are currently set up. Can be called before authorization
@@ -1754,6 +2435,14 @@ where
         self.make_request(get_push_receiver_id).await
     }
 
+    // Returns recent emoji statuses
+    pub async fn get_recent_emoji_statuses<C: AsRef<GetRecentEmojiStatuses>>(
+        &self,
+        get_recent_emoji_statuses: C,
+    ) -> Result<EmojiStatuses> {
+        self.make_request(get_recent_emoji_statuses).await
+    }
+
     // Returns up to 20 recently used inline bots in the order of their last usage
     pub async fn get_recent_inline_bots<C: AsRef<GetRecentInlineBots>>(
         &self,
@@ -1770,7 +2459,7 @@ where
         self.make_request(get_recent_stickers).await
     }
 
-    // Returns recently opened chats, this is an offline request. Returns chats in the order of last opening
+    // Returns recently opened chats; this is an offline request. Returns chats in the order of last opening
     pub async fn get_recently_opened_chats<C: AsRef<GetRecentlyOpenedChats>>(
         &self,
         get_recently_opened_chats: C,
@@ -1786,12 +2475,12 @@ where
         self.make_request(get_recently_visited_t_me_urls).await
     }
 
-    // Returns recommended chat filters for the current user
-    pub async fn get_recommended_chat_filters<C: AsRef<GetRecommendedChatFilters>>(
+    // Returns recommended chat folders for the current user
+    pub async fn get_recommended_chat_folders<C: AsRef<GetRecommendedChatFolders>>(
         &self,
-        get_recommended_chat_filters: C,
-    ) -> Result<RecommendedChatFilters> {
-        self.make_request(get_recommended_chat_filters).await
+        get_recommended_chat_folders: C,
+    ) -> Result<RecommendedChatFolders> {
+        self.make_request(get_recommended_chat_folders).await
     }
 
     // Returns a 2-step verification recovery email address that was previously set up. This method can be used to verify a password provided by the user
@@ -1802,7 +2491,7 @@ where
         self.make_request(get_recovery_email_address).await
     }
 
-    // Returns information about a file by its remote ID; this is an offline request. Can be used to register a URL as a file for further uploading, or sending as a message. Even the request succeeds, the file can be used only if it is still accessible to the user. For example, if the file is from a message, then the message must be not deleted and accessible to the user. If the file database is disabled, then the corresponding object with the file must be preloaded by the application
+    // Returns information about a file by its remote identifier; this is an offline request. Can be used to register a URL as a file for further uploading, or sending as a message. Even the request succeeds, the file can be used only if it is still accessible to the user. For example, if the file is from a message, then the message must be not deleted and accessible to the user. If the file database is disabled, then the corresponding object with the file must be preloaded by the application
     pub async fn get_remote_file<C: AsRef<GetRemoteFile>>(
         &self,
         get_remote_file: C,
@@ -1810,7 +2499,7 @@ where
         self.make_request(get_remote_file).await
     }
 
-    // Returns information about a message that is replied by a given message. Also returns the pinned message, the game message, and the invoice message for messages of the types messagePinMessage, messageGameScore, and messagePaymentSuccessful respectively
+    // Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, the message with a previously set same background, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground and topic messages without non-bundled replied message respectively
     pub async fn get_replied_message<C: AsRef<GetRepliedMessage>>(
         &self,
         get_replied_message: C,
@@ -1826,7 +2515,23 @@ where
         self.make_request(get_saved_animations).await
     }
 
-    // Returns saved order info, if any
+    // Returns saved notification sound by its identifier. Returns a 404 error if there is no saved notification sound with the specified identifier
+    pub async fn get_saved_notification_sound<C: AsRef<GetSavedNotificationSound>>(
+        &self,
+        get_saved_notification_sound: C,
+    ) -> Result<NotificationSounds> {
+        self.make_request(get_saved_notification_sound).await
+    }
+
+    // Returns list of saved notification sounds. If a sound isn't in the list, then default sound needs to be used
+    pub async fn get_saved_notification_sounds<C: AsRef<GetSavedNotificationSounds>>(
+        &self,
+        get_saved_notification_sounds: C,
+    ) -> Result<NotificationSounds> {
+        self.make_request(get_saved_notification_sounds).await
+    }
+
+    // Returns saved order information. Returns a 404 error if there is no saved order information
     pub async fn get_saved_order_info<C: AsRef<GetSavedOrderInfo>>(
         &self,
         get_saved_order_info: C,
@@ -1874,7 +2579,7 @@ where
         self.make_request(get_sticker_set).await
     }
 
-    // Returns stickers from the installed sticker sets that correspond to a given emoji. If the emoji is non-empty, favorite and recently used stickers may also be returned
+    // Returns stickers from the installed sticker sets that correspond to any of the given emoji or can be found by sticker-specific keywords. If the query is non-empty, then favorite, recently used or trending stickers may also be returned
     pub async fn get_stickers<C: AsRef<GetStickers>>(&self, get_stickers: C) -> Result<Stickers> {
         self.make_request(get_stickers).await
     }
@@ -1893,6 +2598,38 @@ where
         get_storage_statistics_fast: C,
     ) -> Result<StorageStatisticsFast> {
         self.make_request(get_storage_statistics_fast).await
+    }
+
+    // Returns a story
+    pub async fn get_story<C: AsRef<GetStory>>(&self, get_story: C) -> Result<Story> {
+        self.make_request(get_story).await
+    }
+
+    // Returns reactions, which can be chosen for a story
+    pub async fn get_story_available_reactions<C: AsRef<GetStoryAvailableReactions>>(
+        &self,
+        get_story_available_reactions: C,
+    ) -> Result<AvailableReactions> {
+        self.make_request(get_story_available_reactions).await
+    }
+
+    // Returns list of chats with non-default notification settings for stories
+    pub async fn get_story_notification_settings_exceptions<
+        C: AsRef<GetStoryNotificationSettingsExceptions>,
+    >(
+        &self,
+        get_story_notification_settings_exceptions: C,
+    ) -> Result<Chats> {
+        self.make_request(get_story_notification_settings_exceptions)
+            .await
+    }
+
+    // Returns viewers of a story. The method can be called only for stories posted on behalf of the current user
+    pub async fn get_story_viewers<C: AsRef<GetStoryViewers>>(
+        &self,
+        get_story_viewers: C,
+    ) -> Result<StoryViewers> {
+        self.make_request(get_story_viewers).await
     }
 
     // Returns suggested name for saving a file in a given directory
@@ -1943,6 +2680,14 @@ where
         self.make_request(get_supergroup_members).await
     }
 
+    // Returns localized name of the Telegram support user; for Telegram support only
+    pub async fn get_support_name<C: AsRef<GetSupportName>>(
+        &self,
+        get_support_name: C,
+    ) -> Result<Text> {
+        self.make_request(get_support_name).await
+    }
+
     // Returns a user that can be contacted to get support
     pub async fn get_support_user<C: AsRef<GetSupportUser>>(
         &self,
@@ -1959,7 +2704,7 @@ where
         self.make_request(get_temporary_password_state).await
     }
 
-    // Returns all entities (mentions, hashtags, cashtags, bot commands, bank card numbers, URLs, and email addresses) contained in the text. Can be called synchronously
+    // Returns all entities (mentions, hashtags, cashtags, bot commands, bank card numbers, URLs, and email addresses) found in the text. Can be called synchronously
     pub async fn get_text_entities<C: AsRef<GetTextEntities>>(
         &self,
         get_text_entities: C,
@@ -1967,7 +2712,23 @@ where
         self.make_request(get_text_entities).await
     }
 
-    // Returns a list of frequently used chats. Supported only if the chat info database is enabled
+    // Converts a themeParameters object to corresponding JSON-serialized string. Can be called synchronously
+    pub async fn get_theme_parameters_json_string<C: AsRef<GetThemeParametersJsonString>>(
+        &self,
+        get_theme_parameters_json_string: C,
+    ) -> Result<Text> {
+        self.make_request(get_theme_parameters_json_string).await
+    }
+
+    // Returns up to 8 emoji statuses, which must be shown right after the default Premium Badge in the emoji status list
+    pub async fn get_themed_emoji_statuses<C: AsRef<GetThemedEmojiStatuses>>(
+        &self,
+        get_themed_emoji_statuses: C,
+    ) -> Result<EmojiStatuses> {
+        self.make_request(get_themed_emoji_statuses).await
+    }
+
+    // Returns a list of frequently used chats
     pub async fn get_top_chats<C: AsRef<GetTopChats>>(&self, get_top_chats: C) -> Result<Chats> {
         self.make_request(get_top_chats).await
     }
@@ -1976,13 +2737,21 @@ where
     pub async fn get_trending_sticker_sets<C: AsRef<GetTrendingStickerSets>>(
         &self,
         get_trending_sticker_sets: C,
-    ) -> Result<StickerSets> {
+    ) -> Result<TrendingStickerSets> {
         self.make_request(get_trending_sticker_sets).await
     }
 
     // Returns information about a user by their identifier. This is an offline request if the current user is not a bot
     pub async fn get_user<C: AsRef<GetUser>>(&self, get_user: C) -> Result<User> {
         self.make_request(get_user).await
+    }
+
+    // Returns list of boosts applied to a chat by a given user; requires administrator rights in the channel chat; for bots only
+    pub async fn get_user_chat_boosts<C: AsRef<GetUserChatBoosts>>(
+        &self,
+        get_user_chat_boosts: C,
+    ) -> Result<FoundChatBoosts> {
+        self.make_request(get_user_chat_boosts).await
     }
 
     // Returns full information about a user by their identifier
@@ -1993,6 +2762,11 @@ where
         self.make_request(get_user_full_info).await
     }
 
+    // Returns an HTTPS link, which can be used to get information about the current user
+    pub async fn get_user_link<C: AsRef<GetUserLink>>(&self, get_user_link: C) -> Result<UserLink> {
+        self.make_request(get_user_link).await
+    }
+
     // Returns the current privacy settings
     pub async fn get_user_privacy_setting_rules<C: AsRef<GetUserPrivacySettingRules>>(
         &self,
@@ -2001,12 +2775,20 @@ where
         self.make_request(get_user_privacy_setting_rules).await
     }
 
-    // Returns the profile photos of a user. The result of this query may be outdated: some photos might have been deleted already
+    // Returns the profile photos of a user. Personal and public photo aren't returned
     pub async fn get_user_profile_photos<C: AsRef<GetUserProfilePhotos>>(
         &self,
         get_user_profile_photos: C,
     ) -> Result<ChatPhotos> {
         self.make_request(get_user_profile_photos).await
+    }
+
+    // Returns support information for the given user; for Telegram support only
+    pub async fn get_user_support_info<C: AsRef<GetUserSupportInfo>>(
+        &self,
+        get_user_support_info: C,
+    ) -> Result<UserSupportInfo> {
+        self.make_request(get_user_support_info).await
     }
 
     // Returns list of participant identifiers, on whose behalf a video chat in the chat can be joined
@@ -2020,6 +2802,30 @@ where
             .await
     }
 
+    // Returns RTMP URL for streaming to the chat; requires creator privileges
+    pub async fn get_video_chat_rtmp_url<C: AsRef<GetVideoChatRtmpUrl>>(
+        &self,
+        get_video_chat_rtmp_url: C,
+    ) -> Result<RtmpUrl> {
+        self.make_request(get_video_chat_rtmp_url).await
+    }
+
+    // Returns an HTTPS URL of a Web App to open after a link of the type internalLinkTypeWebApp is clicked
+    pub async fn get_web_app_link_url<C: AsRef<GetWebAppLinkUrl>>(
+        &self,
+        get_web_app_link_url: C,
+    ) -> Result<HttpUrl> {
+        self.make_request(get_web_app_link_url).await
+    }
+
+    // Returns an HTTPS URL of a Web App to open from the side menu, a keyboardButtonTypeWebApp button, an inlineQueryResultsButtonTypeWebApp button, or an internalLinkTypeSideMenuBot link
+    pub async fn get_web_app_url<C: AsRef<GetWebAppUrl>>(
+        &self,
+        get_web_app_url: C,
+    ) -> Result<HttpUrl> {
+        self.make_request(get_web_app_url).await
+    }
+
     // Returns an instant view version of a web page if available. Returns a 404 error if the web page has no instant view page
     pub async fn get_web_page_instant_view<C: AsRef<GetWebPageInstantView>>(
         &self,
@@ -2028,7 +2834,7 @@ where
         self.make_request(get_web_page_instant_view).await
     }
 
-    // Returns a web page preview by the text of the message. Do not call this function too often. Returns a 404 error if the web page has no preview
+    // Returns a link preview by the text of a message. Do not call this function too often. Returns a 404 error if the text has no link preview
     pub async fn get_web_page_preview<C: AsRef<GetWebPagePreview>>(
         &self,
         get_web_page_preview: C,
@@ -2060,7 +2866,7 @@ where
         self.make_request(import_messages).await
     }
 
-    // Invites users to an active group call. Sends a service message of type messageInviteToGroupCall for video chats
+    // Invites users to an active group call. Sends a service message of type messageInviteVideoChatParticipants for video chats
     pub async fn invite_group_call_participants<C: AsRef<InviteGroupCallParticipants>>(
         &self,
         invite_group_call_participants: C,
@@ -2068,12 +2874,12 @@ where
         self.make_request(invite_group_call_participants).await
     }
 
-    // Adds the current user as a new member to a chat. Private and secret chats can't be joined using this method
+    // Adds the current user as a new member to a chat. Private and secret chats can't be joined using this method. May return an error with a message "INVITE_REQUEST_SENT" if only a join request was created
     pub async fn join_chat<C: AsRef<JoinChat>>(&self, join_chat: C) -> Result<Ok> {
         self.make_request(join_chat).await
     }
 
-    // Uses an invite link to add the current user to the chat if possible
+    // Uses an invite link to add the current user to the chat if possible. May return an error with a message "INVITE_REQUEST_SENT" if only a join request was created
     pub async fn join_chat_by_invite_link<C: AsRef<JoinChatByInviteLink>>(
         &self,
         join_chat_by_invite_link: C,
@@ -2089,6 +2895,14 @@ where
         self.make_request(join_group_call).await
     }
 
+    // Launches a prepaid Telegram Premium giveaway for subscribers of channel chats; requires can_post_messages rights in the channels
+    pub async fn launch_prepaid_premium_giveaway<C: AsRef<LaunchPrepaidPremiumGiveaway>>(
+        &self,
+        launch_prepaid_premium_giveaway: C,
+    ) -> Result<Ok> {
+        self.make_request(launch_prepaid_premium_giveaway).await
+    }
+
     // Removes the current user from chat members. Private and secret chats can't be left using this method
     pub async fn leave_chat<C: AsRef<LeaveChat>>(&self, leave_chat: C) -> Result<Ok> {
         self.make_request(leave_chat).await
@@ -2100,6 +2914,14 @@ where
         leave_group_call: C,
     ) -> Result<Ok> {
         self.make_request(leave_group_call).await
+    }
+
+    // Loads more active stories from a story list. The loaded stories will be sent through updates. Active stories are sorted by the pair (active_stories.order, active_stories.story_sender_chat_id) in descending order. Returns a 404 error if all active stories have been loaded
+    pub async fn load_active_stories<C: AsRef<LoadActiveStories>>(
+        &self,
+        load_active_stories: C,
+    ) -> Result<Ok> {
+        self.make_request(load_active_stories).await
     }
 
     // Loads more chats from a chat list. The loaded chats and their positions in the chat list will be sent through updates. Chats are sorted by the pair (chat.position.order, chat.id) in descending order. Returns a 404 error if all chats have been loaded
@@ -2133,6 +2955,16 @@ where
         self.make_request(open_message_content).await
     }
 
+    // Informs TDLib that a story is opened and is being viewed by the user
+    pub async fn open_story<C: AsRef<OpenStory>>(&self, open_story: C) -> Result<Ok> {
+        self.make_request(open_story).await
+    }
+
+    // Informs TDLib that a Web App is being opened from the attachment menu, a botMenuButton button, an internalLinkTypeAttachmentMenuBot link, or an inlineKeyboardButtonTypeWebApp button. For each bot, a confirmation alert about data sent to the bot must be shown once
+    pub async fn open_web_app<C: AsRef<OpenWebApp>>(&self, open_web_app: C) -> Result<WebAppInfo> {
+        self.make_request(open_web_app).await
+    }
+
     // Optimizes storage usage, i.e. deletes some files and returns new storage usage statistics. Secret thumbnails can't be deleted
     pub async fn optimize_storage<C: AsRef<OptimizeStorage>>(
         &self,
@@ -2149,7 +2981,7 @@ where
         self.make_request(parse_markdown).await
     }
 
-    // Parses Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities contained in the text. Can be called synchronously
+    // Parses Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, BlockQuote, Code, Pre, PreCode, TextUrl and MentionName entities from a marked-up text. Can be called synchronously
     pub async fn parse_text_entities<C: AsRef<ParseTextEntities>>(
         &self,
         parse_text_entities: C,
@@ -2168,6 +3000,22 @@ where
     // Computes time needed to receive a response from a Telegram server through a proxy. Can be called before authorization
     pub async fn ping_proxy<C: AsRef<PingProxy>>(&self, ping_proxy: C) -> Result<Seconds> {
         self.make_request(ping_proxy).await
+    }
+
+    // Preliminary uploads a file to the cloud before sending it in a message, which can be useful for uploading of being recorded voice and video notes. Updates updateFile will be used to notify about upload progress and successful completion of the upload. The file will not have a persistent remote identifier until it is sent in a message
+    pub async fn preliminary_upload_file<C: AsRef<PreliminaryUploadFile>>(
+        &self,
+        preliminary_upload_file: C,
+    ) -> Result<File> {
+        self.make_request(preliminary_upload_file).await
+    }
+
+    // Process new chats added to a shareable chat folder by its owner
+    pub async fn process_chat_folder_new_chats<C: AsRef<ProcessChatFolderNewChats>>(
+        &self,
+        process_chat_folder_new_chats: C,
+    ) -> Result<Ok> {
+        self.make_request(process_chat_folder_new_chats).await
     }
 
     // Handles a pending join request in a chat
@@ -2194,12 +3042,49 @@ where
         self.make_request(process_push_notification).await
     }
 
+    // Rates recognized speech in a video note or a voice note message
+    pub async fn rate_speech_recognition<C: AsRef<RateSpeechRecognition>>(
+        &self,
+        rate_speech_recognition: C,
+    ) -> Result<Ok> {
+        self.make_request(rate_speech_recognition).await
+    }
+
     // Marks all mentions in a chat as read
     pub async fn read_all_chat_mentions<C: AsRef<ReadAllChatMentions>>(
         &self,
         read_all_chat_mentions: C,
     ) -> Result<Ok> {
         self.make_request(read_all_chat_mentions).await
+    }
+
+    // Marks all reactions in a chat or a forum topic as read
+    pub async fn read_all_chat_reactions<C: AsRef<ReadAllChatReactions>>(
+        &self,
+        read_all_chat_reactions: C,
+    ) -> Result<Ok> {
+        self.make_request(read_all_chat_reactions).await
+    }
+
+    // Marks all mentions in a forum topic as read
+    pub async fn read_all_message_thread_mentions<C: AsRef<ReadAllMessageThreadMentions>>(
+        &self,
+        read_all_message_thread_mentions: C,
+    ) -> Result<Ok> {
+        self.make_request(read_all_message_thread_mentions).await
+    }
+
+    // Marks all reactions in a forum topic as read
+    pub async fn read_all_message_thread_reactions<C: AsRef<ReadAllMessageThreadReactions>>(
+        &self,
+        read_all_message_thread_reactions: C,
+    ) -> Result<Ok> {
+        self.make_request(read_all_message_thread_reactions).await
+    }
+
+    // Traverse all chats in a chat list and marks all messages in the chats as read
+    pub async fn read_chat_list<C: AsRef<ReadChatList>>(&self, read_chat_list: C) -> Result<Ok> {
+        self.make_request(read_chat_list).await
     }
 
     // Reads a part of a file from the TDLib file cache and returns read bytes. This method is intended to be used only if the application has no direct access to TDLib's file system, because it is usually slower than a direct read from the file
@@ -2210,7 +3095,15 @@ where
         self.make_request(read_file_part).await
     }
 
-    // Recovers the password with a password recovery code sent to an email address that was previously set up. Works only when the current authorization state is authorizationStateWaitPassword
+    // Recognizes speech in a video note or a voice note message. The message must be successfully sent and must not be scheduled. May return an error with a message "MSG_VOICE_TOO_LONG" if media duration is too big to be recognized
+    pub async fn recognize_speech<C: AsRef<RecognizeSpeech>>(
+        &self,
+        recognize_speech: C,
+    ) -> Result<Ok> {
+        self.make_request(recognize_speech).await
+    }
+
+    // Recovers the 2-step verification password with a password recovery code sent to an email address that was previously set up. Works only when the current authorization state is authorizationStateWaitPassword
     pub async fn recover_authentication_password<C: AsRef<RecoverAuthenticationPassword>>(
         &self,
         recover_authentication_password: C,
@@ -2237,6 +3130,14 @@ where
     // Finishes user registration. Works only when the current authorization state is authorizationStateWaitRegistration
     pub async fn register_user<C: AsRef<RegisterUser>>(&self, register_user: C) -> Result<Ok> {
         self.make_request(register_user).await
+    }
+
+    // Removes all files from the file download list
+    pub async fn remove_all_files_from_downloads<C: AsRef<RemoveAllFilesFromDownloads>>(
+        &self,
+        remove_all_files_from_downloads: C,
+    ) -> Result<Ok> {
+        self.make_request(remove_all_files_from_downloads).await
     }
 
     // Removes background from the list of installed backgrounds
@@ -2269,6 +3170,22 @@ where
         remove_favorite_sticker: C,
     ) -> Result<Ok> {
         self.make_request(remove_favorite_sticker).await
+    }
+
+    // Removes a file from the file download list
+    pub async fn remove_file_from_downloads<C: AsRef<RemoveFileFromDownloads>>(
+        &self,
+        remove_file_from_downloads: C,
+    ) -> Result<Ok> {
+        self.make_request(remove_file_from_downloads).await
+    }
+
+    // Removes a reaction from a message. A chosen reaction can always be removed
+    pub async fn remove_message_reaction<C: AsRef<RemoveMessageReaction>>(
+        &self,
+        remove_message_reaction: C,
+    ) -> Result<Ok> {
+        self.make_request(remove_message_reaction).await
     }
 
     // Removes an active notification from notification list. Needs to be called only if the notification is removed by the current user
@@ -2324,6 +3241,14 @@ where
         self.make_request(remove_saved_animation).await
     }
 
+    // Removes a notification sound from the list of saved notification sounds
+    pub async fn remove_saved_notification_sound<C: AsRef<RemoveSavedNotificationSound>>(
+        &self,
+        remove_saved_notification_sound: C,
+    ) -> Result<Ok> {
+        self.make_request(remove_saved_notification_sound).await
+    }
+
     // Removes a sticker from the set to which it belongs; for bots only. The sticker set must have been created by the bot
     pub async fn remove_sticker_from_set<C: AsRef<RemoveStickerFromSet>>(
         &self,
@@ -2337,12 +3262,28 @@ where
         self.make_request(remove_top_chat).await
     }
 
-    // Changes the order of chat filters
-    pub async fn reorder_chat_filters<C: AsRef<ReorderChatFilters>>(
+    // Changes order of active usernames of the current user
+    pub async fn reorder_active_usernames<C: AsRef<ReorderActiveUsernames>>(
         &self,
-        reorder_chat_filters: C,
+        reorder_active_usernames: C,
     ) -> Result<Ok> {
-        self.make_request(reorder_chat_filters).await
+        self.make_request(reorder_active_usernames).await
+    }
+
+    // Changes order of active usernames of a bot. Can be called only if userTypeBot.can_be_edited == true
+    pub async fn reorder_bot_active_usernames<C: AsRef<ReorderBotActiveUsernames>>(
+        &self,
+        reorder_bot_active_usernames: C,
+    ) -> Result<Ok> {
+        self.make_request(reorder_bot_active_usernames).await
+    }
+
+    // Changes the order of chat folders
+    pub async fn reorder_chat_folders<C: AsRef<ReorderChatFolders>>(
+        &self,
+        reorder_chat_folders: C,
+    ) -> Result<Ok> {
+        self.make_request(reorder_chat_folders).await
     }
 
     // Changes the order of installed sticker sets
@@ -2353,12 +3294,28 @@ where
         self.make_request(reorder_installed_sticker_sets).await
     }
 
+    // Changes order of active usernames of a supergroup or channel, requires owner privileges in the supergroup or channel
+    pub async fn reorder_supergroup_active_usernames<C: AsRef<ReorderSupergroupActiveUsernames>>(
+        &self,
+        reorder_supergroup_active_usernames: C,
+    ) -> Result<Ok> {
+        self.make_request(reorder_supergroup_active_usernames).await
+    }
+
     // Replaces current primary invite link for a chat with a new primary invite link. Available for basic groups, supergroups, and channels. Requires administrator privileges and can_invite_users right
     pub async fn replace_primary_chat_invite_link<C: AsRef<ReplacePrimaryChatInviteLink>>(
         &self,
         replace_primary_chat_invite_link: C,
     ) -> Result<ChatInviteLink> {
         self.make_request(replace_primary_chat_invite_link).await
+    }
+
+    // Replaces the current RTMP URL for streaming to the chat; requires creator privileges
+    pub async fn replace_video_chat_rtmp_url<C: AsRef<ReplaceVideoChatRtmpUrl>>(
+        &self,
+        replace_video_chat_rtmp_url: C,
+    ) -> Result<RtmpUrl> {
+        self.make_request(replace_video_chat_rtmp_url).await
     }
 
     // Reports a chat to the Telegram moderators. A chat can be reported only from the chat action bar, or if chat.can_be_reported
@@ -2374,6 +3331,30 @@ where
         self.make_request(report_chat_photo).await
     }
 
+    // Reports reactions set on a message to the Telegram moderators. Reactions on a message can be reported only if message.can_report_reactions
+    pub async fn report_message_reactions<C: AsRef<ReportMessageReactions>>(
+        &self,
+        report_message_reactions: C,
+    ) -> Result<Ok> {
+        self.make_request(report_message_reactions).await
+    }
+
+    // Reports a story to the Telegram moderators
+    pub async fn report_story<C: AsRef<ReportStory>>(&self, report_story: C) -> Result<Ok> {
+        self.make_request(report_story).await
+    }
+
+    // Reports a false deletion of a message by aggressive anti-spam checks; requires administrator rights in the supergroup. Can be called only for messages from chatEventMessageDeleted with can_report_anti_spam_false_positive == true
+    pub async fn report_supergroup_anti_spam_false_positive<
+        C: AsRef<ReportSupergroupAntiSpamFalsePositive>,
+    >(
+        &self,
+        report_supergroup_anti_spam_false_positive: C,
+    ) -> Result<Ok> {
+        self.make_request(report_supergroup_anti_spam_false_positive)
+            .await
+    }
+
     // Reports messages in a supergroup as spam; requires administrator rights in the supergroup
     pub async fn report_supergroup_spam<C: AsRef<ReportSupergroupSpam>>(
         &self,
@@ -2382,7 +3363,7 @@ where
         self.make_request(report_supergroup_spam).await
     }
 
-    // Requests to send a password recovery code to an email address that was previously set up. Works only when the current authorization state is authorizationStateWaitPassword
+    // Requests to send a 2-step verification password recovery code to an email address that was previously set up. Works only when the current authorization state is authorizationStateWaitPassword
     pub async fn request_authentication_password_recovery<
         C: AsRef<RequestAuthenticationPasswordRecovery>,
     >(
@@ -2401,7 +3382,7 @@ where
         self.make_request(request_password_recovery).await
     }
 
-    // Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber, or if there is no pending authentication query and the current authorization state is authorizationStateWaitCode, authorizationStateWaitRegistration, or authorizationStateWaitPassword
+    // Requests QR code authentication by scanning a QR code on another logged in device. Works only when the current authorization state is authorizationStateWaitPhoneNumber, or if there is no pending authentication query and the current authorization state is authorizationStateWaitEmailAddress, authorizationStateWaitEmailCode, authorizationStateWaitCode, authorizationStateWaitRegistration, or authorizationStateWaitPassword
     pub async fn request_qr_code_authentication<C: AsRef<RequestQrCodeAuthentication>>(
         &self,
         request_qr_code_authentication: C,
@@ -2409,7 +3390,7 @@ where
         self.make_request(request_qr_code_authentication).await
     }
 
-    // Re-sends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode, the next_code_type of the result is not null and the server-specified timeout has passed
+    // Resends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode, the next_code_type of the result is not null and the server-specified timeout has passed, or when the current authorization state is authorizationStateWaitEmailCode
     pub async fn resend_authentication_code<C: AsRef<ResendAuthenticationCode>>(
         &self,
         resend_authentication_code: C,
@@ -2417,7 +3398,7 @@ where
         self.make_request(resend_authentication_code).await
     }
 
-    // Re-sends the authentication code sent to confirm a new phone number for the current user. Works only if the previously received authenticationCodeInfo next_code_type was not null and the server-specified timeout has passed
+    // Resends the authentication code sent to confirm a new phone number for the current user. Works only if the previously received authenticationCodeInfo next_code_type was not null and the server-specified timeout has passed
     pub async fn resend_change_phone_number_code<C: AsRef<ResendChangePhoneNumberCode>>(
         &self,
         resend_change_phone_number_code: C,
@@ -2425,7 +3406,7 @@ where
         self.make_request(resend_change_phone_number_code).await
     }
 
-    // Re-sends the code to verify an email address to be added to a user's Telegram Passport
+    // Resends the code to verify an email address to be added to a user's Telegram Passport
     pub async fn resend_email_address_verification_code<
         C: AsRef<ResendEmailAddressVerificationCode>,
     >(
@@ -2434,6 +3415,14 @@ where
     ) -> Result<EmailAddressAuthenticationCodeInfo> {
         self.make_request(resend_email_address_verification_code)
             .await
+    }
+
+    // Resends the login email address verification code
+    pub async fn resend_login_email_address_code<C: AsRef<ResendLoginEmailAddressCode>>(
+        &self,
+        resend_login_email_address_code: C,
+    ) -> Result<EmailAddressAuthenticationCodeInfo> {
+        self.make_request(resend_login_email_address_code).await
     }
 
     // Resends messages which failed to send. Can be called only for messages for which messageSendingStateFailed.can_retry is true and after specified in messageSendingStateFailed.retry_after time passed. If a message is re-sent, the corresponding failed to send message is deleted. Returns the sent messages in the same order as the message identifiers passed in message_ids. If a message can't be re-sent, null will be returned instead of the message
@@ -2455,7 +3444,7 @@ where
             .await
     }
 
-    // Re-sends the code to verify a phone number to be added to a user's Telegram Passport
+    // Resends the code to verify a phone number to be added to a user's Telegram Passport
     pub async fn resend_phone_number_verification_code<
         C: AsRef<ResendPhoneNumberVerificationCode>,
     >(
@@ -2474,12 +3463,20 @@ where
         self.make_request(resend_recovery_email_address_code).await
     }
 
-    // Resets all notification settings to their default values. By default, all chats are unmuted, the sound is set to "default" and message previews are shown
+    // Resets all notification settings to their default values. By default, all chats are unmuted and message previews are shown
     pub async fn reset_all_notification_settings<C: AsRef<ResetAllNotificationSettings>>(
         &self,
         reset_all_notification_settings: C,
     ) -> Result<Ok> {
         self.make_request(reset_all_notification_settings).await
+    }
+
+    // Resets the login email address. May return an error with a message "TASK_ALREADY_EXISTS" if reset is still pending. Works only when the current authorization state is authorizationStateWaitEmailCode and authorization_state.can_reset_email_address == true
+    pub async fn reset_authentication_email_address<C: AsRef<ResetAuthenticationEmailAddress>>(
+        &self,
+        reset_authentication_email_address: C,
+    ) -> Result<Ok> {
+        self.make_request(reset_authentication_email_address).await
     }
 
     // Resets list of installed backgrounds to its default value
@@ -2538,15 +3535,15 @@ where
         self.make_request(search_background).await
     }
 
-    // Searches for call messages. Returns the results in reverse chronological order (i. e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib
+    // Searches for call messages. Returns the results in reverse chronological order (i.e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib
     pub async fn search_call_messages<C: AsRef<SearchCallMessages>>(
         &self,
         search_call_messages: C,
-    ) -> Result<Messages> {
+    ) -> Result<FoundMessages> {
         self.make_request(search_call_messages).await
     }
 
-    // Searches for a specified query in the first name, last name and username of the members of a specified chat. Requires administrator rights in channels
+    // Searches for a specified query in the first name, last name and usernames of the members of a specified chat. Requires administrator rights in channels
     pub async fn search_chat_members<C: AsRef<SearchChatMembers>>(
         &self,
         search_chat_members: C,
@@ -2554,11 +3551,11 @@ where
         self.make_request(search_chat_members).await
     }
 
-    // Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+    // Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit. A combination of query, sender_id, filter and message_thread_id search criteria is expected to be supported, only if it is required for Telegram official application implementation
     pub async fn search_chat_messages<C: AsRef<SearchChatMessages>>(
         &self,
         search_chat_messages: C,
-    ) -> Result<Messages> {
+    ) -> Result<FoundChatMessages> {
         self.make_request(search_chat_messages).await
     }
 
@@ -2573,7 +3570,7 @@ where
             .await
     }
 
-    // Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the main chat list
+    // Searches for the specified query in the title and username of already known chats; this is an offline request. Returns chats in the order seen in the main chat list
     pub async fn search_chats<C: AsRef<SearchChats>>(&self, search_chats: C) -> Result<Chats> {
         self.make_request(search_chats).await
     }
@@ -2607,6 +3604,14 @@ where
         self.make_request(search_emojis).await
     }
 
+    // Searches for files in the file download list or recently downloaded files from the list
+    pub async fn search_file_downloads<C: AsRef<SearchFileDownloads>>(
+        &self,
+        search_file_downloads: C,
+    ) -> Result<FoundFileDownloads> {
+        self.make_request(search_file_downloads).await
+    }
+
     // Searches for recently used hashtags by their prefix
     pub async fn search_hashtags<C: AsRef<SearchHashtags>>(
         &self,
@@ -2627,11 +3632,19 @@ where
     pub async fn search_messages<C: AsRef<SearchMessages>>(
         &self,
         search_messages: C,
-    ) -> Result<Messages> {
+    ) -> Result<FoundMessages> {
         self.make_request(search_messages).await
     }
 
-    // Searches a public chat by its username. Currently, only private chats, supergroups and channels can be public. Returns the chat if found; otherwise an error is returned
+    // Searches for outgoing messages with content of the type messageDocument in all chats except secret chats. Returns the results in reverse chronological order
+    pub async fn search_outgoing_document_messages<C: AsRef<SearchOutgoingDocumentMessages>>(
+        &self,
+        search_outgoing_document_messages: C,
+    ) -> Result<FoundMessages> {
+        self.make_request(search_outgoing_document_messages).await
+    }
+
+    // Searches a public chat by its username. Currently, only private chats, supergroups and channels can be public. Returns the chat if found; otherwise, an error is returned
     pub async fn search_public_chat<C: AsRef<SearchPublicChat>>(
         &self,
         search_public_chat: C,
@@ -2645,6 +3658,22 @@ where
         search_public_chats: C,
     ) -> Result<Chats> {
         self.make_request(search_public_chats).await
+    }
+
+    // Searches for a given quote in a text. Returns found quote start position in UTF-16 code units. Returns a 404 error if the quote is not found. Can be called synchronously
+    pub async fn search_quote<C: AsRef<SearchQuote>>(
+        &self,
+        search_quote: C,
+    ) -> Result<FoundPosition> {
+        self.make_request(search_quote).await
+    }
+
+    // Searches for the specified query in the title and username of up to 50 recently found chats; this is an offline request
+    pub async fn search_recently_found_chats<C: AsRef<SearchRecentlyFoundChats>>(
+        &self,
+        search_recently_found_chats: C,
+    ) -> Result<Chats> {
+        self.make_request(search_recently_found_chats).await
     }
 
     // Searches for messages in secret chats. Returns the results in reverse chronological order. For optimal performance, the number of returned messages is chosen by TDLib
@@ -2671,12 +3700,52 @@ where
         self.make_request(search_sticker_sets).await
     }
 
-    // Searches for stickers from public sticker sets that correspond to a given emoji
+    // Searches for stickers from public sticker sets that correspond to any of the given emoji
     pub async fn search_stickers<C: AsRef<SearchStickers>>(
         &self,
         search_stickers: C,
     ) -> Result<Stickers> {
         self.make_request(search_stickers).await
+    }
+
+    // Searches specified query by word prefixes in the provided strings. Returns 0-based positions of strings that matched. Can be called synchronously
+    pub async fn search_strings_by_prefix<C: AsRef<SearchStringsByPrefix>>(
+        &self,
+        search_strings_by_prefix: C,
+    ) -> Result<FoundPositions> {
+        self.make_request(search_strings_by_prefix).await
+    }
+
+    // Searches a user by their phone number. Returns a 404 error if the user can't be found
+    pub async fn search_user_by_phone_number<C: AsRef<SearchUserByPhoneNumber>>(
+        &self,
+        search_user_by_phone_number: C,
+    ) -> Result<User> {
+        self.make_request(search_user_by_phone_number).await
+    }
+
+    // Searches a user by a token from the user's link
+    pub async fn search_user_by_token<C: AsRef<SearchUserByToken>>(
+        &self,
+        search_user_by_token: C,
+    ) -> Result<User> {
+        self.make_request(search_user_by_token).await
+    }
+
+    // Returns information about a Web App by its short name. Returns a 404 error if the Web App is not found
+    pub async fn search_web_app<C: AsRef<SearchWebApp>>(
+        &self,
+        search_web_app: C,
+    ) -> Result<FoundWebApp> {
+        self.make_request(search_web_app).await
+    }
+
+    // Sends Firebase Authentication SMS to the phone number of the user. Works only when the current authorization state is authorizationStateWaitCode and the server returned code of the type authenticationCodeTypeFirebaseAndroid or authenticationCodeTypeFirebaseIos
+    pub async fn send_authentication_firebase_sms<C: AsRef<SendAuthenticationFirebaseSms>>(
+        &self,
+        send_authentication_firebase_sms: C,
+    ) -> Result<Ok> {
+        self.make_request(send_authentication_firebase_sms).await
     }
 
     // Invites a bot to a chat (if it is not yet a member) and sends it the /start command. Bots can't be invited to a private chat other than the chat with the bot. Bots can't be invited to channels (although they can be added as admins) and secret chats. Returns the sent message
@@ -2687,12 +3756,17 @@ where
         self.make_request(send_bot_start_message).await
     }
 
-    // Sends debug information for a call
+    // Sends debug information for a call to Telegram servers
     pub async fn send_call_debug_information<C: AsRef<SendCallDebugInformation>>(
         &self,
         send_call_debug_information: C,
     ) -> Result<Ok> {
         self.make_request(send_call_debug_information).await
+    }
+
+    // Sends log file for a call to Telegram servers
+    pub async fn send_call_log<C: AsRef<SendCallLog>>(&self, send_call_log: C) -> Result<Ok> {
+        self.make_request(send_call_log).await
     }
 
     // Sends a call rating
@@ -2717,17 +3791,6 @@ where
         send_chat_action: C,
     ) -> Result<Ok> {
         self.make_request(send_chat_action).await
-    }
-
-    // Sends a notification about a screenshot taken in a chat. Supported only in private and secret chats
-    pub async fn send_chat_screenshot_taken_notification<
-        C: AsRef<SendChatScreenshotTakenNotification>,
-    >(
-        &self,
-        send_chat_screenshot_taken_notification: C,
-    ) -> Result<Ok> {
-        self.make_request(send_chat_screenshot_taken_notification)
-            .await
     }
 
     // Sends a custom request; for bots only
@@ -2802,6 +3865,35 @@ where
         self.make_request(send_phone_number_verification_code).await
     }
 
+    // Sends a new story to a chat; requires can_post_stories rights for channel chats. Returns a temporary story
+    pub async fn send_story<C: AsRef<SendStory>>(&self, send_story: C) -> Result<Story> {
+        self.make_request(send_story).await
+    }
+
+    // Sends a custom request from a Web App
+    pub async fn send_web_app_custom_request<C: AsRef<SendWebAppCustomRequest>>(
+        &self,
+        send_web_app_custom_request: C,
+    ) -> Result<CustomRequestResult> {
+        self.make_request(send_web_app_custom_request).await
+    }
+
+    // Sends data received from a keyboardButtonTypeWebApp Web App to a bot
+    pub async fn send_web_app_data<C: AsRef<SendWebAppData>>(
+        &self,
+        send_web_app_data: C,
+    ) -> Result<Ok> {
+        self.make_request(send_web_app_data).await
+    }
+
+    // Changes accent color and background custom emoji for the current user; for Telegram Premium users only
+    pub async fn set_accent_color<C: AsRef<SetAccentColor>>(
+        &self,
+        set_accent_color: C,
+    ) -> Result<Ok> {
+        self.make_request(set_accent_color).await
+    }
+
     // Changes the period of inactivity after which the account of the current user will automatically be deleted
     pub async fn set_account_ttl<C: AsRef<SetAccountTtl>>(&self, set_account_ttl: C) -> Result<Ok> {
         self.make_request(set_account_ttl).await
@@ -2812,7 +3904,23 @@ where
         self.make_request(set_alarm).await
     }
 
-    // Sets the phone number of the user and sends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitPhoneNumber, or if there is no pending authentication query and the current authorization state is authorizationStateWaitCode, authorizationStateWaitRegistration, or authorizationStateWaitPassword
+    // Changes settings for automatic moving of chats to and from the Archive chat lists
+    pub async fn set_archive_chat_list_settings<C: AsRef<SetArchiveChatListSettings>>(
+        &self,
+        set_archive_chat_list_settings: C,
+    ) -> Result<Ok> {
+        self.make_request(set_archive_chat_list_settings).await
+    }
+
+    // Sets the email address of the user and sends an authentication code to the email address. Works only when the current authorization state is authorizationStateWaitEmailAddress
+    pub async fn set_authentication_email_address<C: AsRef<SetAuthenticationEmailAddress>>(
+        &self,
+        set_authentication_email_address: C,
+    ) -> Result<Ok> {
+        self.make_request(set_authentication_email_address).await
+    }
+
+    // Sets the phone number of the user and sends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitPhoneNumber, or if there is no pending authentication query and the current authorization state is authorizationStateWaitEmailAddress, authorizationStateWaitEmailCode, authorizationStateWaitCode, authorizationStateWaitRegistration, or authorizationStateWaitPassword
     pub async fn set_authentication_phone_number<C: AsRef<SetAuthenticationPhoneNumber>>(
         &self,
         set_authentication_phone_number: C,
@@ -2828,6 +3936,14 @@ where
         self.make_request(set_auto_download_settings).await
     }
 
+    // Sets autosave settings for the given scope. The method is guaranteed to work only after at least one call to getAutosaveSettings
+    pub async fn set_autosave_settings<C: AsRef<SetAutosaveSettings>>(
+        &self,
+        set_autosave_settings: C,
+    ) -> Result<Ok> {
+        self.make_request(set_autosave_settings).await
+    }
+
     // Changes the background selected by the user; adds background to the list of installed backgrounds
     pub async fn set_background<C: AsRef<SetBackground>>(
         &self,
@@ -2841,12 +3957,73 @@ where
         self.make_request(set_bio).await
     }
 
+    // Sets the text shown in the chat with a bot if the chat is empty. Can be called only if userTypeBot.can_be_edited == true
+    pub async fn set_bot_info_description<C: AsRef<SetBotInfoDescription>>(
+        &self,
+        set_bot_info_description: C,
+    ) -> Result<Ok> {
+        self.make_request(set_bot_info_description).await
+    }
+
+    // Sets the text shown on a bot's profile page and sent together with the link when users share the bot. Can be called only if userTypeBot.can_be_edited == true
+    pub async fn set_bot_info_short_description<C: AsRef<SetBotInfoShortDescription>>(
+        &self,
+        set_bot_info_short_description: C,
+    ) -> Result<Ok> {
+        self.make_request(set_bot_info_short_description).await
+    }
+
+    // Sets the name of a bot. Can be called only if userTypeBot.can_be_edited == true
+    pub async fn set_bot_name<C: AsRef<SetBotName>>(&self, set_bot_name: C) -> Result<Ok> {
+        self.make_request(set_bot_name).await
+    }
+
+    // Changes a profile photo for a bot
+    pub async fn set_bot_profile_photo<C: AsRef<SetBotProfilePhoto>>(
+        &self,
+        set_bot_profile_photo: C,
+    ) -> Result<Ok> {
+        self.make_request(set_bot_profile_photo).await
+    }
+
     // Informs the server about the number of pending bot updates if they haven't been processed for a long time; for bots only
     pub async fn set_bot_updates_status<C: AsRef<SetBotUpdatesStatus>>(
         &self,
         set_bot_updates_status: C,
     ) -> Result<Ok> {
         self.make_request(set_bot_updates_status).await
+    }
+
+    // Changes accent color and background custom emoji of a chat. Supported only for channels with getOption("channel_custom_accent_color_boost_level_min") boost level. Requires can_change_info administrator right
+    pub async fn set_chat_accent_color<C: AsRef<SetChatAccentColor>>(
+        &self,
+        set_chat_accent_color: C,
+    ) -> Result<Ok> {
+        self.make_request(set_chat_accent_color).await
+    }
+
+    // Changes story list in which stories from the chat are shown
+    pub async fn set_chat_active_stories_list<C: AsRef<SetChatActiveStoriesList>>(
+        &self,
+        set_chat_active_stories_list: C,
+    ) -> Result<Ok> {
+        self.make_request(set_chat_active_stories_list).await
+    }
+
+    // Changes reactions, available in a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
+    pub async fn set_chat_available_reactions<C: AsRef<SetChatAvailableReactions>>(
+        &self,
+        set_chat_available_reactions: C,
+    ) -> Result<Ok> {
+        self.make_request(set_chat_available_reactions).await
+    }
+
+    // Changes the background in a specific chat. Supported only in private and secret chats with non-deleted users
+    pub async fn set_chat_background<C: AsRef<SetChatBackground>>(
+        &self,
+        set_chat_background: C,
+    ) -> Result<Ok> {
+        self.make_request(set_chat_background).await
     }
 
     // Changes application-specific data associated with a chat
@@ -2897,20 +4074,20 @@ where
         self.make_request(set_chat_member_status).await
     }
 
+    // Changes the message auto-delete or self-destruct (for secret chats) time in a chat. Requires change_info administrator right in basic groups, supergroups and channels Message auto-delete time can't be changed in a chat with the current user (Saved Messages) and the chat 777000 (Telegram).
+    pub async fn set_chat_message_auto_delete_time<C: AsRef<SetChatMessageAutoDeleteTime>>(
+        &self,
+        set_chat_message_auto_delete_time: C,
+    ) -> Result<Ok> {
+        self.make_request(set_chat_message_auto_delete_time).await
+    }
+
     // Selects a message sender to send messages in a chat
     pub async fn set_chat_message_sender<C: AsRef<SetChatMessageSender>>(
         &self,
         set_chat_message_sender: C,
     ) -> Result<Ok> {
         self.make_request(set_chat_message_sender).await
-    }
-
-    // Changes the message TTL in a chat. Requires can_delete_messages administrator right in basic groups, supergroups and channels Message TTL can't be changed in a chat with the current user (Saved Messages) and the chat 777000 (Telegram)
-    pub async fn set_chat_message_ttl<C: AsRef<SetChatMessageTtl>>(
-        &self,
-        set_chat_message_ttl: C,
-    ) -> Result<Ok> {
-        self.make_request(set_chat_message_ttl).await
     }
 
     // Changes the notification settings of a chat. Notification settings of a chat with the current user (Saved Messages) can't be changed
@@ -2952,9 +4129,28 @@ where
         self.make_request(set_chat_title).await
     }
 
+    // Changes the list of close friends of the current user
+    pub async fn set_close_friends<C: AsRef<SetCloseFriends>>(
+        &self,
+        set_close_friends: C,
+    ) -> Result<Ok> {
+        self.make_request(set_close_friends).await
+    }
+
     // Sets the list of commands supported by the bot for the given user scope and language; for bots only
     pub async fn set_commands<C: AsRef<SetCommands>>(&self, set_commands: C) -> Result<Ok> {
         self.make_request(set_commands).await
+    }
+
+    // Sets a custom emoji sticker set thumbnail; for bots only
+    pub async fn set_custom_emoji_sticker_set_thumbnail<
+        C: AsRef<SetCustomEmojiStickerSetThumbnail>,
+    >(
+        &self,
+        set_custom_emoji_sticker_set_thumbnail: C,
+    ) -> Result<Ok> {
+        self.make_request(set_custom_emoji_sticker_set_thumbnail)
+            .await
     }
 
     // Adds or changes a custom local language pack to the current localization target
@@ -2981,12 +4177,70 @@ where
         self.make_request(set_database_encryption_key).await
     }
 
+    // Sets default administrator rights for adding the bot to channel chats; for bots only
+    pub async fn set_default_channel_administrator_rights<
+        C: AsRef<SetDefaultChannelAdministratorRights>,
+    >(
+        &self,
+        set_default_channel_administrator_rights: C,
+    ) -> Result<Ok> {
+        self.make_request(set_default_channel_administrator_rights)
+            .await
+    }
+
+    // Sets default administrator rights for adding the bot to basic group and supergroup chats; for bots only
+    pub async fn set_default_group_administrator_rights<
+        C: AsRef<SetDefaultGroupAdministratorRights>,
+    >(
+        &self,
+        set_default_group_administrator_rights: C,
+    ) -> Result<Ok> {
+        self.make_request(set_default_group_administrator_rights)
+            .await
+    }
+
+    // Changes the default message auto-delete time for new chats
+    pub async fn set_default_message_auto_delete_time<C: AsRef<SetDefaultMessageAutoDeleteTime>>(
+        &self,
+        set_default_message_auto_delete_time: C,
+    ) -> Result<Ok> {
+        self.make_request(set_default_message_auto_delete_time)
+            .await
+    }
+
+    // Changes type of default reaction for the current user
+    pub async fn set_default_reaction_type<C: AsRef<SetDefaultReactionType>>(
+        &self,
+        set_default_reaction_type: C,
+    ) -> Result<Ok> {
+        self.make_request(set_default_reaction_type).await
+    }
+
+    // Changes the emoji status of the current user; for Telegram Premium users only
+    pub async fn set_emoji_status<C: AsRef<SetEmojiStatus>>(
+        &self,
+        set_emoji_status: C,
+    ) -> Result<Ok> {
+        self.make_request(set_emoji_status).await
+    }
+
     // Informs TDLib on a file generation progress
     pub async fn set_file_generation_progress<C: AsRef<SetFileGenerationProgress>>(
         &self,
         set_file_generation_progress: C,
     ) -> Result<Ok> {
         self.make_request(set_file_generation_progress).await
+    }
+
+    // Changes the notification settings of a forum topic
+    pub async fn set_forum_topic_notification_settings<
+        C: AsRef<SetForumTopicNotificationSettings>,
+    >(
+        &self,
+        set_forum_topic_notification_settings: C,
+    ) -> Result<Ok> {
+        self.make_request(set_forum_topic_notification_settings)
+            .await
     }
 
     // Updates the game score of the specified user in the game; for bots only
@@ -3043,7 +4297,7 @@ where
         self.make_request(set_inline_game_score).await
     }
 
-    // Changes the location of the current user. Needs to be called if GetOption("is_location_visible") is true and location changes for more than 1 kilometer
+    // Changes the location of the current user. Needs to be called if getOption("is_location_visible") is true and location changes for more than 1 kilometer
     pub async fn set_location<C: AsRef<SetLocation>>(&self, set_location: C) -> Result<Ok> {
         self.make_request(set_location).await
     }
@@ -3067,6 +4321,27 @@ where
         set_log_verbosity_level: C,
     ) -> Result<Ok> {
         self.make_request(set_log_verbosity_level).await
+    }
+
+    // Changes the login email address of the user. The email address can be changed only if the current user already has login email and passwordState.login_email_address_pattern is non-empty. The change will not be applied until the new login email address is confirmed with checkLoginEmailAddressCode. To use Apple ID/Google ID instead of a email address, call checkLoginEmailAddressCode directly
+    pub async fn set_login_email_address<C: AsRef<SetLoginEmailAddress>>(
+        &self,
+        set_login_email_address: C,
+    ) -> Result<EmailAddressAuthenticationCodeInfo> {
+        self.make_request(set_login_email_address).await
+    }
+
+    // Sets menu button for the given user or for all users; for bots only
+    pub async fn set_menu_button<C: AsRef<SetMenuButton>>(&self, set_menu_button: C) -> Result<Ok> {
+        self.make_request(set_menu_button).await
+    }
+
+    // Changes the block list of a message sender. Currently, only users and supergroup chats can be blocked
+    pub async fn set_message_sender_block_list<C: AsRef<SetMessageSenderBlockList>>(
+        &self,
+        set_message_sender_block_list: C,
+    ) -> Result<Ok> {
+        self.make_request(set_message_sender_block_list).await
     }
 
     // Changes the first and last name of the current user
@@ -3103,7 +4378,7 @@ where
         self.make_request(set_passport_element_errors).await
     }
 
-    // Changes the password for the current user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
+    // Changes the 2-step verification password for the current user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
     pub async fn set_password<C: AsRef<SetPassword>>(
         &self,
         set_password: C,
@@ -3117,6 +4392,14 @@ where
         set_pinned_chats: C,
     ) -> Result<Ok> {
         self.make_request(set_pinned_chats).await
+    }
+
+    // Changes the order of pinned forum topics
+    pub async fn set_pinned_forum_topics<C: AsRef<SetPinnedForumTopics>>(
+        &self,
+        set_pinned_forum_topics: C,
+    ) -> Result<Ok> {
+        self.make_request(set_pinned_forum_topics).await
     }
 
     // Changes the user answer to a poll. A poll in quiz mode can be answered only once
@@ -3148,6 +4431,30 @@ where
         self.make_request(set_scope_notification_settings).await
     }
 
+    // Changes the list of emoji corresponding to a sticker; for bots only. The sticker must belong to a regular or custom emoji sticker set created by the bot
+    pub async fn set_sticker_emojis<C: AsRef<SetStickerEmojis>>(
+        &self,
+        set_sticker_emojis: C,
+    ) -> Result<Ok> {
+        self.make_request(set_sticker_emojis).await
+    }
+
+    // Changes the list of keywords of a sticker; for bots only. The sticker must belong to a regular or custom emoji sticker set created by the bot
+    pub async fn set_sticker_keywords<C: AsRef<SetStickerKeywords>>(
+        &self,
+        set_sticker_keywords: C,
+    ) -> Result<Ok> {
+        self.make_request(set_sticker_keywords).await
+    }
+
+    // Changes the mask position of a mask sticker; for bots only. The sticker must belong to a mask sticker set created by the bot
+    pub async fn set_sticker_mask_position<C: AsRef<SetStickerMaskPosition>>(
+        &self,
+        set_sticker_mask_position: C,
+    ) -> Result<Ok> {
+        self.make_request(set_sticker_mask_position).await
+    }
+
     // Changes the position of a sticker in the set to which it belongs; for bots only. The sticker set must have been created by the bot
     pub async fn set_sticker_position_in_set<C: AsRef<SetStickerPositionInSet>>(
         &self,
@@ -3156,12 +4463,36 @@ where
         self.make_request(set_sticker_position_in_set).await
     }
 
-    // Sets a sticker set thumbnail; for bots only. Returns the sticker set
+    // Sets a sticker set thumbnail; for bots only
     pub async fn set_sticker_set_thumbnail<C: AsRef<SetStickerSetThumbnail>>(
         &self,
         set_sticker_set_thumbnail: C,
-    ) -> Result<StickerSet> {
+    ) -> Result<Ok> {
         self.make_request(set_sticker_set_thumbnail).await
+    }
+
+    // Sets a sticker set title; for bots only
+    pub async fn set_sticker_set_title<C: AsRef<SetStickerSetTitle>>(
+        &self,
+        set_sticker_set_title: C,
+    ) -> Result<Ok> {
+        self.make_request(set_sticker_set_title).await
+    }
+
+    // Changes privacy settings of a story. Can be called only if story.can_be_edited == true
+    pub async fn set_story_privacy_settings<C: AsRef<SetStoryPrivacySettings>>(
+        &self,
+        set_story_privacy_settings: C,
+    ) -> Result<Ok> {
+        self.make_request(set_story_privacy_settings).await
+    }
+
+    // Changes chosen reaction on a story
+    pub async fn set_story_reaction<C: AsRef<SetStoryReaction>>(
+        &self,
+        set_story_reaction: C,
+    ) -> Result<Ok> {
+        self.make_request(set_story_reaction).await
     }
 
     // Changes the sticker set of a supergroup; requires can_change_info administrator right
@@ -3172,7 +4503,7 @@ where
         self.make_request(set_supergroup_sticker_set).await
     }
 
-    // Changes the username of a supergroup or channel, requires owner privileges in the supergroup or channel
+    // Changes the editable username of a supergroup or channel, requires owner privileges in the supergroup or channel
     pub async fn set_supergroup_username<C: AsRef<SetSupergroupUsername>>(
         &self,
         set_supergroup_username: C,
@@ -3188,6 +4519,14 @@ where
         self.make_request(set_tdlib_parameters).await
     }
 
+    // Changes a personal profile photo of a contact user
+    pub async fn set_user_personal_profile_photo<C: AsRef<SetUserPersonalProfilePhoto>>(
+        &self,
+        set_user_personal_profile_photo: C,
+    ) -> Result<Ok> {
+        self.make_request(set_user_personal_profile_photo).await
+    }
+
     // Changes user privacy settings
     pub async fn set_user_privacy_setting_rules<C: AsRef<SetUserPrivacySettingRules>>(
         &self,
@@ -3196,7 +4535,15 @@ where
         self.make_request(set_user_privacy_setting_rules).await
     }
 
-    // Changes the username of the current user
+    // Sets support information for the given user; for Telegram support only
+    pub async fn set_user_support_info<C: AsRef<SetUserSupportInfo>>(
+        &self,
+        set_user_support_info: C,
+    ) -> Result<UserSupportInfo> {
+        self.make_request(set_user_support_info).await
+    }
+
+    // Changes the editable username of the current user
     pub async fn set_username<C: AsRef<SetUsername>>(&self, set_username: C) -> Result<Ok> {
         self.make_request(set_username).await
     }
@@ -3209,12 +4556,28 @@ where
         self.make_request(set_video_chat_default_participant).await
     }
 
+    // Shares a chat after pressing a keyboardButtonTypeRequestChat button with the bot
+    pub async fn share_chat_with_bot<C: AsRef<ShareChatWithBot>>(
+        &self,
+        share_chat_with_bot: C,
+    ) -> Result<Ok> {
+        self.make_request(share_chat_with_bot).await
+    }
+
     // Shares the phone number of the current user with a mutual contact. Supposed to be called when the user clicks on chatActionBarSharePhoneNumber
     pub async fn share_phone_number<C: AsRef<SharePhoneNumber>>(
         &self,
         share_phone_number: C,
     ) -> Result<Ok> {
         self.make_request(share_phone_number).await
+    }
+
+    // Shares a user after pressing a keyboardButtonTypeRequestUser button with the bot
+    pub async fn share_user_with_bot<C: AsRef<ShareUserWithBot>>(
+        &self,
+        share_user_with_bot: C,
+    ) -> Result<Ok> {
+        self.make_request(share_user_with_bot).await
     }
 
     // Starts recording of an active group call. Requires groupCall.can_be_managed group call flag
@@ -3241,9 +4604,17 @@ where
         self.make_request(start_scheduled_group_call).await
     }
 
-    // Stops a poll. A poll in a message can be stopped when the message has can_be_edited flag set
+    // Stops a poll. A poll in a message can be stopped when the message has can_be_edited flag is set
     pub async fn stop_poll<C: AsRef<StopPoll>>(&self, stop_poll: C) -> Result<Ok> {
         self.make_request(stop_poll).await
+    }
+
+    // Suggests a profile photo to another regular user with common messages
+    pub async fn suggest_user_profile_photo<C: AsRef<SuggestUserProfilePhoto>>(
+        &self,
+        suggest_user_profile_photo: C,
+    ) -> Result<Ok> {
+        self.make_request(suggest_user_profile_photo).await
     }
 
     // Fetches the latest versions of all strings from a language pack in the current localization target from the server. This method doesn't need to be called explicitly for the current used/base language packs. Can be called before authorization
@@ -3365,6 +4736,33 @@ where
         self.make_request(test_use_update).await
     }
 
+    // Changes pause state of all files in the file download list
+    pub async fn toggle_all_downloads_are_paused<C: AsRef<ToggleAllDownloadsArePaused>>(
+        &self,
+        toggle_all_downloads_are_paused: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_all_downloads_are_paused).await
+    }
+
+    // Adds or removes a bot to attachment and side menu. Bot can be added to the menu, only if userTypeBot.can_be_added_to_attachment_menu == true
+    pub async fn toggle_bot_is_added_to_attachment_menu<
+        C: AsRef<ToggleBotIsAddedToAttachmentMenu>,
+    >(
+        &self,
+        toggle_bot_is_added_to_attachment_menu: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_bot_is_added_to_attachment_menu)
+            .await
+    }
+
+    // Changes active state for a username of a bot. The editable username can't be disabled. May return an error with a message "USERNAMES_ACTIVE_TOO_MUCH" if the maximum number of active usernames has been reached. Can be called only if userTypeBot.can_be_edited == true
+    pub async fn toggle_bot_username_is_active<C: AsRef<ToggleBotUsernameIsActive>>(
+        &self,
+        toggle_bot_username_is_active: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_bot_username_is_active).await
+    }
+
     // Changes the value of the default disable_notification parameter, used when a message is sent to a chat
     pub async fn toggle_chat_default_disable_notification<
         C: AsRef<ToggleChatDefaultDisableNotification>,
@@ -3392,7 +4790,7 @@ where
         self.make_request(toggle_chat_is_marked_as_unread).await
     }
 
-    // Changes the pinned state of a chat. There can be up to GetOption("pinned_chat_count_max")/GetOption("pinned_archived_chat_count_max") pinned non-secret chats and the same number of secret chats in the main/arhive chat list
+    // Changes the pinned state of a chat. There can be up to getOption("pinned_chat_count_max")/getOption("pinned_archived_chat_count_max") pinned non-secret chats and the same number of secret chats in the main/archive chat list. The limit can be increased with Telegram Premium
     pub async fn toggle_chat_is_pinned<C: AsRef<ToggleChatIsPinned>>(
         &self,
         toggle_chat_is_pinned: C,
@@ -3400,7 +4798,48 @@ where
         self.make_request(toggle_chat_is_pinned).await
     }
 
-    // Toggles whether the current user will receive a notification when the group call will start; scheduled group calls only
+    // Changes the translatable state of a chat; for Telegram Premium users only
+    pub async fn toggle_chat_is_translatable<C: AsRef<ToggleChatIsTranslatable>>(
+        &self,
+        toggle_chat_is_translatable: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_chat_is_translatable).await
+    }
+
+    // Changes pause state of a file in the file download list
+    pub async fn toggle_download_is_paused<C: AsRef<ToggleDownloadIsPaused>>(
+        &self,
+        toggle_download_is_paused: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_download_is_paused).await
+    }
+
+    // Toggles whether a topic is closed in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup unless the user is creator of the topic
+    pub async fn toggle_forum_topic_is_closed<C: AsRef<ToggleForumTopicIsClosed>>(
+        &self,
+        toggle_forum_topic_is_closed: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_forum_topic_is_closed).await
+    }
+
+    // Changes the pinned state of a forum topic; requires can_manage_topics administrator right in the supergroup. There can be up to getOption("pinned_forum_topic_count_max") pinned forum topics
+    pub async fn toggle_forum_topic_is_pinned<C: AsRef<ToggleForumTopicIsPinned>>(
+        &self,
+        toggle_forum_topic_is_pinned: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_forum_topic_is_pinned).await
+    }
+
+    // Toggles whether a General topic is hidden in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup
+    pub async fn toggle_general_forum_topic_is_hidden<C: AsRef<ToggleGeneralForumTopicIsHidden>>(
+        &self,
+        toggle_general_forum_topic_is_hidden: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_general_forum_topic_is_hidden)
+            .await
+    }
+
+    // Toggles whether the current user will receive a notification when the group call starts; scheduled group calls only
     pub async fn toggle_group_call_enabled_start_notification<
         C: AsRef<ToggleGroupCallEnabledStartNotification>,
     >(
@@ -3475,14 +4914,6 @@ where
             .await
     }
 
-    // Changes the block state of a message sender. Currently, only users and supergroup chats can be blocked
-    pub async fn toggle_message_sender_is_blocked<C: AsRef<ToggleMessageSenderIsBlocked>>(
-        &self,
-        toggle_message_sender_is_blocked: C,
-    ) -> Result<Ok> {
-        self.make_request(toggle_message_sender_is_blocked).await
-    }
-
     // Toggles whether a session can accept incoming calls
     pub async fn toggle_session_can_accept_calls<C: AsRef<ToggleSessionCanAcceptCalls>>(
         &self,
@@ -3499,6 +4930,36 @@ where
         toggle_session_can_accept_secret_chats: C,
     ) -> Result<Ok> {
         self.make_request(toggle_session_can_accept_secret_chats)
+            .await
+    }
+
+    // Toggles whether a story is accessible after expiration. Can be called only if story.can_toggle_is_pinned == true
+    pub async fn toggle_story_is_pinned<C: AsRef<ToggleStoryIsPinned>>(
+        &self,
+        toggle_story_is_pinned: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_story_is_pinned).await
+    }
+
+    // Toggles whether aggressive anti-spam checks are enabled in the supergroup. Can be called only if supergroupFullInfo.can_toggle_aggressive_anti_spam == true
+    pub async fn toggle_supergroup_has_aggressive_anti_spam_enabled<
+        C: AsRef<ToggleSupergroupHasAggressiveAntiSpamEnabled>,
+    >(
+        &self,
+        toggle_supergroup_has_aggressive_anti_spam_enabled: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_supergroup_has_aggressive_anti_spam_enabled)
+            .await
+    }
+
+    // Toggles whether non-administrators can receive only administrators and bots using getSupergroupMembers or searchChatMembers. Can be called only if supergroupFullInfo.can_hide_members == true
+    pub async fn toggle_supergroup_has_hidden_members<
+        C: AsRef<ToggleSupergroupHasHiddenMembers>,
+    >(
+        &self,
+        toggle_supergroup_has_hidden_members: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_supergroup_has_hidden_members)
             .await
     }
 
@@ -3524,12 +4985,58 @@ where
             .await
     }
 
+    // Toggles whether the supergroup is a forum; requires owner privileges in the supergroup. Discussion supergroups can't be converted to forums
+    pub async fn toggle_supergroup_is_forum<C: AsRef<ToggleSupergroupIsForum>>(
+        &self,
+        toggle_supergroup_is_forum: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_supergroup_is_forum).await
+    }
+
+    // Toggles whether all users directly joining the supergroup need to be approved by supergroup administrators; requires can_restrict_members administrator right
+    pub async fn toggle_supergroup_join_by_request<C: AsRef<ToggleSupergroupJoinByRequest>>(
+        &self,
+        toggle_supergroup_join_by_request: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_supergroup_join_by_request).await
+    }
+
+    // Toggles whether joining is mandatory to send messages to a discussion supergroup; requires can_restrict_members administrator right
+    pub async fn toggle_supergroup_join_to_send_messages<
+        C: AsRef<ToggleSupergroupJoinToSendMessages>,
+    >(
+        &self,
+        toggle_supergroup_join_to_send_messages: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_supergroup_join_to_send_messages)
+            .await
+    }
+
     // Toggles whether sender signature is added to sent messages in a channel; requires can_change_info administrator right
     pub async fn toggle_supergroup_sign_messages<C: AsRef<ToggleSupergroupSignMessages>>(
         &self,
         toggle_supergroup_sign_messages: C,
     ) -> Result<Ok> {
         self.make_request(toggle_supergroup_sign_messages).await
+    }
+
+    // Changes active state for a username of a supergroup or channel, requires owner privileges in the supergroup or channel. The editable username can't be disabled. May return an error with a message "USERNAMES_ACTIVE_TOO_MUCH" if the maximum number of active usernames has been reached
+    pub async fn toggle_supergroup_username_is_active<
+        C: AsRef<ToggleSupergroupUsernameIsActive>,
+    >(
+        &self,
+        toggle_supergroup_username_is_active: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_supergroup_username_is_active)
+            .await
+    }
+
+    // Changes active state for a username of the current user. The editable username can't be disabled. May return an error with a message "USERNAMES_ACTIVE_TOO_MUCH" if the maximum number of active usernames has been reached
+    pub async fn toggle_username_is_active<C: AsRef<ToggleUsernameIsActive>>(
+        &self,
+        toggle_username_is_active: C,
+    ) -> Result<Ok> {
+        self.make_request(toggle_username_is_active).await
     }
 
     // Changes the owner of a chat. The current user must be a current owner of the chat. Use the method canTransferOwnership to check whether the ownership can be transferred from the current session. Available only for supergroups and channel chats
@@ -3540,12 +5047,36 @@ where
         self.make_request(transfer_chat_ownership).await
     }
 
+    // Extracts text or caption of the given message and translates it to the given language. If the current user is a Telegram Premium user, then text formatting is preserved
+    pub async fn translate_message_text<C: AsRef<TranslateMessageText>>(
+        &self,
+        translate_message_text: C,
+    ) -> Result<FormattedText> {
+        self.make_request(translate_message_text).await
+    }
+
+    // Translates a text to the given language. If the current user is a Telegram Premium user, then text formatting is preserved
+    pub async fn translate_text<C: AsRef<TranslateText>>(
+        &self,
+        translate_text: C,
+    ) -> Result<FormattedText> {
+        self.make_request(translate_text).await
+    }
+
     // Removes all pinned messages from a chat; requires can_pin_messages rights in the group or can_edit_messages rights in the channel
     pub async fn unpin_all_chat_messages<C: AsRef<UnpinAllChatMessages>>(
         &self,
         unpin_all_chat_messages: C,
     ) -> Result<Ok> {
         self.make_request(unpin_all_chat_messages).await
+    }
+
+    // Removes all pinned messages from a forum topic; requires can_pin_messages rights in the supergroup
+    pub async fn unpin_all_message_thread_messages<C: AsRef<UnpinAllMessageThreadMessages>>(
+        &self,
+        unpin_all_message_thread_messages: C,
+    ) -> Result<Ok> {
+        self.make_request(unpin_all_message_thread_messages).await
     }
 
     // Removes a pinned message from a chat; requires can_pin_messages rights in the group or can_edit_messages rights in the channel
@@ -3567,11 +5098,6 @@ where
             .await
     }
 
-    // Asynchronously uploads a file to the cloud without sending it in a message. updateFile will be used to notify about upload progress and successful completion of the upload. The file will not have a persistent remote identifier until it will be sent in a message
-    pub async fn upload_file<C: AsRef<UploadFile>>(&self, upload_file: C) -> Result<File> {
-        self.make_request(upload_file).await
-    }
-
     // Uploads a file with a sticker; returns the uploaded file
     pub async fn upload_sticker_file<C: AsRef<UploadStickerFile>>(
         &self,
@@ -3591,6 +5117,14 @@ where
     // Informs TDLib that messages are being viewed by the user. Sponsored messages must be marked as viewed only when the entire text of the message is shown on the screen (excluding the button). Many useful activities depend on whether the messages are currently being viewed or not (e.g., marking messages as read, incrementing a view counter, updating a view counter, removing deleted messages in supergroups and channels)
     pub async fn view_messages<C: AsRef<ViewMessages>>(&self, view_messages: C) -> Result<Ok> {
         self.make_request(view_messages).await
+    }
+
+    // Informs TDLib that the user viewed detailed information about a Premium feature on the Premium features screen
+    pub async fn view_premium_feature<C: AsRef<ViewPremiumFeature>>(
+        &self,
+        view_premium_feature: C,
+    ) -> Result<Ok> {
+        self.make_request(view_premium_feature).await
     }
 
     // Informs the server that some trending sticker sets have been viewed by the user

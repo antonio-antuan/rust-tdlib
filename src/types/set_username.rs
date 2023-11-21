@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the username of the current user
+/// Changes the editable username of the current user
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetUsername {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct SetUsername {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The new value of the username. Use an empty string to remove the username
+    /// The new value of the username. Use an empty string to remove the username. The username can't be completely removed if there is another active or disabled username
 
     #[serde(default)]
     username: String,

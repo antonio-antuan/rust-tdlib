@@ -10,7 +10,7 @@ pub struct CreateNewBasicGroupChat {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifiers of users to be added to the basic group
+    /// Identifiers of users to be added to the basic group; may be empty to create a basic group without other members
 
     #[serde(default)]
     user_ids: Vec<i64>,
@@ -18,6 +18,10 @@ pub struct CreateNewBasicGroupChat {
 
     #[serde(default)]
     title: String,
+    /// Message auto-delete time value, in seconds; must be from 0 up to 365 * 86400 and be divisible by 86400. If 0, then messages aren't deleted automatically
+
+    #[serde(default)]
+    message_auto_delete_time: i32,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -56,6 +60,10 @@ impl CreateNewBasicGroupChat {
     pub fn title(&self) -> &String {
         &self.title
     }
+
+    pub fn message_auto_delete_time(&self) -> i32 {
+        self.message_auto_delete_time
+    }
 }
 
 #[doc(hidden)]
@@ -78,6 +86,11 @@ impl CreateNewBasicGroupChatBuilder {
 
     pub fn title<T: AsRef<str>>(&mut self, title: T) -> &mut Self {
         self.inner.title = title.as_ref().to_string();
+        self
+    }
+
+    pub fn message_auto_delete_time(&mut self, message_auto_delete_time: i32) -> &mut Self {
+        self.inner.message_auto_delete_time = message_auto_delete_time;
         self
     }
 }

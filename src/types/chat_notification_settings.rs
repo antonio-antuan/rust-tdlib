@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains information about notification settings for a chat
+/// Contains information about notification settings for a chat or a forum topic
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatNotificationSettings {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct ChatNotificationSettings {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// If true, mute_for is ignored and the value for the relevant type of chat is used instead
+    /// If true, mute_for is ignored and the value for the relevant type of chat or the forum chat is used instead
 
     #[serde(default)]
     use_default_mute_for: bool,
@@ -18,15 +18,19 @@ pub struct ChatNotificationSettings {
 
     #[serde(default)]
     mute_for: i32,
-    /// If true, sound is ignored and the value for the relevant type of chat is used instead
+    /// If true, the value for the relevant type of chat or the forum chat is used instead of sound_id
 
     #[serde(default)]
     use_default_sound: bool,
-    /// The name of an audio file to be used for notification sounds; only applies to iOS applications
+    /// Identifier of the notification sound to be played for messages; 0 if sound is disabled
 
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
     #[serde(default)]
-    sound: String,
-    /// If true, show_preview is ignored and the value for the relevant type of chat is used instead
+    sound_id: i64,
+    /// If true, show_preview is ignored and the value for the relevant type of chat or the forum chat is used instead
 
     #[serde(default)]
     use_default_show_preview: bool,
@@ -34,7 +38,35 @@ pub struct ChatNotificationSettings {
 
     #[serde(default)]
     show_preview: bool,
-    /// If true, disable_pinned_message_notifications is ignored and the value for the relevant type of chat is used instead
+    /// If true, mute_stories is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
+    use_default_mute_stories: bool,
+    /// True, if story notifications are disabled for the chat
+
+    #[serde(default)]
+    mute_stories: bool,
+    /// If true, the value for the relevant type of chat is used instead of story_sound_id
+
+    #[serde(default)]
+    use_default_story_sound: bool,
+    /// Identifier of the notification sound to be played for stories; 0 if sound is disabled
+
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
+    #[serde(default)]
+    story_sound_id: i64,
+    /// If true, show_story_sender is ignored and the value for the relevant type of chat is used instead
+
+    #[serde(default)]
+    use_default_show_story_sender: bool,
+    /// True, if the sender of stories must be displayed in notifications
+
+    #[serde(default)]
+    show_story_sender: bool,
+    /// If true, disable_pinned_message_notifications is ignored and the value for the relevant type of chat or the forum chat is used instead
 
     #[serde(default)]
     use_default_disable_pinned_message_notifications: bool,
@@ -42,7 +74,7 @@ pub struct ChatNotificationSettings {
 
     #[serde(default)]
     disable_pinned_message_notifications: bool,
-    /// If true, disable_mention_notifications is ignored and the value for the relevant type of chat is used instead
+    /// If true, disable_mention_notifications is ignored and the value for the relevant type of chat or the forum chat is used instead
 
     #[serde(default)]
     use_default_disable_mention_notifications: bool,
@@ -86,8 +118,8 @@ impl ChatNotificationSettings {
         self.use_default_sound
     }
 
-    pub fn sound(&self) -> &String {
-        &self.sound
+    pub fn sound_id(&self) -> i64 {
+        self.sound_id
     }
 
     pub fn use_default_show_preview(&self) -> bool {
@@ -96,6 +128,30 @@ impl ChatNotificationSettings {
 
     pub fn show_preview(&self) -> bool {
         self.show_preview
+    }
+
+    pub fn use_default_mute_stories(&self) -> bool {
+        self.use_default_mute_stories
+    }
+
+    pub fn mute_stories(&self) -> bool {
+        self.mute_stories
+    }
+
+    pub fn use_default_story_sound(&self) -> bool {
+        self.use_default_story_sound
+    }
+
+    pub fn story_sound_id(&self) -> i64 {
+        self.story_sound_id
+    }
+
+    pub fn use_default_show_story_sender(&self) -> bool {
+        self.use_default_show_story_sender
+    }
+
+    pub fn show_story_sender(&self) -> bool {
+        self.show_story_sender
     }
 
     pub fn use_default_disable_pinned_message_notifications(&self) -> bool {
@@ -143,8 +199,8 @@ impl ChatNotificationSettingsBuilder {
         self
     }
 
-    pub fn sound<T: AsRef<str>>(&mut self, sound: T) -> &mut Self {
-        self.inner.sound = sound.as_ref().to_string();
+    pub fn sound_id(&mut self, sound_id: i64) -> &mut Self {
+        self.inner.sound_id = sound_id;
         self
     }
 
@@ -155,6 +211,39 @@ impl ChatNotificationSettingsBuilder {
 
     pub fn show_preview(&mut self, show_preview: bool) -> &mut Self {
         self.inner.show_preview = show_preview;
+        self
+    }
+
+    pub fn use_default_mute_stories(&mut self, use_default_mute_stories: bool) -> &mut Self {
+        self.inner.use_default_mute_stories = use_default_mute_stories;
+        self
+    }
+
+    pub fn mute_stories(&mut self, mute_stories: bool) -> &mut Self {
+        self.inner.mute_stories = mute_stories;
+        self
+    }
+
+    pub fn use_default_story_sound(&mut self, use_default_story_sound: bool) -> &mut Self {
+        self.inner.use_default_story_sound = use_default_story_sound;
+        self
+    }
+
+    pub fn story_sound_id(&mut self, story_sound_id: i64) -> &mut Self {
+        self.inner.story_sound_id = story_sound_id;
+        self
+    }
+
+    pub fn use_default_show_story_sender(
+        &mut self,
+        use_default_show_story_sender: bool,
+    ) -> &mut Self {
+        self.inner.use_default_show_story_sender = use_default_show_story_sender;
+        self
+    }
+
+    pub fn show_story_sender(&mut self, show_story_sender: bool) -> &mut Self {
+        self.inner.show_story_sender = show_story_sender;
         self
     }
 

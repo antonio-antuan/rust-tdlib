@@ -80,7 +80,7 @@ pub struct ChatStatisticsChannel {
     mean_view_count: StatisticalValue,
     /// Mean number of times the recently sent messages was shared
     mean_share_count: StatisticalValue,
-    /// A percentage of users with enabled notifications for the chat
+    /// A percentage of users with enabled notifications for the chat; 0-100
 
     #[serde(default)]
     enabled_notifications_percentage: f32,

@@ -14,6 +14,10 @@ pub struct SetProfilePhoto {
 
     #[serde(skip_serializing_if = "InputChatPhoto::_is_default")]
     photo: InputChatPhoto,
+    /// Pass true to set a public photo, which will be visible even the main photo is hidden by privacy settings
+
+    #[serde(default)]
+    is_public: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -48,6 +52,10 @@ impl SetProfilePhoto {
     pub fn photo(&self) -> &InputChatPhoto {
         &self.photo
     }
+
+    pub fn is_public(&self) -> bool {
+        self.is_public
+    }
 }
 
 #[doc(hidden)]
@@ -65,6 +73,11 @@ impl SetProfilePhotoBuilder {
 
     pub fn photo<T: AsRef<InputChatPhoto>>(&mut self, photo: T) -> &mut Self {
         self.inner.photo = photo.as_ref().clone();
+        self
+    }
+
+    pub fn is_public(&mut self, is_public: bool) -> &mut Self {
+        self.inner.is_public = is_public;
         self
     }
 }

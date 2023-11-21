@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the username of a supergroup or channel, requires owner privileges in the supergroup or channel
+/// Changes the editable username of a supergroup or channel, requires owner privileges in the supergroup or channel
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetSupergroupUsername {
     #[doc(hidden)]
@@ -14,7 +14,7 @@ pub struct SetSupergroupUsername {
 
     #[serde(default)]
     supergroup_id: i64,
-    /// New value of the username. Use an empty string to remove the username
+    /// New value of the username. Use an empty string to remove the username. The username can't be completely removed if there is another active or disabled username
 
     #[serde(default)]
     username: String,

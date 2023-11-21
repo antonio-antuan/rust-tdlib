@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Stops a poll. A poll in a message can be stopped when the message has can_be_edited flag set
+/// Stops a poll. A poll in a message can be stopped when the message has can_be_edited flag is set
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct StopPoll {
     #[doc(hidden)]

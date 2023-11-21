@@ -14,7 +14,7 @@ pub struct GetExternalLink {
 
     #[serde(default)]
     link: String,
-    /// True, if the current user allowed the bot, returned in getExternalLinkInfo, to send them messages
+    /// Pass true if the current user allowed the bot, returned in getExternalLinkInfo, to send them messages
 
     #[serde(default)]
     allow_write_access: bool,

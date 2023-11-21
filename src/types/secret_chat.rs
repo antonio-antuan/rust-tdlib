@@ -22,7 +22,7 @@ pub struct SecretChat {
 
     #[serde(skip_serializing_if = "SecretChatState::_is_default")]
     state: SecretChatState,
-    /// True, if the chat was created by the current user; otherwise false
+    /// True, if the chat was created by the current user; false otherwise
 
     #[serde(default)]
     is_outbound: bool,
@@ -30,7 +30,7 @@ pub struct SecretChat {
 
     #[serde(default)]
     key_hash: String,
-    /// Secret chat layer; determines features supported by the chat partner's application. Nested text entities and underline and strikethrough entities are supported if the layer >= 101
+    /// Secret chat layer; determines features supported by the chat partner's application. Nested text entities and underline and strikethrough entities are supported if the layer >= 101, files bigger than 2000MB are supported if the layer >= 143, spoiler and custom emoji text entities are supported if the layer >= 144
 
     #[serde(default)]
     layer: i32,

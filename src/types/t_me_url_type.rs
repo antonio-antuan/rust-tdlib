@@ -77,7 +77,7 @@ pub struct TMeUrlTypeChatInvite {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat invite link info
+    /// Information about the chat invite link
     info: ChatInviteLinkInfo,
 }
 

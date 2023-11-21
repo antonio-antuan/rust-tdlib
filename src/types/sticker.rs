@@ -10,7 +10,15 @@ pub struct Sticker {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The identifier of the sticker set to which the sticker belongs; 0 if none
+    /// Unique sticker identifier within the set; 0 if none
+
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
+    #[serde(default)]
+    id: i64,
+    /// Identifier of the sticker set to which the sticker belongs; 0 if none
 
     #[serde(
         deserialize_with = "super::_common::number_from_string",
@@ -30,16 +38,14 @@ pub struct Sticker {
 
     #[serde(default)]
     emoji: String,
-    /// True, if the sticker is an animated sticker in TGS format
+    /// Sticker format
 
-    #[serde(default)]
-    is_animated: bool,
-    /// True, if the sticker is a mask
+    #[serde(skip_serializing_if = "StickerFormat::_is_default")]
+    format: StickerFormat,
+    /// Sticker's full type
 
-    #[serde(default)]
-    is_mask: bool,
-    /// Position where the mask is placed; may be null
-    mask_position: Option<MaskPosition>,
+    #[serde(skip_serializing_if = "StickerFullType::_is_default")]
+    full_type: StickerFullType,
     /// Sticker's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
 
     #[serde(default)]
@@ -72,6 +78,10 @@ impl Sticker {
         StickerBuilder { inner }
     }
 
+    pub fn id(&self) -> i64 {
+        self.id
+    }
+
     pub fn set_id(&self) -> i64 {
         self.set_id
     }
@@ -88,16 +98,12 @@ impl Sticker {
         &self.emoji
     }
 
-    pub fn is_animated(&self) -> bool {
-        self.is_animated
+    pub fn format(&self) -> &StickerFormat {
+        &self.format
     }
 
-    pub fn is_mask(&self) -> bool {
-        self.is_mask
-    }
-
-    pub fn mask_position(&self) -> &Option<MaskPosition> {
-        &self.mask_position
+    pub fn full_type(&self) -> &StickerFullType {
+        &self.full_type
     }
 
     pub fn outline(&self) -> &Vec<ClosedVectorPath> {
@@ -126,6 +132,11 @@ impl StickerBuilder {
         self.inner.clone()
     }
 
+    pub fn id(&mut self, id: i64) -> &mut Self {
+        self.inner.id = id;
+        self
+    }
+
     pub fn set_id(&mut self, set_id: i64) -> &mut Self {
         self.inner.set_id = set_id;
         self
@@ -146,18 +157,13 @@ impl StickerBuilder {
         self
     }
 
-    pub fn is_animated(&mut self, is_animated: bool) -> &mut Self {
-        self.inner.is_animated = is_animated;
+    pub fn format<T: AsRef<StickerFormat>>(&mut self, format: T) -> &mut Self {
+        self.inner.format = format.as_ref().clone();
         self
     }
 
-    pub fn is_mask(&mut self, is_mask: bool) -> &mut Self {
-        self.inner.is_mask = is_mask;
-        self
-    }
-
-    pub fn mask_position<T: AsRef<MaskPosition>>(&mut self, mask_position: T) -> &mut Self {
-        self.inner.mask_position = Some(mask_position.as_ref().clone());
+    pub fn full_type<T: AsRef<StickerFullType>>(&mut self, full_type: T) -> &mut Self {
+        self.inner.full_type = full_type.as_ref().clone();
         self
     }
 

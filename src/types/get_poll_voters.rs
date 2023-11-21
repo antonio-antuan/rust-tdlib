@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns users voted for the specified option in a non-anonymous polls. For optimal performance, the number of returned users is chosen by TDLib
+/// Returns message senders voted for the specified option in a non-anonymous polls. For optimal performance, the number of returned users is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetPollVoters {
     #[doc(hidden)]
@@ -22,11 +22,11 @@ pub struct GetPollVoters {
 
     #[serde(default)]
     option_id: i32,
-    /// Number of users to skip in the result; must be non-negative
+    /// Number of voters to skip in the result; must be non-negative
 
     #[serde(default)]
     offset: i32,
-    /// The maximum number of users to be returned; must be positive and can't be greater than 50. For optimal performance, the number of returned users is chosen by TDLib and can be smaller than the specified limit, even if the end of the voter list has not been reached
+    /// The maximum number of voters to be returned; must be positive and can't be greater than 50. For optimal performance, the number of returned voters is chosen by TDLib and can be smaller than the specified limit, even if the end of the voter list has not been reached
 
     #[serde(default)]
     limit: i32,

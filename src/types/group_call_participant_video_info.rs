@@ -18,7 +18,7 @@ pub struct GroupCallParticipantVideoInfo {
 
     #[serde(default)]
     endpoint_id: String,
-    /// True if the video is paused. This flag needs to be ignored, if new video frames are received
+    /// True, if the video is paused. This flag needs to be ignored, if new video frames are received
 
     #[serde(default)]
     is_paused: bool,

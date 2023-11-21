@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Adds a new sticker to a set; for bots only. Returns the sticker set
+/// Adds a new sticker to a set; for bots only
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AddStickerToSet {
     #[doc(hidden)]
@@ -19,8 +19,6 @@ pub struct AddStickerToSet {
     #[serde(default)]
     name: String,
     /// Sticker to add to the set
-
-    #[serde(skip_serializing_if = "InputSticker::_is_default")]
     sticker: InputSticker,
 
     #[serde(rename(serialize = "@type"))]

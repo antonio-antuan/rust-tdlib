@@ -18,7 +18,7 @@ pub struct ToggleSessionCanAcceptSecretChats {
     )]
     #[serde(default)]
     session_id: i64,
-    /// True, if incoming secret chats can be accepted by the session
+    /// Pass true to allow accepting secret chats by the session; pass false otherwise
 
     #[serde(default)]
     can_accept_secret_chats: bool,

@@ -10,7 +10,7 @@ pub struct TestProxy {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Proxy server IP address
+    /// Proxy server domain or IP address
 
     #[serde(default)]
     server: String,
@@ -23,7 +23,7 @@ pub struct TestProxy {
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "ProxyType::_is_default")]
     type_: ProxyType,
-    /// Identifier of a datacenter, with which to test connection
+    /// Identifier of a datacenter with which to test connection
 
     #[serde(default)]
     dc_id: i32,

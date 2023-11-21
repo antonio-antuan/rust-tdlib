@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns information about a chat by its identifier, this is an offline request if the current user is not a bot
+/// Returns information about a chat by its identifier; this is an offline request if the current user is not a bot
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetChat {
     #[doc(hidden)]

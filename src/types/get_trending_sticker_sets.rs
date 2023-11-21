@@ -10,6 +10,10 @@ pub struct GetTrendingStickerSets {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
+    /// Type of the sticker sets to return
+
+    #[serde(skip_serializing_if = "StickerType::_is_default")]
+    sticker_type: StickerType,
     /// The offset from which to return the sticker sets; must be non-negative
 
     #[serde(default)]
@@ -49,6 +53,10 @@ impl GetTrendingStickerSets {
         GetTrendingStickerSetsBuilder { inner }
     }
 
+    pub fn sticker_type(&self) -> &StickerType {
+        &self.sticker_type
+    }
+
     pub fn offset(&self) -> i32 {
         self.offset
     }
@@ -69,6 +77,11 @@ pub type RTDGetTrendingStickerSetsBuilder = GetTrendingStickerSetsBuilder;
 impl GetTrendingStickerSetsBuilder {
     pub fn build(&self) -> GetTrendingStickerSets {
         self.inner.clone()
+    }
+
+    pub fn sticker_type<T: AsRef<StickerType>>(&mut self, sticker_type: T) -> &mut Self {
+        self.inner.sticker_type = sticker_type.as_ref().clone();
+        self
     }
 
     pub fn offset(&mut self, offset: i32) -> &mut Self {

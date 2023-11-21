@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns information about a file with messages exported from another app
+/// Returns information about a file with messages exported from another application
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetMessageFileType {
     #[doc(hidden)]

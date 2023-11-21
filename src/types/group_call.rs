@@ -22,7 +22,7 @@ pub struct GroupCall {
 
     #[serde(default)]
     scheduled_start_date: i32,
-    /// True, if the group call is scheduled and the current user will receive a notification when the group call will start
+    /// True, if the group call is scheduled and the current user will receive a notification when the group call starts
 
     #[serde(default)]
     enabled_start_notification: bool,
@@ -30,6 +30,10 @@ pub struct GroupCall {
 
     #[serde(default)]
     is_active: bool,
+    /// True, if the chat is an RTMP stream instead of an ordinary video chat
+
+    #[serde(default)]
+    is_rtmp_stream: bool,
     /// True, if the call is joined
 
     #[serde(default)]
@@ -46,6 +50,10 @@ pub struct GroupCall {
 
     #[serde(default)]
     participant_count: i32,
+    /// True, if group call participants, which are muted, aren't returned in participant list
+
+    #[serde(default)]
+    has_hidden_listeners: bool,
     /// True, if all group call participants are loaded
 
     #[serde(default)]
@@ -130,6 +138,10 @@ impl GroupCall {
         self.is_active
     }
 
+    pub fn is_rtmp_stream(&self) -> bool {
+        self.is_rtmp_stream
+    }
+
     pub fn is_joined(&self) -> bool {
         self.is_joined
     }
@@ -144,6 +156,10 @@ impl GroupCall {
 
     pub fn participant_count(&self) -> i32 {
         self.participant_count
+    }
+
+    pub fn has_hidden_listeners(&self) -> bool {
+        self.has_hidden_listeners
     }
 
     pub fn loaded_all_participants(&self) -> bool {
@@ -225,6 +241,11 @@ impl GroupCallBuilder {
         self
     }
 
+    pub fn is_rtmp_stream(&mut self, is_rtmp_stream: bool) -> &mut Self {
+        self.inner.is_rtmp_stream = is_rtmp_stream;
+        self
+    }
+
     pub fn is_joined(&mut self, is_joined: bool) -> &mut Self {
         self.inner.is_joined = is_joined;
         self
@@ -242,6 +263,11 @@ impl GroupCallBuilder {
 
     pub fn participant_count(&mut self, participant_count: i32) -> &mut Self {
         self.inner.participant_count = participant_count;
+        self
+    }
+
+    pub fn has_hidden_listeners(&mut self, has_hidden_listeners: bool) -> &mut Self {
+        self.inner.has_hidden_listeners = has_hidden_listeners;
         self
     }
 

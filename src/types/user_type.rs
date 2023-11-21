@@ -77,6 +77,10 @@ pub struct UserTypeBot {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
+    /// True, if the bot is owned by the current user and can be edited using the methods toggleBotUsernameIsActive, reorderBotActiveUsernames, setBotProfilePhoto, setBotName, setBotInfoDescription, and setBotInfoShortDescription
+
+    #[serde(default)]
+    can_be_edited: bool,
     /// True, if the bot can be invited to basic group and supergroup chats
 
     #[serde(default)]
@@ -97,6 +101,10 @@ pub struct UserTypeBot {
 
     #[serde(default)]
     need_location: bool,
+    /// True, if the bot can be added to attachment or side menu
+
+    #[serde(default)]
+    can_be_added_to_attachment_menu: bool,
 }
 
 impl RObject for UserTypeBot {
@@ -123,6 +131,10 @@ impl UserTypeBot {
         UserTypeBotBuilder { inner }
     }
 
+    pub fn can_be_edited(&self) -> bool {
+        self.can_be_edited
+    }
+
     pub fn can_join_groups(&self) -> bool {
         self.can_join_groups
     }
@@ -142,6 +154,10 @@ impl UserTypeBot {
     pub fn need_location(&self) -> bool {
         self.need_location
     }
+
+    pub fn can_be_added_to_attachment_menu(&self) -> bool {
+        self.can_be_added_to_attachment_menu
+    }
 }
 
 #[doc(hidden)]
@@ -155,6 +171,11 @@ pub type RTDUserTypeBotBuilder = UserTypeBotBuilder;
 impl UserTypeBotBuilder {
     pub fn build(&self) -> UserTypeBot {
         self.inner.clone()
+    }
+
+    pub fn can_be_edited(&mut self, can_be_edited: bool) -> &mut Self {
+        self.inner.can_be_edited = can_be_edited;
+        self
     }
 
     pub fn can_join_groups(&mut self, can_join_groups: bool) -> &mut Self {
@@ -182,6 +203,14 @@ impl UserTypeBotBuilder {
 
     pub fn need_location(&mut self, need_location: bool) -> &mut Self {
         self.inner.need_location = need_location;
+        self
+    }
+
+    pub fn can_be_added_to_attachment_menu(
+        &mut self,
+        can_be_added_to_attachment_menu: bool,
+    ) -> &mut Self {
+        self.inner.can_be_added_to_attachment_menu = can_be_added_to_attachment_menu;
         self
     }
 }

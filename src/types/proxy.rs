@@ -14,7 +14,7 @@ pub struct Proxy {
 
     #[serde(default)]
     id: i32,
-    /// Proxy server IP address
+    /// Proxy server domain or IP address
 
     #[serde(default)]
     server: String,

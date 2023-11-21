@@ -18,7 +18,7 @@ pub struct GetChatMessageCount {
 
     #[serde(skip_serializing_if = "SearchMessagesFilter::_is_default")]
     filter: SearchMessagesFilter,
-    /// If true, returns count that is available locally without sending network requests, returning 1 if the number of messages is unknown
+    /// Pass true to get the number of messages without sending network requests, or 1 if the number of messages is unknown locally
 
     #[serde(default)]
     return_local: bool,

@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns recently opened chats, this is an offline request. Returns chats in the order of last opening
+/// Returns recently opened chats; this is an offline request. Returns chats in the order of last opening
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetRecentlyOpenedChats {
     #[doc(hidden)]

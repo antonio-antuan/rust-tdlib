@@ -14,19 +14,17 @@ pub struct Supergroup {
 
     #[serde(default)]
     id: i64,
-    /// Username of the supergroup or channel; empty for private supergroups or channels
-
-    #[serde(default)]
-    username: String,
+    /// Usernames of the supergroup or channel; may be null
+    usernames: Option<Usernames>,
     /// Point in time (Unix timestamp) when the current user joined, or the point in time when the supergroup or channel was created, in case the user is not a member
 
     #[serde(default)]
     date: i32,
-    /// Status of the current user in the supergroup or channel; custom title will be always empty
+    /// Status of the current user in the supergroup or channel; custom title will always be empty
 
     #[serde(skip_serializing_if = "ChatMemberStatus::_is_default")]
     status: ChatMemberStatus,
-    /// Number of members in the supergroup or channel; 0 if unknown. Currently, it is guaranteed to be known only if the supergroup or channel was received through searchPublicChats, searchChatsNearby, getInactiveSupergroupChats, getSuitableDiscussionChats, getGroupsInCommon, or getUserPrivacySettingRules
+    /// Number of members in the supergroup or channel; 0 if unknown. Currently, it is guaranteed to be known only if the supergroup or channel was received through searchPublicChats, searchChatsNearby, getInactiveSupergroupChats, getSuitableDiscussionChats, getGroupsInCommon, getUserPrivacySettingRules, or in chatFolderInviteLinkInfo.missing_chat_ids
 
     #[serde(default)]
     member_count: i32,
@@ -42,6 +40,14 @@ pub struct Supergroup {
 
     #[serde(default)]
     sign_messages: bool,
+    /// True, if users need to join the supergroup before they can send messages. Always true for channels and non-discussion supergroups
+
+    #[serde(default)]
+    join_to_send_messages: bool,
+    /// True, if all users directly joining the supergroup need to be approved by supergroup administrators. Always false for channels and supergroups without username, location, or a linked chat
+
+    #[serde(default)]
+    join_by_request: bool,
     /// True, if the slow mode is enabled in the supergroup
 
     #[serde(default)]
@@ -54,6 +60,10 @@ pub struct Supergroup {
 
     #[serde(default)]
     is_broadcast_group: bool,
+    /// True, if the supergroup must be shown as a forum by default
+
+    #[serde(default)]
+    is_forum: bool,
     /// True, if the supergroup or channel is verified
 
     #[serde(default)]
@@ -70,6 +80,14 @@ pub struct Supergroup {
 
     #[serde(default)]
     is_fake: bool,
+    /// True, if the channel has non-expired stories available to the current user
+
+    #[serde(default)]
+    has_active_stories: bool,
+    /// True, if the channel has unread non-expired stories available to the current user
+
+    #[serde(default)]
+    has_unread_active_stories: bool,
 }
 
 impl RObject for Supergroup {
@@ -98,8 +116,8 @@ impl Supergroup {
         self.id
     }
 
-    pub fn username(&self) -> &String {
-        &self.username
+    pub fn usernames(&self) -> &Option<Usernames> {
+        &self.usernames
     }
 
     pub fn date(&self) -> i32 {
@@ -126,6 +144,14 @@ impl Supergroup {
         self.sign_messages
     }
 
+    pub fn join_to_send_messages(&self) -> bool {
+        self.join_to_send_messages
+    }
+
+    pub fn join_by_request(&self) -> bool {
+        self.join_by_request
+    }
+
     pub fn is_slow_mode_enabled(&self) -> bool {
         self.is_slow_mode_enabled
     }
@@ -136,6 +162,10 @@ impl Supergroup {
 
     pub fn is_broadcast_group(&self) -> bool {
         self.is_broadcast_group
+    }
+
+    pub fn is_forum(&self) -> bool {
+        self.is_forum
     }
 
     pub fn is_verified(&self) -> bool {
@@ -152,6 +182,14 @@ impl Supergroup {
 
     pub fn is_fake(&self) -> bool {
         self.is_fake
+    }
+
+    pub fn has_active_stories(&self) -> bool {
+        self.has_active_stories
+    }
+
+    pub fn has_unread_active_stories(&self) -> bool {
+        self.has_unread_active_stories
     }
 }
 
@@ -173,8 +211,8 @@ impl SupergroupBuilder {
         self
     }
 
-    pub fn username<T: AsRef<str>>(&mut self, username: T) -> &mut Self {
-        self.inner.username = username.as_ref().to_string();
+    pub fn usernames<T: AsRef<Usernames>>(&mut self, usernames: T) -> &mut Self {
+        self.inner.usernames = Some(usernames.as_ref().clone());
         self
     }
 
@@ -208,6 +246,16 @@ impl SupergroupBuilder {
         self
     }
 
+    pub fn join_to_send_messages(&mut self, join_to_send_messages: bool) -> &mut Self {
+        self.inner.join_to_send_messages = join_to_send_messages;
+        self
+    }
+
+    pub fn join_by_request(&mut self, join_by_request: bool) -> &mut Self {
+        self.inner.join_by_request = join_by_request;
+        self
+    }
+
     pub fn is_slow_mode_enabled(&mut self, is_slow_mode_enabled: bool) -> &mut Self {
         self.inner.is_slow_mode_enabled = is_slow_mode_enabled;
         self
@@ -220,6 +268,11 @@ impl SupergroupBuilder {
 
     pub fn is_broadcast_group(&mut self, is_broadcast_group: bool) -> &mut Self {
         self.inner.is_broadcast_group = is_broadcast_group;
+        self
+    }
+
+    pub fn is_forum(&mut self, is_forum: bool) -> &mut Self {
+        self.inner.is_forum = is_forum;
         self
     }
 
@@ -240,6 +293,16 @@ impl SupergroupBuilder {
 
     pub fn is_fake(&mut self, is_fake: bool) -> &mut Self {
         self.inner.is_fake = is_fake;
+        self
+    }
+
+    pub fn has_active_stories(&mut self, has_active_stories: bool) -> &mut Self {
+        self.inner.has_active_stories = has_active_stories;
+        self
+    }
+
+    pub fn has_unread_active_stories(&mut self, has_unread_active_stories: bool) -> &mut Self {
+        self.inner.has_unread_active_stories = has_unread_active_stories;
         self
     }
 }

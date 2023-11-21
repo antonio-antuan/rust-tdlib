@@ -4,7 +4,7 @@ use rust_tdlib::{
     tdjson,
     types::{
         FormattedText, GetMe, InputMessageContent, InputMessageText, SearchPublicChat,
-        SearchPublicChats, SendMessage, TdlibParameters, Update,
+        SearchPublicChats, SendMessage, SetTdlibParameters, Update,
     },
 };
 use std::borrow::Borrow;
@@ -17,7 +17,7 @@ async fn main() {
 
     let client1 = Client::builder()
         .with_tdlib_parameters(
-            TdlibParameters::builder()
+            SetTdlibParameters::builder()
                 .database_directory("tddb1")
                 .use_test_dc(false)
                 .api_id(std::env::var("API_ID").unwrap().parse::<i32>().unwrap())
@@ -35,7 +35,7 @@ async fn main() {
 
     let client2 = Client::builder()
         .with_tdlib_parameters(
-            TdlibParameters::builder()
+            SetTdlibParameters::builder()
                 .database_directory("tddb2")
                 .use_test_dc(false)
                 .api_id(std::env::var("API_ID").unwrap().parse::<i32>().unwrap())
@@ -93,7 +93,7 @@ async fn main() {
         .await
         .unwrap();
 
-    let text_to_send = format!("hello from {}", me1.username());
+    let text_to_send = format!("hello from {:?}", me1.usernames());
     log::info!("sending text: {}", text_to_send);
 
     client1

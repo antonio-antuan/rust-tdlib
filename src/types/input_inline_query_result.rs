@@ -38,7 +38,7 @@ pub enum InputInlineQueryResult {
     /// Represents link to a JPEG image
     #[serde(rename = "inputInlineQueryResultPhoto")]
     Photo(InputInlineQueryResultPhoto),
-    /// Represents a link to a WEBP or TGS sticker
+    /// Represents a link to a WEBP, TGS, or WEBM sticker
     #[serde(rename = "inputInlineQueryResultSticker")]
     Sticker(InputInlineQueryResultSticker),
     /// Represents information about a venue
@@ -1472,7 +1472,7 @@ impl AsRef<InputInlineQueryResultPhoto> for InputInlineQueryResultPhotoBuilder {
     }
 }
 
-/// Represents a link to a WEBP or TGS sticker
+/// Represents a link to a WEBP, TGS, or WEBM sticker
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputInlineQueryResultSticker {
     #[doc(hidden)]
@@ -1488,7 +1488,7 @@ pub struct InputInlineQueryResultSticker {
 
     #[serde(default)]
     thumbnail_url: String,
-    /// The URL of the WEBP or TGS sticker (sticker file size must not exceed 5MB)
+    /// The URL of the WEBP, TGS, or WEBM sticker (sticker file size must not exceed 5MB)
 
     #[serde(default)]
     sticker_url: String,

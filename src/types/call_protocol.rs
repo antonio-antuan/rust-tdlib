@@ -22,7 +22,7 @@ pub struct CallProtocol {
 
     #[serde(default)]
     min_layer: i32,
-    /// The maximum supported API layer; use 65
+    /// The maximum supported API layer; use 92
 
     #[serde(default)]
     max_layer: i32,

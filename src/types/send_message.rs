@@ -18,10 +18,10 @@ pub struct SendMessage {
 
     #[serde(default)]
     message_thread_id: i64,
-    /// Identifier of the message to reply to or 0
+    /// Information about the message or story to be replied; pass null if none
 
-    #[serde(default)]
-    reply_to_message_id: i64,
+    #[serde(skip_serializing_if = "InputMessageReplyTo::_is_default")]
+    reply_to: InputMessageReplyTo,
     /// Options to be used to send the message; pass null to use default options
     options: MessageSendOptions,
     /// Markup for replying to the message; pass null if none; for bots only
@@ -71,8 +71,8 @@ impl SendMessage {
         self.message_thread_id
     }
 
-    pub fn reply_to_message_id(&self) -> i64 {
-        self.reply_to_message_id
+    pub fn reply_to(&self) -> &InputMessageReplyTo {
+        &self.reply_to
     }
 
     pub fn options(&self) -> &MessageSendOptions {
@@ -111,8 +111,8 @@ impl SendMessageBuilder {
         self
     }
 
-    pub fn reply_to_message_id(&mut self, reply_to_message_id: i64) -> &mut Self {
-        self.inner.reply_to_message_id = reply_to_message_id;
+    pub fn reply_to<T: AsRef<InputMessageReplyTo>>(&mut self, reply_to: T) -> &mut Self {
+        self.inner.reply_to = reply_to.as_ref().clone();
         self
     }
 

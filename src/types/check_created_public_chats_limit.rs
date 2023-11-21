@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Checks whether the maximum number of owned public chats has been reached. Returns corresponding error if the limit was reached
+/// Checks whether the maximum number of owned public chats has been reached. Returns corresponding error if the limit was reached. The limit can be increased with Telegram Premium
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CheckCreatedPublicChatsLimit {
     #[doc(hidden)]

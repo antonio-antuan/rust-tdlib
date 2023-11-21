@@ -10,7 +10,7 @@ pub struct SupergroupFullInfo {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat photo; may be null
+    /// Chat photo; may be null if empty or unknown. If non-null, then it is the same photo as in chat.photo
     photo: Option<ChatPhoto>,
     /// Contains full information about a supergroup or channel
 
@@ -44,14 +44,18 @@ pub struct SupergroupFullInfo {
 
     #[serde(default)]
     slow_mode_delay_expires_in: f32,
-    /// True, if members of the chat can be retrieved
+    /// True, if members of the chat can be retrieved via getSupergroupMembers or searchChatMembers
 
     #[serde(default)]
     can_get_members: bool,
-    /// True, if the chat username can be changed
+    /// True, if non-administrators can receive only administrators and bots using getSupergroupMembers or searchChatMembers
 
     #[serde(default)]
-    can_set_username: bool,
+    has_hidden_members: bool,
+    /// True, if non-administrators and non-bots can be hidden in responses to getSupergroupMembers and searchChatMembers for non-administrators
+
+    #[serde(default)]
+    can_hide_members: bool,
     /// True, if the supergroup sticker set can be changed
 
     #[serde(default)]
@@ -64,10 +68,22 @@ pub struct SupergroupFullInfo {
 
     #[serde(default)]
     can_get_statistics: bool,
-    /// True, if new chat members will have access to old messages. In public or discussion groups and both public and private channels, old messages are always available, so this option affects only private supergroups without a linked chat. The value of this field is only available for chat administrators
+    /// True, if aggressive anti-spam checks can be enabled or disabled in the supergroup
+
+    #[serde(default)]
+    can_toggle_aggressive_anti_spam: bool,
+    /// True, if new chat members will have access to old messages. In public, discussion, of forum groups and all channels, old messages are always available, so this option affects only private non-forum supergroups without a linked chat. The value of this field is only available to chat administrators
 
     #[serde(default)]
     is_all_history_available: bool,
+    /// True, if aggressive anti-spam checks are enabled in the supergroup. The value of this field is only available to chat administrators
+
+    #[serde(default)]
+    has_aggressive_anti_spam_enabled: bool,
+    /// True, if the channel has pinned stories
+
+    #[serde(default)]
+    has_pinned_stories: bool,
     /// Identifier of the supergroup sticker set; 0 if none
 
     #[serde(
@@ -76,9 +92,9 @@ pub struct SupergroupFullInfo {
     )]
     #[serde(default)]
     sticker_set_id: i64,
-    /// Location to which the supergroup is connected; may be null
+    /// Location to which the supergroup is connected; may be null if none
     location: Option<ChatLocation>,
-    /// Primary invite link for this chat; may be null. For chat administrators with can_invite_users right only
+    /// Primary invite link for the chat; may be null. For chat administrators with can_invite_users right only
     invite_link: Option<ChatInviteLink>,
     /// List of commands of bots in the group
 
@@ -156,8 +172,12 @@ impl SupergroupFullInfo {
         self.can_get_members
     }
 
-    pub fn can_set_username(&self) -> bool {
-        self.can_set_username
+    pub fn has_hidden_members(&self) -> bool {
+        self.has_hidden_members
+    }
+
+    pub fn can_hide_members(&self) -> bool {
+        self.can_hide_members
     }
 
     pub fn can_set_sticker_set(&self) -> bool {
@@ -172,8 +192,20 @@ impl SupergroupFullInfo {
         self.can_get_statistics
     }
 
+    pub fn can_toggle_aggressive_anti_spam(&self) -> bool {
+        self.can_toggle_aggressive_anti_spam
+    }
+
     pub fn is_all_history_available(&self) -> bool {
         self.is_all_history_available
+    }
+
+    pub fn has_aggressive_anti_spam_enabled(&self) -> bool {
+        self.has_aggressive_anti_spam_enabled
+    }
+
+    pub fn has_pinned_stories(&self) -> bool {
+        self.has_pinned_stories
     }
 
     pub fn sticker_set_id(&self) -> i64 {
@@ -264,8 +296,13 @@ impl SupergroupFullInfoBuilder {
         self
     }
 
-    pub fn can_set_username(&mut self, can_set_username: bool) -> &mut Self {
-        self.inner.can_set_username = can_set_username;
+    pub fn has_hidden_members(&mut self, has_hidden_members: bool) -> &mut Self {
+        self.inner.has_hidden_members = has_hidden_members;
+        self
+    }
+
+    pub fn can_hide_members(&mut self, can_hide_members: bool) -> &mut Self {
+        self.inner.can_hide_members = can_hide_members;
         self
     }
 
@@ -284,8 +321,29 @@ impl SupergroupFullInfoBuilder {
         self
     }
 
+    pub fn can_toggle_aggressive_anti_spam(
+        &mut self,
+        can_toggle_aggressive_anti_spam: bool,
+    ) -> &mut Self {
+        self.inner.can_toggle_aggressive_anti_spam = can_toggle_aggressive_anti_spam;
+        self
+    }
+
     pub fn is_all_history_available(&mut self, is_all_history_available: bool) -> &mut Self {
         self.inner.is_all_history_available = is_all_history_available;
+        self
+    }
+
+    pub fn has_aggressive_anti_spam_enabled(
+        &mut self,
+        has_aggressive_anti_spam_enabled: bool,
+    ) -> &mut Self {
+        self.inner.has_aggressive_anti_spam_enabled = has_aggressive_anti_spam_enabled;
+        self
+    }
+
+    pub fn has_pinned_stories(&mut self, has_pinned_stories: bool) -> &mut Self {
+        self.inner.has_pinned_stories = has_pinned_stories;
         self
     }
 

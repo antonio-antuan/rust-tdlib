@@ -10,10 +10,10 @@ pub struct GetArchivedStickerSets {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Pass true to return mask stickers sets; pass false to return ordinary sticker sets
+    /// Type of the sticker sets to return
 
-    #[serde(default)]
-    is_masks: bool,
+    #[serde(skip_serializing_if = "StickerType::_is_default")]
+    sticker_type: StickerType,
     /// Identifier of the sticker set from which to return the result
 
     #[serde(
@@ -57,8 +57,8 @@ impl GetArchivedStickerSets {
         GetArchivedStickerSetsBuilder { inner }
     }
 
-    pub fn is_masks(&self) -> bool {
-        self.is_masks
+    pub fn sticker_type(&self) -> &StickerType {
+        &self.sticker_type
     }
 
     pub fn offset_sticker_set_id(&self) -> i64 {
@@ -83,8 +83,8 @@ impl GetArchivedStickerSetsBuilder {
         self.inner.clone()
     }
 
-    pub fn is_masks(&mut self, is_masks: bool) -> &mut Self {
-        self.inner.is_masks = is_masks;
+    pub fn sticker_type<T: AsRef<StickerType>>(&mut self, sticker_type: T) -> &mut Self {
+        self.inner.sticker_type = sticker_type.as_ref().clone();
         self
     }
 

@@ -18,7 +18,7 @@ pub struct ChatMember {
 
     #[serde(default)]
     inviter_user_id: i64,
-    /// Point in time (Unix timestamp) when the user joined the chat
+    /// Point in time (Unix timestamp) when the user joined/was promoted/was banned in the chat
 
     #[serde(default)]
     joined_chat_date: i32,

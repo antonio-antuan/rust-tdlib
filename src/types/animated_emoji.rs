@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Describes an animated representation of an emoji
+/// Describes an animated or custom representation of an emoji
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AnimatedEmoji {
     #[doc(hidden)]
@@ -10,13 +10,21 @@ pub struct AnimatedEmoji {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Animated sticker for the emoji
-    sticker: Sticker,
+    /// Sticker for the emoji; may be null if yet unknown for a custom emoji. If the sticker is a custom emoji, it can have arbitrary format different from stickerFormatTgs
+    sticker: Option<Sticker>,
+    /// Expected width of the sticker, which can be used if the sticker is null
+
+    #[serde(default)]
+    sticker_width: i32,
+    /// Expected height of the sticker, which can be used if the sticker is null
+
+    #[serde(default)]
+    sticker_height: i32,
     /// Emoji modifier fitzpatrick type; 0-6; 0 if none
 
     #[serde(default)]
     fitzpatrick_type: i32,
-    /// File containing the sound to be played when the animated emoji is clicked if any; may be null. The sound is encoded with the Opus codec, and stored inside an OGG container
+    /// File containing the sound to be played when the sticker is clicked; may be null. The sound is encoded with the Opus codec, and stored inside an OGG container
     sound: Option<File>,
 }
 
@@ -42,8 +50,16 @@ impl AnimatedEmoji {
         AnimatedEmojiBuilder { inner }
     }
 
-    pub fn sticker(&self) -> &Sticker {
+    pub fn sticker(&self) -> &Option<Sticker> {
         &self.sticker
+    }
+
+    pub fn sticker_width(&self) -> i32 {
+        self.sticker_width
+    }
+
+    pub fn sticker_height(&self) -> i32 {
+        self.sticker_height
     }
 
     pub fn fitzpatrick_type(&self) -> i32 {
@@ -69,7 +85,17 @@ impl AnimatedEmojiBuilder {
     }
 
     pub fn sticker<T: AsRef<Sticker>>(&mut self, sticker: T) -> &mut Self {
-        self.inner.sticker = sticker.as_ref().clone();
+        self.inner.sticker = Some(sticker.as_ref().clone());
+        self
+    }
+
+    pub fn sticker_width(&mut self, sticker_width: i32) -> &mut Self {
+        self.inner.sticker_width = sticker_width;
+        self
+    }
+
+    pub fn sticker_height(&mut self, sticker_height: i32) -> &mut Self {
+        self.inner.sticker_height = sticker_height;
         self
     }
 

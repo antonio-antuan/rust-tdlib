@@ -18,7 +18,7 @@ pub struct TransferChatOwnership {
 
     #[serde(default)]
     user_id: i64,
-    /// The password of the current user
+    /// The 2-step verification password of the current user
 
     #[serde(default)]
     password: String,

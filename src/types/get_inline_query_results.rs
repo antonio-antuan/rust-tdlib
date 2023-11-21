@@ -10,7 +10,7 @@ pub struct GetInlineQueryResults {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The identifier of the target bot
+    /// Identifier of the target bot
 
     #[serde(default)]
     bot_user_id: i64,
@@ -24,7 +24,7 @@ pub struct GetInlineQueryResults {
 
     #[serde(default)]
     query: String,
-    /// Offset of the first entry to return
+    /// Offset of the first entry to return; use empty string to get the first chunk of results
 
     #[serde(default)]
     offset: String,

@@ -37,7 +37,7 @@ pub enum InputMessageContent {
     InputMessageGame(InputMessageGame),
     /// A message with an invoice; can be used only by bots
     #[serde(rename = "inputMessageInvoice")]
-    InputMessageInvoice(InputMessageInvoice),
+    InputMessageInvoice(Box<InputMessageInvoice>),
     /// A message with a location
     #[serde(rename = "inputMessageLocation")]
     InputMessageLocation(InputMessageLocation),
@@ -50,6 +50,9 @@ pub enum InputMessageContent {
     /// A sticker message
     #[serde(rename = "inputMessageSticker")]
     InputMessageSticker(InputMessageSticker),
+    /// A message with a forwarded story. Stories can't be sent to secret chats. A story can be forwarded only if story.can_be_forwarded
+    #[serde(rename = "inputMessageStory")]
+    InputMessageStory(InputMessageStory),
     /// A text message
     #[serde(rename = "inputMessageText")]
     InputMessageText(InputMessageText),
@@ -83,6 +86,7 @@ impl RObject for InputMessageContent {
             InputMessageContent::InputMessagePhoto(t) => t.extra(),
             InputMessageContent::InputMessagePoll(t) => t.extra(),
             InputMessageContent::InputMessageSticker(t) => t.extra(),
+            InputMessageContent::InputMessageStory(t) => t.extra(),
             InputMessageContent::InputMessageText(t) => t.extra(),
             InputMessageContent::InputMessageVenue(t) => t.extra(),
             InputMessageContent::InputMessageVideo(t) => t.extra(),
@@ -107,6 +111,7 @@ impl RObject for InputMessageContent {
             InputMessageContent::InputMessagePhoto(t) => t.client_id(),
             InputMessageContent::InputMessagePoll(t) => t.client_id(),
             InputMessageContent::InputMessageSticker(t) => t.client_id(),
+            InputMessageContent::InputMessageStory(t) => t.client_id(),
             InputMessageContent::InputMessageText(t) => t.client_id(),
             InputMessageContent::InputMessageVenue(t) => t.client_id(),
             InputMessageContent::InputMessageVideo(t) => t.client_id(),
@@ -164,8 +169,12 @@ pub struct InputMessageAnimation {
 
     #[serde(default)]
     height: i32,
-    /// Animation caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
+    /// Animation caption; pass null to use an empty caption; 0-getOption("message_caption_length_max") characters
     caption: FormattedText,
+    /// True, if the animation preview must be covered by a spoiler animation; not supported in secret chats
+
+    #[serde(default)]
+    has_spoiler: bool,
 }
 
 impl RObject for InputMessageAnimation {
@@ -219,6 +228,10 @@ impl InputMessageAnimation {
     pub fn caption(&self) -> &FormattedText {
         &self.caption
     }
+
+    pub fn has_spoiler(&self) -> bool {
+        self.has_spoiler
+    }
 }
 
 #[doc(hidden)]
@@ -268,6 +281,11 @@ impl InputMessageAnimationBuilder {
         self.inner.caption = caption.as_ref().clone();
         self
     }
+
+    pub fn has_spoiler(&mut self, has_spoiler: bool) -> &mut Self {
+        self.inner.has_spoiler = has_spoiler;
+        self
+    }
 }
 
 impl AsRef<InputMessageAnimation> for InputMessageAnimation {
@@ -308,7 +326,7 @@ pub struct InputMessageAudio {
 
     #[serde(default)]
     performer: String,
-    /// Audio caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
+    /// Audio caption; pass null to use an empty caption; 0-getOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -593,11 +611,11 @@ pub struct InputMessageDocument {
     document: InputFile,
     /// Document thumbnail; pass null to skip thumbnail uploading
     thumbnail: InputThumbnail,
-    /// If true, automatic file type detection will be disabled and the document will be always sent as file. Always true for files sent to secret chats
+    /// True, if automatic file type detection is disabled and the document must be sent as a file. Always true for files sent to secret chats
 
     #[serde(default)]
     disable_content_type_detection: bool,
-    /// Document caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
+    /// Document caption; pass null to use an empty caption; 0-getOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 
@@ -703,7 +721,7 @@ pub struct InputMessageForwarded {
 
     #[serde(default)]
     from_chat_id: i64,
-    /// Identifier of the message to forward
+    /// Identifier of the message to forward. A message can be forwarded only if message.can_be_forwarded
 
     #[serde(default)]
     message_id: i64,
@@ -939,6 +957,10 @@ pub struct InputMessageInvoice {
 
     #[serde(default)]
     start_parameter: String,
+    /// The content of extended media attached to the invoice. The content of the message to be sent. Must be one of the following types: inputMessagePhoto, inputMessageVideo
+
+    #[serde(skip_serializing_if = "InputMessageContent::_is_default")]
+    extended_media_content: Box<InputMessageContent>,
 }
 
 impl RObject for InputMessageInvoice {
@@ -1008,6 +1030,10 @@ impl InputMessageInvoice {
     pub fn start_parameter(&self) -> &String {
         &self.start_parameter
     }
+
+    pub fn extended_media_content(&self) -> &InputMessageContent {
+        &self.extended_media_content
+    }
 }
 
 #[doc(hidden)]
@@ -1075,6 +1101,14 @@ impl InputMessageInvoiceBuilder {
 
     pub fn start_parameter<T: AsRef<str>>(&mut self, start_parameter: T) -> &mut Self {
         self.inner.start_parameter = start_parameter.as_ref().to_string();
+        self
+    }
+
+    pub fn extended_media_content<T: AsRef<InputMessageContent>>(
+        &mut self,
+        extended_media_content: T,
+    ) -> &mut Self {
+        self.inner.extended_media_content = Box::new(extended_media_content.as_ref().clone());
         self
     }
 }
@@ -1210,7 +1244,7 @@ pub struct InputMessagePhoto {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Photo to send
+    /// Photo to send. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     photo: InputFile,
@@ -1228,12 +1262,16 @@ pub struct InputMessagePhoto {
 
     #[serde(default)]
     height: i32,
-    /// Photo caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
+    /// Photo caption; pass null to use an empty caption; 0-getOption("message_caption_length_max") characters
     caption: FormattedText,
-    /// Photo TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
+    /// Photo self-destruct type; pass null if none; private chats only
+
+    #[serde(skip_serializing_if = "MessageSelfDestructType::_is_default")]
+    self_destruct_type: MessageSelfDestructType,
+    /// True, if the photo preview must be covered by a spoiler animation; not supported in secret chats
 
     #[serde(default)]
-    ttl: i32,
+    has_spoiler: bool,
 }
 
 impl RObject for InputMessagePhoto {
@@ -1284,8 +1322,12 @@ impl InputMessagePhoto {
         &self.caption
     }
 
-    pub fn ttl(&self) -> i32 {
-        self.ttl
+    pub fn self_destruct_type(&self) -> &MessageSelfDestructType {
+        &self.self_destruct_type
+    }
+
+    pub fn has_spoiler(&self) -> bool {
+        self.has_spoiler
     }
 }
 
@@ -1332,8 +1374,16 @@ impl InputMessagePhotoBuilder {
         self
     }
 
-    pub fn ttl(&mut self, ttl: i32) -> &mut Self {
-        self.inner.ttl = ttl;
+    pub fn self_destruct_type<T: AsRef<MessageSelfDestructType>>(
+        &mut self,
+        self_destruct_type: T,
+    ) -> &mut Self {
+        self.inner.self_destruct_type = self_destruct_type.as_ref().clone();
+        self
+    }
+
+    pub fn has_spoiler(&mut self, has_spoiler: bool) -> &mut Self {
+        self.inner.has_spoiler = has_spoiler;
         self
     }
 }
@@ -1627,6 +1677,93 @@ impl AsRef<InputMessageSticker> for InputMessageStickerBuilder {
     }
 }
 
+/// A message with a forwarded story. Stories can't be sent to secret chats. A story can be forwarded only if story.can_be_forwarded
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct InputMessageStory {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the chat that posted the story
+
+    #[serde(default)]
+    story_sender_chat_id: i64,
+    /// Story identifier
+
+    #[serde(default)]
+    story_id: i32,
+}
+
+impl RObject for InputMessageStory {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDInputMessageContent for InputMessageStory {}
+
+impl InputMessageStory {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> InputMessageStoryBuilder {
+        let mut inner = InputMessageStory::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        InputMessageStoryBuilder { inner }
+    }
+
+    pub fn story_sender_chat_id(&self) -> i64 {
+        self.story_sender_chat_id
+    }
+
+    pub fn story_id(&self) -> i32 {
+        self.story_id
+    }
+}
+
+#[doc(hidden)]
+pub struct InputMessageStoryBuilder {
+    inner: InputMessageStory,
+}
+
+#[deprecated]
+pub type RTDInputMessageStoryBuilder = InputMessageStoryBuilder;
+
+impl InputMessageStoryBuilder {
+    pub fn build(&self) -> InputMessageStory {
+        self.inner.clone()
+    }
+
+    pub fn story_sender_chat_id(&mut self, story_sender_chat_id: i64) -> &mut Self {
+        self.inner.story_sender_chat_id = story_sender_chat_id;
+        self
+    }
+
+    pub fn story_id(&mut self, story_id: i32) -> &mut Self {
+        self.inner.story_id = story_id;
+        self
+    }
+}
+
+impl AsRef<InputMessageStory> for InputMessageStory {
+    fn as_ref(&self) -> &InputMessageStory {
+        self
+    }
+}
+
+impl AsRef<InputMessageStory> for InputMessageStoryBuilder {
+    fn as_ref(&self) -> &InputMessageStory {
+        &self.inner
+    }
+}
+
 /// A text message
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputMessageText {
@@ -1635,12 +1772,10 @@ pub struct InputMessageText {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Formatted text to be sent; 1-GetOption("message_text_length_max") characters. Only Bold, Italic, Underline, Strikethrough, Code, Pre, PreCode, TextUrl and MentionName entities are allowed to be specified manually
+    /// Formatted text to be sent; 0-getOption("message_text_length_max") characters. Only Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, BlockQuote, Code, Pre, PreCode, TextUrl and MentionName entities are allowed to be specified manually
     text: FormattedText,
-    /// True, if rich web page previews for URLs in the message text must be disabled
-
-    #[serde(default)]
-    disable_web_page_preview: bool,
+    /// Options to be used for generation of a link preview; pass null to use default link preview options
+    link_preview_options: LinkPreviewOptions,
     /// True, if a chat message draft must be deleted
 
     #[serde(default)]
@@ -1675,8 +1810,8 @@ impl InputMessageText {
         &self.text
     }
 
-    pub fn disable_web_page_preview(&self) -> bool {
-        self.disable_web_page_preview
+    pub fn link_preview_options(&self) -> &LinkPreviewOptions {
+        &self.link_preview_options
     }
 
     pub fn clear_draft(&self) -> bool {
@@ -1702,8 +1837,11 @@ impl InputMessageTextBuilder {
         self
     }
 
-    pub fn disable_web_page_preview(&mut self, disable_web_page_preview: bool) -> &mut Self {
-        self.inner.disable_web_page_preview = disable_web_page_preview;
+    pub fn link_preview_options<T: AsRef<LinkPreviewOptions>>(
+        &mut self,
+        link_preview_options: T,
+    ) -> &mut Self {
+        self.inner.link_preview_options = link_preview_options.as_ref().clone();
         self
     }
 
@@ -1831,12 +1969,16 @@ pub struct InputMessageVideo {
 
     #[serde(default)]
     supports_streaming: bool,
-    /// Video caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
+    /// Video caption; pass null to use an empty caption; 0-getOption("message_caption_length_max") characters
     caption: FormattedText,
-    /// Video TTL (Time To Live), in seconds (0-60). A non-zero TTL can be specified only in private chats
+    /// Video self-destruct type; pass null if none; private chats only
+
+    #[serde(skip_serializing_if = "MessageSelfDestructType::_is_default")]
+    self_destruct_type: MessageSelfDestructType,
+    /// True, if the video preview must be covered by a spoiler animation; not supported in secret chats
 
     #[serde(default)]
-    ttl: i32,
+    has_spoiler: bool,
 }
 
 impl RObject for InputMessageVideo {
@@ -1895,8 +2037,12 @@ impl InputMessageVideo {
         &self.caption
     }
 
-    pub fn ttl(&self) -> i32 {
-        self.ttl
+    pub fn self_destruct_type(&self) -> &MessageSelfDestructType {
+        &self.self_destruct_type
+    }
+
+    pub fn has_spoiler(&self) -> bool {
+        self.has_spoiler
     }
 }
 
@@ -1953,8 +2099,16 @@ impl InputMessageVideoBuilder {
         self
     }
 
-    pub fn ttl(&mut self, ttl: i32) -> &mut Self {
-        self.inner.ttl = ttl;
+    pub fn self_destruct_type<T: AsRef<MessageSelfDestructType>>(
+        &mut self,
+        self_destruct_type: T,
+    ) -> &mut Self {
+        self.inner.self_destruct_type = self_destruct_type.as_ref().clone();
+        self
+    }
+
+    pub fn has_spoiler(&mut self, has_spoiler: bool) -> &mut Self {
+        self.inner.has_spoiler = has_spoiler;
         self
     }
 }
@@ -2098,11 +2252,11 @@ pub struct InputMessageVoiceNote {
 
     #[serde(default)]
     duration: i32,
-    /// Waveform representation of the voice note, in 5-bit format
+    /// Waveform representation of the voice note in 5-bit format
 
     #[serde(default)]
     waveform: String,
-    /// Voice note caption; pass null to use an empty caption; 0-GetOption("message_caption_length_max") characters
+    /// Voice note caption; pass null to use an empty caption; 0-getOption("message_caption_length_max") characters
     caption: FormattedText,
 }
 

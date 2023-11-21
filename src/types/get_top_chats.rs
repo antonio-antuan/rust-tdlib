@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns a list of frequently used chats. Supported only if the chat info database is enabled
+/// Returns a list of frequently used chats
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetTopChats {
     #[doc(hidden)]

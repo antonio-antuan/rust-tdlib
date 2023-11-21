@@ -10,7 +10,7 @@ pub struct AddCustomServerLanguagePack {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of a language pack to be added; may be different from a name that is used in an "https://t.me/setlanguage/" link
+    /// Identifier of a language pack to be added
 
     #[serde(default)]
     language_pack_id: String,

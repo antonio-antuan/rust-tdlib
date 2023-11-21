@@ -23,9 +23,9 @@ pub use worker::{Worker, WorkerBuilder};
 
 use crate::client::auth_handler::ClientAuthStateHandler;
 use crate::types::{
-    AuthorizationStateWaitCode, AuthorizationStateWaitEncryptionKey,
+    AuthorizationStateWaitCode,
     AuthorizationStateWaitPassword, AuthorizationStateWaitPhoneNumber,
-    AuthorizationStateWaitRegistration, Close, Ok, RFunction, TdlibParameters, Update,
+    AuthorizationStateWaitRegistration, Close, Ok, RFunction, SetTdlibParameters, Update,
 };
 use crate::{
     errors::{Error, Result},
@@ -59,14 +59,6 @@ pub struct ConsoleClientStateHandler;
 impl ClientAuthStateHandler for ConsoleClientStateHandler {
     async fn handle_wait_code(&self, _wait_code: &AuthorizationStateWaitCode) -> String {
         println!("waiting for auth code");
-        utils::wait_input_sync()
-    }
-
-    async fn handle_encryption_key(
-        &self,
-        _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
-    ) -> String {
-        println!("waiting for encryption key");
         utils::wait_input_sync()
     }
 
@@ -132,14 +124,6 @@ impl ClientAuthStateHandler for ConsoleClientStateHandlerIdentified {
         utils::wait_input_sync()
     }
 
-    async fn handle_encryption_key(
-        &self,
-        _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
-    ) -> String {
-        println!("waiting for encryption key");
-        utils::wait_input_sync()
-    }
-
     async fn handle_wait_password(
         &self,
         _wait_password: &AuthorizationStateWaitPassword,
@@ -180,7 +164,7 @@ where
     client_id: Option<i32>,
     is_started: bool,
     updates_sender: Option<mpsc::Sender<Box<Update>>>,
-    tdlib_parameters: TdlibParameters,
+    tdlib_parameters: SetTdlibParameters,
     auth_state_channel_size: Option<usize>,
     auth_handler: Box<dyn ClientAuthStateHandler>,
 }
@@ -193,7 +177,7 @@ where
         self.auth_state_channel_size
     }
 
-    pub(crate) fn tdlib_parameters(&self) -> &TdlibParameters {
+    pub(crate) fn tdlib_parameters(&self) -> &SetTdlibParameters {
         &self.tdlib_parameters
     }
 
@@ -239,7 +223,7 @@ where
     A: ClientAuthStateHandler + Clone + 'static,
 {
     updates_sender: Option<mpsc::Sender<Box<Update>>>,
-    tdlib_parameters: Option<TdlibParameters>,
+    tdlib_parameters: Option<SetTdlibParameters>,
     tdlib_client: R,
     auth_state_channel_size: Option<usize>,
     auth_handler: A,
@@ -278,7 +262,7 @@ where
     }
 
     /// Base parameters for your TDlib instance.
-    pub fn with_tdlib_parameters(mut self, tdlib_parameters: TdlibParameters) -> Self {
+    pub fn with_tdlib_parameters(mut self, tdlib_parameters: SetTdlibParameters) -> Self {
         self.tdlib_parameters = Some(tdlib_parameters);
         self
     }
@@ -340,7 +324,7 @@ where
         tdlib_client: R,
         auth_handler: A,
         updates_sender: Option<mpsc::Sender<Box<Update>>>,
-        tdlib_parameters: TdlibParameters,
+        tdlib_parameters: SetTdlibParameters,
         auth_state_channel_size: Option<usize>,
     ) -> Self {
         Self {

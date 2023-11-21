@@ -22,7 +22,7 @@ pub struct GetLoginUrl {
 
     #[serde(default)]
     button_id: i64,
-    /// True, if the user allowed the bot to send them messages
+    /// Pass true to allow the bot to send messages to the current user
 
     #[serde(default)]
     allow_write_access: bool,

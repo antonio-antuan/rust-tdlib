@@ -21,14 +21,18 @@ pub struct ChatInviteLinkInfo {
     /// Type of the chat
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
-    #[serde(skip_serializing_if = "ChatType::_is_default")]
-    type_: ChatType,
+    #[serde(skip_serializing_if = "InviteLinkChatType::_is_default")]
+    type_: InviteLinkChatType,
     /// Title of the chat
 
     #[serde(default)]
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
+    /// Identifier of the accent color for chat title and background of chat photo
+
+    #[serde(default)]
+    accent_color_id: i32,
     /// Contains information about a chat invite link
 
     #[serde(default)]
@@ -49,6 +53,18 @@ pub struct ChatInviteLinkInfo {
 
     #[serde(default)]
     is_public: bool,
+    /// True, if the chat is verified
+
+    #[serde(default)]
+    is_verified: bool,
+    /// True, if many users reported this chat as a scam
+
+    #[serde(default)]
+    is_scam: bool,
+    /// True, if many users reported this chat as a fake account
+
+    #[serde(default)]
+    is_fake: bool,
 }
 
 impl RObject for ChatInviteLinkInfo {
@@ -81,7 +97,7 @@ impl ChatInviteLinkInfo {
         self.accessible_for
     }
 
-    pub fn type_(&self) -> &ChatType {
+    pub fn type_(&self) -> &InviteLinkChatType {
         &self.type_
     }
 
@@ -91,6 +107,10 @@ impl ChatInviteLinkInfo {
 
     pub fn photo(&self) -> &Option<ChatPhotoInfo> {
         &self.photo
+    }
+
+    pub fn accent_color_id(&self) -> i32 {
+        self.accent_color_id
     }
 
     pub fn description(&self) -> &String {
@@ -111,6 +131,18 @@ impl ChatInviteLinkInfo {
 
     pub fn is_public(&self) -> bool {
         self.is_public
+    }
+
+    pub fn is_verified(&self) -> bool {
+        self.is_verified
+    }
+
+    pub fn is_scam(&self) -> bool {
+        self.is_scam
+    }
+
+    pub fn is_fake(&self) -> bool {
+        self.is_fake
     }
 }
 
@@ -137,7 +169,7 @@ impl ChatInviteLinkInfoBuilder {
         self
     }
 
-    pub fn type_<T: AsRef<ChatType>>(&mut self, type_: T) -> &mut Self {
+    pub fn type_<T: AsRef<InviteLinkChatType>>(&mut self, type_: T) -> &mut Self {
         self.inner.type_ = type_.as_ref().clone();
         self
     }
@@ -149,6 +181,11 @@ impl ChatInviteLinkInfoBuilder {
 
     pub fn photo<T: AsRef<ChatPhotoInfo>>(&mut self, photo: T) -> &mut Self {
         self.inner.photo = Some(photo.as_ref().clone());
+        self
+    }
+
+    pub fn accent_color_id(&mut self, accent_color_id: i32) -> &mut Self {
+        self.inner.accent_color_id = accent_color_id;
         self
     }
 
@@ -174,6 +211,21 @@ impl ChatInviteLinkInfoBuilder {
 
     pub fn is_public(&mut self, is_public: bool) -> &mut Self {
         self.inner.is_public = is_public;
+        self
+    }
+
+    pub fn is_verified(&mut self, is_verified: bool) -> &mut Self {
+        self.inner.is_verified = is_verified;
+        self
+    }
+
+    pub fn is_scam(&mut self, is_scam: bool) -> &mut Self {
+        self.inner.is_scam = is_scam;
+        self
+    }
+
+    pub fn is_fake(&mut self, is_fake: bool) -> &mut Self {
+        self.inner.is_fake = is_fake;
         self
     }
 }

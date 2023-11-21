@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for the specified query in the title and username of already known chats, this is an offline request. Returns chats in the order seen in the main chat list
+/// Searches for the specified query in the title and username of already known chats; this is an offline request. Returns chats in the order seen in the main chat list
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchChats {
     #[doc(hidden)]

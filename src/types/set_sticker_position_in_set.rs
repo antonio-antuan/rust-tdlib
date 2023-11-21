@@ -14,7 +14,7 @@ pub struct SetStickerPositionInSet {
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     sticker: InputFile,
-    /// New position of the sticker in the set, zero-based
+    /// New position of the sticker in the set, 0-based
 
     #[serde(default)]
     position: i32,

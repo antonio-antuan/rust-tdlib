@@ -10,6 +10,10 @@ pub struct GetBlockedMessageSenders {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
+    /// Block list from which to return users
+
+    #[serde(skip_serializing_if = "BlockList::_is_default")]
+    block_list: BlockList,
     /// Number of users and chats to skip in the result; must be non-negative
 
     #[serde(default)]
@@ -49,6 +53,10 @@ impl GetBlockedMessageSenders {
         GetBlockedMessageSendersBuilder { inner }
     }
 
+    pub fn block_list(&self) -> &BlockList {
+        &self.block_list
+    }
+
     pub fn offset(&self) -> i32 {
         self.offset
     }
@@ -69,6 +77,11 @@ pub type RTDGetBlockedMessageSendersBuilder = GetBlockedMessageSendersBuilder;
 impl GetBlockedMessageSendersBuilder {
     pub fn build(&self) -> GetBlockedMessageSenders {
         self.inner.clone()
+    }
+
+    pub fn block_list<T: AsRef<BlockList>>(&mut self, block_list: T) -> &mut Self {
+        self.inner.block_list = block_list.as_ref().clone();
+        self
     }
 
     pub fn offset(&mut self, offset: i32) -> &mut Self {

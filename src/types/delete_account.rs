@@ -14,6 +14,10 @@ pub struct DeleteAccount {
 
     #[serde(default)]
     reason: String,
+    /// The 2-step verification password of the current user. If not specified, account deletion can be canceled within one week
+
+    #[serde(default)]
+    password: String,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -48,6 +52,10 @@ impl DeleteAccount {
     pub fn reason(&self) -> &String {
         &self.reason
     }
+
+    pub fn password(&self) -> &String {
+        &self.password
+    }
 }
 
 #[doc(hidden)]
@@ -65,6 +73,11 @@ impl DeleteAccountBuilder {
 
     pub fn reason<T: AsRef<str>>(&mut self, reason: T) -> &mut Self {
         self.inner.reason = reason.as_ref().to_string();
+        self
+    }
+
+    pub fn password<T: AsRef<str>>(&mut self, password: T) -> &mut Self {
+        self.inner.password = password.as_ref().to_string();
         self
     }
 }

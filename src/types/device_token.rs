@@ -4,10 +4,10 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Represents a data needed to subscribe for push notifications through registerDevice method. To use specific push notification service, the correct application platform must be specified and a valid server authentication data must be uploaded at https://my.telegram.org
+/// Represents a data needed to subscribe for push notifications through registerDevice method.
 pub trait TDDeviceToken: Debug + RObject {}
 
-/// Represents a data needed to subscribe for push notifications through registerDevice method. To use specific push notification service, the correct application platform must be specified and a valid server authentication data must be uploaded at https://my.telegram.org
+/// Represents a data needed to subscribe for push notifications through registerDevice method.
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum DeviceToken {
@@ -23,9 +23,12 @@ pub enum DeviceToken {
     /// A token for BlackBerry Push Service
     #[serde(rename = "deviceTokenBlackBerryPush")]
     BlackBerryPush(DeviceTokenBlackBerryPush),
-    /// A token for Firebase Cloud Messaging
+    /// To use specific push notification service, the correct application platform must be specified and a valid server authentication data must be uploaded at https://my.telegram.org A token for Firebase Cloud Messaging
     #[serde(rename = "deviceTokenFirebaseCloudMessaging")]
     FirebaseCloudMessaging(DeviceTokenFirebaseCloudMessaging),
+    /// A token for HUAWEI Push Service
+    #[serde(rename = "deviceTokenHuaweiPush")]
+    HuaweiPush(DeviceTokenHuaweiPush),
     /// A token for Microsoft Push Notification Service
     #[serde(rename = "deviceTokenMicrosoftPush")]
     MicrosoftPush(DeviceTokenMicrosoftPush),
@@ -57,6 +60,7 @@ impl RObject for DeviceToken {
             DeviceToken::ApplePushVoIP(t) => t.extra(),
             DeviceToken::BlackBerryPush(t) => t.extra(),
             DeviceToken::FirebaseCloudMessaging(t) => t.extra(),
+            DeviceToken::HuaweiPush(t) => t.extra(),
             DeviceToken::MicrosoftPush(t) => t.extra(),
             DeviceToken::MicrosoftPushVoIP(t) => t.extra(),
             DeviceToken::SimplePush(t) => t.extra(),
@@ -75,6 +79,7 @@ impl RObject for DeviceToken {
             DeviceToken::ApplePushVoIP(t) => t.client_id(),
             DeviceToken::BlackBerryPush(t) => t.client_id(),
             DeviceToken::FirebaseCloudMessaging(t) => t.client_id(),
+            DeviceToken::HuaweiPush(t) => t.client_id(),
             DeviceToken::MicrosoftPush(t) => t.client_id(),
             DeviceToken::MicrosoftPushVoIP(t) => t.client_id(),
             DeviceToken::SimplePush(t) => t.client_id(),
@@ -365,7 +370,7 @@ impl AsRef<DeviceTokenBlackBerryPush> for DeviceTokenBlackBerryPushBuilder {
     }
 }
 
-/// A token for Firebase Cloud Messaging
+/// To use specific push notification service, the correct application platform must be specified and a valid server authentication data must be uploaded at https://my.telegram.org A token for Firebase Cloud Messaging
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DeviceTokenFirebaseCloudMessaging {
     #[doc(hidden)]
@@ -448,6 +453,93 @@ impl AsRef<DeviceTokenFirebaseCloudMessaging> for DeviceTokenFirebaseCloudMessag
 
 impl AsRef<DeviceTokenFirebaseCloudMessaging> for DeviceTokenFirebaseCloudMessagingBuilder {
     fn as_ref(&self) -> &DeviceTokenFirebaseCloudMessaging {
+        &self.inner
+    }
+}
+
+/// A token for HUAWEI Push Service
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct DeviceTokenHuaweiPush {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Device registration token; may be empty to deregister a device
+
+    #[serde(default)]
+    token: String,
+    /// True, if push notifications must be additionally encrypted
+
+    #[serde(default)]
+    encrypt: bool,
+}
+
+impl RObject for DeviceTokenHuaweiPush {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDDeviceToken for DeviceTokenHuaweiPush {}
+
+impl DeviceTokenHuaweiPush {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> DeviceTokenHuaweiPushBuilder {
+        let mut inner = DeviceTokenHuaweiPush::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        DeviceTokenHuaweiPushBuilder { inner }
+    }
+
+    pub fn token(&self) -> &String {
+        &self.token
+    }
+
+    pub fn encrypt(&self) -> bool {
+        self.encrypt
+    }
+}
+
+#[doc(hidden)]
+pub struct DeviceTokenHuaweiPushBuilder {
+    inner: DeviceTokenHuaweiPush,
+}
+
+#[deprecated]
+pub type RTDDeviceTokenHuaweiPushBuilder = DeviceTokenHuaweiPushBuilder;
+
+impl DeviceTokenHuaweiPushBuilder {
+    pub fn build(&self) -> DeviceTokenHuaweiPush {
+        self.inner.clone()
+    }
+
+    pub fn token<T: AsRef<str>>(&mut self, token: T) -> &mut Self {
+        self.inner.token = token.as_ref().to_string();
+        self
+    }
+
+    pub fn encrypt(&mut self, encrypt: bool) -> &mut Self {
+        self.inner.encrypt = encrypt;
+        self
+    }
+}
+
+impl AsRef<DeviceTokenHuaweiPush> for DeviceTokenHuaweiPush {
+    fn as_ref(&self) -> &DeviceTokenHuaweiPush {
+        self
+    }
+}
+
+impl AsRef<DeviceTokenHuaweiPush> for DeviceTokenHuaweiPushBuilder {
+    fn as_ref(&self) -> &DeviceTokenHuaweiPush {
         &self.inner
     }
 }

@@ -28,8 +28,12 @@ pub struct ChatPhoto {
 
     #[serde(default)]
     sizes: Vec<PhotoSize>,
-    /// Animated variant of the photo in MPEG4 format; may be null
+    /// A big (up to 1280x1280) animated variant of the photo in MPEG4 format; may be null
     animation: Option<AnimatedChatPhoto>,
+    /// A small (160x160) animated variant of the photo in MPEG4 format; may be null even the big animation is available
+    small_animation: Option<AnimatedChatPhoto>,
+    /// Sticker-based version of the chat photo; may be null
+    sticker: Option<ChatPhotoSticker>,
 }
 
 impl RObject for ChatPhoto {
@@ -73,6 +77,14 @@ impl ChatPhoto {
     pub fn animation(&self) -> &Option<AnimatedChatPhoto> {
         &self.animation
     }
+
+    pub fn small_animation(&self) -> &Option<AnimatedChatPhoto> {
+        &self.small_animation
+    }
+
+    pub fn sticker(&self) -> &Option<ChatPhotoSticker> {
+        &self.sticker
+    }
 }
 
 #[doc(hidden)]
@@ -110,6 +122,19 @@ impl ChatPhotoBuilder {
 
     pub fn animation<T: AsRef<AnimatedChatPhoto>>(&mut self, animation: T) -> &mut Self {
         self.inner.animation = Some(animation.as_ref().clone());
+        self
+    }
+
+    pub fn small_animation<T: AsRef<AnimatedChatPhoto>>(
+        &mut self,
+        small_animation: T,
+    ) -> &mut Self {
+        self.inner.small_animation = Some(small_animation.as_ref().clone());
+        self
+    }
+
+    pub fn sticker<T: AsRef<ChatPhotoSticker>>(&mut self, sticker: T) -> &mut Self {
+        self.inner.sticker = Some(sticker.as_ref().clone());
         self
     }
 }

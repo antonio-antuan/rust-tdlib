@@ -65,14 +65,35 @@ impl<'a, AUTHORIZATIONSTATE: TDAuthorizationState> TDAuthorizationState
 {
 }
 
+impl<'a, AUTOSAVESETTINGSSCOPE: TDAutosaveSettingsScope> TDAutosaveSettingsScope
+    for &'a AUTOSAVESETTINGSSCOPE
+{
+}
+impl<'a, AUTOSAVESETTINGSSCOPE: TDAutosaveSettingsScope> TDAutosaveSettingsScope
+    for &'a mut AUTOSAVESETTINGSSCOPE
+{
+}
+
 impl<'a, BACKGROUNDFILL: TDBackgroundFill> TDBackgroundFill for &'a BACKGROUNDFILL {}
 impl<'a, BACKGROUNDFILL: TDBackgroundFill> TDBackgroundFill for &'a mut BACKGROUNDFILL {}
 
 impl<'a, BACKGROUNDTYPE: TDBackgroundType> TDBackgroundType for &'a BACKGROUNDTYPE {}
 impl<'a, BACKGROUNDTYPE: TDBackgroundType> TDBackgroundType for &'a mut BACKGROUNDTYPE {}
 
+impl<'a, BLOCKLIST: TDBlockList> TDBlockList for &'a BLOCKLIST {}
+impl<'a, BLOCKLIST: TDBlockList> TDBlockList for &'a mut BLOCKLIST {}
+
 impl<'a, BOTCOMMANDSCOPE: TDBotCommandScope> TDBotCommandScope for &'a BOTCOMMANDSCOPE {}
 impl<'a, BOTCOMMANDSCOPE: TDBotCommandScope> TDBotCommandScope for &'a mut BOTCOMMANDSCOPE {}
+
+impl<'a, BOTWRITEACCESSALLOWREASON: TDBotWriteAccessAllowReason> TDBotWriteAccessAllowReason
+    for &'a BOTWRITEACCESSALLOWREASON
+{
+}
+impl<'a, BOTWRITEACCESSALLOWREASON: TDBotWriteAccessAllowReason> TDBotWriteAccessAllowReason
+    for &'a mut BOTWRITEACCESSALLOWREASON
+{
+}
 
 impl<'a, CALLDISCARDREASON: TDCallDiscardReason> TDCallDiscardReason for &'a CALLDISCARDREASON {}
 impl<'a, CALLDISCARDREASON: TDCallDiscardReason> TDCallDiscardReason for &'a mut CALLDISCARDREASON {}
@@ -95,6 +116,12 @@ impl<'a, CALLBACKQUERYPAYLOAD: TDCallbackQueryPayload> TDCallbackQueryPayload
 {
 }
 
+impl<'a, CANSENDSTORYRESULT: TDCanSendStoryResult> TDCanSendStoryResult for &'a CANSENDSTORYRESULT {}
+impl<'a, CANSENDSTORYRESULT: TDCanSendStoryResult> TDCanSendStoryResult
+    for &'a mut CANSENDSTORYRESULT
+{
+}
+
 impl<'a, CANTRANSFEROWNERSHIPRESULT: TDCanTransferOwnershipResult> TDCanTransferOwnershipResult
     for &'a CANTRANSFEROWNERSHIPRESULT
 {
@@ -110,6 +137,18 @@ impl<'a, CHATACTION: TDChatAction> TDChatAction for &'a mut CHATACTION {}
 impl<'a, CHATACTIONBAR: TDChatActionBar> TDChatActionBar for &'a CHATACTIONBAR {}
 impl<'a, CHATACTIONBAR: TDChatActionBar> TDChatActionBar for &'a mut CHATACTIONBAR {}
 
+impl<'a, CHATAVAILABLEREACTIONS: TDChatAvailableReactions> TDChatAvailableReactions
+    for &'a CHATAVAILABLEREACTIONS
+{
+}
+impl<'a, CHATAVAILABLEREACTIONS: TDChatAvailableReactions> TDChatAvailableReactions
+    for &'a mut CHATAVAILABLEREACTIONS
+{
+}
+
+impl<'a, CHATBOOSTSOURCE: TDChatBoostSource> TDChatBoostSource for &'a CHATBOOSTSOURCE {}
+impl<'a, CHATBOOSTSOURCE: TDChatBoostSource> TDChatBoostSource for &'a mut CHATBOOSTSOURCE {}
+
 impl<'a, CHATEVENTACTION: TDChatEventAction> TDChatEventAction for &'a CHATEVENTACTION {}
 impl<'a, CHATEVENTACTION: TDChatEventAction> TDChatEventAction for &'a mut CHATEVENTACTION {}
 
@@ -122,8 +161,14 @@ impl<'a, CHATMEMBERSTATUS: TDChatMemberStatus> TDChatMemberStatus for &'a mut CH
 impl<'a, CHATMEMBERSFILTER: TDChatMembersFilter> TDChatMembersFilter for &'a CHATMEMBERSFILTER {}
 impl<'a, CHATMEMBERSFILTER: TDChatMembersFilter> TDChatMembersFilter for &'a mut CHATMEMBERSFILTER {}
 
-impl<'a, CHATREPORTREASON: TDChatReportReason> TDChatReportReason for &'a CHATREPORTREASON {}
-impl<'a, CHATREPORTREASON: TDChatReportReason> TDChatReportReason for &'a mut CHATREPORTREASON {}
+impl<'a, CHATPHOTOSTICKERTYPE: TDChatPhotoStickerType> TDChatPhotoStickerType
+    for &'a CHATPHOTOSTICKERTYPE
+{
+}
+impl<'a, CHATPHOTOSTICKERTYPE: TDChatPhotoStickerType> TDChatPhotoStickerType
+    for &'a mut CHATPHOTOSTICKERTYPE
+{
+}
 
 impl<'a, CHATSOURCE: TDChatSource> TDChatSource for &'a CHATSOURCE {}
 impl<'a, CHATSOURCE: TDChatSource> TDChatSource for &'a mut CHATSOURCE {}
@@ -161,8 +206,38 @@ impl<'a, DEVICETOKEN: TDDeviceToken> TDDeviceToken for &'a mut DEVICETOKEN {}
 impl<'a, DICESTICKERS: TDDiceStickers> TDDiceStickers for &'a DICESTICKERS {}
 impl<'a, DICESTICKERS: TDDiceStickers> TDDiceStickers for &'a mut DICESTICKERS {}
 
+impl<'a, EMAILADDRESSAUTHENTICATION: TDEmailAddressAuthentication> TDEmailAddressAuthentication
+    for &'a EMAILADDRESSAUTHENTICATION
+{
+}
+impl<'a, EMAILADDRESSAUTHENTICATION: TDEmailAddressAuthentication> TDEmailAddressAuthentication
+    for &'a mut EMAILADDRESSAUTHENTICATION
+{
+}
+
+impl<'a, EMAILADDRESSRESETSTATE: TDEmailAddressResetState> TDEmailAddressResetState
+    for &'a EMAILADDRESSRESETSTATE
+{
+}
+impl<'a, EMAILADDRESSRESETSTATE: TDEmailAddressResetState> TDEmailAddressResetState
+    for &'a mut EMAILADDRESSRESETSTATE
+{
+}
+
+impl<'a, EMOJICATEGORYTYPE: TDEmojiCategoryType> TDEmojiCategoryType for &'a EMOJICATEGORYTYPE {}
+impl<'a, EMOJICATEGORYTYPE: TDEmojiCategoryType> TDEmojiCategoryType for &'a mut EMOJICATEGORYTYPE {}
+
 impl<'a, FILETYPE: TDFileType> TDFileType for &'a FILETYPE {}
 impl<'a, FILETYPE: TDFileType> TDFileType for &'a mut FILETYPE {}
+
+impl<'a, FIREBASEAUTHENTICATIONSETTINGS: TDFirebaseAuthenticationSettings>
+    TDFirebaseAuthenticationSettings for &'a FIREBASEAUTHENTICATIONSETTINGS
+{
+}
+impl<'a, FIREBASEAUTHENTICATIONSETTINGS: TDFirebaseAuthenticationSettings>
+    TDFirebaseAuthenticationSettings for &'a mut FIREBASEAUTHENTICATIONSETTINGS
+{
+}
 
 impl<'a, GROUPCALLVIDEOQUALITY: TDGroupCallVideoQuality> TDGroupCallVideoQuality
     for &'a GROUPCALLVIDEOQUALITY
@@ -185,6 +260,15 @@ impl<'a, INLINEKEYBOARDBUTTONTYPE: TDInlineKeyboardButtonType> TDInlineKeyboardB
 impl<'a, INLINEQUERYRESULT: TDInlineQueryResult> TDInlineQueryResult for &'a INLINEQUERYRESULT {}
 impl<'a, INLINEQUERYRESULT: TDInlineQueryResult> TDInlineQueryResult for &'a mut INLINEQUERYRESULT {}
 
+impl<'a, INLINEQUERYRESULTSBUTTONTYPE: TDInlineQueryResultsButtonType>
+    TDInlineQueryResultsButtonType for &'a INLINEQUERYRESULTSBUTTONTYPE
+{
+}
+impl<'a, INLINEQUERYRESULTSBUTTONTYPE: TDInlineQueryResultsButtonType>
+    TDInlineQueryResultsButtonType for &'a mut INLINEQUERYRESULTSBUTTONTYPE
+{
+}
+
 impl<'a, INPUTBACKGROUND: TDInputBackground> TDInputBackground for &'a INPUTBACKGROUND {}
 impl<'a, INPUTBACKGROUND: TDInputBackground> TDInputBackground for &'a mut INPUTBACKGROUND {}
 
@@ -206,12 +290,24 @@ impl<'a, INPUTINLINEQUERYRESULT: TDInputInlineQueryResult> TDInputInlineQueryRes
 {
 }
 
+impl<'a, INPUTINVOICE: TDInputInvoice> TDInputInvoice for &'a INPUTINVOICE {}
+impl<'a, INPUTINVOICE: TDInputInvoice> TDInputInvoice for &'a mut INPUTINVOICE {}
+
 impl<'a, INPUTMESSAGECONTENT: TDInputMessageContent> TDInputMessageContent
     for &'a INPUTMESSAGECONTENT
 {
 }
 impl<'a, INPUTMESSAGECONTENT: TDInputMessageContent> TDInputMessageContent
     for &'a mut INPUTMESSAGECONTENT
+{
+}
+
+impl<'a, INPUTMESSAGEREPLYTO: TDInputMessageReplyTo> TDInputMessageReplyTo
+    for &'a INPUTMESSAGEREPLYTO
+{
+}
+impl<'a, INPUTMESSAGEREPLYTO: TDInputMessageReplyTo> TDInputMessageReplyTo
+    for &'a mut INPUTMESSAGEREPLYTO
 {
 }
 
@@ -233,11 +329,23 @@ impl<'a, INPUTPASSPORTELEMENTERRORSOURCE: TDInputPassportElementErrorSource>
 {
 }
 
-impl<'a, INPUTSTICKER: TDInputSticker> TDInputSticker for &'a INPUTSTICKER {}
-impl<'a, INPUTSTICKER: TDInputSticker> TDInputSticker for &'a mut INPUTSTICKER {}
+impl<'a, INPUTSTORYAREATYPE: TDInputStoryAreaType> TDInputStoryAreaType for &'a INPUTSTORYAREATYPE {}
+impl<'a, INPUTSTORYAREATYPE: TDInputStoryAreaType> TDInputStoryAreaType
+    for &'a mut INPUTSTORYAREATYPE
+{
+}
+
+impl<'a, INPUTSTORYCONTENT: TDInputStoryContent> TDInputStoryContent for &'a INPUTSTORYCONTENT {}
+impl<'a, INPUTSTORYCONTENT: TDInputStoryContent> TDInputStoryContent for &'a mut INPUTSTORYCONTENT {}
 
 impl<'a, INTERNALLINKTYPE: TDInternalLinkType> TDInternalLinkType for &'a INTERNALLINKTYPE {}
 impl<'a, INTERNALLINKTYPE: TDInternalLinkType> TDInternalLinkType for &'a mut INTERNALLINKTYPE {}
+
+impl<'a, INVITELINKCHATTYPE: TDInviteLinkChatType> TDInviteLinkChatType for &'a INVITELINKCHATTYPE {}
+impl<'a, INVITELINKCHATTYPE: TDInviteLinkChatType> TDInviteLinkChatType
+    for &'a mut INVITELINKCHATTYPE
+{
+}
 
 impl<'a, JSONVALUE: TDJsonValue> TDJsonValue for &'a JSONVALUE {}
 impl<'a, JSONVALUE: TDJsonValue> TDJsonValue for &'a mut JSONVALUE {}
@@ -269,17 +377,23 @@ impl<'a, MASKPOINT: TDMaskPoint> TDMaskPoint for &'a mut MASKPOINT {}
 impl<'a, MESSAGECONTENT: TDMessageContent> TDMessageContent for &'a MESSAGECONTENT {}
 impl<'a, MESSAGECONTENT: TDMessageContent> TDMessageContent for &'a mut MESSAGECONTENT {}
 
+impl<'a, MESSAGEEXTENDEDMEDIA: TDMessageExtendedMedia> TDMessageExtendedMedia
+    for &'a MESSAGEEXTENDEDMEDIA
+{
+}
+impl<'a, MESSAGEEXTENDEDMEDIA: TDMessageExtendedMedia> TDMessageExtendedMedia
+    for &'a mut MESSAGEEXTENDEDMEDIA
+{
+}
+
 impl<'a, MESSAGEFILETYPE: TDMessageFileType> TDMessageFileType for &'a MESSAGEFILETYPE {}
 impl<'a, MESSAGEFILETYPE: TDMessageFileType> TDMessageFileType for &'a mut MESSAGEFILETYPE {}
 
-impl<'a, MESSAGEFORWARDORIGIN: TDMessageForwardOrigin> TDMessageForwardOrigin
-    for &'a MESSAGEFORWARDORIGIN
-{
-}
-impl<'a, MESSAGEFORWARDORIGIN: TDMessageForwardOrigin> TDMessageForwardOrigin
-    for &'a mut MESSAGEFORWARDORIGIN
-{
-}
+impl<'a, MESSAGEORIGIN: TDMessageOrigin> TDMessageOrigin for &'a MESSAGEORIGIN {}
+impl<'a, MESSAGEORIGIN: TDMessageOrigin> TDMessageOrigin for &'a mut MESSAGEORIGIN {}
+
+impl<'a, MESSAGEREPLYTO: TDMessageReplyTo> TDMessageReplyTo for &'a MESSAGEREPLYTO {}
+impl<'a, MESSAGEREPLYTO: TDMessageReplyTo> TDMessageReplyTo for &'a mut MESSAGEREPLYTO {}
 
 impl<'a, MESSAGESCHEDULINGSTATE: TDMessageSchedulingState> TDMessageSchedulingState
     for &'a MESSAGESCHEDULINGSTATE
@@ -287,6 +401,15 @@ impl<'a, MESSAGESCHEDULINGSTATE: TDMessageSchedulingState> TDMessageSchedulingSt
 }
 impl<'a, MESSAGESCHEDULINGSTATE: TDMessageSchedulingState> TDMessageSchedulingState
     for &'a mut MESSAGESCHEDULINGSTATE
+{
+}
+
+impl<'a, MESSAGESELFDESTRUCTTYPE: TDMessageSelfDestructType> TDMessageSelfDestructType
+    for &'a MESSAGESELFDESTRUCTTYPE
+{
+}
+impl<'a, MESSAGESELFDESTRUCTTYPE: TDMessageSelfDestructType> TDMessageSelfDestructType
+    for &'a mut MESSAGESELFDESTRUCTTYPE
 {
 }
 
@@ -299,6 +422,15 @@ impl<'a, MESSAGESENDINGSTATE: TDMessageSendingState> TDMessageSendingState
 }
 impl<'a, MESSAGESENDINGSTATE: TDMessageSendingState> TDMessageSendingState
     for &'a mut MESSAGESENDINGSTATE
+{
+}
+
+impl<'a, MESSAGESOURCE: TDMessageSource> TDMessageSource for &'a MESSAGESOURCE {}
+impl<'a, MESSAGESOURCE: TDMessageSource> TDMessageSource for &'a mut MESSAGESOURCE {}
+
+impl<'a, MESSAGESPONSORTYPE: TDMessageSponsorType> TDMessageSponsorType for &'a MESSAGESPONSORTYPE {}
+impl<'a, MESSAGESPONSORTYPE: TDMessageSponsorType> TDMessageSponsorType
+    for &'a mut MESSAGESPONSORTYPE
 {
 }
 
@@ -380,8 +512,47 @@ impl<'a, PASSPORTELEMENTTYPE: TDPassportElementType> TDPassportElementType
 {
 }
 
+impl<'a, PAYMENTPROVIDER: TDPaymentProvider> TDPaymentProvider for &'a PAYMENTPROVIDER {}
+impl<'a, PAYMENTPROVIDER: TDPaymentProvider> TDPaymentProvider for &'a mut PAYMENTPROVIDER {}
+
 impl<'a, POLLTYPE: TDPollType> TDPollType for &'a POLLTYPE {}
 impl<'a, POLLTYPE: TDPollType> TDPollType for &'a mut POLLTYPE {}
+
+impl<'a, PREMIUMFEATURE: TDPremiumFeature> TDPremiumFeature for &'a PREMIUMFEATURE {}
+impl<'a, PREMIUMFEATURE: TDPremiumFeature> TDPremiumFeature for &'a mut PREMIUMFEATURE {}
+
+impl<'a, PREMIUMGIVEAWAYINFO: TDPremiumGiveawayInfo> TDPremiumGiveawayInfo
+    for &'a PREMIUMGIVEAWAYINFO
+{
+}
+impl<'a, PREMIUMGIVEAWAYINFO: TDPremiumGiveawayInfo> TDPremiumGiveawayInfo
+    for &'a mut PREMIUMGIVEAWAYINFO
+{
+}
+
+impl<'a, PREMIUMGIVEAWAYPARTICIPANTSTATUS: TDPremiumGiveawayParticipantStatus>
+    TDPremiumGiveawayParticipantStatus for &'a PREMIUMGIVEAWAYPARTICIPANTSTATUS
+{
+}
+impl<'a, PREMIUMGIVEAWAYPARTICIPANTSTATUS: TDPremiumGiveawayParticipantStatus>
+    TDPremiumGiveawayParticipantStatus for &'a mut PREMIUMGIVEAWAYPARTICIPANTSTATUS
+{
+}
+
+impl<'a, PREMIUMLIMITTYPE: TDPremiumLimitType> TDPremiumLimitType for &'a PREMIUMLIMITTYPE {}
+impl<'a, PREMIUMLIMITTYPE: TDPremiumLimitType> TDPremiumLimitType for &'a mut PREMIUMLIMITTYPE {}
+
+impl<'a, PREMIUMSOURCE: TDPremiumSource> TDPremiumSource for &'a PREMIUMSOURCE {}
+impl<'a, PREMIUMSOURCE: TDPremiumSource> TDPremiumSource for &'a mut PREMIUMSOURCE {}
+
+impl<'a, PREMIUMSTORYFEATURE: TDPremiumStoryFeature> TDPremiumStoryFeature
+    for &'a PREMIUMSTORYFEATURE
+{
+}
+impl<'a, PREMIUMSTORYFEATURE: TDPremiumStoryFeature> TDPremiumStoryFeature
+    for &'a mut PREMIUMSTORYFEATURE
+{
+}
 
 impl<'a, PROXYTYPE: TDProxyType> TDProxyType for &'a PROXYTYPE {}
 impl<'a, PROXYTYPE: TDProxyType> TDProxyType for &'a mut PROXYTYPE {}
@@ -395,8 +566,14 @@ impl<'a, PUSHMESSAGECONTENT: TDPushMessageContent> TDPushMessageContent
 {
 }
 
+impl<'a, REACTIONTYPE: TDReactionType> TDReactionType for &'a REACTIONTYPE {}
+impl<'a, REACTIONTYPE: TDReactionType> TDReactionType for &'a mut REACTIONTYPE {}
+
 impl<'a, REPLYMARKUP: TDReplyMarkup> TDReplyMarkup for &'a REPLYMARKUP {}
 impl<'a, REPLYMARKUP: TDReplyMarkup> TDReplyMarkup for &'a mut REPLYMARKUP {}
+
+impl<'a, REPORTREASON: TDReportReason> TDReportReason for &'a REPORTREASON {}
+impl<'a, REPORTREASON: TDReportReason> TDReportReason for &'a mut REPORTREASON {}
 
 impl<'a, RESETPASSWORDRESULT: TDResetPasswordResult> TDResetPasswordResult
     for &'a RESETPASSWORDRESULT
@@ -422,8 +599,56 @@ impl<'a, SEARCHMESSAGESFILTER: TDSearchMessagesFilter> TDSearchMessagesFilter
 impl<'a, SECRETCHATSTATE: TDSecretChatState> TDSecretChatState for &'a SECRETCHATSTATE {}
 impl<'a, SECRETCHATSTATE: TDSecretChatState> TDSecretChatState for &'a mut SECRETCHATSTATE {}
 
+impl<'a, SESSIONTYPE: TDSessionType> TDSessionType for &'a SESSIONTYPE {}
+impl<'a, SESSIONTYPE: TDSessionType> TDSessionType for &'a mut SESSIONTYPE {}
+
+impl<'a, SPEECHRECOGNITIONRESULT: TDSpeechRecognitionResult> TDSpeechRecognitionResult
+    for &'a SPEECHRECOGNITIONRESULT
+{
+}
+impl<'a, SPEECHRECOGNITIONRESULT: TDSpeechRecognitionResult> TDSpeechRecognitionResult
+    for &'a mut SPEECHRECOGNITIONRESULT
+{
+}
+
 impl<'a, STATISTICALGRAPH: TDStatisticalGraph> TDStatisticalGraph for &'a STATISTICALGRAPH {}
 impl<'a, STATISTICALGRAPH: TDStatisticalGraph> TDStatisticalGraph for &'a mut STATISTICALGRAPH {}
+
+impl<'a, STICKERFORMAT: TDStickerFormat> TDStickerFormat for &'a STICKERFORMAT {}
+impl<'a, STICKERFORMAT: TDStickerFormat> TDStickerFormat for &'a mut STICKERFORMAT {}
+
+impl<'a, STICKERFULLTYPE: TDStickerFullType> TDStickerFullType for &'a STICKERFULLTYPE {}
+impl<'a, STICKERFULLTYPE: TDStickerFullType> TDStickerFullType for &'a mut STICKERFULLTYPE {}
+
+impl<'a, STICKERTYPE: TDStickerType> TDStickerType for &'a STICKERTYPE {}
+impl<'a, STICKERTYPE: TDStickerType> TDStickerType for &'a mut STICKERTYPE {}
+
+impl<'a, STOREPAYMENTPURPOSE: TDStorePaymentPurpose> TDStorePaymentPurpose
+    for &'a STOREPAYMENTPURPOSE
+{
+}
+impl<'a, STOREPAYMENTPURPOSE: TDStorePaymentPurpose> TDStorePaymentPurpose
+    for &'a mut STOREPAYMENTPURPOSE
+{
+}
+
+impl<'a, STORYAREATYPE: TDStoryAreaType> TDStoryAreaType for &'a STORYAREATYPE {}
+impl<'a, STORYAREATYPE: TDStoryAreaType> TDStoryAreaType for &'a mut STORYAREATYPE {}
+
+impl<'a, STORYCONTENT: TDStoryContent> TDStoryContent for &'a STORYCONTENT {}
+impl<'a, STORYCONTENT: TDStoryContent> TDStoryContent for &'a mut STORYCONTENT {}
+
+impl<'a, STORYLIST: TDStoryList> TDStoryList for &'a STORYLIST {}
+impl<'a, STORYLIST: TDStoryList> TDStoryList for &'a mut STORYLIST {}
+
+impl<'a, STORYPRIVACYSETTINGS: TDStoryPrivacySettings> TDStoryPrivacySettings
+    for &'a STORYPRIVACYSETTINGS
+{
+}
+impl<'a, STORYPRIVACYSETTINGS: TDStoryPrivacySettings> TDStoryPrivacySettings
+    for &'a mut STORYPRIVACYSETTINGS
+{
+}
 
 impl<'a, SUGGESTEDACTION: TDSuggestedAction> TDSuggestedAction for &'a SUGGESTEDACTION {}
 impl<'a, SUGGESTEDACTION: TDSuggestedAction> TDSuggestedAction for &'a mut SUGGESTEDACTION {}
@@ -439,6 +664,18 @@ impl<'a, SUPERGROUPMEMBERSFILTER: TDSupergroupMembersFilter> TDSupergroupMembers
 
 impl<'a, TMEURLTYPE: TDTMeUrlType> TDTMeUrlType for &'a TMEURLTYPE {}
 impl<'a, TMEURLTYPE: TDTMeUrlType> TDTMeUrlType for &'a mut TMEURLTYPE {}
+
+impl<'a, TARGETCHAT: TDTargetChat> TDTargetChat for &'a TARGETCHAT {}
+impl<'a, TARGETCHAT: TDTargetChat> TDTargetChat for &'a mut TARGETCHAT {}
+
+impl<'a, TELEGRAMPAYMENTPURPOSE: TDTelegramPaymentPurpose> TDTelegramPaymentPurpose
+    for &'a TELEGRAMPAYMENTPURPOSE
+{
+}
+impl<'a, TELEGRAMPAYMENTPURPOSE: TDTelegramPaymentPurpose> TDTelegramPaymentPurpose
+    for &'a mut TELEGRAMPAYMENTPURPOSE
+{
+}
 
 impl<'a, TEXTENTITYTYPE: TDTextEntityType> TDTextEntityType for &'a TEXTENTITYTYPE {}
 impl<'a, TEXTENTITYTYPE: TDTextEntityType> TDTextEntityType for &'a mut TEXTENTITYTYPE {}

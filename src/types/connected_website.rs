@@ -45,8 +45,8 @@ pub struct ConnectedWebsite {
     /// IP address from which the user was logged in, in human-readable format
 
     #[serde(default)]
-    ip: String,
-    /// Human-readable description of a country and a region, from which the user was logged in, based on the IP address
+    ip_address: String,
+    /// Human-readable description of a country and a region from which the user was logged in, based on the IP address
 
     #[serde(default)]
     location: String,
@@ -102,8 +102,8 @@ impl ConnectedWebsite {
         self.last_active_date
     }
 
-    pub fn ip(&self) -> &String {
-        &self.ip
+    pub fn ip_address(&self) -> &String {
+        &self.ip_address
     }
 
     pub fn location(&self) -> &String {
@@ -159,8 +159,8 @@ impl ConnectedWebsiteBuilder {
         self
     }
 
-    pub fn ip<T: AsRef<str>>(&mut self, ip: T) -> &mut Self {
-        self.inner.ip = ip.as_ref().to_string();
+    pub fn ip_address<T: AsRef<str>>(&mut self, ip_address: T) -> &mut Self {
+        self.inner.ip_address = ip_address.as_ref().to_string();
         self
     }
 

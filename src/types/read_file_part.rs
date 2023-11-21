@@ -17,11 +17,11 @@ pub struct ReadFilePart {
     /// The offset from which to read the file
 
     #[serde(default)]
-    offset: i32,
+    offset: i64,
     /// Number of bytes to read. An error will be returned if there are not enough bytes available in the file from the specified position. Pass 0 to read all available data from the specified position
 
     #[serde(default)]
-    count: i32,
+    count: i64,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -57,11 +57,11 @@ impl ReadFilePart {
         self.file_id
     }
 
-    pub fn offset(&self) -> i32 {
+    pub fn offset(&self) -> i64 {
         self.offset
     }
 
-    pub fn count(&self) -> i32 {
+    pub fn count(&self) -> i64 {
         self.count
     }
 }
@@ -84,12 +84,12 @@ impl ReadFilePartBuilder {
         self
     }
 
-    pub fn offset(&mut self, offset: i32) -> &mut Self {
+    pub fn offset(&mut self, offset: i64) -> &mut Self {
         self.inner.offset = offset;
         self
     }
 
-    pub fn count(&mut self, count: i32) -> &mut Self {
+    pub fn count(&mut self, count: i64) -> &mut Self {
         self.inner.count = count;
         self
     }

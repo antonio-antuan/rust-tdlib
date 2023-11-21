@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Checks the authentication password for correctness. Works only when the current authorization state is authorizationStateWaitPassword
+/// Checks the 2-step verification password for correctness. Works only when the current authorization state is authorizationStateWaitPassword
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CheckAuthenticationPassword {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct CheckAuthenticationPassword {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The password to check
+    /// The 2-step verification password to check
 
     #[serde(default)]
     password: String,

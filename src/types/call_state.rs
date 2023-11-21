@@ -87,7 +87,7 @@ pub struct CallStateDiscarded {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The reason, why the call has ended
+    /// The reason why the call has ended
 
     #[serde(skip_serializing_if = "CallDiscardReason::_is_default")]
     reason: CallDiscardReason,
@@ -99,6 +99,10 @@ pub struct CallStateDiscarded {
 
     #[serde(default)]
     need_debug_information: bool,
+    /// True, if the call log must be sent to the server
+
+    #[serde(default)]
+    need_log: bool,
 }
 
 impl RObject for CallStateDiscarded {
@@ -136,6 +140,10 @@ impl CallStateDiscarded {
     pub fn need_debug_information(&self) -> bool {
         self.need_debug_information
     }
+
+    pub fn need_log(&self) -> bool {
+        self.need_log
+    }
 }
 
 #[doc(hidden)]
@@ -163,6 +171,11 @@ impl CallStateDiscardedBuilder {
 
     pub fn need_debug_information(&mut self, need_debug_information: bool) -> &mut Self {
         self.inner.need_debug_information = need_debug_information;
+        self
+    }
+
+    pub fn need_log(&mut self, need_log: bool) -> &mut Self {
+        self.inner.need_log = need_log;
         self
     }
 }
@@ -468,7 +481,7 @@ pub struct CallStateReady {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Call protocols supported by the peer
+    /// Call protocols supported by the other call participant
     protocol: CallProtocol,
     /// List of available call servers
 

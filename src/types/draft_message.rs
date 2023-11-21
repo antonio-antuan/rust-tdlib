@@ -10,10 +10,8 @@ pub struct DraftMessage {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the message to reply to; 0 if none
-
-    #[serde(default)]
-    reply_to_message_id: i64,
+    /// Information about the message to be replied; must be of the type inputMessageReplyToMessage; may be null if none
+    reply_to: Option<InputMessageReplyTo>,
     /// Point in time (Unix timestamp) when the draft was created
 
     #[serde(default)]
@@ -46,8 +44,8 @@ impl DraftMessage {
         DraftMessageBuilder { inner }
     }
 
-    pub fn reply_to_message_id(&self) -> i64 {
-        self.reply_to_message_id
+    pub fn reply_to(&self) -> &Option<InputMessageReplyTo> {
+        &self.reply_to
     }
 
     pub fn date(&self) -> i32 {
@@ -72,8 +70,8 @@ impl DraftMessageBuilder {
         self.inner.clone()
     }
 
-    pub fn reply_to_message_id(&mut self, reply_to_message_id: i64) -> &mut Self {
-        self.inner.reply_to_message_id = reply_to_message_id;
+    pub fn reply_to<T: AsRef<InputMessageReplyTo>>(&mut self, reply_to: T) -> &mut Self {
+        self.inner.reply_to = Some(reply_to.as_ref().clone());
         self
     }
 

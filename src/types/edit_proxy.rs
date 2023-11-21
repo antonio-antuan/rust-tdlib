@@ -14,7 +14,7 @@ pub struct EditProxy {
 
     #[serde(default)]
     proxy_id: i32,
-    /// Proxy server IP address
+    /// Proxy server domain or IP address
 
     #[serde(default)]
     server: String,
@@ -22,7 +22,7 @@ pub struct EditProxy {
 
     #[serde(default)]
     port: i32,
-    /// True, if the proxy needs to be enabled
+    /// Pass true to immediately enable the proxy
 
     #[serde(default)]
     enable: bool,

@@ -153,6 +153,10 @@ pub struct NotificationTypeNewMessage {
     client_id: Option<i32>,
     /// The message
     message: Message,
+    /// True, if message content must be displayed in notifications
+
+    #[serde(default)]
+    show_preview: bool,
 }
 
 impl RObject for NotificationTypeNewMessage {
@@ -182,6 +186,10 @@ impl NotificationTypeNewMessage {
     pub fn message(&self) -> &Message {
         &self.message
     }
+
+    pub fn show_preview(&self) -> bool {
+        self.show_preview
+    }
 }
 
 #[doc(hidden)]
@@ -199,6 +207,11 @@ impl NotificationTypeNewMessageBuilder {
 
     pub fn message<T: AsRef<Message>>(&mut self, message: T) -> &mut Self {
         self.inner.message = message.as_ref().clone();
+        self
+    }
+
+    pub fn show_preview(&mut self, show_preview: bool) -> &mut Self {
+        self.inner.show_preview = show_preview;
         self
     }
 }
@@ -223,7 +236,7 @@ pub struct NotificationTypeNewPushMessage {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The message identifier. The message will not be available in the chat history, but the ID can be used in viewMessages, or as reply_to_message_id
+    /// The message identifier. The message will not be available in the chat history, but the identifier can be used in viewMessages, or as a message to be replied in the same chat
 
     #[serde(default)]
     message_id: i64,

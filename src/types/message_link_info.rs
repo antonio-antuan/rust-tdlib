@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains information about a link to a message in a chat
+/// Contains information about a link to a message or a forum topic in a chat
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageLinkInfo {
     #[doc(hidden)]
@@ -10,17 +10,21 @@ pub struct MessageLinkInfo {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// True, if the link is a public link for a message in a chat
+    /// True, if the link is a public link for a message or a forum topic in a chat
 
     #[serde(default)]
     is_public: bool,
-    /// If found, identifier of the chat to which the message belongs, 0 otherwise
+    /// If found, identifier of the chat to which the link points, 0 otherwise
 
     #[serde(default)]
     chat_id: i64,
+    /// If found, identifier of the message thread in which to open the message, or a forum topic to open if the message is missing
+
+    #[serde(default)]
+    message_thread_id: i64,
     /// If found, the linked message; may be null
     message: Option<Message>,
-    /// Timestamp from which the video/audio/video note/voice note playing must start, in seconds; 0 if not specified. The media can be in the message content or in its web page preview
+    /// Timestamp from which the video/audio/video note/voice note/story playing must start, in seconds; 0 if not specified. The media can be in the message content or in its web page preview
 
     #[serde(default)]
     media_timestamp: i32,
@@ -28,10 +32,6 @@ pub struct MessageLinkInfo {
 
     #[serde(default)]
     for_album: bool,
-    /// True, if the message is linked as a channel post comment or from a message thread
-
-    #[serde(default)]
-    for_comment: bool,
 }
 
 impl RObject for MessageLinkInfo {
@@ -64,6 +64,10 @@ impl MessageLinkInfo {
         self.chat_id
     }
 
+    pub fn message_thread_id(&self) -> i64 {
+        self.message_thread_id
+    }
+
     pub fn message(&self) -> &Option<Message> {
         &self.message
     }
@@ -74,10 +78,6 @@ impl MessageLinkInfo {
 
     pub fn for_album(&self) -> bool {
         self.for_album
-    }
-
-    pub fn for_comment(&self) -> bool {
-        self.for_comment
     }
 }
 
@@ -104,6 +104,11 @@ impl MessageLinkInfoBuilder {
         self
     }
 
+    pub fn message_thread_id(&mut self, message_thread_id: i64) -> &mut Self {
+        self.inner.message_thread_id = message_thread_id;
+        self
+    }
+
     pub fn message<T: AsRef<Message>>(&mut self, message: T) -> &mut Self {
         self.inner.message = Some(message.as_ref().clone());
         self
@@ -116,11 +121,6 @@ impl MessageLinkInfoBuilder {
 
     pub fn for_album(&mut self, for_album: bool) -> &mut Self {
         self.inner.for_album = for_album;
-        self
-    }
-
-    pub fn for_comment(&mut self, for_comment: bool) -> &mut Self {
-        self.inner.for_comment = for_comment;
         self
     }
 }

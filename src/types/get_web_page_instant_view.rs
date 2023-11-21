@@ -14,7 +14,7 @@ pub struct GetWebPageInstantView {
 
     #[serde(default)]
     url: String,
-    /// If true, the full instant view for the web page will be returned
+    /// Pass true to get full instant view for the web page
 
     #[serde(default)]
     force_full: bool,

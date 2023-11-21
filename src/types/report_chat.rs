@@ -14,14 +14,14 @@ pub struct ReportChat {
 
     #[serde(default)]
     chat_id: i64,
-    /// Identifiers of reported messages, if any
+    /// Identifiers of reported messages; may be empty to report the whole chat
 
     #[serde(default)]
     message_ids: Vec<i64>,
     /// The reason for reporting the chat
 
-    #[serde(skip_serializing_if = "ChatReportReason::_is_default")]
-    reason: ChatReportReason,
+    #[serde(skip_serializing_if = "ReportReason::_is_default")]
+    reason: ReportReason,
     /// Additional report details; 0-1024 characters
 
     #[serde(default)]
@@ -65,7 +65,7 @@ impl ReportChat {
         &self.message_ids
     }
 
-    pub fn reason(&self) -> &ChatReportReason {
+    pub fn reason(&self) -> &ReportReason {
         &self.reason
     }
 
@@ -97,7 +97,7 @@ impl ReportChatBuilder {
         self
     }
 
-    pub fn reason<T: AsRef<ChatReportReason>>(&mut self, reason: T) -> &mut Self {
+    pub fn reason<T: AsRef<ReportReason>>(&mut self, reason: T) -> &mut Self {
         self.inner.reason = reason.as_ref().clone();
         self
     }

@@ -4,10 +4,10 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Represents a single rule for managing privacy settings
+/// Represents a single rule for managing user privacy settings
 pub trait TDUserPrivacySettingRule: Debug + RObject {}
 
-/// Represents a single rule for managing privacy settings
+/// Represents a single rule for managing user privacy settings
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum UserPrivacySettingRule {
@@ -20,7 +20,7 @@ pub enum UserPrivacySettingRule {
     /// A rule to allow all members of certain specified basic groups and supergroups to doing something
     #[serde(rename = "userPrivacySettingRuleAllowChatMembers")]
     AllowChatMembers(UserPrivacySettingRuleAllowChatMembers),
-    /// A rule to allow all of a user's contacts to do something
+    /// A rule to allow all contacts of the user to do something
     #[serde(rename = "userPrivacySettingRuleAllowContacts")]
     AllowContacts(UserPrivacySettingRuleAllowContacts),
     /// A rule to allow certain specified users to do something
@@ -32,7 +32,7 @@ pub enum UserPrivacySettingRule {
     /// A rule to restrict all members of specified basic groups and supergroups from doing something
     #[serde(rename = "userPrivacySettingRuleRestrictChatMembers")]
     RestrictChatMembers(UserPrivacySettingRuleRestrictChatMembers),
-    /// A rule to restrict all contacts of a user from doing something
+    /// A rule to restrict all contacts of the user from doing something
     #[serde(rename = "userPrivacySettingRuleRestrictContacts")]
     RestrictContacts(UserPrivacySettingRuleRestrictContacts),
     /// A rule to restrict all specified users from doing something
@@ -227,7 +227,7 @@ impl AsRef<UserPrivacySettingRuleAllowChatMembers>
     }
 }
 
-/// A rule to allow all of a user's contacts to do something
+/// A rule to allow all contacts of the user to do something
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleAllowContacts {
     #[doc(hidden)]
@@ -502,7 +502,7 @@ impl AsRef<UserPrivacySettingRuleRestrictChatMembers>
     }
 }
 
-/// A rule to restrict all contacts of a user from doing something
+/// A rule to restrict all contacts of the user from doing something
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UserPrivacySettingRuleRestrictContacts {
     #[doc(hidden)]

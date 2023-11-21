@@ -14,7 +14,7 @@ pub struct ToggleGroupCallScreenSharingIsPaused {
 
     #[serde(default)]
     group_call_id: i32,
-    /// True if screen sharing is paused
+    /// Pass true to pause screen sharing; pass false to unpause it
 
     #[serde(default)]
     is_paused: bool,

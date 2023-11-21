@@ -14,6 +14,10 @@ pub struct VideoNote {
 
     #[serde(default)]
     duration: i32,
+    /// A waveform representation of the video note's audio in 5-bit format; may be empty if unknown
+
+    #[serde(default)]
+    waveform: String,
     /// Video width and height; as defined by the sender
 
     #[serde(default)]
@@ -22,6 +26,8 @@ pub struct VideoNote {
     minithumbnail: Option<Minithumbnail>,
     /// Video thumbnail in JPEG format; as defined by the sender; may be null
     thumbnail: Option<Thumbnail>,
+    /// Result of speech recognition in the video note; may be null
+    speech_recognition_result: Option<SpeechRecognitionResult>,
     /// File containing the video
     video: File,
 }
@@ -52,6 +58,10 @@ impl VideoNote {
         self.duration
     }
 
+    pub fn waveform(&self) -> &String {
+        &self.waveform
+    }
+
     pub fn length(&self) -> i32 {
         self.length
     }
@@ -62,6 +72,10 @@ impl VideoNote {
 
     pub fn thumbnail(&self) -> &Option<Thumbnail> {
         &self.thumbnail
+    }
+
+    pub fn speech_recognition_result(&self) -> &Option<SpeechRecognitionResult> {
+        &self.speech_recognition_result
     }
 
     pub fn video(&self) -> &File {
@@ -87,6 +101,11 @@ impl VideoNoteBuilder {
         self
     }
 
+    pub fn waveform<T: AsRef<str>>(&mut self, waveform: T) -> &mut Self {
+        self.inner.waveform = waveform.as_ref().to_string();
+        self
+    }
+
     pub fn length(&mut self, length: i32) -> &mut Self {
         self.inner.length = length;
         self
@@ -99,6 +118,14 @@ impl VideoNoteBuilder {
 
     pub fn thumbnail<T: AsRef<Thumbnail>>(&mut self, thumbnail: T) -> &mut Self {
         self.inner.thumbnail = Some(thumbnail.as_ref().clone());
+        self
+    }
+
+    pub fn speech_recognition_result<T: AsRef<SpeechRecognitionResult>>(
+        &mut self,
+        speech_recognition_result: T,
+    ) -> &mut Self {
+        self.inner.speech_recognition_result = Some(speech_recognition_result.as_ref().clone());
         self
     }
 

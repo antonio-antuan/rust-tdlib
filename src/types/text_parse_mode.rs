@@ -4,10 +4,10 @@ use uuid::Uuid;
 
 use std::fmt::Debug;
 
-/// Describes the way the text needs to be parsed for TextEntities
+/// Describes the way the text needs to be parsed for text entities
 pub trait TDTextParseMode: Debug + RObject {}
 
-/// Describes the way the text needs to be parsed for TextEntities
+/// Describes the way the text needs to be parsed for text entities
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(tag = "@type")]
 pub enum TextParseMode {

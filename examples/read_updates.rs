@@ -2,14 +2,14 @@ use rust_tdlib::client::ClientState;
 use rust_tdlib::{
     client::{Client, Worker},
     tdjson,
-    types::{TdlibParameters, Update},
+    types::{SetTdlibParameters, Update},
 };
 
 #[tokio::main]
 async fn main() {
     tdjson::set_log_verbosity_level(1);
     env_logger::init();
-    let tdlib_parameters = TdlibParameters::builder()
+    let tdlib_parameters = SetTdlibParameters::builder()
         .database_directory("tddb")
         .use_test_dc(false)
         .api_id(std::env::var("API_ID").unwrap().parse::<i32>().unwrap())

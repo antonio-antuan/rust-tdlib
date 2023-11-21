@@ -14,7 +14,7 @@ pub enum InputChatPhoto {
     #[doc(hidden)]
     #[default]
     _Default,
-    /// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 800 and be at most 2MB in size
+    /// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 1280 and be at most 2MB in size
     #[serde(rename = "inputChatPhotoAnimation")]
     Animation(InputChatPhotoAnimation),
     /// A previously used profile photo of the current user
@@ -23,6 +23,9 @@ pub enum InputChatPhoto {
     /// A static photo in JPEG format
     #[serde(rename = "inputChatPhotoStatic")]
     Static(InputChatPhotoStatic),
+    /// A sticker on a custom background
+    #[serde(rename = "inputChatPhotoSticker")]
+    Sticker(InputChatPhotoSticker),
 }
 
 impl RObject for InputChatPhoto {
@@ -32,6 +35,7 @@ impl RObject for InputChatPhoto {
             InputChatPhoto::Animation(t) => t.extra(),
             InputChatPhoto::Previous(t) => t.extra(),
             InputChatPhoto::Static(t) => t.extra(),
+            InputChatPhoto::Sticker(t) => t.extra(),
 
             _ => None,
         }
@@ -42,6 +46,7 @@ impl RObject for InputChatPhoto {
             InputChatPhoto::Animation(t) => t.client_id(),
             InputChatPhoto::Previous(t) => t.client_id(),
             InputChatPhoto::Static(t) => t.client_id(),
+            InputChatPhoto::Sticker(t) => t.client_id(),
 
             _ => None,
         }
@@ -64,7 +69,7 @@ impl AsRef<InputChatPhoto> for InputChatPhoto {
     }
 }
 
-/// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 800 and be at most 2MB in size
+/// An animation in MPEG4 format; must be square, at most 10 seconds long, have width between 160 and 1280 and be at most 2MB in size
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InputChatPhotoAnimation {
     #[doc(hidden)]
@@ -299,6 +304,78 @@ impl AsRef<InputChatPhotoStatic> for InputChatPhotoStatic {
 
 impl AsRef<InputChatPhotoStatic> for InputChatPhotoStaticBuilder {
     fn as_ref(&self) -> &InputChatPhotoStatic {
+        &self.inner
+    }
+}
+
+/// A sticker on a custom background
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct InputChatPhotoSticker {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Information about the sticker
+    sticker: ChatPhotoSticker,
+}
+
+impl RObject for InputChatPhotoSticker {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDInputChatPhoto for InputChatPhotoSticker {}
+
+impl InputChatPhotoSticker {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> InputChatPhotoStickerBuilder {
+        let mut inner = InputChatPhotoSticker::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        InputChatPhotoStickerBuilder { inner }
+    }
+
+    pub fn sticker(&self) -> &ChatPhotoSticker {
+        &self.sticker
+    }
+}
+
+#[doc(hidden)]
+pub struct InputChatPhotoStickerBuilder {
+    inner: InputChatPhotoSticker,
+}
+
+#[deprecated]
+pub type RTDInputChatPhotoStickerBuilder = InputChatPhotoStickerBuilder;
+
+impl InputChatPhotoStickerBuilder {
+    pub fn build(&self) -> InputChatPhotoSticker {
+        self.inner.clone()
+    }
+
+    pub fn sticker<T: AsRef<ChatPhotoSticker>>(&mut self, sticker: T) -> &mut Self {
+        self.inner.sticker = sticker.as_ref().clone();
+        self
+    }
+}
+
+impl AsRef<InputChatPhotoSticker> for InputChatPhotoSticker {
+    fn as_ref(&self) -> &InputChatPhotoSticker {
+        self
+    }
+}
+
+impl AsRef<InputChatPhotoSticker> for InputChatPhotoStickerBuilder {
+    fn as_ref(&self) -> &InputChatPhotoSticker {
         &self.inner
     }
 }

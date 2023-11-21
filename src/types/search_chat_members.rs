@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for a specified query in the first name, last name and username of the members of a specified chat. Requires administrator rights in channels
+/// Searches for a specified query in the first name, last name and usernames of the members of a specified chat. Requires administrator rights in channels
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchChatMembers {
     #[doc(hidden)]

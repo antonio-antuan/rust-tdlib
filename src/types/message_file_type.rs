@@ -14,7 +14,7 @@ pub enum MessageFileType {
     #[doc(hidden)]
     #[default]
     _Default,
-    /// Returns information about a file with messages exported from another app
+    /// Returns information about a file with messages exported from another application
     #[serde(rename = "getMessageFileType")]
     GetMessageFileType(GetMessageFileType),
     /// The messages was exported from a group chat

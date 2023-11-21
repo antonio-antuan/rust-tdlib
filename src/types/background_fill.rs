@@ -154,7 +154,7 @@ pub struct BackgroundFillGradient {
 
     #[serde(default)]
     bottom_color: i32,
-    /// Clockwise rotation angle of the gradient, in degrees; 0-359. Must be always divisible by 45
+    /// Clockwise rotation angle of the gradient, in degrees; 0-359. Must always be divisible by 45
 
     #[serde(default)]
     rotation_angle: i32,

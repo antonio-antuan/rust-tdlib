@@ -21,11 +21,11 @@ pub struct AutoDownloadSettings {
     /// The maximum size of a video file to be auto-downloaded, in bytes
 
     #[serde(default)]
-    max_video_file_size: i32,
+    max_video_file_size: i64,
     /// The maximum size of other file types to be auto-downloaded, in bytes
 
     #[serde(default)]
-    max_other_file_size: i32,
+    max_other_file_size: i64,
     /// The maximum suggested bitrate for uploaded videos, in kbit/s
 
     #[serde(default)]
@@ -38,6 +38,10 @@ pub struct AutoDownloadSettings {
 
     #[serde(default)]
     preload_next_audio: bool,
+    /// True, if stories needs to be preloaded
+
+    #[serde(default)]
+    preload_stories: bool,
     /// True, if "use less data for calls" option needs to be enabled
 
     #[serde(default)]
@@ -74,11 +78,11 @@ impl AutoDownloadSettings {
         self.max_photo_file_size
     }
 
-    pub fn max_video_file_size(&self) -> i32 {
+    pub fn max_video_file_size(&self) -> i64 {
         self.max_video_file_size
     }
 
-    pub fn max_other_file_size(&self) -> i32 {
+    pub fn max_other_file_size(&self) -> i64 {
         self.max_other_file_size
     }
 
@@ -92,6 +96,10 @@ impl AutoDownloadSettings {
 
     pub fn preload_next_audio(&self) -> bool {
         self.preload_next_audio
+    }
+
+    pub fn preload_stories(&self) -> bool {
+        self.preload_stories
     }
 
     pub fn use_less_data_for_calls(&self) -> bool {
@@ -122,12 +130,12 @@ impl AutoDownloadSettingsBuilder {
         self
     }
 
-    pub fn max_video_file_size(&mut self, max_video_file_size: i32) -> &mut Self {
+    pub fn max_video_file_size(&mut self, max_video_file_size: i64) -> &mut Self {
         self.inner.max_video_file_size = max_video_file_size;
         self
     }
 
-    pub fn max_other_file_size(&mut self, max_other_file_size: i32) -> &mut Self {
+    pub fn max_other_file_size(&mut self, max_other_file_size: i64) -> &mut Self {
         self.inner.max_other_file_size = max_other_file_size;
         self
     }
@@ -144,6 +152,11 @@ impl AutoDownloadSettingsBuilder {
 
     pub fn preload_next_audio(&mut self, preload_next_audio: bool) -> &mut Self {
         self.inner.preload_next_audio = preload_next_audio;
+        self
+    }
+
+    pub fn preload_stories(&mut self, preload_stories: bool) -> &mut Self {
+        self.inner.preload_stories = preload_stories;
         self
     }
 

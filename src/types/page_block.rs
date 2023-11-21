@@ -635,7 +635,11 @@ pub struct PageBlockChatLink {
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
-    /// Chat username, by which all other information about the chat can be resolved
+    /// Identifier of the accent color for chat title and background of chat photo
+
+    #[serde(default)]
+    accent_color_id: i32,
+    /// Chat username by which all other information about the chat can be resolved
 
     #[serde(default)]
     username: String,
@@ -673,6 +677,10 @@ impl PageBlockChatLink {
         &self.photo
     }
 
+    pub fn accent_color_id(&self) -> i32 {
+        self.accent_color_id
+    }
+
     pub fn username(&self) -> &String {
         &self.username
     }
@@ -698,6 +706,11 @@ impl PageBlockChatLinkBuilder {
 
     pub fn photo<T: AsRef<ChatPhotoInfo>>(&mut self, photo: T) -> &mut Self {
         self.inner.photo = Some(photo.as_ref().clone());
+        self
+    }
+
+    pub fn accent_color_id(&mut self, accent_color_id: i32) -> &mut Self {
+        self.inner.accent_color_id = accent_color_id;
         self
     }
 

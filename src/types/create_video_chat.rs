@@ -10,7 +10,7 @@ pub struct CreateVideoChat {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat identifier, in which the video chat will be created
+    /// Identifier of a chat in which the video chat will be created
 
     #[serde(default)]
     chat_id: i64,
@@ -22,6 +22,10 @@ pub struct CreateVideoChat {
 
     #[serde(default)]
     start_date: i32,
+    /// Pass true to create an RTMP stream instead of an ordinary video chat; requires creator privileges
+
+    #[serde(default)]
+    is_rtmp_stream: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -64,6 +68,10 @@ impl CreateVideoChat {
     pub fn start_date(&self) -> i32 {
         self.start_date
     }
+
+    pub fn is_rtmp_stream(&self) -> bool {
+        self.is_rtmp_stream
+    }
 }
 
 #[doc(hidden)]
@@ -91,6 +99,11 @@ impl CreateVideoChatBuilder {
 
     pub fn start_date(&mut self, start_date: i32) -> &mut Self {
         self.inner.start_date = start_date;
+        self
+    }
+
+    pub fn is_rtmp_stream(&mut self, is_rtmp_stream: bool) -> &mut Self {
+        self.inner.is_rtmp_stream = is_rtmp_stream;
         self
     }
 }

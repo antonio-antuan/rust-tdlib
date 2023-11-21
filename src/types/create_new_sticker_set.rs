@@ -22,11 +22,19 @@ pub struct CreateNewStickerSet {
 
     #[serde(default)]
     name: String,
-    /// True, if stickers are masks. Animated stickers can't be masks
+    /// Format of the stickers in the set
+
+    #[serde(skip_serializing_if = "StickerFormat::_is_default")]
+    sticker_format: StickerFormat,
+    /// Type of the stickers in the set
+
+    #[serde(skip_serializing_if = "StickerType::_is_default")]
+    sticker_type: StickerType,
+    /// Pass true if stickers in the sticker set must be repainted; for custom emoji sticker sets only
 
     #[serde(default)]
-    is_masks: bool,
-    /// List of stickers to be added to the set; must be non-empty. All stickers must be of the same type. For animated stickers, uploadStickerFile must be used before the sticker is shown
+    needs_repainting: bool,
+    /// List of stickers to be added to the set; must be non-empty. All stickers must have the same format. For TGS stickers, uploadStickerFile must be used before the sticker is shown
 
     #[serde(default)]
     stickers: Vec<InputSticker>,
@@ -77,8 +85,16 @@ impl CreateNewStickerSet {
         &self.name
     }
 
-    pub fn is_masks(&self) -> bool {
-        self.is_masks
+    pub fn sticker_format(&self) -> &StickerFormat {
+        &self.sticker_format
+    }
+
+    pub fn sticker_type(&self) -> &StickerType {
+        &self.sticker_type
+    }
+
+    pub fn needs_repainting(&self) -> bool {
+        self.needs_repainting
     }
 
     pub fn stickers(&self) -> &Vec<InputSticker> {
@@ -118,8 +134,18 @@ impl CreateNewStickerSetBuilder {
         self
     }
 
-    pub fn is_masks(&mut self, is_masks: bool) -> &mut Self {
-        self.inner.is_masks = is_masks;
+    pub fn sticker_format<T: AsRef<StickerFormat>>(&mut self, sticker_format: T) -> &mut Self {
+        self.inner.sticker_format = sticker_format.as_ref().clone();
+        self
+    }
+
+    pub fn sticker_type<T: AsRef<StickerType>>(&mut self, sticker_type: T) -> &mut Self {
+        self.inner.sticker_type = sticker_type.as_ref().clone();
+        self
+    }
+
+    pub fn needs_repainting(&mut self, needs_repainting: bool) -> &mut Self {
+        self.inner.needs_repainting = needs_repainting;
         self
     }
 

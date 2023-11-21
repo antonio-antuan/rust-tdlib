@@ -10,23 +10,43 @@ pub struct ChatPermissions {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// True, if the user can send text messages, contacts, locations, and venues
+    /// True, if the user can send text messages, contacts, giveaways, invoices, locations, and venues
 
     #[serde(default)]
-    can_send_messages: bool,
-    /// True, if the user can send audio files, documents, photos, videos, video notes, and voice notes. Implies can_send_messages permissions
+    can_send_basic_messages: bool,
+    /// True, if the user can send music files
 
     #[serde(default)]
-    can_send_media_messages: bool,
-    /// True, if the user can send polls. Implies can_send_messages permissions
+    can_send_audios: bool,
+    /// True, if the user can send documents
+
+    #[serde(default)]
+    can_send_documents: bool,
+    /// True, if the user can send photos
+
+    #[serde(default)]
+    can_send_photos: bool,
+    /// True, if the user can send videos
+
+    #[serde(default)]
+    can_send_videos: bool,
+    /// True, if the user can send video notes
+
+    #[serde(default)]
+    can_send_video_notes: bool,
+    /// True, if the user can send voice notes
+
+    #[serde(default)]
+    can_send_voice_notes: bool,
+    /// True, if the user can send polls
 
     #[serde(default)]
     can_send_polls: bool,
-    /// True, if the user can send animations, games, stickers, and dice and use inline bots. Implies can_send_messages permissions
+    /// True, if the user can send animations, games, stickers, and dice and use inline bots
 
     #[serde(default)]
     can_send_other_messages: bool,
-    /// True, if the user may add a web page preview to their messages. Implies can_send_messages permissions
+    /// True, if the user may add a web page preview to their messages
 
     #[serde(default)]
     can_add_web_page_previews: bool,
@@ -42,6 +62,10 @@ pub struct ChatPermissions {
 
     #[serde(default)]
     can_pin_messages: bool,
+    /// True, if the user can manage topics
+
+    #[serde(default)]
+    can_manage_topics: bool,
 }
 
 impl RObject for ChatPermissions {
@@ -66,12 +90,32 @@ impl ChatPermissions {
         ChatPermissionsBuilder { inner }
     }
 
-    pub fn can_send_messages(&self) -> bool {
-        self.can_send_messages
+    pub fn can_send_basic_messages(&self) -> bool {
+        self.can_send_basic_messages
     }
 
-    pub fn can_send_media_messages(&self) -> bool {
-        self.can_send_media_messages
+    pub fn can_send_audios(&self) -> bool {
+        self.can_send_audios
+    }
+
+    pub fn can_send_documents(&self) -> bool {
+        self.can_send_documents
+    }
+
+    pub fn can_send_photos(&self) -> bool {
+        self.can_send_photos
+    }
+
+    pub fn can_send_videos(&self) -> bool {
+        self.can_send_videos
+    }
+
+    pub fn can_send_video_notes(&self) -> bool {
+        self.can_send_video_notes
+    }
+
+    pub fn can_send_voice_notes(&self) -> bool {
+        self.can_send_voice_notes
     }
 
     pub fn can_send_polls(&self) -> bool {
@@ -97,6 +141,10 @@ impl ChatPermissions {
     pub fn can_pin_messages(&self) -> bool {
         self.can_pin_messages
     }
+
+    pub fn can_manage_topics(&self) -> bool {
+        self.can_manage_topics
+    }
 }
 
 #[doc(hidden)]
@@ -112,13 +160,38 @@ impl ChatPermissionsBuilder {
         self.inner.clone()
     }
 
-    pub fn can_send_messages(&mut self, can_send_messages: bool) -> &mut Self {
-        self.inner.can_send_messages = can_send_messages;
+    pub fn can_send_basic_messages(&mut self, can_send_basic_messages: bool) -> &mut Self {
+        self.inner.can_send_basic_messages = can_send_basic_messages;
         self
     }
 
-    pub fn can_send_media_messages(&mut self, can_send_media_messages: bool) -> &mut Self {
-        self.inner.can_send_media_messages = can_send_media_messages;
+    pub fn can_send_audios(&mut self, can_send_audios: bool) -> &mut Self {
+        self.inner.can_send_audios = can_send_audios;
+        self
+    }
+
+    pub fn can_send_documents(&mut self, can_send_documents: bool) -> &mut Self {
+        self.inner.can_send_documents = can_send_documents;
+        self
+    }
+
+    pub fn can_send_photos(&mut self, can_send_photos: bool) -> &mut Self {
+        self.inner.can_send_photos = can_send_photos;
+        self
+    }
+
+    pub fn can_send_videos(&mut self, can_send_videos: bool) -> &mut Self {
+        self.inner.can_send_videos = can_send_videos;
+        self
+    }
+
+    pub fn can_send_video_notes(&mut self, can_send_video_notes: bool) -> &mut Self {
+        self.inner.can_send_video_notes = can_send_video_notes;
+        self
+    }
+
+    pub fn can_send_voice_notes(&mut self, can_send_voice_notes: bool) -> &mut Self {
+        self.inner.can_send_voice_notes = can_send_voice_notes;
         self
     }
 
@@ -149,6 +222,11 @@ impl ChatPermissionsBuilder {
 
     pub fn can_pin_messages(&mut self, can_pin_messages: bool) -> &mut Self {
         self.inner.can_pin_messages = can_pin_messages;
+        self
+    }
+
+    pub fn can_manage_topics(&mut self, can_manage_topics: bool) -> &mut Self {
+        self.inner.can_manage_topics = can_manage_topics;
         self
     }
 }

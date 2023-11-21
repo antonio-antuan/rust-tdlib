@@ -26,7 +26,7 @@ pub struct GetChatHistory {
 
     #[serde(default)]
     limit: i32,
-    /// If true, returns only messages that are available locally without sending network requests
+    /// Pass true to get only messages that are available without sending network requests
 
     #[serde(default)]
     only_local: bool,

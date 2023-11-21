@@ -17,7 +17,7 @@ pub enum MessageSchedulingState {
     /// The message will be sent at the specified date
     #[serde(rename = "messageSchedulingStateSendAtDate")]
     SendAtDate(MessageSchedulingStateSendAtDate),
-    /// The message will be sent when the peer will be online. Applicable to private chats only and when the exact online status of the peer is known
+    /// The message will be sent when the other user is online. Applicable to private chats only and when the exact online status of the other user is known
     #[serde(rename = "messageSchedulingStateSendWhenOnline")]
     SendWhenOnline(MessageSchedulingStateSendWhenOnline),
 }
@@ -67,7 +67,7 @@ pub struct MessageSchedulingStateSendAtDate {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Date the message will be sent. The date must be within 367 days in the future
+    /// Point in time (Unix timestamp) when the message will be sent. The date must be within 367 days in the future
 
     #[serde(default)]
     send_date: i32,
@@ -133,7 +133,7 @@ impl AsRef<MessageSchedulingStateSendAtDate> for MessageSchedulingStateSendAtDat
     }
 }
 
-/// The message will be sent when the peer will be online. Applicable to private chats only and when the exact online status of the peer is known
+/// The message will be sent when the other user is online. Applicable to private chats only and when the exact online status of the other user is known
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageSchedulingStateSendWhenOnline {
     #[doc(hidden)]

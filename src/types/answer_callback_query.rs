@@ -22,7 +22,7 @@ pub struct AnswerCallbackQuery {
 
     #[serde(default)]
     text: String,
-    /// If true, an alert must be shown to the user instead of a toast notification
+    /// Pass true to show an alert to the user instead of a toast notification
 
     #[serde(default)]
     show_alert: bool,

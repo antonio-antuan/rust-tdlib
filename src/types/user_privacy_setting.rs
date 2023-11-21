@@ -26,6 +26,12 @@ pub enum UserPrivacySetting {
     /// A privacy setting for managing whether peer-to-peer connections can be used for calls
     #[serde(rename = "userPrivacySettingAllowPeerToPeerCalls")]
     AllowPeerToPeerCalls(UserPrivacySettingAllowPeerToPeerCalls),
+    /// A privacy setting for managing whether the user can receive voice and video messages in private chats
+    #[serde(rename = "userPrivacySettingAllowPrivateVoiceAndVideoNoteMessages")]
+    AllowPrivateVoiceAndVideoNoteMessages(UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages),
+    /// A privacy setting for managing whether the user's bio is visible
+    #[serde(rename = "userPrivacySettingShowBio")]
+    ShowBio(UserPrivacySettingShowBio),
     /// A privacy setting for managing whether a link to the user's account is included in forwarded messages
     #[serde(rename = "userPrivacySettingShowLinkInForwardedMessages")]
     ShowLinkInForwardedMessages(UserPrivacySettingShowLinkInForwardedMessages),
@@ -48,6 +54,8 @@ impl RObject for UserPrivacySetting {
             UserPrivacySetting::AllowChatInvites(t) => t.extra(),
             UserPrivacySetting::AllowFindingByPhoneNumber(t) => t.extra(),
             UserPrivacySetting::AllowPeerToPeerCalls(t) => t.extra(),
+            UserPrivacySetting::AllowPrivateVoiceAndVideoNoteMessages(t) => t.extra(),
+            UserPrivacySetting::ShowBio(t) => t.extra(),
             UserPrivacySetting::ShowLinkInForwardedMessages(t) => t.extra(),
             UserPrivacySetting::ShowPhoneNumber(t) => t.extra(),
             UserPrivacySetting::ShowProfilePhoto(t) => t.extra(),
@@ -63,6 +71,8 @@ impl RObject for UserPrivacySetting {
             UserPrivacySetting::AllowChatInvites(t) => t.client_id(),
             UserPrivacySetting::AllowFindingByPhoneNumber(t) => t.client_id(),
             UserPrivacySetting::AllowPeerToPeerCalls(t) => t.client_id(),
+            UserPrivacySetting::AllowPrivateVoiceAndVideoNoteMessages(t) => t.client_id(),
+            UserPrivacySetting::ShowBio(t) => t.client_id(),
             UserPrivacySetting::ShowLinkInForwardedMessages(t) => t.client_id(),
             UserPrivacySetting::ShowPhoneNumber(t) => t.client_id(),
             UserPrivacySetting::ShowProfilePhoto(t) => t.client_id(),
@@ -337,6 +347,133 @@ impl AsRef<UserPrivacySettingAllowPeerToPeerCalls>
     for UserPrivacySettingAllowPeerToPeerCallsBuilder
 {
     fn as_ref(&self) -> &UserPrivacySettingAllowPeerToPeerCalls {
+        &self.inner
+    }
+}
+
+/// A privacy setting for managing whether the user can receive voice and video messages in private chats
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDUserPrivacySetting for UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages {}
+
+impl UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessagesBuilder {
+        let mut inner = UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessagesBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessagesBuilder {
+    inner: UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages,
+}
+
+#[deprecated]
+pub type RTDUserPrivacySettingAllowPrivateVoiceAndVideoNoteMessagesBuilder =
+    UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessagesBuilder;
+
+impl UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessagesBuilder {
+    pub fn build(&self) -> UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages>
+    for UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages
+{
+    fn as_ref(&self) -> &UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages {
+        self
+    }
+}
+
+impl AsRef<UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages>
+    for UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessagesBuilder
+{
+    fn as_ref(&self) -> &UserPrivacySettingAllowPrivateVoiceAndVideoNoteMessages {
+        &self.inner
+    }
+}
+
+/// A privacy setting for managing whether the user's bio is visible
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct UserPrivacySettingShowBio {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for UserPrivacySettingShowBio {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDUserPrivacySetting for UserPrivacySettingShowBio {}
+
+impl UserPrivacySettingShowBio {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> UserPrivacySettingShowBioBuilder {
+        let mut inner = UserPrivacySettingShowBio::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        UserPrivacySettingShowBioBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct UserPrivacySettingShowBioBuilder {
+    inner: UserPrivacySettingShowBio,
+}
+
+#[deprecated]
+pub type RTDUserPrivacySettingShowBioBuilder = UserPrivacySettingShowBioBuilder;
+
+impl UserPrivacySettingShowBioBuilder {
+    pub fn build(&self) -> UserPrivacySettingShowBio {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<UserPrivacySettingShowBio> for UserPrivacySettingShowBio {
+    fn as_ref(&self) -> &UserPrivacySettingShowBio {
+        self
+    }
+}
+
+impl AsRef<UserPrivacySettingShowBio> for UserPrivacySettingShowBioBuilder {
+    fn as_ref(&self) -> &UserPrivacySettingShowBio {
         &self.inner
     }
 }
