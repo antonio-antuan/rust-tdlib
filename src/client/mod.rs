@@ -189,7 +189,7 @@ where
         self.tdlib_client.clone()
     }
 
-    pub(crate) fn get_client_id(&self) -> Option<i32> {
+    pub fn get_client_id(&self) -> Option<i32> {
         self.client_id
     }
 
