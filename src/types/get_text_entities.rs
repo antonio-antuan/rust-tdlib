@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns all entities (mentions, hashtags, cashtags, bot commands, bank card numbers, URLs, and email addresses) contained in the text. Can be called synchronously
+/// Returns all entities (mentions, hashtags, cashtags, bot commands, bank card numbers, URLs, and email addresses) found in the text. Can be called synchronously
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetTextEntities {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct GetTextEntities {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The text in which to look for entites
+    /// The text in which to look for entities
 
     #[serde(default)]
     text: String,

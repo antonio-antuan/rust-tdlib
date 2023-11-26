@@ -22,7 +22,7 @@ pub struct EditMessageCaption {
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New message content caption; 0-GetOption("message_caption_length_max") characters; pass null to remove caption
+    /// New message content caption; 0-getOption("message_caption_length_max") characters; pass null to remove caption
     caption: FormattedText,
 
     #[serde(rename(serialize = "@type"))]

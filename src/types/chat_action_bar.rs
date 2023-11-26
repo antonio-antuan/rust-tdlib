@@ -23,13 +23,13 @@ pub enum ChatActionBar {
     /// The chat is a private chat with an administrator of a chat to which the user sent join request
     #[serde(rename = "chatActionBarJoinRequest")]
     JoinRequest(ChatActionBarJoinRequest),
-    /// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method toggleMessageSenderIsBlocked, or the other user can be added to the contact list using the method addContact
+    /// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method setMessageSenderBlockList, or the other user can be added to the contact list using the method addContact. If the chat is a private chat with a user with an emoji status, then a notice about emoji status usage must be shown
     #[serde(rename = "chatActionBarReportAddBlock")]
     ReportAddBlock(ChatActionBarReportAddBlock),
-    /// The chat can be reported as spam using the method reportChat with the reason chatReportReasonSpam
+    /// The chat can be reported as spam using the method reportChat with the reason reportReasonSpam. If the chat is a private chat with a user with an emoji status, then a notice about emoji status usage must be shown
     #[serde(rename = "chatActionBarReportSpam")]
     ReportSpam(ChatActionBarReportSpam),
-    /// The chat is a location-based supergroup, which can be reported as having unrelated location using the method reportChat with the reason chatReportReasonUnrelatedLocation
+    /// The chat is a location-based supergroup, which can be reported as having unrelated location using the method reportChat with the reason reportReasonUnrelatedLocation
     #[serde(rename = "chatActionBarReportUnrelatedLocation")]
     ReportUnrelatedLocation(ChatActionBarReportUnrelatedLocation),
     /// The chat is a private or secret chat with a mutual contact and the user's phone number can be shared with the other user using the method sharePhoneNumber
@@ -306,7 +306,7 @@ impl AsRef<ChatActionBarJoinRequest> for ChatActionBarJoinRequestBuilder {
     }
 }
 
-/// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method toggleMessageSenderIsBlocked, or the other user can be added to the contact list using the method addContact
+/// The chat is a private or secret chat, which can be reported using the method reportChat, or the other user can be blocked using the method setMessageSenderBlockList, or the other user can be added to the contact list using the method addContact. If the chat is a private chat with a user with an emoji status, then a notice about emoji status usage must be shown
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarReportAddBlock {
     #[doc(hidden)]
@@ -318,7 +318,7 @@ pub struct ChatActionBarReportAddBlock {
 
     #[serde(default)]
     can_unarchive: bool,
-    /// If non-negative, the current user was found by the peer through searchChatsNearby and this is the distance between the users
+    /// If non-negative, the current user was found by the other user through searchChatsNearby and this is the distance between the users
 
     #[serde(default)]
     distance: i32,
@@ -393,7 +393,7 @@ impl AsRef<ChatActionBarReportAddBlock> for ChatActionBarReportAddBlockBuilder {
     }
 }
 
-/// The chat can be reported as spam using the method reportChat with the reason chatReportReasonSpam
+/// The chat can be reported as spam using the method reportChat with the reason reportReasonSpam. If the chat is a private chat with a user with an emoji status, then a notice about emoji status usage must be shown
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarReportSpam {
     #[doc(hidden)]
@@ -467,7 +467,7 @@ impl AsRef<ChatActionBarReportSpam> for ChatActionBarReportSpamBuilder {
     }
 }
 
-/// The chat is a location-based supergroup, which can be reported as having unrelated location using the method reportChat with the reason chatReportReasonUnrelatedLocation
+/// The chat is a location-based supergroup, which can be reported as having unrelated location using the method reportChat with the reason reportReasonUnrelatedLocation
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChatActionBarReportUnrelatedLocation {
     #[doc(hidden)]

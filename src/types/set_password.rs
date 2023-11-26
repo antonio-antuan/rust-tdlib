@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Changes the password for the current user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
+/// Changes the 2-step verification password for the current user. If a new recovery email address is specified, then the change will not be applied until the new recovery email address is confirmed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetPassword {
     #[doc(hidden)]
@@ -10,11 +10,11 @@ pub struct SetPassword {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Previous password of the user
+    /// Previous 2-step verification password of the user
 
     #[serde(default)]
     old_password: String,
-    /// New password of the user; may be empty to remove the password
+    /// New 2-step verification password of the user; may be empty to remove the password
 
     #[serde(default)]
     new_password: String,
@@ -22,7 +22,7 @@ pub struct SetPassword {
 
     #[serde(default)]
     new_hint: String,
-    /// Pass true if the recovery email address must be changed
+    /// Pass true to change also the recovery email address
 
     #[serde(default)]
     set_recovery_email_address: bool,

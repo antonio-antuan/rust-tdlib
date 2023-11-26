@@ -10,7 +10,7 @@ pub struct GetPaymentReceipt {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat identifier of the PaymentSuccessful message
+    /// Chat identifier of the messagePaymentSuccessful message
 
     #[serde(default)]
     chat_id: i64,

@@ -10,7 +10,7 @@ pub struct CreateTemporaryPassword {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Persistent user password
+    /// The 2-step verification password of the current user
 
     #[serde(default)]
     password: String,

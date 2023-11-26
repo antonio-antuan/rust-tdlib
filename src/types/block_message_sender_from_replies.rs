@@ -14,15 +14,15 @@ pub struct BlockMessageSenderFromReplies {
 
     #[serde(default)]
     message_id: i64,
-    /// Pass true if the message must be deleted
+    /// Pass true to delete the message
 
     #[serde(default)]
     delete_message: bool,
-    /// Pass true if all messages from the same sender must be deleted
+    /// Pass true to delete all messages from the same sender
 
     #[serde(default)]
     delete_all_messages: bool,
-    /// Pass true if the sender must be reported to the Telegram moderators
+    /// Pass true to report the sender to the Telegram moderators
 
     #[serde(default)]
     report_spam: bool,

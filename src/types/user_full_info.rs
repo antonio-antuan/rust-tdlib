@@ -10,12 +10,14 @@ pub struct UserFullInfo {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// User profile photo; may be null
+    /// User profile photo set by the current user for the contact; may be null. If null and user.profile_photo is null, then the photo is empty; otherwise, it is unknown. If non-null, then it is the same photo as in user.profile_photo and chat.photo. This photo isn't returned in the list of user photos
+    personal_photo: Option<ChatPhoto>,
+    /// User profile photo; may be null. If null and user.profile_photo is null, then the photo is empty; otherwise, it is unknown. If non-null and personal_photo is null, then it is the same photo as in user.profile_photo and chat.photo
     photo: Option<ChatPhoto>,
-    /// True, if the user is blocked by the current user
-
-    #[serde(default)]
-    is_blocked: bool,
+    /// User profile photo visible if the main photo is hidden by privacy settings; may be null. If null and user.profile_photo is null, then the photo is empty; otherwise, it is unknown. If non-null and both photo and personal_photo are null, then it is the same photo as in user.profile_photo and chat.photo. This photo isn't returned in the list of user photos
+    public_photo: Option<ChatPhoto>,
+    /// Block list to which the user is added; may be null if none
+    block_list: Option<BlockList>,
     /// True, if the user can be called
 
     #[serde(default)]
@@ -32,30 +34,30 @@ pub struct UserFullInfo {
 
     #[serde(default)]
     has_private_forwards: bool,
+    /// True, if voice and video notes can't be sent or forwarded to the user
+
+    #[serde(default)]
+    has_restricted_voice_and_video_note_messages: bool,
+    /// True, if the user has pinned stories
+
+    #[serde(default)]
+    has_pinned_stories: bool,
     /// True, if the current user needs to explicitly allow to share their phone number with the user when the method addContact is used
 
     #[serde(default)]
     need_phone_number_privacy_exception: bool,
-    /// A short user bio
+    /// A short user bio; may be null for bots
+    bio: Option<FormattedText>,
+    /// The list of available options for gifting Telegram Premium to the user
 
     #[serde(default)]
-    bio: String,
-    /// For bots, the text that is shown on the bot's profile page and is sent together with the link when users share the bot
-
-    #[serde(default)]
-    share_text: String,
-    /// Contains full information about a user
-
-    #[serde(default)]
-    description: String,
+    premium_gift_options: Vec<PremiumPaymentOption>,
     /// Number of group chats where both the other user and the current user are a member; 0 for the current user
 
     #[serde(default)]
     group_in_common_count: i32,
-    /// For bots, list of the bot commands
-
-    #[serde(default)]
-    commands: Vec<BotCommand>,
+    /// For bots, information about the bot; may be null if the user isn't a bot
+    bot_info: Option<BotInfo>,
 }
 
 impl RObject for UserFullInfo {
@@ -80,12 +82,20 @@ impl UserFullInfo {
         UserFullInfoBuilder { inner }
     }
 
+    pub fn personal_photo(&self) -> &Option<ChatPhoto> {
+        &self.personal_photo
+    }
+
     pub fn photo(&self) -> &Option<ChatPhoto> {
         &self.photo
     }
 
-    pub fn is_blocked(&self) -> bool {
-        self.is_blocked
+    pub fn public_photo(&self) -> &Option<ChatPhoto> {
+        &self.public_photo
+    }
+
+    pub fn block_list(&self) -> &Option<BlockList> {
+        &self.block_list
     }
 
     pub fn can_be_called(&self) -> bool {
@@ -104,28 +114,32 @@ impl UserFullInfo {
         self.has_private_forwards
     }
 
+    pub fn has_restricted_voice_and_video_note_messages(&self) -> bool {
+        self.has_restricted_voice_and_video_note_messages
+    }
+
+    pub fn has_pinned_stories(&self) -> bool {
+        self.has_pinned_stories
+    }
+
     pub fn need_phone_number_privacy_exception(&self) -> bool {
         self.need_phone_number_privacy_exception
     }
 
-    pub fn bio(&self) -> &String {
+    pub fn bio(&self) -> &Option<FormattedText> {
         &self.bio
     }
 
-    pub fn share_text(&self) -> &String {
-        &self.share_text
-    }
-
-    pub fn description(&self) -> &String {
-        &self.description
+    pub fn premium_gift_options(&self) -> &Vec<PremiumPaymentOption> {
+        &self.premium_gift_options
     }
 
     pub fn group_in_common_count(&self) -> i32 {
         self.group_in_common_count
     }
 
-    pub fn commands(&self) -> &Vec<BotCommand> {
-        &self.commands
+    pub fn bot_info(&self) -> &Option<BotInfo> {
+        &self.bot_info
     }
 }
 
@@ -142,13 +156,23 @@ impl UserFullInfoBuilder {
         self.inner.clone()
     }
 
+    pub fn personal_photo<T: AsRef<ChatPhoto>>(&mut self, personal_photo: T) -> &mut Self {
+        self.inner.personal_photo = Some(personal_photo.as_ref().clone());
+        self
+    }
+
     pub fn photo<T: AsRef<ChatPhoto>>(&mut self, photo: T) -> &mut Self {
         self.inner.photo = Some(photo.as_ref().clone());
         self
     }
 
-    pub fn is_blocked(&mut self, is_blocked: bool) -> &mut Self {
-        self.inner.is_blocked = is_blocked;
+    pub fn public_photo<T: AsRef<ChatPhoto>>(&mut self, public_photo: T) -> &mut Self {
+        self.inner.public_photo = Some(public_photo.as_ref().clone());
+        self
+    }
+
+    pub fn block_list<T: AsRef<BlockList>>(&mut self, block_list: T) -> &mut Self {
+        self.inner.block_list = Some(block_list.as_ref().clone());
         self
     }
 
@@ -172,6 +196,20 @@ impl UserFullInfoBuilder {
         self
     }
 
+    pub fn has_restricted_voice_and_video_note_messages(
+        &mut self,
+        has_restricted_voice_and_video_note_messages: bool,
+    ) -> &mut Self {
+        self.inner.has_restricted_voice_and_video_note_messages =
+            has_restricted_voice_and_video_note_messages;
+        self
+    }
+
+    pub fn has_pinned_stories(&mut self, has_pinned_stories: bool) -> &mut Self {
+        self.inner.has_pinned_stories = has_pinned_stories;
+        self
+    }
+
     pub fn need_phone_number_privacy_exception(
         &mut self,
         need_phone_number_privacy_exception: bool,
@@ -180,18 +218,16 @@ impl UserFullInfoBuilder {
         self
     }
 
-    pub fn bio<T: AsRef<str>>(&mut self, bio: T) -> &mut Self {
-        self.inner.bio = bio.as_ref().to_string();
+    pub fn bio<T: AsRef<FormattedText>>(&mut self, bio: T) -> &mut Self {
+        self.inner.bio = Some(bio.as_ref().clone());
         self
     }
 
-    pub fn share_text<T: AsRef<str>>(&mut self, share_text: T) -> &mut Self {
-        self.inner.share_text = share_text.as_ref().to_string();
-        self
-    }
-
-    pub fn description<T: AsRef<str>>(&mut self, description: T) -> &mut Self {
-        self.inner.description = description.as_ref().to_string();
+    pub fn premium_gift_options(
+        &mut self,
+        premium_gift_options: Vec<PremiumPaymentOption>,
+    ) -> &mut Self {
+        self.inner.premium_gift_options = premium_gift_options;
         self
     }
 
@@ -200,8 +236,8 @@ impl UserFullInfoBuilder {
         self
     }
 
-    pub fn commands(&mut self, commands: Vec<BotCommand>) -> &mut Self {
-        self.inner.commands = commands;
+    pub fn bot_info<T: AsRef<BotInfo>>(&mut self, bot_info: T) -> &mut Self {
+        self.inner.bot_info = Some(bot_info.as_ref().clone());
         self
     }
 }

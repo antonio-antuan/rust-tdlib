@@ -14,7 +14,7 @@ pub struct Call {
 
     #[serde(default)]
     id: i32,
-    /// Peer user identifier
+    /// User identifier of the other call participant
 
     #[serde(default)]
     user_id: i64,

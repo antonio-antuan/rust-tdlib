@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for call messages. Returns the results in reverse chronological order (i. e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib
+/// Searches for call messages. Returns the results in reverse chronological order (i.e., in order of decreasing message_id). For optimal performance, the number of returned messages is chosen by TDLib
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchCallMessages {
     #[doc(hidden)]
@@ -10,15 +10,15 @@ pub struct SearchCallMessages {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Identifier of the message from which to search; use 0 to get results from the last message
+    /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
 
     #[serde(default)]
-    from_message_id: i64,
+    offset: String,
     /// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 
     #[serde(default)]
     limit: i32,
-    /// If true, returns only messages with missed/declined calls
+    /// Pass true to search only for messages with missed/declined calls
 
     #[serde(default)]
     only_missed: bool,
@@ -53,8 +53,8 @@ impl SearchCallMessages {
         SearchCallMessagesBuilder { inner }
     }
 
-    pub fn from_message_id(&self) -> i64 {
-        self.from_message_id
+    pub fn offset(&self) -> &String {
+        &self.offset
     }
 
     pub fn limit(&self) -> i32 {
@@ -79,8 +79,8 @@ impl SearchCallMessagesBuilder {
         self.inner.clone()
     }
 
-    pub fn from_message_id(&mut self, from_message_id: i64) -> &mut Self {
-        self.inner.from_message_id = from_message_id;
+    pub fn offset<T: AsRef<str>>(&mut self, offset: T) -> &mut Self {
+        self.inner.offset = offset.as_ref().to_string();
         self
     }
 

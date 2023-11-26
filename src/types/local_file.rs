@@ -33,15 +33,15 @@ pub struct LocalFile {
     /// Download will be started from this offset. downloaded_prefix_size is calculated from this offset
 
     #[serde(default)]
-    download_offset: i32,
+    download_offset: i64,
     /// If is_downloading_completed is false, then only some prefix of the file starting from download_offset is ready to be read. downloaded_prefix_size is the size of that prefix in bytes
 
     #[serde(default)]
-    downloaded_prefix_size: i32,
+    downloaded_prefix_size: i64,
     /// Total downloaded file size, in bytes. Can be used only for calculating download progress. The actual file size may be bigger, and some parts of it may contain garbage
 
     #[serde(default)]
-    downloaded_size: i32,
+    downloaded_size: i64,
 }
 
 impl RObject for LocalFile {
@@ -86,15 +86,15 @@ impl LocalFile {
         self.is_downloading_completed
     }
 
-    pub fn download_offset(&self) -> i32 {
+    pub fn download_offset(&self) -> i64 {
         self.download_offset
     }
 
-    pub fn downloaded_prefix_size(&self) -> i32 {
+    pub fn downloaded_prefix_size(&self) -> i64 {
         self.downloaded_prefix_size
     }
 
-    pub fn downloaded_size(&self) -> i32 {
+    pub fn downloaded_size(&self) -> i64 {
         self.downloaded_size
     }
 }
@@ -137,17 +137,17 @@ impl LocalFileBuilder {
         self
     }
 
-    pub fn download_offset(&mut self, download_offset: i32) -> &mut Self {
+    pub fn download_offset(&mut self, download_offset: i64) -> &mut Self {
         self.inner.download_offset = download_offset;
         self
     }
 
-    pub fn downloaded_prefix_size(&mut self, downloaded_prefix_size: i32) -> &mut Self {
+    pub fn downloaded_prefix_size(&mut self, downloaded_prefix_size: i64) -> &mut Self {
         self.inner.downloaded_prefix_size = downloaded_prefix_size;
         self
     }
 
-    pub fn downloaded_size(&mut self, downloaded_size: i32) -> &mut Self {
+    pub fn downloaded_size(&mut self, downloaded_size: i64) -> &mut Self {
         self.inner.downloaded_size = downloaded_size;
         self
     }

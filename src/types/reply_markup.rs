@@ -20,7 +20,7 @@ pub enum ReplyMarkup {
     /// Contains an inline keyboard layout
     #[serde(rename = "replyMarkupInlineKeyboard")]
     InlineKeyboard(ReplyMarkupInlineKeyboard),
-    /// Instructs application to remove the keyboard once this message has been received. This kind of keyboard can't be received in an incoming message; instead, UpdateChatReplyMarkup with message_id == 0 will be sent
+    /// Instructs application to remove the keyboard once this message has been received. This kind of keyboard can't be received in an incoming message; instead, updateChatReplyMarkup with message_id == 0 will be sent
     #[serde(rename = "replyMarkupRemoveKeyboard")]
     RemoveKeyboard(ReplyMarkupRemoveKeyboard),
     /// Contains a custom keyboard layout to quickly reply to bots
@@ -233,7 +233,7 @@ impl AsRef<ReplyMarkupInlineKeyboard> for ReplyMarkupInlineKeyboardBuilder {
     }
 }
 
-/// Instructs application to remove the keyboard once this message has been received. This kind of keyboard can't be received in an incoming message; instead, UpdateChatReplyMarkup with message_id == 0 will be sent
+/// Instructs application to remove the keyboard once this message has been received. This kind of keyboard can't be received in an incoming message; instead, updateChatReplyMarkup with message_id == 0 will be sent
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ReplyMarkupRemoveKeyboard {
     #[doc(hidden)]
@@ -319,6 +319,10 @@ pub struct ReplyMarkupShowKeyboard {
 
     #[serde(default)]
     rows: Vec<Vec<KeyboardButton>>,
+    /// True, if the keyboard is supposed to always be shown when the ordinary keyboard is hidden
+
+    #[serde(default)]
+    is_persistent: bool,
     /// True, if the application needs to resize the keyboard vertically
 
     #[serde(default)]
@@ -365,6 +369,10 @@ impl ReplyMarkupShowKeyboard {
         &self.rows
     }
 
+    pub fn is_persistent(&self) -> bool {
+        self.is_persistent
+    }
+
     pub fn resize_keyboard(&self) -> bool {
         self.resize_keyboard
     }
@@ -397,6 +405,11 @@ impl ReplyMarkupShowKeyboardBuilder {
 
     pub fn rows(&mut self, rows: Vec<Vec<KeyboardButton>>) -> &mut Self {
         self.inner.rows = rows;
+        self
+    }
+
+    pub fn is_persistent(&mut self, is_persistent: bool) -> &mut Self {
+        self.inner.is_persistent = is_persistent;
         self
     }
 

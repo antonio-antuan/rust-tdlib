@@ -10,7 +10,7 @@ pub struct SetBackground {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The input background to use; pass null to create a new filled backgrounds or to remove the current background
+    /// The input background to use; pass null to create a new filled background or to remove the current background
 
     #[serde(skip_serializing_if = "InputBackground::_is_default")]
     background: InputBackground,
@@ -19,7 +19,7 @@ pub struct SetBackground {
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "BackgroundType::_is_default")]
     type_: BackgroundType,
-    /// True, if the background is chosen for dark theme
+    /// Pass true if the background is changed for a dark theme
 
     #[serde(default)]
     for_dark_theme: bool,

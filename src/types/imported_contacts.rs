@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Represents the result of an ImportContacts request
+/// Represents the result of an importContacts request
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ImportedContacts {
     #[doc(hidden)]

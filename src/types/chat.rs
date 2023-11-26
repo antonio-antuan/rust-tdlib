@@ -25,9 +25,21 @@ pub struct Chat {
     title: String,
     /// Chat photo; may be null
     photo: Option<ChatPhotoInfo>,
+    /// Identifier of the accent color for message sender name, and backgrounds of chat photo, reply header, and link preview
+
+    #[serde(default)]
+    accent_color_id: i32,
+    /// Identifier of a custom emoji to be shown on the reply header background in replies to messages sent by the chat; 0 if none
+
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
+    #[serde(default)]
+    background_custom_emoji_id: i64,
     /// Actions that non-administrator chat members are allowed to take in the chat
     permissions: ChatPermissions,
-    /// Last message in the chat; may be null
+    /// Last message in the chat; may be null if none or unknown
     last_message: Option<Message>,
     /// Positions of the chat in chat lists
 
@@ -35,18 +47,20 @@ pub struct Chat {
     positions: Option<Vec<ChatPosition>>,
     /// Identifier of a user or chat that is selected to send messages in the chat; may be null if the user can't change message sender
     message_sender_id: Option<MessageSender>,
+    /// Block list to which the chat is added; may be null if none
+    block_list: Option<BlockList>,
     /// True, if chat content can't be saved locally, forwarded, or copied
 
     #[serde(default)]
     has_protected_content: bool,
+    /// True, if translation of all messages in the chat must be suggested to the user
+
+    #[serde(default)]
+    is_translatable: bool,
     /// True, if the chat is marked as unread
 
     #[serde(default)]
     is_marked_as_unread: bool,
-    /// True, if the chat is blocked by the current user and private messages from the chat can't be received
-
-    #[serde(default)]
-    is_blocked: bool,
     /// True, if the chat has scheduled messages
 
     #[serde(default)]
@@ -83,27 +97,37 @@ pub struct Chat {
 
     #[serde(default)]
     unread_mention_count: i32,
-    /// Notification settings for this chat
-    notification_settings: ChatNotificationSettings,
-    /// Current message Time To Live setting (self-destruct timer) for the chat; 0 if not defined. TTL is counted from the time message or its content is viewed in secret chats and from the send date in other chats
+    /// Number of messages with unread reactions in the chat
 
     #[serde(default)]
-    message_ttl: i32,
+    unread_reaction_count: i32,
+    /// Notification settings for the chat
+    notification_settings: ChatNotificationSettings,
+    /// Types of reaction, available in the chat
+
+    #[serde(skip_serializing_if = "ChatAvailableReactions::_is_default")]
+    available_reactions: ChatAvailableReactions,
+    /// Current message auto-delete or self-destruct timer setting for the chat, in seconds; 0 if disabled. Self-destruct timer in secret chats starts after the message or its content is viewed. Auto-delete timer in other chats starts from the send date
+
+    #[serde(default)]
+    message_auto_delete_time: i32,
+    /// Background set for the chat; may be null if none
+    background: Option<ChatBackground>,
     /// If non-empty, name of a theme, set for the chat
 
     #[serde(default)]
     theme_name: String,
-    /// Information about actions which must be possible to do through the chat action bar; may be null
+    /// Information about actions which must be possible to do through the chat action bar; may be null if none
     action_bar: Option<ChatActionBar>,
     /// Information about video chat of the chat
     video_chat: VideoChat,
-    /// Information about pending join requests; may be null
+    /// Information about pending join requests; may be null if none
     pending_join_requests: Option<ChatJoinRequestsInfo>,
     /// Identifier of the message from which reply markup needs to be used; 0 if there is no default custom reply markup in the chat
 
     #[serde(default)]
     reply_markup_message_id: i64,
-    /// A draft of a message in the chat; may be null
+    /// A draft of a message in the chat; may be null if none
     draft_message: Option<DraftMessage>,
     /// Application-specific data associated with the chat. (For example, the chat scroll position or local chat notification settings can be stored here.) Persistent if the message database is used
 
@@ -149,6 +173,14 @@ impl Chat {
         &self.photo
     }
 
+    pub fn accent_color_id(&self) -> i32 {
+        self.accent_color_id
+    }
+
+    pub fn background_custom_emoji_id(&self) -> i64 {
+        self.background_custom_emoji_id
+    }
+
     pub fn permissions(&self) -> &ChatPermissions {
         &self.permissions
     }
@@ -165,16 +197,20 @@ impl Chat {
         &self.message_sender_id
     }
 
+    pub fn block_list(&self) -> &Option<BlockList> {
+        &self.block_list
+    }
+
     pub fn has_protected_content(&self) -> bool {
         self.has_protected_content
     }
 
-    pub fn is_marked_as_unread(&self) -> bool {
-        self.is_marked_as_unread
+    pub fn is_translatable(&self) -> bool {
+        self.is_translatable
     }
 
-    pub fn is_blocked(&self) -> bool {
-        self.is_blocked
+    pub fn is_marked_as_unread(&self) -> bool {
+        self.is_marked_as_unread
     }
 
     pub fn has_scheduled_messages(&self) -> bool {
@@ -213,12 +249,24 @@ impl Chat {
         self.unread_mention_count
     }
 
+    pub fn unread_reaction_count(&self) -> i32 {
+        self.unread_reaction_count
+    }
+
     pub fn notification_settings(&self) -> &ChatNotificationSettings {
         &self.notification_settings
     }
 
-    pub fn message_ttl(&self) -> i32 {
-        self.message_ttl
+    pub fn available_reactions(&self) -> &ChatAvailableReactions {
+        &self.available_reactions
+    }
+
+    pub fn message_auto_delete_time(&self) -> i32 {
+        self.message_auto_delete_time
+    }
+
+    pub fn background(&self) -> &Option<ChatBackground> {
+        &self.background
     }
 
     pub fn theme_name(&self) -> &String {
@@ -283,6 +331,16 @@ impl ChatBuilder {
         self
     }
 
+    pub fn accent_color_id(&mut self, accent_color_id: i32) -> &mut Self {
+        self.inner.accent_color_id = accent_color_id;
+        self
+    }
+
+    pub fn background_custom_emoji_id(&mut self, background_custom_emoji_id: i64) -> &mut Self {
+        self.inner.background_custom_emoji_id = background_custom_emoji_id;
+        self
+    }
+
     pub fn permissions<T: AsRef<ChatPermissions>>(&mut self, permissions: T) -> &mut Self {
         self.inner.permissions = permissions.as_ref().clone();
         self
@@ -306,18 +364,23 @@ impl ChatBuilder {
         self
     }
 
+    pub fn block_list<T: AsRef<BlockList>>(&mut self, block_list: T) -> &mut Self {
+        self.inner.block_list = Some(block_list.as_ref().clone());
+        self
+    }
+
     pub fn has_protected_content(&mut self, has_protected_content: bool) -> &mut Self {
         self.inner.has_protected_content = has_protected_content;
         self
     }
 
-    pub fn is_marked_as_unread(&mut self, is_marked_as_unread: bool) -> &mut Self {
-        self.inner.is_marked_as_unread = is_marked_as_unread;
+    pub fn is_translatable(&mut self, is_translatable: bool) -> &mut Self {
+        self.inner.is_translatable = is_translatable;
         self
     }
 
-    pub fn is_blocked(&mut self, is_blocked: bool) -> &mut Self {
-        self.inner.is_blocked = is_blocked;
+    pub fn is_marked_as_unread(&mut self, is_marked_as_unread: bool) -> &mut Self {
+        self.inner.is_marked_as_unread = is_marked_as_unread;
         self
     }
 
@@ -375,6 +438,11 @@ impl ChatBuilder {
         self
     }
 
+    pub fn unread_reaction_count(&mut self, unread_reaction_count: i32) -> &mut Self {
+        self.inner.unread_reaction_count = unread_reaction_count;
+        self
+    }
+
     pub fn notification_settings<T: AsRef<ChatNotificationSettings>>(
         &mut self,
         notification_settings: T,
@@ -383,8 +451,21 @@ impl ChatBuilder {
         self
     }
 
-    pub fn message_ttl(&mut self, message_ttl: i32) -> &mut Self {
-        self.inner.message_ttl = message_ttl;
+    pub fn available_reactions<T: AsRef<ChatAvailableReactions>>(
+        &mut self,
+        available_reactions: T,
+    ) -> &mut Self {
+        self.inner.available_reactions = available_reactions.as_ref().clone();
+        self
+    }
+
+    pub fn message_auto_delete_time(&mut self, message_auto_delete_time: i32) -> &mut Self {
+        self.inner.message_auto_delete_time = message_auto_delete_time;
+        self
+    }
+
+    pub fn background<T: AsRef<ChatBackground>>(&mut self, background: T) -> &mut Self {
+        self.inner.background = Some(background.as_ref().clone());
         self
     }
 

@@ -26,7 +26,7 @@ pub struct Contact {
 
     #[serde(default)]
     vcard: String,
-    /// Identifier of the user, if known; otherwise 0
+    /// Identifier of the user, if known; 0 otherwise
 
     #[serde(default)]
     user_id: i64,

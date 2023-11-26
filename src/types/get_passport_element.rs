@@ -15,7 +15,7 @@ pub struct GetPassportElement {
     #[serde(rename(serialize = "type", deserialize = "type"))]
     #[serde(skip_serializing_if = "PassportElementType::_is_default")]
     type_: PassportElementType,
-    /// Password of the current user
+    /// The 2-step verification password of the current user
 
     #[serde(default)]
     password: String,

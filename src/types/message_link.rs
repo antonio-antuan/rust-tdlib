@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains an HTTPS link to a message in a supergroup or channel
+/// Contains an HTTPS link to a message in a supergroup or channel, or a forum topic
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageLink {
     #[doc(hidden)]
@@ -10,7 +10,7 @@ pub struct MessageLink {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Message link
+    /// The link
 
     #[serde(default)]
     link: String,

@@ -23,28 +23,31 @@ pub enum AuthorizationState {
     /// The user is currently logging out
     #[serde(rename = "authorizationStateLoggingOut")]
     LoggingOut(AuthorizationStateLoggingOut),
-    /// The user has been successfully authorized. TDLib is now ready to answer queries
+    /// The user has been successfully authorized. TDLib is now ready to answer general requests
     #[serde(rename = "authorizationStateReady")]
     Ready(AuthorizationStateReady),
-    /// TDLib needs the user's authentication code to authorize
+    /// TDLib needs the user's authentication code to authorize. Call checkAuthenticationCode to check the code
     #[serde(rename = "authorizationStateWaitCode")]
     WaitCode(AuthorizationStateWaitCode),
-    /// TDLib needs an encryption key to decrypt the local database
-    #[serde(rename = "authorizationStateWaitEncryptionKey")]
-    WaitEncryptionKey(AuthorizationStateWaitEncryptionKey),
+    /// TDLib needs the user's email address to authorize. Call setAuthenticationEmailAddress to provide the email address, or directly call checkAuthenticationEmailCode with Apple ID/Google ID token if allowed
+    #[serde(rename = "authorizationStateWaitEmailAddress")]
+    WaitEmailAddress(AuthorizationStateWaitEmailAddress),
+    /// TDLib needs the user's authentication code sent to an email address to authorize. Call checkAuthenticationEmailCode to provide the code
+    #[serde(rename = "authorizationStateWaitEmailCode")]
+    WaitEmailCode(AuthorizationStateWaitEmailCode),
     /// The user needs to confirm authorization on another logged in device by scanning a QR code with the provided link
     #[serde(rename = "authorizationStateWaitOtherDeviceConfirmation")]
     WaitOtherDeviceConfirmation(AuthorizationStateWaitOtherDeviceConfirmation),
-    /// The user has been authorized, but needs to enter a password to start using the application
+    /// The user has been authorized, but needs to enter a 2-step verification password to start using the application. Call checkAuthenticationPassword to provide the password, or requestAuthenticationPasswordRecovery to recover the password, or deleteAccount to delete the account after a week
     #[serde(rename = "authorizationStateWaitPassword")]
     WaitPassword(AuthorizationStateWaitPassword),
-    /// TDLib needs the user's phone number to authorize. Call `setAuthenticationPhoneNumber` to provide the phone number, or use `requestQrCodeAuthentication`, or `checkAuthenticationBotToken` for other authentication options
+    /// TDLib needs the user's phone number to authorize. Call setAuthenticationPhoneNumber to provide the phone number, or use requestQrCodeAuthentication or checkAuthenticationBotToken for other authentication options
     #[serde(rename = "authorizationStateWaitPhoneNumber")]
     WaitPhoneNumber(AuthorizationStateWaitPhoneNumber),
-    /// The user is unregistered and need to accept terms of service and enter their first name and last name to finish registration
+    /// The user is unregistered and need to accept terms of service and enter their first name and last name to finish registration. Call registerUser to accept the terms of service and provide the data
     #[serde(rename = "authorizationStateWaitRegistration")]
     WaitRegistration(AuthorizationStateWaitRegistration),
-    /// TDLib needs TdlibParameters for initialization
+    /// Initialization parameters are needed. Call setTdlibParameters to provide them
     #[serde(rename = "authorizationStateWaitTdlibParameters")]
     WaitTdlibParameters(AuthorizationStateWaitTdlibParameters),
     /// Returns the current authorization state; this is an offline request. For informational purposes only. Use updateAuthorizationState instead to maintain the current authorization state. Can be called before initialization
@@ -61,7 +64,8 @@ impl RObject for AuthorizationState {
             AuthorizationState::LoggingOut(t) => t.extra(),
             AuthorizationState::Ready(t) => t.extra(),
             AuthorizationState::WaitCode(t) => t.extra(),
-            AuthorizationState::WaitEncryptionKey(t) => t.extra(),
+            AuthorizationState::WaitEmailAddress(t) => t.extra(),
+            AuthorizationState::WaitEmailCode(t) => t.extra(),
             AuthorizationState::WaitOtherDeviceConfirmation(t) => t.extra(),
             AuthorizationState::WaitPassword(t) => t.extra(),
             AuthorizationState::WaitPhoneNumber(t) => t.extra(),
@@ -80,7 +84,8 @@ impl RObject for AuthorizationState {
             AuthorizationState::LoggingOut(t) => t.client_id(),
             AuthorizationState::Ready(t) => t.client_id(),
             AuthorizationState::WaitCode(t) => t.client_id(),
-            AuthorizationState::WaitEncryptionKey(t) => t.client_id(),
+            AuthorizationState::WaitEmailAddress(t) => t.client_id(),
+            AuthorizationState::WaitEmailCode(t) => t.client_id(),
             AuthorizationState::WaitOtherDeviceConfirmation(t) => t.client_id(),
             AuthorizationState::WaitPassword(t) => t.client_id(),
             AuthorizationState::WaitPhoneNumber(t) => t.client_id(),
@@ -292,7 +297,7 @@ impl AsRef<AuthorizationStateLoggingOut> for AuthorizationStateLoggingOutBuilder
     }
 }
 
-/// The user has been successfully authorized. TDLib is now ready to answer queries
+/// The user has been successfully authorized. TDLib is now ready to answer general requests
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AuthorizationStateReady {
     #[doc(hidden)]
@@ -353,7 +358,7 @@ impl AsRef<AuthorizationStateReady> for AuthorizationStateReadyBuilder {
     }
 }
 
-/// TDLib needs the user's authentication code to authorize
+/// TDLib needs the user's authentication code to authorize. Call checkAuthenticationCode to check the code
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AuthorizationStateWaitCode {
     #[doc(hidden)]
@@ -425,21 +430,25 @@ impl AsRef<AuthorizationStateWaitCode> for AuthorizationStateWaitCodeBuilder {
     }
 }
 
-/// TDLib needs an encryption key to decrypt the local database
+/// TDLib needs the user's email address to authorize. Call setAuthenticationEmailAddress to provide the email address, or directly call checkAuthenticationEmailCode with Apple ID/Google ID token if allowed
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct AuthorizationStateWaitEncryptionKey {
+pub struct AuthorizationStateWaitEmailAddress {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// True, if the database is currently encrypted
+    /// True, if authorization through Apple ID is allowed
 
     #[serde(default)]
-    is_encrypted: bool,
+    allow_apple_id: bool,
+    /// True, if authorization through Google ID is allowed
+
+    #[serde(default)]
+    allow_google_id: bool,
 }
 
-impl RObject for AuthorizationStateWaitEncryptionKey {
+impl RObject for AuthorizationStateWaitEmailAddress {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         self.extra.as_deref()
@@ -450,51 +459,175 @@ impl RObject for AuthorizationStateWaitEncryptionKey {
     }
 }
 
-impl TDAuthorizationState for AuthorizationStateWaitEncryptionKey {}
+impl TDAuthorizationState for AuthorizationStateWaitEmailAddress {}
 
-impl AuthorizationStateWaitEncryptionKey {
+impl AuthorizationStateWaitEmailAddress {
     pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> AuthorizationStateWaitEncryptionKeyBuilder {
-        let mut inner = AuthorizationStateWaitEncryptionKey::default();
+    pub fn builder() -> AuthorizationStateWaitEmailAddressBuilder {
+        let mut inner = AuthorizationStateWaitEmailAddress::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        AuthorizationStateWaitEncryptionKeyBuilder { inner }
+        AuthorizationStateWaitEmailAddressBuilder { inner }
     }
 
-    pub fn is_encrypted(&self) -> bool {
-        self.is_encrypted
+    pub fn allow_apple_id(&self) -> bool {
+        self.allow_apple_id
+    }
+
+    pub fn allow_google_id(&self) -> bool {
+        self.allow_google_id
     }
 }
 
 #[doc(hidden)]
-pub struct AuthorizationStateWaitEncryptionKeyBuilder {
-    inner: AuthorizationStateWaitEncryptionKey,
+pub struct AuthorizationStateWaitEmailAddressBuilder {
+    inner: AuthorizationStateWaitEmailAddress,
 }
 
 #[deprecated]
-pub type RTDAuthorizationStateWaitEncryptionKeyBuilder = AuthorizationStateWaitEncryptionKeyBuilder;
+pub type RTDAuthorizationStateWaitEmailAddressBuilder = AuthorizationStateWaitEmailAddressBuilder;
 
-impl AuthorizationStateWaitEncryptionKeyBuilder {
-    pub fn build(&self) -> AuthorizationStateWaitEncryptionKey {
+impl AuthorizationStateWaitEmailAddressBuilder {
+    pub fn build(&self) -> AuthorizationStateWaitEmailAddress {
         self.inner.clone()
     }
 
-    pub fn is_encrypted(&mut self, is_encrypted: bool) -> &mut Self {
-        self.inner.is_encrypted = is_encrypted;
+    pub fn allow_apple_id(&mut self, allow_apple_id: bool) -> &mut Self {
+        self.inner.allow_apple_id = allow_apple_id;
+        self
+    }
+
+    pub fn allow_google_id(&mut self, allow_google_id: bool) -> &mut Self {
+        self.inner.allow_google_id = allow_google_id;
         self
     }
 }
 
-impl AsRef<AuthorizationStateWaitEncryptionKey> for AuthorizationStateWaitEncryptionKey {
-    fn as_ref(&self) -> &AuthorizationStateWaitEncryptionKey {
+impl AsRef<AuthorizationStateWaitEmailAddress> for AuthorizationStateWaitEmailAddress {
+    fn as_ref(&self) -> &AuthorizationStateWaitEmailAddress {
         self
     }
 }
 
-impl AsRef<AuthorizationStateWaitEncryptionKey> for AuthorizationStateWaitEncryptionKeyBuilder {
-    fn as_ref(&self) -> &AuthorizationStateWaitEncryptionKey {
+impl AsRef<AuthorizationStateWaitEmailAddress> for AuthorizationStateWaitEmailAddressBuilder {
+    fn as_ref(&self) -> &AuthorizationStateWaitEmailAddress {
+        &self.inner
+    }
+}
+
+/// TDLib needs the user's authentication code sent to an email address to authorize. Call checkAuthenticationEmailCode to provide the code
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct AuthorizationStateWaitEmailCode {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// True, if authorization through Apple ID is allowed
+
+    #[serde(default)]
+    allow_apple_id: bool,
+    /// True, if authorization through Google ID is allowed
+
+    #[serde(default)]
+    allow_google_id: bool,
+    /// Information about the sent authentication code
+    code_info: EmailAddressAuthenticationCodeInfo,
+    /// Reset state of the email address; may be null if the email address can't be reset
+    email_address_reset_state: Option<EmailAddressResetState>,
+}
+
+impl RObject for AuthorizationStateWaitEmailCode {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDAuthorizationState for AuthorizationStateWaitEmailCode {}
+
+impl AuthorizationStateWaitEmailCode {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> AuthorizationStateWaitEmailCodeBuilder {
+        let mut inner = AuthorizationStateWaitEmailCode::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        AuthorizationStateWaitEmailCodeBuilder { inner }
+    }
+
+    pub fn allow_apple_id(&self) -> bool {
+        self.allow_apple_id
+    }
+
+    pub fn allow_google_id(&self) -> bool {
+        self.allow_google_id
+    }
+
+    pub fn code_info(&self) -> &EmailAddressAuthenticationCodeInfo {
+        &self.code_info
+    }
+
+    pub fn email_address_reset_state(&self) -> &Option<EmailAddressResetState> {
+        &self.email_address_reset_state
+    }
+}
+
+#[doc(hidden)]
+pub struct AuthorizationStateWaitEmailCodeBuilder {
+    inner: AuthorizationStateWaitEmailCode,
+}
+
+#[deprecated]
+pub type RTDAuthorizationStateWaitEmailCodeBuilder = AuthorizationStateWaitEmailCodeBuilder;
+
+impl AuthorizationStateWaitEmailCodeBuilder {
+    pub fn build(&self) -> AuthorizationStateWaitEmailCode {
+        self.inner.clone()
+    }
+
+    pub fn allow_apple_id(&mut self, allow_apple_id: bool) -> &mut Self {
+        self.inner.allow_apple_id = allow_apple_id;
+        self
+    }
+
+    pub fn allow_google_id(&mut self, allow_google_id: bool) -> &mut Self {
+        self.inner.allow_google_id = allow_google_id;
+        self
+    }
+
+    pub fn code_info<T: AsRef<EmailAddressAuthenticationCodeInfo>>(
+        &mut self,
+        code_info: T,
+    ) -> &mut Self {
+        self.inner.code_info = code_info.as_ref().clone();
+        self
+    }
+
+    pub fn email_address_reset_state<T: AsRef<EmailAddressResetState>>(
+        &mut self,
+        email_address_reset_state: T,
+    ) -> &mut Self {
+        self.inner.email_address_reset_state = Some(email_address_reset_state.as_ref().clone());
+        self
+    }
+}
+
+impl AsRef<AuthorizationStateWaitEmailCode> for AuthorizationStateWaitEmailCode {
+    fn as_ref(&self) -> &AuthorizationStateWaitEmailCode {
+        self
+    }
+}
+
+impl AsRef<AuthorizationStateWaitEmailCode> for AuthorizationStateWaitEmailCodeBuilder {
+    fn as_ref(&self) -> &AuthorizationStateWaitEmailCode {
         &self.inner
     }
 }
@@ -578,7 +711,7 @@ impl AsRef<AuthorizationStateWaitOtherDeviceConfirmation>
     }
 }
 
-/// The user has been authorized, but needs to enter a password to start using the application
+/// The user has been authorized, but needs to enter a 2-step verification password to start using the application. Call checkAuthenticationPassword to provide the password, or requestAuthenticationPasswordRecovery to recover the password, or deleteAccount to delete the account after a week
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AuthorizationStateWaitPassword {
     #[doc(hidden)]
@@ -594,6 +727,10 @@ pub struct AuthorizationStateWaitPassword {
 
     #[serde(default)]
     has_recovery_email_address: bool,
+    /// True, if some Telegram Passport elements were saved
+
+    #[serde(default)]
+    has_passport_data: bool,
     /// Pattern of the email address to which the recovery email was sent; empty until a recovery email has been sent
 
     #[serde(default)]
@@ -632,6 +769,10 @@ impl AuthorizationStateWaitPassword {
         self.has_recovery_email_address
     }
 
+    pub fn has_passport_data(&self) -> bool {
+        self.has_passport_data
+    }
+
     pub fn recovery_email_address_pattern(&self) -> &String {
         &self.recovery_email_address_pattern
     }
@@ -660,6 +801,11 @@ impl AuthorizationStateWaitPasswordBuilder {
         self
     }
 
+    pub fn has_passport_data(&mut self, has_passport_data: bool) -> &mut Self {
+        self.inner.has_passport_data = has_passport_data;
+        self
+    }
+
     pub fn recovery_email_address_pattern<T: AsRef<str>>(
         &mut self,
         recovery_email_address_pattern: T,
@@ -682,7 +828,7 @@ impl AsRef<AuthorizationStateWaitPassword> for AuthorizationStateWaitPasswordBui
     }
 }
 
-/// TDLib needs the user's phone number to authorize. Call `setAuthenticationPhoneNumber` to provide the phone number, or use `requestQrCodeAuthentication`, or `checkAuthenticationBotToken` for other authentication options
+/// TDLib needs the user's phone number to authorize. Call setAuthenticationPhoneNumber to provide the phone number, or use requestQrCodeAuthentication or checkAuthenticationBotToken for other authentication options
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AuthorizationStateWaitPhoneNumber {
     #[doc(hidden)]
@@ -743,7 +889,7 @@ impl AsRef<AuthorizationStateWaitPhoneNumber> for AuthorizationStateWaitPhoneNum
     }
 }
 
-/// The user is unregistered and need to accept terms of service and enter their first name and last name to finish registration
+/// The user is unregistered and need to accept terms of service and enter their first name and last name to finish registration. Call registerUser to accept the terms of service and provide the data
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AuthorizationStateWaitRegistration {
     #[doc(hidden)]
@@ -815,7 +961,7 @@ impl AsRef<AuthorizationStateWaitRegistration> for AuthorizationStateWaitRegistr
     }
 }
 
-/// TDLib needs TdlibParameters for initialization
+/// Initialization parameters are needed. Call setTdlibParameters to provide them
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AuthorizationStateWaitTdlibParameters {
     #[doc(hidden)]

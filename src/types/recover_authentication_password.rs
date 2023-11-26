@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Recovers the password with a password recovery code sent to an email address that was previously set up. Works only when the current authorization state is authorizationStateWaitPassword
+/// Recovers the 2-step verification password with a password recovery code sent to an email address that was previously set up. Works only when the current authorization state is authorizationStateWaitPassword
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct RecoverAuthenticationPassword {
     #[doc(hidden)]
@@ -14,7 +14,7 @@ pub struct RecoverAuthenticationPassword {
 
     #[serde(default)]
     recovery_code: String,
-    /// New password of the user; may be empty to remove the password
+    /// New 2-step verification password of the user; may be empty to remove the password
 
     #[serde(default)]
     new_password: String,

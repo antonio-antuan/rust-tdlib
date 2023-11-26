@@ -229,7 +229,7 @@ pub struct ChatTypeSecret {
 
     #[serde(default)]
     secret_chat_id: i32,
-    /// User identifier of the secret chat peer
+    /// User identifier of the other user in the secret chat
 
     #[serde(default)]
     user_id: i64,

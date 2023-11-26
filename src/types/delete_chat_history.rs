@@ -14,7 +14,7 @@ pub struct DeleteChatHistory {
 
     #[serde(default)]
     chat_id: i64,
-    /// Pass true if the chat needs to be removed from the chat list
+    /// Pass true to remove the chat from all chat lists
 
     #[serde(default)]
     remove_from_chat_list: bool,

@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns list of chats with non-default notification settings
+/// Returns list of chats with non-default notification settings for new messages
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetChatNotificationSettingsExceptions {
     #[doc(hidden)]
@@ -14,7 +14,7 @@ pub struct GetChatNotificationSettingsExceptions {
 
     #[serde(skip_serializing_if = "NotificationSettingsScope::_is_default")]
     scope: NotificationSettingsScope,
-    /// If true, also chats with non-default sound will be returned
+    /// Pass true to include in the response chats with only non-default sound
 
     #[serde(default)]
     compare_sound: bool,

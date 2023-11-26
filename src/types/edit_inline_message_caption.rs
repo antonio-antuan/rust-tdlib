@@ -18,7 +18,7 @@ pub struct EditInlineMessageCaption {
 
     #[serde(skip_serializing_if = "ReplyMarkup::_is_default")]
     reply_markup: ReplyMarkup,
-    /// New message content caption; pass null to remove caption; 0-GetOption("message_caption_length_max") characters
+    /// New message content caption; pass null to remove caption; 0-getOption("message_caption_length_max") characters
     caption: FormattedText,
 
     #[serde(rename(serialize = "@type"))]

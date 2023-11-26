@@ -18,7 +18,7 @@ pub struct ToggleGroupCallParticipantIsMuted {
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     participant_id: MessageSender,
-    /// Pass true if the user must be muted and false otherwise
+    /// Pass true to mute the user; pass false to unmute them
 
     #[serde(default)]
     is_muted: bool,

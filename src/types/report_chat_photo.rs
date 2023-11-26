@@ -20,8 +20,8 @@ pub struct ReportChatPhoto {
     file_id: i32,
     /// The reason for reporting the chat photo
 
-    #[serde(skip_serializing_if = "ChatReportReason::_is_default")]
-    reason: ChatReportReason,
+    #[serde(skip_serializing_if = "ReportReason::_is_default")]
+    reason: ReportReason,
     /// Additional report details; 0-1024 characters
 
     #[serde(default)]
@@ -65,7 +65,7 @@ impl ReportChatPhoto {
         self.file_id
     }
 
-    pub fn reason(&self) -> &ChatReportReason {
+    pub fn reason(&self) -> &ReportReason {
         &self.reason
     }
 
@@ -97,7 +97,7 @@ impl ReportChatPhotoBuilder {
         self
     }
 
-    pub fn reason<T: AsRef<ChatReportReason>>(&mut self, reason: T) -> &mut Self {
+    pub fn reason<T: AsRef<ReportReason>>(&mut self, reason: T) -> &mut Self {
         self.inner.reason = reason.as_ref().clone();
         self
     }

@@ -18,6 +18,8 @@ pub struct ResendMessages {
 
     #[serde(default)]
     message_ids: Vec<i64>,
+    /// New manually chosen quote from the message to be replied; pass null if none. Ignored if more than one message is re-sent, or if messageSendingStateFailed.need_another_reply_quote == false
+    quote: FormattedText,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -56,6 +58,10 @@ impl ResendMessages {
     pub fn message_ids(&self) -> &Vec<i64> {
         &self.message_ids
     }
+
+    pub fn quote(&self) -> &FormattedText {
+        &self.quote
+    }
 }
 
 #[doc(hidden)]
@@ -78,6 +84,11 @@ impl ResendMessagesBuilder {
 
     pub fn message_ids(&mut self, message_ids: Vec<i64>) -> &mut Self {
         self.inner.message_ids = message_ids;
+        self
+    }
+
+    pub fn quote<T: AsRef<FormattedText>>(&mut self, quote: T) -> &mut Self {
+        self.inner.quote = quote.as_ref().clone();
         self
     }
 }

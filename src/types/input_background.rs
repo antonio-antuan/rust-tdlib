@@ -17,6 +17,9 @@ pub enum InputBackground {
     /// A background from a local file
     #[serde(rename = "inputBackgroundLocal")]
     Local(InputBackgroundLocal),
+    /// A background previously set in the chat; for chat backgrounds only
+    #[serde(rename = "inputBackgroundPrevious")]
+    Previous(InputBackgroundPrevious),
     /// A background from the server
     #[serde(rename = "inputBackgroundRemote")]
     Remote(InputBackgroundRemote),
@@ -27,6 +30,7 @@ impl RObject for InputBackground {
     fn extra(&self) -> Option<&str> {
         match self {
             InputBackground::Local(t) => t.extra(),
+            InputBackground::Previous(t) => t.extra(),
             InputBackground::Remote(t) => t.extra(),
 
             _ => None,
@@ -36,6 +40,7 @@ impl RObject for InputBackground {
     fn client_id(&self) -> Option<i32> {
         match self {
             InputBackground::Local(t) => t.client_id(),
+            InputBackground::Previous(t) => t.client_id(),
             InputBackground::Remote(t) => t.client_id(),
 
             _ => None,
@@ -129,6 +134,80 @@ impl AsRef<InputBackgroundLocal> for InputBackgroundLocal {
 
 impl AsRef<InputBackgroundLocal> for InputBackgroundLocalBuilder {
     fn as_ref(&self) -> &InputBackgroundLocal {
+        &self.inner
+    }
+}
+
+/// A background previously set in the chat; for chat backgrounds only
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct InputBackgroundPrevious {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Identifier of the message with the background
+
+    #[serde(default)]
+    message_id: i64,
+}
+
+impl RObject for InputBackgroundPrevious {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDInputBackground for InputBackgroundPrevious {}
+
+impl InputBackgroundPrevious {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> InputBackgroundPreviousBuilder {
+        let mut inner = InputBackgroundPrevious::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        InputBackgroundPreviousBuilder { inner }
+    }
+
+    pub fn message_id(&self) -> i64 {
+        self.message_id
+    }
+}
+
+#[doc(hidden)]
+pub struct InputBackgroundPreviousBuilder {
+    inner: InputBackgroundPrevious,
+}
+
+#[deprecated]
+pub type RTDInputBackgroundPreviousBuilder = InputBackgroundPreviousBuilder;
+
+impl InputBackgroundPreviousBuilder {
+    pub fn build(&self) -> InputBackgroundPrevious {
+        self.inner.clone()
+    }
+
+    pub fn message_id(&mut self, message_id: i64) -> &mut Self {
+        self.inner.message_id = message_id;
+        self
+    }
+}
+
+impl AsRef<InputBackgroundPrevious> for InputBackgroundPrevious {
+    fn as_ref(&self) -> &InputBackgroundPrevious {
+        self
+    }
+}
+
+impl AsRef<InputBackgroundPrevious> for InputBackgroundPreviousBuilder {
+    fn as_ref(&self) -> &InputBackgroundPrevious {
         &self.inner
     }
 }

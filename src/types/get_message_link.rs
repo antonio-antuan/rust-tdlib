@@ -18,7 +18,7 @@ pub struct GetMessageLink {
 
     #[serde(default)]
     message_id: i64,
-    /// If not 0, timestamp from which the video/audio/video note/voice note playing must start, in seconds. The media can be in the message content or in its web page preview
+    /// If not 0, timestamp from which the video/audio/video note/voice note/story playing must start, in seconds. The media can be in the message content or in its web page preview
 
     #[serde(default)]
     media_timestamp: i32,
@@ -26,10 +26,10 @@ pub struct GetMessageLink {
 
     #[serde(default)]
     for_album: bool,
-    /// Pass true to create a link to the message as a channel post comment, or from a message thread
+    /// Pass true to create a link to the message as a channel post comment, in a message thread, or a forum topic
 
     #[serde(default)]
-    for_comment: bool,
+    in_message_thread: bool,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -77,8 +77,8 @@ impl GetMessageLink {
         self.for_album
     }
 
-    pub fn for_comment(&self) -> bool {
-        self.for_comment
+    pub fn in_message_thread(&self) -> bool {
+        self.in_message_thread
     }
 }
 
@@ -115,8 +115,8 @@ impl GetMessageLinkBuilder {
         self
     }
 
-    pub fn for_comment(&mut self, for_comment: bool) -> &mut Self {
-        self.inner.for_comment = for_comment;
+    pub fn in_message_thread(&mut self, in_message_thread: bool) -> &mut Self {
+        self.inner.in_message_thread = in_message_thread;
         self
     }
 }

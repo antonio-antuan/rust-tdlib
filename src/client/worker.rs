@@ -12,7 +12,7 @@ use crate::{
     tdjson::ClientId,
     types::{
         AuthorizationState, CheckAuthenticationCode, CheckAuthenticationPassword,
-        CheckDatabaseEncryptionKey, GetApplicationConfig, RObject, RegisterUser,
+        GetApplicationConfig, RObject, RegisterUser,
         SetAuthenticationPhoneNumber, SetTdlibParameters, Update, UpdateAuthorizationState,
     },
 };
@@ -183,7 +183,6 @@ where
             AuthorizationState::LoggingOut(_) => Ok((ClientState::Closed, state)),
             AuthorizationState::Ready(_) => Ok((ClientState::Opened, state)),
             AuthorizationState::WaitCode(_) => Ok((ClientState::Authorizing, state)),
-            AuthorizationState::WaitEncryptionKey(_) => Ok((ClientState::Authorizing, state)),
             AuthorizationState::WaitOtherDeviceConfirmation(_) => {
                 Ok((ClientState::Authorizing, state))
             }
@@ -194,6 +193,8 @@ where
             AuthorizationState::GetAuthorizationState(_) => {
                 panic!()
             }
+            AuthorizationState::WaitEmailAddress(_) => {panic!()}
+            AuthorizationState::WaitEmailCode(_) => {panic!()}
         }
     }
 
@@ -585,21 +586,6 @@ where
                 .await?;
             Ok(())
         }
-        AuthorizationState::WaitEncryptionKey(wait_encryption_key) => {
-            let key = auth_state_handler
-                .handle_encryption_key(client.get_auth_handler(), wait_encryption_key)
-                .await;
-            log::debug!("checking encryption key");
-            client
-                .check_database_encryption_key(
-                    CheckDatabaseEncryptionKey::builder()
-                        .encryption_key(key)
-                        .build(),
-                )
-                .await?;
-            log::debug!("encryption key check done");
-            Ok(())
-        }
         AuthorizationState::WaitOtherDeviceConfirmation(wait_device_confirmation) => {
             log::debug!("handling other device confirmation");
             auth_state_handler
@@ -665,12 +651,10 @@ where
             Ok(())
         }
         AuthorizationState::WaitTdlibParameters(_) => {
-            log::debug!("going to set tdlib parameters");
+            log::debug!("going to set tdlib parameters: {:?}", client.tdlib_parameters());
             client
                 .set_tdlib_parameters(
-                    SetTdlibParameters::builder()
-                        .parameters(client.tdlib_parameters())
-                        .build(),
+                    client.tdlib_parameters()
                 )
                 .await?;
             log::debug!("tdlib parameters set");
@@ -679,6 +663,8 @@ where
         AuthorizationState::GetAuthorizationState(_) => Err(Error::Internal(
             "retrieved GetAuthorizationState update but observer not found any subscriber",
         )),
+        AuthorizationState::WaitEmailAddress(_) => {todo!("wait email address is not supported")}
+        AuthorizationState::WaitEmailCode(_) => {todo!("wait email code is not supported")}
     };
 
     match &result_state {
@@ -748,7 +734,7 @@ mod tests {
     use crate::client::Client;
     use crate::errors::Result;
     use crate::tdjson;
-    use crate::types::{Chats, RFunction, RObject, SearchPublicChats, TdlibParameters};
+    use crate::types::{Chats, RFunction, RObject, SearchPublicChats, SetTdlibParameters};
     use std::time::Duration;
     use tokio::time::timeout;
 
@@ -798,7 +784,7 @@ mod tests {
             worker.bind_client(
                 Client::builder()
                     .with_tdlib_client(mocked_raw_api.clone())
-                    .with_tdlib_parameters(TdlibParameters::builder().build())
+                    .with_tdlib_parameters(SetTdlibParameters::builder().build())
                     .build()
                     .unwrap(),
             ),
@@ -819,7 +805,7 @@ mod tests {
             worker.bind_client(
                 Client::builder()
                     .with_tdlib_client(mocked_raw_api.clone())
-                    .with_tdlib_parameters(TdlibParameters::builder().build())
+                    .with_tdlib_parameters(SetTdlibParameters::builder().build())
                     .build()
                     .unwrap(),
             ),
@@ -865,7 +851,7 @@ mod tests {
             .set_client(
                 Client::builder()
                     .with_tdlib_client(mocked_raw_api.clone())
-                    .with_tdlib_parameters(TdlibParameters::builder().build())
+                    .with_tdlib_parameters(SetTdlibParameters::builder().build())
                     .build()
                     .unwrap(),
             )

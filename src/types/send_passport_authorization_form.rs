@@ -13,7 +13,7 @@ pub struct SendPassportAuthorizationForm {
     /// Authorization form identifier
 
     #[serde(default)]
-    autorization_form_id: i32,
+    authorization_form_id: i32,
     /// Types of Telegram Passport elements chosen by user to complete the authorization form
 
     #[serde(default)]
@@ -49,8 +49,8 @@ impl SendPassportAuthorizationForm {
         SendPassportAuthorizationFormBuilder { inner }
     }
 
-    pub fn autorization_form_id(&self) -> i32 {
-        self.autorization_form_id
+    pub fn authorization_form_id(&self) -> i32 {
+        self.authorization_form_id
     }
 
     pub fn types(&self) -> &Vec<PassportElementType> {
@@ -71,8 +71,8 @@ impl SendPassportAuthorizationFormBuilder {
         self.inner.clone()
     }
 
-    pub fn autorization_form_id(&mut self, autorization_form_id: i32) -> &mut Self {
-        self.inner.autorization_form_id = autorization_form_id;
+    pub fn authorization_form_id(&mut self, authorization_form_id: i32) -> &mut Self {
+        self.inner.authorization_form_id = authorization_form_id;
         self
     }
 

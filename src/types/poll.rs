@@ -30,10 +30,10 @@ pub struct Poll {
 
     #[serde(default)]
     total_voter_count: i32,
-    /// User identifiers of recent voters, if the poll is non-anonymous
+    /// Identifiers of recent voters, if the poll is non-anonymous
 
     #[serde(default)]
-    recent_voter_user_ids: Vec<i64>,
+    recent_voter_ids: Vec<MessageSender>,
     /// True, if the poll is anonymous
 
     #[serde(default)]
@@ -95,8 +95,8 @@ impl Poll {
         self.total_voter_count
     }
 
-    pub fn recent_voter_user_ids(&self) -> &Vec<i64> {
-        &self.recent_voter_user_ids
+    pub fn recent_voter_ids(&self) -> &Vec<MessageSender> {
+        &self.recent_voter_ids
     }
 
     pub fn is_anonymous(&self) -> bool {
@@ -153,8 +153,8 @@ impl PollBuilder {
         self
     }
 
-    pub fn recent_voter_user_ids(&mut self, recent_voter_user_ids: Vec<i64>) -> &mut Self {
-        self.inner.recent_voter_user_ids = recent_voter_user_ids;
+    pub fn recent_voter_ids(&mut self, recent_voter_ids: Vec<MessageSender>) -> &mut Self {
+        self.inner.recent_voter_ids = recent_voter_ids;
         self
     }
 

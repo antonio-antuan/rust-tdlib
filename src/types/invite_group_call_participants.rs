@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Invites users to an active group call. Sends a service message of type messageInviteToGroupCall for video chats
+/// Invites users to an active group call. Sends a service message of type messageInviteVideoChatParticipants for video chats
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InviteGroupCallParticipants {
     #[doc(hidden)]

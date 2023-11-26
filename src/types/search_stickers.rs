@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Searches for stickers from public sticker sets that correspond to a given emoji
+/// Searches for stickers from public sticker sets that correspond to any of the given emoji
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SearchStickers {
     #[doc(hidden)]
@@ -10,11 +10,15 @@ pub struct SearchStickers {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// String representation of emoji; must be non-empty
+    /// Type of the stickers to return
+
+    #[serde(skip_serializing_if = "StickerType::_is_default")]
+    sticker_type: StickerType,
+    /// Space-separated list of emoji to search for; must be non-empty
 
     #[serde(default)]
-    emoji: String,
-    /// The maximum number of stickers to be returned
+    emojis: String,
+    /// The maximum number of stickers to be returned; 0-100
 
     #[serde(default)]
     limit: i32,
@@ -49,8 +53,12 @@ impl SearchStickers {
         SearchStickersBuilder { inner }
     }
 
-    pub fn emoji(&self) -> &String {
-        &self.emoji
+    pub fn sticker_type(&self) -> &StickerType {
+        &self.sticker_type
+    }
+
+    pub fn emojis(&self) -> &String {
+        &self.emojis
     }
 
     pub fn limit(&self) -> i32 {
@@ -71,8 +79,13 @@ impl SearchStickersBuilder {
         self.inner.clone()
     }
 
-    pub fn emoji<T: AsRef<str>>(&mut self, emoji: T) -> &mut Self {
-        self.inner.emoji = emoji.as_ref().to_string();
+    pub fn sticker_type<T: AsRef<StickerType>>(&mut self, sticker_type: T) -> &mut Self {
+        self.inner.sticker_type = sticker_type.as_ref().clone();
+        self
+    }
+
+    pub fn emojis<T: AsRef<str>>(&mut self, emojis: T) -> &mut Self {
+        self.inner.emojis = emojis.as_ref().to_string();
         self
     }
 

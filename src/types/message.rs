@@ -22,9 +22,9 @@ pub struct Message {
 
     #[serde(default)]
     chat_id: i64,
-    /// The sending state of the message; may be null
+    /// The sending state of the message; may be null if the message isn't being sent and didn't fail to be sent
     sending_state: Option<MessageSendingState>,
-    /// The scheduling state of the message; may be null
+    /// The scheduling state of the message; may be null if the message isn't scheduled
     scheduling_state: Option<MessageSchedulingState>,
     /// True, if the message is outgoing
 
@@ -42,6 +42,10 @@ pub struct Message {
 
     #[serde(default)]
     can_be_forwarded: bool,
+    /// True, if the message can be replied in another chat or topic
+
+    #[serde(default)]
+    can_be_replied_in_another_chat: bool,
     /// True, if content of the message can be saved locally or copied
 
     #[serde(default)]
@@ -54,11 +58,15 @@ pub struct Message {
 
     #[serde(default)]
     can_be_deleted_for_all_users: bool,
-    /// True, if the message statistics are available
+    /// True, if the list of added reactions is available through getMessageAddedReactions
+
+    #[serde(default)]
+    can_get_added_reactions: bool,
+    /// True, if the message statistics are available through getMessageStatistics
 
     #[serde(default)]
     can_get_statistics: bool,
-    /// True, if the message thread info is available
+    /// True, if information about the message thread is available through getMessageThread and getMessageThreadHistory
 
     #[serde(default)]
     can_get_message_thread: bool,
@@ -66,10 +74,14 @@ pub struct Message {
 
     #[serde(default)]
     can_get_viewers: bool,
-    /// True, if media timestamp links can be generated for media timestamp entities in the message text, caption or web page description
+    /// True, if media timestamp links can be generated for media timestamp entities in the message text, caption or web page description through getMessageLink
 
     #[serde(default)]
     can_get_media_timestamp_links: bool,
+    /// True, if reactions on the message can be reported through reportMessageReactions
+
+    #[serde(default)]
+    can_report_reactions: bool,
     /// True, if media timestamp entities refers to a media in this message as opposed to a media in the replied message
 
     #[serde(default)]
@@ -78,6 +90,10 @@ pub struct Message {
 
     #[serde(default)]
     is_channel_post: bool,
+    /// True, if the message is a forum topic message
+
+    #[serde(default)]
+    is_topic_message: bool,
     /// True, if the message contains an unread mention for the current user
 
     #[serde(default)]
@@ -90,30 +106,32 @@ pub struct Message {
 
     #[serde(default)]
     edit_date: i32,
-    /// Information about the initial message sender; may be null
+    /// Information about the initial message sender; may be null if none or unknown
     forward_info: Option<MessageForwardInfo>,
-    /// Information about interactions with the message; may be null
+    /// Information about the initial message for messages created with importMessages; may be null if the message isn't imported
+    import_info: Option<MessageImportInfo>,
+    /// Information about interactions with the message; may be null if none
     interaction_info: Option<MessageInteractionInfo>,
-    /// If non-zero, the identifier of the chat to which the replied message belongs; Currently, only messages in the Replies chat can have different reply_in_chat_id and chat_id
+    /// Information about unread reactions added to the message
 
     #[serde(default)]
-    reply_in_chat_id: i64,
-    /// If non-zero, the identifier of the message this message is replying to; can be the identifier of a deleted message
-
-    #[serde(default)]
-    reply_to_message_id: i64,
+    unread_reactions: Vec<UnreadReaction>,
+    /// Information about the message or the story this message is replying to; may be null if none
+    reply_to: Option<MessageReplyTo>,
     /// If non-zero, the identifier of the message thread the message belongs to; unique within the chat to which the message belongs
 
     #[serde(default)]
     message_thread_id: i64,
-    /// For self-destructing messages, the message's TTL (Time To Live), in seconds; 0 if none. TDLib will send updateDeleteMessages or updateMessageContent once the TTL expires
+    /// The message's self-destruct type; may be null if none
+    self_destruct_type: Option<MessageSelfDestructType>,
+    /// Time left before the message self-destruct timer expires, in seconds; 0 if self-destruction isn't scheduled yet
 
     #[serde(default)]
-    ttl: i32,
-    /// Time left before the message expires, in seconds. If the TTL timer isn't started yet, equals to the value of the ttl field
+    self_destruct_in: f32,
+    /// Time left before the message will be automatically deleted by message_auto_delete_time setting of the chat, in seconds; 0 if never
 
     #[serde(default)]
-    ttl_expires_in: f32,
+    auto_delete_in: f32,
     /// If non-zero, the user identifier of the bot through which this message was sent
 
     #[serde(default)]
@@ -138,7 +156,7 @@ pub struct Message {
 
     #[serde(skip_serializing_if = "MessageContent::_is_default")]
     content: MessageContent,
-    /// Reply markup for the message; may be null
+    /// Reply markup for the message; may be null if none
     reply_markup: Option<ReplyMarkup>,
 }
 
@@ -200,6 +218,10 @@ impl Message {
         self.can_be_forwarded
     }
 
+    pub fn can_be_replied_in_another_chat(&self) -> bool {
+        self.can_be_replied_in_another_chat
+    }
+
     pub fn can_be_saved(&self) -> bool {
         self.can_be_saved
     }
@@ -210,6 +232,10 @@ impl Message {
 
     pub fn can_be_deleted_for_all_users(&self) -> bool {
         self.can_be_deleted_for_all_users
+    }
+
+    pub fn can_get_added_reactions(&self) -> bool {
+        self.can_get_added_reactions
     }
 
     pub fn can_get_statistics(&self) -> bool {
@@ -228,12 +254,20 @@ impl Message {
         self.can_get_media_timestamp_links
     }
 
+    pub fn can_report_reactions(&self) -> bool {
+        self.can_report_reactions
+    }
+
     pub fn has_timestamped_media(&self) -> bool {
         self.has_timestamped_media
     }
 
     pub fn is_channel_post(&self) -> bool {
         self.is_channel_post
+    }
+
+    pub fn is_topic_message(&self) -> bool {
+        self.is_topic_message
     }
 
     pub fn contains_unread_mention(&self) -> bool {
@@ -252,28 +286,36 @@ impl Message {
         &self.forward_info
     }
 
+    pub fn import_info(&self) -> &Option<MessageImportInfo> {
+        &self.import_info
+    }
+
     pub fn interaction_info(&self) -> &Option<MessageInteractionInfo> {
         &self.interaction_info
     }
 
-    pub fn reply_in_chat_id(&self) -> i64 {
-        self.reply_in_chat_id
+    pub fn unread_reactions(&self) -> &Vec<UnreadReaction> {
+        &self.unread_reactions
     }
 
-    pub fn reply_to_message_id(&self) -> i64 {
-        self.reply_to_message_id
+    pub fn reply_to(&self) -> &Option<MessageReplyTo> {
+        &self.reply_to
     }
 
     pub fn message_thread_id(&self) -> i64 {
         self.message_thread_id
     }
 
-    pub fn ttl(&self) -> i32 {
-        self.ttl
+    pub fn self_destruct_type(&self) -> &Option<MessageSelfDestructType> {
+        &self.self_destruct_type
     }
 
-    pub fn ttl_expires_in(&self) -> f32 {
-        self.ttl_expires_in
+    pub fn self_destruct_in(&self) -> f32 {
+        self.self_destruct_in
+    }
+
+    pub fn auto_delete_in(&self) -> f32 {
+        self.auto_delete_in
     }
 
     pub fn via_bot_user_id(&self) -> i64 {
@@ -362,6 +404,14 @@ impl MessageBuilder {
         self
     }
 
+    pub fn can_be_replied_in_another_chat(
+        &mut self,
+        can_be_replied_in_another_chat: bool,
+    ) -> &mut Self {
+        self.inner.can_be_replied_in_another_chat = can_be_replied_in_another_chat;
+        self
+    }
+
     pub fn can_be_saved(&mut self, can_be_saved: bool) -> &mut Self {
         self.inner.can_be_saved = can_be_saved;
         self
@@ -380,6 +430,11 @@ impl MessageBuilder {
         can_be_deleted_for_all_users: bool,
     ) -> &mut Self {
         self.inner.can_be_deleted_for_all_users = can_be_deleted_for_all_users;
+        self
+    }
+
+    pub fn can_get_added_reactions(&mut self, can_get_added_reactions: bool) -> &mut Self {
+        self.inner.can_get_added_reactions = can_get_added_reactions;
         self
     }
 
@@ -406,6 +461,11 @@ impl MessageBuilder {
         self
     }
 
+    pub fn can_report_reactions(&mut self, can_report_reactions: bool) -> &mut Self {
+        self.inner.can_report_reactions = can_report_reactions;
+        self
+    }
+
     pub fn has_timestamped_media(&mut self, has_timestamped_media: bool) -> &mut Self {
         self.inner.has_timestamped_media = has_timestamped_media;
         self
@@ -413,6 +473,11 @@ impl MessageBuilder {
 
     pub fn is_channel_post(&mut self, is_channel_post: bool) -> &mut Self {
         self.inner.is_channel_post = is_channel_post;
+        self
+    }
+
+    pub fn is_topic_message(&mut self, is_topic_message: bool) -> &mut Self {
+        self.inner.is_topic_message = is_topic_message;
         self
     }
 
@@ -436,6 +501,11 @@ impl MessageBuilder {
         self
     }
 
+    pub fn import_info<T: AsRef<MessageImportInfo>>(&mut self, import_info: T) -> &mut Self {
+        self.inner.import_info = Some(import_info.as_ref().clone());
+        self
+    }
+
     pub fn interaction_info<T: AsRef<MessageInteractionInfo>>(
         &mut self,
         interaction_info: T,
@@ -444,13 +514,13 @@ impl MessageBuilder {
         self
     }
 
-    pub fn reply_in_chat_id(&mut self, reply_in_chat_id: i64) -> &mut Self {
-        self.inner.reply_in_chat_id = reply_in_chat_id;
+    pub fn unread_reactions(&mut self, unread_reactions: Vec<UnreadReaction>) -> &mut Self {
+        self.inner.unread_reactions = unread_reactions;
         self
     }
 
-    pub fn reply_to_message_id(&mut self, reply_to_message_id: i64) -> &mut Self {
-        self.inner.reply_to_message_id = reply_to_message_id;
+    pub fn reply_to<T: AsRef<MessageReplyTo>>(&mut self, reply_to: T) -> &mut Self {
+        self.inner.reply_to = Some(reply_to.as_ref().clone());
         self
     }
 
@@ -459,13 +529,21 @@ impl MessageBuilder {
         self
     }
 
-    pub fn ttl(&mut self, ttl: i32) -> &mut Self {
-        self.inner.ttl = ttl;
+    pub fn self_destruct_type<T: AsRef<MessageSelfDestructType>>(
+        &mut self,
+        self_destruct_type: T,
+    ) -> &mut Self {
+        self.inner.self_destruct_type = Some(self_destruct_type.as_ref().clone());
         self
     }
 
-    pub fn ttl_expires_in(&mut self, ttl_expires_in: f32) -> &mut Self {
-        self.inner.ttl_expires_in = ttl_expires_in;
+    pub fn self_destruct_in(&mut self, self_destruct_in: f32) -> &mut Self {
+        self.inner.self_destruct_in = self_destruct_in;
+        self
+    }
+
+    pub fn auto_delete_in(&mut self, auto_delete_in: f32) -> &mut Self {
+        self.inner.auto_delete_in = auto_delete_in;
         self
     }
 

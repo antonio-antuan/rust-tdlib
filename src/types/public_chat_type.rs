@@ -14,7 +14,7 @@ pub enum PublicChatType {
     #[doc(hidden)]
     #[default]
     _Default,
-    /// The chat is public, because it has username
+    /// The chat is public, because it has an active username
     #[serde(rename = "publicChatTypeHasUsername")]
     HasUsername(PublicChatTypeHasUsername),
     /// The chat is public, because it is a location-based supergroup
@@ -59,7 +59,7 @@ impl AsRef<PublicChatType> for PublicChatType {
     }
 }
 
-/// The chat is public, because it has username
+/// The chat is public, because it has an active username
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct PublicChatTypeHasUsername {
     #[doc(hidden)]

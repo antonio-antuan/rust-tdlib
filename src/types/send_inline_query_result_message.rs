@@ -18,10 +18,10 @@ pub struct SendInlineQueryResultMessage {
 
     #[serde(default)]
     message_thread_id: i64,
-    /// Identifier of a message to reply to or 0
+    /// Information about the message or story to be replied; pass null if none
 
-    #[serde(default)]
-    reply_to_message_id: i64,
+    #[serde(skip_serializing_if = "InputMessageReplyTo::_is_default")]
+    reply_to: InputMessageReplyTo,
     /// Options to be used to send the message; pass null to use default options
     options: MessageSendOptions,
     /// Identifier of the inline query
@@ -32,11 +32,11 @@ pub struct SendInlineQueryResultMessage {
     )]
     #[serde(default)]
     query_id: i64,
-    /// Identifier of the inline result
+    /// Identifier of the inline query result
 
     #[serde(default)]
     result_id: String,
-    /// If true, there will be no mention of a bot, via which the message is sent. Can be used only for bots GetOption("animation_search_bot_username"), GetOption("photo_search_bot_username") and GetOption("venue_search_bot_username")
+    /// Pass true to hide the bot, via which the message is sent. Can be used only for bots getOption("animation_search_bot_username"), getOption("photo_search_bot_username"), and getOption("venue_search_bot_username")
 
     #[serde(default)]
     hide_via_bot: bool,
@@ -79,8 +79,8 @@ impl SendInlineQueryResultMessage {
         self.message_thread_id
     }
 
-    pub fn reply_to_message_id(&self) -> i64 {
-        self.reply_to_message_id
+    pub fn reply_to(&self) -> &InputMessageReplyTo {
+        &self.reply_to
     }
 
     pub fn options(&self) -> &MessageSendOptions {
@@ -123,8 +123,8 @@ impl SendInlineQueryResultMessageBuilder {
         self
     }
 
-    pub fn reply_to_message_id(&mut self, reply_to_message_id: i64) -> &mut Self {
-        self.inner.reply_to_message_id = reply_to_message_id;
+    pub fn reply_to<T: AsRef<InputMessageReplyTo>>(&mut self, reply_to: T) -> &mut Self {
+        self.inner.reply_to = reply_to.as_ref().clone();
         self
     }
 

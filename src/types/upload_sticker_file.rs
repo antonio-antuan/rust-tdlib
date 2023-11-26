@@ -14,10 +14,14 @@ pub struct UploadStickerFile {
 
     #[serde(default)]
     user_id: i64,
-    /// Sticker file to upload
+    /// Sticker format
 
-    #[serde(skip_serializing_if = "InputSticker::_is_default")]
-    sticker: InputSticker,
+    #[serde(skip_serializing_if = "StickerFormat::_is_default")]
+    sticker_format: StickerFormat,
+    /// File file to upload; must fit in a 512x512 square. For WEBP stickers the file must be in WEBP or PNG format, which will be converted to WEBP server-side. See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+
+    #[serde(skip_serializing_if = "InputFile::_is_default")]
+    sticker: InputFile,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -53,7 +57,11 @@ impl UploadStickerFile {
         self.user_id
     }
 
-    pub fn sticker(&self) -> &InputSticker {
+    pub fn sticker_format(&self) -> &StickerFormat {
+        &self.sticker_format
+    }
+
+    pub fn sticker(&self) -> &InputFile {
         &self.sticker
     }
 }
@@ -76,7 +84,12 @@ impl UploadStickerFileBuilder {
         self
     }
 
-    pub fn sticker<T: AsRef<InputSticker>>(&mut self, sticker: T) -> &mut Self {
+    pub fn sticker_format<T: AsRef<StickerFormat>>(&mut self, sticker_format: T) -> &mut Self {
+        self.inner.sticker_format = sticker_format.as_ref().clone();
+        self
+    }
+
+    pub fn sticker<T: AsRef<InputFile>>(&mut self, sticker: T) -> &mut Self {
         self.inner.sticker = sticker.as_ref().clone();
         self
     }

@@ -10,7 +10,7 @@ pub struct RemoteFile {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Remote file identifier; may be empty. Can be used by the current user across application restarts or even from other devices. Uniquely identifies a file, but a file can have a lot of different valid identifiers. If the ID starts with "http://" or "https://", it represents the HTTP URL of the file. TDLib is currently unable to download files if only their URL is known. If downloadFile is called on such a file or if it is sent to a secret chat, TDLib starts a file generation process by sending updateFileGenerationStart to the application with the HTTP URL in the original_path and "#url#" as the conversion string. Application must generate the file by downloading it to the specified location
+    /// Remote file identifier; may be empty. Can be used by the current user across application restarts or even from other devices. Uniquely identifies a file, but a file can have a lot of different valid identifiers. If the identifier starts with "http://" or "https://", it represents the HTTP URL of the file. TDLib is currently unable to download files if only their URL is known. If downloadFile/addFileToDownloads is called on such a file or if it is sent to a secret chat, TDLib starts a file generation process by sending updateFileGenerationStart to the application with the HTTP URL in the original_path and "#url#" as the conversion string. Application must generate the file by downloading it to the specified location
 
     #[serde(default)]
     id: String,
@@ -29,7 +29,7 @@ pub struct RemoteFile {
     /// Size of the remote available part of the file, in bytes; 0 if unknown
 
     #[serde(default)]
-    uploaded_size: i32,
+    uploaded_size: i64,
 }
 
 impl RObject for RemoteFile {
@@ -70,7 +70,7 @@ impl RemoteFile {
         self.is_uploading_completed
     }
 
-    pub fn uploaded_size(&self) -> i32 {
+    pub fn uploaded_size(&self) -> i64 {
         self.uploaded_size
     }
 }
@@ -108,7 +108,7 @@ impl RemoteFileBuilder {
         self
     }
 
-    pub fn uploaded_size(&mut self, uploaded_size: i32) -> &mut Self {
+    pub fn uploaded_size(&mut self, uploaded_size: i64) -> &mut Self {
         self.inner.uploaded_size = uploaded_size;
         self
     }

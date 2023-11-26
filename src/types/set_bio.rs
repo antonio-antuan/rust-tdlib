@@ -10,7 +10,7 @@ pub struct SetBio {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The new value of the user bio; 0-70 characters without line feeds
+    /// The new value of the user bio; 0-getOption("bio_length_max") characters without line feeds
 
     #[serde(default)]
     bio: String,

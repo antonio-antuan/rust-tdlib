@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Re-sends the code to verify an email address to be added to a user's Telegram Passport
+/// Resends the code to verify an email address to be added to a user's Telegram Passport
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ResendEmailAddressVerificationCode {
     #[doc(hidden)]

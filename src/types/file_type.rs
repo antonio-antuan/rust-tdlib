@@ -26,9 +26,15 @@ pub enum FileType {
     /// The data is not a file
     #[serde(rename = "fileTypeNone")]
     None(FileTypeNone),
+    /// The file is a notification sound
+    #[serde(rename = "fileTypeNotificationSound")]
+    NotificationSound(FileTypeNotificationSound),
     /// The file is a photo
     #[serde(rename = "fileTypePhoto")]
     Photo(FileTypePhoto),
+    /// The file is a photo published as a story
+    #[serde(rename = "fileTypePhotoStory")]
+    PhotoStory(FileTypePhotoStory),
     /// The file is a profile photo
     #[serde(rename = "fileTypeProfilePhoto")]
     ProfilePhoto(FileTypeProfilePhoto),
@@ -56,6 +62,9 @@ pub enum FileType {
     /// The file is a video note
     #[serde(rename = "fileTypeVideoNote")]
     VideoNote(FileTypeVideoNote),
+    /// The file is a video published as a story
+    #[serde(rename = "fileTypeVideoStory")]
+    VideoStory(FileTypeVideoStory),
     /// The file is a voice note
     #[serde(rename = "fileTypeVoiceNote")]
     VoiceNote(FileTypeVoiceNote),
@@ -72,7 +81,9 @@ impl RObject for FileType {
             FileType::Audio(t) => t.extra(),
             FileType::Document(t) => t.extra(),
             FileType::None(t) => t.extra(),
+            FileType::NotificationSound(t) => t.extra(),
             FileType::Photo(t) => t.extra(),
+            FileType::PhotoStory(t) => t.extra(),
             FileType::ProfilePhoto(t) => t.extra(),
             FileType::Secret(t) => t.extra(),
             FileType::SecretThumbnail(t) => t.extra(),
@@ -82,6 +93,7 @@ impl RObject for FileType {
             FileType::Unknown(t) => t.extra(),
             FileType::Video(t) => t.extra(),
             FileType::VideoNote(t) => t.extra(),
+            FileType::VideoStory(t) => t.extra(),
             FileType::VoiceNote(t) => t.extra(),
             FileType::Wallpaper(t) => t.extra(),
 
@@ -95,7 +107,9 @@ impl RObject for FileType {
             FileType::Audio(t) => t.client_id(),
             FileType::Document(t) => t.client_id(),
             FileType::None(t) => t.client_id(),
+            FileType::NotificationSound(t) => t.client_id(),
             FileType::Photo(t) => t.client_id(),
+            FileType::PhotoStory(t) => t.client_id(),
             FileType::ProfilePhoto(t) => t.client_id(),
             FileType::Secret(t) => t.client_id(),
             FileType::SecretThumbnail(t) => t.client_id(),
@@ -105,6 +119,7 @@ impl RObject for FileType {
             FileType::Unknown(t) => t.client_id(),
             FileType::Video(t) => t.client_id(),
             FileType::VideoNote(t) => t.client_id(),
+            FileType::VideoStory(t) => t.client_id(),
             FileType::VoiceNote(t) => t.client_id(),
             FileType::Wallpaper(t) => t.client_id(),
 
@@ -373,6 +388,67 @@ impl AsRef<FileTypeNone> for FileTypeNoneBuilder {
     }
 }
 
+/// The file is a notification sound
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct FileTypeNotificationSound {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for FileTypeNotificationSound {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDFileType for FileTypeNotificationSound {}
+
+impl FileTypeNotificationSound {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> FileTypeNotificationSoundBuilder {
+        let mut inner = FileTypeNotificationSound::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        FileTypeNotificationSoundBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct FileTypeNotificationSoundBuilder {
+    inner: FileTypeNotificationSound,
+}
+
+#[deprecated]
+pub type RTDFileTypeNotificationSoundBuilder = FileTypeNotificationSoundBuilder;
+
+impl FileTypeNotificationSoundBuilder {
+    pub fn build(&self) -> FileTypeNotificationSound {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<FileTypeNotificationSound> for FileTypeNotificationSound {
+    fn as_ref(&self) -> &FileTypeNotificationSound {
+        self
+    }
+}
+
+impl AsRef<FileTypeNotificationSound> for FileTypeNotificationSoundBuilder {
+    fn as_ref(&self) -> &FileTypeNotificationSound {
+        &self.inner
+    }
+}
+
 /// The file is a photo
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct FileTypePhoto {
@@ -430,6 +506,67 @@ impl AsRef<FileTypePhoto> for FileTypePhoto {
 
 impl AsRef<FileTypePhoto> for FileTypePhotoBuilder {
     fn as_ref(&self) -> &FileTypePhoto {
+        &self.inner
+    }
+}
+
+/// The file is a photo published as a story
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct FileTypePhotoStory {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for FileTypePhotoStory {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDFileType for FileTypePhotoStory {}
+
+impl FileTypePhotoStory {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> FileTypePhotoStoryBuilder {
+        let mut inner = FileTypePhotoStory::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        FileTypePhotoStoryBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct FileTypePhotoStoryBuilder {
+    inner: FileTypePhotoStory,
+}
+
+#[deprecated]
+pub type RTDFileTypePhotoStoryBuilder = FileTypePhotoStoryBuilder;
+
+impl FileTypePhotoStoryBuilder {
+    pub fn build(&self) -> FileTypePhotoStory {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<FileTypePhotoStory> for FileTypePhotoStory {
+    fn as_ref(&self) -> &FileTypePhotoStory {
+        self
+    }
+}
+
+impl AsRef<FileTypePhotoStory> for FileTypePhotoStoryBuilder {
+    fn as_ref(&self) -> &FileTypePhotoStory {
         &self.inner
     }
 }
@@ -979,6 +1116,67 @@ impl AsRef<FileTypeVideoNote> for FileTypeVideoNote {
 
 impl AsRef<FileTypeVideoNote> for FileTypeVideoNoteBuilder {
     fn as_ref(&self) -> &FileTypeVideoNote {
+        &self.inner
+    }
+}
+
+/// The file is a video published as a story
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct FileTypeVideoStory {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for FileTypeVideoStory {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDFileType for FileTypeVideoStory {}
+
+impl FileTypeVideoStory {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> FileTypeVideoStoryBuilder {
+        let mut inner = FileTypeVideoStory::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        FileTypeVideoStoryBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct FileTypeVideoStoryBuilder {
+    inner: FileTypeVideoStory,
+}
+
+#[deprecated]
+pub type RTDFileTypeVideoStoryBuilder = FileTypeVideoStoryBuilder;
+
+impl FileTypeVideoStoryBuilder {
+    pub fn build(&self) -> FileTypeVideoStory {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<FileTypeVideoStory> for FileTypeVideoStory {
+    fn as_ref(&self) -> &FileTypeVideoStory {
+        self
+    }
+}
+
+impl AsRef<FileTypeVideoStory> for FileTypeVideoStoryBuilder {
+    fn as_ref(&self) -> &FileTypeVideoStory {
         &self.inner
     }
 }

@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns a list of sticker sets attached to a file. Currently, only photos and videos can have attached sticker sets
+/// Returns a list of sticker sets attached to a file, including regular, mask, and emoji sticker sets. Currently, only animations, photos, and videos can have attached sticker sets
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetAttachedStickerSets {
     #[doc(hidden)]

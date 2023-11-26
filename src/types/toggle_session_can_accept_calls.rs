@@ -18,7 +18,7 @@ pub struct ToggleSessionCanAcceptCalls {
     )]
     #[serde(default)]
     session_id: i64,
-    /// True, if incoming calls can be accepted by the session
+    /// Pass true to allow accepting incoming calls by the session; pass false otherwise
 
     #[serde(default)]
     can_accept_calls: bool,

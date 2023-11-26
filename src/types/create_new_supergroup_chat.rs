@@ -14,7 +14,11 @@ pub struct CreateNewSupergroupChat {
 
     #[serde(default)]
     title: String,
-    /// True, if a channel chat needs to be created
+    /// Pass true to create a forum supergroup chat
+
+    #[serde(default)]
+    is_forum: bool,
+    /// Pass true to create a channel chat; ignored if a forum is created
 
     #[serde(default)]
     is_channel: bool,
@@ -24,7 +28,11 @@ pub struct CreateNewSupergroupChat {
     description: String,
     /// Chat location if a location-based supergroup is being created; pass null to create an ordinary supergroup chat
     location: ChatLocation,
-    /// True, if the supergroup is created for importing messages using importMessage
+    /// Message auto-delete time value, in seconds; must be from 0 up to 365 * 86400 and be divisible by 86400. If 0, then messages aren't deleted automatically
+
+    #[serde(default)]
+    message_auto_delete_time: i32,
+    /// Pass true to create a supergroup for importing messages using importMessages
 
     #[serde(default)]
     for_import: bool,
@@ -63,6 +71,10 @@ impl CreateNewSupergroupChat {
         &self.title
     }
 
+    pub fn is_forum(&self) -> bool {
+        self.is_forum
+    }
+
     pub fn is_channel(&self) -> bool {
         self.is_channel
     }
@@ -73,6 +85,10 @@ impl CreateNewSupergroupChat {
 
     pub fn location(&self) -> &ChatLocation {
         &self.location
+    }
+
+    pub fn message_auto_delete_time(&self) -> i32 {
+        self.message_auto_delete_time
     }
 
     pub fn for_import(&self) -> bool {
@@ -98,6 +114,11 @@ impl CreateNewSupergroupChatBuilder {
         self
     }
 
+    pub fn is_forum(&mut self, is_forum: bool) -> &mut Self {
+        self.inner.is_forum = is_forum;
+        self
+    }
+
     pub fn is_channel(&mut self, is_channel: bool) -> &mut Self {
         self.inner.is_channel = is_channel;
         self
@@ -110,6 +131,11 @@ impl CreateNewSupergroupChatBuilder {
 
     pub fn location<T: AsRef<ChatLocation>>(&mut self, location: T) -> &mut Self {
         self.inner.location = location.as_ref().clone();
+        self
+    }
+
+    pub fn message_auto_delete_time(&mut self, message_auto_delete_time: i32) -> &mut Self {
+        self.inner.message_auto_delete_time = message_auto_delete_time;
         self
     }
 

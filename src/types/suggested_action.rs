@@ -23,12 +23,21 @@ pub enum SuggestedAction {
     /// Suggests the user to convert specified supergroup to a broadcast group
     #[serde(rename = "suggestedActionConvertToBroadcastGroup")]
     ConvertToBroadcastGroup(SuggestedActionConvertToBroadcastGroup),
-    /// Suggests the user to enable "archive_and_mute_new_chats_from_unknown_users" option
+    /// Suggests the user to enable archive_and_mute_new_chats_from_unknown_users setting in archiveChatListSettings
     #[serde(rename = "suggestedActionEnableArchiveAndMuteNewChats")]
     EnableArchiveAndMuteNewChats(SuggestedActionEnableArchiveAndMuteNewChats),
+    /// Suggests the user to restore a recently expired Premium subscription
+    #[serde(rename = "suggestedActionRestorePremium")]
+    RestorePremium(SuggestedActionRestorePremium),
     /// Suggests the user to set a 2-step verification password to be able to log in again
     #[serde(rename = "suggestedActionSetPassword")]
     SetPassword(SuggestedActionSetPassword),
+    /// Suggests the user to subscribe to the Premium subscription with annual payments
+    #[serde(rename = "suggestedActionSubscribeToAnnualPremium")]
+    SubscribeToAnnualPremium(SuggestedActionSubscribeToAnnualPremium),
+    /// Suggests the user to upgrade the Premium subscription from monthly payments to annual payments
+    #[serde(rename = "suggestedActionUpgradePremium")]
+    UpgradePremium(SuggestedActionUpgradePremium),
     /// Suggests the user to view a hint about the meaning of one and two check marks on sent messages
     #[serde(rename = "suggestedActionViewChecksHint")]
     ViewChecksHint(SuggestedActionViewChecksHint),
@@ -42,7 +51,10 @@ impl RObject for SuggestedAction {
             SuggestedAction::CheckPhoneNumber(t) => t.extra(),
             SuggestedAction::ConvertToBroadcastGroup(t) => t.extra(),
             SuggestedAction::EnableArchiveAndMuteNewChats(t) => t.extra(),
+            SuggestedAction::RestorePremium(t) => t.extra(),
             SuggestedAction::SetPassword(t) => t.extra(),
+            SuggestedAction::SubscribeToAnnualPremium(t) => t.extra(),
+            SuggestedAction::UpgradePremium(t) => t.extra(),
             SuggestedAction::ViewChecksHint(t) => t.extra(),
 
             _ => None,
@@ -55,7 +67,10 @@ impl RObject for SuggestedAction {
             SuggestedAction::CheckPhoneNumber(t) => t.client_id(),
             SuggestedAction::ConvertToBroadcastGroup(t) => t.client_id(),
             SuggestedAction::EnableArchiveAndMuteNewChats(t) => t.client_id(),
+            SuggestedAction::RestorePremium(t) => t.client_id(),
             SuggestedAction::SetPassword(t) => t.client_id(),
+            SuggestedAction::SubscribeToAnnualPremium(t) => t.client_id(),
+            SuggestedAction::UpgradePremium(t) => t.client_id(),
             SuggestedAction::ViewChecksHint(t) => t.client_id(),
 
             _ => None,
@@ -278,7 +293,7 @@ impl AsRef<SuggestedActionConvertToBroadcastGroup>
     }
 }
 
-/// Suggests the user to enable "archive_and_mute_new_chats_from_unknown_users" option
+/// Suggests the user to enable archive_and_mute_new_chats_from_unknown_users setting in archiveChatListSettings
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SuggestedActionEnableArchiveAndMuteNewChats {
     #[doc(hidden)]
@@ -344,6 +359,67 @@ impl AsRef<SuggestedActionEnableArchiveAndMuteNewChats>
     }
 }
 
+/// Suggests the user to restore a recently expired Premium subscription
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct SuggestedActionRestorePremium {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for SuggestedActionRestorePremium {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDSuggestedAction for SuggestedActionRestorePremium {}
+
+impl SuggestedActionRestorePremium {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> SuggestedActionRestorePremiumBuilder {
+        let mut inner = SuggestedActionRestorePremium::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        SuggestedActionRestorePremiumBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct SuggestedActionRestorePremiumBuilder {
+    inner: SuggestedActionRestorePremium,
+}
+
+#[deprecated]
+pub type RTDSuggestedActionRestorePremiumBuilder = SuggestedActionRestorePremiumBuilder;
+
+impl SuggestedActionRestorePremiumBuilder {
+    pub fn build(&self) -> SuggestedActionRestorePremium {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<SuggestedActionRestorePremium> for SuggestedActionRestorePremium {
+    fn as_ref(&self) -> &SuggestedActionRestorePremium {
+        self
+    }
+}
+
+impl AsRef<SuggestedActionRestorePremium> for SuggestedActionRestorePremiumBuilder {
+    fn as_ref(&self) -> &SuggestedActionRestorePremium {
+        &self.inner
+    }
+}
+
 /// Suggests the user to set a 2-step verification password to be able to log in again
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SuggestedActionSetPassword {
@@ -352,7 +428,7 @@ pub struct SuggestedActionSetPassword {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The number of days to pass between consecutive authorizations if the user declines to set password
+    /// The number of days to pass between consecutive authorizations if the user declines to set password; if 0, then the user is advised to set the password for security reasons
 
     #[serde(default)]
     authorization_delay: i32,
@@ -414,6 +490,131 @@ impl AsRef<SuggestedActionSetPassword> for SuggestedActionSetPassword {
 
 impl AsRef<SuggestedActionSetPassword> for SuggestedActionSetPasswordBuilder {
     fn as_ref(&self) -> &SuggestedActionSetPassword {
+        &self.inner
+    }
+}
+
+/// Suggests the user to subscribe to the Premium subscription with annual payments
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct SuggestedActionSubscribeToAnnualPremium {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for SuggestedActionSubscribeToAnnualPremium {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDSuggestedAction for SuggestedActionSubscribeToAnnualPremium {}
+
+impl SuggestedActionSubscribeToAnnualPremium {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> SuggestedActionSubscribeToAnnualPremiumBuilder {
+        let mut inner = SuggestedActionSubscribeToAnnualPremium::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        SuggestedActionSubscribeToAnnualPremiumBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct SuggestedActionSubscribeToAnnualPremiumBuilder {
+    inner: SuggestedActionSubscribeToAnnualPremium,
+}
+
+#[deprecated]
+pub type RTDSuggestedActionSubscribeToAnnualPremiumBuilder =
+    SuggestedActionSubscribeToAnnualPremiumBuilder;
+
+impl SuggestedActionSubscribeToAnnualPremiumBuilder {
+    pub fn build(&self) -> SuggestedActionSubscribeToAnnualPremium {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<SuggestedActionSubscribeToAnnualPremium> for SuggestedActionSubscribeToAnnualPremium {
+    fn as_ref(&self) -> &SuggestedActionSubscribeToAnnualPremium {
+        self
+    }
+}
+
+impl AsRef<SuggestedActionSubscribeToAnnualPremium>
+    for SuggestedActionSubscribeToAnnualPremiumBuilder
+{
+    fn as_ref(&self) -> &SuggestedActionSubscribeToAnnualPremium {
+        &self.inner
+    }
+}
+
+/// Suggests the user to upgrade the Premium subscription from monthly payments to annual payments
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct SuggestedActionUpgradePremium {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for SuggestedActionUpgradePremium {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDSuggestedAction for SuggestedActionUpgradePremium {}
+
+impl SuggestedActionUpgradePremium {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> SuggestedActionUpgradePremiumBuilder {
+        let mut inner = SuggestedActionUpgradePremium::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        SuggestedActionUpgradePremiumBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct SuggestedActionUpgradePremiumBuilder {
+    inner: SuggestedActionUpgradePremium,
+}
+
+#[deprecated]
+pub type RTDSuggestedActionUpgradePremiumBuilder = SuggestedActionUpgradePremiumBuilder;
+
+impl SuggestedActionUpgradePremiumBuilder {
+    pub fn build(&self) -> SuggestedActionUpgradePremium {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<SuggestedActionUpgradePremium> for SuggestedActionUpgradePremium {
+    fn as_ref(&self) -> &SuggestedActionUpgradePremium {
+        self
+    }
+}
+
+impl AsRef<SuggestedActionUpgradePremium> for SuggestedActionUpgradePremiumBuilder {
+    fn as_ref(&self) -> &SuggestedActionUpgradePremium {
         &self.inner
     }
 }

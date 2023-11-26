@@ -17,9 +17,9 @@ pub enum ChatList {
     /// A list of chats usually located at the top of the main chat list. Unmuted chats are automatically moved from the Archive to the Main chat list when a new message arrives
     #[serde(rename = "chatListArchive")]
     Archive(ChatListArchive),
-    /// A list of chats belonging to a chat filter
-    #[serde(rename = "chatListFilter")]
-    Filter(ChatListFilter),
+    /// A list of chats added to a chat folder
+    #[serde(rename = "chatListFolder")]
+    Folder(ChatListFolder),
     /// A main list of chats
     #[serde(rename = "chatListMain")]
     Main(ChatListMain),
@@ -30,7 +30,7 @@ impl RObject for ChatList {
     fn extra(&self) -> Option<&str> {
         match self {
             ChatList::Archive(t) => t.extra(),
-            ChatList::Filter(t) => t.extra(),
+            ChatList::Folder(t) => t.extra(),
             ChatList::Main(t) => t.extra(),
 
             _ => None,
@@ -40,7 +40,7 @@ impl RObject for ChatList {
     fn client_id(&self) -> Option<i32> {
         match self {
             ChatList::Archive(t) => t.client_id(),
-            ChatList::Filter(t) => t.client_id(),
+            ChatList::Folder(t) => t.client_id(),
             ChatList::Main(t) => t.client_id(),
 
             _ => None,
@@ -125,21 +125,21 @@ impl AsRef<ChatListArchive> for ChatListArchiveBuilder {
     }
 }
 
-/// A list of chats belonging to a chat filter
+/// A list of chats added to a chat folder
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct ChatListFilter {
+pub struct ChatListFolder {
     #[doc(hidden)]
     #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Chat filter identifier
+    /// Chat folder identifier
 
     #[serde(default)]
-    chat_filter_id: i32,
+    chat_folder_id: i32,
 }
 
-impl RObject for ChatListFilter {
+impl RObject for ChatListFolder {
     #[doc(hidden)]
     fn extra(&self) -> Option<&str> {
         self.extra.as_deref()
@@ -150,51 +150,51 @@ impl RObject for ChatListFilter {
     }
 }
 
-impl TDChatList for ChatListFilter {}
+impl TDChatList for ChatListFolder {}
 
-impl ChatListFilter {
+impl ChatListFolder {
     pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
         Ok(serde_json::from_str(json.as_ref())?)
     }
-    pub fn builder() -> ChatListFilterBuilder {
-        let mut inner = ChatListFilter::default();
+    pub fn builder() -> ChatListFolderBuilder {
+        let mut inner = ChatListFolder::default();
         inner.extra = Some(Uuid::new_v4().to_string());
 
-        ChatListFilterBuilder { inner }
+        ChatListFolderBuilder { inner }
     }
 
-    pub fn chat_filter_id(&self) -> i32 {
-        self.chat_filter_id
+    pub fn chat_folder_id(&self) -> i32 {
+        self.chat_folder_id
     }
 }
 
 #[doc(hidden)]
-pub struct ChatListFilterBuilder {
-    inner: ChatListFilter,
+pub struct ChatListFolderBuilder {
+    inner: ChatListFolder,
 }
 
 #[deprecated]
-pub type RTDChatListFilterBuilder = ChatListFilterBuilder;
+pub type RTDChatListFolderBuilder = ChatListFolderBuilder;
 
-impl ChatListFilterBuilder {
-    pub fn build(&self) -> ChatListFilter {
+impl ChatListFolderBuilder {
+    pub fn build(&self) -> ChatListFolder {
         self.inner.clone()
     }
 
-    pub fn chat_filter_id(&mut self, chat_filter_id: i32) -> &mut Self {
-        self.inner.chat_filter_id = chat_filter_id;
+    pub fn chat_folder_id(&mut self, chat_folder_id: i32) -> &mut Self {
+        self.inner.chat_folder_id = chat_folder_id;
         self
     }
 }
 
-impl AsRef<ChatListFilter> for ChatListFilter {
-    fn as_ref(&self) -> &ChatListFilter {
+impl AsRef<ChatListFolder> for ChatListFolder {
+    fn as_ref(&self) -> &ChatListFolder {
         self
     }
 }
 
-impl AsRef<ChatListFilter> for ChatListFilterBuilder {
-    fn as_ref(&self) -> &ChatListFilter {
+impl AsRef<ChatListFolder> for ChatListFolderBuilder {
+    fn as_ref(&self) -> &ChatListFolder {
         &self.inner
     }
 }

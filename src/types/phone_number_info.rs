@@ -20,6 +20,10 @@ pub struct PhoneNumberInfo {
 
     #[serde(default)]
     formatted_phone_number: String,
+    /// True, if the phone number was bought on Fragment and isn't tied to a SIM card
+
+    #[serde(default)]
+    is_anonymous: bool,
 }
 
 impl RObject for PhoneNumberInfo {
@@ -55,6 +59,10 @@ impl PhoneNumberInfo {
     pub fn formatted_phone_number(&self) -> &String {
         &self.formatted_phone_number
     }
+
+    pub fn is_anonymous(&self) -> bool {
+        self.is_anonymous
+    }
 }
 
 #[doc(hidden)]
@@ -85,6 +93,11 @@ impl PhoneNumberInfoBuilder {
         formatted_phone_number: T,
     ) -> &mut Self {
         self.inner.formatted_phone_number = formatted_phone_number.as_ref().to_string();
+        self
+    }
+
+    pub fn is_anonymous(&mut self, is_anonymous: bool) -> &mut Self {
+        self.inner.is_anonymous = is_anonymous;
         self
     }
 }

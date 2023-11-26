@@ -28,6 +28,10 @@ pub struct ProfilePhoto {
 
     #[serde(default)]
     has_animation: Option<bool>,
+    /// True, if the photo is visible only for the current user
+
+    #[serde(default)]
+    is_personal: bool,
 }
 
 impl RObject for ProfilePhoto {
@@ -71,6 +75,10 @@ impl ProfilePhoto {
     pub fn has_animation(&self) -> &Option<bool> {
         &self.has_animation
     }
+
+    pub fn is_personal(&self) -> bool {
+        self.is_personal
+    }
 }
 
 #[doc(hidden)]
@@ -108,6 +116,11 @@ impl ProfilePhotoBuilder {
 
     pub fn has_animation(&mut self, has_animation: bool) -> &mut Self {
         self.inner.has_animation = Some(has_animation);
+        self
+    }
+
+    pub fn is_personal(&mut self, is_personal: bool) -> &mut Self {
+        self.inner.is_personal = is_personal;
         self
     }
 }

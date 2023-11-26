@@ -18,22 +18,16 @@ pub struct InlineQueryResults {
     )]
     #[serde(default)]
     inline_query_id: i64,
-    /// The offset for the next request. If empty, there are no more results
-
-    #[serde(default)]
-    next_offset: String,
+    /// Button to be shown above inline query results; may be null
+    button: Option<InlineQueryResultsButton>,
     /// Results of the query
 
     #[serde(default)]
     results: Vec<InlineQueryResult>,
-    /// If non-empty, this text must be shown on the button, which opens a private chat with the bot and sends the bot a start message with the switch_pm_parameter
+    /// The offset for the next request. If empty, there are no more results
 
     #[serde(default)]
-    switch_pm_text: String,
-    /// Parameter for the bot start message
-
-    #[serde(default)]
-    switch_pm_parameter: String,
+    next_offset: String,
 }
 
 impl RObject for InlineQueryResults {
@@ -62,20 +56,16 @@ impl InlineQueryResults {
         self.inline_query_id
     }
 
-    pub fn next_offset(&self) -> &String {
-        &self.next_offset
+    pub fn button(&self) -> &Option<InlineQueryResultsButton> {
+        &self.button
     }
 
     pub fn results(&self) -> &Vec<InlineQueryResult> {
         &self.results
     }
 
-    pub fn switch_pm_text(&self) -> &String {
-        &self.switch_pm_text
-    }
-
-    pub fn switch_pm_parameter(&self) -> &String {
-        &self.switch_pm_parameter
+    pub fn next_offset(&self) -> &String {
+        &self.next_offset
     }
 }
 
@@ -97,8 +87,8 @@ impl InlineQueryResultsBuilder {
         self
     }
 
-    pub fn next_offset<T: AsRef<str>>(&mut self, next_offset: T) -> &mut Self {
-        self.inner.next_offset = next_offset.as_ref().to_string();
+    pub fn button<T: AsRef<InlineQueryResultsButton>>(&mut self, button: T) -> &mut Self {
+        self.inner.button = Some(button.as_ref().clone());
         self
     }
 
@@ -107,13 +97,8 @@ impl InlineQueryResultsBuilder {
         self
     }
 
-    pub fn switch_pm_text<T: AsRef<str>>(&mut self, switch_pm_text: T) -> &mut Self {
-        self.inner.switch_pm_text = switch_pm_text.as_ref().to_string();
-        self
-    }
-
-    pub fn switch_pm_parameter<T: AsRef<str>>(&mut self, switch_pm_parameter: T) -> &mut Self {
-        self.inner.switch_pm_parameter = switch_pm_parameter.as_ref().to_string();
+    pub fn next_offset<T: AsRef<str>>(&mut self, next_offset: T) -> &mut Self {
+        self.inner.next_offset = next_offset.as_ref().to_string();
         self
     }
 }

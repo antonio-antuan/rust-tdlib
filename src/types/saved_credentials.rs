@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Contains information about saved card credentials
+/// Contains information about saved payment credentials
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SavedCredentials {
     #[doc(hidden)]

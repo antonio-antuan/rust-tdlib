@@ -58,6 +58,10 @@ pub struct ChatEventLogFilters {
 
     #[serde(default)]
     video_chat_changes: bool,
+    /// True, if forum-related actions need to be returned
+
+    #[serde(default)]
+    forum_changes: bool,
 }
 
 impl RObject for ChatEventLogFilters {
@@ -128,6 +132,10 @@ impl ChatEventLogFilters {
 
     pub fn video_chat_changes(&self) -> bool {
         self.video_chat_changes
+    }
+
+    pub fn forum_changes(&self) -> bool {
+        self.forum_changes
     }
 }
 
@@ -201,6 +209,11 @@ impl ChatEventLogFiltersBuilder {
 
     pub fn video_chat_changes(&mut self, video_chat_changes: bool) -> &mut Self {
         self.inner.video_chat_changes = video_chat_changes;
+        self
+    }
+
+    pub fn forum_changes(&mut self, forum_changes: bool) -> &mut Self {
+        self.inner.forum_changes = forum_changes;
         self
     }
 }

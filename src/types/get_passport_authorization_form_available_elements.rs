@@ -13,8 +13,8 @@ pub struct GetPassportAuthorizationFormAvailableElements {
     /// Authorization form identifier
 
     #[serde(default)]
-    autorization_form_id: i32,
-    /// Password of the current user
+    authorization_form_id: i32,
+    /// The 2-step verification password of the current user
 
     #[serde(default)]
     password: String,
@@ -49,8 +49,8 @@ impl GetPassportAuthorizationFormAvailableElements {
         GetPassportAuthorizationFormAvailableElementsBuilder { inner }
     }
 
-    pub fn autorization_form_id(&self) -> i32 {
-        self.autorization_form_id
+    pub fn authorization_form_id(&self) -> i32 {
+        self.authorization_form_id
     }
 
     pub fn password(&self) -> &String {
@@ -72,8 +72,8 @@ impl GetPassportAuthorizationFormAvailableElementsBuilder {
         self.inner.clone()
     }
 
-    pub fn autorization_form_id(&mut self, autorization_form_id: i32) -> &mut Self {
-        self.inner.autorization_form_id = autorization_form_id;
+    pub fn authorization_form_id(&mut self, authorization_form_id: i32) -> &mut Self {
+        self.inner.authorization_form_id = authorization_form_id;
         self
     }
 

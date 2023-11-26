@@ -18,10 +18,12 @@ pub struct AnswerInlineQuery {
     )]
     #[serde(default)]
     inline_query_id: i64,
-    /// True, if the result of the query can be cached for the specified user
+    /// Pass true if results may be cached and returned only for the user that sent the query. By default, results may be returned to any user who sends the same query
 
     #[serde(default)]
     is_personal: bool,
+    /// Button to be shown above inline query results; pass null if none
+    button: InlineQueryResultsButton,
     /// The results of the query
 
     #[serde(default)]
@@ -34,14 +36,6 @@ pub struct AnswerInlineQuery {
 
     #[serde(default)]
     next_offset: String,
-    /// If non-empty, this text must be shown on the button that opens a private chat with the bot and sends a start message to the bot with the parameter switch_pm_parameter
-
-    #[serde(default)]
-    switch_pm_text: String,
-    /// The parameter for the bot start message
-
-    #[serde(default)]
-    switch_pm_parameter: String,
 
     #[serde(rename(serialize = "@type"))]
     td_type: String,
@@ -81,6 +75,10 @@ impl AnswerInlineQuery {
         self.is_personal
     }
 
+    pub fn button(&self) -> &InlineQueryResultsButton {
+        &self.button
+    }
+
     pub fn results(&self) -> &Vec<InputInlineQueryResult> {
         &self.results
     }
@@ -91,14 +89,6 @@ impl AnswerInlineQuery {
 
     pub fn next_offset(&self) -> &String {
         &self.next_offset
-    }
-
-    pub fn switch_pm_text(&self) -> &String {
-        &self.switch_pm_text
-    }
-
-    pub fn switch_pm_parameter(&self) -> &String {
-        &self.switch_pm_parameter
     }
 }
 
@@ -125,6 +115,11 @@ impl AnswerInlineQueryBuilder {
         self
     }
 
+    pub fn button<T: AsRef<InlineQueryResultsButton>>(&mut self, button: T) -> &mut Self {
+        self.inner.button = button.as_ref().clone();
+        self
+    }
+
     pub fn results(&mut self, results: Vec<InputInlineQueryResult>) -> &mut Self {
         self.inner.results = results;
         self
@@ -137,16 +132,6 @@ impl AnswerInlineQueryBuilder {
 
     pub fn next_offset<T: AsRef<str>>(&mut self, next_offset: T) -> &mut Self {
         self.inner.next_offset = next_offset.as_ref().to_string();
-        self
-    }
-
-    pub fn switch_pm_text<T: AsRef<str>>(&mut self, switch_pm_text: T) -> &mut Self {
-        self.inner.switch_pm_text = switch_pm_text.as_ref().to_string();
-        self
-    }
-
-    pub fn switch_pm_parameter<T: AsRef<str>>(&mut self, switch_pm_parameter: T) -> &mut Self {
-        self.inner.switch_pm_parameter = switch_pm_parameter.as_ref().to_string();
         self
     }
 }

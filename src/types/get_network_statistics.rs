@@ -10,7 +10,7 @@ pub struct GetNetworkStatistics {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// If true, returns only data for the current library launch
+    /// Pass true to get statistics only for the current library launch
 
     #[serde(default)]
     only_current: bool,

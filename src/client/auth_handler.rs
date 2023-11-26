@@ -6,7 +6,7 @@ use dyn_clone::DynClone;
 use tokio::sync::Mutex;
 
 use crate::types::{
-    AuthorizationStateWaitCode, AuthorizationStateWaitEncryptionKey,
+    AuthorizationStateWaitCode,
     AuthorizationStateWaitOtherDeviceConfirmation, AuthorizationStateWaitPassword,
     AuthorizationStateWaitPhoneNumber, AuthorizationStateWaitRegistration,
 };
@@ -20,8 +20,6 @@ pub enum ClientIdentifier {
     BotToken(String),
 }
 
-/// `ClientAuthStateHandler` trait provides methods that returns data, required for authentication.
-/// Mandatory to use [AuthStateHandlerProxy](crate::client::AuthStateHandlerProxy) if you want to handle authorization per-client, see See `examples/auth_bot.rs` for details.
 #[async_trait]
 pub trait ClientAuthStateHandler: DynClone + Send + Sync + Debug {
     /// Interacts with provided link
@@ -36,11 +34,6 @@ pub trait ClientAuthStateHandler: DynClone + Send + Sync + Debug {
     }
     /// Returns wait code
     async fn handle_wait_code(&self, wait_code: &AuthorizationStateWaitCode) -> String;
-    /// Returns database encryption key
-    async fn handle_encryption_key(
-        &self,
-        wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
-    ) -> String;
     /// Returns password
     async fn handle_wait_password(&self, wait_password: &AuthorizationStateWaitPassword) -> String;
     /// Returns [ClientIdentifier](crate::client::auth_handler::ClientIdentifier)
@@ -78,12 +71,6 @@ pub trait AuthStateHandler {
         client: Box<dyn ClientAuthStateHandler>,
         wait_code: &AuthorizationStateWaitCode,
     ) -> String;
-    /// Returns database encryption key
-    async fn handle_encryption_key(
-        &self,
-        client: Box<dyn ClientAuthStateHandler>,
-        wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
-    ) -> String;
     /// Returns password
     async fn handle_wait_password(
         &self,
@@ -107,10 +94,6 @@ pub trait AuthStateHandler {
 /// Provides minimal implementation of `AuthStateHandler`.
 /// All required methods wait (synchronously) for stdin input
 #[derive(Debug, Clone)]
-#[deprecated(
-    since = "0.4.3",
-    note = "use ClientAuthStateHandler trait implementations bound to particular client with AuthStateHandlerProxy bound to worker"
-)]
 pub struct ConsoleAuthStateHandler;
 
 impl Default for ConsoleAuthStateHandler {
@@ -133,15 +116,6 @@ impl AuthStateHandler for ConsoleAuthStateHandler {
         _wait_code: &AuthorizationStateWaitCode,
     ) -> String {
         println!("waiting for auth code");
-        utils::wait_input_sync()
-    }
-
-    async fn handle_encryption_key(
-        &self,
-        _client: Box<dyn ClientAuthStateHandler>,
-        _wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
-    ) -> String {
-        println!("waiting for encryption key");
         utils::wait_input_sync()
     }
 
@@ -225,17 +199,6 @@ impl AuthStateHandler for SignalAuthStateHandler {
     ) -> String {
         log::info!("waiting for auth code");
         self.wait_signal().await
-    }
-
-    async fn handle_encryption_key(
-        &self,
-        _client: Box<dyn ClientAuthStateHandler>,
-        _: &AuthorizationStateWaitEncryptionKey,
-    ) -> String {
-        log::info!("waiting for encryption key");
-        let f = self.wait_signal().await;
-        log::info!("get encryption key");
-        f
     }
 
     async fn handle_wait_password(
@@ -325,20 +288,6 @@ impl AuthStateHandler for AuthStateHandlerProxy {
         wait_code: &AuthorizationStateWaitCode,
     ) -> String {
         client.handle_wait_code(wait_code).await
-    }
-
-    async fn handle_encryption_key(
-        &self,
-        client: Box<dyn ClientAuthStateHandler>,
-        wait_encryption_key: &AuthorizationStateWaitEncryptionKey,
-    ) -> String {
-        match &self.0 {
-            None => {
-                log::info!("wait for client's encryption key");
-                client.handle_encryption_key(wait_encryption_key).await
-            }
-            Some(key) => key.clone(),
-        }
     }
 
     async fn handle_wait_password(

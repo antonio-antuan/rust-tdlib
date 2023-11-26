@@ -26,6 +26,10 @@ pub struct PhoneNumberAuthenticationSettings {
 
     #[serde(default)]
     allow_sms_retriever_api: bool,
+    /// For official Android and iOS applications only; pass null otherwise. Settings for Firebase Authentication
+
+    #[serde(skip_serializing_if = "FirebaseAuthenticationSettings::_is_default")]
+    firebase_authentication_settings: FirebaseAuthenticationSettings,
     /// List of up to 20 authentication tokens, recently received in updateOption("authentication_token") in previously logged out sessions
 
     #[serde(default)]
@@ -70,6 +74,10 @@ impl PhoneNumberAuthenticationSettings {
         self.allow_sms_retriever_api
     }
 
+    pub fn firebase_authentication_settings(&self) -> &FirebaseAuthenticationSettings {
+        &self.firebase_authentication_settings
+    }
+
     pub fn authentication_tokens(&self) -> &Vec<String> {
         &self.authentication_tokens
     }
@@ -105,6 +113,15 @@ impl PhoneNumberAuthenticationSettingsBuilder {
 
     pub fn allow_sms_retriever_api(&mut self, allow_sms_retriever_api: bool) -> &mut Self {
         self.inner.allow_sms_retriever_api = allow_sms_retriever_api;
+        self
+    }
+
+    pub fn firebase_authentication_settings<T: AsRef<FirebaseAuthenticationSettings>>(
+        &mut self,
+        firebase_authentication_settings: T,
+    ) -> &mut Self {
+        self.inner.firebase_authentication_settings =
+            firebase_authentication_settings.as_ref().clone();
         self
     }
 

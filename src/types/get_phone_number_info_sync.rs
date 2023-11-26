@@ -10,7 +10,7 @@ pub struct GetPhoneNumberInfoSync {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// A two-letter ISO 639-1 country code for country information localization
+    /// A two-letter ISO 639-1 language code for country information localization
 
     #[serde(default)]
     language_code: String,

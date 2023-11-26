@@ -10,7 +10,7 @@ pub struct GetRecoveryEmailAddress {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// The password for the current user
+    /// The 2-step verification password for the current user
 
     #[serde(default)]
     password: String,

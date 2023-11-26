@@ -14,15 +14,15 @@ pub struct ViewMessages {
 
     #[serde(default)]
     chat_id: i64,
-    /// If not 0, a message thread identifier in which the messages are being viewed
-
-    #[serde(default)]
-    message_thread_id: i64,
     /// The identifiers of the messages being viewed
 
     #[serde(default)]
     message_ids: Vec<i64>,
-    /// True, if messages in closed chats must be marked as read by the request
+    /// Source of the message view; pass null to guess the source based on chat open state
+
+    #[serde(skip_serializing_if = "MessageSource::_is_default")]
+    source: MessageSource,
+    /// Pass true to mark as read the specified messages even the chat is closed
 
     #[serde(default)]
     force_read: bool,
@@ -61,12 +61,12 @@ impl ViewMessages {
         self.chat_id
     }
 
-    pub fn message_thread_id(&self) -> i64 {
-        self.message_thread_id
-    }
-
     pub fn message_ids(&self) -> &Vec<i64> {
         &self.message_ids
+    }
+
+    pub fn source(&self) -> &MessageSource {
+        &self.source
     }
 
     pub fn force_read(&self) -> bool {
@@ -92,13 +92,13 @@ impl ViewMessagesBuilder {
         self
     }
 
-    pub fn message_thread_id(&mut self, message_thread_id: i64) -> &mut Self {
-        self.inner.message_thread_id = message_thread_id;
+    pub fn message_ids(&mut self, message_ids: Vec<i64>) -> &mut Self {
+        self.inner.message_ids = message_ids;
         self
     }
 
-    pub fn message_ids(&mut self, message_ids: Vec<i64>) -> &mut Self {
-        self.inner.message_ids = message_ids;
+    pub fn source<T: AsRef<MessageSource>>(&mut self, source: T) -> &mut Self {
+        self.inner.source = source.as_ref().clone();
         self
     }
 

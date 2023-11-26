@@ -14,7 +14,7 @@ pub struct SetInlineGameScore {
 
     #[serde(default)]
     inline_message_id: String,
-    /// True, if the message needs to be edited
+    /// Pass true to edit the game message to include the current scoreboard
 
     #[serde(default)]
     edit_message: bool,

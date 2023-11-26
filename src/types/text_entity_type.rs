@@ -17,6 +17,9 @@ pub enum TextEntityType {
     /// A bank card number. The getBankCardInfo method can be used to get information about the bank card
     #[serde(rename = "textEntityTypeBankCardNumber")]
     BankCardNumber(TextEntityTypeBankCardNumber),
+    /// Text that must be formatted as if inside a blockquote HTML tag
+    #[serde(rename = "textEntityTypeBlockQuote")]
+    BlockQuote(TextEntityTypeBlockQuote),
     /// A bold text
     #[serde(rename = "textEntityTypeBold")]
     Bold(TextEntityTypeBold),
@@ -29,6 +32,9 @@ pub enum TextEntityType {
     /// Text that must be formatted as if inside a code HTML tag
     #[serde(rename = "textEntityTypeCode")]
     Code(TextEntityTypeCode),
+    /// A custom emoji. The text behind a custom emoji must be an emoji. Only premium users can use premium custom emoji
+    #[serde(rename = "textEntityTypeCustomEmoji")]
+    CustomEmoji(TextEntityTypeCustomEmoji),
     /// An email address
     #[serde(rename = "textEntityTypeEmailAddress")]
     EmailAddress(TextEntityTypeEmailAddress),
@@ -41,7 +47,7 @@ pub enum TextEntityType {
     /// A media timestamp
     #[serde(rename = "textEntityTypeMediaTimestamp")]
     MediaTimestamp(TextEntityTypeMediaTimestamp),
-    /// A mention of a user by their username
+    /// A mention of a user, a supergroup, or a channel by their username
     #[serde(rename = "textEntityTypeMention")]
     Mention(TextEntityTypeMention),
     /// A text shows instead of a raw mention of the user (e.g., when the user has no username)
@@ -56,6 +62,9 @@ pub enum TextEntityType {
     /// Text that must be formatted as if inside pre, and code HTML tags
     #[serde(rename = "textEntityTypePreCode")]
     PreCode(TextEntityTypePreCode),
+    /// A spoiler text
+    #[serde(rename = "textEntityTypeSpoiler")]
+    Spoiler(TextEntityTypeSpoiler),
     /// A strikethrough text
     #[serde(rename = "textEntityTypeStrikethrough")]
     Strikethrough(TextEntityTypeStrikethrough),
@@ -75,10 +84,12 @@ impl RObject for TextEntityType {
     fn extra(&self) -> Option<&str> {
         match self {
             TextEntityType::BankCardNumber(t) => t.extra(),
+            TextEntityType::BlockQuote(t) => t.extra(),
             TextEntityType::Bold(t) => t.extra(),
             TextEntityType::BotCommand(t) => t.extra(),
             TextEntityType::Cashtag(t) => t.extra(),
             TextEntityType::Code(t) => t.extra(),
+            TextEntityType::CustomEmoji(t) => t.extra(),
             TextEntityType::EmailAddress(t) => t.extra(),
             TextEntityType::Hashtag(t) => t.extra(),
             TextEntityType::Italic(t) => t.extra(),
@@ -88,6 +99,7 @@ impl RObject for TextEntityType {
             TextEntityType::PhoneNumber(t) => t.extra(),
             TextEntityType::Pre(t) => t.extra(),
             TextEntityType::PreCode(t) => t.extra(),
+            TextEntityType::Spoiler(t) => t.extra(),
             TextEntityType::Strikethrough(t) => t.extra(),
             TextEntityType::TextUrl(t) => t.extra(),
             TextEntityType::Underline(t) => t.extra(),
@@ -100,10 +112,12 @@ impl RObject for TextEntityType {
     fn client_id(&self) -> Option<i32> {
         match self {
             TextEntityType::BankCardNumber(t) => t.client_id(),
+            TextEntityType::BlockQuote(t) => t.client_id(),
             TextEntityType::Bold(t) => t.client_id(),
             TextEntityType::BotCommand(t) => t.client_id(),
             TextEntityType::Cashtag(t) => t.client_id(),
             TextEntityType::Code(t) => t.client_id(),
+            TextEntityType::CustomEmoji(t) => t.client_id(),
             TextEntityType::EmailAddress(t) => t.client_id(),
             TextEntityType::Hashtag(t) => t.client_id(),
             TextEntityType::Italic(t) => t.client_id(),
@@ -113,6 +127,7 @@ impl RObject for TextEntityType {
             TextEntityType::PhoneNumber(t) => t.client_id(),
             TextEntityType::Pre(t) => t.client_id(),
             TextEntityType::PreCode(t) => t.client_id(),
+            TextEntityType::Spoiler(t) => t.client_id(),
             TextEntityType::Strikethrough(t) => t.client_id(),
             TextEntityType::TextUrl(t) => t.client_id(),
             TextEntityType::Underline(t) => t.client_id(),
@@ -196,6 +211,67 @@ impl AsRef<TextEntityTypeBankCardNumber> for TextEntityTypeBankCardNumber {
 
 impl AsRef<TextEntityTypeBankCardNumber> for TextEntityTypeBankCardNumberBuilder {
     fn as_ref(&self) -> &TextEntityTypeBankCardNumber {
+        &self.inner
+    }
+}
+
+/// Text that must be formatted as if inside a blockquote HTML tag
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct TextEntityTypeBlockQuote {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for TextEntityTypeBlockQuote {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDTextEntityType for TextEntityTypeBlockQuote {}
+
+impl TextEntityTypeBlockQuote {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> TextEntityTypeBlockQuoteBuilder {
+        let mut inner = TextEntityTypeBlockQuote::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        TextEntityTypeBlockQuoteBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct TextEntityTypeBlockQuoteBuilder {
+    inner: TextEntityTypeBlockQuote,
+}
+
+#[deprecated]
+pub type RTDTextEntityTypeBlockQuoteBuilder = TextEntityTypeBlockQuoteBuilder;
+
+impl TextEntityTypeBlockQuoteBuilder {
+    pub fn build(&self) -> TextEntityTypeBlockQuote {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<TextEntityTypeBlockQuote> for TextEntityTypeBlockQuote {
+    fn as_ref(&self) -> &TextEntityTypeBlockQuote {
+        self
+    }
+}
+
+impl AsRef<TextEntityTypeBlockQuote> for TextEntityTypeBlockQuoteBuilder {
+    fn as_ref(&self) -> &TextEntityTypeBlockQuote {
         &self.inner
     }
 }
@@ -444,6 +520,84 @@ impl AsRef<TextEntityTypeCode> for TextEntityTypeCodeBuilder {
     }
 }
 
+/// A custom emoji. The text behind a custom emoji must be an emoji. Only premium users can use premium custom emoji
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct TextEntityTypeCustomEmoji {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+    /// Unique identifier of the custom emoji
+
+    #[serde(
+        deserialize_with = "super::_common::number_from_string",
+        serialize_with = "super::_common::string_to_number"
+    )]
+    #[serde(default)]
+    custom_emoji_id: i64,
+}
+
+impl RObject for TextEntityTypeCustomEmoji {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDTextEntityType for TextEntityTypeCustomEmoji {}
+
+impl TextEntityTypeCustomEmoji {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> TextEntityTypeCustomEmojiBuilder {
+        let mut inner = TextEntityTypeCustomEmoji::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        TextEntityTypeCustomEmojiBuilder { inner }
+    }
+
+    pub fn custom_emoji_id(&self) -> i64 {
+        self.custom_emoji_id
+    }
+}
+
+#[doc(hidden)]
+pub struct TextEntityTypeCustomEmojiBuilder {
+    inner: TextEntityTypeCustomEmoji,
+}
+
+#[deprecated]
+pub type RTDTextEntityTypeCustomEmojiBuilder = TextEntityTypeCustomEmojiBuilder;
+
+impl TextEntityTypeCustomEmojiBuilder {
+    pub fn build(&self) -> TextEntityTypeCustomEmoji {
+        self.inner.clone()
+    }
+
+    pub fn custom_emoji_id(&mut self, custom_emoji_id: i64) -> &mut Self {
+        self.inner.custom_emoji_id = custom_emoji_id;
+        self
+    }
+}
+
+impl AsRef<TextEntityTypeCustomEmoji> for TextEntityTypeCustomEmoji {
+    fn as_ref(&self) -> &TextEntityTypeCustomEmoji {
+        self
+    }
+}
+
+impl AsRef<TextEntityTypeCustomEmoji> for TextEntityTypeCustomEmojiBuilder {
+    fn as_ref(&self) -> &TextEntityTypeCustomEmoji {
+        &self.inner
+    }
+}
+
 /// An email address
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TextEntityTypeEmailAddress {
@@ -635,7 +789,7 @@ pub struct TextEntityTypeMediaTimestamp {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Timestamp from which a video/audio/video note/voice note playing must start, in seconds. The media can be in the content or the web page preview of the current message, or in the same places in the replied message
+    /// Timestamp from which a video/audio/video note/voice note/story playing must start, in seconds. The media can be in the content or the web page preview of the current message, or in the same places in the replied message
 
     #[serde(default)]
     media_timestamp: i32,
@@ -701,7 +855,7 @@ impl AsRef<TextEntityTypeMediaTimestamp> for TextEntityTypeMediaTimestampBuilder
     }
 }
 
-/// A mention of a user by their username
+/// A mention of a user, a supergroup, or a channel by their username
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct TextEntityTypeMention {
     #[doc(hidden)]
@@ -1028,6 +1182,67 @@ impl AsRef<TextEntityTypePreCode> for TextEntityTypePreCode {
 
 impl AsRef<TextEntityTypePreCode> for TextEntityTypePreCodeBuilder {
     fn as_ref(&self) -> &TextEntityTypePreCode {
+        &self.inner
+    }
+}
+
+/// A spoiler text
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct TextEntityTypeSpoiler {
+    #[doc(hidden)]
+    #[serde(rename(serialize = "@extra", deserialize = "@extra"))]
+    extra: Option<String>,
+    #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
+    client_id: Option<i32>,
+}
+
+impl RObject for TextEntityTypeSpoiler {
+    #[doc(hidden)]
+    fn extra(&self) -> Option<&str> {
+        self.extra.as_deref()
+    }
+    #[doc(hidden)]
+    fn client_id(&self) -> Option<i32> {
+        self.client_id
+    }
+}
+
+impl TDTextEntityType for TextEntityTypeSpoiler {}
+
+impl TextEntityTypeSpoiler {
+    pub fn from_json<S: AsRef<str>>(json: S) -> Result<Self> {
+        Ok(serde_json::from_str(json.as_ref())?)
+    }
+    pub fn builder() -> TextEntityTypeSpoilerBuilder {
+        let mut inner = TextEntityTypeSpoiler::default();
+        inner.extra = Some(Uuid::new_v4().to_string());
+
+        TextEntityTypeSpoilerBuilder { inner }
+    }
+}
+
+#[doc(hidden)]
+pub struct TextEntityTypeSpoilerBuilder {
+    inner: TextEntityTypeSpoiler,
+}
+
+#[deprecated]
+pub type RTDTextEntityTypeSpoilerBuilder = TextEntityTypeSpoilerBuilder;
+
+impl TextEntityTypeSpoilerBuilder {
+    pub fn build(&self) -> TextEntityTypeSpoiler {
+        self.inner.clone()
+    }
+}
+
+impl AsRef<TextEntityTypeSpoiler> for TextEntityTypeSpoiler {
+    fn as_ref(&self) -> &TextEntityTypeSpoiler {
+        self
+    }
+}
+
+impl AsRef<TextEntityTypeSpoiler> for TextEntityTypeSpoilerBuilder {
+    fn as_ref(&self) -> &TextEntityTypeSpoiler {
         &self.inner
     }
 }

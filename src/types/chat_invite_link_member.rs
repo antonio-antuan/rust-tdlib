@@ -18,6 +18,10 @@ pub struct ChatInviteLinkMember {
 
     #[serde(default)]
     joined_chat_date: i32,
+    /// True, if the user has joined the chat using an invite link for a chat folder
+
+    #[serde(default)]
+    via_chat_folder_invite_link: bool,
     /// User identifier of the chat administrator, approved user join request
 
     #[serde(default)]
@@ -54,6 +58,10 @@ impl ChatInviteLinkMember {
         self.joined_chat_date
     }
 
+    pub fn via_chat_folder_invite_link(&self) -> bool {
+        self.via_chat_folder_invite_link
+    }
+
     pub fn approver_user_id(&self) -> i64 {
         self.approver_user_id
     }
@@ -79,6 +87,11 @@ impl ChatInviteLinkMemberBuilder {
 
     pub fn joined_chat_date(&mut self, joined_chat_date: i32) -> &mut Self {
         self.inner.joined_chat_date = joined_chat_date;
+        self
+    }
+
+    pub fn via_chat_folder_invite_link(&mut self, via_chat_folder_invite_link: bool) -> &mut Self {
+        self.inner.via_chat_folder_invite_link = via_chat_folder_invite_link;
         self
     }
 

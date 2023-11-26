@@ -2,7 +2,7 @@ use rust_tdlib::types::AuthorizationState;
 use rust_tdlib::{
     client::{Client, ClientState, SignalAuthStateHandler, Worker},
     tdjson,
-    types::TdlibParameters,
+    types::SetTdlibParameters,
 };
 
 #[tokio::main]
@@ -17,7 +17,7 @@ async fn main() {
         std::fs::remove_dir_all(db_dir).expect("can't clear directory");
     }
 
-    let tdlib_parameters = TdlibParameters::builder()
+    let tdlib_parameters = SetTdlibParameters::builder()
         .database_directory(db_dir)
         .use_test_dc(true)
         .api_id(std::env::var("API_ID").unwrap().parse::<i32>().unwrap())

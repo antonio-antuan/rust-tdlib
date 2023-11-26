@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Sets a sticker set thumbnail; for bots only. Returns the sticker set
+/// Sets a sticker set thumbnail; for bots only
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SetStickerSetThumbnail {
     #[doc(hidden)]
@@ -18,7 +18,7 @@ pub struct SetStickerSetThumbnail {
 
     #[serde(default)]
     name: String,
-    /// Thumbnail to set in PNG or TGS format; pass null to remove the sticker set thumbnail. Animated thumbnail must be set for animated sticker sets and only for them
+    /// Thumbnail to set in PNG, TGS, or WEBM format; pass null to remove the sticker set thumbnail. Thumbnail format must match the format of stickers in the set
 
     #[serde(skip_serializing_if = "InputFile::_is_default")]
     thumbnail: InputFile,

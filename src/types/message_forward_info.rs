@@ -10,10 +10,10 @@ pub struct MessageForwardInfo {
     extra: Option<String>,
     #[serde(rename(serialize = "@client_id", deserialize = "@client_id"))]
     client_id: Option<i32>,
-    /// Origin of a forwarded message
+    /// Origin of the forwarded message
 
-    #[serde(skip_serializing_if = "MessageForwardOrigin::_is_default")]
-    origin: MessageForwardOrigin,
+    #[serde(skip_serializing_if = "MessageOrigin::_is_default")]
+    origin: MessageOrigin,
     /// Point in time (Unix timestamp) when the message was originally sent
 
     #[serde(default)]
@@ -54,7 +54,7 @@ impl MessageForwardInfo {
         MessageForwardInfoBuilder { inner }
     }
 
-    pub fn origin(&self) -> &MessageForwardOrigin {
+    pub fn origin(&self) -> &MessageOrigin {
         &self.origin
     }
 
@@ -88,7 +88,7 @@ impl MessageForwardInfoBuilder {
         self.inner.clone()
     }
 
-    pub fn origin<T: AsRef<MessageForwardOrigin>>(&mut self, origin: T) -> &mut Self {
+    pub fn origin<T: AsRef<MessageOrigin>>(&mut self, origin: T) -> &mut Self {
         self.inner.origin = origin.as_ref().clone();
         self
     }

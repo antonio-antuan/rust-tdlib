@@ -18,10 +18,10 @@ pub struct AddLocalMessage {
 
     #[serde(skip_serializing_if = "MessageSender::_is_default")]
     sender_id: MessageSender,
-    /// Identifier of the message to reply to or 0
+    /// Information about the message or story to be replied; pass null if none
 
-    #[serde(default)]
-    reply_to_message_id: i64,
+    #[serde(skip_serializing_if = "InputMessageReplyTo::_is_default")]
+    reply_to: InputMessageReplyTo,
     /// Pass true to disable notification for the message
 
     #[serde(default)]
@@ -69,8 +69,8 @@ impl AddLocalMessage {
         &self.sender_id
     }
 
-    pub fn reply_to_message_id(&self) -> i64 {
-        self.reply_to_message_id
+    pub fn reply_to(&self) -> &InputMessageReplyTo {
+        &self.reply_to
     }
 
     pub fn disable_notification(&self) -> bool {
@@ -105,8 +105,8 @@ impl AddLocalMessageBuilder {
         self
     }
 
-    pub fn reply_to_message_id(&mut self, reply_to_message_id: i64) -> &mut Self {
-        self.inner.reply_to_message_id = reply_to_message_id;
+    pub fn reply_to<T: AsRef<InputMessageReplyTo>>(&mut self, reply_to: T) -> &mut Self {
+        self.inner.reply_to = reply_to.as_ref().clone();
         self
     }
 

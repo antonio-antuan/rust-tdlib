@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns all user contacts
+/// Returns all contacts of the user
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetContacts {
     #[doc(hidden)]

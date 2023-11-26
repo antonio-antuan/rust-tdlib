@@ -14,7 +14,7 @@ pub struct DiscardCall {
 
     #[serde(default)]
     call_id: i32,
-    /// True, if the user was disconnected
+    /// Pass true if the user was disconnected
 
     #[serde(default)]
     is_disconnected: bool,
@@ -22,7 +22,7 @@ pub struct DiscardCall {
 
     #[serde(default)]
     duration: i32,
-    /// True, if the call was a video call
+    /// Pass true if the call was a video call
 
     #[serde(default)]
     is_video: bool,

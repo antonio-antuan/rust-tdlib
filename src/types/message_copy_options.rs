@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Options to be used when a message content is copied without reference to the original sender. Service messages and messageInvoice can't be copied
+/// Options to be used when a message content is copied without reference to the original sender. Service messages, and messages with messageInvoice or messagePremiumGiveaway content can't be copied
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MessageCopyOptions {
     #[doc(hidden)]

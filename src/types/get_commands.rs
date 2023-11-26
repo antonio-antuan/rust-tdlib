@@ -2,7 +2,7 @@ use crate::errors::Result;
 use crate::types::*;
 use uuid::Uuid;
 
-/// Returns the list of commands supported by the bot for the given user scope and language; for bots only
+/// Returns list of commands supported by the bot for the given user scope and language; for bots only
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GetCommands {
     #[doc(hidden)]
@@ -14,7 +14,7 @@ pub struct GetCommands {
 
     #[serde(skip_serializing_if = "BotCommandScope::_is_default")]
     scope: BotCommandScope,
-    /// A two-letter ISO 639-1 country code or an empty string
+    /// A two-letter ISO 639-1 language code or an empty string
 
     #[serde(default)]
     language_code: String,
